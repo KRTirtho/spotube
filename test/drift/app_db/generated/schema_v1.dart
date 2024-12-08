@@ -1,11 +1,7 @@
+// dart format width=80
 // GENERATED CODE, DO NOT EDIT BY HAND.
 // ignore_for_file: type=lint
-//@dart=2.12
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart' hide Table;
-import 'package:spotify/spotify.dart';
-import 'package:spotube/services/sourced_track/enums.dart';
-import 'package:spotube/utils/migrations/adapters.dart';
 
 class AuthenticationTable extends Table
     with TableInfo<AuthenticationTable, AuthenticationTableData> {

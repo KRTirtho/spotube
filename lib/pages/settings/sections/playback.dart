@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
@@ -15,6 +16,7 @@ import 'package:spotube/provider/audio_player/sources/piped_instances_provider.d
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 import 'package:spotube/services/sourced_track/enums.dart';
+import 'package:spotube/utils/platform.dart';
 
 class SettingsPlaybackSection extends HookConsumerWidget {
   const SettingsPlaybackSection({super.key});
@@ -238,6 +240,30 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                   },
                 )
               : const SizedBox.shrink(),
+        ),
+        SwitchListTile(
+          title: Text(context.l10n.cache_music),
+          subtitle: kIsMobile
+              ? null
+              : Text.rich(
+                  TextSpan(
+                    children: [
+                      TextSpan(text: "${context.l10n.open} "),
+                      TextSpan(
+                        text: context.l10n.cache_folder.toLowerCase(),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = preferencesNotifier.openCacheFolder,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.primary,
+                          decoration: TextDecoration.underline,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+          secondary: const Icon(SpotubeIcons.cache),
+          value: preferences.cacheMusic,
+          onChanged: preferencesNotifier.setCacheMusic,
         ),
         ListTile(
           leading: const Icon(SpotubeIcons.playlistRemove),

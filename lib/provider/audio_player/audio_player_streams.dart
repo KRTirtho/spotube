@@ -74,6 +74,7 @@ class AudioPlayerStreamListeners {
   StreamSubscription subscribeToPlaylist() {
     return audioPlayer.playlistStream.listen((mpvPlaylist) {
       try {
+        if (audioPlayerState.activeTrack == null) return;
         notificationService.addTrack(audioPlayerState.activeTrack!);
         discord.updatePresence(audioPlayerState.activeTrack!);
         updatePalette();

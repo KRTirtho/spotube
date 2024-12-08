@@ -94,6 +94,7 @@ class PreferencesTable extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get enableConnect =>
       boolean().withDefault(const Constant(false))();
+  BoolColumn get cacheMusic => boolean().withDefault(const Constant(true))();
 
   // Default values as PreferencesTableData
   static PreferencesTableData defaults() {
@@ -119,11 +120,12 @@ class PreferencesTable extends Table {
       invidiousInstance: "https://inv.nadeko.net",
       themeMode: ThemeMode.system,
       audioSource: AudioSource.youtube,
-      streamMusicCodec: SourceCodecs.weba,
+      streamMusicCodec: SourceCodecs.m4a,
       downloadMusicCodec: SourceCodecs.m4a,
       discordPresence: true,
       endlessPlayback: true,
       enableConnect: false,
+      cacheMusic: true,
     );
   }
 }

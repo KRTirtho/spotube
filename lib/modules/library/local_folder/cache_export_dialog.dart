@@ -1,0 +1,139 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:path/path.dart';
+import 'package:spotube/extensions/context.dart';
+import 'package:spotube/services/logger/logger.dart';
+import 'package:spotube/services/sourced_track/enums.dart';
+
+final codecs = SourceCodecs.values.map((s) => s.name);
+
+class LocalFolderCacheExportDialog extends HookConsumerWidget {
+  final Directory exportDir;
+  final Directory cacheDir;
+  const LocalFolderCacheExportDialog({
+    super.key,
+    required this.exportDir,
+    required this.cacheDir,
+  });
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
+
+    final files = useState<List<File>>([]);
+    final filesExported = useState<int>(0);
+
+    useEffect(() {
+      final stream = cacheDir.list().where(
+            (event) =>
+                event is File &&
+                codecs.contains(extension(event.path).replaceAll(".", "")),
+          );
+
+      stream.listen(
+        (event) {
+          files.value = [...files.value, event as File];
+        },
+        onError: (e, stack) {
+          AppLogger.reportError(e, stack);
+        },
+      );
+      return null;
+    }, []);
+
+    useEffect(() {
+      if (filesExported.value == files.value.length &&
+          filesExported.value > 0) {
+        Navigator.of(context).pop();
+      }
+      return null;
+    }, [filesExported.value, files.value]);
+
+    final isExportInProgress =
+        filesExported.value > 0 && filesExported.value != files.value.length;
+
+    return AlertDialog(
+      title: Text(context.l10n.export_cache_files),
+      content: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        child: filesExported.value == 0
+            ? Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    context.l10n.found_n_files(files.value.length.toString()),
+                  ),
+                  const Gap(10),
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: context.l10n.export_cache_confirmation,
+                        ),
+                        TextSpan(
+                          text: "\n${exportDir.path}?",
+                          style: textTheme.labelMedium!.copyWith(
+                            color: colorScheme.secondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    context.l10n.exported_n_out_of_m_files(
+                      files.value.length.toString(),
+                      filesExported.value.toString(),
+                    ),
+                  ),
+                  const Gap(10),
+                  LinearProgressIndicator(
+                    value: filesExported.value / files.value.length,
+                  ),
+                ],
+              ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: isExportInProgress
+              ? null
+              : () {
+                  Navigator.of(context).pop();
+                },
+          child: Text(context.l10n.cancel),
+        ),
+        TextButton(
+          onPressed: isExportInProgress
+              ? null
+              : () async {
+                  for (final file in files.value) {
+                    try {
+                      final destinationFile = File(
+                        join(exportDir.path, basename(file.path)),
+                      );
+
+                      if (await destinationFile.exists()) {
+                        await destinationFile.delete();
+                      }
+                      await file.copy(destinationFile.path);
+                      filesExported.value++;
+                    } catch (e, stack) {
+                      AppLogger.reportError(e, stack);
+                      continue;
+                    }
+                  }
+                },
+          child: Text(context.l10n.export),
+        ),
+      ],
+    );
+  }
+}

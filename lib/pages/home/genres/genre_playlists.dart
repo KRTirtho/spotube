@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
@@ -27,6 +29,14 @@ class GenrePlaylistsPage extends HookConsumerWidget {
     final playlistsNotifier =
         ref.read(categoryPlaylistsProvider(category.id!).notifier);
     final scrollController = useScrollController();
+    final routeName = GoRouterState.of(context).name;
+
+    useCustomStatusBarColor(
+      Colors.black,
+      routeName == GenrePlaylistsPage.name,
+      noSetBGColor: true,
+      automaticSystemUiAdjustment: false,
+    );
 
     return Scaffold(
       appBar: kIsDesktop

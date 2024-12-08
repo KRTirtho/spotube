@@ -1,4 +1,7 @@
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:go_router/go_router.dart';
 import 'package:html/dom.dart' hide Text;
 import 'package:spotify/spotify.dart';
@@ -8,6 +11,7 @@ import 'package:spotube/modules/root/update_dialog.dart';
 import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/dio/dio.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 import 'package:spotube/utils/primitive_utils.dart';
@@ -447,6 +451,29 @@ abstract class ServiceUtils {
           return RootAppUpdateDialog(version: latestVersion);
         },
       );
+    }
+  }
+
+  /// Spotify Images are always JPEGs
+  static Future<Uint8List?> downloadImage(
+    String imageUrl,
+  ) async {
+    try {
+      final fileStream = DefaultCacheManager().getImageFile(imageUrl);
+
+      final bytes = List<int>.empty(growable: true);
+
+      await for (final data in fileStream) {
+        if (data is FileInfo) {
+          bytes.addAll(data.file.readAsBytesSync());
+          break;
+        }
+      }
+
+      return Uint8List.fromList(bytes);
+    } catch (e, stackTrace) {
+      AppLogger.reportError(e, stackTrace);
+      return null;
     }
   }
 }

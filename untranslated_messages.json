@@ -3,181 +3,441 @@
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "bn": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "ca": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "cs": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "de": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "es": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "eu": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "fa": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "fi": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "fr": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "hi": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "id": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "it": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "ja": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "ka": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "ko": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "ne": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "nl": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "pl": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "pt": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "ru": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "th": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "tr": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "uk": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "vi": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ],
 
   "zh": [
     "invidious_instance",
     "invidious_description",
     "invidious_warning",
-    "invidious_source_description"
+    "invidious_source_description",
+    "cache_music",
+    "open",
+    "cache_folder",
+    "export",
+    "clear_cache",
+    "clear_cache_confirmation",
+    "export_cache_files",
+    "found_n_files",
+    "export_cache_confirmation",
+    "exported_n_out_of_m_files"
   ]
 }

@@ -1,8 +1,9 @@
+// dart format width=80
 // GENERATED CODE, DO NOT EDIT BY HAND.
 // ignore_for_file: type=lint
-//@dart=2.12
 import 'package:drift/drift.dart';
 import 'package:drift/internal/migrations.dart';
+import 'schema_v3.dart' as v3;
 import 'schema_v2.dart' as v2;
 import 'schema_v1.dart' as v1;
 
@@ -10,6 +11,8 @@ class GeneratedHelper implements SchemaInstantiationHelper {
   @override
   GeneratedDatabase databaseForVersion(QueryExecutor db, int version) {
     switch (version) {
+      case 3:
+        return v3.DatabaseAtV3(db);
       case 2:
         return v2.DatabaseAtV2(db);
       case 1:
@@ -19,5 +22,5 @@ class GeneratedHelper implements SchemaInstantiationHelper {
     }
   }
 
-  static const versions = const [1, 2];
+  static const versions = const [1, 2, 3];
 }

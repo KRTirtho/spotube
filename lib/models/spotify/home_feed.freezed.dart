@@ -29,8 +29,12 @@ mixin _$SpotifySectionPlaylist {
   String get owner => throw _privateConstructorUsedError;
   String get uri => throw _privateConstructorUsedError;
 
+  /// Serializes this SpotifySectionPlaylist to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SpotifySectionPlaylist
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SpotifySectionPlaylistCopyWith<SpotifySectionPlaylist> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -61,6 +65,8 @@ class _$SpotifySectionPlaylistCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SpotifySectionPlaylist
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -128,6 +134,8 @@ class __$$SpotifySectionPlaylistImplCopyWithImpl<$Res>
       $Res Function(_$SpotifySectionPlaylistImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SpotifySectionPlaylist
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -221,12 +229,14 @@ class _$SpotifySectionPlaylistImpl extends _SpotifySectionPlaylist {
             (identical(other.uri, uri) || other.uri == uri));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, description, format,
       const DeepCollectionEquality().hash(_images), name, owner, uri);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SpotifySectionPlaylist
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotifySectionPlaylistImplCopyWith<_$SpotifySectionPlaylistImpl>
@@ -266,8 +276,11 @@ abstract class _SpotifySectionPlaylist extends SpotifySectionPlaylist {
   String get owner;
   @override
   String get uri;
+
+  /// Create a copy of SpotifySectionPlaylist
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotifySectionPlaylistImplCopyWith<_$SpotifySectionPlaylistImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -283,8 +296,12 @@ mixin _$SpotifySectionArtist {
   List<SpotifySectionItemImage> get images =>
       throw _privateConstructorUsedError;
 
+  /// Serializes this SpotifySectionArtist to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SpotifySectionArtist
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SpotifySectionArtistCopyWith<SpotifySectionArtist> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -309,6 +326,8 @@ class _$SpotifySectionArtistCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SpotifySectionArtist
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -352,6 +371,8 @@ class __$$SpotifySectionArtistImplCopyWithImpl<$Res>
       $Res Function(_$SpotifySectionArtistImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SpotifySectionArtist
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -416,12 +437,14 @@ class _$SpotifySectionArtistImpl extends _SpotifySectionArtist {
             const DeepCollectionEquality().equals(other._images, _images));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, name, uri, const DeepCollectionEquality().hash(_images));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SpotifySectionArtist
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotifySectionArtistImplCopyWith<_$SpotifySectionArtistImpl>
@@ -454,8 +477,11 @@ abstract class _SpotifySectionArtist extends SpotifySectionArtist {
   String get uri;
   @override
   List<SpotifySectionItemImage> get images;
+
+  /// Create a copy of SpotifySectionArtist
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotifySectionArtistImplCopyWith<_$SpotifySectionArtistImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -473,8 +499,12 @@ mixin _$SpotifySectionAlbum {
   String get name => throw _privateConstructorUsedError;
   String get uri => throw _privateConstructorUsedError;
 
+  /// Serializes this SpotifySectionAlbum to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SpotifySectionAlbum
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SpotifySectionAlbumCopyWith<SpotifySectionAlbum> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -502,6 +532,8 @@ class _$SpotifySectionAlbumCopyWithImpl<$Res, $Val extends SpotifySectionAlbum>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SpotifySectionAlbum
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -554,6 +586,8 @@ class __$$SpotifySectionAlbumImplCopyWithImpl<$Res>
       $Res Function(_$SpotifySectionAlbumImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SpotifySectionAlbum
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -635,7 +669,7 @@ class _$SpotifySectionAlbumImpl extends _SpotifySectionAlbum {
             (identical(other.uri, uri) || other.uri == uri));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -644,7 +678,9 @@ class _$SpotifySectionAlbumImpl extends _SpotifySectionAlbum {
       name,
       uri);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SpotifySectionAlbum
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotifySectionAlbumImplCopyWith<_$SpotifySectionAlbumImpl> get copyWith =>
@@ -678,8 +714,11 @@ abstract class _SpotifySectionAlbum extends SpotifySectionAlbum {
   String get name;
   @override
   String get uri;
+
+  /// Create a copy of SpotifySectionAlbum
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotifySectionAlbumImplCopyWith<_$SpotifySectionAlbumImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -694,8 +733,12 @@ mixin _$SpotifySectionAlbumArtist {
   String get name => throw _privateConstructorUsedError;
   String get uri => throw _privateConstructorUsedError;
 
+  /// Serializes this SpotifySectionAlbumArtist to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SpotifySectionAlbumArtist
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SpotifySectionAlbumArtistCopyWith<SpotifySectionAlbumArtist> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -720,6 +763,8 @@ class _$SpotifySectionAlbumArtistCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SpotifySectionAlbumArtist
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -761,6 +806,8 @@ class __$$SpotifySectionAlbumArtistImplCopyWithImpl<$Res>
       $Res Function(_$SpotifySectionAlbumArtistImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SpotifySectionAlbumArtist
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -808,11 +855,13 @@ class _$SpotifySectionAlbumArtistImpl extends _SpotifySectionAlbumArtist {
             (identical(other.uri, uri) || other.uri == uri));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, uri);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SpotifySectionAlbumArtist
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotifySectionAlbumArtistImplCopyWith<_$SpotifySectionAlbumArtistImpl>
@@ -840,8 +889,11 @@ abstract class _SpotifySectionAlbumArtist extends SpotifySectionAlbumArtist {
   String get name;
   @override
   String get uri;
+
+  /// Create a copy of SpotifySectionAlbumArtist
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotifySectionAlbumArtistImplCopyWith<_$SpotifySectionAlbumArtistImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -857,8 +909,12 @@ mixin _$SpotifySectionItemImage {
   String get url => throw _privateConstructorUsedError;
   num? get width => throw _privateConstructorUsedError;
 
+  /// Serializes this SpotifySectionItemImage to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SpotifySectionItemImage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SpotifySectionItemImageCopyWith<SpotifySectionItemImage> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -883,6 +939,8 @@ class _$SpotifySectionItemImageCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SpotifySectionItemImage
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -929,6 +987,8 @@ class __$$SpotifySectionItemImageImplCopyWithImpl<$Res>
       $Res Function(_$SpotifySectionItemImageImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SpotifySectionItemImage
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -985,11 +1045,13 @@ class _$SpotifySectionItemImageImpl extends _SpotifySectionItemImage {
             (identical(other.width, width) || other.width == width));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, height, url, width);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SpotifySectionItemImage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotifySectionItemImageImplCopyWith<_$SpotifySectionItemImageImpl>
@@ -1020,8 +1082,11 @@ abstract class _SpotifySectionItemImage extends SpotifySectionItemImage {
   String get url;
   @override
   num? get width;
+
+  /// Create a copy of SpotifySectionItemImage
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotifySectionItemImageImplCopyWith<_$SpotifySectionItemImageImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1038,8 +1103,12 @@ mixin _$SpotifyHomeFeedSectionItem {
   SpotifySectionArtist? get artist => throw _privateConstructorUsedError;
   SpotifySectionAlbum? get album => throw _privateConstructorUsedError;
 
+  /// Serializes this SpotifyHomeFeedSectionItem to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SpotifyHomeFeedSectionItem
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SpotifyHomeFeedSectionItemCopyWith<SpotifyHomeFeedSectionItem>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1073,6 +1142,8 @@ class _$SpotifyHomeFeedSectionItemCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SpotifyHomeFeedSectionItem
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1101,6 +1172,8 @@ class _$SpotifyHomeFeedSectionItemCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of SpotifyHomeFeedSectionItem
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SpotifySectionPlaylistCopyWith<$Res>? get playlist {
@@ -1113,6 +1186,8 @@ class _$SpotifyHomeFeedSectionItemCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of SpotifyHomeFeedSectionItem
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SpotifySectionArtistCopyWith<$Res>? get artist {
@@ -1125,6 +1200,8 @@ class _$SpotifyHomeFeedSectionItemCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of SpotifyHomeFeedSectionItem
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SpotifySectionAlbumCopyWith<$Res>? get album {
@@ -1171,6 +1248,8 @@ class __$$SpotifyHomeFeedSectionItemImplCopyWithImpl<$Res>
       $Res Function(_$SpotifyHomeFeedSectionItemImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SpotifyHomeFeedSectionItem
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1237,12 +1316,14 @@ class _$SpotifyHomeFeedSectionItemImpl implements _SpotifyHomeFeedSectionItem {
             (identical(other.album, album) || other.album == album));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, typename, playlist, artist, album);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SpotifyHomeFeedSectionItem
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotifyHomeFeedSectionItemImplCopyWith<_$SpotifyHomeFeedSectionItemImpl>
@@ -1276,8 +1357,11 @@ abstract class _SpotifyHomeFeedSectionItem
   SpotifySectionArtist? get artist;
   @override
   SpotifySectionAlbum? get album;
+
+  /// Create a copy of SpotifyHomeFeedSectionItem
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotifyHomeFeedSectionItemImplCopyWith<_$SpotifyHomeFeedSectionItemImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1295,8 +1379,12 @@ mixin _$SpotifyHomeFeedSection {
   List<SpotifyHomeFeedSectionItem> get items =>
       throw _privateConstructorUsedError;
 
+  /// Serializes this SpotifyHomeFeedSection to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SpotifyHomeFeedSection
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SpotifyHomeFeedSectionCopyWith<SpotifyHomeFeedSection> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1325,6 +1413,8 @@ class _$SpotifyHomeFeedSectionCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SpotifyHomeFeedSection
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1380,6 +1470,8 @@ class __$$SpotifyHomeFeedSectionImplCopyWithImpl<$Res>
       $Res Function(_$SpotifyHomeFeedSectionImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SpotifyHomeFeedSection
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1453,12 +1545,14 @@ class _$SpotifyHomeFeedSectionImpl implements _SpotifyHomeFeedSection {
             const DeepCollectionEquality().equals(other._items, _items));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, typename, title, uri,
       const DeepCollectionEquality().hash(_items));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SpotifyHomeFeedSection
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotifyHomeFeedSectionImplCopyWith<_$SpotifyHomeFeedSectionImpl>
@@ -1492,8 +1586,11 @@ abstract class _SpotifyHomeFeedSection implements SpotifyHomeFeedSection {
   String get uri;
   @override
   List<SpotifyHomeFeedSectionItem> get items;
+
+  /// Create a copy of SpotifyHomeFeedSection
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotifyHomeFeedSectionImplCopyWith<_$SpotifyHomeFeedSectionImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1508,8 +1605,12 @@ mixin _$SpotifyHomeFeed {
   List<SpotifyHomeFeedSection> get sections =>
       throw _privateConstructorUsedError;
 
+  /// Serializes this SpotifyHomeFeed to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SpotifyHomeFeed
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SpotifyHomeFeedCopyWith<SpotifyHomeFeed> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1533,6 +1634,8 @@ class _$SpotifyHomeFeedCopyWithImpl<$Res, $Val extends SpotifyHomeFeed>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SpotifyHomeFeed
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1571,6 +1674,8 @@ class __$$SpotifyHomeFeedImplCopyWithImpl<$Res>
       _$SpotifyHomeFeedImpl _value, $Res Function(_$SpotifyHomeFeedImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SpotifyHomeFeed
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1626,12 +1731,14 @@ class _$SpotifyHomeFeedImpl implements _SpotifyHomeFeed {
             const DeepCollectionEquality().equals(other._sections, _sections));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, greeting, const DeepCollectionEquality().hash(_sections));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SpotifyHomeFeed
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotifyHomeFeedImplCopyWith<_$SpotifyHomeFeedImpl> get copyWith =>
@@ -1659,8 +1766,11 @@ abstract class _SpotifyHomeFeed implements SpotifyHomeFeed {
   String get greeting;
   @override
   List<SpotifyHomeFeedSection> get sections;
+
+  /// Create a copy of SpotifyHomeFeed
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotifyHomeFeedImplCopyWith<_$SpotifyHomeFeedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
