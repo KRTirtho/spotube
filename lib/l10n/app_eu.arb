@@ -164,7 +164,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "Lizentzia",
   "add_spotify_credentials": "Gehitu zure Spotify kredentzialak hasi ahal izateko",
-  "credentials_will_not_be_shared_disclaimer": "Ez arduratu, zure kredentzialak ez ditugu bilduko edo inorekin elkarbanatuko",
+  "credentials_will_not_be_shared_disclaimer": "Ez kezkatu, zure kredentzialetako bat ere ez da inorekin bilduko edo partekatuko",
   "know_how_to_login": "Ez dakizu nola egin?",
   "follow_step_by_step_guide": "Jarraitu pausoz-pausoko gida",
   "spotify_cookie": "Spotify-ren {name} cookiea",

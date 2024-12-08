@@ -161,7 +161,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "Licence",
   "add_spotify_credentials": "Přidejte své přihlašovací údaje Spotify a začněte",
-  "credentials_will_not_be_shared_disclaimer": "Nebojte, žádné z vašich údajů nebudou shromažďovány ani s nikým sdíleny",
+  "credentials_will_not_be_shared_disclaimer": "Nemějte obavy, žádné z vašich přihlašovacích údajů nebudou shromažďovány ani sdíleny s nikým",
   "know_how_to_login": "Nevíte, jak na to?",
   "follow_step_by_step_guide": "Postupujte podle návodu",
   "spotify_cookie": "Cookie Spotify {name}",

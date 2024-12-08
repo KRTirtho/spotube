@@ -160,7 +160,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "الترخيص",
   "add_spotify_credentials": "أضف بيانات Spotify الخاصة بك للبدء",
-  "credentials_will_not_be_shared_disclaimer": "لا تقلق، لن يتم جمع أي من بيانات الخاصة بك أو مشاركتها مع أي شخص",
+  "credentials_will_not_be_shared_disclaimer": "لا تقلق، لن يتم جمع أي من بيانات الاعتماد الخاصة بك أو مشاركتها مع أي شخص",
   "know_how_to_login": "لا تعرف كيف تفعل هذا؟",
   "follow_step_by_step_guide": "اتبع الدليل خطوة بخطوة",
   "spotify_cookie": "Spotify {name} كوكيز",

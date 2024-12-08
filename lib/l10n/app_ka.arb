@@ -161,7 +161,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "ლიცენზია",
   "add_spotify_credentials": "დასაწყებად დაამატეთ თქვენი Spotify მონაცემები",
-  "credentials_will_not_be_shared_disclaimer": "არ ინერვიულოთ, თქვენი მონაცემები არ იქნება შეგროვებული ან გაზიარებული ვინმესთან",
+  "credentials_will_not_be_shared_disclaimer": "არ ინერვიულოთ, თქვენი რწმუნებათა სიგელები არ იქნება შეგროვებული ან გაზიარებული ვინმესთან",
   "know_how_to_login": "არ იცით როგორ გააკეთოთ ეს?",
   "follow_step_by_step_guide": "მიჰყევით ნაბიჯ-ნაბიჯ სახელმძღვანელოს",
   "spotify_cookie": "Spotify {name} ქუქი",
