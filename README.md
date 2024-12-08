@@ -87,6 +87,19 @@ This handy table lists all the methods you can use to install Spotube:
     </td>
   </tr>
   <tr>
+  <tr>
+    <td>iOS</td>
+    <td>
+      <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-iOS.ipa">
+        <img width="220" alt="Download iOS IPA" src="https://github.com/user-attachments/assets/3e50d93d-fb39-435c-be6b-337745f7c423">
+      </a>
+      <br/>
+      <blockquote style="color:red">
+        *iPA file only. Requires sideloading with <a href="https://altstore.io/">AltStore</a> or similar tools.
+      </blockquote>
+    </td>
+  </tr>
+  <tr>
     <td>Flatpak</td>
     <td>
       <p><code>flatpak install com.github.KRTirtho.Spotube</code></p>
