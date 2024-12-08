@@ -109,10 +109,10 @@ abstract class LanguageLocals {
     //   name: "Breton",
     //   nativeName: "brezhoneg",
     // ),
-    // "bg": const ISOLanguageName(
-    //   name: "Bulgarian",
-    //   nativeName: "български език",
-    // ),
+     "bg": const ISOLanguageName(
+       name: "Bulgarian",
+       nativeName: "български език",
+       ),
     // "my": const ISOLanguageName(
     //   name: "Burmese",
     //   nativeName: "ဗမာစာ",
