@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -28,8 +29,10 @@ class LocalFolderItem extends HookConsumerWidget {
 
     final downloadFolder =
         ref.watch(userPreferencesProvider.select((s) => s.downloadLocation));
+    final cacheFolder = useFuture(UserPreferencesNotifier.getMusicCacheDir());
 
     final isDownloadFolder = folder == downloadFolder;
+    final isCacheFolder = folder == cacheFolder.data;
 
     final Uri(:pathSegments) = Uri.parse(
       folder
@@ -62,6 +65,7 @@ class LocalFolderItem extends HookConsumerWidget {
           LocalLibraryPage.name,
           queryParameters: {
             if (isDownloadFolder) "downloads": "true",
+            if (isCacheFolder) "cache": "true",
           },
           extra: folder,
         );

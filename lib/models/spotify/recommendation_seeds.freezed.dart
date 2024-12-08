@@ -24,7 +24,9 @@ mixin _$GeneratePlaylistProviderInput {
   RecommendationSeeds? get min => throw _privateConstructorUsedError;
   RecommendationSeeds? get target => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GeneratePlaylistProviderInput
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $GeneratePlaylistProviderInputCopyWith<GeneratePlaylistProviderInput>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -62,6 +64,8 @@ class _$GeneratePlaylistProviderInputCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of GeneratePlaylistProviderInput
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -105,6 +109,8 @@ class _$GeneratePlaylistProviderInputCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of GeneratePlaylistProviderInput
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $RecommendationSeedsCopyWith<$Res>? get max {
@@ -117,6 +123,8 @@ class _$GeneratePlaylistProviderInputCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of GeneratePlaylistProviderInput
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $RecommendationSeedsCopyWith<$Res>? get min {
@@ -129,6 +137,8 @@ class _$GeneratePlaylistProviderInputCopyWithImpl<$Res,
     });
   }
 
+  /// Create a copy of GeneratePlaylistProviderInput
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $RecommendationSeedsCopyWith<$Res>? get target {
@@ -178,6 +188,8 @@ class __$$GeneratePlaylistProviderInputImplCopyWithImpl<$Res>
       $Res Function(_$GeneratePlaylistProviderInputImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of GeneratePlaylistProviderInput
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -283,7 +295,9 @@ class _$GeneratePlaylistProviderInputImpl
       min,
       target);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of GeneratePlaylistProviderInput
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$GeneratePlaylistProviderInputImplCopyWith<
@@ -317,8 +331,11 @@ abstract class _GeneratePlaylistProviderInput
   RecommendationSeeds? get min;
   @override
   RecommendationSeeds? get target;
+
+  /// Create a copy of GeneratePlaylistProviderInput
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$GeneratePlaylistProviderInputImplCopyWith<
           _$GeneratePlaylistProviderInputImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -347,8 +364,12 @@ mixin _$RecommendationSeeds {
   num? get timeSignature => throw _privateConstructorUsedError;
   num? get valence => throw _privateConstructorUsedError;
 
+  /// Serializes this RecommendationSeeds to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of RecommendationSeeds
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $RecommendationSeedsCopyWith<RecommendationSeeds> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -386,6 +407,8 @@ class _$RecommendationSeedsCopyWithImpl<$Res, $Val extends RecommendationSeeds>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of RecommendationSeeds
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -498,6 +521,8 @@ class __$$RecommendationSeedsImplCopyWithImpl<$Res>
       $Res Function(_$RecommendationSeedsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of RecommendationSeeds
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -665,7 +690,7 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
             (identical(other.valence, valence) || other.valence == valence));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -684,7 +709,9 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
       timeSignature,
       valence);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of RecommendationSeeds
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$RecommendationSeedsImplCopyWith<_$RecommendationSeedsImpl> get copyWith =>
@@ -749,8 +776,11 @@ abstract class _RecommendationSeeds implements RecommendationSeeds {
   num? get timeSignature;
   @override
   num? get valence;
+
+  /// Create a copy of RecommendationSeeds
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$RecommendationSeedsImplCopyWith<_$RecommendationSeedsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

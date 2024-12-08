@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/extensions/string.dart';
 import 'package:spotube/modules/library/user_local_tracks.dart';
 import 'package:spotube/components/expandable_search/expandable_search.dart';
 import 'package:spotube/components/fallbacks/not_found.dart';
@@ -25,7 +26,13 @@ class LocalLibraryPage extends HookConsumerWidget {
 
   final String location;
   final bool isDownloads;
-  const LocalLibraryPage(this.location, {super.key, this.isDownloads = false});
+  final bool isCache;
+  const LocalLibraryPage(
+    this.location, {
+    super.key,
+    this.isDownloads = false,
+    this.isCache = false,
+  });
 
   Future<void> playLocalTracks(
     WidgetRef ref,
@@ -71,7 +78,13 @@ class LocalLibraryPage extends HookConsumerWidget {
           appBar: PageWindowTitleBar(
             leading: const BackButton(),
             centerTitle: true,
-            title: Text(isDownloads ? context.l10n.downloads : location),
+            title: Text(
+              isDownloads
+                  ? context.l10n.downloads
+                  : isCache
+                      ? context.l10n.cache_folder.capitalize()
+                      : location,
+            ),
             backgroundColor: Colors.transparent,
           ),
           body: Column(

@@ -124,4 +124,5 @@ abstract class SpotubeIcons {
   static const chart = FeatherIcons.barChart2;
   static const folderAdd = FeatherIcons.folderPlus;
   static const folderRemove = FeatherIcons.folderMinus;
+  static const cache = FeatherIcons.hardDrive;
 }

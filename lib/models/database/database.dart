@@ -58,18 +58,26 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
     return MigrationStrategy(
-      onUpgrade: stepByStep(from1To2: (m, schema) async {
-        // Add invidiousInstance column to preferences table
-        await m.addColumn(
-          schema.preferencesTable,
-          schema.preferencesTable.invidiousInstance,
-        );
-      }),
+      onUpgrade: stepByStep(
+        from1To2: (m, schema) async {
+          // Add invidiousInstance column to preferences table
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.invidiousInstance,
+          );
+        },
+        from2To3: (m, schema) async {
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.cacheMusic,
+          );
+        },
+      ),
     );
   }
 }

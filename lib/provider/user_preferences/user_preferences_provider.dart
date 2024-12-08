@@ -14,6 +14,7 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:open_file/open_file.dart';
 
 typedef UserPreferences = PreferencesTableData;
 
@@ -93,6 +94,16 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     final query = db.update(db.preferencesTable)..where((t) => t.id.equals(0));
 
     await query.replace(PreferencesTableCompanion.insert());
+  }
+
+  static Future<String> getMusicCacheDir() async => join(
+        await getApplicationCacheDirectory().then((value) => value.path),
+        'cached_tracks',
+      );
+
+  Future<void> openCacheFolder() async {
+    final filePath = await getMusicCacheDir();
+    await OpenFile.open(filePath);
   }
 
   void setStreamMusicCodec(SourceCodecs codec) {
@@ -210,6 +221,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setEnableConnect(bool enable) {
     setData(PreferencesTableCompanion(enableConnect: Value(enable)));
+  }
+
+  void setCacheMusic(bool cache) {
+    setData(PreferencesTableCompanion(cacheMusic: Value(cache)));
   }
 }
 

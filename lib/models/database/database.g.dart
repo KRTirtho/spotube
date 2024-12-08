@@ -812,6 +812,16 @@ class $PreferencesTableTable extends PreferencesTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("enable_connect" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _cacheMusicMeta =
+      const VerificationMeta('cacheMusic');
+  @override
+  late final GeneratedColumn<bool> cacheMusic = GeneratedColumn<bool>(
+      'cache_music', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("cache_music" IN (0, 1))'),
+      defaultValue: const Constant(true));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -839,7 +849,8 @@ class $PreferencesTableTable extends PreferencesTable
         downloadMusicCodec,
         discordPresence,
         endlessPlayback,
-        enableConnect
+        enableConnect,
+        cacheMusic
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -946,6 +957,12 @@ class $PreferencesTableTable extends PreferencesTable
           enableConnect.isAcceptableOrUnknown(
               data['enable_connect']!, _enableConnectMeta));
     }
+    if (data.containsKey('cache_music')) {
+      context.handle(
+          _cacheMusicMeta,
+          cacheMusic.isAcceptableOrUnknown(
+              data['cache_music']!, _cacheMusicMeta));
+    }
     return context;
   }
 
@@ -1020,6 +1037,8 @@ class $PreferencesTableTable extends PreferencesTable
           .read(DriftSqlType.bool, data['${effectivePrefix}endless_playback'])!,
       enableConnect: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}enable_connect'])!,
+      cacheMusic: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}cache_music'])!,
     );
   }
 
@@ -1086,6 +1105,7 @@ class PreferencesTableData extends DataClass
   final bool discordPresence;
   final bool endlessPlayback;
   final bool enableConnect;
+  final bool cacheMusic;
   const PreferencesTableData(
       {required this.id,
       required this.audioQuality,
@@ -1112,7 +1132,8 @@ class PreferencesTableData extends DataClass
       required this.downloadMusicCodec,
       required this.discordPresence,
       required this.endlessPlayback,
-      required this.enableConnect});
+      required this.enableConnect,
+      required this.cacheMusic});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -1182,6 +1203,7 @@ class PreferencesTableData extends DataClass
     map['discord_presence'] = Variable<bool>(discordPresence);
     map['endless_playback'] = Variable<bool>(endlessPlayback);
     map['enable_connect'] = Variable<bool>(enableConnect);
+    map['cache_music'] = Variable<bool>(cacheMusic);
     return map;
   }
 
@@ -1213,6 +1235,7 @@ class PreferencesTableData extends DataClass
       discordPresence: Value(discordPresence),
       endlessPlayback: Value(endlessPlayback),
       enableConnect: Value(enableConnect),
+      cacheMusic: Value(cacheMusic),
     );
   }
 
@@ -1257,6 +1280,7 @@ class PreferencesTableData extends DataClass
       discordPresence: serializer.fromJson<bool>(json['discordPresence']),
       endlessPlayback: serializer.fromJson<bool>(json['endlessPlayback']),
       enableConnect: serializer.fromJson<bool>(json['enableConnect']),
+      cacheMusic: serializer.fromJson<bool>(json['cacheMusic']),
     );
   }
   @override
@@ -1301,6 +1325,7 @@ class PreferencesTableData extends DataClass
       'discordPresence': serializer.toJson<bool>(discordPresence),
       'endlessPlayback': serializer.toJson<bool>(endlessPlayback),
       'enableConnect': serializer.toJson<bool>(enableConnect),
+      'cacheMusic': serializer.toJson<bool>(cacheMusic),
     };
   }
 
@@ -1330,7 +1355,8 @@ class PreferencesTableData extends DataClass
           SourceCodecs? downloadMusicCodec,
           bool? discordPresence,
           bool? endlessPlayback,
-          bool? enableConnect}) =>
+          bool? enableConnect,
+          bool? cacheMusic}) =>
       PreferencesTableData(
         id: id ?? this.id,
         audioQuality: audioQuality ?? this.audioQuality,
@@ -1358,6 +1384,7 @@ class PreferencesTableData extends DataClass
         discordPresence: discordPresence ?? this.discordPresence,
         endlessPlayback: endlessPlayback ?? this.endlessPlayback,
         enableConnect: enableConnect ?? this.enableConnect,
+        cacheMusic: cacheMusic ?? this.cacheMusic,
       );
   PreferencesTableData copyWithCompanion(PreferencesTableCompanion data) {
     return PreferencesTableData(
@@ -1427,6 +1454,8 @@ class PreferencesTableData extends DataClass
       enableConnect: data.enableConnect.present
           ? data.enableConnect.value
           : this.enableConnect,
+      cacheMusic:
+          data.cacheMusic.present ? data.cacheMusic.value : this.cacheMusic,
     );
   }
 
@@ -1458,7 +1487,8 @@ class PreferencesTableData extends DataClass
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
           ..write('discordPresence: $discordPresence, ')
           ..write('endlessPlayback: $endlessPlayback, ')
-          ..write('enableConnect: $enableConnect')
+          ..write('enableConnect: $enableConnect, ')
+          ..write('cacheMusic: $cacheMusic')
           ..write(')'))
         .toString();
   }
@@ -1490,7 +1520,8 @@ class PreferencesTableData extends DataClass
         downloadMusicCodec,
         discordPresence,
         endlessPlayback,
-        enableConnect
+        enableConnect,
+        cacheMusic
       ]);
   @override
   bool operator ==(Object other) =>
@@ -1521,7 +1552,8 @@ class PreferencesTableData extends DataClass
           other.downloadMusicCodec == this.downloadMusicCodec &&
           other.discordPresence == this.discordPresence &&
           other.endlessPlayback == this.endlessPlayback &&
-          other.enableConnect == this.enableConnect);
+          other.enableConnect == this.enableConnect &&
+          other.cacheMusic == this.cacheMusic);
 }
 
 class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
@@ -1551,6 +1583,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<bool> discordPresence;
   final Value<bool> endlessPlayback;
   final Value<bool> enableConnect;
+  final Value<bool> cacheMusic;
   const PreferencesTableCompanion({
     this.id = const Value.absent(),
     this.audioQuality = const Value.absent(),
@@ -1578,6 +1611,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.discordPresence = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
     this.enableConnect = const Value.absent(),
+    this.cacheMusic = const Value.absent(),
   });
   PreferencesTableCompanion.insert({
     this.id = const Value.absent(),
@@ -1606,6 +1640,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.discordPresence = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
     this.enableConnect = const Value.absent(),
+    this.cacheMusic = const Value.absent(),
   });
   static Insertable<PreferencesTableData> custom({
     Expression<int>? id,
@@ -1634,6 +1669,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<bool>? discordPresence,
     Expression<bool>? endlessPlayback,
     Expression<bool>? enableConnect,
+    Expression<bool>? cacheMusic,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1665,6 +1701,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       if (discordPresence != null) 'discord_presence': discordPresence,
       if (endlessPlayback != null) 'endless_playback': endlessPlayback,
       if (enableConnect != null) 'enable_connect': enableConnect,
+      if (cacheMusic != null) 'cache_music': cacheMusic,
     });
   }
 
@@ -1694,7 +1731,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       Value<SourceCodecs>? downloadMusicCodec,
       Value<bool>? discordPresence,
       Value<bool>? endlessPlayback,
-      Value<bool>? enableConnect}) {
+      Value<bool>? enableConnect,
+      Value<bool>? cacheMusic}) {
     return PreferencesTableCompanion(
       id: id ?? this.id,
       audioQuality: audioQuality ?? this.audioQuality,
@@ -1722,6 +1760,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       discordPresence: discordPresence ?? this.discordPresence,
       endlessPlayback: endlessPlayback ?? this.endlessPlayback,
       enableConnect: enableConnect ?? this.enableConnect,
+      cacheMusic: cacheMusic ?? this.cacheMusic,
     );
   }
 
@@ -1825,6 +1864,9 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     if (enableConnect.present) {
       map['enable_connect'] = Variable<bool>(enableConnect.value);
     }
+    if (cacheMusic.present) {
+      map['cache_music'] = Variable<bool>(cacheMusic.value);
+    }
     return map;
   }
 
@@ -1856,7 +1898,8 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
           ..write('discordPresence: $discordPresence, ')
           ..write('endlessPlayback: $endlessPlayback, ')
-          ..write('enableConnect: $enableConnect')
+          ..write('enableConnect: $enableConnect, ')
+          ..write('cacheMusic: $cacheMusic')
           ..write(')'))
         .toString();
   }
@@ -4527,6 +4570,7 @@ typedef $$PreferencesTableTableCreateCompanionBuilder
   Value<bool> discordPresence,
   Value<bool> endlessPlayback,
   Value<bool> enableConnect,
+  Value<bool> cacheMusic,
 });
 typedef $$PreferencesTableTableUpdateCompanionBuilder
     = PreferencesTableCompanion Function({
@@ -4556,6 +4600,7 @@ typedef $$PreferencesTableTableUpdateCompanionBuilder
   Value<bool> discordPresence,
   Value<bool> endlessPlayback,
   Value<bool> enableConnect,
+  Value<bool> cacheMusic,
 });
 
 class $$PreferencesTableTableFilterComposer
@@ -4677,6 +4722,9 @@ class $$PreferencesTableTableFilterComposer
 
   ColumnFilters<bool> get enableConnect => $composableBuilder(
       column: $table.enableConnect, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get cacheMusic => $composableBuilder(
+      column: $table.cacheMusic, builder: (column) => ColumnFilters(column));
 }
 
 class $$PreferencesTableTableOrderingComposer
@@ -4783,6 +4831,9 @@ class $$PreferencesTableTableOrderingComposer
   ColumnOrderings<bool> get enableConnect => $composableBuilder(
       column: $table.enableConnect,
       builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get cacheMusic => $composableBuilder(
+      column: $table.cacheMusic, builder: (column) => ColumnOrderings(column));
 }
 
 class $$PreferencesTableTableAnnotationComposer
@@ -4880,6 +4931,9 @@ class $$PreferencesTableTableAnnotationComposer
 
   GeneratedColumn<bool> get enableConnect => $composableBuilder(
       column: $table.enableConnect, builder: (column) => column);
+
+  GeneratedColumn<bool> get cacheMusic => $composableBuilder(
+      column: $table.cacheMusic, builder: (column) => column);
 }
 
 class $$PreferencesTableTableTableManager extends RootTableManager<
@@ -4936,6 +4990,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<bool> discordPresence = const Value.absent(),
             Value<bool> endlessPlayback = const Value.absent(),
             Value<bool> enableConnect = const Value.absent(),
+            Value<bool> cacheMusic = const Value.absent(),
           }) =>
               PreferencesTableCompanion(
             id: id,
@@ -4964,6 +5019,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             discordPresence: discordPresence,
             endlessPlayback: endlessPlayback,
             enableConnect: enableConnect,
+            cacheMusic: cacheMusic,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -4992,6 +5048,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<bool> discordPresence = const Value.absent(),
             Value<bool> endlessPlayback = const Value.absent(),
             Value<bool> enableConnect = const Value.absent(),
+            Value<bool> cacheMusic = const Value.absent(),
           }) =>
               PreferencesTableCompanion.insert(
             id: id,
@@ -5020,6 +5077,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             discordPresence: discordPresence,
             endlessPlayback: endlessPlayback,
             enableConnect: enableConnect,
+            cacheMusic: cacheMusic,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
@@ -5829,8 +5887,7 @@ final class $$PlaylistTableTableReferences extends BaseReferences<_$AppDatabase,
       db.audioPlayerStateTable.createAlias($_aliasNameGenerator(
           db.playlistTable.audioPlayerStateId, db.audioPlayerStateTable.id));
 
-  $$AudioPlayerStateTableTableProcessedTableManager? get audioPlayerStateId {
-    if ($_item.audioPlayerStateId == null) return null;
+  $$AudioPlayerStateTableTableProcessedTableManager get audioPlayerStateId {
     final manager = $$AudioPlayerStateTableTableTableManager(
             $_db, $_db.audioPlayerStateTable)
         .filter((f) => f.id($_item.audioPlayerStateId!));
@@ -6156,8 +6213,7 @@ final class $$PlaylistMediaTableTableReferences extends BaseReferences<
       db.playlistTable.createAlias($_aliasNameGenerator(
           db.playlistMediaTable.playlistId, db.playlistTable.id));
 
-  $$PlaylistTableTableProcessedTableManager? get playlistId {
-    if ($_item.playlistId == null) return null;
+  $$PlaylistTableTableProcessedTableManager get playlistId {
     final manager = $$PlaylistTableTableTableManager($_db, $_db.playlistTable)
         .filter((f) => f.id($_item.playlistId!));
     final item = $_typedResult.readTableOrNull(_playlistIdTable($_db));

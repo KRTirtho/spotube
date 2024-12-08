@@ -21,7 +21,6 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
-import 'package:path_provider/path_provider.dart' as paths;
 import 'package:spotube/utils/service_utils.dart';
 
 class ServerPlaybackRoutes {
@@ -39,8 +38,7 @@ class ServerPlaybackRoutes {
   ) async {
     final trackCacheFile = File(
       join(
-        await paths.getApplicationCacheDirectory().then((value) => value.path),
-        'cached_tracks',
+        await UserPreferencesNotifier.getMusicCacheDir(),
         '${track.name} - ${track.artists?.asString()} (${track.sourceInfo.id}).${track.codec.name}',
       ),
     );
@@ -68,7 +66,7 @@ class ServerPlaybackRoutes {
 
     final contentLength = headersRes?.headers.value("content-length");
 
-    if (await trackCacheFile.exists()) {
+    if (await trackCacheFile.exists() && userPreferences.cacheMusic) {
       final bytes = await trackCacheFile.readAsBytes();
       final cachedFileLength = bytes.length;
 
@@ -117,8 +115,8 @@ class ServerPlaybackRoutes {
 
     final bytes = res.data;
 
-    if (bytes == null) {
-      return (response: res, bytes: null);
+    if (bytes == null || !userPreferences.cacheMusic) {
+      return (response: res, bytes: bytes);
     }
 
     final contentRange =

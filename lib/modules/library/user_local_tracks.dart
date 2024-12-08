@@ -30,6 +30,7 @@ class UserLocalTracks extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final cacheDir = useFuture(UserPreferencesNotifier.getMusicCacheDir());
     final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
     final preferences = ref.watch(userPreferencesProvider);
 
@@ -83,12 +84,16 @@ class UserLocalTracks extends HookConsumerWidget {
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,
                 ),
-                itemCount: preferences.localLibraryLocation.length + 1,
+                itemCount: preferences.localLibraryLocation.length +
+                    1 +
+                    (cacheDir.hasData ? 1 : 0),
                 itemBuilder: (context, index) {
                   return LocalFolderItem(
                     folder: index == 0
                         ? preferences.downloadLocation
-                        : preferences.localLibraryLocation[index - 1],
+                        : index == 1 && cacheDir.hasData
+                            ? cacheDir.data!
+                            : preferences.localLibraryLocation[index - 1],
                   );
                 },
               ),
