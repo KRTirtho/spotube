@@ -7,6 +7,7 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
+import 'package:spotube/services/audio_player/playback_state.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/platform.dart';
 
@@ -59,6 +60,9 @@ class MobileAudioService extends BaseAudioHandler {
       });
     });
     audioPlayer.playerStateStream.listen((state) async {
+      if (state == AudioPlaybackState.playing) {
+        await session?.setActive(true);
+      }
       playbackState.add(await _transformEvent());
     });
 

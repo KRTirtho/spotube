@@ -23,6 +23,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/video_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/services/sourced_track/sources/invidious.dart';
 import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
 import 'package:spotube/services/sourced_track/sources/piped.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
@@ -42,6 +43,17 @@ final sourceInfoToIconMap = {
     ),
   ),
   PipedSourceInfo: const Icon(SpotubeIcons.piped),
+  InvidiousSourceInfo: Container(
+    height: 18,
+    width: 18,
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(90),
+      image: DecorationImage(
+        image: Assets.invidious.provider(),
+        fit: BoxFit.cover,
+      ),
+    ),
+  ),
 };
 
 class SiblingTracksSheet extends HookConsumerWidget {

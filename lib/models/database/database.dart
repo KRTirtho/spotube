@@ -9,6 +9,7 @@ import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotify/spotify.dart' hide Playlist;
+import 'package:spotube/models/database/database.steps.dart';
 import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
@@ -57,7 +58,28 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 3;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onUpgrade: stepByStep(
+        from1To2: (m, schema) async {
+          // Add invidiousInstance column to preferences table
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.invidiousInstance,
+          );
+        },
+        from2To3: (m, schema) async {
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.cacheMusic,
+          );
+        },
+      ),
+    );
+  }
 }
 
 LazyDatabase _openConnection() {

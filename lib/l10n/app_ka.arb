@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*ეს გამოითვლება Spotify-ის თითოეულ სტრიმზე\nგადახდის შესაბამისად, რომელიც $0.003 დან $0.005-მდეა. ეს არის ჰიპოთეტური\nგამოთვლა, რომელიც აჩვენებს მომხმარებელს რამდენი გადაიხდიდა\nარტისტებს, თუკი ისინი უსმენდნენ მათ სიმღერებს Spotify-ზე.",
   "webview_not_found": "ვებვიუ ვერ მოიძებნა",
   "webview_not_found_description": "თქვენს მოწყობილობაზე ვებვიუის შესრულების დრო არ არის დაყენებული.\nთუ დაყენებულია, დარწმუნდით, რომ ის environment PATH-შია\n\nდაყენების შემდეგ, გადატვირთეთ აპი",
-  "unsupported_platform": "მოუხერხებელი პლატფორმა"
+  "unsupported_platform": "მოუხერხებელი პლატფორმა",
+  "invidious_instance": "Invidious სერვერის ინსტანცია",
+  "invidious_description": "Invidious სერვერის ინსტანცია, რომელიც გამოიყენება ტრეკის შესატყვისად",
+  "invidious_warning": "ზოგიერთი შეიძლება კარგად არ მუშაობდეს. გამოიყენეთ თქვენს პასუხისმგებლობაზე",
+  "invidious_source_description": "მსგავსია Piped-ის, მაგრამ მაღალი ხელმისაწვდომობით.",
+  "cache_music": "მუსიკის ქეში",
+  "open": "გახსენით",
+  "cache_folder": "ქეშის საქაღალდე",
+  "export": "ექსპორტი",
+  "clear_cache": "ქეშის გასუფთავება",
+  "clear_cache_confirmation": "გსურთ ქეშის გასუფთავება?",
+  "export_cache_files": "ქეშირებული ფაილების ექსპორტი",
+  "found_n_files": "ნაპოვნია {count} ფაილი",
+  "export_cache_confirmation": "გსურთ ამ ფაილების ექსპორტი",
+  "exported_n_out_of_m_files": "{filesExported} ფაილი {files}-დან ექსპორტირებულია"
 }

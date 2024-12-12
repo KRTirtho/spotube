@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*これは、Spotifyのストリームごとの支払い\nが $0.003 から $0.005 の範囲で計算されています。これは仮想的な\n計算で、Spotify で曲を聴いた場合に、アーティストに\nどれくらい支払ったかをユーザーに示すためのものです。",
   "webview_not_found": "Webviewが見つかりません",
   "webview_not_found_description": "デバイスにWebviewランタイムがインストールされていません。\nインストールされている場合は、environment PATHにあることを確認してください\n\nインストール後、アプリを再起動してください",
-  "unsupported_platform": "サポートされていないプラットフォーム"
+  "unsupported_platform": "サポートされていないプラットフォーム",
+  "invidious_instance": "Invidiousサーバーインスタンス",
+  "invidious_description": "トラックマッチングに使用するInvidiousサーバーインスタンス",
+  "invidious_warning": "一部はうまく機能しない可能性があります。自己責任で使用してください",
+  "invidious_source_description": "Pipedに似ていますが、より高い可用性があります。",
+  "cache_music": "音楽をキャッシュ",
+  "open": "開く",
+  "cache_folder": "キャッシュフォルダー",
+  "export": "エクスポート",
+  "clear_cache": "キャッシュをクリア",
+  "clear_cache_confirmation": "キャッシュをクリアしますか？",
+  "export_cache_files": "キャッシュされたファイルをエクスポート",
+  "found_n_files": "{count}ファイルが見つかりました",
+  "export_cache_confirmation": "これらのファイルをエクスポートしますか",
+  "exported_n_out_of_m_files": "{filesExported} / {files}ファイルがエクスポートされました"
 }

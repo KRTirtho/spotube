@@ -387,5 +387,19 @@
   "total_money": "المجموع {money}",
   "webview_not_found": "لم يتم العثور على Webview",
   "webview_not_found_description": "لم يتم تثبيت بيئة تشغيل Webview على جهازك.\nإذا كانت مثبتة، تأكد من وجودها في environment PATH\n\nبعد التثبيت، أعد تشغيل التطبيق",
-  "unsupported_platform": "المنصة غير مدعومة"
+  "unsupported_platform": "المنصة غير مدعومة",
+  "invidious_instance": "مثيل خادم Invidious",
+  "invidious_description": "مثيل خادم Invidious المستخدم لمطابقة المسارات",
+  "invidious_warning": "قد لا تعمل بعض الخوادم بشكل جيد. استخدمها على مسؤوليتك الخاصة",
+  "invidious_source_description": "مشابه لـ Piped ولكن بتوافر أعلى",
+  "cache_music": "تخزين الموسيقى مؤقتًا",
+  "open": "فتح",
+  "cache_folder": "مجلد التخزين المؤقت",
+  "export": "تصدير",
+  "clear_cache": "مسح التخزين المؤقت",
+  "clear_cache_confirmation": "هل تريد مسح التخزين المؤقت؟",
+  "export_cache_files": "تصدير الملفات المخزنة مؤقتًا",
+  "found_n_files": "تم العثور على {count} ملف",
+  "export_cache_confirmation": "هل تريد تصدير هذه الملفات إلى",
+  "exported_n_out_of_m_files": "تم تصدير {filesExported} من أصل {files} ملفات"
 }

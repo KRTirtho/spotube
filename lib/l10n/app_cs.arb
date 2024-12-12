@@ -387,5 +387,19 @@
   "total_money": "Celkem {money}",
   "webview_not_found": "Webview nebyl nalezen",
   "webview_not_found_description": "Na vašem zařízení není nainstalováno žádné runtime prostředí Webview.\nPokud je nainstalováno, ujistěte se, že je v environment PATH\n\nPo instalaci restartujte aplikaci",
-  "unsupported_platform": "Nepodporovaná platforma"
+  "unsupported_platform": "Nepodporovaná platforma",
+  "invidious_instance": "Instance serveru Invidious",
+  "invidious_description": "Instance serveru Invidious pro párování stop",
+  "invidious_warning": "Některé instance nemusí fungovat správně. Používejte na vlastní riziko",
+  "invidious_source_description": "Podobné Piped, ale s vyšší dostupností",
+  "cache_music": "Hudba v mezipaměti",
+  "open": "Otevřít",
+  "cache_folder": "Složka mezipaměti",
+  "export": "Exportovat",
+  "clear_cache": "Vymazat mezipaměť",
+  "clear_cache_confirmation": "Opravdu chcete vymazat mezipaměť?",
+  "export_cache_files": "Exportovat soubory z mezipaměti",
+  "found_n_files": "Nalezeno {count} souborů",
+  "export_cache_confirmation": "Chcete exportovat tyto soubory do",
+  "exported_n_out_of_m_files": "Exportováno {filesExported} z {files} souborů"
 }

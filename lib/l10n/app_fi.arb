@@ -387,5 +387,19 @@
   "total_money": "Yhteensä {money}",
   "webview_not_found": "Webview ei löydy",
   "webview_not_found_description": "Laitteellasi ei ole asennettua Webview-ajonaikaa.\nJos se on asennettu, varmista, että se on environment PATH:ssa\n\nAsennuksen jälkeen käynnistä sovellus uudelleen",
-  "unsupported_platform": "Ei tuettu alusta"
+  "unsupported_platform": "Ei tuettu alusta",
+  "invidious_instance": "Invidious-palvelinesiintymä",
+  "invidious_description": "Invidious-palvelinesiintymä raitojen yhteensovittamiseen",
+  "invidious_warning": "Jotkin esiintymät eivät välttämättä toimi hyvin. Käytä omalla vastuullasi",
+  "invidious_source_description": "Samankaltainen kuin Piped, mutta korkeammalla saatavuudella",
+  "cache_music": "Musiikki välimuistissa",
+  "open": "Avaa",
+  "cache_folder": "Välimuistikansio",
+  "export": "Vie",
+  "clear_cache": "Tyhjennä välimuisti",
+  "clear_cache_confirmation": "Haluatko tyhjentää välimuistin?",
+  "export_cache_files": "Vie välimuistitiedostot",
+  "found_n_files": "Löydettiin {count} tiedostoa",
+  "export_cache_confirmation": "Haluatko viedä nämä tiedostot",
+  "exported_n_out_of_m_files": "Vietiin {filesExported}/{files} tiedostoa"
 }

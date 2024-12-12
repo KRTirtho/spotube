@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
@@ -36,6 +37,33 @@ extension TrackExtensions on Track {
     durationMs = (metadata?.durationMs?.toInt() ?? 0);
 
     return this;
+  }
+
+  Metadata toMetadata({
+    required int fileLength,
+    Uint8List? imageBytes,
+  }) {
+    return Metadata(
+      title: name,
+      artist: artists?.map((a) => a.name).join(", "),
+      album: album?.name,
+      albumArtist: artists?.map((a) => a.name).join(", "),
+      year: album?.releaseDate != null
+          ? int.tryParse(album!.releaseDate!.split("-").first) ?? 1969
+          : 1969,
+      trackNumber: trackNumber,
+      discNumber: discNumber,
+      durationMs: durationMs?.toDouble() ?? 0.0,
+      fileSize: BigInt.from(fileLength),
+      trackTotal: album?.tracks?.length ?? 0,
+      picture: imageBytes != null
+          ? Picture(
+              data: imageBytes,
+              // Spotify images are always JPEGs
+              mimeType: 'image/jpeg',
+            )
+          : null,
+    );
   }
 }
 

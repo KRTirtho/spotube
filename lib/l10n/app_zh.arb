@@ -387,5 +387,19 @@
   "spotify_hipotetical_calculation": "*根据 Spotify 每次流媒体的支付金额\n$0.003 到 $0.005 进行计算。这是一个假设性的\n计算，用于给用户了解他们如果在 Spotify 上\n收听歌曲会支付给艺术家的金额。",
   "webview_not_found": "未找到 Webview",
   "webview_not_found_description": "您的设备中未安装 Webview 运行时。\n如果已安装，请确保它在 environment PATH 中\n\n安装后，重新启动应用程序",
-  "unsupported_platform": "不支持的平台"
+  "unsupported_platform": "不支持的平台",
+  "invidious_instance": "Invidious服务器实例",
+  "invidious_description": "用于音轨匹配的Invidious服务器实例",
+  "invidious_warning": "有些可能无法正常工作。请自行承担风险",
+  "invidious_source_description": "类似于Piped，但可用性更高。",
+  "cache_music": "缓存音乐",
+  "open": "打开",
+  "cache_folder": "缓存文件夹",
+  "export": "导出",
+  "clear_cache": "清除缓存",
+  "clear_cache_confirmation": "您要清除缓存吗？",
+  "export_cache_files": "导出缓存文件",
+  "found_n_files": "找到 {count} 个文件",
+  "export_cache_confirmation": "您要导出这些文件到",
+  "exported_n_out_of_m_files": "导出了 {filesExported} / {files} 个文件"
 }

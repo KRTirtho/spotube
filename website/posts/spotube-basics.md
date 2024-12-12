@@ -3,6 +3,7 @@ title: Spotube Basics
 author: Kingkor Roy Tirtho
 date: 2024-02-10
 published: true
+cover_img: /images/spotube-basics/cover.jpg
 ---
 
 Spotube is an open-source Spotify client that allows users to stream music from Spotify. To use Spotube, you need to sign in with your Spotify account. Here's a step-by-step guide on how to sign in to Spotube.

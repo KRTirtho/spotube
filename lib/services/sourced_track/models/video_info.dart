@@ -1,3 +1,4 @@
+import 'package:invidious/invidious.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:spotube/models/database/database.dart';
 
@@ -110,6 +111,26 @@ class YoutubeVideoInfo {
           ? DateTime.tryParse(stream.uploadedDate!) ?? DateTime(2003, 9, 9)
           : DateTime(2003, 9, 9),
       channelId: stream.uploaderUrl,
+    );
+  }
+
+  factory YoutubeVideoInfo.fromSearchResponse(
+    InvidiousSearchResponseVideo searchResponse,
+    SearchMode searchMode,
+  ) {
+    return YoutubeVideoInfo(
+      searchMode: searchMode,
+      title: searchResponse.title,
+      duration: Duration(seconds: searchResponse.lengthSeconds),
+      thumbnailUrl: searchResponse.videoThumbnails.first.url,
+      id: searchResponse.videoId,
+      likes: 0,
+      dislikes: 0,
+      views: searchResponse.viewCount,
+      channelName: searchResponse.author,
+      channelId: searchResponse.authorId,
+      publishedAt:
+          DateTime.fromMillisecondsSinceEpoch(searchResponse.published * 1000),
     );
   }
 }

@@ -387,5 +387,19 @@
   "total_money": "মোট {money}",
   "webview_not_found": "ওয়েবভিউ পাওয়া যায়নি",
   "webview_not_found_description": "আপনার ডিভাইসে কোনো ওয়েবভিউ রানটাইম ইনস্টল করা নেই।\nযদি ইনস্টল থাকে, তা নিশ্চিত করুন যে এটি environment PATH এ রয়েছে\n\nইনস্টল করার পর, অ্যাপটি পুনরায় চালু করুন",
-  "unsupported_platform": "সমর্থিত প্ল্যাটফর্ম নয়"
+  "unsupported_platform": "সমর্থিত প্ল্যাটফর্ম নয়",
+  "invidious_instance": "ইনভিডিয়াস সার্ভার ইন্সটেন্স",
+  "invidious_description": "ট্রাক মিলানোর জন্য ব্যবহৃত ইনভিডিয়াস সার্ভার",
+  "invidious_warning": "কিছু সার্ভার ভাল কাজ নাও করতে পারে। নিজের ঝুঁকিতে ব্যবহার করুন",
+  "invidious_source_description": "পাইপের মতো কিন্তু আরও বেশি উপলব্ধতা সহ",
+  "cache_music": "ক্যাশে সংগীত",
+  "open": "খুলুন",
+  "cache_folder": "ক্যাশে ফোল্ডার",
+  "export": "রপ্তানি",
+  "clear_cache": "ক্যাশে পরিষ্কার",
+  "clear_cache_confirmation": "আপনি কি ক্যাশে পরিষ্কার করতে চান?",
+  "export_cache_files": "ক্যাশে ফাইল রপ্তানি",
+  "found_n_files": "{count} টি ফাইল পাওয়া গেছে",
+  "export_cache_confirmation": "আপনি কি এই ফাইলগুলি রপ্তানি করতে চান",
+  "exported_n_out_of_m_files": "{filesExported} টি ফাইল রপ্তানি করা হয়েছে {files} এর মধ্যে"
 }

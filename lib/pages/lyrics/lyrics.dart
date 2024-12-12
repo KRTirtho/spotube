@@ -38,10 +38,11 @@ class LyricsPage extends HookConsumerWidget {
     );
     final palette = usePaletteColor(albumArt, ref);
     final mediaQuery = MediaQuery.of(context);
+    final route = ModalRoute.of(context);
 
-    useCustomStatusBarColor(
+    final resetStatusBar = useCustomStatusBarColor(
       palette.color,
-      true,
+      route?.isCurrent ?? false,
       noSetBGColor: true,
     );
 
@@ -81,53 +82,57 @@ class LyricsPage extends HookConsumerWidget {
     );
 
     if (isModal) {
-      return DefaultTabController(
-        length: 2,
-        child: SafeArea(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-            child: Container(
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface.withOpacity(.4),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
+      return PopScope(
+        canPop: true,
+        onPopInvokedWithResult: (_, __) => resetStatusBar(),
+        child: DefaultTabController(
+          length: 2,
+          child: SafeArea(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+              child: Container(
+                clipBehavior: Clip.hardEdge,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface.withOpacity(.4),
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(10),
+                    topRight: Radius.circular(10),
+                  ),
                 ),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 5),
-                  Container(
-                    height: 7,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      color: palette.titleTextColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  AppBar(
-                    leadingWidth: double.infinity,
-                    leading: tabbar,
-                    backgroundColor: Colors.transparent,
-                    automaticallyImplyLeading: false,
-                    actions: [
-                      IconButton(
-                        icon: const Icon(SpotubeIcons.minimize),
-                        onPressed: () => Navigator.of(context).pop(),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 5),
+                    Container(
+                      height: 7,
+                      width: 150,
+                      decoration: BoxDecoration(
+                        color: palette.titleTextColor,
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      const SizedBox(width: 5),
-                    ],
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        SyncedLyrics(palette: palette, isModal: isModal),
-                        PlainLyrics(palette: palette, isModal: isModal),
+                    ),
+                    AppBar(
+                      leadingWidth: double.infinity,
+                      leading: tabbar,
+                      backgroundColor: Colors.transparent,
+                      automaticallyImplyLeading: false,
+                      actions: [
+                        IconButton(
+                          icon: const Icon(SpotubeIcons.minimize),
+                          onPressed: () => Navigator.of(context).pop(),
+                        ),
+                        const SizedBox(width: 5),
                       ],
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          SyncedLyrics(palette: palette, isModal: isModal),
+                          PlainLyrics(palette: palette, isModal: isModal),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

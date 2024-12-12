@@ -10,6 +10,8 @@ targets:
           explicit_to_json: true
       drift_dev:
         options:
+          databases:
+            app_db: lib/models/database/database.dart
           sql:
             dialect: sqlite
             options:

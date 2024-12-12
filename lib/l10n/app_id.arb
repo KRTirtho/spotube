@@ -387,5 +387,19 @@
   "total_money": "Total {money}",
   "webview_not_found": "Webview tidak ditemukan",
   "webview_not_found_description": "Tidak ada runtime Webview yang diinstal di perangkat Anda.\nJika sudah diinstal, pastikan itu ada di environment PATH\n\nSetelah diinstal, restart aplikasi",
-  "unsupported_platform": "Platform tidak didukung"
+  "unsupported_platform": "Platform tidak didukung",
+  "invidious_instance": "Invidious Server Instance",
+  "invidious_description": "The Invidious server instance to use for track matching",
+  "invidious_warning": "Some of them might not work well. So use at your own risk",
+  "invidious_source_description": "Similar to Piped but with higher availability.",
+  "cache_music": "Cache music",
+  "open": "Open",
+  "cache_folder": "Cache folder",
+  "export": "Export",
+  "clear_cache": "Clear cache",
+  "clear_cache_confirmation": "Do you want to clear the cache?",
+  "export_cache_files": "Export Cached Files",
+  "found_n_files": "Found {count} files",
+  "export_cache_confirmation": "Do you want to export these files to",
+  "exported_n_out_of_m_files": "Exported {filesExported} out of {files} files"
 }

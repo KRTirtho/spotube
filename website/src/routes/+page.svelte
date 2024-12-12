@@ -10,6 +10,8 @@
 	import { Download, Heart } from 'lucide-svelte';
 	import type { PageData } from './$types';
 	import { Avatar } from '@skeletonlabs/skeleton';
+	import Ads from '$lib/components/ads/ads.svelte';
+	import { ADS_SLOTS } from '$lib';
 
 	export let data: PageData;
 
@@ -75,6 +77,8 @@
 		</a>
 	</div>
 
+	<Ads adSlot={ADS_SLOTS.rootPageDisplay} adFormat="auto" />
+
 	<br /><br />
 
 	<h2 class="h2">
@@ -111,4 +115,5 @@
 			</a>
 		{/each}
 	</div>
+	<Ads adSlot={ADS_SLOTS.rootPageDisplay} adFormat="auto" />
 </section>

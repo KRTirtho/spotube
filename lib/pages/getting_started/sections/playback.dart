@@ -17,6 +17,10 @@ final audioSourceToIconMap = {
     size: 30,
   ),
   AudioSource.piped: const Icon(SpotubeIcons.piped, size: 30),
+  AudioSource.invidious: ClipRRect(
+    borderRadius: BorderRadius.circular(48),
+    child: Assets.invidious.image(width: 48, height: 48),
+  ),
   AudioSource.jiosaavn: Assets.jiosaavn.image(width: 48, height: 48),
 };
 
@@ -45,6 +49,7 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
               AudioSource.jiosaavn:
                   "${context.l10n.jiosaavn_source_description}\n"
                       "${context.l10n.highest_quality("320kbps mp")}",
+              AudioSource.invidious: context.l10n.invidious_source_description,
             },
         []);
 
@@ -104,7 +109,9 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
               title: Align(
                 alignment: switch (preferences.audioSource) {
                   AudioSource.youtube => Alignment.centerLeft,
-                  AudioSource.piped => Alignment.center,
+                  AudioSource.piped ||
+                  AudioSource.invidious =>
+                    Alignment.center,
                   AudioSource.jiosaavn => Alignment.centerRight,
                 },
                 child: Text(

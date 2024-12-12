@@ -387,5 +387,19 @@
   "total_money": "Total {money}",
   "webview_not_found": "No se encontró el Webview",
   "webview_not_found_description": "No hay tiempo de ejecución de Webview instalado en su dispositivo.\nSi está instalado, asegúrese de que esté en el environment PATH\n\nDespués de instalar, reinicie la aplicación",
-  "unsupported_platform": "Plataforma no soportada"
+  "unsupported_platform": "Plataforma no soportada",
+  "invidious_instance": "Instancia del Servidor Invidious",
+  "invidious_description": "La instancia del servidor Invidious para identificar pistas",
+  "invidious_warning": "Algunas instancias podrían no funcionar bien. Úselas bajo su propio riesgo",
+  "invidious_source_description": "Similar a Piped, pero con mayor disponibilidad",
+  "cache_music": "Caché de música",
+  "open": "Abrir",
+  "cache_folder": "Carpeta de caché",
+  "export": "Exportar",
+  "clear_cache": "Limpiar caché",
+  "clear_cache_confirmation": "¿Desea limpiar la caché?",
+  "export_cache_files": "Exportar archivos en caché",
+  "found_n_files": "Se encontraron {count} archivos",
+  "export_cache_confirmation": "¿Desea exportar estos archivos a",
+  "exported_n_out_of_m_files": "Se exportaron {filesExported} de {files} archivos"
 }

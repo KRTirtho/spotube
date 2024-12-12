@@ -17,6 +17,10 @@ declare namespace App {
 	}
 }
 
-declare module '@fortawesome/pro-solid-svg-icons/index.es' {
-	export * from '@fortawesome/pro-solid-svg-icons';
+declare namespace globalThis {
+	declare var adsbygoogle: any[];
+}
+
+declare module "@fortawesome/pro-solid-svg-icons/index.es" {
+	export * from "@fortawesome/pro-solid-svg-icons";
 }

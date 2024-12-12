@@ -44,14 +44,23 @@ final localTracksProvider =
       userPreferencesProvider.select((s) => s.downloadLocation),
     );
     final downloadDir = Directory(downloadLocation);
+    final cacheDir =
+        Directory(await UserPreferencesNotifier.getMusicCacheDir());
     if (!await downloadDir.exists()) {
       await downloadDir.create(recursive: true);
+    }
+    if (!await cacheDir.exists()) {
+      await cacheDir.create(recursive: true);
     }
     final localLibraryLocations = ref.watch(
       userPreferencesProvider.select((s) => s.localLibraryLocation),
     );
 
-    for (final location in [downloadLocation, ...localLibraryLocations]) {
+    for (final location in [
+      downloadLocation,
+      cacheDir.path,
+      ...localLibraryLocations
+    ]) {
       if (location.isEmpty) continue;
       final entities = <File>[];
       if (await Directory(location).exists()) {
