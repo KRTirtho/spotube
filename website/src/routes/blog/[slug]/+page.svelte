@@ -13,7 +13,7 @@
 	<title>Blog | {title}</title>
 </svelte:head>
 
-<article class="p-4 md:p-16 flex flex-grow flex-col">
+<article class="p-4 md:p-16">
 	<section
 		class={cover_img
 			? 'bg-black/30 h-56 md:h-80 xl:h-96 bg-cover bg-center flex flex-col justify-end p-4 pb-0 md:p-8 md:pb-0 rounded-lg'

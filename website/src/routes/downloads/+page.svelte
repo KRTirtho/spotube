@@ -23,7 +23,9 @@
 
 	<DownloadItems links={extendedDownloadLinks} />
 
+	<br />
 	<Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
+	<br />
 
 	<h2 class="h2">Other Downloads</h2>
 	<br /><br />
@@ -37,5 +39,6 @@
 			</a>
 		{/each}
 	</div>
-  <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
+	<br />
+	<Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
 </section>

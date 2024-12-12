@@ -44,6 +44,7 @@ const config = {
 					rehypeAutoAds,
 					{
 						adCode: `
+              <br/>
               <ins class="adsbygoogle"
                 style="display:block; text-align:center;"
                 data-ad-layout="in-article"
@@ -51,6 +52,7 @@ const config = {
                 data-ad-client="ca-pub-6419300932495863"
                 data-ad-slot="6788673194"
               ></ins>
+              <br/>
               <script>
                 (adsbygoogle = window.adsbygoogle || []).push({});
               </script>
