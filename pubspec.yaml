@@ -46,7 +46,10 @@ dependencies:
   fluentui_system_icons: ^1.1.234
   flutter:
     sdk: flutter
-  flutter_broadcasts: ^0.4.0
+  flutter_broadcasts:
+    git:
+      url: https://github.com/KRTirtho/flutter_broadcasts.git
+      ref: main
   flutter_cache_manager: ^3.3.0
   flutter_discord_rpc: ^1.0.0
   flutter_displaymode: ^0.6.0
@@ -132,7 +135,7 @@ dev_dependencies:
   crypto: ^3.0.3
   envied_generator: ^1.0.0
   flutter_gen_runner: ^5.4.0
-  flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.14.2
   flutter_lints: ^3.0.1
   flutter_test:
     sdk: flutter
