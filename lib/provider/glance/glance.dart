@@ -5,6 +5,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -70,8 +71,38 @@ Future<void> _updateWidget() async {
   }
 }
 
+Future<void> _sendActiveTrack(Track? track) async {
+  if (track == null) {
+    await _saveWidgetData("activeTrack", null);
+    await _updateWidget();
+    return;
+  }
+
+  final jsonTrack = track.toJson();
+
+  final image = track.album?.images?.first;
+  final cachedImage = await DefaultCacheManager().getSingleFile(image!.url!);
+  final data = {
+    ...jsonTrack,
+    "album": {
+      ...jsonTrack["album"],
+      "images": [
+        {
+          ...image.toJson(),
+          "path": cachedImage.path,
+        }
+      ]
+    }
+  };
+
+  await _saveWidgetData("activeTrack", jsonEncode(data));
+
+  await _updateWidget();
+}
+
 final glanceProvider = Provider((ref) {
   final server = ref.read(serverProvider);
+  final activeTrack = ref.read(audioPlayerProvider).activeTrack;
 
   server.whenData(
     (value) async {
@@ -84,6 +115,8 @@ final glanceProvider = Provider((ref) {
       await _updateWidget();
     },
   );
+
+  _sendActiveTrack(activeTrack);
 
   ref.listen(serverProvider, (prev, next) async {
     next.whenData(
@@ -105,27 +138,7 @@ final glanceProvider = Provider((ref) {
       try {
         if (previous?.activeTrack != next.activeTrack &&
             next.activeTrack != null) {
-          final jsonTrack = next.activeTrack!.toJson();
-
-          final image = next.activeTrack!.album?.images?.first;
-          final cachedImage =
-              await DefaultCacheManager().getSingleFile(image!.url!);
-          final data = {
-            ...jsonTrack,
-            "album": {
-              ...jsonTrack["album"],
-              "images": [
-                {
-                  ...image.toJson(),
-                  "path": cachedImage.path,
-                }
-              ]
-            }
-          };
-
-          await _saveWidgetData("activeTrack", jsonEncode(data));
-
-          await _updateWidget();
+          await _sendActiveTrack(next.activeTrack);
         }
       } catch (e, stack) {
         AppLogger.reportError(e, stack);

@@ -82,10 +82,13 @@ class HomePlayerWidget : GlanceAppWidget() {
 
         val isPlaying = prefs.getBoolean("isPlaying", false)
         val playbackServerAddress = prefs.getString("playbackServerAddress", null) ?: ""
+
+        Log.e("HomePlayerWidget", "Active track String: $activeTrackStr")
         var activeTrack: Track? = null
         if (activeTrackStr != null) {
             activeTrack = gson.fromJson(activeTrackStr, Track::class.java)
         }
+        Log.e("HomePlayerWidget", "Active track: $activeTrack")
 
 
         val playIcon = Icon.createWithResource(context, android.R.drawable.ic_media_play);
