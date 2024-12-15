@@ -9,6 +9,7 @@ import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hive/hive.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:media_kit/media_kit.dart';
@@ -27,6 +28,7 @@ import 'package:spotube/hooks/configurators/use_has_touch.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
+import 'package:spotube/provider/glance/glance.dart';
 import 'package:spotube/provider/server/bonsoir.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/provider/tray_manager/tray_manager.dart';
@@ -160,6 +162,10 @@ class Spotube extends HookConsumerWidget {
 
     useEffect(() {
       FlutterNativeSplash.remove();
+
+      if (kIsMobile) {
+        HomeWidget.registerInteractivityCallback(glanceBackgroundCallback);
+      }
 
       return () {
         /// For enabling hot reload for audio player

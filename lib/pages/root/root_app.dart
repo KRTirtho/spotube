@@ -18,6 +18,7 @@ import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/glance/glance.dart';
 import 'package:spotube/provider/server/routes/connect.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
 import 'package:spotube/utils/platform.dart';
@@ -38,6 +39,8 @@ class RootApp extends HookConsumerWidget {
     final downloader = ref.watch(downloadManagerProvider);
     final scaffoldMessenger = ScaffoldMessenger.of(context);
     final connectRoutes = ref.watch(serverConnectRoutesProvider);
+
+    ref.listen(glanceProvider, (_, __) {});
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) async {

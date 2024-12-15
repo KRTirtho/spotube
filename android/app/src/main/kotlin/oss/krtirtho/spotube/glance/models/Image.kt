@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Image(
     val height: Int?,
     val width: Int?,
-    val url: String?
+    val path: String,
 )

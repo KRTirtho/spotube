@@ -5,6 +5,7 @@ import HomeWidgetGlanceStateDefinition
 import android.content.Context
 import android.graphics.drawable.Icon
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
@@ -35,14 +36,9 @@ import androidx.glance.preview.Preview
 import androidx.glance.state.GlanceStateDefinition
 import com.google.gson.Gson
 import es.antonborri.home_widget.HomeWidgetBackgroundIntent
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import oss.krtirtho.spotube.glance.models.Track
 import oss.krtirtho.spotube.glance.widgets.TrackDetailsView
 import oss.krtirtho.spotube.glance.widgets.TrackProgress
-import java.net.URL
 
 val gson = Gson()
 val serverAddressKey = ActionParameters.Key<String>("serverAddress")
@@ -83,6 +79,7 @@ class HomePlayerWidget : GlanceAppWidget() {
         val size = LocalSize.current
 
         val activeTrackStr = prefs.getString("activeTrack", null)
+
         val isPlaying = prefs.getBoolean("isPlaying", false)
         val playbackServerAddress = prefs.getString("playbackServerAddress", null) ?: ""
         var activeTrack: Track? = null
@@ -99,17 +96,10 @@ class HomePlayerWidget : GlanceAppWidget() {
         GlanceTheme {
             Scaffold {
                 Column(
-                    modifier = GlanceModifier.padding(
-                        horizontal = if (size != Breakpoints.SMALL_SQUARE) 8.dp else 2.dp,
-                        vertical = 16.dp
-                    )
+                    modifier = GlanceModifier.padding(top = 10.dp)
                 ) {
-                    if (size == Breakpoints.HORIZONTAL_RECTANGLE) {
-                        Row(
-                            verticalAlignment = Alignment.Vertical.CenterVertically,
-                        ) { TrackDetailsView(activeTrack) }
-                    } else {
-                        TrackDetailsView(activeTrack)
+                    Row(verticalAlignment = Alignment.Vertical.CenterVertically) {
+                      TrackDetailsView(activeTrack) 
                     }
                     Spacer(modifier = GlanceModifier.size(6.dp))
                     if (size != Breakpoints.SMALL_SQUARE) {
@@ -154,7 +144,7 @@ class HomePlayerWidget : GlanceAppWidget() {
     }
 }
 
-class PlayPauseAction : InteractiveAction("toggle_playback")
+class PlayPauseAction : InteractiveAction("toggle-playback")
 class NextAction : InteractiveAction("next")
 class PreviousAction : InteractiveAction("previous")
 
@@ -165,22 +155,19 @@ abstract class InteractiveAction(val command: String) : ActionCallback {
         glanceId: GlanceId,
         parameters: ActionParameters
     ) {
-        val serverAddress = parameters[serverAddressKey]
+        val serverAddress = parameters[serverAddressKey] ?: ""
+
+        Log.d("HomePlayerWidget", "Sending command $command to $serverAddress")
+        
         if (serverAddress == null || serverAddress.isEmpty()) {
             return
         }
 
-        withContext(Dispatchers.IO) {
-            val client = OkHttpClient()
-            val request = Request.Builder().url("http://$serverAddress/playback/$command").build()
 
-            client.newCall(request).execute().use { response ->
-                if (response.isSuccessful) {
-                    response.body?.string()
-                } else {
-                    print("Failed to send command to server")
-                }
-            }
-        }
+        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
+            context,
+            Uri.parse("spotube://playback/$command?serverAddress=$serverAddress")
+        )
+        backgroundIntent.send()
     }
 }
