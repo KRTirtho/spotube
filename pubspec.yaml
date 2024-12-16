@@ -163,6 +163,7 @@ flutter:
     - assets/
     - assets/tutorial/
     - assets/logos/
+    - assets/backgrounds/
     - LICENSE
 
 flutter_gen:

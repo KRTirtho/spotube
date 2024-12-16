@@ -12,22 +12,31 @@ import androidx.compose.ui.unit.dp
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.GlanceTheme
+import androidx.glance.Image
 import androidx.glance.ImageProvider
 import androidx.glance.LocalSize
 import androidx.glance.action.ActionParameters
 import androidx.glance.action.actionParametersOf
+import androidx.glance.action.clickable
+import androidx.glance.background
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.SizeMode
 import androidx.glance.appwidget.action.ActionCallback
 import androidx.glance.appwidget.action.actionRunCallback
+import androidx.glance.appwidget.background
 import androidx.glance.appwidget.components.CircleIconButton
 import androidx.glance.appwidget.components.Scaffold
+import androidx.glance.appwidget.cornerRadius
 import androidx.glance.appwidget.provideContent
+import androidx.glance.background
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
 import androidx.glance.layout.Column
+import androidx.glance.layout.ContentScale
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
@@ -36,7 +45,10 @@ import androidx.glance.preview.Preview
 import androidx.glance.state.GlanceStateDefinition
 import com.google.gson.Gson
 import es.antonborri.home_widget.HomeWidgetBackgroundIntent
+import es.antonborri.home_widget.actionStartActivity
+import oss.krtirtho.spotube.MainActivity
 import oss.krtirtho.spotube.glance.models.Track
+import oss.krtirtho.spotube.glance.widgets.FlutterAssetImageProvider
 import oss.krtirtho.spotube.glance.widgets.TrackDetailsView
 import oss.krtirtho.spotube.glance.widgets.TrackProgress
 
@@ -83,26 +95,54 @@ class HomePlayerWidget : GlanceAppWidget() {
         val isPlaying = prefs.getBoolean("isPlaying", false)
         val playbackServerAddress = prefs.getString("playbackServerAddress", null) ?: ""
 
-        Log.e("HomePlayerWidget", "Active track String: $activeTrackStr")
         var activeTrack: Track? = null
         if (activeTrackStr != null) {
             activeTrack = gson.fromJson(activeTrackStr, Track::class.java)
         }
-        Log.e("HomePlayerWidget", "Active track: $activeTrack")
 
 
-        val playIcon = Icon.createWithResource(context, android.R.drawable.ic_media_play);
-        val pauseIcon = Icon.createWithResource(context, android.R.drawable.ic_media_pause);
-        val previousIcon = Icon.createWithResource(context, android.R.drawable.ic_media_previous);
-        val nextIcon = Icon.createWithResource(context, android.R.drawable.ic_media_next);
+        val playIcon = Icon.createWithResource(context, R.drawable.ic_media_play);
+        val pauseIcon = Icon.createWithResource(context, R.drawable.ic_media_pause);
+        val previousIcon = Icon.createWithResource(context, R.drawable.ic_media_previous);
+        val nextIcon = Icon.createWithResource(context, R.drawable.ic_media_next);
 
         GlanceTheme {
-            Scaffold {
+            Box(
+                modifier = GlanceModifier
+                    .fillMaxSize()
+                    .cornerRadius(8.dp)
+                    .background(
+                        color = GlanceTheme.colors.surface.getColor(context)
+                    )
+                    .clickable {
+                        actionStartActivity<MainActivity>(context)
+                    }
+                ,
+            ) {
+                Image(
+                    provider = FlutterAssetImageProvider(
+                        context,
+                        "assets/backgrounds/xmas-effect.png"
+                    ),
+                    contentDescription = "Background",
+                    modifier = GlanceModifier
+                        .fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+                Box(
+                    modifier = GlanceModifier
+                        .background(
+                            color =
+                            GlanceTheme.colors.surface.getColor(context)
+                                .copy(alpha = 0.5f),
+                        )
+                        .fillMaxSize(),
+                ) {}
                 Column(
-                    modifier = GlanceModifier.padding(top = 10.dp)
+                    modifier = GlanceModifier.padding(top = 10.dp, start = 10.dp, end = 10.dp)
                 ) {
                     Row(verticalAlignment = Alignment.Vertical.CenterVertically) {
-                      TrackDetailsView(activeTrack) 
+                        TrackDetailsView(activeTrack)
                     }
                     Spacer(modifier = GlanceModifier.size(6.dp))
                     if (size != Breakpoints.SMALL_SQUARE) {
@@ -161,7 +201,7 @@ abstract class InteractiveAction(val command: String) : ActionCallback {
         val serverAddress = parameters[serverAddressKey] ?: ""
 
         Log.d("HomePlayerWidget", "Sending command $command to $serverAddress")
-        
+
         if (serverAddress == null || serverAddress.isEmpty()) {
             return
         }

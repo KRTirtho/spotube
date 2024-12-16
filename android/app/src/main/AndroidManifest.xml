@@ -79,6 +79,9 @@
         <data android:scheme="spotube" />
       </intent-filter>
 
+      <intent-filter>
+        <action android:name="es.antonborri.home_widget.action.LAUNCH" />
+      </intent-filter>
     </activity>
 
     <!-- AudioService Config -->
