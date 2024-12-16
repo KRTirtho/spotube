@@ -117,6 +117,10 @@ Future<void> main(List<String> rawArgs) async {
       await WindowManagerTools.initialize();
     }
 
+    if (kIsIOS) {
+      HomeWidget.setAppGroupId("group.spotube_home_player_widget");
+    }
+
     runApp(
       ProviderScope(
         overrides: [

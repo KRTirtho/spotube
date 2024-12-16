@@ -62,7 +62,7 @@ Future<void> _updateWidget() async {
     }
     if (kIsIOS) {
       await HomeWidget.updateWidget(
-        name: 'HomePlayerWidgetReceiver',
+        name: 'HomePlayerWidget',
         iOSName: 'HomePlayerWidget',
       );
     }
