@@ -188,6 +188,27 @@ class ServerPlaybackRoutes {
       return Response.internalServerError();
     }
   }
+
+  /// @get('/playback/toggle-playback')
+  Future<Response> togglePlayback(Request request) async {
+    audioPlayer.isPlaying
+        ? await audioPlayer.pause()
+        : await audioPlayer.resume();
+
+    return Response.ok("Playback toggled");
+  }
+
+  /// @get('/playback/previous')
+  Future<Response> previousTrack(Request request) async {
+    await audioPlayer.skipToPrevious();
+    return Response.ok("Previous track");
+  }
+
+  /// @get('/playback/next')
+  Future<Response> nextTrack(Request request) async {
+    await audioPlayer.skipToNext();
+    return Response.ok("Next track");
+  }
 }
 
 final serverPlaybackRoutesProvider =

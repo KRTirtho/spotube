@@ -80,3 +80,5 @@ tm.json
 
 # FVM Version Cache
 .fvm/
+
+android/build

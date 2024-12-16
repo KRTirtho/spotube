@@ -71,6 +71,7 @@ dependencies:
   google_fonts: ^6.2.1
   hive: ^2.2.3
   hive_flutter: ^1.1.0
+  home_widget: ^0.7.0
   hooks_riverpod: ^2.5.1
   html: ^0.15.1
   html_unescape: ^2.0.0
@@ -162,6 +163,7 @@ flutter:
     - assets/
     - assets/tutorial/
     - assets/logos/
+    - assets/backgrounds/
     - LICENSE
 
 flutter_gen:

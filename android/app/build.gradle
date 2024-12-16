@@ -28,8 +28,10 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+def composeVersion = "1.4.8"
+
 android {
-    namespace "dev.krtirtho.spotube"
+    namespace "oss.krtirtho.spotube"
     
     compileSdkVersion 35
 
@@ -46,6 +48,14 @@ android {
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "$composeVersion" // Correlates with org.jetbrains.kotlin.android plugin in settings.gradle
     }
 
     defaultConfig {
@@ -65,6 +75,7 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
@@ -98,15 +109,28 @@ android {
         }
     }
 
+    packagingOptions {
+        resources.excludes += "DebugProbesKt.bin"
+    }
 }
 
 flutter {
     source '../..'
 }
 
+def glanceVersion = "1.1.1"
 dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
-
     // other deps so just ignore
     implementation 'com.android.support:multidex:2.0.1'
+
+    implementation "androidx.glance:glance-appwidget:$glanceVersion"
+    implementation "androidx.glance:glance-appwidget-preview:$glanceVersion"
+    implementation "androidx.glance:glance-preview:$glanceVersion"
+    implementation "androidx.glance:glance-material3:$glanceVersion"
+    implementation "androidx.glance:glance-material:$glanceVersion"
+    implementation "androidx.work:work-runtime-ktx:2.8.1"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3"
+    implementation 'com.google.code.gson:gson:2.11.0'
 }
