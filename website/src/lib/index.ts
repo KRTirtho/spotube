@@ -97,7 +97,7 @@ export const extendedNightlyDownloadLinks: Record<
 export const ADS_SLOTS = Object.freeze({
 	rootPageDisplay: 5979549631,
 	blogPageInFeed: 3386010031,
-	downloadPageDisplay: 9521642154,
+	downloadPageDisplay: 9928443050,
   packagePageArticle: 9119323068,
   // This is being used for rehype-auto-ads in svelte.config.js
   blogArticlePageArticle: 6788673194,
