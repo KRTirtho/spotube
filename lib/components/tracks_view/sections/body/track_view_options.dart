@@ -102,35 +102,35 @@ class TrackViewBodyOptions extends HookConsumerWidget {
       },
       icon: const Icon(SpotubeIcons.moreVertical),
       children: [
-        PopSheetEntry(
+        AdaptiveMenuButton(
           value: "download",
           leading: const Icon(SpotubeIcons.download),
           enabled: selectedTracks.isNotEmpty,
-          title: Text(
+          child: Text(
             context.l10n.download_count(selectedTracks.length),
           ),
         ),
-        PopSheetEntry(
+        AdaptiveMenuButton(
           value: "add-to-playlist",
           leading: const Icon(SpotubeIcons.playlistAdd),
           enabled: selectedTracks.isNotEmpty,
-          title: Text(
+          child: Text(
             context.l10n.add_count_to_playlist(selectedTracks.length),
           ),
         ),
-        PopSheetEntry(
+        AdaptiveMenuButton(
           enabled: selectedTracks.isNotEmpty,
           value: "add-to-queue",
           leading: const Icon(SpotubeIcons.queueAdd),
-          title: Text(
+          child: Text(
             context.l10n.add_count_to_queue(selectedTracks.length),
           ),
         ),
-        PopSheetEntry(
+        AdaptiveMenuButton(
           enabled: selectedTracks.isNotEmpty,
           value: "play-next",
           leading: const Icon(SpotubeIcons.lightning),
-          title: Text(
+          child: Text(
             context.l10n.play_count_next(selectedTracks.length),
           ),
         ),

@@ -23,45 +23,45 @@ class SortTracksDropdown extends StatelessWidget {
       ),
       child: AdaptivePopSheetList<SortBy>(
         children: [
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: SortBy.none,
             enabled: value != SortBy.none,
-            title: Text(context.l10n.none),
+            child: Text(context.l10n.none),
           ),
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: SortBy.ascending,
             enabled: value != SortBy.ascending,
-            title: Text(context.l10n.sort_a_z),
+            child: Text(context.l10n.sort_a_z),
           ),
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: SortBy.descending,
             enabled: value != SortBy.descending,
-            title: Text(context.l10n.sort_z_a),
+            child: Text(context.l10n.sort_z_a),
           ),
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: SortBy.newest,
             enabled: value != SortBy.newest,
-            title: Text(context.l10n.sort_newest),
+            child: Text(context.l10n.sort_newest),
           ),
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: SortBy.oldest,
             enabled: value != SortBy.oldest,
-            title: Text(context.l10n.sort_oldest),
+            child: Text(context.l10n.sort_oldest),
           ),
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: SortBy.duration,
             enabled: value != SortBy.duration,
-            title: Text(context.l10n.sort_duration),
+            child: Text(context.l10n.sort_duration),
           ),
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: SortBy.artist,
             enabled: value != SortBy.artist,
-            title: Text(context.l10n.sort_artist),
+            child: Text(context.l10n.sort_artist),
           ),
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: SortBy.album,
             enabled: value != SortBy.album,
-            title: Text(context.l10n.sort_album),
+            child: Text(context.l10n.sort_album),
           ),
         ],
         headings: [

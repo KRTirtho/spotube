@@ -219,12 +219,16 @@ class Spotube extends HookConsumerWidget {
       theme: ThemeData(
         radius: .5,
         iconTheme: const IconThemeProperties(),
-        colorScheme: ColorSchemes.lightNeutral(),
+        colorScheme: ColorSchemes.lightBlue(),
+        surfaceOpacity: .9,
+        surfaceBlur: 10,
       ),
       darkTheme: ThemeData(
         radius: .5,
         iconTheme: const IconThemeProperties(),
         colorScheme: ColorSchemes.darkNeutral(),
+        surfaceOpacity: .9,
+        surfaceBlur: 10,
       ),
       themeMode: themeMode,
       shortcuts: {

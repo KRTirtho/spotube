@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -16,7 +17,6 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_brightness_value.dart';
-import 'package:flutter/material.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
@@ -46,7 +46,7 @@ class BottomPlayer extends HookConsumerWidget {
     );
 
     final theme = Theme.of(context);
-    final bg = theme.colorScheme.surfaceContainerHighest;
+    final bg = theme.colorScheme.background;
 
     final bgColor = useBrightnessValue(
       Color.lerp(bg, Colors.white, 0.7),
@@ -64,31 +64,30 @@ class BottomPlayer extends HookConsumerWidget {
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
         child: DecoratedBox(
-          decoration: BoxDecoration(color: bgColor?.withOpacity(0.8)),
-          child: Material(
-            type: MaterialType.transparency,
-            textStyle: theme.textTheme.bodyMedium!,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: PlayerTrackDetails(track: playlist.activeTrack),
+          decoration: BoxDecoration(color: bgColor?.withValues(alpha: .8)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: PlayerTrackDetails(track: playlist.activeTrack),
+              ),
+              // controls
+              const Flexible(
+                flex: 3,
+                child: Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: PlayerControls(),
                 ),
-                // controls
-                const Flexible(
-                  flex: 3,
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 5),
-                    child: PlayerControls(),
-                  ),
-                ),
-                // add to saved tracks
-                Column(
-                  children: [
-                    PlayerActions(
-                      extraActions: [
-                        IconButton(
-                          tooltip: context.l10n.mini_player,
+              ),
+              // add to saved tracks
+              Column(
+                children: [
+                  PlayerActions(
+                    extraActions: [
+                      Tooltip(
+                        tooltip: Text(context.l10n.mini_player),
+                        child: IconButton(
+                          variance: ButtonVariance.ghost,
                           icon: const Icon(SpotubeIcons.miniPlayer),
                           onPressed: () async {
                             if (!kIsDesktop) return;
@@ -107,35 +106,37 @@ class BottomPlayer extends HookConsumerWidget {
                             await Future.delayed(
                               const Duration(milliseconds: 100),
                               () async {
-                                GoRouter.of(context).go(
-                                  '/mini-player',
-                                  extra: prevSize,
-                                );
+                                if (context.mounted) {
+                                  context.go(
+                                    '/mini-player',
+                                    extra: prevSize,
+                                  );
+                                }
                               },
                             );
                           },
                         ),
-                      ],
-                    ),
-                    Container(
-                      height: 40,
-                      constraints: const BoxConstraints(maxWidth: 250),
-                      padding: const EdgeInsets.only(right: 10),
-                      child: Consumer(builder: (context, ref, _) {
-                        final volume = ref.watch(volumeProvider);
-                        return VolumeSlider(
-                          fullWidth: true,
-                          value: volume,
-                          onChanged: (value) {
-                            ref.read(volumeProvider.notifier).setVolume(value);
-                          },
-                        );
-                      }),
-                    )
-                  ],
-                ),
-              ],
-            ),
+                      ),
+                    ],
+                  ),
+                  Container(
+                    height: 40,
+                    constraints: const BoxConstraints(maxWidth: 250),
+                    padding: const EdgeInsets.only(right: 10),
+                    child: Consumer(builder: (context, ref, _) {
+                      final volume = ref.watch(volumeProvider);
+                      return VolumeSlider(
+                        fullWidth: true,
+                        value: volume,
+                        onChanged: (value) {
+                          ref.read(volumeProvider.notifier).setVolume(value);
+                        },
+                      );
+                    }),
+                  )
+                ],
+              ),
+            ],
           ),
         ),
       ),
