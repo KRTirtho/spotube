@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide AppBar;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' show AppBar;
 import 'package:spotube/components/titlebar/titlebar_buttons.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
@@ -148,29 +149,26 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
             left: kIsMacOS && hasFullscreen && hasLeadingOrCanPop ? 65 : 0,
           ),
           child: AppBar(
-            leading: widget.leading,
-            automaticallyImplyLeading: widget.automaticallyImplyLeading,
-            actions: [
+            leading: [
+              if (widget.leading != null) widget.leading!,
+              if (widget.leading == null &&
+                  widget.automaticallyImplyLeading &&
+                  Navigator.canPop(context))
+                const BackButton(),
+            ],
+            trailing: [
               ...?widget.actions,
               WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
             ],
             backgroundColor: widget.backgroundColor,
-            foregroundColor: widget.foregroundColor,
-            actionsIconTheme: widget.actionsIconTheme,
-            centerTitle: widget.centerTitle,
-            titleSpacing: widget.titleSpacing,
-            toolbarOpacity: widget.toolbarOpacity,
-            leadingWidth: widget.leadingWidth,
-            toolbarTextStyle: widget.toolbarTextStyle,
-            titleTextStyle: widget.titleTextStyle,
             title: SizedBox(
               width: double.infinity, // workaround to force dragging
               child: widget.title ?? const Text(""),
             ),
-            scrolledUnderElevation: 0,
-            shadowColor: Colors.transparent,
-            forceMaterialTransparency: true,
-            elevation: 0,
+            alignment: widget.centerTitle == true
+                ? Alignment.center
+                : Alignment.centerLeft,
+            leadingGap: widget.leadingWidth,
           ),
         ),
       );

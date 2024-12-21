@@ -33,7 +33,7 @@ class PlaybuttonCard extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final unescapeHtml = description?.unescapeHtml().cleanHtml();
+    final unescapeHtml = description?.unescapeHtml().cleanHtml() ?? "";
 
     return Container(
       width: 150,
@@ -42,6 +42,7 @@ class PlaybuttonCard extends HookWidget {
           children: [
             UniversalImage(
               path: imageUrl,
+              height: 150,
               fit: BoxFit.cover,
             ),
             StatedWidget.builder(
@@ -95,13 +96,11 @@ class PlaybuttonCard extends HookWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        subtitle: unescapeHtml == null
-            ? null
-            : Text(
-                unescapeHtml,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
+        subtitle: Text(
+          unescapeHtml.isEmpty ? "\n" : unescapeHtml,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+        ),
         onPressed: onTap,
       ),
     );
