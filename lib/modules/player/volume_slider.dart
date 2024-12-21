@@ -31,13 +31,18 @@ class VolumeSlider extends HookConsumerWidget {
           }
         }
       },
-      child: Slider(
-        min: 0,
-        max: 1,
-        value: SliderValue.single(value),
-        onChanged: (v) => onChanged(v.value),
+      child: SizedBox(
+        height: 20,
+        width: 100,
+        child: Slider(
+          min: 0,
+          max: 1,
+          value: SliderValue.single(value),
+          onChanged: (v) => onChanged(v.value),
+        ),
       ),
     );
+
     return Row(
       mainAxisAlignment:
           !fullWidth ? MainAxisAlignment.center : MainAxisAlignment.start,

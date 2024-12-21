@@ -1,14 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/framework/app_pop_scope.dart';
-import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/components/dialogs/replace_downloaded_dialog.dart';
 import 'package:spotube/modules/root/bottom_player.dart';
 import 'package:spotube/modules/root/sidebar.dart';
@@ -17,7 +16,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/glance/glance.dart';
 import 'package:spotube/provider/server/routes/connect.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
@@ -37,7 +35,7 @@ class RootApp extends HookConsumerWidget {
 
     final showingDialogCompleter = useRef(Completer()..complete());
     final downloader = ref.watch(downloadManagerProvider);
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
+
     final connectRoutes = ref.watch(serverConnectRoutesProvider);
 
     ref.listen(glanceProvider, (_, __) {});
@@ -50,64 +48,70 @@ class RootApp extends HookConsumerWidget {
       final subscriptions = [
         ConnectionCheckerService.instance.onConnectivityChanged
             .listen((status) {
+          if (!context.mounted) return;
           if (status) {
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    Icon(
-                      SpotubeIcons.wifi,
-                      color: theme.colorScheme.onPrimary,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(context.l10n.connection_restored),
-                  ],
-                ),
-                backgroundColor: theme.colorScheme.primary,
-                showCloseIcon: true,
-                width: 350,
-              ),
+            showToast(
+              context: context,
+              builder: (context, overlay) {
+                return SurfaceCard(
+                  fillColor: theme.colorScheme.primary,
+                  child: Row(
+                    children: [
+                      Icon(
+                        SpotubeIcons.wifi,
+                        color: theme.colorScheme.primaryForeground,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(context.l10n.connection_restored),
+                    ],
+                  ),
+                );
+              },
             );
           } else {
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Row(
-                  children: [
-                    Icon(
-                      SpotubeIcons.noWifi,
-                      color: theme.colorScheme.onError,
-                    ),
-                    const SizedBox(width: 10),
-                    Text(context.l10n.you_are_offline),
-                  ],
-                ),
-                backgroundColor: theme.colorScheme.error,
-                showCloseIcon: true,
-                width: 300,
-              ),
+            showToast(
+              context: context,
+              builder: (context, overlay) {
+                return SurfaceCard(
+                  fillColor: theme.colorScheme.destructive,
+                  child: Row(
+                    children: [
+                      Icon(
+                        SpotubeIcons.noWifi,
+                        color: theme.colorScheme.destructiveForeground,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(context.l10n.you_are_offline),
+                    ],
+                  ),
+                );
+              },
             );
           }
         }),
         connectRoutes.connectClientStream.listen((clientOrigin) {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              backgroundColor: Colors.yellow[600],
-              behavior: SnackBarBehavior.floating,
-              content: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    SpotubeIcons.error,
-                    color: Colors.black,
-                  ),
-                  const SizedBox(width: 10),
-                  Text(
-                    context.l10n.connect_client_alert(clientOrigin),
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                ],
-              ),
-            ),
+          if (!context.mounted) return;
+          showToast(
+            context: context,
+            builder: (context, overlay) {
+              return SurfaceCard(
+                fillColor: Colors.yellow[600],
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(
+                      SpotubeIcons.error,
+                      color: Colors.black,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      context.l10n.connect_client_alert(clientOrigin),
+                      style: const TextStyle(color: Colors.black),
+                    ),
+                  ],
+                ),
+              );
+            },
           );
         })
       ];
@@ -156,7 +160,7 @@ class RootApp extends HookConsumerWidget {
 
     useEndlessPlayback(ref);
 
-    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final backgroundColor = Theme.of(context).colorScheme.background;
 
     useEffect(() {
       SystemChrome.setSystemUIOverlayStyle(
@@ -175,43 +179,12 @@ class RootApp extends HookConsumerWidget {
     }, []);
 
     final scaffold = Scaffold(
-      body: Sidebar(child: child),
-      extendBody: true,
-      drawerScrimColor: Colors.transparent,
-      endDrawer: kIsDesktop
-          ? Container(
-              constraints: const BoxConstraints(maxWidth: 800),
-              decoration: BoxDecoration(
-                boxShadow: theme.brightness == Brightness.light
-                    ? null
-                    : kElevationToShadow[8],
-              ),
-              margin: const EdgeInsets.only(
-                top: 40,
-                bottom: 100,
-              ),
-              child: Consumer(
-                builder: (context, ref, _) {
-                  final playlist = ref.watch(audioPlayerProvider);
-                  final playlistNotifier =
-                      ref.read(audioPlayerProvider.notifier);
-
-                  return PlayerQueue.fromAudioPlayerNotifier(
-                    floating: true,
-                    playlist: playlist,
-                    notifier: playlistNotifier,
-                  );
-                },
-              ),
-            )
-          : null,
-      bottomNavigationBar: const Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomPlayer(),
-          SpotubeNavigationBar(),
-        ],
-      ),
+      footers: const [
+        BottomPlayer(),
+        SpotubeNavigationBar(),
+      ],
+      floatingFooter: true,
+      child: Sidebar(child: child),
     );
 
     if (!kIsAndroid) {

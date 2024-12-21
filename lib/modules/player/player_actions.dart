@@ -2,8 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
@@ -82,7 +84,32 @@ class PlayerActions extends HookConsumerWidget {
               icon: const Icon(SpotubeIcons.queue),
               enabled: playlist.activeTrack != null,
               onPressed: () {
-                // Scaffold.of(context).openEndDrawer();
+                openDrawer(
+                  context: context,
+                  position: OverlayPosition.right,
+                  transformBackdrop: false,
+                  draggable: false,
+                  surfaceBlur: context.theme.surfaceBlur,
+                  surfaceOpacity: 0.7,
+                  builder: (context) {
+                    return Container(
+                      constraints: const BoxConstraints(maxWidth: 800),
+                      child: Consumer(
+                        builder: (context, ref, _) {
+                          final playlist = ref.watch(audioPlayerProvider);
+                          final playlistNotifier =
+                              ref.read(audioPlayerProvider.notifier);
+
+                          return PlayerQueue.fromAudioPlayerNotifier(
+                            floating: true,
+                            playlist: playlist,
+                            notifier: playlistNotifier,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                );
               },
             ),
           ),
@@ -100,6 +127,7 @@ class PlayerActions extends HookConsumerWidget {
                         draggable: true,
                         barrierColor: Colors.black.withValues(alpha: .2),
                         borderRadius: BorderRadius.circular(10),
+                        transformBackdrop: false,
                         builder: (context) {
                           return SiblingTracksSheet(floating: floatingQueue);
                         },

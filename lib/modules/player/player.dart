@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart'
+    show openDrawer, OverlayPosition;
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -289,53 +292,53 @@ class PlayerView extends HookConsumerWidget {
                               const SizedBox(width: 10),
                               Expanded(
                                 child: OutlinedButton.icon(
-                                    icon: const Icon(SpotubeIcons.queue),
-                                    label: Text(context.l10n.queue),
-                                    style: OutlinedButton.styleFrom(
-                                      foregroundColor: bodyTextColor,
-                                      side: BorderSide(
-                                        color: bodyTextColor ?? Colors.white,
-                                      ),
+                                  icon: const Icon(SpotubeIcons.queue),
+                                  label: Text(context.l10n.queue),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: bodyTextColor,
+                                    side: BorderSide(
+                                      color: bodyTextColor ?? Colors.white,
                                     ),
-                                    onPressed: currentTrack != null
-                                        ? () {
-                                            showModalBottomSheet(
-                                              context: context,
-                                              isDismissible: true,
-                                              enableDrag: true,
-                                              isScrollControlled: true,
-                                              backgroundColor: Colors.black12,
-                                              barrierColor: Colors.black12,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              constraints: BoxConstraints(
-                                                maxHeight:
-                                                    MediaQuery.of(context)
-                                                            .size
-                                                            .height *
-                                                        .7,
-                                              ),
-                                              builder: (context) => Consumer(
-                                                builder: (context, ref, _) {
-                                                  final playlist = ref.watch(
-                                                    audioPlayerProvider,
-                                                  );
-                                                  final playlistNotifier = ref
-                                                      .read(audioPlayerProvider
-                                                          .notifier);
-                                                  return PlayerQueue
-                                                      .fromAudioPlayerNotifier(
-                                                    floating: false,
-                                                    playlist: playlist,
-                                                    notifier: playlistNotifier,
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          }
-                                        : null),
+                                  ),
+                                  // enabled: currentTrack != null,
+                                  onPressed: () {
+                                    openDrawer(
+                                      context: context,
+                                      barrierDismissible: true,
+                                      draggable: true,
+                                      barrierColor: Colors.black12,
+                                      borderRadius: BorderRadius.circular(10),
+                                      transformBackdrop: false,
+                                      position: OverlayPosition.bottom,
+                                      surfaceBlur: context.theme.surfaceBlur,
+                                      surfaceOpacity: 0.7,
+                                      expands: true,
+                                      builder: (context) => Consumer(
+                                        builder: (context, ref, _) {
+                                          final playlist = ref.watch(
+                                            audioPlayerProvider,
+                                          );
+                                          final playlistNotifier = ref.read(
+                                              audioPlayerProvider.notifier);
+                                          return ConstrainedBox(
+                                            constraints: BoxConstraints(
+                                              maxHeight: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.8,
+                                            ),
+                                            child: PlayerQueue
+                                                .fromAudioPlayerNotifier(
+                                              floating: false,
+                                              playlist: playlist,
+                                              notifier: playlistNotifier,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  },
+                                ),
                               ),
                               if (auth.asData?.value != null)
                                 const SizedBox(width: 10),

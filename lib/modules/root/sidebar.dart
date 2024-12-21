@@ -96,32 +96,31 @@ class Sidebar extends HookConsumerWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SafeArea(
-          child: Column(
-            children: [
-              Expanded(
-                child: mediaQuery.lgAndUp
-                    ? NavigationSidebar(
-                        index: selectedIndex,
-                        onSelected: (index) {
-                          final tile = sidebarTileList[index];
-                          ServiceUtils.pushNamed(context, tile.name);
-                        },
-                        children: navigationButtons,
-                      )
-                    : NavigationRail(
-                        alignment: NavigationRailAlignment.start,
-                        index: selectedIndex,
-                        onSelected: (index) {
-                          final tile = sidebarTileList[index];
-                          ServiceUtils.pushNamed(context, tile.name);
-                        },
-                        children: navigationButtons,
-                      ),
-              ),
-              const SidebarFooter(),
-            ],
-          ),
+        Column(
+          children: [
+            Expanded(
+              child: mediaQuery.lgAndUp
+                  ? NavigationSidebar(
+                      index: selectedIndex,
+                      onSelected: (index) {
+                        final tile = sidebarTileList[index];
+                        ServiceUtils.pushNamed(context, tile.name);
+                      },
+                      children: navigationButtons,
+                    )
+                  : NavigationRail(
+                      alignment: NavigationRailAlignment.start,
+                      index: selectedIndex,
+                      onSelected: (index) {
+                        final tile = sidebarTileList[index];
+                        ServiceUtils.pushNamed(context, tile.name);
+                      },
+                      children: navigationButtons,
+                    ),
+            ),
+            const SidebarFooter(),
+            const Gap(130)
+          ],
         ),
         const VerticalDivider(),
         Expanded(child: child),

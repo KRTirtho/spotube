@@ -127,4 +127,5 @@ abstract class SpotubeIcons {
   static const cache = FeatherIcons.hardDrive;
   static const export = Icons.file_open_outlined;
   static const delete = FeatherIcons.trash2;
+  static const open = FeatherIcons.externalLink;
 }
