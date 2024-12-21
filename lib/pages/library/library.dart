@@ -11,6 +11,7 @@ import 'package:spotube/modules/library/user_downloads.dart';
 import 'package:spotube/modules/library/user_playlists.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:spotube/utils/platform.dart';
 
 class LibraryPage extends HookConsumerWidget {
   static const name = "library";
@@ -37,22 +38,23 @@ class LibraryPage extends HookConsumerWidget {
       bottom: false,
       child: Scaffold(
         headers: [
-          TitleBar(
-            leading: [
-              TabList(
-                index: index.value,
-                children: [
-                  for (final child in children)
-                    TabButton(
-                      child: child,
-                      onPressed: () {
-                        index.value = children.indexOf(child);
-                      },
-                    ),
-                ],
-              )
-            ],
-          )
+          if (kIsWindows || kIsLinux) const TitleBar(),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: TabList(
+              index: index.value,
+              children: [
+                for (final child in children)
+                  TabButton(
+                    child: child,
+                    onPressed: () {
+                      index.value = children.indexOf(child);
+                    },
+                  ),
+              ],
+            ),
+          ),
+          const Gap(10),
         ],
         child: IndexedStack(
           index: index.value,

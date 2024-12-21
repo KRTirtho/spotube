@@ -7,7 +7,6 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/utils/use_brightness_value.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -61,6 +60,9 @@ class SpotubeNavigationBar extends HookConsumerWidget {
         children: [
           for (final tile in navbarTileList)
             NavigationButton(
+              style: const ButtonStyle.muted(density: ButtonDensity.icon),
+              selectedStyle:
+                  const ButtonStyle.fixed(density: ButtonDensity.icon),
               child: Badge(
                 isLabelVisible: tile.id == "library" && downloadCount > 0,
                 label: Text(downloadCount.toString()),
