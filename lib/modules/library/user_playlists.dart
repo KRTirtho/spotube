@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart' hide Image;
+import 'package:flutter/material.dart' show kToolbarHeight;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:collection/collection.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Image;
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotify/spotify.dart';
@@ -79,7 +80,7 @@ class UserPlaylists extends HookConsumerWidget {
       return const AnonymousFallback();
     }
 
-    return RefreshIndicator(
+    return RefreshTrigger(
       onRefresh: () async {
         ref.invalidate(favoritePlaylistsProvider);
       },
@@ -91,11 +92,13 @@ class UserPlaylists extends HookConsumerWidget {
             slivers: [
               SliverAppBar(
                 floating: true,
-                flexibleSpace: Padding(
+                backgroundColor: context.theme.colorScheme.background,
+                flexibleSpace: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: SearchBar(
+                  height: 48,
+                  child: TextField(
                     onChanged: (value) => searchText.value = value,
-                    hintText: context.l10n.filter_playlists,
+                    placeholder: Text(context.l10n.filter_playlists),
                     leading: const Icon(SpotubeIcons.filter),
                   ),
                 ),
@@ -107,12 +110,14 @@ class UserPlaylists extends HookConsumerWidget {
                       const Gap(10),
                       const PlaylistCreateDialogButton(),
                       const Gap(10),
-                      ElevatedButton.icon(
-                        icon: const Icon(SpotubeIcons.magic),
-                        label: Text(context.l10n.generate_playlist),
+                      Button.primary(
+                        leading: const Icon(SpotubeIcons.magic),
+                        child: Text(context.l10n.generate_playlist),
                         onPressed: () {
                           ServiceUtils.pushNamed(
-                              context, PlaylistGeneratorPage.name);
+                            context,
+                            PlaylistGeneratorPage.name,
+                          );
                         },
                       ),
                       const Gap(10),

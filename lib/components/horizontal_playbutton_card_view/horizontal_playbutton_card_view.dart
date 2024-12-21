@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
@@ -37,7 +37,6 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData(:textTheme) = Theme.of(context);
     final scrollController = useScrollController();
     final height = useBreakpointValue<double>(
       xs: 226,
@@ -56,7 +55,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               DefaultTextStyle(
-                style: textTheme.titleMedium!,
+                style: context.theme.typography.h4,
                 child: title,
               ),
               if (titleTrailing != null) titleTrailing!,

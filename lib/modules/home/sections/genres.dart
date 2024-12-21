@@ -1,10 +1,10 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
@@ -22,7 +22,6 @@ class HomeGenresSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final categoriesQuery = ref.watch(categoriesProvider);
@@ -46,21 +45,18 @@ class HomeGenresSection extends HookConsumerWidget {
               children: [
                 Text(
                   context.l10n.genres,
-                  style: textTheme.headlineSmall,
+                  style: context.theme.typography.h4,
                 ),
                 Directionality(
                   textDirection: TextDirection.rtl,
-                  child: TextButton.icon(
+                  child: Button.link(
                     onPressed: () {
                       context.pushNamed(GenrePage.name);
                     },
-                    icon: const Icon(SpotubeIcons.angleRight),
-                    label: Text(
+                    leading: const Icon(SpotubeIcons.angleRight),
+                    child: Text(
                       context.l10n.browse_all,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: colorScheme.secondary,
-                      ),
-                    ),
+                    ).muted(),
                   ),
                 ),
               ],
@@ -96,12 +92,12 @@ class HomeGenresSection extends HookConsumerWidget {
                       final text = gradient.colors
                               .take(2)
                               .any((c) => c.computeLuminance() > 0.5)
-                          ? Colors.grey[900]
+                          ? Colors.gray[900]
                           : Colors.white;
                       return (
                         gradient: LinearGradient(
                           colors: gradient.colors
-                              .map((c) => c.withOpacity(0.8))
+                              .map((c) => c.withAlpha((0.8 * 255).ceil()))
                               .toList(),
                         ),
                         textColor: text
@@ -110,40 +106,42 @@ class HomeGenresSection extends HookConsumerWidget {
                     [],
                   );
 
-                  return InkWell(
-                    onTap: () {
-                      context.pushNamed(
-                        GenrePlaylistsPage.name,
-                        pathParameters: {
-                          "categoryId": category.id!,
-                        },
-                        extra: category,
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(8),
-                    child: Ink(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        image: DecorationImage(
-                          image: UniversalImage.imageProvider(
-                            category.icons!.first.url!,
-                          ),
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Ink(
+                  return MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        context.pushNamed(
+                          GenrePlaylistsPage.name,
+                          pathParameters: {
+                            "categoryId": category.id!,
+                          },
+                          extra: category,
+                        );
+                      },
+                      child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: colorScheme.surfaceContainerHighest,
-                          gradient: categoriesQuery.isLoading ? null : gradient,
+                          borderRadius: BorderRadius.circular(8),
+                          image: DecorationImage(
+                            image: UniversalImage.imageProvider(
+                              category.icons!.first.url!,
+                            ),
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            category.name!,
-                            style: textTheme.titleMedium
-                                ?.copyWith(color: textColor),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: context.theme.colorScheme.muted,
+                            gradient:
+                                categoriesQuery.isLoading ? null : gradient,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              category.name!,
+                              style: context.theme.typography.large,
+                            ),
                           ),
                         ),
                       ),

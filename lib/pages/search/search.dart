@@ -1,21 +1,17 @@
-import 'dart:async';
-
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart' hide Page;
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:fuzzywuzzy/fuzzywuzzy.dart';
-import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter/services.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:fuzzywuzzy/fuzzywuzzy.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/utils/use_force_update.dart';
 import 'package:spotube/pages/search/sections/albums.dart';
 import 'package:spotube/pages/search/sections/artists.dart';
 import 'package:spotube/pages/search/sections/playlists.dart';
@@ -23,7 +19,6 @@ import 'package:spotube/pages/search/sections/tracks.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
-
 import 'package:spotube/utils/platform.dart';
 
 class SearchPage extends HookConsumerWidget {
@@ -36,6 +31,7 @@ class SearchPage extends HookConsumerWidget {
     final theme = Theme.of(context);
     final searchTerm = ref.watch(searchTermStateProvider);
     final controller = useSearchController();
+    final focusNode = useFocusNode();
 
     final auth = ref.watch(authenticationProvider);
     final mediaQuery = MediaQuery.of(context);
@@ -84,117 +80,92 @@ class SearchPage extends HookConsumerWidget {
       },
     );
 
+    void onSubmitted(String value) {
+      ref.read(searchTermStateProvider.notifier).state = value;
+      if (value.trim().isEmpty) {
+        return;
+      }
+      KVStoreService.setRecentSearches(
+        {
+          value,
+          ...KVStoreService.recentSearches,
+        }.toList(),
+      );
+    }
+
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        appBar: kIsDesktop && !kIsMacOS
-            ? const TitleBar(automaticallyImplyLeading: true)
-            : null,
-        body: auth.asData?.value == null
+        headers: [
+          if (kIsWindows || kIsLinux)
+            const TitleBar(automaticallyImplyLeading: true)
+        ],
+        child: auth.asData?.value == null
             ? const AnonymousFallback()
             : Column(
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      if ((kIsMobile || kIsMacOS) && context.canPop())
-                        const BackButton()
-                      else
-                        const Gap(20),
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                            right: 20,
-                            top: 20,
-                            bottom: 20,
-                          ),
-                          child: SearchAnchor(
-                            searchController: controller,
-                            viewBuilder: (_) => HookBuilder(builder: (context) {
-                              final searchController =
-                                  useListenable(controller);
-                              final update = useForceUpdate();
-                              final suggestions = searchController.text.isEmpty
-                                  ? KVStoreService.recentSearches
-                                  : KVStoreService.recentSearches
-                                      .where(
-                                        (s) =>
-                                            weightedRatio(
-                                              s.toLowerCase(),
-                                              searchController.text
-                                                  .toLowerCase(),
-                                            ) >
-                                            50,
-                                      )
-                                      .toList();
+                          padding: const EdgeInsets.all(20),
+                          child: ListenableBuilder(
+                              listenable: controller,
+                              builder: (context, _) {
+                                final suggestions = controller.text.isEmpty
+                                    ? KVStoreService.recentSearches
+                                    : KVStoreService.recentSearches
+                                        .where(
+                                          (s) =>
+                                              weightedRatio(
+                                                s.toLowerCase(),
+                                                controller.text.toLowerCase(),
+                                              ) >
+                                              50,
+                                        )
+                                        .toList();
 
-                              return ListView.builder(
-                                itemCount: suggestions.length,
-                                itemBuilder: (context, index) {
-                                  final suggestion = suggestions[index];
+                                return KeyboardListener(
+                                  focusNode: focusNode,
+                                  autofocus: true,
+                                  onKeyEvent: (value) {
+                                    final isEnter = value.logicalKey ==
+                                        LogicalKeyboardKey.enter;
 
-                                  return ListTile(
-                                    leading: const Icon(SpotubeIcons.history),
-                                    title: Text(suggestion),
-                                    trailing: IconButton(
-                                      icon: const Icon(SpotubeIcons.trash),
+                                    if (isEnter) {
+                                      onSubmitted(controller.text);
+                                      focusNode.unfocus();
+                                    }
+                                  },
+                                  child: AutoComplete(
+                                    autofocus: true,
+                                    controller: controller,
+                                    suggestions: suggestions,
+                                    leading: const Icon(SpotubeIcons.search),
+                                    textInputAction: TextInputAction.search,
+                                    placeholder: Text(context.l10n.search),
+                                    trailing: IconButton.ghost(
+                                      size: ButtonSize.small,
+                                      icon: const Icon(SpotubeIcons.close),
                                       onPressed: () {
-                                        KVStoreService.setRecentSearches(
-                                          KVStoreService.recentSearches
-                                              .where((s) => s != suggestion)
-                                              .toList(),
-                                        );
-                                        update();
+                                        controller.clear();
                                       },
                                     ),
-                                    onTap: () {
-                                      controller.closeView(suggestion);
+                                    onAcceptSuggestion: (index) {
+                                      controller.text =
+                                          KVStoreService.recentSearches[index];
                                       ref
-                                          .read(
-                                              searchTermStateProvider.notifier)
-                                          .state = suggestion;
+                                              .read(searchTermStateProvider
+                                                  .notifier)
+                                              .state =
+                                          KVStoreService.recentSearches[index];
                                     },
-                                  );
-                                },
-                              );
-                            }),
-                            suggestionsBuilder: (context, controller) {
-                              return [];
-                            },
-                            viewOnSubmitted: (value) async {
-                              controller.closeView(value);
-                              Timer(
-                                const Duration(milliseconds: 50),
-                                () {
-                                  ref
-                                      .read(searchTermStateProvider.notifier)
-                                      .state = value;
-                                  if (value.trim().isEmpty) {
-                                    return;
-                                  }
-                                  KVStoreService.setRecentSearches(
-                                    {
-                                      value,
-                                      ...KVStoreService.recentSearches,
-                                    }.toList(),
-                                  );
-                                },
-                              );
-                            },
-                            builder: (context, controller) {
-                              return SearchBar(
-                                autoFocus: queries.none((s) =>
-                                        s.asData?.value != null &&
-                                        !s.hasError) &&
-                                    !kIsMobile,
-                                controller: controller,
-                                leading: const Icon(SpotubeIcons.search),
-                                hintText: "${context.l10n.search}...",
-                                onTap: controller.openView,
-                                onChanged: (_) => controller.openView(),
-                              );
-                            },
-                          ),
+                                    onChanged: (value) {},
+                                    onSubmitted: onSubmitted,
+                                  ),
+                                );
+                              }),
                         ),
                       ),
                     ],
@@ -211,15 +182,15 @@ class SearchPage extends HookConsumerWidget {
                                 Icon(
                                   SpotubeIcons.web,
                                   size: 120,
-                                  color: theme.colorScheme.onSurface
+                                  color: theme.colorScheme.foreground
                                       .withOpacity(0.7),
                                 ),
                                 const SizedBox(height: 20),
                                 Text(
                                   context.l10n.search_to_get_results,
-                                  style: theme.textTheme.titleLarge?.copyWith(
+                                  style: theme.typography.h3.copyWith(
                                     fontWeight: FontWeight.w900,
-                                    color: theme.colorScheme.onSurface
+                                    color: theme.colorScheme.foreground
                                         .withOpacity(0.5),
                                   ),
                                 ),
@@ -245,7 +216,7 @@ class SearchPage extends HookConsumerWidget {
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.w900,
-                                          color: theme.colorScheme.onSurface
+                                          color: theme.colorScheme.foreground
                                               .withOpacity(0.7),
                                         ),
                                       ),

@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart' hide Image;
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Image;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
-import 'package:gap/gap.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
@@ -52,7 +52,7 @@ class UserAlbums extends HookConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
-        body: RefreshIndicator(
+        child: RefreshTrigger(
           onRefresh: () async {
             ref.invalidate(favoriteAlbumsProvider);
           },
@@ -62,13 +62,17 @@ class UserAlbums extends HookConsumerWidget {
               controller: controller,
               slivers: [
                 SliverAppBar(
+                  backgroundColor: Theme.of(context).colorScheme.background,
                   floating: true,
                   flexibleSpace: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: SearchBar(
-                      onChanged: (value) => searchText.value = value,
-                      leading: const Icon(SpotubeIcons.filter),
-                      hintText: context.l10n.filter_albums,
+                    child: SizedBox(
+                      height: 48,
+                      child: TextField(
+                        onChanged: (value) => searchText.value = value,
+                        leading: const Icon(SpotubeIcons.filter),
+                        placeholder: Text(context.l10n.filter_artist),
+                      ),
                     ),
                   ),
                 ),

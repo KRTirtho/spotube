@@ -104,7 +104,7 @@ class Sidebar extends HookConsumerWidget {
                       index: selectedIndex,
                       onSelected: (index) {
                         final tile = sidebarTileList[index];
-                        ServiceUtils.pushNamed(context, tile.name);
+                        context.goNamed(tile.name);
                       },
                       children: navigationButtons,
                     )
@@ -113,13 +113,13 @@ class Sidebar extends HookConsumerWidget {
                       index: selectedIndex,
                       onSelected: (index) {
                         final tile = sidebarTileList[index];
-                        ServiceUtils.pushNamed(context, tile.name);
+                        context.goNamed(tile.name);
                       },
                       children: navigationButtons,
                     ),
             ),
             const SidebarFooter(),
-            const Gap(130)
+            if (mediaQuery.lgAndUp) const Gap(130) else const Gap(65),
           ],
         ),
         const VerticalDivider(),

@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/extensions/context.dart';
@@ -40,9 +40,9 @@ class HomePageFeedSection extends HookConsumerWidget {
           onFetchMore: () {},
           titleTrailing: Directionality(
             textDirection: TextDirection.rtl,
-            child: TextButton.icon(
-              label: Text(context.l10n.browse_more),
-              icon: const Icon(SpotubeIcons.angleRight),
+            child: Button.link(
+              leading: const Icon(SpotubeIcons.angleRight),
+              child: Text(context.l10n.browse_more),
               onPressed: () => ServiceUtils.pushNamed(
                 context,
                 HomeFeedSectionPage.name,

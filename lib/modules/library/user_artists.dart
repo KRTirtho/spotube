@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
-import 'package:gap/gap.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 
@@ -54,7 +54,7 @@ class UserArtists extends HookConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
-        body: RefreshIndicator(
+        child: RefreshTrigger(
           onRefresh: () async {
             ref.invalidate(followedArtistsProvider);
           },
@@ -66,11 +66,15 @@ class UserArtists extends HookConsumerWidget {
                 controller: controller,
                 slivers: [
                   SliverAppBar(
+                    backgroundColor: Theme.of(context).colorScheme.background,
                     floating: true,
-                    flexibleSpace: SearchBar(
-                      onChanged: (value) => searchText.value = value,
-                      leading: const Icon(SpotubeIcons.filter),
-                      hintText: context.l10n.filter_artist,
+                    flexibleSpace: SizedBox(
+                      height: 48,
+                      child: TextField(
+                        onChanged: (value) => searchText.value = value,
+                        leading: const Icon(SpotubeIcons.filter),
+                        placeholder: Text(context.l10n.filter_artist),
+                      ),
                     ),
                   ),
                   const SliverGap(10),
