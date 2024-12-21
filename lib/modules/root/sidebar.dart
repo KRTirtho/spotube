@@ -66,56 +66,67 @@ class Sidebar extends HookConsumerWidget {
       return Scaffold(child: child);
     }
 
-    return LayoutBuilder(builder: (context, constrains) {
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SafeArea(
-            child: Column(
-              children: [
-                Expanded(
-                  child: NavigationSidebar(
-                    index: selectedIndex,
-                    onSelected: (index) {
-                      final tile = sidebarTileList[index];
-                      ServiceUtils.pushNamed(context, tile.name);
-                    },
-                    children: [
-                      const NavigationLabel(child: Text("Spotube")),
-                      for (final tile in sidebarTileList)
-                        NavigationButton(
-                          label: Text(tile.title),
-                          child: Badge(
-                            backgroundColor: context.theme.colorScheme.primary,
-                            isLabelVisible:
-                                tile.title == "Library" && downloadCount > 0,
-                            label: Text(
-                              downloadCount.toString(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                              ),
-                            ),
-                            child: Icon(tile.icon),
-                          ),
-                          onChanged: (value) {
-                            if (value) {
-                              context.goNamed(tile.name);
-                            }
-                          },
-                        ),
-                    ],
-                  ),
-                ),
-                const SidebarFooter(),
-              ],
+    final navigationButtons = [
+      NavigationLabel(
+        child: mediaQuery.lgAndUp ? const Text("Spotube") : const Text(""),
+      ),
+      for (final tile in sidebarTileList)
+        NavigationButton(
+          label: mediaQuery.lgAndUp ? Text(tile.title) : null,
+          child: Badge(
+            backgroundColor: context.theme.colorScheme.primary,
+            isLabelVisible: tile.title == "Library" && downloadCount > 0,
+            label: Text(
+              downloadCount.toString(),
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 10,
+              ),
             ),
+            child: Icon(tile.icon),
           ),
-          const VerticalDivider(),
-          Expanded(child: child),
-        ],
-      );
-    });
+          onChanged: (value) {
+            if (value) {
+              context.goNamed(tile.name);
+            }
+          },
+        ),
+    ];
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: mediaQuery.lgAndUp
+                    ? NavigationSidebar(
+                        index: selectedIndex,
+                        onSelected: (index) {
+                          final tile = sidebarTileList[index];
+                          ServiceUtils.pushNamed(context, tile.name);
+                        },
+                        children: navigationButtons,
+                      )
+                    : NavigationRail(
+                        alignment: NavigationRailAlignment.start,
+                        index: selectedIndex,
+                        onSelected: (index) {
+                          final tile = sidebarTileList[index];
+                          ServiceUtils.pushNamed(context, tile.name);
+                        },
+                        children: navigationButtons,
+                      ),
+              ),
+              const SidebarFooter(),
+            ],
+          ),
+        ),
+        const VerticalDivider(),
+        Expanded(child: child),
+      ],
+    );
   }
 }
 
