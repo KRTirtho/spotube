@@ -28,9 +28,8 @@ class StatsArtistsPage extends HookConsumerWidget {
         () => topTracks.asData?.value.artists ?? [], [topTracks.asData?.value]);
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
+      appBar: TitleBar(
         automaticallyImplyLeading: true,
-        centerTitle: false,
         title: Text(context.l10n.artists),
       ),
       body: Skeletonizer(

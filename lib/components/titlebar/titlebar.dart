@@ -1,89 +1,56 @@
 import 'package:flutter/material.dart' hide AppBar;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart' show AppBar;
+import 'package:shadcn_flutter/shadcn_flutter.dart'
+    show AppBar, WidgetExtension;
 import 'package:spotube/components/titlebar/titlebar_buttons.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
-
 import 'package:window_manager/window_manager.dart';
 
-class PageWindowTitleBar extends StatefulHookConsumerWidget
-    implements PreferredSizeWidget {
-  final Widget? leading;
+class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
   final bool automaticallyImplyLeading;
-  final List<Widget>? actions;
+  final List<Widget> trailing;
+  final List<Widget> leading;
+  final Widget? child;
+  final Widget? title;
+  final Widget? header; // small widget placed on top of title
+  final Widget? subtitle; // small widget placed below title
+  final bool
+      trailingExpanded; // expand the trailing instead of the main content
+  final AlignmentGeometry alignment;
   final Color? backgroundColor;
   final Color? foregroundColor;
-  final IconThemeData? actionsIconTheme;
-  final bool? centerTitle;
-  final double? titleSpacing;
-  final double toolbarOpacity;
-  final double? leadingWidth;
-  final TextStyle? toolbarTextStyle;
-  final TextStyle? titleTextStyle;
-  final double? titleWidth;
-  final Widget? title;
+  final double? leadingGap;
+  final double? trailingGap;
+  final EdgeInsetsGeometry? padding;
+  final double? height;
+  final bool useSafeArea;
+  final double? surfaceBlur;
+  final double? surfaceOpacity;
 
-  final bool _sliver;
-
-  const PageWindowTitleBar({
+  const TitleBar({
     super.key,
-    this.actions,
+    this.automaticallyImplyLeading = true,
+    this.trailing = const [],
+    this.leading = const [],
     this.title,
-    this.toolbarOpacity = 1,
+    this.header,
+    this.subtitle,
+    this.child,
+    this.trailingExpanded = false,
+    this.alignment = Alignment.center,
+    this.padding,
     this.backgroundColor,
-    this.actionsIconTheme,
-    this.automaticallyImplyLeading = false,
-    this.centerTitle,
     this.foregroundColor,
-    this.leading,
-    this.leadingWidth,
-    this.titleSpacing,
-    this.titleTextStyle,
-    this.titleWidth,
-    this.toolbarTextStyle,
-  })  : _sliver = false,
-        pinned = false,
-        floating = false,
-        snap = false,
-        stretch = false;
+    this.leadingGap,
+    this.trailingGap,
+    this.height,
+    this.surfaceBlur,
+    this.surfaceOpacity,
+    this.useSafeArea = true,
+  });
 
-  final bool pinned;
-  final bool floating;
-  final bool snap;
-  final bool stretch;
-
-  const PageWindowTitleBar.sliver({
-    super.key,
-    this.actions,
-    this.title,
-    this.backgroundColor,
-    this.actionsIconTheme,
-    this.automaticallyImplyLeading = false,
-    this.centerTitle,
-    this.foregroundColor,
-    this.leading,
-    this.leadingWidth,
-    this.titleSpacing,
-    this.titleTextStyle,
-    this.titleWidth,
-    this.toolbarTextStyle,
-    this.pinned = false,
-    this.floating = false,
-    this.snap = false,
-    this.stretch = false,
-  })  : _sliver = true,
-        toolbarOpacity = 1;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
-  ConsumerState<PageWindowTitleBar> createState() => _PageWindowTitleBarState();
-}
-
-class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
-  void onDrag(details) {
+  void onDrag(WidgetRef ref) {
     final systemTitleBar =
         ref.read(userPreferencesProvider.select((s) => s.systemTitleBar));
     if (kIsDesktop && !systemTitleBar) {
@@ -92,86 +59,53 @@ class _PageWindowTitleBarState extends ConsumerState<PageWindowTitleBar> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
+  Widget build(BuildContext context, ref) {
+    final hasLeadingOrCanPop = leading.isNotEmpty || Navigator.canPop(context);
 
-    if (widget._sliver) {
-      return SliverLayoutBuilder(
+    return SizedBox(
+      height: height ?? 56,
+      child: LayoutBuilder(
         builder: (context, constraints) {
           final hasFullscreen =
-              mediaQuery.size.width == constraints.crossAxisExtent;
-          final hasLeadingOrCanPop =
-              widget.leading != null || Navigator.canPop(context);
+              MediaQuery.sizeOf(context).width == constraints.maxWidth;
 
-          return SliverPadding(
-            padding: EdgeInsets.only(
-              left: kIsMacOS && hasFullscreen && hasLeadingOrCanPop ? 65 : 0,
-            ),
-            sliver: SliverAppBar(
-              leading: widget.leading,
-              automaticallyImplyLeading: widget.automaticallyImplyLeading,
-              actions: [
-                ...?widget.actions,
-                WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
+          return GestureDetector(
+            onHorizontalDragStart: (_) => onDrag(ref),
+            onVerticalDragStart: (_) => onDrag(ref),
+            child: AppBar(
+              leading: leading.isEmpty &&
+                      automaticallyImplyLeading &&
+                      Navigator.canPop(context)
+                  ? [
+                      const BackButton(),
+                    ]
+                  : leading,
+              trailing: [
+                ...trailing,
+                WindowTitleBarButtons(foregroundColor: foregroundColor),
               ],
-              backgroundColor: widget.backgroundColor,
-              foregroundColor: widget.foregroundColor,
-              actionsIconTheme: widget.actionsIconTheme,
-              centerTitle: widget.centerTitle,
-              titleSpacing: widget.titleSpacing,
-              leadingWidth: widget.leadingWidth,
-              toolbarTextStyle: widget.toolbarTextStyle,
-              titleTextStyle: widget.titleTextStyle,
-              title: SizedBox(
-                width: double.infinity, // workaround to force dragging
-                child: widget.title ?? const Text(""),
-              ),
-              pinned: widget.pinned,
-              floating: widget.floating,
-              snap: widget.snap,
-              stretch: widget.stretch,
-            ),
+              title: title,
+              header: header,
+              subtitle: subtitle,
+              trailingExpanded: trailingExpanded,
+              alignment: alignment,
+              padding: padding,
+              backgroundColor: backgroundColor,
+              leadingGap: leadingGap,
+              trailingGap: trailingGap,
+              height: height,
+              surfaceBlur: surfaceBlur,
+              surfaceOpacity: surfaceOpacity,
+              useSafeArea: useSafeArea,
+              child: child,
+            ).withPadding(
+                left: kIsMacOS && hasFullscreen && hasLeadingOrCanPop ? 65 : 0),
           );
         },
-      );
-    }
-
-    return LayoutBuilder(builder: (context, constrains) {
-      final hasFullscreen = mediaQuery.size.width == constrains.maxWidth;
-      final hasLeadingOrCanPop =
-          widget.leading != null || Navigator.canPop(context);
-
-      return GestureDetector(
-        onHorizontalDragStart: onDrag,
-        onVerticalDragStart: onDrag,
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: kIsMacOS && hasFullscreen && hasLeadingOrCanPop ? 65 : 0,
-          ),
-          child: AppBar(
-            leading: [
-              if (widget.leading != null) widget.leading!,
-              if (widget.leading == null &&
-                  widget.automaticallyImplyLeading &&
-                  Navigator.canPop(context))
-                const BackButton(),
-            ],
-            trailing: [
-              ...?widget.actions,
-              WindowTitleBarButtons(foregroundColor: widget.foregroundColor),
-            ],
-            backgroundColor: widget.backgroundColor,
-            title: SizedBox(
-              width: double.infinity, // workaround to force dragging
-              child: widget.title ?? const Text(""),
-            ),
-            alignment: widget.centerTitle == true
-                ? Alignment.center
-                : Alignment.centerLeft,
-            leadingGap: widget.leadingWidth,
-          ),
-        ),
-      );
-    });
+      ),
+    );
   }
+
+  @override
+  Size get preferredSize => Size.fromHeight(height ?? 56.0);
 }

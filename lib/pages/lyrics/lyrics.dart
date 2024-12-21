@@ -146,7 +146,7 @@ class LyricsPage extends HookConsumerWidget {
         child: Scaffold(
           extendBodyBehindAppBar: true,
           appBar: !kIsMacOS
-              ? PageWindowTitleBar(
+              ? TitleBar(
                   backgroundColor: Colors.transparent,
                   title: tabbar,
                 )

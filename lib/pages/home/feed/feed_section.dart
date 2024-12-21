@@ -23,11 +23,9 @@ class HomeFeedSectionPage extends HookConsumerWidget {
     return Skeletonizer(
       enabled: homeFeedSection.isLoading,
       child: Scaffold(
-        appBar: PageWindowTitleBar(
+        appBar: TitleBar(
           title: Text(section.title ?? ""),
-          centerTitle: false,
           automaticallyImplyLeading: true,
-          titleSpacing: 0,
         ),
         body: CustomScrollView(
           slivers: [

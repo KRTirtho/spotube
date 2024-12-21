@@ -88,7 +88,7 @@ class SearchPage extends HookConsumerWidget {
       bottom: false,
       child: Scaffold(
         appBar: kIsDesktop && !kIsMacOS
-            ? const PageWindowTitleBar(automaticallyImplyLeading: true)
+            ? const TitleBar(automaticallyImplyLeading: true)
             : null,
         body: auth.asData?.value == null
             ? const AnonymousFallback()

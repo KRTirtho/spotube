@@ -28,9 +28,8 @@ class StatsStreamsPage extends HookConsumerWidget {
     final tracksData = topTracks.asData?.value.items ?? [];
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
+      appBar: TitleBar(
         title: Text(context.l10n.streamed_songs),
-        centerTitle: false,
         automaticallyImplyLeading: true,
       ),
       body: Skeletonizer(

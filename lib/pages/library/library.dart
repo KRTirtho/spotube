@@ -37,19 +37,21 @@ class LibraryPage extends HookConsumerWidget {
       bottom: false,
       child: Scaffold(
         headers: [
-          PageWindowTitleBar(
-            leading: TabList(
-              index: index.value,
-              children: [
-                for (final child in children)
-                  TabButton(
-                    child: child,
-                    onPressed: () {
-                      index.value = children.indexOf(child);
-                    },
-                  ),
-              ],
-            ),
+          TitleBar(
+            leading: [
+              TabList(
+                index: index.value,
+                children: [
+                  for (final child in children)
+                    TabButton(
+                      child: child,
+                      onPressed: () {
+                        index.value = children.indexOf(child);
+                      },
+                    ),
+                ],
+              )
+            ],
           )
         ],
         child: IndexedStack(
@@ -60,11 +62,6 @@ class LibraryPage extends HookConsumerWidget {
             UserDownloads(),
             UserArtists(),
             UserAlbums(),
-            // Text("UserPlaylists()"),
-            // Text("UserLocalTracks()"),
-            // Text("UserDownloads()"),
-            // Text("UserArtists()"),
-            // Text("UserAlbums()"),
           ],
         ),
       ),

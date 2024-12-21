@@ -25,10 +25,9 @@ class GenrePage extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
+      appBar: TitleBar(
         title: Text(context.l10n.explore_genres),
         automaticallyImplyLeading: true,
-        titleSpacing: 0,
       ),
       body: SafeArea(
         top: false,

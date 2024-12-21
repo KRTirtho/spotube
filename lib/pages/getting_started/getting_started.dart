@@ -43,9 +43,9 @@ class GettingStarting extends HookConsumerWidget {
     return Theme(
       data: themeData,
       child: Scaffold(
-        appBar: PageWindowTitleBar(
+        appBar: TitleBar(
           backgroundColor: Colors.transparent,
-          actions: [
+          trailing: [
             ListenableBuilder(
               listenable: pageController,
               builder: (context, _) {

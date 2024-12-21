@@ -138,15 +138,15 @@ class PlayerView extends HookConsumerWidget {
               child: ForceDraggableWidget(
                 child: Padding(
                   padding: EdgeInsets.only(top: topPadding),
-                  child: PageWindowTitleBar(
+                  child: TitleBar(
                     backgroundColor: Colors.transparent,
-                    foregroundColor: titleTextColor,
-                    toolbarOpacity: 1,
-                    leading: IconButton(
-                      icon: const Icon(SpotubeIcons.angleDown, size: 18),
-                      onPressed: panelController.close,
-                    ),
-                    actions: [
+                    leading: [
+                      IconButton(
+                        icon: const Icon(SpotubeIcons.angleDown, size: 18),
+                        onPressed: panelController.close,
+                      )
+                    ],
+                    trailing: [
                       if (currentTrack is YoutubeSourcedTrack)
                         TextButton.icon(
                           icon: Assets.logos.songlinkTransparent.image(

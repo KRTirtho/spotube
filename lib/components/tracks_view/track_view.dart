@@ -20,14 +20,14 @@ class TrackView extends HookConsumerWidget {
 
     return Scaffold(
       appBar: kIsDesktop
-          ? const PageWindowTitleBar(
+          ? const TitleBar(
               backgroundColor: Colors.transparent,
-              foregroundColor: Colors.white,
-              leadingWidth: 400,
-              leading: Align(
-                alignment: Alignment.centerLeft,
-                child: BackButton(color: Colors.white),
-              ),
+              leading: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: BackButton(color: Colors.white),
+                )
+              ],
             )
           : null,
       extendBodyBehindAppBar: true,

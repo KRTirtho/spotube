@@ -40,8 +40,8 @@ class GenrePlaylistsPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: kIsDesktop
-          ? const PageWindowTitleBar(
-              leading: BackButton(color: Colors.white),
+          ? const TitleBar(
+              leading: [BackButton(color: Colors.white)],
               backgroundColor: Colors.transparent,
               foregroundColor: Colors.white,
             )

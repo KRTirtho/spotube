@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/assets.gen.dart';
@@ -344,6 +345,7 @@ class TrackOptions extends HookConsumerWidget {
             leading: const Icon(SpotubeIcons.album),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(context.l10n.go_to_album),
                 Text(

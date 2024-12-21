@@ -30,8 +30,8 @@ class ArtistPage extends HookConsumerWidget {
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        appBar: const PageWindowTitleBar(
-          leading: BackButton(),
+        appBar: const TitleBar(
+          leading: [BackButton()],
           backgroundColor: Colors.transparent,
         ),
         extendBodyBehindAppBar: true,

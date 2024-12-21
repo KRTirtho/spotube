@@ -88,7 +88,7 @@ class ConnectControlPage extends HookConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: PageWindowTitleBar(
+        appBar: TitleBar(
           title: Text(resolvedService!.name),
           automaticallyImplyLeading: true,
         ),

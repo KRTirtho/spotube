@@ -21,10 +21,10 @@ class LogsPage extends HookConsumerWidget {
     final logsQuery = ref.watch(logsProvider);
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
+      appBar: TitleBar(
         title: Text(context.l10n.logs),
-        leading: const BackButton(),
-        actions: [
+        leading: const [BackButton()],
+        trailing: [
           IconButton(
             icon: const Icon(SpotubeIcons.clipboard),
             iconSize: 16,

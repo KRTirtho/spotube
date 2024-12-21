@@ -24,8 +24,8 @@ class WebViewLogin extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(
-        leading: BackButton(color: Colors.white),
+      appBar: const TitleBar(
+        leading: [BackButton(color: Colors.white)],
         backgroundColor: Colors.transparent,
       ),
       extendBodyBehindAppBar: true,

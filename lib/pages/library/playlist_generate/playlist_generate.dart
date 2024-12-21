@@ -231,10 +231,9 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
     final controller = useScrollController();
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
-        leading: const BackButton(),
+      appBar: TitleBar(
+        leading: const [BackButton()],
         title: Text(context.l10n.generate_playlist),
-        centerTitle: true,
       ),
       body: Scrollbar(
         controller: controller,

@@ -23,10 +23,9 @@ class ConnectPage extends HookConsumerWidget {
     final discoveredDevices = connectClients.asData?.value.services;
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
+      appBar: TitleBar(
         automaticallyImplyLeading: true,
         title: Text(context.l10n.devices),
-        titleSpacing: 0,
       ),
       body: ListTileTheme(
         shape: RoundedRectangleBorder(

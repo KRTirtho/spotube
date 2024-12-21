@@ -44,10 +44,9 @@ class BlackListPage extends HookConsumerWidget {
     );
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
+      appBar: TitleBar(
         title: Text(context.l10n.blacklist),
-        centerTitle: true,
-        leading: const BackButton(),
+        leading: const [BackButton()],
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,

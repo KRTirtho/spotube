@@ -27,7 +27,7 @@ class LastFMLoginPage extends HookConsumerWidget {
     final isLoading = useState(false);
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(leading: BackButton()),
+      appBar: const TitleBar(leading: [BackButton()]),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 400),

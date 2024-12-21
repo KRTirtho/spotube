@@ -29,8 +29,8 @@ class AboutSpotube extends HookConsumerWidget {
     const colon = Text(":");
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
-        leading: const BackButton(),
+      appBar: TitleBar(
+        leading: const [BackButton()],
         title: Text(context.l10n.about_spotube),
       ),
       body: SingleChildScrollView(

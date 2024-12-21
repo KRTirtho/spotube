@@ -48,7 +48,7 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
         (generatedPlaylist.asData?.value.length ?? 0);
 
     return Scaffold(
-      appBar: const PageWindowTitleBar(leading: BackButton()),
+      appBar: const TitleBar(leading: [BackButton()]),
       body: generatedPlaylist.isLoading
           ? Center(
               child: Column(

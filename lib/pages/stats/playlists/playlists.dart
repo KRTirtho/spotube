@@ -26,9 +26,8 @@ class StatsPlaylistsPage extends HookConsumerWidget {
     final playlistsData = topPlaylists.asData?.value.items ?? [];
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
+      appBar: TitleBar(
         automaticallyImplyLeading: true,
-        centerTitle: false,
         title: Text(context.l10n.playlists),
       ),
       body: Skeletonizer(

@@ -16,7 +16,7 @@ class StatsPage extends HookConsumerWidget {
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        appBar: kIsMacOS || kIsMobile ? null : const PageWindowTitleBar(),
+        appBar: kIsMacOS || kIsMobile ? null : const TitleBar(),
         body: CustomScrollView(
           slivers: [
             if (kIsMacOS) const SliverGap(20),

@@ -25,9 +25,8 @@ class StatsAlbumsPage extends HookConsumerWidget {
     final albumsData = topAlbums.asData?.value.items ?? [];
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
+      appBar: TitleBar(
         automaticallyImplyLeading: true,
-        centerTitle: false,
         title: Text(context.l10n.albums),
       ),
       body: Skeletonizer(
