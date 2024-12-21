@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
@@ -90,6 +91,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                             ),
                         isLoading: isLoadingNextPage,
                         hasReachedMax: !hasNextPage,
+                        separatorBuilder: (context, index) => const Gap(8.0),
                         itemBuilder: (context, index) {
                           final item = items[index];
 
