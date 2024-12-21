@@ -1,33 +1,28 @@
-import 'package:collection/collection.dart';
+import 'package:flutter/material.dart' show Badge;
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter/material.dart';
-import 'package:sidebarx/sidebarx.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/models/database/database.dart';
-import 'package:spotube/modules/connect/connect_device.dart';
 import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/extensions/image.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
-import 'package:spotube/hooks/utils/use_brightness_value.dart';
-import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
+import 'package:spotube/modules/connect/connect_device.dart';
 import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/settings/settings.dart';
-import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:window_manager/window_manager.dart';
 
 class Sidebar extends HookConsumerWidget {
   final Widget child;
@@ -66,173 +61,65 @@ class Sidebar extends HookConsumerWidget {
       (e) => routerState.namedLocation(e.name) == routerState.matchedLocation,
     );
 
-    final controller = useSidebarXController(
-      selectedIndex: selectedIndex,
-      extended: mediaQuery.lgAndUp,
-    );
-
-    final theme = Theme.of(context);
-    final bg = theme.colorScheme.surfaceContainerHighest;
-
-    final bgColor = useBrightnessValue(
-      Color.lerp(bg, Colors.white, 0.6),
-      Color.lerp(bg, Colors.black, 0.45)!,
-    );
-
-    useEffect(() {
-      if (!context.mounted) return;
-      if (mediaQuery.lgAndUp && !controller.extended) {
-        controller.setExtended(true);
-      } else if (mediaQuery.mdAndDown && controller.extended) {
-        controller.setExtended(false);
-      }
-      return null;
-    }, [mediaQuery, controller]);
-
-    useEffect(() {
-      if (controller.selectedIndex != selectedIndex) {
-        controller.selectIndex(selectedIndex);
-      }
-      return null;
-    }, [selectedIndex]);
-
     if (layoutMode == LayoutMode.compact ||
         (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive)) {
-      return Scaffold(body: child);
+      return Scaffold(child: child);
     }
 
-    return Row(
-      children: [
-        SafeArea(
-          child: SidebarX(
-            controller: controller,
-            items: sidebarTileList.mapIndexed(
-              (index, e) {
-                return SidebarXItem(
-                  onTap: () {
-                    context.goNamed(e.name);
-                  },
-                  iconBuilder: (selected, hovered) {
-                    return Badge(
-                      backgroundColor: theme.colorScheme.primary,
-                      isLabelVisible: e.title == "Library" && downloadCount > 0,
-                      label: Text(
-                        downloadCount.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                        ),
-                      ),
-                      child: Icon(
-                        e.icon,
-                        color: selected || hovered
-                            ? theme.colorScheme.primary
-                            : null,
-                      ),
-                    );
-                  },
-                  label: e.title,
-                );
-              },
-            ).toList(),
-            headerBuilder: (_, __) => const SidebarHeader(),
-            footerBuilder: (_, __) => const Padding(
-              padding: EdgeInsets.only(bottom: 5),
-              child: SidebarFooter(),
-            ),
-            showToggleButton: false,
-            theme: SidebarXTheme(
-              width: 50,
-              margin: EdgeInsets.only(bottom: 10, top: kIsMacOS ? 35 : 5),
-              selectedItemDecoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: theme.colorScheme.primary.withOpacity(0.1),
-              ),
-              selectedIconTheme: IconThemeData(
-                color: theme.colorScheme.primary,
-              ),
-            ),
-            extendedTheme: SidebarXTheme(
-              width: 250,
-              margin: EdgeInsets.only(
-                bottom: 10,
-                left: 0,
-                top: kIsMacOS ? 0 : 5,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              decoration: BoxDecoration(
-                color: bgColor?.withOpacity(0.8),
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
-              ),
-              selectedItemDecoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: theme.colorScheme.primary.withOpacity(0.1),
-              ),
-              selectedIconTheme: IconThemeData(
-                color: theme.colorScheme.primary,
-              ),
-              selectedTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.w600,
-              ),
-              itemTextPadding: const EdgeInsets.only(left: 10),
-              selectedItemTextPadding: const EdgeInsets.only(left: 10),
-              hoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ),
-        ),
-        Expanded(child: child)
-      ],
-    );
-  }
-}
-
-class SidebarHeader extends HookWidget {
-  const SidebarHeader({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final theme = Theme.of(context);
-
-    if (mediaQuery.mdAndDown) {
-      return Container(
-        height: 40,
-        width: 40,
-        margin: const EdgeInsets.only(bottom: 5),
-        child: Sidebar.brandLogo(),
-      );
-    }
-
-    return DragToMoveArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            if (kIsMacOS) const SizedBox(height: 25),
-            Row(
+    return LayoutBuilder(builder: (context, constrains) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SafeArea(
+            child: Column(
               children: [
-                Sidebar.brandLogo(),
-                const SizedBox(width: 10),
-                Text(
-                  "Spotube",
-                  style: theme.textTheme.titleLarge,
+                Expanded(
+                  child: NavigationSidebar(
+                    index: selectedIndex,
+                    onSelected: (index) {
+                      final tile = sidebarTileList[index];
+                      ServiceUtils.pushNamed(context, tile.name);
+                    },
+                    children: [
+                      const NavigationLabel(child: Text("Spotube")),
+                      for (final tile in sidebarTileList)
+                        NavigationButton(
+                          label: Text(tile.title),
+                          child: Badge(
+                            backgroundColor: context.theme.colorScheme.primary,
+                            isLabelVisible:
+                                tile.title == "Library" && downloadCount > 0,
+                            label: Text(
+                              downloadCount.toString(),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                              ),
+                            ),
+                            child: Icon(tile.icon),
+                          ),
+                          onChanged: (value) {
+                            if (value) {
+                              context.goNamed(tile.name);
+                            }
+                          },
+                        ),
+                    ],
+                  ),
                 ),
+                const SidebarFooter(),
               ],
             ),
-          ],
-        ),
-      ),
-    );
+          ),
+          const VerticalDivider(),
+          Expanded(child: child),
+        ],
+      );
+    });
   }
 }
 
-class SidebarFooter extends HookConsumerWidget {
+class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
   const SidebarFooter({
     super.key,
   });
@@ -253,6 +140,7 @@ class SidebarFooter extends HookConsumerWidget {
 
     if (mediaQuery.mdAndDown) {
       return IconButton(
+        variance: ButtonVariance.ghost,
         icon: const Icon(SpotubeIcons.settings),
         onPressed: () => ServiceUtils.navigateNamed(context, SettingsPage.name),
       );
@@ -260,8 +148,9 @@ class SidebarFooter extends HookConsumerWidget {
 
     return Container(
       padding: const EdgeInsets.only(left: 12),
-      width: 250,
+      width: 180,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           const ConnectDeviceButton.sidebar(),
           const Gap(10),
@@ -273,21 +162,16 @@ class SidebarFooter extends HookConsumerWidget {
                 const CircularProgressIndicator()
               else if (data != null)
                 Flexible(
-                  child: InkWell(
+                  child: GestureDetector(
                     onTap: () {
                       ServiceUtils.pushNamed(context, ProfilePage.name);
                     },
-                    borderRadius: BorderRadius.circular(30),
                     child: Row(
                       children: [
-                        CircleAvatar(
-                          backgroundImage:
-                              UniversalImage.imageProvider(avatarImg),
-                          onBackgroundImageError: (exception, stackTrace) =>
-                              Assets.userPlaceholder.image(
-                            height: 16,
-                            width: 16,
-                          ),
+                        Avatar(
+                          initials:
+                              Avatar.getInitials(data.displayName ?? "User"),
+                          provider: UniversalImage.imageProvider(avatarImg),
                         ),
                         const SizedBox(width: 10),
                         Flexible(
@@ -296,8 +180,8 @@ class SidebarFooter extends HookConsumerWidget {
                             maxLines: 1,
                             softWrap: false,
                             overflow: TextOverflow.fade,
-                            style: theme.textTheme.bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.bold),
+                            style: theme.typography.normal
+                                .copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -305,6 +189,7 @@ class SidebarFooter extends HookConsumerWidget {
                   ),
                 ),
               IconButton(
+                variance: ButtonVariance.ghost,
                 icon: const Icon(SpotubeIcons.settings),
                 onPressed: () {
                   ServiceUtils.pushNamed(context, SettingsPage.name);
@@ -316,4 +201,7 @@ class SidebarFooter extends HookConsumerWidget {
       ),
     );
   }
+
+  @override
+  bool get selectable => false;
 }

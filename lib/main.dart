@@ -3,7 +3,6 @@ import 'dart:ui';
 
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -34,7 +33,6 @@ import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/provider/tray_manager/tray_manager.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/provider/connect/clients.dart';
-import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
@@ -42,8 +40,6 @@ import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
-import 'package:spotube/themes/theme.dart';
-import 'package:spotube/utils/migrations/hive.dart';
 import 'package:spotube/utils/migrations/sandbox.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:system_theme/system_theme.dart';
@@ -53,6 +49,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:window_manager/window_manager.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 Future<void> main(List<String> rawArgs) async {
   if (rawArgs.contains("web_view_title_bar")) {
@@ -110,8 +107,6 @@ Future<void> main(List<String> rawArgs) async {
 
     final database = AppDatabase();
 
-    await migrateFromHiveToDrift(database);
-
     if (kIsDesktop) {
       await localNotifier.setup(appName: "Spotube");
       await WindowManagerTools.initialize();
@@ -142,13 +137,13 @@ class Spotube extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final themeMode =
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
-    final accentMaterialColor =
-        ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
-    final isAmoledTheme =
-        ref.watch(userPreferencesProvider.select((s) => s.amoledDarkTheme));
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
-    final paletteColor =
-        ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
+    // final accentMaterialColor =
+    //     ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
+    // final isAmoledTheme =
+    //     ref.watch(userPreferencesProvider.select((s) => s.amoledDarkTheme));
+    // final paletteColor =
+    //     ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
     final router = ref.watch(routerProvider);
     final hasTouchSupport = useHasTouch();
 
@@ -178,20 +173,20 @@ class Spotube extends HookConsumerWidget {
       };
     }, []);
 
-    final lightTheme = useMemoized(
-      () => theme(paletteColor ?? accentMaterialColor, Brightness.light, false),
-      [paletteColor, accentMaterialColor],
-    );
-    final darkTheme = useMemoized(
-      () => theme(
-        paletteColor ?? accentMaterialColor,
-        Brightness.dark,
-        isAmoledTheme,
-      ),
-      [paletteColor, accentMaterialColor, isAmoledTheme],
-    );
+    // final lightTheme = useMemoized(
+    //   () => theme(paletteColor ?? accentMaterialColor, Brightness.light, false),
+    //   [paletteColor, accentMaterialColor],
+    // );
+    // final darkTheme = useMemoized(
+    //   () => theme(
+    //     paletteColor ?? accentMaterialColor,
+    //     Brightness.dark,
+    //     isAmoledTheme,
+    //   ),
+    //   [paletteColor, accentMaterialColor, isAmoledTheme],
+    // );
 
-    return MaterialApp.router(
+    return ShadcnApp.router(
       supportedLocales: L10n.all,
       locale: locale.languageCode == "system" ? null : locale,
       localizationsDelegates: const [
@@ -221,9 +216,17 @@ class Spotube extends HookConsumerWidget {
 
         return child;
       },
+      theme: ThemeData(
+        radius: .5,
+        iconTheme: const IconThemeProperties(),
+        colorScheme: ColorSchemes.lightNeutral(),
+      ),
+      darkTheme: ThemeData(
+        radius: .5,
+        iconTheme: const IconThemeProperties(),
+        colorScheme: ColorSchemes.darkNeutral(),
+      ),
       themeMode: themeMode,
-      theme: lightTheme,
-      darkTheme: darkTheme,
       shortcuts: {
         ...WidgetsApp.defaultShortcuts.map((key, value) {
           return MapEntry(

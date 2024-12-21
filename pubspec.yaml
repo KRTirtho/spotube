@@ -102,6 +102,7 @@ dependencies:
       ref: dart-3-support
       url: https://github.com/KRTirtho/scrobblenaut.git
   scroll_to_index: ^3.0.1
+  shadcn_flutter: ^0.0.23
   shared_preferences: ^2.2.3
   shelf: ^1.4.1
   shelf_router: ^1.1.4
@@ -165,6 +166,53 @@ flutter:
     - assets/logos/
     - assets/backgrounds/
     - LICENSE
+  fonts:
+    - family: GeistSans
+      fonts:
+        - asset: packages/shadcn_flutter/fonts/Geist-Black.otf
+          weight: 800
+        - asset: packages/shadcn_flutter/fonts/Geist-Bold.otf
+          weight: 700
+        - asset: packages/shadcn_flutter/fonts/Geist-Light.otf
+          weight: 300
+        - asset: packages/shadcn_flutter/fonts/Geist-Medium.otf
+          weight: 500
+        - asset: packages/shadcn_flutter/fonts/Geist-SemiBold.otf
+          weight: 600
+        - asset: packages/shadcn_flutter/fonts/Geist-Thin.otf
+          weight: 100
+        - asset: packages/shadcn_flutter/fonts/Geist-UltraBlack.otf
+          weight: 900
+        - asset: packages/shadcn_flutter/fonts/Geist-UltraLight.otf
+          weight: 200
+        - asset: packages/shadcn_flutter/fonts/Geist-Regular.otf
+          weight: 400
+    - family: GeistMono
+      fonts:
+        - asset: packages/shadcn_flutter/fonts/GeistMono-Black.otf
+          weight: 800
+        - asset: packages/shadcn_flutter/fonts/GeistMono-Bold.otf
+          weight: 700
+        - asset: packages/shadcn_flutter/fonts/GeistMono-Light.otf
+          weight: 300
+        - asset: packages/shadcn_flutter/fonts/GeistMono-Medium.otf
+          weight: 500
+        - asset: packages/shadcn_flutter/fonts/GeistMono-Regular.otf
+          weight: 400
+        - asset: packages/shadcn_flutter/fonts/GeistMono-SemiBold.otf
+          weight: 600
+        - asset: packages/shadcn_flutter/fonts/GeistMono-Thin.otf
+          weight: 100
+        - asset: packages/shadcn_flutter/fonts/GeistMono-UltraBlack.otf
+          weight: 900
+        - asset: packages/shadcn_flutter/fonts/GeistMono-UltraLight.otf
+          weight: 200
+    - family: RadixIcons
+      fonts:
+        - asset: packages/shadcn_flutter/icons/RadixIcons.otf
+    - family: BootstrapIcons
+      fonts:
+        - asset: packages/shadcn_flutter/icons/BootstrapIcons.otf
 
 flutter_gen:
   output: lib/collections
