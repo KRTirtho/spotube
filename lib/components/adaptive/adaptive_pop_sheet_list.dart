@@ -34,7 +34,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
   final bool useRootNavigator;
 
   final List<Widget>? headings;
-  final String? tooltip;
+  final String tooltip;
   final ValueChanged<T>? onSelected;
 
   final Offset offset;
@@ -47,7 +47,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     this.useRootNavigator = true,
     this.headings,
     this.onSelected,
-    this.tooltip,
+    required this.tooltip,
     this.offset = Offset.zero,
   }) : assert(
           !(icon != null && child != null),
@@ -140,7 +140,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     if (mediaQuery.mdAndUp) {
       return Tooltip(
         tooltip: TooltipContainer(
-          child: Text(tooltip ?? ''),
+          child: Text(tooltip),
         ),
         child: IconButton.ghost(
           icon: icon ?? const Icon(SpotubeIcons.moreVertical),
@@ -164,7 +164,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
     if (child != null) {
       return Tooltip(
-        tooltip: TooltipContainer(child: Text(tooltip ?? '')),
+        tooltip: TooltipContainer(child: Text(tooltip)),
         child: Button(
           onPressed: () => showDropdownMenu(context, Offset.zero),
           style: const ButtonStyle.ghost(),
@@ -174,7 +174,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     }
 
     return Tooltip(
-      tooltip: TooltipContainer(child: Text(tooltip ?? '')),
+      tooltip: TooltipContainer(child: Text(tooltip)),
       child: IconButton.ghost(
         icon: icon ?? const Icon(SpotubeIcons.moreVertical),
         onPressed: () => showDropdownMenu(context, Offset.zero),

@@ -166,7 +166,7 @@ class PlayerQueue extends HookConsumerWidget {
                               icon: const Icon(SpotubeIcons.playlistRemove),
                               onPressed: () {
                                 onStop();
-                                Navigator.of(context).pop();
+                                closeDrawer(context);
                               },
                             ),
                           ),

@@ -204,6 +204,7 @@ class TrackOptions extends HookConsumerWidget {
     final isLocalTrack = track is LocalTrack;
 
     final adaptivePopSheetList = AdaptivePopSheetList<TrackOptionValue>(
+      tooltip: context.l10n.more_actions,
       onSelected: (value) async {
         switch (value) {
           case TrackOptionValue.album:

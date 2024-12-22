@@ -164,6 +164,7 @@ class PlayerActions extends HookConsumerWidget {
             auth.asData?.value != null)
           TrackHeartButton(track: playlist.activeTrack!),
         AdaptivePopSheetList<Duration>(
+          tooltip: context.l10n.sleep_timer,
           offset: Offset(0, -50 * (sleepTimerEntries.values.length + 2)),
           headings: [
             Text(context.l10n.sleep_timer),
@@ -190,11 +191,18 @@ class PlayerActions extends HookConsumerWidget {
               enabled: customHoursEnabled,
               onPressed: (context) async {
                 final currentTime = TimeOfDay.now();
-                final time = await showDialog<TimeOfDay>(
+                final time = await showDialog<TimeOfDay?>(
                   context: context,
                   builder: (context) => HookBuilder(builder: (context) {
                     final timeRef = useRef<TimeOfDay?>(null);
                     return AlertDialog(
+                      trailing: IconButton.ghost(
+                        size: ButtonSize.xSmall,
+                        icon: const Icon(SpotubeIcons.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
                       title: Text(
                         ShadcnLocalizations.of(context).placeholderTimePicker,
                       ),
