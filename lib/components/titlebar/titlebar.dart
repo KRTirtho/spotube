@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart' hide AppBar;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart'
-    show AppBar, WidgetExtension;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/titlebar/titlebar_buttons.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';

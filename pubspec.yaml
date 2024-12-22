@@ -78,7 +78,7 @@ dependencies:
   http: ^1.2.1
   image_picker: ^1.1.0
   intl: any
-  invidious: ^0.1.0
+  invidious: ^0.1.1
   jiosaavn: ^0.1.0
   json_annotation: ^4.8.1
   local_notifier: ^0.1.6

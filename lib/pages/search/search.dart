@@ -145,12 +145,21 @@ class SearchPage extends HookConsumerWidget {
                                     leading: const Icon(SpotubeIcons.search),
                                     textInputAction: TextInputAction.search,
                                     placeholder: Text(context.l10n.search),
-                                    trailing: IconButton.ghost(
-                                      size: ButtonSize.small,
-                                      icon: const Icon(SpotubeIcons.close),
-                                      onPressed: () {
-                                        controller.clear();
-                                      },
+                                    trailing: AnimatedCrossFade(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      crossFadeState: controller.text.isNotEmpty
+                                          ? CrossFadeState.showFirst
+                                          : CrossFadeState.showSecond,
+                                      firstChild: IconButton.ghost(
+                                        size: ButtonSize.small,
+                                        icon: const Icon(SpotubeIcons.close),
+                                        onPressed: () {
+                                          controller.clear();
+                                        },
+                                      ),
+                                      secondChild:
+                                          const SizedBox.square(dimension: 28),
                                     ),
                                     onAcceptSuggestion: (index) {
                                       controller.text =

@@ -237,7 +237,7 @@ class PlayerQueue extends HookConsumerWidget {
           right: 20,
           bottom: 20,
           child: IconButton.secondary(
-            icon: const Icon(SpotubeIcons.open),
+            icon: const Icon(SpotubeIcons.angleDown),
             onPressed: () {
               controller.scrollToIndex(
                 playlist.playlist.index,

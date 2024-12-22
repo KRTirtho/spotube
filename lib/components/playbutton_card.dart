@@ -4,6 +4,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/string.dart';
+import 'package:spotube/utils/platform.dart';
 
 class PlaybuttonCard extends HookWidget {
   final void Function()? onTap;
@@ -55,10 +56,15 @@ class PlaybuttonCard extends HookWidget {
                       AnimatedScale(
                         curve: Curves.easeOutBack,
                         duration: const Duration(milliseconds: 300),
-                        scale: states.contains(WidgetState.hovered) ? 1 : 0.7,
+                        scale: states.contains(WidgetState.hovered) || kIsMobile
+                            ? 1
+                            : 0.7,
                         child: AnimatedOpacity(
                           duration: const Duration(milliseconds: 300),
-                          opacity: states.contains(WidgetState.hovered) ? 1 : 0,
+                          opacity:
+                              states.contains(WidgetState.hovered) || kIsMobile
+                                  ? 1
+                                  : 0,
                           child: IconButton.secondary(
                             icon: const Icon(SpotubeIcons.queueAdd),
                             onPressed: onAddToQueuePressed,
@@ -70,10 +76,15 @@ class PlaybuttonCard extends HookWidget {
                       AnimatedScale(
                         curve: Curves.easeOutBack,
                         duration: const Duration(milliseconds: 150),
-                        scale: states.contains(WidgetState.hovered) ? 1 : 0.7,
+                        scale: states.contains(WidgetState.hovered) || kIsMobile
+                            ? 1
+                            : 0.7,
                         child: AnimatedOpacity(
                           duration: const Duration(milliseconds: 150),
-                          opacity: states.contains(WidgetState.hovered) ? 1 : 0,
+                          opacity:
+                              states.contains(WidgetState.hovered) || kIsMobile
+                                  ? 1
+                                  : 0,
                           child: IconButton.secondary(
                             icon: const Icon(SpotubeIcons.play),
                             onPressed: onPlaybuttonPressed,

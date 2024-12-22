@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show FilledButton, ButtonStyle, ListTile;
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide ButtonStyle;
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
@@ -45,9 +47,13 @@ class SettingsAboutSection extends HookConsumerWidget {
             trailing: (context, update) => FilledButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStatePropertyAll(Colors.red[100]),
-                foregroundColor:
-                    const WidgetStatePropertyAll(Colors.pinkAccent),
+                foregroundColor: const WidgetStatePropertyAll(Colors.pink),
                 padding: const WidgetStatePropertyAll(EdgeInsets.all(15)),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: context.theme.borderRadiusLg,
+                  ),
+                ),
               ),
               onPressed: () {
                 launchUrlString(
@@ -66,11 +72,14 @@ class SettingsAboutSection extends HookConsumerWidget {
             ),
           ),
         if (Env.enableUpdateChecker)
-          SwitchListTile(
-            secondary: const Icon(SpotubeIcons.update),
+          ListTile(
+            leading: const Icon(SpotubeIcons.update),
             title: Text(context.l10n.check_for_updates),
-            value: preferences.checkUpdate,
-            onChanged: (checked) => preferencesNotifier.setCheckUpdate(checked),
+            trailing: Switch(
+              value: preferences.checkUpdate,
+              onChanged: (checked) =>
+                  preferencesNotifier.setCheckUpdate(checked),
+            ),
           ),
         ListTile(
           leading: const Icon(SpotubeIcons.info),

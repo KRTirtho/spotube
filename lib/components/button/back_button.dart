@@ -7,6 +7,7 @@ class BackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton.ghost(
+      size: const ButtonSize(.9),
       icon: const Icon(SpotubeIcons.angleLeft),
       onPressed: () => Navigator.of(context).pop(),
     );
