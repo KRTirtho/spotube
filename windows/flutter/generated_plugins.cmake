@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   app_links
-  audioplayers_windows
   bonsoir_windows
   desktop_webview_window
   file_selector_windows
