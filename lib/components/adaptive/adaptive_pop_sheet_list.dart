@@ -139,7 +139,9 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
     if (mediaQuery.mdAndUp) {
       return Tooltip(
-        tooltip: Text(tooltip ?? ''),
+        tooltip: TooltipContainer(
+          child: Text(tooltip ?? ''),
+        ),
         child: IconButton.ghost(
           icon: icon ?? const Icon(SpotubeIcons.moreVertical),
           onPressed: () {
@@ -162,7 +164,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
     if (child != null) {
       return Tooltip(
-        tooltip: Text(tooltip ?? ''),
+        tooltip: TooltipContainer(child: Text(tooltip ?? '')),
         child: Button(
           onPressed: () => showDropdownMenu(context, Offset.zero),
           style: const ButtonStyle.ghost(),
@@ -172,7 +174,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     }
 
     return Tooltip(
-      tooltip: Text(tooltip ?? ''),
+      tooltip: TooltipContainer(child: Text(tooltip ?? '')),
       child: IconButton.ghost(
         icon: icon ?? const Icon(SpotubeIcons.moreVertical),
         onPressed: () => showDropdownMenu(context, Offset.zero),

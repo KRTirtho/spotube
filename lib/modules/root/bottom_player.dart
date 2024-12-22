@@ -74,7 +74,8 @@ class BottomPlayer extends HookConsumerWidget {
               PlayerActions(
                 extraActions: [
                   Tooltip(
-                    tooltip: Text(context.l10n.mini_player),
+                    tooltip:
+                        TooltipContainer(child: Text(context.l10n.mini_player)),
                     child: IconButton(
                       variance: ButtonVariance.ghost,
                       icon: const Icon(SpotubeIcons.miniPlayer),

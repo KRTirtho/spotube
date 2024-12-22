@@ -5,16 +5,14 @@ import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Image;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 
 import 'package:spotify/spotify.dart';
-import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
-import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
@@ -127,35 +125,17 @@ class UserPlaylists extends HookConsumerWidget {
               const SliverGap(10),
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                sliver: SliverGrid.builder(
-                  itemCount: playlists.isEmpty ? 6 : playlists.length + 1,
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 150,
-                    mainAxisExtent: 225,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  itemBuilder: (context, index) {
-                    if (playlists.isNotEmpty && index == playlists.length) {
-                      if (playlistsQuery.asData?.value.hasMore != true) {
-                        return const SizedBox.shrink();
-                      }
-
-                      return Waypoint(
-                        controller: controller,
-                        isGrid: true,
-                        onTouchEdge: playlistsQueryNotifier.fetchMore,
-                        child: Skeletonizer(
-                          enabled: true,
-                          child: PlaylistCard(FakeData.playlistSimple),
-                        ),
-                      );
-                    }
-
-                    return PlaylistCard(
-                      playlists.elementAtOrNull(index) ??
-                          FakeData.playlistSimple,
-                    );
+                sliver: PlaybuttonView(
+                  controller: controller,
+                  hasMore: playlistsQuery.asData?.value.hasMore == true,
+                  isLoading: playlistsQuery.isLoading,
+                  onRequestMore: playlistsQueryNotifier.fetchMore,
+                  itemCount: playlists.length,
+                  gridItemBuilder: (context, index) {
+                    return PlaylistCard(playlists[index]);
+                  },
+                  listItemBuilder: (context, index) {
+                    return PlaylistCard.tile(playlists[index]);
                   },
                 ),
               ),

@@ -4,14 +4,12 @@ import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spotube/collections/fake.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
-import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
@@ -78,39 +76,17 @@ class UserAlbums extends HookConsumerWidget {
                 const SliverGap(10),
                 SliverPadding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
-                  sliver: SliverGrid.builder(
-                    itemCount: albums.isEmpty ? 6 : albums.length + 1,
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 150,
-                      mainAxisExtent: 225,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
+                  sliver: PlaybuttonView(
+                    controller: controller,
+                    itemCount: albums.length,
+                    hasMore: albumsQuery.asData?.value.hasMore == true,
+                    isLoading: albumsQuery.isLoading,
+                    onRequestMore: albumsQueryNotifier.fetchMore,
+                    gridItemBuilder: (context, index) => AlbumCard(
+                      albums[index],
                     ),
-                    itemBuilder: (context, index) {
-                      if (albums.isNotEmpty && index == albums.length) {
-                        if (albumsQuery.asData?.value.hasMore != true) {
-                          return const SizedBox.shrink();
-                        }
-
-                        return Waypoint(
-                          controller: controller,
-                          isGrid: true,
-                          onTouchEdge: albumsQueryNotifier.fetchMore,
-                          child: Skeletonizer(
-                            enabled: true,
-                            child: AlbumCard(FakeData.albumSimple),
-                          ),
-                        );
-                      }
-
-                      return Skeletonizer(
-                        enabled: albumsQuery.isLoading,
-                        child: AlbumCard(
-                          albums.elementAtOrNull(index) ?? FakeData.albumSimple,
-                        ),
-                      );
-                    },
+                    listItemBuilder: (context, index) =>
+                        AlbumCard.tile(albums[index]),
                   ),
                 ),
               ],

@@ -401,5 +401,6 @@
   "export_cache_files": "Export Cached Files",
   "found_n_files": "Found {count} files",
   "export_cache_confirmation": "Do you want to export these files to",
-  "exported_n_out_of_m_files": "Exported {filesExported} out of {files} files"
+  "exported_n_out_of_m_files": "Exported {filesExported} out of {files} files",
+  "undo": "Undo"
 }

@@ -1,17 +1,15 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/string.dart';
 import 'package:spotube/utils/platform.dart';
 
-class PlaybuttonCard extends HookWidget {
+class PlaybuttonCard extends StatelessWidget {
   final void Function()? onTap;
   final void Function()? onPlaybuttonPressed;
   final void Function()? onAddToQueuePressed;
   final String? description;
-  final EdgeInsetsGeometry? margin;
+
   final String imageUrl;
   final bool isPlaying;
   final bool isLoading;
@@ -23,7 +21,6 @@ class PlaybuttonCard extends HookWidget {
     required this.isPlaying,
     required this.isLoading,
     required this.title,
-    this.margin,
     this.description,
     this.onPlaybuttonPressed,
     this.onAddToQueuePressed,
@@ -56,15 +53,18 @@ class PlaybuttonCard extends HookWidget {
                       AnimatedScale(
                         curve: Curves.easeOutBack,
                         duration: const Duration(milliseconds: 300),
-                        scale: states.contains(WidgetState.hovered) || kIsMobile
+                        scale: (states.contains(WidgetState.hovered) ||
+                                    kIsMobile) &&
+                                !isLoading
                             ? 1
                             : 0.7,
                         child: AnimatedOpacity(
                           duration: const Duration(milliseconds: 300),
-                          opacity:
-                              states.contains(WidgetState.hovered) || kIsMobile
-                                  ? 1
-                                  : 0,
+                          opacity: (states.contains(WidgetState.hovered) ||
+                                      kIsMobile) &&
+                                  !isLoading
+                              ? 1
+                              : 0,
                           child: IconButton.secondary(
                             icon: const Icon(SpotubeIcons.queueAdd),
                             onPressed: onAddToQueuePressed,
@@ -76,17 +76,29 @@ class PlaybuttonCard extends HookWidget {
                       AnimatedScale(
                         curve: Curves.easeOutBack,
                         duration: const Duration(milliseconds: 150),
-                        scale: states.contains(WidgetState.hovered) || kIsMobile
+                        scale: states.contains(WidgetState.hovered) ||
+                                kIsMobile ||
+                                isPlaying ||
+                                isLoading
                             ? 1
                             : 0.7,
                         child: AnimatedOpacity(
                           duration: const Duration(milliseconds: 150),
-                          opacity:
-                              states.contains(WidgetState.hovered) || kIsMobile
-                                  ? 1
-                                  : 0,
+                          opacity: states.contains(WidgetState.hovered) ||
+                                  kIsMobile ||
+                                  isPlaying ||
+                                  isLoading
+                              ? 1
+                              : 0,
                           child: IconButton.secondary(
-                            icon: const Icon(SpotubeIcons.play),
+                            icon: switch ((isLoading, isPlaying)) {
+                              (true, _) => const CircularProgressIndicator(
+                                  size: 15,
+                                ),
+                              (false, false) => const Icon(SpotubeIcons.play),
+                              (false, true) => const Icon(SpotubeIcons.pause)
+                            },
+                            enabled: !isLoading,
                             onPressed: onPlaybuttonPressed,
                             size: ButtonSize.small,
                           ),
@@ -96,11 +108,23 @@ class PlaybuttonCard extends HookWidget {
                   ),
                 );
               },
-            )
+            ),
+            if (isOwner)
+              const Positioned(
+                right: 5,
+                top: 5,
+                child: SecondaryBadge(
+                  style: ButtonStyle.secondaryIcon(
+                    shape: ButtonShape.circle,
+                    size: ButtonSize.small,
+                  ),
+                  child: Icon(SpotubeIcons.user),
+                ),
+              ),
           ],
         ),
         title: Tooltip(
-          tooltip: Text(title),
+          tooltip: TooltipContainer(child: Text(title)),
           child: Text(
             title,
             maxLines: 1,

@@ -160,7 +160,8 @@ class PlayerQueue extends HookConsumerWidget {
                         if (mediaQuery.mdAndUp || !isSearching.value) ...[
                           const SizedBox(width: 10),
                           Tooltip(
-                            tooltip: Text(context.l10n.clear_all),
+                            tooltip: TooltipContainer(
+                                child: Text(context.l10n.clear_all)),
                             child: IconButton.outline(
                               icon: const Icon(SpotubeIcons.playlistRemove),
                               onPressed: () {

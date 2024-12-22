@@ -84,7 +84,8 @@ class PlayerControls extends HookConsumerWidget {
                     return Column(
                       children: [
                         Tooltip(
-                          tooltip: Text(context.l10n.slide_to_seek),
+                          tooltip: TooltipContainer(
+                              child: Text(context.l10n.slide_to_seek)),
                           child: Slider(
                             value:
                                 SliderValue.single(progress.value.toDouble()),
@@ -132,10 +133,12 @@ class PlayerControls extends HookConsumerWidget {
                     final shuffled = ref
                         .watch(audioPlayerProvider.select((s) => s.shuffled));
                     return Tooltip(
-                      tooltip: Text(
-                        shuffled
-                            ? context.l10n.unshuffle_playlist
-                            : context.l10n.shuffle_playlist,
+                      tooltip: TooltipContainer(
+                        child: Text(
+                          shuffled
+                              ? context.l10n.unshuffle_playlist
+                              : context.l10n.shuffle_playlist,
+                        ),
                       ),
                       child: IconButton(
                         icon: const Icon(SpotubeIcons.shuffle),
@@ -155,7 +158,8 @@ class PlayerControls extends HookConsumerWidget {
                     );
                   }),
                   Tooltip(
-                    tooltip: Text(context.l10n.previous_track),
+                    tooltip: TooltipContainer(
+                        child: Text(context.l10n.previous_track)),
                     child: IconButton.ghost(
                       enabled: !isFetchingActiveTrack,
                       icon: const Icon(SpotubeIcons.skipBack),
@@ -163,10 +167,12 @@ class PlayerControls extends HookConsumerWidget {
                     ),
                   ),
                   Tooltip(
-                    tooltip: Text(
-                      playing
-                          ? context.l10n.pause_playback
-                          : context.l10n.resume_playback,
+                    tooltip: TooltipContainer(
+                      child: Text(
+                        playing
+                            ? context.l10n.pause_playback
+                            : context.l10n.resume_playback,
+                      ),
                     ),
                     child: IconButton.primary(
                       shape: ButtonShape.circle,
@@ -188,7 +194,8 @@ class PlayerControls extends HookConsumerWidget {
                     ),
                   ),
                   Tooltip(
-                    tooltip: Text(context.l10n.next_track),
+                    tooltip:
+                        TooltipContainer(child: Text(context.l10n.next_track)),
                     child: IconButton.ghost(
                       icon: const Icon(SpotubeIcons.skipForward),
                       onPressed:
@@ -200,12 +207,14 @@ class PlayerControls extends HookConsumerWidget {
                         .watch(audioPlayerProvider.select((s) => s.loopMode));
 
                     return Tooltip(
-                      tooltip: Text(
-                        loopMode == PlaylistMode.single
-                            ? context.l10n.loop_track
-                            : loopMode == PlaylistMode.loop
-                                ? context.l10n.repeat_playlist
-                                : "",
+                      tooltip: TooltipContainer(
+                        child: Text(
+                          loopMode == PlaylistMode.single
+                              ? context.l10n.loop_track
+                              : loopMode == PlaylistMode.loop
+                                  ? context.l10n.repeat_playlist
+                                  : "",
+                        ),
                       ),
                       child: IconButton(
                         icon: Icon(

@@ -130,4 +130,6 @@ abstract class SpotubeIcons {
   static const open = FeatherIcons.externalLink;
   static const radioChecked = Icons.radio_button_on_rounded;
   static const radioUnchecked = Icons.radio_button_off_rounded;
+  static const grid = FeatherIcons.grid;
+  static const list = FeatherIcons.list;
 }

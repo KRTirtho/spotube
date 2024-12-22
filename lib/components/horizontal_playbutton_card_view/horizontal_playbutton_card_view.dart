@@ -9,7 +9,6 @@ import 'package:spotube/collections/fake.dart';
 import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
-import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class HorizontalPlaybuttonCardView<T> extends HookWidget {
@@ -38,12 +37,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final scrollController = useScrollController();
-    final height = useBreakpointValue<double>(
-      xs: 226,
-      sm: 226,
-      md: 236,
-      others: 266,
-    );
+    final isArtist = items.every((s) => s is Artist);
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -64,7 +58,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
             ],
           ),
           SizedBox(
-            height: height,
+            height: isArtist ? 250 : 225,
             child: NotificationListener(
               // disable multiple scrollbar to use this
               onNotification: (notification) => true,
@@ -88,7 +82,9 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                         onFetchData: onFetchMore,
                         loadingBuilder: (context) => Skeletonizer(
                               enabled: true,
-                              child: AlbumCard(FakeData.albumSimple),
+                              child: isArtist
+                                  ? ArtistCard(FakeData.artist)
+                                  : AlbumCard(FakeData.albumSimple),
                             ),
                         isLoading: isLoadingNextPage,
                         hasReachedMax: !hasNextPage,
@@ -100,11 +96,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                             PlaylistSimple() =>
                               PlaylistCard(item as PlaylistSimple),
                             AlbumSimple() => AlbumCard(item as AlbumSimple),
-                            Artist() => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
-                                child: ArtistCard(item as Artist),
-                              ),
+                            Artist() => ArtistCard(item as Artist),
                             _ => const SizedBox.shrink(),
                           };
                         }),
