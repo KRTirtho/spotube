@@ -9,6 +9,17 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsBackgroundsGen {
+  const $AssetsBackgroundsGen();
+
+  /// File path: assets/backgrounds/xmas-effect.png
+  AssetGenImage get xmasEffect =>
+      const AssetGenImage('assets/backgrounds/xmas-effect.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [xmasEffect];
+}
+
 class $AssetsLogosGen {
   const $AssetsLogosGen();
 
@@ -46,6 +57,7 @@ class Assets {
   static const String license = 'LICENSE';
   static const AssetGenImage albumPlaceholder =
       AssetGenImage('assets/album-placeholder.png');
+  static const $AssetsBackgroundsGen backgrounds = $AssetsBackgroundsGen();
   static const AssetGenImage bengaliPatternsBg =
       AssetGenImage('assets/bengali-patterns-bg.jpg');
   static const AssetGenImage branding = AssetGenImage('assets/branding.png');
@@ -61,6 +73,8 @@ class Assets {
       AssetGenImage('assets/spotube-hero-banner.png');
   static const AssetGenImage spotubeLogoForeground =
       AssetGenImage('assets/spotube-logo-foreground.jpg');
+  static const AssetGenImage spotubeLogoMacos =
+      AssetGenImage('assets/spotube-logo-macos.png');
   static const AssetGenImage spotubeLogoBmp =
       AssetGenImage('assets/spotube-logo.bmp');
   static const String spotubeLogoIco = 'assets/spotube-logo.ico';
@@ -104,6 +118,7 @@ class Assets {
         placeholder,
         spotubeHeroBanner,
         spotubeLogoForeground,
+        spotubeLogoMacos,
         spotubeLogoBmp,
         spotubeLogoIco,
         spotubeLogoPng,

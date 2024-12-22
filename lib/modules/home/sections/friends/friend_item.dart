@@ -42,6 +42,9 @@ class FriendItem extends HookConsumerWidget {
               ),
               RichText(
                 text: TextSpan(
+                  style: context.theme.typography.normal.copyWith(
+                    color: context.theme.colorScheme.foreground,
+                  ),
                   children: [
                     TextSpan(
                       text: friend.track.name,

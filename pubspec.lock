@@ -334,14 +334,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.9.2"
-  buttons_tabbar:
-    dependency: "direct main"
-    description:
-      name: buttons_tabbar
-      sha256: "6e541377ab96d4223d8f072bc4f35c9d32dafe042005cad93530e0cd9d02801f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.14"
   cached_network_image:
     dependency: "direct main"
     description:
@@ -486,14 +478,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
-  curved_navigation_bar:
-    dependency: "direct main"
-    description:
-      name: curved_navigation_bar
-      sha256: bb4ab128fcb6f4a9f0f1f72d227db531818b20218984789777f049fcbf919279
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.6"
   dart_des:
     dependency: transitive
     description:
@@ -1025,7 +1009,7 @@ packages:
     source: hosted
     version: "1.1.1"
   flutter_svg:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_svg
       sha256: "6ff9fa12892ae074092de2fa6a9938fb21dbabfdaa2ff57dc697ff912fc8d4b2"
@@ -1892,14 +1876,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
-  popover:
-    dependency: "direct main"
-    description:
-      name: popover
-      sha256: "0606f3e10f92fc0459f5c52fd917738c29e7552323b28694d50c2d3312d0e1a2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1"
   posix:
     dependency: transitive
     description:
@@ -2149,14 +2125,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.2"
-  sidebarx:
-    dependency: "direct main"
-    description:
-      name: sidebarx
-      sha256: abe39d6db237fb8e25c600e8039ffab80fa7fe71acab03e9c378c31f912d2766
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.17.1"
   simple_icons:
     dependency: "direct main"
     description:

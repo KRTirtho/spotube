@@ -15,7 +15,6 @@ import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/components/waypoint.dart';
-import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
@@ -126,12 +125,13 @@ class UserPlaylists extends HookConsumerWidget {
                 ),
               ),
               const SliverGap(10),
-              SliverLayoutBuilder(builder: (context, constrains) {
-                return SliverGrid.builder(
+              SliverPadding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                sliver: SliverGrid.builder(
                   itemCount: playlists.isEmpty ? 6 : playlists.length + 1,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 200,
-                    mainAxisExtent: constrains.smAndDown ? 225 : 250,
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 150,
+                    mainAxisExtent: 225,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
                   ),
@@ -157,8 +157,8 @@ class UserPlaylists extends HookConsumerWidget {
                           FakeData.playlistSimple,
                     );
                   },
-                );
-              })
+                ),
+              ),
             ],
           ),
         ),

@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive/hive.dart';
+
 import 'package:home_widget/home_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -43,7 +43,6 @@ import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/utils/migrations/sandbox.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:system_theme/system_theme.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
@@ -99,11 +98,6 @@ Future<void> main(List<String> rawArgs) async {
 
     await KVStoreService.initialize();
     await EncryptedKvStoreService.initialize();
-
-    final hiveCacheDir =
-        kIsWeb ? null : (await getApplicationSupportDirectory()).path;
-
-    Hive.init(hiveCacheDir);
 
     final database = AppDatabase();
 
@@ -222,6 +216,7 @@ class Spotube extends HookConsumerWidget {
         colorScheme: ColorSchemes.lightBlue(),
         surfaceOpacity: .8,
         surfaceBlur: 10,
+        typography: const Typography.geist(),
       ),
       darkTheme: ThemeData(
         radius: .5,
@@ -229,6 +224,7 @@ class Spotube extends HookConsumerWidget {
         colorScheme: ColorSchemes.darkNeutral(),
         surfaceOpacity: .8,
         surfaceBlur: 10,
+        typography: const Typography.geist(),
       ),
       themeMode: themeMode,
       shortcuts: {

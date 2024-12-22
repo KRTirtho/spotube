@@ -21,10 +21,8 @@ dependencies:
   audio_session: ^0.1.19
   auto_size_text: ^3.0.0
   bonsoir: ^5.1.10
-  buttons_tabbar: ^1.3.8
   cached_network_image: ^3.3.1
   collection: ^1.18.0
-  curved_navigation_bar: ^1.0.3
   desktop_webview_window:
     git:
       path: packages/desktop_webview_window
@@ -62,7 +60,6 @@ dependencies:
   flutter_riverpod: ^2.5.1
   flutter_secure_storage: ^9.0.0
   flutter_sharing_intent: ^1.1.0
-  flutter_svg: ^1.1.6
   form_validator: ^2.1.1
   freezed_annotation: ^2.4.1
   fuzzywuzzy: ^1.1.6
@@ -95,7 +92,6 @@ dependencies:
   path_provider: ^2.1.3
   permission_handler: ^11.3.1
   piped_client: ^0.1.1
-  popover: ^0.3.0
   riverpod: ^2.5.1
   scrobblenaut:
     git:
@@ -107,7 +103,6 @@ dependencies:
   shelf: ^1.4.1
   shelf_router: ^1.1.4
   shelf_web_socket: ^2.0.0
-  sidebarx: ^0.17.1
   simple_icons: ^10.1.3
   skeletonizer: ^1.1.1
   sliver_tools: ^0.2.12

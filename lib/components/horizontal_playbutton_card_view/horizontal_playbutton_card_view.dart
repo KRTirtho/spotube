@@ -55,7 +55,9 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               DefaultTextStyle(
-                style: context.theme.typography.h4,
+                style: context.theme.typography.h4.copyWith(
+                  color: context.theme.colorScheme.foreground,
+                ),
                 child: title,
               ),
               if (titleTrailing != null) titleTrailing!,
