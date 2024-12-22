@@ -5,7 +5,7 @@
 	export let data: PageData;
 	const {
 		Content,
-		meta: { date, title, readingTime, cover_img }
+		meta: { date, title, readingTime, cover_img, author }
 	} = data as Required<PageData>;
 </script>
 
@@ -20,7 +20,8 @@
 			: null}
 		style={cover_img ? `background-image: url(/posts/${cover_img});` : ''}
 	>
-		<h1 class={`h1 ${cover_img ? 'text-white' : ''}`}>{title}</h1>
+		<h1 class={`h1 text-stroke ${cover_img ? 'text-white' : ''}`}>{title}</h1>
+		<h4 class={`h4 text-stroke text-gray-400`}>By {author}</h4>
 		<br />
 		<p class={cover_img ? 'text-gray-400' : ''}>{new Date(date).toDateString()}</p>
 		<p class={`mb-16 ${cover_img ? 'text-gray-400' : ''}`}>{readingTime?.text ?? ''}</p>
