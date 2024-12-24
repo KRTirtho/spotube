@@ -159,12 +159,13 @@ packages:
     source: hosted
     version: "5.1.10"
   bonsoir_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: bonsoir_android
-      sha256: a72d83a78780c1f238e3178d0585e5604fbd9f2503206293737cdfab899ce8d0
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/bonsoir_android"
+      ref: HEAD
+      resolved-ref: aa5604628ba41e3a7153769f4465a3d375488f2e
+      url: "https://github.com/KRTirtho/Bonsoir.git"
+    source: git
     version: "5.1.5"
   bonsoir_darwin:
     dependency: transitive
@@ -514,10 +515,11 @@ packages:
   disable_battery_optimization:
     dependency: "direct main"
     description:
-      name: disable_battery_optimization
-      sha256: "6b2ba802f984af141faf1b6b5fb956d5ef01f9cd555597c35b9cc335a03185ba"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: aa77a61946849fff495091fc13dcc390948cc60b
+      url: "https://github.com/KRTirtho/Disable-Battery-Optimizations.git"
+    source: git
     version: "1.1.1"
   draggable_scrollbar:
     dependency: "direct main"
@@ -1952,10 +1954,11 @@ packages:
   shadcn_flutter:
     dependency: "direct main"
     description:
-      name: shadcn_flutter
-      sha256: "2b58f6ee6d15defd8d07aa1e82077c85455ddc68047368994c562006c2338ec2"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "5359958464a57235f0f34c43a4623356a32459a0"
+      resolved-ref: "5359958464a57235f0f34c43a4623356a32459a0"
+      url: "https://github.com/KRTirtho/shadcn_flutter.git"
+    source: git
     version: "0.0.24"
   shared_preferences:
     dependency: "direct main"

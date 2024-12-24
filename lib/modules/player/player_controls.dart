@@ -7,6 +7,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart' hide ThemeData;
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/modules/player/use_progress.dart';
@@ -65,6 +66,8 @@ class PlayerControls extends HookConsumerWidget {
               if (!compact)
                 HookBuilder(
                   builder: (context) {
+                    final mediaQuery = MediaQuery.sizeOf(context);
+
                     final (
                       :bufferProgress,
                       :duration,
@@ -85,23 +88,27 @@ class PlayerControls extends HookConsumerWidget {
                       children: [
                         Tooltip(
                           tooltip: TooltipContainer(
-                              child: Text(context.l10n.slide_to_seek)),
-                          child: Slider(
-                            value:
-                                SliderValue.single(progress.value.toDouble()),
-                            onChanged: isFetchingActiveTrack
-                                ? null
-                                : (v) {
-                                    progress.value = v.value;
-                                  },
-                            onChangeEnd: (value) async {
-                              await audioPlayer.seek(
-                                Duration(
-                                  seconds: (value.value * duration.inSeconds)
-                                      .toInt(),
-                                ),
-                              );
-                            },
+                            child: Text(context.l10n.slide_to_seek),
+                          ),
+                          child: SizedBox(
+                            width: mediaQuery.xlAndUp ? 600 : 500,
+                            child: Slider(
+                              value:
+                                  SliderValue.single(progress.value.toDouble()),
+                              onChanged: isFetchingActiveTrack
+                                  ? null
+                                  : (v) {
+                                      progress.value = v.value;
+                                    },
+                              onChangeEnd: (value) async {
+                                await audioPlayer.seek(
+                                  Duration(
+                                    seconds: (value.value * duration.inSeconds)
+                                        .toInt(),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                         Padding(

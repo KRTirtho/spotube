@@ -30,7 +30,9 @@ dependencies:
       url: https://github.com/KRTirtho/flutter-plugins.git
   device_info_plus: ^11.1.1
   dio: ^5.4.3+1
-  disable_battery_optimization: ^1.1.1
+  disable_battery_optimization:
+    git:
+      url: https://github.com/KRTirtho/Disable-Battery-Optimizations.git
   draggable_scrollbar:
     git:
       ref: cfd570035bf393de541d32e9b28808b5d7e602df
@@ -98,7 +100,10 @@ dependencies:
       ref: dart-3-support
       url: https://github.com/KRTirtho/scrobblenaut.git
   scroll_to_index: ^3.0.1
-  shadcn_flutter: ^0.0.24
+  shadcn_flutter:
+    git:
+      url: https://github.com/KRTirtho/shadcn_flutter.git
+      ref: 5359958464a57235f0f34c43a4623356a32459a0
   shared_preferences: ^2.2.3
   shelf: ^1.4.1
   shelf_router: ^1.1.4
@@ -149,6 +154,10 @@ dev_dependencies:
   drift_dev: ^2.21.0
 
 dependency_overrides:
+  bonsoir_android:
+    git:
+      url: https://github.com/KRTirtho/Bonsoir.git
+      path: packages/bonsoir_android
   web: ^1.1.0
   meta: 1.16.0
 
