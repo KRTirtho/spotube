@@ -33,15 +33,18 @@ class PlaybuttonTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cleanDescription = description?.unescapeHtml().cleanHtml() ?? "";
+    final scale = context.theme.scaling;
 
     return Button.ghost(
-      leading: ClipRRect(
-        borderRadius: context.theme.borderRadiusMd,
-        child: UniversalImage(
-          path: imageUrl,
-          width: 40,
-          height: 40,
-          fit: BoxFit.cover,
+      leading: Container(
+        width: 50 * scale,
+        height: 50 * scale,
+        decoration: BoxDecoration(
+          borderRadius: context.theme.borderRadiusMd,
+          image: DecorationImage(
+            image: UniversalImage.imageProvider(imageUrl),
+            fit: BoxFit.cover,
+          ),
         ),
       ),
       trailing: Row(

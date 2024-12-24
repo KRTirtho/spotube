@@ -161,18 +161,19 @@ class RootApp extends HookConsumerWidget {
     useEndlessPlayback(ref);
 
     final backgroundColor = Theme.of(context).colorScheme.background;
+    final brightness = Theme.of(context).brightness;
 
     useEffect(() {
       SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
           statusBarColor: backgroundColor, // status bar color
-          statusBarIconBrightness: backgroundColor.computeLuminance() > 0.179
-              ? Brightness.dark
-              : Brightness.light,
+          statusBarIconBrightness: brightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark,
         ),
       );
       return null;
-    }, [backgroundColor]);
+    }, [backgroundColor, brightness]);
 
     final navTileNames = useMemoized(() {
       return getSidebarTileList(context.l10n).map((s) => s.name).toList();

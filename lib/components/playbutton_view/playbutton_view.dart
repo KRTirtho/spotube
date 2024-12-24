@@ -1,5 +1,6 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playbutton_view/playbutton_card.dart';
@@ -98,9 +99,9 @@ class PlaybuttonView extends StatelessWidget {
             switch ((isGrid.value, isLoading)) {
               (true, _) => SliverGrid.builder(
                   itemCount: isLoading ? 6 : itemCount + 1,
-                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 150,
-                    mainAxisExtent: 225,
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 150 * context.theme.scaling,
+                    mainAxisExtent: 225 * context.theme.scaling,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
                   ),

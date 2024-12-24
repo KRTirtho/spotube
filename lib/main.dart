@@ -210,13 +210,13 @@ class Spotube extends HookConsumerWidget {
 
         return child;
       },
+      scaling: const AdaptiveScaling(1),
       theme: ThemeData(
         radius: .5,
         iconTheme: const IconThemeProperties(),
         colorScheme: ColorSchemes.lightBlue(),
         surfaceOpacity: .8,
         surfaceBlur: 10,
-        typography: const Typography.geist(),
       ),
       darkTheme: ThemeData(
         radius: .5,
@@ -224,7 +224,6 @@ class Spotube extends HookConsumerWidget {
         colorScheme: ColorSchemes.darkNeutral(),
         surfaceOpacity: .8,
         surfaceBlur: 10,
-        typography: const Typography.geist(),
       ),
       themeMode: themeMode,
       shortcuts: {

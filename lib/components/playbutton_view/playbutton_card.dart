@@ -1,4 +1,5 @@
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/string.dart';
@@ -32,16 +33,23 @@ class PlaybuttonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unescapeHtml = description?.unescapeHtml().cleanHtml() ?? "";
+    final scale = context.theme.scaling;
 
-    return Container(
-      width: 150,
+    return SizedBox(
+      width: 150 * scale,
       child: CardImage(
         image: Stack(
           children: [
-            UniversalImage(
-              path: imageUrl,
-              height: 150,
-              fit: BoxFit.cover,
+            Container(
+              width: 150 * scale,
+              height: 150 * scale,
+              decoration: BoxDecoration(
+                borderRadius: context.theme.borderRadiusMd,
+                image: DecorationImage(
+                  image: UniversalImage.imageProvider(imageUrl),
+                  fit: BoxFit.cover,
+                ),
+              ),
             ),
             StatedWidget.builder(
               builder: (context, states) {
