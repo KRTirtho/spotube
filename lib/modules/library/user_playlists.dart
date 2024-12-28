@@ -78,9 +78,9 @@ class UserPlaylists extends HookConsumerWidget {
     }
 
     return RefreshTrigger(
-      onRefresh: () async {
-        ref.invalidate(favoritePlaylistsProvider);
-      },
+      // onRefresh: () async {
+      //   ref.invalidate(favoritePlaylistsProvider);
+      // },
       child: SafeArea(
         child: InterScrollbar(
           controller: controller,

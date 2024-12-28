@@ -29,13 +29,15 @@ class SearchPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final searchTerm = ref.watch(searchTermStateProvider);
+    final mediaQuery = MediaQuery.sizeOf(context);
+
+    final scrollController = useScrollController();
     final controller = useSearchController();
     final focusNode = useFocusNode();
 
     final auth = ref.watch(authenticationProvider);
-    final mediaQuery = MediaQuery.of(context);
 
+    final searchTerm = ref.watch(searchTermStateProvider);
     final searchTrack = ref.watch(searchProvider(SearchType.track));
     final searchAlbum = ref.watch(searchProvider(SearchType.album));
     final searchPlaylist = ref.watch(searchProvider(SearchType.playlist));
@@ -50,35 +52,6 @@ class SearchPage extends HookConsumerWidget {
 
       return null;
     }, []);
-
-    final resultWidget = HookBuilder(
-      builder: (context) {
-        final controller = useScrollController();
-
-        return InterScrollbar(
-          controller: controller,
-          child: SingleChildScrollView(
-            controller: controller,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SearchTracksSection(),
-                    SearchPlaylistsSection(),
-                    Gap(20),
-                    SearchArtistsSection(),
-                    Gap(20),
-                    SearchAlbumsSection(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-    );
 
     void onSubmitted(String value) {
       ref.read(searchTermStateProvider.notifier).state = value;
@@ -182,59 +155,80 @@ class SearchPage extends HookConsumerWidget {
                   Expanded(
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
-                      child: searchTerm.isEmpty
-                          ? Column(
-                              children: [
-                                SizedBox(
-                                  height: mediaQuery.size.height * 0.2,
-                                ),
-                                Icon(
-                                  SpotubeIcons.web,
-                                  size: 120,
+                      child: switch ((searchTerm.isEmpty, isFetching)) {
+                        (true, false) => Column(
+                            children: [
+                              SizedBox(
+                                height: mediaQuery.height * 0.2,
+                              ),
+                              Icon(
+                                SpotubeIcons.web,
+                                size: 120,
+                                color: theme.colorScheme.foreground
+                                    .withOpacity(0.7),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                context.l10n.search_to_get_results,
+                                style: theme.typography.h3.copyWith(
+                                  fontWeight: FontWeight.w900,
                                   color: theme.colorScheme.foreground
-                                      .withOpacity(0.7),
+                                      .withOpacity(0.5),
                                 ),
-                                const SizedBox(height: 20),
+                              ),
+                            ],
+                          ),
+                        (false, true) => Container(
+                            constraints: BoxConstraints(
+                              maxWidth: mediaQuery.lgAndUp
+                                  ? mediaQuery.width * 0.5
+                                  : mediaQuery.width,
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
                                 Text(
-                                  context.l10n.search_to_get_results,
-                                  style: theme.typography.h3.copyWith(
+                                  context.l10n.crunching_results,
+                                  style: TextStyle(
+                                    fontSize: 20,
                                     fontWeight: FontWeight.w900,
                                     color: theme.colorScheme.foreground
-                                        .withOpacity(0.5),
+                                        .withOpacity(0.7),
                                   ),
                                 ),
+                                const SizedBox(height: 20),
+                                const LinearProgressIndicator(),
                               ],
-                            )
-                          : isFetching
-                              ? Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth: mediaQuery.lgAndUp
-                                        ? mediaQuery.size.width * 0.5
-                                        : mediaQuery.size.width,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
+                            ),
+                          ),
+                        _ => InterScrollbar(
+                            controller: scrollController,
+                            child: SingleChildScrollView(
+                              controller: scrollController,
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8),
+                                child: SafeArea(
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        context.l10n.crunching_results,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w900,
-                                          color: theme.colorScheme.foreground
-                                              .withOpacity(0.7),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      const LinearProgressIndicator(),
+                                      SearchTracksSection(),
+                                      SearchPlaylistsSection(),
+                                      Gap(20),
+                                      SearchArtistsSection(),
+                                      Gap(20),
+                                      SearchAlbumsSection(),
                                     ],
                                   ),
-                                )
-                              : resultWidget,
+                                ),
+                              ),
+                            ),
+                          ),
+                      },
                     ),
                   ),
                 ],

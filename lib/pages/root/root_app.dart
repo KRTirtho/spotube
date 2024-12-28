@@ -179,13 +179,17 @@ class RootApp extends HookConsumerWidget {
       return getSidebarTileList(context.l10n).map((s) => s.name).toList();
     }, []);
 
-    final scaffold = Scaffold(
-      footers: const [
-        BottomPlayer(),
-        SpotubeNavigationBar(),
-      ],
-      floatingFooter: true,
-      child: Sidebar(child: child),
+    final scaffold = MediaQuery.removeViewInsets(
+      context: context,
+      removeBottom: true,
+      child: Scaffold(
+        footers: const [
+          BottomPlayer(),
+          SpotubeNavigationBar(),
+        ],
+        floatingFooter: true,
+        child: Sidebar(child: child),
+      ),
     );
 
     if (!kIsAndroid) {

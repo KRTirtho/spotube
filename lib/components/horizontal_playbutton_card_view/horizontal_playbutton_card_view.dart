@@ -38,6 +38,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
   Widget build(BuildContext context) {
     final scrollController = useScrollController();
     final isArtist = items.every((s) => s is Artist);
+    final scale = context.theme.scaling;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -92,7 +93,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                             ),
                         isLoading: isLoadingNextPage,
                         hasReachedMax: !hasNextPage,
-                        separatorBuilder: (context, index) => const Gap(8.0),
+                        separatorBuilder: (context, index) => Gap(12 * scale),
                         itemBuilder: (context, index) {
                           final item = items[index];
 

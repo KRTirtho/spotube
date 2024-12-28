@@ -35,7 +35,7 @@ class PlaybuttonTile extends StatelessWidget {
     final cleanDescription = description?.unescapeHtml().cleanHtml() ?? "";
     final scale = context.theme.scaling;
 
-    return Button.ghost(
+    return Button(
       leading: Container(
         width: 50 * scale,
         height: 50 * scale,
@@ -46,6 +46,12 @@ class PlaybuttonTile extends StatelessWidget {
             fit: BoxFit.cover,
           ),
         ),
+      ),
+      style: ButtonVariance.ghost.copyWith(
+        padding: (context, states, value) {
+          return (ButtonVariance.ghost.padding(context, states) as EdgeInsets)
+              .copyWith(right: 0, left: 0);
+        },
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,

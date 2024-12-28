@@ -11,7 +11,11 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
 class TrackPresentationModifiersSection extends HookConsumerWidget {
-  const TrackPresentationModifiersSection({super.key});
+  final FocusNode? focusNode;
+  const TrackPresentationModifiersSection({
+    super.key,
+    this.focusNode,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -22,11 +26,12 @@ class TrackPresentationModifiersSection extends HookConsumerWidget {
     );
 
     final controller = useTextEditingController();
+    final scale = context.theme.scaling;
 
     return LayoutBuilder(builder: (context, constrains) {
       return Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: constrains.mdAndUp ? 16 : 8,
+          horizontal: (constrains.mdAndUp ? 16 : 8) * scale,
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -55,11 +60,13 @@ class TrackPresentationModifiersSection extends HookConsumerWidget {
                 children: [
                   Flexible(
                     child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        maxWidth: 320,
+                      constraints: BoxConstraints(
+                        maxWidth: 320 * scale,
+                        maxHeight: 38 * scale,
                       ),
                       child: TextField(
                         controller: controller,
+                        focusNode: focusNode,
                         leading: Icon(
                           SpotubeIcons.search,
                           color: context.theme.colorScheme.mutedForeground,

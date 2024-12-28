@@ -228,6 +228,12 @@ class Spotube extends HookConsumerWidget {
       ),
       materialTheme: material.ThemeData(
         splashFactory: material.NoSplash.splashFactory,
+        appBarTheme: const material.AppBarTheme(
+          surfaceTintColor: Colors.transparent,
+          scrolledUnderElevation: 0,
+          shadowColor: Colors.transparent,
+          elevation: 0,
+        ),
       ),
       themeMode: themeMode,
       shortcuts: {

@@ -55,9 +55,9 @@ class UserArtists extends HookConsumerWidget {
     return SafeArea(
       child: Scaffold(
         child: RefreshTrigger(
-          onRefresh: () async {
-            ref.invalidate(followedArtistsProvider);
-          },
+          // onRefresh: () async {
+          //   ref.invalidate(followedArtistsProvider);
+          // },
           child: InterScrollbar(
             controller: controller,
             child: Padding(

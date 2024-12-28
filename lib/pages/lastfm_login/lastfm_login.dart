@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:form_validator/form_validator.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
@@ -15,31 +16,59 @@ class LastFMLoginPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final theme = Theme.of(context);
     final router = GoRouter.of(context);
     final scrobblerNotifier = ref.read(scrobblerProvider.notifier);
 
-    final formKey = useMemoized(() => GlobalKey<FormState>(), []);
-    final username = useTextEditingController();
-    final password = useTextEditingController();
+    final usernameKey =
+        useMemoized(() => const FormKey<String>("username"), []);
+    final passwordKey =
+        useMemoized(() => const FormKey<String>("password"), []);
+
     final passwordVisible = useState(false);
 
     final isLoading = useState(false);
 
     return Scaffold(
-      appBar: const TitleBar(leading: [BackButton()]),
-      body: Center(
-        child: ConstrainedBox(
+      headers: const [
+        SafeArea(
+          child: TitleBar(
+            leading: [BackButton()],
+          ),
+        ),
+      ],
+      child: SingleChildScrollView(
+        child: Container(
           constraints: const BoxConstraints(maxWidth: 400),
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(16),
           child: Card(
-            margin: const EdgeInsets.all(8.0),
             child: Padding(
               padding: const EdgeInsets.all(16.0).copyWith(top: 8),
               child: Form(
-                key: formKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
+                onSubmit: (context, values) async {
+                  try {
+                    isLoading.value = true;
+                    await scrobblerNotifier.login(
+                      values[usernameKey].trim(),
+                      values[passwordKey],
+                    );
+                    router.pop();
+                  } catch (e) {
+                    if (context.mounted) {
+                      showPromptDialog(
+                        context: context,
+                        title: context.l10n.error("Authentication failed"),
+                        message: e.toString(),
+                        cancelText: null,
+                      );
+                    }
+                  } finally {
+                    isLoading.value = false;
+                  }
+                },
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  spacing: 10,
                   children: [
                     Container(
                       decoration: BoxDecoration(
@@ -53,38 +82,35 @@ class LastFMLoginPage extends HookConsumerWidget {
                         size: 60,
                       ),
                     ),
-                    Text(
-                      "last.fm",
-                      style: theme.textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 10),
+                    const Text("last.fm").h3(),
                     Text(context.l10n.login_with_your_lastfm),
-                    const SizedBox(height: 10),
                     AutofillGroup(
                       child: Column(
+                        spacing: 10,
                         children: [
-                          TextFormField(
-                            autofillHints: const [
-                              AutofillHints.username,
-                              AutofillHints.email,
-                            ],
-                            controller: username,
-                            validator: ValidationBuilder().required().build(),
-                            decoration: InputDecoration(
-                              labelText: context.l10n.username,
+                          FormField(
+                            label: Text(context.l10n.username),
+                            key: usernameKey,
+                            validator: const NotEmptyValidator(),
+                            child: TextField(
+                              autofillHints: const [
+                                AutofillHints.username,
+                                AutofillHints.email,
+                              ],
+                              placeholder: Text(context.l10n.username),
                             ),
                           ),
-                          const SizedBox(height: 10),
-                          TextFormField(
-                            autofillHints: const [
-                              AutofillHints.password,
-                            ],
-                            controller: password,
-                            validator: ValidationBuilder().required().build(),
-                            obscureText: !passwordVisible.value,
-                            decoration: InputDecoration(
-                              labelText: context.l10n.password,
-                              suffixIcon: IconButton(
+                          FormField(
+                            key: passwordKey,
+                            validator: const NotEmptyValidator(),
+                            label: Text(context.l10n.password),
+                            child: TextField(
+                              autofillHints: const [
+                                AutofillHints.password,
+                              ],
+                              obscureText: !passwordVisible.value,
+                              placeholder: Text(context.l10n.password),
+                              trailing: IconButton.ghost(
                                 icon: Icon(
                                   passwordVisible.value
                                       ? SpotubeIcons.eye
@@ -98,37 +124,13 @@ class LastFMLoginPage extends HookConsumerWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
-                    FilledButton(
-                      onPressed: isLoading.value
-                          ? null
-                          : () async {
-                              try {
-                                isLoading.value = true;
-                                if (formKey.currentState?.validate() != true) {
-                                  return;
-                                }
-                                await scrobblerNotifier.login(
-                                  username.text.trim(),
-                                  password.text,
-                                );
-                                router.pop();
-                              } catch (e) {
-                                if (context.mounted) {
-                                  showPromptDialog(
-                                    context: context,
-                                    title: context.l10n
-                                        .error("Authentication failed"),
-                                    message: e.toString(),
-                                    cancelText: null,
-                                  );
-                                }
-                              } finally {
-                                isLoading.value = false;
-                              }
-                            },
-                      child: Text(context.l10n.login),
-                    ),
+                    FormErrorBuilder(builder: (context, errors, child) {
+                      return Button.primary(
+                        onPressed: () => context.submitForm(),
+                        enabled: errors.isEmpty && !isLoading.value,
+                        child: Text(context.l10n.login),
+                      );
+                    }),
                   ],
                 ),
               ),

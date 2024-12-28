@@ -50,9 +50,9 @@ class UserAlbums extends HookConsumerWidget {
     return SafeArea(
       child: Scaffold(
         child: RefreshTrigger(
-          onRefresh: () async {
-            ref.invalidate(favoriteAlbumsProvider);
-          },
+          // onRefresh: () async {
+          //   ref.invalidate(favoriteAlbumsProvider);
+          // },
           child: InterScrollbar(
             controller: controller,
             child: CustomScrollView(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart' show ListTile;
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
@@ -9,6 +10,7 @@ import 'package:spotube/components/track_presentation/presentation_top.dart';
 import 'package:spotube/components/track_presentation/presentation_modifiers.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/utils/platform.dart';
 
 class TrackPresentation extends HookConsumerWidget {
   final TrackPresentationOptions options;
@@ -22,6 +24,29 @@ class TrackPresentation extends HookConsumerWidget {
     final headerTextStyle = context.theme.typography.small.copyWith(
       color: context.theme.colorScheme.mutedForeground,
     );
+    final scrollController = useScrollController();
+    final focusNode = useFocusNode();
+    final scale = context.theme.scaling;
+
+    useEffect(() {
+      if (!kIsMobile) return null;
+      void listener() {
+        if (!scrollController.hasClients) return;
+
+        if (focusNode.hasFocus) {
+          scrollController.animateTo(
+            300 * scale,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      }
+
+      focusNode.addListener(listener);
+      return () {
+        focusNode.removeListener(listener);
+      };
+    }, [focusNode, scrollController, scale]);
 
     return Data<TrackPresentationOptions>.inherit(
       data: options,
@@ -29,6 +54,7 @@ class TrackPresentation extends HookConsumerWidget {
         child: Scaffold(
           headers: const [TitleBar()],
           child: CustomScrollView(
+            controller: scrollController,
             slivers: [
               const TrackPresentationTopSection(),
               const SliverGap(16),
@@ -36,7 +62,9 @@ class TrackPresentation extends HookConsumerWidget {
                 builder: (context, constrains) {
                   return SliverList.list(
                     children: [
-                      const TrackPresentationModifiersSection(),
+                      TrackPresentationModifiersSection(
+                        focusNode: focusNode,
+                      ),
                       ListTile(
                         titleTextStyle: headerTextStyle,
                         subtitleTextStyle: headerTextStyle,
