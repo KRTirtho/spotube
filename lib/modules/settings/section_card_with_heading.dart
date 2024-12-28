@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' show ListTileTheme, ListTileThemeData;
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Theme, ThemeData;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 class SectionCardWithHeading extends StatelessWidget {
@@ -35,7 +35,9 @@ class SectionCardWithHeading extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Text(
               heading,
-              style: context.theme.typography.large,
+              style: context.theme.typography.large.copyWith(
+                color: context.theme.colorScheme.foreground,
+              ),
             ),
           ),
           Padding(

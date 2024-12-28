@@ -402,5 +402,10 @@
   "found_n_files": "Found {count} files",
   "export_cache_confirmation": "Do you want to export these files to",
   "exported_n_out_of_m_files": "Exported {filesExported} out of {files} files",
-  "undo": "Undo"
+  "undo": "Undo",
+  "download_all": "Download all",
+  "add_all_to_playlist": "Add all to playlist",
+  "add_all_to_queue": "Add all to queue",
+  "play_all_next": "Play all next",
+  "pause": "Pause"
 }

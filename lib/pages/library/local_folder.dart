@@ -17,7 +17,7 @@ import 'package:spotube/components/expandable_search/expandable_search.dart';
 import 'package:spotube/components/fallbacks/not_found.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/components/sort_tracks_dropdown.dart';
+import 'package:spotube/components/track_presentation/sort_tracks_dropdown.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';

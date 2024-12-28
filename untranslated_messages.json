@@ -1,105 +1,235 @@
 {
   "ar": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "bn": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "ca": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "cs": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "de": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "es": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "eu": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "fa": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "fi": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "fr": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "hi": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "id": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "it": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "ja": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "ka": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "ko": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "ne": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "nl": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "pl": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "pt": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "ru": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "th": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "tr": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "uk": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "vi": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ],
 
   "zh": [
-    "undo"
+    "undo",
+    "download_all",
+    "add_all_to_playlist",
+    "add_all_to_queue",
+    "play_all_next",
+    "pause"
   ]
 }

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart' hide Page;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 
 class PaginationProps {
@@ -38,31 +38,33 @@ class PaginationProps {
       onRefresh.hashCode;
 }
 
-class InheritedTrackView extends InheritedWidget {
+class TrackPresentationOptions {
   final Object collection;
   final String title;
   final String? description;
+  final String? owner;
+  final String? ownerImage;
   final String image;
   final String routePath;
   final List<Track> tracks;
   final PaginationProps pagination;
   final bool isLiked;
-  final String shareUrl;
+  final String? shareUrl;
 
   // events
   final FutureOr<bool?> Function()? onHeart; // if null heart button will hidden
 
-  const InheritedTrackView({
-    super.key,
-    required super.child,
+  const TrackPresentationOptions({
     required this.collection,
     required this.title,
     this.description,
+    this.owner,
+    this.ownerImage,
     required this.image,
     required this.tracks,
     required this.pagination,
     required this.routePath,
-    required this.shareUrl,
+    this.shareUrl,
     this.isLiked = false,
     this.onHeart,
   }) : assert(collection is AlbumSimple || collection is PlaylistSimple);
@@ -71,29 +73,36 @@ class InheritedTrackView extends InheritedWidget {
       ? (collection as AlbumSimple).id!
       : (collection as PlaylistSimple).id!;
 
-  @override
-  bool updateShouldNotify(InheritedTrackView oldWidget) {
-    return oldWidget.title != title ||
-        oldWidget.description != description ||
-        oldWidget.image != image ||
-        oldWidget.tracks != tracks ||
-        oldWidget.pagination != pagination ||
-        oldWidget.isLiked != isLiked ||
-        oldWidget.onHeart != onHeart ||
-        oldWidget.shareUrl != shareUrl ||
-        oldWidget.routePath != routePath ||
-        oldWidget.collection != collection ||
-        oldWidget.child != child;
+  static TrackPresentationOptions of(BuildContext context) {
+    return Data.of<TrackPresentationOptions>(context);
   }
 
-  static InheritedTrackView of(BuildContext context) {
-    final widget =
-        context.dependOnInheritedWidgetOfExactType<InheritedTrackView>();
-    if (widget == null) {
-      throw Exception(
-        'InheritedTrackView not found. Make sure to wrap [TrackView] with [InheritedTrackView]',
-      );
-    }
-    return widget;
+  @override
+  operator ==(Object other) {
+    return other is TrackPresentationOptions &&
+        other.collection == collection &&
+        other.title == title &&
+        other.description == description &&
+        other.image == image &&
+        other.routePath == routePath &&
+        other.tracks == tracks &&
+        other.pagination == pagination &&
+        other.isLiked == isLiked &&
+        other.shareUrl == shareUrl &&
+        other.onHeart == onHeart;
   }
+
+  @override
+  int get hashCode =>
+      super.hashCode ^
+      collection.hashCode ^
+      title.hashCode ^
+      description.hashCode ^
+      image.hashCode ^
+      routePath.hashCode ^
+      tracks.hashCode ^
+      pagination.hashCode ^
+      isLiked.hashCode ^
+      shareUrl.hashCode ^
+      onHeart.hashCode;
 }

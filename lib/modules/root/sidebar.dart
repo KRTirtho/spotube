@@ -78,8 +78,8 @@ class Sidebar extends HookConsumerWidget {
             isLabelVisible: tile.title == "Library" && downloadCount > 0,
             label: Text(
               downloadCount.toString(),
-              style: const TextStyle(
-                color: Colors.white,
+              style: TextStyle(
+                color: context.theme.colorScheme.primaryForeground,
                 fontSize: 10,
               ),
             ),

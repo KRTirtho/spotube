@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' show ListTile, showModalBottomSheet;
+import 'package:flutter/material.dart' show showModalBottomSheet;
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -39,6 +39,8 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
   final Offset offset;
 
+  final ButtonVariance variance;
+
   const AdaptivePopSheetList({
     super.key,
     required this.children,
@@ -49,6 +51,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     this.onSelected,
     required this.tooltip,
     this.offset = Offset.zero,
+    this.variance = ButtonVariance.ghost,
   }) : assert(
           !(icon != null && child != null),
           'Either icon or child must be provided',
@@ -79,7 +82,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     }).toList();
 
     if (mediaQuery.mdAndUp) {
-      await showDropdown<T>(
+      await showDropdown<T?>(
         context: context,
         rootOverlay: useRootNavigator,
         // heightConstraint: PopoverConstraint.anchorFixedSize,
@@ -113,19 +116,21 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
           itemBuilder: (context, index) {
             final data = childrenModified[index];
 
-            return ListTile(
-              dense: true,
-              leading: data.leading,
-              title: data.child,
+            return Button(
               enabled: data.enabled,
-              trailing: data.trailing,
-              focusNode: data.focusNode,
-              onTap: () {
+              style: ButtonVariance.ghost.copyWith(
+                padding: (context, state, value) => const EdgeInsets.all(16),
+              ),
+              onPressed: () {
                 data.onPressed?.call(context);
                 if (data.autoClose) {
                   Navigator.of(context).pop();
                 }
               },
+              leading: data.leading,
+              trailing: data.trailing,
+              alignment: Alignment.centerLeft,
+              child: data.child,
             );
           },
         );
@@ -142,7 +147,8 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
         tooltip: TooltipContainer(
           child: Text(tooltip),
         ),
-        child: IconButton.ghost(
+        child: IconButton(
+          variance: variance,
           icon: icon ?? const Icon(SpotubeIcons.moreVertical),
           onPressed: () {
             final renderBox = context.findRenderObject() as RenderBox;
@@ -167,7 +173,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
         tooltip: TooltipContainer(child: Text(tooltip)),
         child: Button(
           onPressed: () => showDropdownMenu(context, Offset.zero),
-          style: const ButtonStyle.ghost(),
+          style: variance,
           child: IgnorePointer(child: child),
         ),
       );
@@ -175,7 +181,8 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
     return Tooltip(
       tooltip: TooltipContainer(child: Text(tooltip)),
-      child: IconButton.ghost(
+      child: IconButton(
+        variance: variance,
         icon: icon ?? const Icon(SpotubeIcons.moreVertical),
         onPressed: () => showDropdownMenu(context, Offset.zero),
       ),

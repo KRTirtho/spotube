@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter/services.dart';
 import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -224,6 +225,9 @@ class Spotube extends HookConsumerWidget {
         colorScheme: ColorSchemes.darkNeutral(),
         surfaceOpacity: .8,
         surfaceBlur: 10,
+      ),
+      materialTheme: material.ThemeData(
+        splashFactory: material.NoSplash.splashFactory,
       ),
       themeMode: themeMode,
       shortcuts: {
