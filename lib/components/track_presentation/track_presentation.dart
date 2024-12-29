@@ -90,7 +90,7 @@ class TrackPresentation extends HookConsumerWidget {
                 },
               ),
               const PresentationListSection(),
-              const SliverGap(200),
+              const SliverSafeArea(sliver: SliverGap(10)),
             ],
           ),
         ),
