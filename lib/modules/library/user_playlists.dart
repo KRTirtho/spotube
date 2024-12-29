@@ -82,6 +82,7 @@ class UserPlaylists extends HookConsumerWidget {
       //   ref.invalidate(favoritePlaylistsProvider);
       // },
       child: SafeArea(
+        bottom: false,
         child: InterScrollbar(
           controller: controller,
           child: CustomScrollView(
@@ -139,6 +140,7 @@ class UserPlaylists extends HookConsumerWidget {
                   },
                 ),
               ),
+              const SliverSafeArea(sliver: SliverGap(10)),
             ],
           ),
         ),

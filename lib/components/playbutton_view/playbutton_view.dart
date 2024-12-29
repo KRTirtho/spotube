@@ -51,6 +51,8 @@ class PlaybuttonView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scale = context.theme.scaling;
+
     return SliverLayoutBuilder(
       builder: (context, constrains) => HookBuilder(builder: (context) {
         final isGrid = useState(constrains.mdAndUp);
@@ -100,10 +102,10 @@ class PlaybuttonView extends StatelessWidget {
               (true, _) => SliverGrid.builder(
                   itemCount: isLoading ? 6 : itemCount + 1,
                   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 150 * context.theme.scaling,
-                    mainAxisExtent: 225 * context.theme.scaling,
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
+                    maxCrossAxisExtent: 150 * scale,
+                    mainAxisExtent: 225 * scale,
+                    crossAxisSpacing: 12 * scale,
+                    mainAxisSpacing: 12 * scale,
                   ),
                   itemBuilder: (context, index) {
                     if (isLoading) {

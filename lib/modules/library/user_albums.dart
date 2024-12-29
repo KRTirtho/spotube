@@ -48,6 +48,7 @@ class UserAlbums extends HookConsumerWidget {
     }
 
     return SafeArea(
+      bottom: false,
       child: Scaffold(
         child: RefreshTrigger(
           // onRefresh: () async {
@@ -89,6 +90,7 @@ class UserAlbums extends HookConsumerWidget {
                         AlbumCard.tile(albums[index]),
                   ),
                 ),
+                const SliverSafeArea(sliver: SliverGap(10)),
               ],
             ),
           ),

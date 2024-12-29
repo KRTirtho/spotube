@@ -1,13 +1,11 @@
-import 'dart:ui';
-
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
@@ -35,7 +33,6 @@ class LyricsPage extends HookConsumerWidget {
       [playlist.activeTrack?.album?.images],
     );
     final palette = usePaletteColor(albumArt, ref);
-    final mediaQuery = MediaQuery.of(context);
     final route = ModalRoute.of(context);
     final selectedIndex = useState(0);
 
@@ -47,17 +44,28 @@ class LyricsPage extends HookConsumerWidget {
 
     Widget tabbar = Padding(
       padding: const EdgeInsets.all(10),
-      child: Opacity(
-        opacity: 0.8,
-        child: Tabs(
-          index: selectedIndex.value,
-          onChanged: (index) => selectedIndex.value = index,
-          tabs: [
-            Text(context.l10n.synced),
-            Text(context.l10n.plain),
-          ],
-        ),
-      ),
+      child: isModal
+          ? TabList(
+              index: selectedIndex.value,
+              children: [
+                TabButton(
+                  onPressed: () => selectedIndex.value = 0,
+                  child: Text(context.l10n.synced),
+                ),
+                TabButton(
+                  onPressed: () => selectedIndex.value = 1,
+                  child: Text(context.l10n.plain),
+                ),
+              ],
+            )
+          : Tabs(
+              index: selectedIndex.value,
+              onChanged: (index) => selectedIndex.value = index,
+              tabs: [
+                Text(context.l10n.synced),
+                Text(context.l10n.plain),
+              ],
+            ),
     );
 
     tabbar = Row(
@@ -89,57 +97,53 @@ class LyricsPage extends HookConsumerWidget {
         canPop: true,
         onPopInvokedWithResult: (_, __) => resetStatusBar(),
         child: SafeArea(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-            child: Container(
-              clipBehavior: Clip.hardEdge,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background.withOpacity(.4),
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(10),
-                  topRight: Radius.circular(10),
-                ),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 5),
-                  Container(
-                    height: 7,
-                    width: 150,
-                    decoration: BoxDecoration(
-                      color: palette.titleTextColor,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+          bottom: false,
+          child: SurfaceCard(
+            surfaceBlur: context.theme.surfaceBlur,
+            surfaceOpacity: context.theme.surfaceOpacity,
+            padding: EdgeInsets.zero,
+            borderRadius: BorderRadius.zero,
+            borderWidth: 0,
+            child: Column(
+              children: [
+                const SizedBox(height: 5),
+                Container(
+                  height: 7,
+                  width: 150,
+                  decoration: BoxDecoration(
+                    color: palette.titleTextColor,
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  AppBar(
-                    leading: [tabbar],
-                    backgroundColor: Colors.transparent,
-                    trailing: [
-                      IconButton.ghost(
-                        icon: const Icon(SpotubeIcons.minimize),
-                        onPressed: () => Navigator.of(context).pop(),
-                      ),
-                      const SizedBox(width: 5),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: tabbar,
+                    ),
+                    IconButton.ghost(
+                      icon: const Icon(SpotubeIcons.minimize),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                    const SizedBox(width: 5),
+                  ],
+                ),
+                Expanded(
+                  child: IndexedStack(
+                    index: selectedIndex.value,
+                    children: [
+                      SyncedLyrics(palette: palette, isModal: isModal),
+                      PlainLyrics(palette: palette, isModal: isModal),
                     ],
                   ),
-                  Expanded(
-                    child: IndexedStack(
-                      index: selectedIndex.value,
-                      children: [
-                        SyncedLyrics(palette: palette, isModal: isModal),
-                        PlainLyrics(palette: palette, isModal: isModal),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
       );
     }
     return SafeArea(
-      bottom: mediaQuery.mdAndUp,
+      bottom: false,
       child: Scaffold(
         floatingHeader: true,
         headers: [
@@ -157,13 +161,14 @@ class LyricsPage extends HookConsumerWidget {
               image: UniversalImage.imageProvider(albumArt),
               fit: BoxFit.cover,
             ),
-            borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.circular(10),
-            ),
           ),
           margin: const EdgeInsets.only(bottom: 10),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: SurfaceCard(
+            surfaceBlur: context.theme.surfaceBlur,
+            surfaceOpacity: context.theme.surfaceOpacity,
+            padding: EdgeInsets.zero,
+            borderRadius: BorderRadius.zero,
+            borderWidth: 0,
             child: ColoredBox(
               color: palette.color.withOpacity(.7),
               child: SafeArea(

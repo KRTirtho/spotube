@@ -367,12 +367,6 @@ class PlayerView extends HookConsumerWidget {
                                             topRight: Radius.circular(20),
                                           ),
                                         ),
-                                        constraints: BoxConstraints(
-                                          maxHeight: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.8,
-                                        ),
                                         builder: (context) =>
                                             const LyricsPage(isModal: true),
                                       );

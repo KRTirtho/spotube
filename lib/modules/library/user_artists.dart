@@ -53,6 +53,7 @@ class UserArtists extends HookConsumerWidget {
     }
 
     return SafeArea(
+      bottom: false,
       child: Scaffold(
         child: RefreshTrigger(
           // onRefresh: () async {
@@ -117,6 +118,7 @@ class UserArtists extends HookConsumerWidget {
                       },
                     );
                   }),
+                  const SliverSafeArea(sliver: SliverGap(10)),
                 ],
               ),
             ),

@@ -1955,8 +1955,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "5359958464a57235f0f34c43a4623356a32459a0"
-      resolved-ref: "5359958464a57235f0f34c43a4623356a32459a0"
+      ref: fix-scaffold-footer-safearea
+      resolved-ref: "8ede34e1e3270ec3839192a7a6453e19cd00f9ab"
       url: "https://github.com/KRTirtho/shadcn_flutter.git"
     source: git
     version: "0.0.24"

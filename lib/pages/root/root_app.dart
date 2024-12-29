@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -180,37 +179,16 @@ class RootApp extends HookConsumerWidget {
       return getSidebarTileList(context.l10n).map((s) => s.name).toList();
     }, []);
 
-    final bottomPlayerKey = useMemoized(() => GlobalKey<State>(), []);
-    final navigationBarKey = useMemoized(() => GlobalKey<State>(), []);
-
-    final bottomPadding = useMemoized(() {
-      return [bottomPlayerKey, navigationBarKey]
-          .map((k) =>
-              (k.currentContext?.findRenderObject() as RenderBox?)
-                  ?.size
-                  .height ??
-              0)
-          .sum;
-    }, [bottomPlayerKey, navigationBarKey]);
-
     final scaffold = MediaQuery.removeViewInsets(
       context: context,
       removeBottom: true,
       child: Scaffold(
-        footers: [
-          BottomPlayer(key: bottomPlayerKey),
-          SpotubeNavigationBar(key: navigationBarKey),
+        footers: const [
+          BottomPlayer(),
+          SpotubeNavigationBar(),
         ],
         floatingFooter: true,
-        // Fix for safe are not working for bottom bar
-        child: MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            padding: MediaQuery.of(context).padding.copyWith(
-                  bottom: bottomPadding,
-                ),
-          ),
-          child: Sidebar(child: child),
-        ),
+        child: Sidebar(child: child),
       ),
     );
 
