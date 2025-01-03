@@ -5,6 +5,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
@@ -118,23 +119,54 @@ class PlayerActions extends HookConsumerWidget {
             tooltip: TooltipContainer(
                 child: Text(context.l10n.alternative_track_sources)),
             child: IconButton.ghost(
+              enabled: playlist.activeTrack != null,
               icon: const Icon(SpotubeIcons.alternativeRoute),
-              onPressed: playlist.activeTrack != null
-                  ? () {
-                      openDrawer(
-                        context: context,
-                        position: OverlayPosition.bottom,
-                        barrierDismissible: true,
-                        draggable: true,
-                        barrierColor: Colors.black.withValues(alpha: .2),
-                        borderRadius: BorderRadius.circular(10),
-                        transformBackdrop: false,
-                        builder: (context) {
-                          return SiblingTracksSheet(floating: floatingQueue);
-                        },
+              onPressed: () {
+                final screenSize = MediaQuery.sizeOf(context);
+                if (screenSize.mdAndUp) {
+                  showPopover(
+                    alignment: Alignment.bottomCenter,
+                    context: context,
+                    builder: (context) {
+                      return SurfaceCard(
+                        padding: EdgeInsets.zero,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 600,
+                            maxWidth: 500,
+                          ),
+                          child: SiblingTracksSheet(floating: floatingQueue),
+                        ),
                       );
-                    }
-                  : null,
+                    },
+                  );
+                } else {
+                  openDrawer(
+                    context: context,
+                    position: OverlayPosition.bottom,
+                    barrierDismissible: true,
+                    draggable: true,
+                    barrierColor: Colors.black.withValues(alpha: .2),
+                    borderRadius: BorderRadius.circular(10),
+                    transformBackdrop: false,
+                    surfaceBlur: context.theme.surfaceBlur,
+                    surfaceOpacity: context.theme.surfaceOpacity,
+                    builder: (context) {
+                      return Card(
+                        borderWidth: 0,
+                        borderColor: Colors.transparent,
+                        padding: EdgeInsets.zero,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: screenSize.height * .8,
+                          ),
+                          child: SiblingTracksSheet(floating: floatingQueue),
+                        ),
+                      );
+                    },
+                  );
+                }
+              },
             ),
           ),
         if (!kIsWeb && !isLocalTrack)
