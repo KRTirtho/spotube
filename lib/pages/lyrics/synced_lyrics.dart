@@ -34,9 +34,11 @@ class SyncedLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final mediaQuery = MediaQuery.sizeOf(context);
+    final theme = Theme.of(context);
+
     final playlist = ref.watch(audioPlayerProvider);
 
-    final mediaQuery = MediaQuery.sizeOf(context);
     final controller = useAutoScrollController();
 
     final delay = ref.watch(syncedLyricsDelayProvider);
@@ -70,7 +72,9 @@ class SyncedLyrics extends HookConsumerWidget {
     final headlineTextStyle = (mediaQuery.mdAndUp
             ? typography.h3
             : typography.h4.copyWith(fontSize: 25))
-        .copyWith(color: palette.titleTextColor);
+        .copyWith(
+      color: palette.titleTextColor,
+    );
 
     final bodyTextTheme = typography.large.copyWith(
       color: palette.bodyTextColor,
@@ -182,9 +186,15 @@ class SyncedLyrics extends HookConsumerWidget {
                                         text: lyricSlice.text,
                                         textStyle:
                                             DefaultTextStyle.of(context).style,
-                                        textColor: isActive
-                                            ? Colors.white
-                                            : palette.bodyTextColor,
+                                        textColor: switch ((
+                                          isActive,
+                                          isModal == true
+                                        )) {
+                                          (true, _) => Colors.white,
+                                          (_, true) =>
+                                            theme.colorScheme.mutedForeground,
+                                          (_, _) => palette.bodyTextColor,
+                                        },
                                         strokeColor: isActive
                                             ? Colors.black
                                             : Colors.transparent,

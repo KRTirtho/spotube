@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shimmers/shimmer_lyrics.dart';
@@ -53,7 +54,9 @@ class PlainLyrics extends HookConsumerWidget {
                 child: Text(
                   playlist.activeTrack?.artists?.asString() ?? "",
                   style: (mediaQuery.mdAndUp ? typography.h4 : typography.large)
-                      .copyWith(color: palette.bodyTextColor),
+                      .copyWith(
+                    color: palette.bodyTextColor,
+                  ),
                 ),
               )
             ],
@@ -103,7 +106,9 @@ class PlainLyrics extends HookConsumerWidget {
                         return AnimatedDefaultTextStyle(
                           duration: const Duration(milliseconds: 200),
                           style: TextStyle(
-                            color: palette.bodyTextColor,
+                            color: isModal == true
+                                ? context.theme.colorScheme.foreground
+                                : palette.bodyTextColor,
                             fontSize: 24 * textZoomLevel.value / 100,
                             height: textZoomLevel.value < 70
                                 ? 1.5

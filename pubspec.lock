@@ -2101,6 +2101,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  sliding_up_panel:
+    dependency: "direct main"
+    description:
+      name: sliding_up_panel
+      sha256: "578e90956a6212d1e406373250b2436a0f3afece29aee3c24c8360094d6cf968"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0+1"
   sliver_tools:
     dependency: "direct main"
     description:

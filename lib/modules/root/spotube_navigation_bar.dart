@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -52,24 +53,29 @@ class SpotubeNavigationBar extends HookConsumerWidget {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 100),
-      child: NavigationBar(
-        index: selectedIndex,
-        onSelected: (i) {
-          ServiceUtils.navigateNamed(context, navbarTileList[i].name);
-        },
-        children: [
-          for (final tile in navbarTileList)
-            NavigationButton(
-              style: const ButtonStyle.muted(density: ButtonDensity.icon),
-              selectedStyle:
-                  const ButtonStyle.fixed(density: ButtonDensity.icon),
-              child: Badge(
-                isLabelVisible: tile.id == "library" && downloadCount > 0,
-                label: Text(downloadCount.toString()),
-                child: Icon(tile.icon),
-              ),
-            )
-        ],
+      height: panelHeight,
+      child: SingleChildScrollView(
+        child: NavigationBar(
+          index: selectedIndex,
+          surfaceBlur: context.theme.surfaceBlur,
+          surfaceOpacity: context.theme.surfaceOpacity,
+          onSelected: (i) {
+            ServiceUtils.navigateNamed(context, navbarTileList[i].name);
+          },
+          children: [
+            for (final tile in navbarTileList)
+              NavigationButton(
+                style: const ButtonStyle.muted(density: ButtonDensity.icon),
+                selectedStyle:
+                    const ButtonStyle.fixed(density: ButtonDensity.icon),
+                child: Badge(
+                  isLabelVisible: tile.id == "library" && downloadCount > 0,
+                  label: Text(downloadCount.toString()),
+                  child: Icon(tile.icon),
+                ),
+              )
+          ],
+        ),
       ),
     );
   }

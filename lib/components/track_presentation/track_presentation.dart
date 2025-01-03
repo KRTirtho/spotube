@@ -51,6 +51,7 @@ class TrackPresentation extends HookConsumerWidget {
     return Data<TrackPresentationOptions>.inherit(
       data: options,
       child: SafeArea(
+        bottom: false,
         child: Scaffold(
           headers: const [TitleBar()],
           child: CustomScrollView(

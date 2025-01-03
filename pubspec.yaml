@@ -112,6 +112,7 @@ dependencies:
   shelf_web_socket: ^2.0.0
   simple_icons: ^10.1.3
   skeletonizer: ^1.1.1
+  sliding_up_panel: ^2.0.0+1
   sliver_tools: ^0.2.12
   smtc_windows: ^1.0.0
   spotify: ^0.13.7
