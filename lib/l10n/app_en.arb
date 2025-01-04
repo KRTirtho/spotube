@@ -97,6 +97,7 @@
   "pause_playback": "Pause Playback",
   "resume_playback": "Resume Playback",
   "loop_track": "Loop track",
+  "no_loop": "No loop",
   "repeat_playlist": "Repeat playlist",
   "queue": "Queue",
   "alternative_track_sources": "Alternative track sources",

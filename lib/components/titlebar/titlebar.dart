@@ -1,3 +1,4 @@
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/components/button/back_button.dart';
@@ -60,6 +61,7 @@ class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, ref) {
     final hasLeadingOrCanPop = leading.isNotEmpty || Navigator.canPop(context);
+    final lastClicked = useRef<int>(DateTime.now().millisecondsSinceEpoch);
 
     return SizedBox(
       height: height ?? 56,
@@ -71,6 +73,23 @@ class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
           return GestureDetector(
             onHorizontalDragStart: (_) => onDrag(ref),
             onVerticalDragStart: (_) => onDrag(ref),
+            onTapDown: (details) async {
+              final systemTitlebar = ref.read(
+                  userPreferencesProvider.select((s) => s.systemTitleBar));
+              if (!kIsDesktop || systemTitlebar) return;
+
+              int currMills = DateTime.now().millisecondsSinceEpoch;
+
+              if ((currMills - lastClicked.value) < 500) {
+                if (await windowManager.isMaximized()) {
+                  await windowManager.unmaximize();
+                } else {
+                  await windowManager.maximize();
+                }
+              } else {
+                lastClicked.value = currMills;
+              }
+            },
             child: AppBar(
               leading: leading.isEmpty &&
                       automaticallyImplyLeading &&
