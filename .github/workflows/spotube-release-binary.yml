@@ -20,7 +20,8 @@ on:
         description: Dry run without uploading to release
 
 env:
-  FLUTTER_VERSION: 3.27.0
+  FLUTTER_VERSION: 3.28.0-0.1.pre
+  FLUTTER_CHANNEL: beta
 
 permissions:
   contents: write
@@ -68,6 +69,7 @@ jobs:
           cache: true
           cache-key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
           flutter-version: ${{ env.FLUTTER_VERSION  }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
       - name: Setup Java
         if: ${{matrix.platform == 'android'}}
         uses: actions/setup-java@v4
