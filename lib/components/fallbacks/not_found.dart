@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/extensions/context.dart';
 
@@ -8,7 +8,6 @@ class NotFound extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final widgets = [
       SizedBox(
         height: 150,
@@ -19,11 +18,10 @@ class NotFound extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(context.l10n.nothing_found, style: theme.textTheme.titleLarge),
+          Text(context.l10n.nothing_found).large().semiBold(),
           Text(
             context.l10n.the_box_is_empty,
-            style: theme.textTheme.titleMedium,
-          ),
+          ).semiBold(),
         ],
       ),
     ];

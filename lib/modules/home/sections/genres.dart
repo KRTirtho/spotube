@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -8,7 +6,6 @@ import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
-import 'package:spotube/collections/gradients.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -84,70 +81,33 @@ class HomeGenresSection extends HookConsumerWidget {
                 final category =
                     categories.elementAtOrNull(index) ?? FakeData.category;
 
-                return HookBuilder(builder: (context) {
-                  final (:gradient, :textColor) = useMemoized(
-                    () {
-                      final gradient =
-                          gradients[Random().nextInt(gradients.length)];
-                      final text = gradient.colors
-                              .take(2)
-                              .any((c) => c.computeLuminance() > 0.5)
-                          ? Colors.gray[900]
-                          : Colors.white;
-                      return (
-                        gradient: LinearGradient(
-                          colors: gradient.colors
-                              .map((c) => c.withAlpha((0.8 * 255).ceil()))
-                              .toList(),
-                        ),
-                        textColor: text
+                return Button(
+                  style: ButtonVariance.secondary.copyWith(
+                    padding: (context, states, value) {
+                      return EdgeInsets.zero;
+                    },
+                  ),
+                  onPressed: () {},
+                  child: CardImage(
+                    onPressed: () {
+                      context.pushNamed(
+                        GenrePlaylistsPage.name,
+                        pathParameters: {
+                          "categoryId": category.id!,
+                        },
+                        extra: category,
                       );
                     },
-                    [],
-                  );
-
-                  return MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () {
-                        context.pushNamed(
-                          GenrePlaylistsPage.name,
-                          pathParameters: {
-                            "categoryId": category.id!,
-                          },
-                          extra: category,
-                        );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: DecorationImage(
-                            image: UniversalImage.imageProvider(
-                              category.icons!.first.url!,
-                            ),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: context.theme.colorScheme.muted,
-                            gradient:
-                                categoriesQuery.isLoading ? null : gradient,
-                          ),
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              category.name!,
-                              style: context.theme.typography.large,
-                            ),
-                          ),
-                        ),
-                      ),
+                    direction: Axis.horizontal,
+                    image: UniversalImage(
+                      path: category.icons!.first.url!,
+                      fit: BoxFit.cover,
+                      height: 50,
+                      width: 50,
                     ),
-                  );
-                });
+                    title: Text(category.name!),
+                  ),
+                );
               },
             ),
           ),

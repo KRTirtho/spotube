@@ -36,14 +36,15 @@ class LastFMLoginPage extends HookConsumerWidget {
           ),
         ),
       ],
-      child: SingleChildScrollView(
-        child: Container(
-          constraints: const BoxConstraints(maxWidth: 400),
-          alignment: Alignment.center,
-          padding: const EdgeInsets.all(16),
-          child: Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0).copyWith(top: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            constraints: const BoxConstraints(maxWidth: 400),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(16),
+            child: Card(
+              padding: const EdgeInsets.all(16.0),
               child: Form(
                 onSubmit: (context, values) async {
                   try {
@@ -136,7 +137,7 @@ class LastFMLoginPage extends HookConsumerWidget {
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

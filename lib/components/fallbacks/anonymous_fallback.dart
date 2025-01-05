@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/settings/settings.dart';
 
@@ -28,7 +28,7 @@ class AnonymousFallback extends ConsumerWidget {
         children: [
           Text(context.l10n.not_logged_in),
           const SizedBox(height: 10),
-          FilledButton(
+          Button.primary(
             child: Text(context.l10n.login_with_spotify),
             onPressed: () => ServiceUtils.pushNamed(context, SettingsPage.name),
           )
