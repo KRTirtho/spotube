@@ -1,8 +1,8 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -32,7 +32,7 @@ class TrackPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
+    final ThemeData(:typography, :colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final playlist = ref.watch(audioPlayerProvider);
@@ -53,12 +53,15 @@ class TrackPage extends HookConsumerWidget {
     }
 
     return Scaffold(
-      appBar: const TitleBar(
-        automaticallyImplyLeading: true,
-        backgroundColor: Colors.transparent,
-      ),
-      extendBodyBehindAppBar: true,
-      body: Stack(
+      headers: const [
+        TitleBar(
+          automaticallyImplyLeading: true,
+          backgroundColor: Colors.transparent,
+          surfaceBlur: 0,
+        )
+      ],
+      floatingHeader: true,
+      child: Stack(
         children: [
           Positioned.fill(
             child: Container(
@@ -71,7 +74,7 @@ class TrackPage extends HookConsumerWidget {
                   ),
                   fit: BoxFit.cover,
                   colorFilter: ColorFilter.mode(
-                    colorScheme.surface.withOpacity(0.5),
+                    colorScheme.background.withOpacity(0.5),
                     BlendMode.srcOver,
                   ),
                   alignment: Alignment.topCenter,
@@ -89,7 +92,7 @@ class TrackPage extends HookConsumerWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        colorScheme.surface,
+                        colorScheme.background,
                         Colors.transparent,
                       ],
                       begin: Alignment.topCenter,
@@ -125,8 +128,7 @@ class TrackPage extends HookConsumerWidget {
                             children: [
                               Text(
                                 track.name!,
-                                style: textTheme.titleLarge,
-                              ),
+                              ).large().semiBold(),
                               const Gap(10),
                               Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -170,9 +172,10 @@ class TrackPage extends HookConsumerWidget {
                                     if (!isActive &&
                                         !playlist.tracks
                                             .containsBy(track, (t) => t.id))
-                                      OutlinedButton.icon(
-                                        icon: const Icon(SpotubeIcons.queueAdd),
-                                        label: Text(context.l10n.queue),
+                                      Button.outline(
+                                        leading:
+                                            const Icon(SpotubeIcons.queueAdd),
+                                        child: Text(context.l10n.queue),
                                         onPressed: () {
                                           playlistNotifier.addTrack(track);
                                         },
@@ -181,27 +184,37 @@ class TrackPage extends HookConsumerWidget {
                                     if (!isActive &&
                                         !playlist.tracks
                                             .containsBy(track, (t) => t.id))
-                                      IconButton.outlined(
-                                        icon:
-                                            const Icon(SpotubeIcons.lightning),
-                                        tooltip: context.l10n.play_next,
-                                        onPressed: () {
-                                          playlistNotifier
-                                              .addTracksAtFirst([track]);
-                                        },
+                                      Tooltip(
+                                        tooltip: TooltipContainer(
+                                          child: Text(context.l10n.play_next),
+                                        ),
+                                        child: IconButton.outline(
+                                          icon: const Icon(
+                                              SpotubeIcons.lightning),
+                                          onPressed: () {
+                                            playlistNotifier
+                                                .addTracksAtFirst([track]);
+                                          },
+                                        ),
                                       ),
                                     const Gap(5),
-                                    IconButton.filled(
-                                      tooltip: isActive
-                                          ? context.l10n.pause_playback
-                                          : context.l10n.play,
-                                      icon: Icon(
-                                        isActive
-                                            ? SpotubeIcons.pause
-                                            : SpotubeIcons.play,
-                                        color: colorScheme.onPrimary,
+                                    Tooltip(
+                                      tooltip: TooltipContainer(
+                                        child: Text(
+                                          isActive
+                                              ? context.l10n.pause_playback
+                                              : context.l10n.play,
+                                        ),
                                       ),
-                                      onPressed: onPlay,
+                                      child: IconButton.primary(
+                                        shape: ButtonShape.circle,
+                                        icon: Icon(
+                                          isActive
+                                              ? SpotubeIcons.pause
+                                              : SpotubeIcons.play,
+                                        ),
+                                        onPressed: onPlay,
+                                      ),
                                     ),
                                     const Gap(5),
                                     if (mediaQuery.smAndDown)

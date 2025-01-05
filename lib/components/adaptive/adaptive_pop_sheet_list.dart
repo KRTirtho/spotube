@@ -110,7 +110,6 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       backgroundColor: context.theme.colorScheme.card,
       builder: (context) {
         return ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
           itemCount: childrenModified.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {

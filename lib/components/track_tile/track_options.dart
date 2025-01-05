@@ -1,10 +1,10 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart' hide Page;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotify/spotify.dart' hide Offset;
@@ -69,16 +69,20 @@ class TrackOptions extends HookConsumerWidget {
   void actionShare(BuildContext context, Track track) {
     final data = "https://open.spotify.com/track/${track.id}";
     Clipboard.setData(ClipboardData(text: data)).then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          width: 300,
-          behavior: SnackBarBehavior.floating,
-          content: Text(
-            context.l10n.copied_to_clipboard(data),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
+      if (context.mounted) {
+        showToast(
+          context: context,
+          location: ToastLocation.topRight,
+          builder: (context, overlay) {
+            return SurfaceCard(
+              child: Text(
+                context.l10n.copied_to_clipboard(data),
+                textAlign: TextAlign.center,
+              ),
+            );
+          },
+        );
+      }
     });
   }
 
@@ -161,7 +165,6 @@ class TrackOptions extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final mediaQuery = MediaQuery.of(context);
     final router = GoRouter.of(context);
     final ThemeData(:colorScheme) = Theme.of(context);
@@ -220,36 +223,57 @@ class TrackOptions extends HookConsumerWidget {
           case TrackOptionValue.addToQueue:
             await playback.addTrack(track);
             if (context.mounted) {
-              scaffoldMessenger.showSnackBar(
-                SnackBar(
-                  content: Text(
-                    context.l10n.added_track_to_queue(track.name!),
-                  ),
-                ),
+              showToast(
+                context: context,
+                location: ToastLocation.topRight,
+                builder: (context, overlay) {
+                  return SurfaceCard(
+                    child: Text(
+                      context.l10n.added_track_to_queue(track.name!),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
               );
             }
             break;
           case TrackOptionValue.playNext:
             playback.addTracksAtFirst([track]);
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Text(
-                  context.l10n.track_will_play_next(track.name!),
-                ),
-              ),
-            );
+
+            if (context.mounted) {
+              showToast(
+                context: context,
+                location: ToastLocation.topRight,
+                builder: (context, overlay) {
+                  return SurfaceCard(
+                    child: Text(
+                      context.l10n.track_will_play_next(track.name!),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+              );
+            }
             break;
           case TrackOptionValue.removeFromQueue:
             playback.removeTrack(track.id!);
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Text(
-                  context.l10n.removed_track_from_queue(
-                    track.name!,
-                  ),
-                ),
-              ),
-            );
+
+            if (context.mounted) {
+              showToast(
+                context: context,
+                location: ToastLocation.topRight,
+                builder: (context, overlay) {
+                  return SurfaceCard(
+                    child: Text(
+                      context.l10n.removed_track_from_queue(
+                        track.name!,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+              );
+            }
             break;
           case TrackOptionValue.favorite:
             favorites.toggleTrackLike(track);
@@ -286,7 +310,10 @@ class TrackOptions extends HookConsumerWidget {
           case TrackOptionValue.details:
             showDialog(
               context: context,
-              builder: (context) => TrackDetailsDialog(track: track),
+              builder: (context) => ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: TrackDetailsDialog(track: track),
+              ),
             );
             break;
           case TrackOptionValue.download:
@@ -299,8 +326,7 @@ class TrackOptions extends HookConsumerWidget {
       },
       icon: icon ?? const Icon(SpotubeIcons.moreHorizontal),
       headings: [
-        ListTile(
-          dense: true,
+        Basic(
           leading: AspectRatio(
             aspectRatio: 1,
             child: ClipRRect(
@@ -316,8 +342,7 @@ class TrackOptions extends HookConsumerWidget {
             track.name!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          ).semiBold(),
           subtitle: Align(
             alignment: Alignment.centerLeft,
             child: ArtistLink(
@@ -449,7 +474,7 @@ class TrackOptions extends HookConsumerWidget {
             leading: Assets.logos.songlinkTransparent.image(
               width: 22,
               height: 22,
-              color: colorScheme.onSurface.withOpacity(0.5),
+              color: colorScheme.foreground.withOpacity(0.5),
             ),
             child: Text(context.l10n.song_link),
           ),
@@ -471,11 +496,6 @@ class TrackOptions extends HookConsumerWidget {
       adaptivePopSheetList.showDropdownMenu(context, offsetFromRect);
     };
 
-    return ListTileTheme(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: adaptivePopSheetList,
-    );
+    return adaptivePopSheetList;
   }
 }
