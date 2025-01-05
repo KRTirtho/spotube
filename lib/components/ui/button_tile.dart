@@ -9,6 +9,7 @@ class ButtonTile extends StatelessWidget {
   final void Function()? onPressed;
   final bool selected;
   final ButtonVariance style;
+  final EdgeInsets? padding;
 
   const ButtonTile({
     super.key,
@@ -19,6 +20,7 @@ class ButtonTile extends StatelessWidget {
     this.enabled = true,
     this.onPressed,
     this.selected = false,
+    this.padding,
     this.style = ButtonVariance.outline,
   });
 
@@ -30,17 +32,23 @@ class ButtonTile extends StatelessWidget {
       enabled: enabled,
       onPressed: onPressed,
       style: style.copyWith(
+        padding: padding != null ? (context, states, value) => padding! : null,
         decoration: (context, states, value) {
           final decoration = style.decoration(context, states) as BoxDecoration;
 
-          if (selected && style == ButtonVariance.outline) {
-            return decoration.copyWith(
-              border: Border.all(
-                color: colorScheme.primary,
-                width: 1.0,
-              ),
-              color: colorScheme.primary.withAlpha(25),
-            );
+          if (selected) {
+            return switch (style) {
+              ButtonVariance.outline => decoration.copyWith(
+                  border: Border.all(
+                    color: colorScheme.primary,
+                    width: 1.0,
+                  ),
+                  color: colorScheme.primary.withAlpha(25),
+                ),
+              ButtonVariance.ghost || _ => decoration.copyWith(
+                  color: colorScheme.primary.withAlpha(25),
+                ),
+            };
           }
 
           return decoration;

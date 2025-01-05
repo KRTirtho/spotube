@@ -1,14 +1,14 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart' show ListTile, Material, MaterialType;
+
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
@@ -18,7 +18,6 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/video_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
@@ -161,40 +160,36 @@ class SiblingTracksSheet extends HookConsumerWidget {
     final itemBuilder = useCallback(
       (SourceInfo sourceInfo) {
         final icon = sourceInfoToIconMap[sourceInfo.runtimeType];
-        return ListTile(
-          hoverColor: theme.colorScheme.primary.withOpacity(.1),
-          dense: true,
-          subtitleTextStyle: theme.typography.small.copyWith(
-            color: theme.colorScheme.mutedForeground,
+        return ButtonTile(
+          style: ButtonVariance.ghost,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          title: Text(
+            sourceInfo.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          titleTextStyle: theme.typography.normal,
-          leadingAndTrailingTextStyle: theme.typography.normal,
-          title: Text(sourceInfo.title),
-          horizontalTitleGap: 0,
-          leading: Padding(
-            padding: const EdgeInsets.only(top: 8.0, right: 8.0),
-            child: UniversalImage(
-              path: sourceInfo.thumbnail,
-              height: 60,
-              width: 60,
-            ),
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
+          leading: UniversalImage(
+            path: sourceInfo.thumbnail,
+            height: 60,
+            width: 60,
           ),
           trailing: Text(sourceInfo.duration.toHumanReadableString()),
           subtitle: Row(
             children: [
               if (icon != null) icon,
-              Text(" • ${sourceInfo.artist}"),
+              Flexible(
+                child: Text(
+                  " • ${sourceInfo.artist}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
           enabled: !isFetchingActiveTrack,
           selected: !isFetchingActiveTrack &&
               sourceInfo.id == (activeTrack as SourcedTrack).sourceInfo.id,
-          selectedTileColor: theme.colorScheme.primary.withOpacity(.1),
-          selectedColor: theme.colorScheme.primary,
-          onTap: () {
+          onPressed: () {
             if (!isFetchingActiveTrack &&
                 sourceInfo.id != (activeTrack as SourcedTrack).sourceInfo.id) {
               activeTrackNotifier.swapSibling(sourceInfo);
@@ -222,20 +217,17 @@ class SiblingTracksSheet extends HookConsumerWidget {
                   child: !isSearching.value
                       ? Text(
                           context.l10n.alternative_track_sources,
-                          style: theme.typography.bold,
-                        )
-                      : Flexible(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth: 320 * scale,
-                              maxHeight: 38 * scale,
-                            ),
-                            child: TextField(
-                              autofocus: true,
-                              controller: searchController,
-                              placeholder: Text(context.l10n.search),
-                              style: theme.typography.bold,
-                            ),
+                        ).bold()
+                      : ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 320 * scale,
+                            maxHeight: 38 * scale,
+                          ),
+                          child: TextField(
+                            autofocus: true,
+                            controller: searchController,
+                            placeholder: Text(context.l10n.search),
+                            style: theme.typography.bold,
                           ),
                         ),
                 ),
@@ -290,39 +282,38 @@ class SiblingTracksSheet extends HookConsumerWidget {
                   FadeTransition(opacity: animation, child: child),
               child: InterScrollbar(
                 controller: controller,
-                child: Material(
-                  type: MaterialType.transparency,
-                  child: switch (isSearching.value) {
-                    false => ListView.builder(
-                        padding: const EdgeInsets.all(8.0),
-                        controller: controller,
-                        itemCount: siblings.length,
-                        itemBuilder: (context, index) =>
-                            itemBuilder(siblings[index]),
-                      ),
-                    true => FutureBuilder(
-                        future: searchRequest,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return Center(
-                              child: Text(snapshot.error.toString()),
-                            );
-                          } else if (!snapshot.hasData) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          }
-
-                          return ListView.builder(
-                            padding: const EdgeInsets.all(8.0),
-                            controller: controller,
-                            itemCount: snapshot.data!.length,
-                            itemBuilder: (context, index) =>
-                                itemBuilder(snapshot.data![index]),
+                child: switch (isSearching.value) {
+                  false => ListView.separated(
+                      padding: const EdgeInsets.all(8.0),
+                      controller: controller,
+                      itemCount: siblings.length,
+                      separatorBuilder: (context, index) => const Gap(8),
+                      itemBuilder: (context, index) =>
+                          itemBuilder(siblings[index]),
+                    ),
+                  true => FutureBuilder(
+                      future: searchRequest,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(snapshot.error.toString()),
                           );
-                        },
-                      ),
-                  },
-                ),
+                        } else if (!snapshot.hasData) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        return ListView.separated(
+                          padding: const EdgeInsets.all(8.0),
+                          controller: controller,
+                          itemCount: snapshot.data!.length,
+                          separatorBuilder: (context, index) => const Gap(8),
+                          itemBuilder: (context, index) =>
+                              itemBuilder(snapshot.data![index]),
+                        );
+                      },
+                    ),
+                },
               ),
             ),
           ),
