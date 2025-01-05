@@ -1,9 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/library/local_folder/local_folder_item.dart';
@@ -58,49 +57,48 @@ class UserLocalTracks extends HookConsumerWidget {
     // For now, this gets all of them.
     ref.watch(localTracksProvider);
 
-    return LayoutBuilder(builder: (context, constrains) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton.icon(
-                icon: const Icon(SpotubeIcons.folderAdd),
-                label: Text(context.l10n.add_library_location),
-                onPressed: addLocalLibraryLocation,
+    final locations = [
+      preferences.downloadLocation,
+      if (cacheDir.hasData) cacheDir.data!,
+      ...preferences.localLibraryLocation,
+    ];
+
+    return LayoutBuilder(
+        builder: (context, constrains) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Button.secondary(
+                      leading: const Icon(SpotubeIcons.folderAdd),
+                      onPressed: addLocalLibraryLocation,
+                      child: Text(context.l10n.add_library_location),
+                    ),
+                  ),
+                  const Gap(8),
+                  Expanded(
+                    child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 200,
+                        mainAxisExtent: constrains.isXs
+                            ? 210
+                            : constrains.mdAndDown
+                                ? 280
+                                : 250,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                      ),
+                      itemCount: locations.length,
+                      itemBuilder: (context, index) {
+                        return LocalFolderItem(
+                          folder: locations[index],
+                        );
+                      },
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const Gap(8),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 200,
-                  mainAxisExtent: constrains.isXs
-                      ? 210
-                      : constrains.mdAndDown
-                          ? 280
-                          : 250,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 10,
-                ),
-                itemCount: preferences.localLibraryLocation.length +
-                    1 +
-                    (cacheDir.hasData ? 1 : 0),
-                itemBuilder: (context, index) {
-                  return LocalFolderItem(
-                    folder: index == 0
-                        ? preferences.downloadLocation
-                        : index == 1 && cacheDir.hasData
-                            ? cacheDir.data!
-                            : preferences.localLibraryLocation[index - 1],
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
-      );
-    });
+            ));
   }
 }
