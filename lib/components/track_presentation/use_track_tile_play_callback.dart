@@ -37,6 +37,7 @@ Future<void> Function(Track track, int index) useTrackTilePlayCallback(
     }
 
     final isRemoteDevice = await showSelectDeviceDialog(context, ref);
+    if (isRemoteDevice == null) return;
 
     if (isRemoteDevice) {
       final remotePlayback = ref.read(connectProvider.notifier);

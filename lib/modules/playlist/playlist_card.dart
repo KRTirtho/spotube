@@ -94,6 +94,7 @@ class PlaylistCard extends HookConsumerWidget {
         if (fetchedInitialTracks.isEmpty || !context.mounted) return;
 
         final isRemoteDevice = await showSelectDeviceDialog(context, ref);
+        if (isRemoteDevice == null) return;
         if (isRemoteDevice) {
           final remotePlayback = ref.read(connectProvider.notifier);
           final allTracks = await fetchAllTracks();

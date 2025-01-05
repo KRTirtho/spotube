@@ -55,6 +55,8 @@ class SearchTracksSection extends HookConsumerWidget {
                 final isRemoteDevice =
                     await showSelectDeviceDialog(context, ref);
 
+                if (isRemoteDevice == null) return;
+
                 if (isRemoteDevice) {
                   final remotePlayback = ref.read(connectProvider.notifier);
                   final remotePlaylist = ref.read(queueProvider);

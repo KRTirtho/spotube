@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
@@ -9,13 +8,15 @@ class ConfirmDownloadDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Padding(
-        padding: const EdgeInsets.all(15),
-        child: Row(
+    final screenSize = MediaQuery.sizeOf(context);
+
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: Breakpoints.sm),
+      child: AlertDialog(
+        title: Row(
+          spacing: 10,
           children: [
             Text(context.l10n.are_you_sure),
-            const SizedBox(width: 10),
             const UniversalImage(
               path:
                   "https://c.tenor.com/kHcmsxlKHEAAAAAM/rock-one-eyebrow-raised-rock-staring.gif",
@@ -24,58 +25,53 @@ class ConfirmDownloadDialog extends StatelessWidget {
             )
           ],
         ),
-      ),
-      content: Container(
-        padding: const EdgeInsets.all(15),
-        constraints: BoxConstraints(maxWidth: Breakpoints.sm),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                context.l10n.download_warning,
-                textAlign: TextAlign.justify,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                context.l10n.download_ip_ban_warning,
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
+        content: Expanded(
+          flex: screenSize.smAndUp ? 0 : 1,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  context.l10n.download_warning,
+                  textAlign: TextAlign.justify,
                 ),
-                textAlign: TextAlign.justify,
-              ),
-              const SizedBox(height: 10),
-              Text(
-                context.l10n.by_clicking_accept_terms,
-              ),
-              const SizedBox(height: 10),
-              BulletPoint(context.l10n.download_agreement_1),
-              const SizedBox(height: 10),
-              BulletPoint(context.l10n.download_agreement_2),
-              const SizedBox(height: 10),
-              BulletPoint(context.l10n.download_agreement_3),
-            ],
+                const SizedBox(height: 10),
+                Text(
+                  context.l10n.download_ip_ban_warning,
+                  style: const TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.justify,
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  context.l10n.by_clicking_accept_terms,
+                ),
+                const SizedBox(height: 10),
+                BulletPoint(context.l10n.download_agreement_1),
+                const SizedBox(height: 10),
+                BulletPoint(context.l10n.download_agreement_2),
+                const SizedBox(height: 10),
+                BulletPoint(context.l10n.download_agreement_3),
+              ],
+            ),
           ),
         ),
+        actions: [
+          Button.outline(
+            child: Text(context.l10n.decline),
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+          ),
+          Button.destructive(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text(context.l10n.accept),
+          ),
+        ],
       ),
-      actions: [
-        OutlinedButton(
-          child: Text(context.l10n.decline),
-          onPressed: () {
-            Navigator.pop(context, false);
-          },
-        ),
-        FilledButton(
-          style: FilledButton.styleFrom(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.red,
-          ),
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(context.l10n.accept),
-        ),
-      ],
     );
   }
 }

@@ -97,12 +97,13 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
           case "download":
             {
               final confirmed = audioSource == AudioSource.piped ||
-                  await showDialog(
-                    context: context,
-                    builder: (context) {
-                      return const ConfirmDownloadDialog();
-                    },
-                  );
+                  (await showDialog<bool?>(
+                        context: context,
+                        builder: (context) {
+                          return const ConfirmDownloadDialog();
+                        },
+                      ) ??
+                      false);
               if (confirmed != true) return;
               downloader.batchAddToQueue(tracks);
               notifier.deselectAllTracks();

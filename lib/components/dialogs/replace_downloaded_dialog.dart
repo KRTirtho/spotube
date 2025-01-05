@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/context.dart';
@@ -13,45 +13,35 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final groupValue = ref.watch(replaceDownloadedFileState);
-    final theme = Theme.of(context);
     final replaceAll = ref.watch(replaceDownloadedFileState);
 
     return AlertDialog(
       title: Text(context.l10n.track_exists(track.name ?? "")),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(context.l10n.do_you_want_to_replace),
-          RadioListTile<bool>(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            activeColor: theme.colorScheme.primary,
-            value: true,
-            groupValue: groupValue,
-            onChanged: (value) {
-              if (value != null) {
-                ref.read(replaceDownloadedFileState.notifier).state = true;
-              }
-            },
-            title: Text(context.l10n.replace_downloaded_tracks),
-          ),
-          RadioListTile<bool>(
-            dense: true,
-            contentPadding: EdgeInsets.zero,
-            activeColor: theme.colorScheme.primary,
-            value: false,
-            groupValue: groupValue,
-            onChanged: (value) {
-              if (value != null) {
-                ref.read(replaceDownloadedFileState.notifier).state = false;
-              }
-            },
-            title: Text(context.l10n.skip_download_tracks),
-          ),
-        ],
+      content: RadioGroup(
+        value: groupValue,
+        onChanged: (value) {
+          ref.read(replaceDownloadedFileState.notifier).state = value;
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(context.l10n.do_you_want_to_replace),
+            const Gap(16),
+            RadioItem<bool>(
+              value: true,
+              trailing: Text(context.l10n.replace_downloaded_tracks),
+            ),
+            const Gap(8),
+            RadioItem<bool>(
+              value: false,
+              trailing: Text(context.l10n.skip_download_tracks),
+            ),
+          ],
+        ),
       ),
       actions: [
-        OutlinedButton(
+        Button.outline(
           onPressed: replaceAll == true
               ? null
               : () {
@@ -59,7 +49,7 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
                 },
           child: Text(context.l10n.skip),
         ),
-        FilledButton(
+        Button.primary(
           onPressed: replaceAll == false
               ? null
               : () {

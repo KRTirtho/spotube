@@ -91,6 +91,7 @@ class AlbumCard extends HookConsumerWidget {
         if (fetchedTracks.isEmpty || !context.mounted) return;
 
         final isRemoteDevice = await showSelectDeviceDialog(context, ref);
+        if (isRemoteDevice == null) return;
         if (isRemoteDevice) {
           final remotePlayback = ref.read(connectProvider.notifier);
           await remotePlayback.load(

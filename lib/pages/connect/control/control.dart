@@ -188,6 +188,7 @@ class ConnectControlPage extends HookConsumerWidget {
                     SliverToBoxAdapter(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 20,
                         children: [
                           Tooltip(
                             tooltip: TooltipContainer(
