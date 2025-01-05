@@ -1,6 +1,8 @@
 {
   "ar": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -10,7 +12,9 @@
   ],
 
   "bn": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -20,7 +24,9 @@
   ],
 
   "ca": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -30,7 +36,9 @@
   ],
 
   "cs": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -40,7 +48,9 @@
   ],
 
   "de": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -50,7 +60,9 @@
   ],
 
   "es": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -60,7 +72,9 @@
   ],
 
   "eu": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -70,7 +84,9 @@
   ],
 
   "fa": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -80,7 +96,9 @@
   ],
 
   "fi": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -90,7 +108,9 @@
   ],
 
   "fr": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -100,7 +120,9 @@
   ],
 
   "hi": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -110,7 +132,9 @@
   ],
 
   "id": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -120,7 +144,9 @@
   ],
 
   "it": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -130,7 +156,9 @@
   ],
 
   "ja": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -140,7 +168,9 @@
   ],
 
   "ka": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -150,7 +180,9 @@
   ],
 
   "ko": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -160,7 +192,9 @@
   ],
 
   "ne": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -170,7 +204,9 @@
   ],
 
   "nl": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -180,7 +216,9 @@
   ],
 
   "pl": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -190,7 +228,9 @@
   ],
 
   "pt": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -200,7 +240,9 @@
   ],
 
   "ru": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -210,7 +252,9 @@
   ],
 
   "th": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -220,7 +264,9 @@
   ],
 
   "tr": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -230,7 +276,9 @@
   ],
 
   "uk": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -240,7 +288,9 @@
   ],
 
   "vi": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",
@@ -250,7 +300,9 @@
   ],
 
   "zh": [
+    "playlist",
     "no_loop",
+    "generate",
     "undo",
     "download_all",
     "add_all_to_playlist",

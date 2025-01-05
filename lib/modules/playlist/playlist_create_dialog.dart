@@ -16,7 +16,6 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/form/checkbox_form_field.dart';
 import 'package:spotube/components/form/text_form_field.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
@@ -267,19 +266,11 @@ class PlaylistCreateDialogButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final mediaQuery = MediaQuery.of(context);
     final spotify = ref.watch(spotifyProvider);
-
-    if (mediaQuery.smAndDown) {
-      return IconButton.secondary(
-        icon: const Icon(SpotubeIcons.addFilled),
-        onPressed: () => showPlaylistDialog(context, spotify),
-      );
-    }
 
     return Button.secondary(
       leading: const Icon(SpotubeIcons.addFilled),
-      child: Text(context.l10n.create_playlist),
+      child: Text(context.l10n.playlist),
       onPressed: () => showPlaylistDialog(context, spotify),
     );
   }

@@ -110,7 +110,7 @@ class UserPlaylists extends HookConsumerWidget {
                       const Gap(10),
                       Button.primary(
                         leading: const Icon(SpotubeIcons.magic),
-                        child: Text(context.l10n.generate_playlist),
+                        child: Text(context.l10n.generate),
                         onPressed: () {
                           ServiceUtils.pushNamed(
                             context,

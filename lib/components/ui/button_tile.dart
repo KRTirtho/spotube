@@ -31,8 +31,7 @@ class ButtonTile extends StatelessWidget {
       onPressed: onPressed,
       style: style.copyWith(
         decoration: (context, states, value) {
-          final decoration = ButtonVariance.outline.decoration(context, states)
-              as BoxDecoration;
+          final decoration = style.decoration(context, states) as BoxDecoration;
 
           if (selected && style == ButtonVariance.outline) {
             return decoration.copyWith(
@@ -47,7 +46,7 @@ class ButtonTile extends StatelessWidget {
           return decoration;
         },
         iconTheme: (context, states, value) {
-          final iconTheme = ButtonVariance.outline.iconTheme(context, states);
+          final iconTheme = style.iconTheme(context, states);
 
           if (selected && style == ButtonVariance.outline) {
             return iconTheme.copyWith(
@@ -58,7 +57,7 @@ class ButtonTile extends StatelessWidget {
           return iconTheme;
         },
         textStyle: (context, states, value) {
-          final textStyle = ButtonVariance.outline.textStyle(context, states);
+          final textStyle = style.textStyle(context, states);
 
           if (selected && style == ButtonVariance.outline) {
             return textStyle.copyWith(
