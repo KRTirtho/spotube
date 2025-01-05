@@ -26,7 +26,7 @@ class ArtistPageFooter extends ConsumerWidget {
     if (summary.asData?.value == null) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(8),
       padding: mediaQuery.smAndDown
           ? const EdgeInsets.all(20)
           : const EdgeInsets.all(30),
