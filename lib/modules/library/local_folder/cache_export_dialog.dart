@@ -1,10 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as path;
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -22,7 +21,7 @@ class LocalFolderCacheExportDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
+    final ThemeData(:typography, :colorScheme) = Theme.of(context);
 
     final files = useState<List<File>>([]);
     final filesExported = useState<int>(0);
@@ -31,7 +30,7 @@ class LocalFolderCacheExportDialog extends HookConsumerWidget {
       final stream = cacheDir.list().where(
             (event) =>
                 event is File &&
-                codecs.contains(extension(event.path).replaceAll(".", "")),
+                codecs.contains(path.extension(event.path).replaceAll(".", "")),
           );
 
       stream.listen(
@@ -76,8 +75,8 @@ class LocalFolderCacheExportDialog extends HookConsumerWidget {
                         ),
                         TextSpan(
                           text: "\n${exportDir.path}?",
-                          style: textTheme.labelMedium!.copyWith(
-                            color: colorScheme.secondary,
+                          style: typography.small.copyWith(
+                            color: colorScheme.mutedForeground,
                           ),
                         ),
                       ],
@@ -102,7 +101,7 @@ class LocalFolderCacheExportDialog extends HookConsumerWidget {
               ),
       ),
       actions: [
-        TextButton(
+        Button.outline(
           onPressed: isExportInProgress
               ? null
               : () {
@@ -110,14 +109,14 @@ class LocalFolderCacheExportDialog extends HookConsumerWidget {
                 },
           child: Text(context.l10n.cancel),
         ),
-        TextButton(
+        Button.primary(
           onPressed: isExportInProgress
               ? null
               : () async {
                   for (final file in files.value) {
                     try {
                       final destinationFile = File(
-                        join(exportDir.path, basename(file.path)),
+                        path.join(exportDir.path, path.basename(file.path)),
                       );
 
                       if (await destinationFile.exists()) {
