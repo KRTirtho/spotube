@@ -408,5 +408,6 @@
   "add_all_to_playlist": "Add all to playlist",
   "add_all_to_queue": "Add all to queue",
   "play_all_next": "Play all next",
-  "pause": "Pause"
+  "pause": "Pause",
+  "view_all": "View all"
 }

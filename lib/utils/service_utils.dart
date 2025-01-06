@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:go_router/go_router.dart';
 import 'package:html/dom.dart' hide Text;
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Element;
 import 'package:spotify/spotify.dart';
 import 'package:spotube/modules/library/user_local_tracks.dart';
 import 'package:spotube/modules/root/update_dialog.dart';
@@ -20,7 +21,6 @@ import 'package:html/parser.dart' as parser;
 
 import 'dart:async';
 
-import 'package:flutter/material.dart' hide Element;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotube/collections/env.dart';
@@ -304,7 +304,9 @@ abstract class ServiceUtils {
         .map((e) => e.matchedLocation);
 
     if (routerState.matchedLocation == location ||
-        routerStack.contains(location)) return;
+        routerStack.contains(location)) {
+      return;
+    }
     router.push(location, extra: extra);
   }
 
@@ -418,7 +420,7 @@ abstract class ServiceUtils {
       await showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: Colors.black26,
+        barrierColor: Colors.black.withAlpha(66),
         builder: (context) {
           return RootAppUpdateDialog.nightly(nightlyBuildNum: buildNum);
         },
@@ -439,14 +441,16 @@ abstract class ServiceUtils {
       if (currentVersion == null ||
           latestVersion == null ||
           (latestVersion.isPreRelease && !currentVersion.isPreRelease) ||
-          (!latestVersion.isPreRelease && currentVersion.isPreRelease)) return;
+          (!latestVersion.isPreRelease && currentVersion.isPreRelease)) {
+        return;
+      }
 
       if (latestVersion <= currentVersion || !context.mounted) return;
 
       showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: Colors.black26,
+        barrierColor: Colors.black.withAlpha(66),
         builder: (context) {
           return RootAppUpdateDialog(version: latestVersion);
         },

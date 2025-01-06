@@ -8,7 +8,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "bn": [
@@ -20,7 +21,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "ca": [
@@ -32,7 +34,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "cs": [
@@ -44,7 +47,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "de": [
@@ -56,7 +60,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "es": [
@@ -68,7 +73,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "eu": [
@@ -80,7 +86,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "fa": [
@@ -92,7 +99,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "fi": [
@@ -104,7 +112,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "fr": [
@@ -116,7 +125,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "hi": [
@@ -128,7 +138,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "id": [
@@ -140,7 +151,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "it": [
@@ -152,7 +164,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "ja": [
@@ -164,7 +177,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "ka": [
@@ -176,7 +190,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "ko": [
@@ -188,7 +203,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "ne": [
@@ -200,7 +216,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "nl": [
@@ -212,7 +229,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "pl": [
@@ -224,7 +242,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "pt": [
@@ -236,7 +255,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "ru": [
@@ -248,7 +268,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "th": [
@@ -260,7 +281,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "tr": [
@@ -272,7 +294,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "uk": [
@@ -284,7 +307,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "vi": [
@@ -296,7 +320,8 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ],
 
   "zh": [
@@ -308,6 +333,7 @@
     "add_all_to_playlist",
     "add_all_to_queue",
     "play_all_next",
-    "pause"
+    "pause",
+    "view_all"
   ]
 }
