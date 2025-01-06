@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:spotube/collections/formatters.dart';
@@ -20,7 +20,6 @@ class StatsStreamFeesPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final ThemeData(:textTheme, :hintColor) = Theme.of(context);
     final duration = useState<HistoryDuration>(HistoryDuration.days30);
 
     final topTracks = ref.watch(
@@ -40,12 +39,23 @@ class StatsStreamFeesPage extends HookConsumerWidget {
       [artistsData],
     );
 
+    final translations = <HistoryDuration, String>{
+      HistoryDuration.days7: context.l10n.this_week,
+      HistoryDuration.days30: context.l10n.this_month,
+      HistoryDuration.months6: context.l10n.last_6_months,
+      HistoryDuration.year: context.l10n.this_year,
+      HistoryDuration.years2: context.l10n.last_2_years,
+      HistoryDuration.allTime: context.l10n.all_time,
+    };
+
     return Scaffold(
-      appBar: TitleBar(
-        automaticallyImplyLeading: true,
-        title: Text(context.l10n.streaming_fees_hypothetical),
-      ),
-      body: CustomScrollView(
+      headers: [
+        TitleBar(
+          automaticallyImplyLeading: true,
+          title: Text(context.l10n.streaming_fees_hypothetical),
+        )
+      ],
+      child: CustomScrollView(
         slivers: [
           SliverCrossAxisConstrained(
             maxCrossAxisExtent: 600,
@@ -55,10 +65,7 @@ class StatsStreamFeesPage extends HookConsumerWidget {
               sliver: SliverToBoxAdapter(
                 child: Text(
                   context.l10n.spotify_hipotetical_calculation,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: hintColor,
-                  ),
-                ),
+                ).small().muted(),
               ),
             ),
           ),
@@ -70,39 +77,22 @@ class StatsStreamFeesPage extends HookConsumerWidget {
                 children: [
                   Text(
                     context.l10n.total_money(usdFormatter.format(total)),
-                    style: textTheme.titleLarge,
-                  ),
-                  DropdownButton<HistoryDuration>(
+                  ).semiBold().large(),
+                  Select<HistoryDuration>(
                     value: duration.value,
                     onChanged: (value) {
                       if (value == null) return;
                       duration.value = value;
                     },
-                    items: [
-                      DropdownMenuItem(
-                        value: HistoryDuration.days7,
-                        child: Text(context.l10n.this_week),
-                      ),
-                      DropdownMenuItem(
-                        value: HistoryDuration.days30,
-                        child: Text(context.l10n.this_month),
-                      ),
-                      DropdownMenuItem(
-                        value: HistoryDuration.months6,
-                        child: Text(context.l10n.last_6_months),
-                      ),
-                      DropdownMenuItem(
-                        value: HistoryDuration.year,
-                        child: Text(context.l10n.this_year),
-                      ),
-                      DropdownMenuItem(
-                        value: HistoryDuration.years2,
-                        child: Text(context.l10n.last_2_years),
-                      ),
-                      DropdownMenuItem(
-                        value: HistoryDuration.allTime,
-                        child: Text(context.l10n.all_time),
-                      ),
+                    itemBuilder: (context, value) => Text(translations[value]!),
+                    constraints: const BoxConstraints(maxWidth: 150),
+                    popupWidthConstraint: PopoverConstraint.anchorMaxSize,
+                    children: [
+                      for (final entry in translations.entries)
+                        SelectItemButton(
+                          value: entry.key,
+                          child: Text(entry.value),
+                        ),
                     ],
                   ),
                 ],

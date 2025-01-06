@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
@@ -28,11 +28,13 @@ class StatsArtistsPage extends HookConsumerWidget {
         () => topTracks.asData?.value.artists ?? [], [topTracks.asData?.value]);
 
     return Scaffold(
-      appBar: TitleBar(
-        automaticallyImplyLeading: true,
-        title: Text(context.l10n.artists),
-      ),
-      body: Skeletonizer(
+      headers: [
+        TitleBar(
+          automaticallyImplyLeading: true,
+          title: Text(context.l10n.artists),
+        )
+      ],
+      child: Skeletonizer(
         enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,
         child: InfiniteList(
           onFetchData: () async {

@@ -148,7 +148,10 @@ class PlayerControls extends HookConsumerWidget {
                         ),
                       ),
                       child: IconButton(
-                        icon: const Icon(SpotubeIcons.shuffle),
+                        icon: Icon(
+                          SpotubeIcons.shuffle,
+                          color: shuffled ? theme.colorScheme.primary : null,
+                        ),
                         variance: shuffled
                             ? ButtonVariance.secondary
                             : ButtonVariance.ghost,
@@ -228,6 +231,9 @@ class PlayerControls extends HookConsumerWidget {
                           loopMode == PlaylistMode.single
                               ? SpotubeIcons.repeatOne
                               : SpotubeIcons.repeat,
+                          color: loopMode != PlaylistMode.none
+                              ? theme.colorScheme.primary
+                              : null,
                         ),
                         variance: loopMode == PlaylistMode.single ||
                                 loopMode == PlaylistMode.loop

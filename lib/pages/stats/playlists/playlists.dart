@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
@@ -26,11 +26,13 @@ class StatsPlaylistsPage extends HookConsumerWidget {
     final playlistsData = topPlaylists.asData?.value.items ?? [];
 
     return Scaffold(
-      appBar: TitleBar(
-        automaticallyImplyLeading: true,
-        title: Text(context.l10n.playlists),
-      ),
-      body: Skeletonizer(
+      headers: [
+        TitleBar(
+          automaticallyImplyLeading: true,
+          title: Text(context.l10n.playlists),
+        )
+      ],
+      child: Skeletonizer(
         enabled: topPlaylists.isLoading && !topPlaylists.isLoadingNextPage,
         child: InfiniteList(
           onFetchData: () async {

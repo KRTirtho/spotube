@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/stats/summary/summary.dart';
 import 'package:spotube/modules/stats/top/top.dart';
@@ -16,8 +15,10 @@ class StatsPage extends HookConsumerWidget {
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        appBar: kIsMacOS || kIsMobile ? null : const TitleBar(),
-        body: CustomScrollView(
+        headers: [
+          if (kIsWindows || kIsLinux) const TitleBar(),
+        ],
+        child: CustomScrollView(
           slivers: [
             if (kIsMacOS) const SliverGap(20),
             const StatsPageSummarySection(),

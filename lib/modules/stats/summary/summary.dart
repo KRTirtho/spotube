@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/formatters.dart';
@@ -48,7 +48,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
                 title: summaryData.duration.inMinutes.toDouble(),
                 unit: context.l10n.summary_minutes,
                 description: context.l10n.summary_listened_to_music,
-                color: Colors.purple,
+                color: Colors.indigo,
                 onTap: () {
                   ServiceUtils.pushNamed(context, StatsMinutesPage.name);
                 },
@@ -57,7 +57,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
                 title: summaryData.tracks.toDouble(),
                 unit: context.l10n.summary_songs,
                 description: context.l10n.summary_streamed_overall,
-                color: Colors.lightBlue,
+                color: Colors.blue,
                 onTap: () {
                   ServiceUtils.pushNamed(context, StatsStreamsPage.name);
                 },
