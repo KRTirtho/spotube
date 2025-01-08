@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:spotube/modules/library/user_downloads/download_item.dart';
 import 'package:spotube/extensions/context.dart';
@@ -31,15 +31,10 @@ class UserDownloads extends HookConsumerWidget {
                   context.l10n
                       .currently_downloading(downloadManager.$downloadCount),
                   maxLines: 1,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
+                ).semiBold(),
               ),
               const SizedBox(width: 10),
-              FilledButton(
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red[50],
-                  foregroundColor: Colors.red[400],
-                ),
+              Button.destructive(
                 onPressed: downloadManager.$downloadCount == 0
                     ? null
                     : downloadManager.cancelAll,

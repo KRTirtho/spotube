@@ -77,17 +77,15 @@ class LocalFolderItem extends HookConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (tracks.isEmpty)
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(
-                  SpotubeIcons.folder,
-                  size: mediaQuery.smAndDown
-                      ? 95
-                      : mediaQuery.mdAndDown
-                          ? 100
-                          : 142,
-                ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(
+                SpotubeIcons.folder,
+                size: mediaQuery.smAndDown
+                    ? 95
+                    : mediaQuery.mdAndDown
+                        ? 100
+                        : 142,
               ),
             )
           else
