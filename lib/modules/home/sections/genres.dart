@@ -43,7 +43,7 @@ class HomeGenresSection extends HookConsumerWidget {
 
     useEffect(() {
       int times = 0;
-      Timer.periodic(
+      final timer = Timer.periodic(
         const Duration(seconds: 5),
         (timer) {
           if (times > 5 || interactedRef.value) {
@@ -57,7 +57,10 @@ class HomeGenresSection extends HookConsumerWidget {
         },
       );
 
-      return controller.dispose;
+      return () {
+        timer.cancel();
+        controller.dispose();
+      };
     }, []);
 
     return SliverList.list(

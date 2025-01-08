@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' show ListTile;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -21,9 +20,6 @@ class TrackPresentation extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final headerTextStyle = context.theme.typography.small.copyWith(
-      color: context.theme.colorScheme.mutedForeground,
-    );
     final scrollController = useScrollController();
     final focusNode = useFocusNode();
     final scale = context.theme.scaling;
@@ -66,10 +62,11 @@ class TrackPresentation extends HookConsumerWidget {
                       TrackPresentationModifiersSection(
                         focusNode: focusNode,
                       ),
-                      ListTile(
-                        titleTextStyle: headerTextStyle,
-                        subtitleTextStyle: headerTextStyle,
-                        leadingAndTrailingTextStyle: headerTextStyle,
+                      Basic(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
                         leading: constrains.mdAndUp ? const Text("  #") : null,
                         title: Row(
                           children: [
@@ -85,7 +82,7 @@ class TrackPresentation extends HookConsumerWidget {
                             Text(context.l10n.duration),
                           ],
                         ),
-                      ),
+                      ).small().muted(),
                     ],
                   );
                 },

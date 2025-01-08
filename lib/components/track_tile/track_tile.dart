@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart' show ListTile, Material, MaterialType;
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -14,7 +14,9 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/components/track_tile/track_options.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/button_variance.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
@@ -89,225 +91,232 @@ class TrackTile extends HookConsumerWidget {
         },
         child: HoverBuilder(
           permanentState: isSelected || constrains.smAndDown ? true : null,
-          builder: (context, isHovering) => Material(
-            type: MaterialType.transparency,
-            child: ListTile(
-              selectedColor: theme.colorScheme.primary,
-              selectedTileColor: theme.colorScheme.primary.withOpacity(0.1),
-              selected: isSelected,
-              onTap: () async {
-                try {
-                  isLoading.value = true;
-                  await onTap?.call();
-                } finally {
-                  if (context.mounted) {
-                    isLoading.value = false;
-                  }
+          builder: (context, isHovering) => ButtonTile(
+            selected: isSelected,
+            onPressed: () async {
+              if (isBlackListed) return;
+              try {
+                isLoading.value = true;
+                await onTap?.call();
+              } finally {
+                if (context.mounted) {
+                  isLoading.value = false;
                 }
-              },
-              onLongPress: onLongPress,
-              enabled: !isBlackListed,
-              contentPadding: EdgeInsets.zero,
-              tileColor: isBlackListed ? theme.colorScheme.destructive : null,
-              horizontalTitleGap: 12,
-              leadingAndTrailingTextStyle: theme.typography.normal.copyWith(
-                color: theme.colorScheme.foreground,
-              ),
-              titleTextStyle: theme.typography.normal.copyWith(
-                color: theme.colorScheme.foreground,
-              ),
-              subtitleTextStyle: theme.typography.xSmall.copyWith(
-                color: theme.colorScheme.mutedForeground,
-              ),
-              leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...?leadingActions,
-                  AnimatedCrossFade(
-                    duration: const Duration(milliseconds: 300),
-                    crossFadeState: index != null && onChanged == null
-                        ? CrossFadeState.showSecond
-                        : CrossFadeState.showFirst,
-                    firstChild: Checkbox(
-                      state: selected
-                          ? CheckboxState.checked
-                          : CheckboxState.unchecked,
-                      onChanged: (state) =>
-                          onChanged?.call(state == CheckboxState.checked),
-                    ),
-                    secondChild: constrains.smAndDown
-                        ? const SizedBox(width: 16)
-                        : SizedBox(
-                            width: 50,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 6),
-                              child: Text(
-                                '${(index ?? 0) + 1}',
-                                maxLines: 1,
-                                style: theme.typography.small,
-                                textAlign: TextAlign.center,
-                              ),
+              }
+            },
+            onLongPress: onLongPress,
+            style: (isBlackListed
+                    ? ButtonVariance.destructive
+                    : ButtonVariance.ghost)
+                .copyWith(
+              padding: (context, states) =>
+                  const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+            ),
+            leading: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ...?leadingActions,
+                AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 300),
+                  crossFadeState: index != null && onChanged == null
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  firstChild: Checkbox(
+                    state: selected
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
+                    onChanged: (state) =>
+                        onChanged?.call(state == CheckboxState.checked),
+                  ),
+                  secondChild: constrains.smAndDown
+                      ? const SizedBox(width: 16)
+                      : SizedBox(
+                          width: 50,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Text(
+                              '${(index ?? 0) + 1}',
+                              maxLines: 1,
+                              style: theme.typography.small,
+                              textAlign: TextAlign.center,
                             ),
                           ),
-                  ),
-                  Stack(
-                    children: [
-                      Container(
-                        height: 40,
-                        width: 40,
+                        ),
+                ),
+                Stack(
+                  children: [
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: theme.borderRadiusMd,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: UniversalImage.imageProvider(
+                            (track.album?.images).asUrlString(
+                              placeholder: ImagePlaceholder.albumArt,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
                         decoration: BoxDecoration(
                           borderRadius: theme.borderRadiusMd,
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: UniversalImage.imageProvider(
-                              (track.album?.images).asUrlString(
-                                placeholder: ImagePlaceholder.albumArt,
+                          color: isHovering
+                              ? Colors.black.withAlpha(102)
+                              : Colors.transparent,
+                        ),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Center(
+                        child: Skeleton.ignore(
+                          child: Consumer(
+                            builder: (context, ref, _) {
+                              final isFetchingActiveTrack =
+                                  ref.watch(queryingTrackInfoProvider);
+                              return AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                child: switch ((
+                                  isPlaying,
+                                  isFetchingActiveTrack,
+                                  isPlaying,
+                                  isHovering,
+                                  isLoading.value
+                                )) {
+                                  (true, true, _, _, _) ||
+                                  (_, _, _, _, true) =>
+                                    const SizedBox(
+                                      width: 26,
+                                      height: 26,
+                                      child:
+                                          CircularProgressIndicator(size: 1.5),
+                                    ),
+                                  (_, _, true, _, _) => Icon(
+                                      SpotubeIcons.pause,
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  (_, _, _, true, _) => const Icon(
+                                      SpotubeIcons.play,
+                                      color: Colors.white,
+                                    ),
+                                  _ => const SizedBox.shrink(),
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            title: Row(
+              children: [
+                Expanded(
+                  flex: 6,
+                  child: switch (track) {
+                    LocalTrack() => Text(
+                        track.name!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    _ => Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Button(
+                              style: ButtonVariance.link.copyWith(
+                                padding: (context, states) => EdgeInsets.zero,
                               ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          decoration: BoxDecoration(
-                            borderRadius: theme.borderRadiusMd,
-                            color: isHovering
-                                ? Colors.black.withOpacity(0.4)
-                                : Colors.transparent,
-                          ),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: Center(
-                          child: Skeleton.ignore(
-                            child: Consumer(
-                              builder: (context, ref, _) {
-                                final isFetchingActiveTrack =
-                                    ref.watch(queryingTrackInfoProvider);
-                                return AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
-                                  child: switch ((
-                                    isPlaying,
-                                    isFetchingActiveTrack,
-                                    isPlaying,
-                                    isHovering,
-                                    isLoading.value
-                                  )) {
-                                    (true, true, _, _, _) ||
-                                    (_, _, _, _, true) =>
-                                      const SizedBox(
-                                        width: 26,
-                                        height: 26,
-                                        child: CircularProgressIndicator(
-                                            size: 1.5),
-                                      ),
-                                    (_, _, true, _, _) => Icon(
-                                        SpotubeIcons.pause,
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                    (_, _, _, true, _) => const Icon(
-                                        SpotubeIcons.play,
-                                        color: Colors.white,
-                                      ),
-                                    _ => const SizedBox.shrink(),
+                              onPressed: () {
+                                context.pushNamed(
+                                  TrackPage.name,
+                                  pathParameters: {
+                                    "id": track.id!,
                                   },
                                 );
                               },
+                              child: Text(
+                                track.name!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
-              ),
-              title: Row(
-                children: [
+                  },
+                ),
+                if (constrains.mdAndUp) ...[
+                  const SizedBox(width: 8),
                   Expanded(
-                    flex: 6,
+                    flex: 4,
                     child: switch (track) {
                       LocalTrack() => Text(
-                          track.name!,
+                          track.album!.name!,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                      _ => LinkText(
-                          track.name!,
-                          "/track/${track.id}",
-                          push: true,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                    },
-                  ),
-                  if (constrains.mdAndUp) ...[
-                    const SizedBox(width: 8),
-                    Expanded(
-                      flex: 4,
-                      child: switch (track) {
-                        LocalTrack() => Text(
+                      _ => Align(
+                          alignment: Alignment.centerLeft,
+                          child: LinkText(
                             track.album!.name!,
-                            maxLines: 1,
+                            "/album/${track.album?.id}",
+                            extra: track.album,
+                            push: true,
                             overflow: TextOverflow.ellipsis,
                           ),
-                        _ => Align(
-                            alignment: Alignment.centerLeft,
-                            child: LinkText(
-                              track.album!.name!,
-                              "/album/${track.album?.id}",
-                              extra: track.album,
-                              push: true,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          )
-                      },
-                    ),
-                  ],
+                        )
+                    },
+                  ),
                 ],
-              ),
-              subtitle: Align(
-                alignment: Alignment.centerLeft,
-                child: track is LocalTrack
-                    ? Text(
-                        track.artists?.asString() ?? '',
-                      )
-                    : ClipRect(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxHeight: 40),
-                          child: ArtistLink(
-                            artists: track.artists ?? [],
-                            onOverflowArtistClick: () => ServiceUtils.pushNamed(
-                              context,
-                              TrackPage.name,
-                              pathParameters: {
-                                "id": track.id!,
-                              },
-                            ),
+              ],
+            ),
+            subtitle: Align(
+              alignment: Alignment.centerLeft,
+              child: track is LocalTrack
+                  ? Text(
+                      track.artists?.asString() ?? '',
+                    )
+                  : ClipRect(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxHeight: 40),
+                        child: ArtistLink(
+                          artists: track.artists ?? [],
+                          onOverflowArtistClick: () => ServiceUtils.pushNamed(
+                            context,
+                            TrackPage.name,
+                            pathParameters: {
+                              "id": track.id!,
+                            },
                           ),
                         ),
                       ),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(width: 8),
-                  Text(
-                    Duration(milliseconds: track.durationMs ?? 0)
-                        .toHumanReadableString(padZero: false),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  TrackOptions(
-                    track: track,
-                    playlistId: playlistId,
-                    userPlaylist: userPlaylist,
-                    showMenuCbRef: showOptionCbRef,
-                  ),
-                  if (kIsDesktop) const Gap(10),
-                ],
-              ),
+                    ),
+            ),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(width: 8),
+                Text(
+                  Duration(milliseconds: track.durationMs ?? 0)
+                      .toHumanReadableString(padZero: false),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                TrackOptions(
+                  track: track,
+                  playlistId: playlistId,
+                  userPlaylist: userPlaylist,
+                  showMenuCbRef: showOptionCbRef,
+                ),
+                if (kIsDesktop) const Gap(10),
+              ],
             ),
           ),
         ),

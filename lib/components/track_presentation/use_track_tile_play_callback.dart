@@ -32,7 +32,11 @@ Future<void> Function(Track track, int index) useTrackTilePlayCallback(
         ref.read(presentationStateProvider(options.collection).notifier);
 
     if (state.selectedTracks.isNotEmpty) {
-      notifier.selectTrack(track);
+      if (state.selectedTracks.contains(track)) {
+        notifier.deselectTrack(track);
+      } else {
+        notifier.selectTrack(track);
+      }
       return;
     }
 
