@@ -10,7 +10,7 @@ import 'package:spotube/modules/connect/connect_device.dart';
 import 'package:spotube/modules/home/sections/featured.dart';
 import 'package:spotube/modules/home/sections/feed.dart';
 import 'package:spotube/modules/home/sections/friends.dart';
-import 'package:spotube/modules/home/sections/genres.dart';
+import 'package:spotube/modules/home/sections/genres/genres.dart';
 import 'package:spotube/modules/home/sections/made_for_user.dart';
 import 'package:spotube/modules/home/sections/new_releases.dart';
 import 'package:spotube/modules/home/sections/recent.dart';

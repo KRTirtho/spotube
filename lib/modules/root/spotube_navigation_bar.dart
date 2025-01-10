@@ -55,25 +55,30 @@ class SpotubeNavigationBar extends HookConsumerWidget {
       duration: const Duration(milliseconds: 100),
       height: panelHeight,
       child: SingleChildScrollView(
-        child: NavigationBar(
-          index: selectedIndex,
-          surfaceBlur: context.theme.surfaceBlur,
-          surfaceOpacity: context.theme.surfaceOpacity,
-          onSelected: (i) {
-            ServiceUtils.navigateNamed(context, navbarTileList[i].name);
-          },
+        child: Column(
           children: [
-            for (final tile in navbarTileList)
-              NavigationButton(
-                style: const ButtonStyle.muted(density: ButtonDensity.icon),
-                selectedStyle:
-                    const ButtonStyle.fixed(density: ButtonDensity.icon),
-                child: Badge(
-                  isLabelVisible: tile.id == "library" && downloadCount > 0,
-                  label: Text(downloadCount.toString()),
-                  child: Icon(tile.icon),
-                ),
-              )
+            const Divider(),
+            NavigationBar(
+              index: selectedIndex,
+              surfaceBlur: context.theme.surfaceBlur,
+              surfaceOpacity: context.theme.surfaceOpacity,
+              onSelected: (i) {
+                ServiceUtils.navigateNamed(context, navbarTileList[i].name);
+              },
+              children: [
+                for (final tile in navbarTileList)
+                  NavigationButton(
+                    style: const ButtonStyle.muted(density: ButtonDensity.icon),
+                    selectedStyle:
+                        const ButtonStyle.fixed(density: ButtonDensity.icon),
+                    child: Badge(
+                      isLabelVisible: tile.id == "library" && downloadCount > 0,
+                      label: Text(downloadCount.toString()),
+                      child: Icon(tile.icon),
+                    ),
+                  )
+              ],
+            ),
           ],
         ),
       ),
