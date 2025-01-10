@@ -1,8 +1,10 @@
 library spotify;
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:drift/drift.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/database/database.dart';

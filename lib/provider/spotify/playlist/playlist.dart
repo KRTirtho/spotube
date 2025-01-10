@@ -104,3 +104,39 @@ final playlistProvider =
     AsyncNotifierProvider.family<PlaylistNotifier, Playlist, String>(
   () => PlaylistNotifier(),
 );
+
+final _blendModes = BlendMode.values
+    .where((e) => switch (e) {
+          BlendMode.clear ||
+          BlendMode.src ||
+          BlendMode.srcATop ||
+          BlendMode.srcIn ||
+          BlendMode.srcOut ||
+          BlendMode.srcOver ||
+          BlendMode.dstOut ||
+          BlendMode.xor =>
+            false,
+          _ => true
+        })
+    .toList();
+
+typedef PlaylistImageInfo = ({
+  Color color,
+  BlendMode colorBlendMode,
+  String src,
+  Alignment placement,
+});
+
+final playlistImageProvider = Provider.family<PlaylistImageInfo, String>(
+  (ref, playlistId) {
+    final random = Random();
+
+    return (
+      color: Colors.primaries[random.nextInt(Colors.primaries.length)],
+      colorBlendMode: _blendModes[random.nextInt(_blendModes.length)],
+      src: Assets
+          .patterns.values[random.nextInt(Assets.patterns.values.length)].path,
+      placement: random.nextBool() ? Alignment.topLeft : Alignment.bottomLeft,
+    );
+  },
+);

@@ -11,14 +11,14 @@ class PlaybuttonCard extends StatelessWidget {
   final void Function()? onAddToQueuePressed;
   final String? description;
 
-  final String imageUrl;
+  final String? imageUrl;
+  final Widget? image;
   final bool isPlaying;
   final bool isLoading;
   final String title;
   final bool isOwner;
 
   const PlaybuttonCard({
-    required this.imageUrl,
     required this.isPlaying,
     required this.isLoading,
     required this.title,
@@ -27,8 +27,13 @@ class PlaybuttonCard extends StatelessWidget {
     this.onAddToQueuePressed,
     this.onTap,
     this.isOwner = false,
+    this.imageUrl,
+    this.image,
     super.key,
-  });
+  }) : assert(
+          imageUrl != null || image != null,
+          "imageUrl and image can't be null at the same time",
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -40,17 +45,27 @@ class PlaybuttonCard extends StatelessWidget {
       child: CardImage(
         image: Stack(
           children: [
-            Container(
-              width: 150 * scale,
-              height: 150 * scale,
-              decoration: BoxDecoration(
-                borderRadius: context.theme.borderRadiusMd,
-                image: DecorationImage(
-                  image: UniversalImage.imageProvider(imageUrl),
-                  fit: BoxFit.cover,
+            if (imageUrl != null)
+              Container(
+                width: 150 * scale,
+                height: 150 * scale,
+                decoration: BoxDecoration(
+                  borderRadius: context.theme.borderRadiusMd,
+                  image: DecorationImage(
+                    image: UniversalImage.imageProvider(imageUrl!),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              )
+            else
+              SizedBox(
+                width: 150 * scale,
+                height: 150 * scale,
+                child: ClipRRect(
+                  borderRadius: context.theme.borderRadiusMd,
+                  child: image!,
                 ),
               ),
-            ),
             StatedWidget.builder(
               builder: (context, states) {
                 return Positioned(

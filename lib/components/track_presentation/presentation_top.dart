@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
@@ -12,6 +14,7 @@ import 'package:spotube/components/track_presentation/use_is_user_playlist.dart'
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class TrackPresentationTopSection extends HookConsumerWidget {
   const TrackPresentationTopSection({super.key});
@@ -22,6 +25,26 @@ class TrackPresentationTopSection extends HookConsumerWidget {
     final options = TrackPresentationOptions.of(context);
     final scale = context.theme.scaling;
     final isUserPlaylist = useIsUserPlaylist(ref, options.collectionId);
+
+    final playlistImage = (options.collection is PlaylistSimple &&
+            (options.collection as PlaylistSimple).owner?.displayName ==
+                "Spotify" &&
+            Env.disableSpotifyImages)
+        ? ref.watch(playlistImageProvider(options.collectionId))
+        : null;
+    final decorationImage = playlistImage != null
+        ? DecorationImage(
+            image: AssetImage(playlistImage.src),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              playlistImage.color,
+              playlistImage.colorBlendMode,
+            ),
+          )
+        : DecorationImage(
+            image: UniversalImage.imageProvider(options.image),
+            fit: BoxFit.cover,
+          );
 
     final imageDimension = mediaQuery.mdAndUp ? 200 : 120;
 
@@ -153,10 +176,7 @@ class TrackPresentationTopSection extends HookConsumerWidget {
             children: [
               DecoratedBox(
                 decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: UniversalImage.imageProvider(options.image),
-                    fit: BoxFit.cover,
-                  ),
+                  image: decorationImage,
                   borderRadius: BorderRadius.circular(45),
                 ),
                 child: OutlinedContainer(
@@ -179,11 +199,7 @@ class TrackPresentationTopSection extends HookConsumerWidget {
                             width: imageDimension * scale,
                             decoration: BoxDecoration(
                               borderRadius: context.theme.borderRadiusXl,
-                              image: DecorationImage(
-                                image:
-                                    UniversalImage.imageProvider(options.image),
-                                fit: BoxFit.cover,
-                              ),
+                              image: decorationImage,
                             ),
                           ),
                           Flexible(

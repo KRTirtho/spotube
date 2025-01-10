@@ -172,6 +172,7 @@ flutter:
     - assets/tutorial/
     - assets/logos/
     - assets/backgrounds/
+    - assets/patterns/
     - LICENSE
   fonts:
     - family: GeistSans

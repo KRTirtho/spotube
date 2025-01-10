@@ -1,11 +1,14 @@
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/string.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:stroke_text/stroke_text.dart';
 
 class GenreSectionCardPlaylistCard extends HookConsumerWidget {
   final PlaylistSimple playlist;
@@ -58,15 +61,58 @@ class GenreSectionCardPlaylistCard extends HookConsumerWidget {
             children: [
               ClipRRect(
                 borderRadius: theme.borderRadiusSm,
-                child: UniversalImage(
-                  path: (playlist.images)!.asUrlString(
-                    placeholder: ImagePlaceholder.collection,
-                    index: 1,
-                  ),
-                  fit: BoxFit.cover,
-                  height: 100 * theme.scaling,
-                  width: 100 * theme.scaling,
-                ),
+                child: playlist.owner?.displayName == "Spotify" &&
+                        Env.disableSpotifyImages
+                    ? Consumer(
+                        builder: (context, ref, _) {
+                          final (:src, :color, :colorBlendMode, :placement) =
+                              ref.watch(playlistImageProvider(playlist.id!));
+                          return SizedBox(
+                            height: 100 * theme.scaling,
+                            width: 100 * theme.scaling,
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: Image.asset(
+                                    src,
+                                    color: color,
+                                    colorBlendMode: colorBlendMode,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Positioned.fill(
+                                  top: placement == Alignment.topLeft
+                                      ? 10
+                                      : null,
+                                  left: 10,
+                                  bottom: placement == Alignment.bottomLeft
+                                      ? 10
+                                      : null,
+                                  child: StrokeText(
+                                    text: playlist.name!,
+                                    strokeColor: Colors.white,
+                                    strokeWidth: 3,
+                                    textColor: Colors.black,
+                                    textStyle: const TextStyle(
+                                      fontSize: 16,
+                                      fontStyle: FontStyle.italic,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      )
+                    : UniversalImage(
+                        path: (playlist.images)!.asUrlString(
+                          placeholder: ImagePlaceholder.collection,
+                          index: 1,
+                        ),
+                        fit: BoxFit.cover,
+                        height: 100 * theme.scaling,
+                        width: 100 * theme.scaling,
+                      ),
               ),
               Text(
                 playlist.name!,

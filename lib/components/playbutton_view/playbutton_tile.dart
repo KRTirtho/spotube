@@ -11,14 +11,14 @@ class PlaybuttonTile extends StatelessWidget {
   final void Function()? onAddToQueuePressed;
   final String? description;
 
-  final String imageUrl;
+  final String? imageUrl;
+  final Widget? image;
   final bool isPlaying;
   final bool isLoading;
   final String title;
   final bool isOwner;
 
   const PlaybuttonTile({
-    required this.imageUrl,
     required this.isPlaying,
     required this.isLoading,
     required this.title,
@@ -27,8 +27,13 @@ class PlaybuttonTile extends StatelessWidget {
     this.onAddToQueuePressed,
     this.onTap,
     this.isOwner = false,
+    this.imageUrl,
+    this.image,
     super.key,
-  });
+  }) : assert(
+          imageUrl != null || image != null,
+          "imageUrl and image can't be null at the same time",
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -36,17 +41,26 @@ class PlaybuttonTile extends StatelessWidget {
     final scale = context.theme.scaling;
 
     return Button(
-      leading: Container(
-        width: 50 * scale,
-        height: 50 * scale,
-        decoration: BoxDecoration(
-          borderRadius: context.theme.borderRadiusMd,
-          image: DecorationImage(
-            image: UniversalImage.imageProvider(imageUrl),
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
+      leading: imageUrl != null
+          ? Container(
+              width: 50 * scale,
+              height: 50 * scale,
+              decoration: BoxDecoration(
+                borderRadius: context.theme.borderRadiusMd,
+                image: DecorationImage(
+                  image: UniversalImage.imageProvider(imageUrl!),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )
+          : SizedBox(
+              width: 50 * scale,
+              height: 50 * scale,
+              child: ClipRRect(
+                borderRadius: context.theme.borderRadiusMd,
+                child: image,
+              ),
+            ),
       style: ButtonVariance.ghost.copyWith(
         padding: (context, states, value) {
           return (ButtonVariance.ghost.padding(context, states) as EdgeInsets)

@@ -35,6 +35,84 @@ class $AssetsLogosGen {
   List<AssetGenImage> get values => [songlinkTransparent, songlink];
 }
 
+class $AssetsPatternsGen {
+  const $AssetsPatternsGen();
+
+  /// File path: assets/patterns/black_white_visualized.jpg
+  AssetGenImage get blackWhiteVisualized =>
+      const AssetGenImage('assets/patterns/black_white_visualized.jpg');
+
+  /// File path: assets/patterns/brazil_carnival.jpg
+  AssetGenImage get brazilCarnival =>
+      const AssetGenImage('assets/patterns/brazil_carnival.jpg');
+
+  /// File path: assets/patterns/cotton_balls.jpg
+  AssetGenImage get cottonBalls =>
+      const AssetGenImage('assets/patterns/cotton_balls.jpg');
+
+  /// File path: assets/patterns/cute_worms.jpg
+  AssetGenImage get cuteWorms =>
+      const AssetGenImage('assets/patterns/cute_worms.jpg');
+
+  /// File path: assets/patterns/flash_cross_axis.jpg
+  AssetGenImage get flashCrossAxis =>
+      const AssetGenImage('assets/patterns/flash_cross_axis.jpg');
+
+  /// File path: assets/patterns/memphis_shapes.jpg
+  AssetGenImage get memphisShapes =>
+      const AssetGenImage('assets/patterns/memphis_shapes.jpg');
+
+  /// File path: assets/patterns/oval_gloomy.jpg
+  AssetGenImage get ovalGloomy =>
+      const AssetGenImage('assets/patterns/oval_gloomy.jpg');
+
+  /// File path: assets/patterns/oval_sunny.jpg
+  AssetGenImage get ovalSunny =>
+      const AssetGenImage('assets/patterns/oval_sunny.jpg');
+
+  /// File path: assets/patterns/red_nimbuses.jpg
+  AssetGenImage get redNimbuses =>
+      const AssetGenImage('assets/patterns/red_nimbuses.jpg');
+
+  /// File path: assets/patterns/tree_bark.jpg
+  AssetGenImage get treeBark =>
+      const AssetGenImage('assets/patterns/tree_bark.jpg');
+
+  /// File path: assets/patterns/vibrant_pentagons.jpg
+  AssetGenImage get vibrantPentagons =>
+      const AssetGenImage('assets/patterns/vibrant_pentagons.jpg');
+
+  /// File path: assets/patterns/wiring_pattern.jpg
+  AssetGenImage get wiringPattern =>
+      const AssetGenImage('assets/patterns/wiring_pattern.jpg');
+
+  /// File path: assets/patterns/zigzags_gloomy.jpg
+  AssetGenImage get zigzagsGloomy =>
+      const AssetGenImage('assets/patterns/zigzags_gloomy.jpg');
+
+  /// File path: assets/patterns/zigzags_sunny.jpg
+  AssetGenImage get zigzagsSunny =>
+      const AssetGenImage('assets/patterns/zigzags_sunny.jpg');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        blackWhiteVisualized,
+        brazilCarnival,
+        cottonBalls,
+        cuteWorms,
+        flashCrossAxis,
+        memphisShapes,
+        ovalGloomy,
+        ovalSunny,
+        redNimbuses,
+        treeBark,
+        vibrantPentagons,
+        wiringPattern,
+        zigzagsGloomy,
+        zigzagsSunny
+      ];
+}
+
 class $AssetsTutorialGen {
   const $AssetsTutorialGen();
 
@@ -67,6 +145,7 @@ class Assets {
   static const AssetGenImage likedTracks =
       AssetGenImage('assets/liked-tracks.jpg');
   static const $AssetsLogosGen logos = $AssetsLogosGen();
+  static const $AssetsPatternsGen patterns = $AssetsPatternsGen();
   static const AssetGenImage placeholder =
       AssetGenImage('assets/placeholder.png');
   static const AssetGenImage spotubeHeroBanner =
