@@ -19,7 +19,6 @@ import 'package:spotube/pages/search/sections/tracks.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
-import 'package:spotube/utils/platform.dart';
 
 class SearchPage extends HookConsumerWidget {
   static const name = "search";
@@ -70,8 +69,7 @@ class SearchPage extends HookConsumerWidget {
       bottom: false,
       child: Scaffold(
         headers: [
-          if (kIsWindows || kIsLinux)
-            const TitleBar(automaticallyImplyLeading: true)
+          if (kTitlebarVisible) const TitleBar(automaticallyImplyLeading: true)
         ],
         child: auth.asData?.value == null
             ? const AnonymousFallback()

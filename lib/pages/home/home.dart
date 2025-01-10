@@ -36,7 +36,7 @@ class HomePage extends HookConsumerWidget {
         bottom: false,
         child: Scaffold(
           headers: [
-            if (kIsWindows || kIsLinux) const TitleBar(),
+            if (kTitlebarVisible) const TitleBar(),
           ],
           child: CustomScrollView(
             controller: controller,

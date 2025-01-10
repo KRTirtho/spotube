@@ -7,6 +7,8 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 
+final kTitlebarVisible = kIsWindows || kIsLinux;
+
 class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
   final bool automaticallyImplyLeading;
   final List<Widget> trailing;

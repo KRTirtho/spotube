@@ -1,8 +1,6 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/components/titlebar/mouse_state.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 
 typedef WindowButtonIconBuilder = Widget Function(
     WindowButtonContext buttonContext);
@@ -86,14 +84,7 @@ class WindowButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) {
-      return Container();
-    } else {
-      // Don't show button on macOS
-      if (Platform.isMacOS) {
-        return Container();
-      }
-    }
+    if (!kTitlebarVisible) return const SizedBox.shrink();
 
     return MouseStateBuilder(
       builder: (context, mouseState) {
@@ -103,11 +94,12 @@ class WindowButton extends StatelessWidget {
             backgroundColor: getBackgroundColor(mouseState),
             iconColor: getIconColor(mouseState));
 
-        var icon =
-            (iconBuilder != null) ? iconBuilder!(buttonContext) : Container();
+        var icon = (iconBuilder != null)
+            ? iconBuilder!(buttonContext)
+            : const SizedBox();
 
         var fadeOutColor =
-            getBackgroundColor(MouseState()..isMouseOver = true).withOpacity(0);
+            getBackgroundColor(MouseState()..isMouseOver = true).withAlpha(0);
         var padding = this.padding ?? const EdgeInsets.all(10);
         var animationMs =
             mouseState.isMouseOver ? (animate ? 100 : 0) : (animate ? 200 : 0);
