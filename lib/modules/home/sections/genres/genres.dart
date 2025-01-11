@@ -55,6 +55,7 @@ class HomeGenresSection extends HookConsumerWidget {
 
       return () {
         timer.cancel();
+        controller.dispose();
       };
     }, []);
 

@@ -105,7 +105,7 @@ dependencies:
   shadcn_flutter:
     git:
       url: https://github.com/KRTirtho/shadcn_flutter.git
-      ref: fix-scaffold-footer-safearea
+      ref: d928e73cd734582046c63a3bed99cc42aeab6085
   shared_preferences: ^2.2.3
   shelf: ^1.4.1
   shelf_router: ^1.1.4
