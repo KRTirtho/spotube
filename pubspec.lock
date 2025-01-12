@@ -979,10 +979,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_undraw
-      sha256: "17fe2738231c502171f984c003f6e40979de1a2550ef2debdd29fec27ae006ea"
+      sha256: a38083350fac9e0d44ddde0e53a39f00730498ed4a110f967a38c6fb1a161755
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.0"
+    version: "0.2.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -2696,11 +2696,12 @@ packages:
   youtube_explode_dart:
     dependency: "direct main"
     description:
-      name: youtube_explode_dart
-      sha256: "51ca5b2c03bf56060143d4f87df90ec3227592d7ae8a8003532533ae019d4291"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.6"
+      path: "."
+      ref: e519db65ad0b0a40b12f69285932f9db509da3cf
+      resolved-ref: e519db65ad0b0a40b12f69285932f9db509da3cf
+      url: "https://github.com/Hexer10/youtube_explode_dart.git"
+    source: git
+    version: "2.3.7"
 sdks:
   dart: ">=3.6.0 <4.0.0"
   flutter: ">=3.27.0"
