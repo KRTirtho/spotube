@@ -1,4 +1,5 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -7,6 +8,7 @@ import 'package:spotube/components/playbutton_view/playbutton_card.dart';
 import 'package:spotube/components/playbutton_view/playbutton_tile.dart';
 import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 const _dummyPlaybuttonCard = PlaybuttonCard(
@@ -99,38 +101,59 @@ class PlaybuttonView extends StatelessWidget {
             const SliverGap(10),
             // Toggle between grid and list view
             switch ((isGrid.value, isLoading)) {
-              (true, _) => SliverGrid.builder(
-                  itemCount: isLoading ? 6 : itemCount + 1,
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 150 * scale,
-                    mainAxisExtent: 225 * scale,
-                    crossAxisSpacing: 12 * scale,
-                    mainAxisSpacing: 12 * scale,
-                  ),
-                  itemBuilder: (context, index) {
-                    if (isLoading) {
-                      return const Skeletonizer(
-                        enabled: true,
-                        child: _dummyPlaybuttonCard,
-                      );
-                    }
-
-                    if (index == itemCount) {
-                      if (!hasMore) return const SizedBox.shrink();
-                      return Waypoint(
-                        controller: controller,
-                        isGrid: true,
-                        onTouchEdge: onRequestMore,
-                        child: const Skeletonizer(
-                          enabled: true,
-                          child: _dummyPlaybuttonCard,
+              (true, _) => !isLoading && itemCount == 0
+                  ? SliverPadding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      sliver: SliverToBoxAdapter(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 10,
+                          children: [
+                            Undraw(
+                              height: 200 * context.theme.scaling,
+                              illustration: UndrawIllustration.taken,
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                            Text(
+                              context.l10n.nothing_found,
+                              textAlign: TextAlign.center,
+                            ).muted().small()
+                          ],
                         ),
-                      );
-                    }
+                      ),
+                    )
+                  : SliverGrid.builder(
+                      itemCount: isLoading ? 6 : itemCount + 1,
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        maxCrossAxisExtent: 150 * scale,
+                        mainAxisExtent: 225 * scale,
+                        crossAxisSpacing: 12 * scale,
+                        mainAxisSpacing: 12 * scale,
+                      ),
+                      itemBuilder: (context, index) {
+                        if (isLoading) {
+                          return const Skeletonizer(
+                            enabled: true,
+                            child: _dummyPlaybuttonCard,
+                          );
+                        }
 
-                    return gridItemBuilder(context, index);
-                  },
-                ),
+                        if (index == itemCount) {
+                          if (!hasMore) return const SizedBox.shrink();
+                          return Waypoint(
+                            controller: controller,
+                            isGrid: true,
+                            onTouchEdge: onRequestMore,
+                            child: const Skeletonizer(
+                              enabled: true,
+                              child: _dummyPlaybuttonCard,
+                            ),
+                          );
+                        }
+
+                        return gridItemBuilder(context, index);
+                      },
+                    ),
               (false, true) => Skeletonizer.sliver(
                   enabled: true,
                   child: SliverList(
@@ -150,6 +173,23 @@ class PlaybuttonView extends StatelessWidget {
                   onFetchData: onRequestMore,
                   hasReachedMax: !hasMore,
                   isLoading: isLoading,
+                  emptyBuilder: (context) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 10,
+                      children: [
+                        Undraw(
+                          height: 200 * context.theme.scaling,
+                          illustration: UndrawIllustration.taken,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        Text(
+                          context.l10n.nothing_found,
+                          textAlign: TextAlign.center,
+                        ).muted().small()
+                      ],
+                    );
+                  },
                 ),
             }
           ],

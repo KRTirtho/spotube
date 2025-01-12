@@ -20,6 +20,17 @@ class $AssetsBackgroundsGen {
   List<AssetGenImage> get values => [xmasEffect];
 }
 
+class $AssetsIllustrationsGen {
+  const $AssetsIllustrationsGen();
+
+  /// File path: assets/illustrations/fixing_bugs.png
+  AssetGenImage get fixingBugs =>
+      const AssetGenImage('assets/illustrations/fixing_bugs.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [fixingBugs];
+}
+
 class $AssetsLogosGen {
   const $AssetsLogosGen();
 
@@ -140,6 +151,8 @@ class Assets {
       AssetGenImage('assets/bengali-patterns-bg.jpg');
   static const AssetGenImage branding = AssetGenImage('assets/branding.png');
   static const AssetGenImage emptyBox = AssetGenImage('assets/empty_box.png');
+  static const $AssetsIllustrationsGen illustrations =
+      $AssetsIllustrationsGen();
   static const AssetGenImage invidious = AssetGenImage('assets/invidious.jpg');
   static const AssetGenImage jiosaavn = AssetGenImage('assets/jiosaavn.png');
   static const AssetGenImage likedTracks =

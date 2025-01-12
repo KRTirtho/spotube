@@ -1,6 +1,8 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
@@ -8,6 +10,7 @@ import 'package:spotube/components/track_presentation/presentation_state.dart';
 import 'package:spotube/components/track_presentation/use_track_tile_play_callback.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/components/track_presentation/use_is_user_playlist.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
@@ -24,6 +27,30 @@ class PresentationListSection extends HookConsumerWidget {
     final isUserPlaylist = useIsUserPlaylist(ref, options.collectionId);
 
     final onTileTap = useTrackTilePlayCallback(ref);
+
+    if (state.presentationTracks.isEmpty && !options.pagination.isLoading) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Undraw(
+                illustration: UndrawIllustration.dreamer,
+                color: context.theme.colorScheme.primary,
+                height: 200 * context.theme.scaling,
+              ),
+              Text(
+                isUserPlaylist
+                    ? context.l10n.no_tracks_added_yet
+                    : context.l10n.no_tracks,
+                textAlign: TextAlign.center,
+              ).muted().small(),
+            ],
+          ),
+        ),
+      );
+    }
 
     return SliverInfiniteList(
       isLoading: options.pagination.isLoading,

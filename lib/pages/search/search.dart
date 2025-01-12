@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:spotify/spotify.dart';
@@ -159,21 +160,13 @@ class SearchPage extends HookConsumerWidget {
                               SizedBox(
                                 height: mediaQuery.height * 0.2,
                               ),
-                              Icon(
-                                SpotubeIcons.web,
-                                size: 120,
-                                color: theme.colorScheme.foreground
-                                    .withOpacity(0.7),
+                              Undraw(
+                                illustration: UndrawIllustration.explore,
+                                color: theme.colorScheme.primary,
+                                height: 200 * theme.scaling,
                               ),
                               const SizedBox(height: 20),
-                              Text(
-                                context.l10n.search_to_get_results,
-                                style: theme.typography.h3.copyWith(
-                                  fontWeight: FontWeight.w900,
-                                  color: theme.colorScheme.foreground
-                                      .withOpacity(0.5),
-                                ),
-                              ),
+                              Text(context.l10n.search_to_get_results).large(),
                             ],
                           ),
                         (false, true) => Container(

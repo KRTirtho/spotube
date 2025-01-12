@@ -9,7 +9,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "bn": [
@@ -22,7 +27,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "ca": [
@@ -35,7 +45,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "cs": [
@@ -48,7 +63,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "de": [
@@ -61,7 +81,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "es": [
@@ -74,7 +99,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "eu": [
@@ -87,7 +117,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "fa": [
@@ -100,7 +135,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "fi": [
@@ -113,7 +153,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "fr": [
@@ -126,7 +171,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "hi": [
@@ -139,7 +189,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "id": [
@@ -152,7 +207,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "it": [
@@ -165,7 +225,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "ja": [
@@ -178,7 +243,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "ka": [
@@ -191,7 +261,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "ko": [
@@ -204,7 +279,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "ne": [
@@ -217,7 +297,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "nl": [
@@ -230,7 +315,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "pl": [
@@ -243,7 +333,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "pt": [
@@ -256,7 +351,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "ru": [
@@ -269,7 +369,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "th": [
@@ -282,7 +387,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "tr": [
@@ -295,7 +405,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "uk": [
@@ -308,7 +423,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "vi": [
@@ -321,7 +441,12 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ],
 
   "zh": [
@@ -334,6 +459,11 @@
     "add_all_to_queue",
     "play_all_next",
     "pause",
-    "view_all"
+    "view_all",
+    "no_tracks_added_yet",
+    "no_tracks",
+    "no_tracks_listened_yet",
+    "not_following_artists",
+    "no_favorite_albums_yet"
   ]
 }

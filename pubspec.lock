@@ -963,18 +963,26 @@ packages:
     source: hosted
     version: "1.1.1"
   flutter_svg:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: flutter_svg
-      sha256: "6ff9fa12892ae074092de2fa6a9938fb21dbabfdaa2ff57dc697ff912fc8d4b2"
+      sha256: c200fd79c918a40c5cd50ea0877fa13f81bdaf6f0a5d3dbcc2a13e3285d6aa1b
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "2.0.17"
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_undraw:
+    dependency: "direct main"
+    description:
+      name: flutter_undraw
+      sha256: "17fe2738231c502171f984c003f6e40979de1a2550ef2debdd29fec27ae006ea"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -1662,14 +1670,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.1"
-  path_drawing:
-    dependency: transitive
-    description:
-      name: path_drawing
-      sha256: bbb1934c0cbb03091af082a6389ca2080345291ef07a5fa6d6e078ba8682f977
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   path_parsing:
     dependency: transitive
     description:
@@ -2525,6 +2525,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.1"
+  vector_graphics:
+    dependency: transitive
+    description:
+      name: vector_graphics
+      sha256: "27d5fefe86fb9aace4a9f8375b56b3c292b64d8c04510df230f849850d912cb7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.15"
   vector_graphics_codec:
     dependency: transitive
     description:

@@ -1,9 +1,11 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 
@@ -79,45 +81,82 @@ class UserArtists extends HookConsumerWidget {
                     ),
                   ),
                   const SliverGap(10),
-                  SliverLayoutBuilder(builder: (context, constrains) {
-                    return SliverGrid.builder(
-                      itemCount: filteredArtists.isEmpty
-                          ? 6
-                          : filteredArtists.length + 1,
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200,
-                        mainAxisExtent: constrains.smAndDown ? 225 : 250,
-                        crossAxisSpacing: 8,
-                        mainAxisSpacing: 8,
-                      ),
-                      itemBuilder: (context, index) {
-                        if (filteredArtists.isNotEmpty &&
-                            index == filteredArtists.length) {
-                          if (artistQuery.asData?.value.hasMore != true) {
-                            return const SizedBox.shrink();
+                  if (filteredArtists.isNotEmpty)
+                    SliverLayoutBuilder(builder: (context, constrains) {
+                      return SliverGrid.builder(
+                        itemCount: filteredArtists.length + 1,
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200,
+                          mainAxisExtent: constrains.smAndDown ? 225 : 250,
+                          crossAxisSpacing: 8,
+                          mainAxisSpacing: 8,
+                        ),
+                        itemBuilder: (context, index) {
+                          if (filteredArtists.isNotEmpty &&
+                              index == filteredArtists.length) {
+                            if (artistQuery.asData?.value.hasMore != true) {
+                              return const SizedBox.shrink();
+                            }
+
+                            return Waypoint(
+                              controller: controller,
+                              isGrid: true,
+                              onTouchEdge: artistQueryNotifier.fetchMore,
+                              child: Skeletonizer(
+                                enabled: true,
+                                child: ArtistCard(FakeData.artist),
+                              ),
+                            );
                           }
 
-                          return Waypoint(
-                            controller: controller,
-                            isGrid: true,
-                            onTouchEdge: artistQueryNotifier.fetchMore,
-                            child: Skeletonizer(
-                              enabled: true,
-                              child: ArtistCard(FakeData.artist),
+                          return Skeletonizer(
+                            enabled: artistQuery.isLoading,
+                            child: ArtistCard(
+                              filteredArtists.elementAtOrNull(index) ??
+                                  FakeData.artist,
                             ),
                           );
-                        }
-
-                        return Skeletonizer(
-                          enabled: artistQuery.isLoading,
-                          child: ArtistCard(
-                            filteredArtists.elementAtOrNull(index) ??
-                                FakeData.artist,
+                        },
+                      );
+                    })
+                  else if (filteredArtists.isEmpty &&
+                      searchText.value.isEmpty &&
+                      !artistQuery.isLoading)
+                    SliverToBoxAdapter(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 10,
+                        children: [
+                          Undraw(
+                            height: 200 * context.theme.scaling,
+                            illustration: UndrawIllustration.followMeDrone,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
-                        );
-                      },
-                    );
-                  }),
+                          Text(
+                            context.l10n.not_following_artists,
+                            textAlign: TextAlign.center,
+                          ).muted().small()
+                        ],
+                      ),
+                    )
+                  else
+                    SliverToBoxAdapter(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 10,
+                        children: [
+                          Undraw(
+                            height: 200 * context.theme.scaling,
+                            illustration: UndrawIllustration.taken,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          Text(
+                            context.l10n.nothing_found,
+                            textAlign: TextAlign.center,
+                          ).muted().small()
+                        ],
+                      ),
+                    ),
                   const SliverSafeArea(sliver: SliverGap(10)),
                 ],
               ),

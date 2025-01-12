@@ -1,9 +1,11 @@
+import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Image;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';
@@ -75,21 +77,45 @@ class UserAlbums extends HookConsumerWidget {
                   ),
                 ),
                 const SliverGap(10),
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  sliver: PlaybuttonView(
-                    controller: controller,
-                    itemCount: albums.length,
-                    hasMore: albumsQuery.asData?.value.hasMore == true,
-                    isLoading: albumsQuery.isLoading,
-                    onRequestMore: albumsQueryNotifier.fetchMore,
-                    gridItemBuilder: (context, index) => AlbumCard(
-                      albums[index],
+                if (albums.isEmpty &&
+                    !albumsQuery.isLoading &&
+                    searchText.value.isEmpty)
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    sliver: SliverToBoxAdapter(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 10,
+                        children: [
+                          Undraw(
+                            height: 200 * context.theme.scaling,
+                            illustration: UndrawIllustration.followMeDrone,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          Text(
+                            context.l10n.not_following_artists,
+                            textAlign: TextAlign.center,
+                          ).muted().small()
+                        ],
+                      ),
                     ),
-                    listItemBuilder: (context, index) =>
-                        AlbumCard.tile(albums[index]),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    sliver: PlaybuttonView(
+                      controller: controller,
+                      itemCount: albums.length,
+                      hasMore: albumsQuery.asData?.value.hasMore == true,
+                      isLoading: albumsQuery.isLoading,
+                      onRequestMore: albumsQueryNotifier.fetchMore,
+                      gridItemBuilder: (context, index) => AlbumCard(
+                        albums[index],
+                      ),
+                      listItemBuilder: (context, index) =>
+                          AlbumCard.tile(albums[index]),
+                    ),
                   ),
-                ),
                 const SliverSafeArea(sliver: SliverGap(10)),
               ],
             ),

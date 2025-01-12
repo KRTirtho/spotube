@@ -89,23 +89,24 @@ class GenreSectionCard extends HookConsumerWidget {
                 ),
               ],
             ),
-            Expanded(
-              child: Skeleton.ignore(
-                child: Skeletonizer(
-                  enabled: playlists?.isLoading ?? false,
-                  child: ListView.separated(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: playlistsData.length,
-                    separatorBuilder: (context, index) => const Gap(12),
-                    itemBuilder: (context, index) {
-                      final playlist = playlistsData.elementAt(index);
+            if (playlists?.hasError != true)
+              Expanded(
+                child: Skeleton.ignore(
+                  child: Skeletonizer(
+                    enabled: playlists?.isLoading ?? false,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: playlistsData.length,
+                      separatorBuilder: (context, index) => const Gap(12),
+                      itemBuilder: (context, index) {
+                        final playlist = playlistsData.elementAt(index);
 
-                      return GenreSectionCardPlaylistCard(playlist: playlist);
-                    },
+                        return GenreSectionCardPlaylistCard(playlist: playlist);
+                      },
+                    ),
                   ),
                 ),
-              ),
-            )
+              )
           ],
         ),
       ),

@@ -63,6 +63,7 @@ dependencies:
   flutter_riverpod: ^2.5.1
   flutter_secure_storage: ^9.0.0
   flutter_sharing_intent: ^1.1.0
+  flutter_undraw: ^0.2.0
   form_builder_validators: ^11.1.1
   form_validator: ^2.1.1
   freezed_annotation: ^2.4.1
@@ -163,6 +164,7 @@ dependency_overrides:
       path: packages/bonsoir_android
   web: ^1.1.0
   meta: 1.16.0
+  flutter_svg: ^2.0.17
 
 flutter:
   generate: true
@@ -174,6 +176,14 @@ flutter:
     - assets/backgrounds/
     - assets/patterns/
     - LICENSE
+    - packages/flutter_undraw/assets/undraw/access_denied.svg
+    - packages/flutter_undraw/assets/undraw/fixing_bugs.svg
+    - packages/flutter_undraw/assets/undraw/secure_login.svg
+    - packages/flutter_undraw/assets/undraw/explore.svg
+    - packages/flutter_undraw/assets/undraw/dreamer.svg
+    - packages/flutter_undraw/assets/undraw/happy_music.svg
+    - packages/flutter_undraw/assets/undraw/follow_me_drone.svg
+    - packages/flutter_undraw/assets/undraw/taken.svg
   fonts:
     - family: GeistSans
       fonts:
