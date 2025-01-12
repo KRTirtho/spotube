@@ -184,6 +184,7 @@ flutter:
     - packages/flutter_undraw/assets/undraw/happy_music.svg
     - packages/flutter_undraw/assets/undraw/follow_me_drone.svg
     - packages/flutter_undraw/assets/undraw/taken.svg
+    - packages/flutter_undraw/assets/undraw/empty.svg
   fonts:
     - family: GeistSans
       fonts:

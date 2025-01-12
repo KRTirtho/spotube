@@ -81,7 +81,7 @@ class PlayerQueue extends HookConsumerWidget {
     );
 
     if (tracks.isEmpty) {
-      return const NotFound(vertical: true);
+      return const NotFound();
     }
 
     return Stack(

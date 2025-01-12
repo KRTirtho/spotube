@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -320,10 +321,21 @@ class LocalLibraryPage extends HookConsumerWidget {
 
                             if (!trackSnapshot.isLoading &&
                                 filteredTracks.isEmpty) {
-                              return const Expanded(
-                                child: Row(
+                              return Expanded(
+                                child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [NotFound()],
+                                  children: [
+                                    Undraw(
+                                      illustration: UndrawIllustration.empty,
+                                      height: 200 * scale,
+                                      color: context.theme.colorScheme.primary,
+                                    ),
+                                    const Gap(10),
+                                    Text(
+                                      context.l10n.nothing_found,
+                                      textAlign: TextAlign.center,
+                                    ).muted().small()
+                                  ],
                                 ),
                               );
                             }
