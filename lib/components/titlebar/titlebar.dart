@@ -1,6 +1,7 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/titlebar/titlebar_buttons.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -49,7 +50,7 @@ class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
     this.height,
     this.surfaceBlur,
     this.surfaceOpacity,
-    this.useSafeArea = true,
+    this.useSafeArea = false,
   });
 
   void onDrag(WidgetRef ref) {
@@ -66,7 +67,7 @@ class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
     final lastClicked = useRef<int>(DateTime.now().millisecondsSinceEpoch);
 
     return SizedBox(
-      height: height ?? 56,
+      height: height ?? (48 * context.theme.scaling),
       child: LayoutBuilder(
         builder: (context, constraints) {
           final hasFullscreen =
@@ -102,18 +103,22 @@ class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
                   : leading,
               trailing: [
                 ...trailing,
-                WindowTitleBarButtons(foregroundColor: foregroundColor),
+                Align(
+                  alignment: Alignment.topRight,
+                  child:
+                      WindowTitleBarButtons(foregroundColor: foregroundColor),
+                ),
               ],
               title: title,
               header: header,
               subtitle: subtitle,
               trailingExpanded: trailingExpanded,
               alignment: alignment,
-              padding: padding,
+              padding: padding ?? EdgeInsets.zero,
               backgroundColor: backgroundColor,
               leadingGap: leadingGap,
               trailingGap: trailingGap,
-              height: height,
+              height: height ?? (48 * context.theme.scaling),
               surfaceBlur: surfaceBlur,
               surfaceOpacity: surfaceOpacity,
               useSafeArea: useSafeArea,
@@ -127,5 +132,5 @@ class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => Size.fromHeight(height ?? 56.0);
+  Size get preferredSize => Size.fromHeight(height ?? 48);
 }

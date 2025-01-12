@@ -70,7 +70,8 @@ class SearchPage extends HookConsumerWidget {
       bottom: false,
       child: Scaffold(
         headers: [
-          if (kTitlebarVisible) const TitleBar(automaticallyImplyLeading: true)
+          if (kTitlebarVisible)
+            const TitleBar(automaticallyImplyLeading: true, height: 30)
         ],
         child: auth.asData?.value == null
             ? const AnonymousFallback()

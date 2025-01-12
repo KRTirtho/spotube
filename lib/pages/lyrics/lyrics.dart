@@ -151,6 +151,8 @@ class LyricsPage extends HookConsumerWidget {
               ? TitleBar(
                   backgroundColor: Colors.transparent,
                   title: tabbar,
+                  height: 58 * context.theme.scaling,
+                  surfaceBlur: 0,
                 )
               : tabbar
         ],

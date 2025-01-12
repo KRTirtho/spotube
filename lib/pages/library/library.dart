@@ -2,8 +2,6 @@ import 'package:flutter/material.dart' show Badge;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-
 import 'package:spotube/modules/library/user_local_tracks.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/library/user_albums.dart';
@@ -19,7 +17,6 @@ class LibraryPage extends HookConsumerWidget {
   const LibraryPage({super.key});
   @override
   Widget build(BuildContext context, ref) {
-    final scale = context.theme.scaling;
     final downloadingCount = ref.watch(downloadManagerProvider).$downloadCount;
     final index = useState(0);
 
@@ -40,11 +37,6 @@ class LibraryPage extends HookConsumerWidget {
       child: Scaffold(
         headers: [
           TitleBar(
-            padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 12,
-                ).copyWith(left: 0) *
-                scale,
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
               child: TabList(

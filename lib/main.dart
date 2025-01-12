@@ -207,7 +207,9 @@ class Spotube extends HookConsumerWidget {
           child: child!,
         );
 
-        if (kIsDesktop && !kIsMacOS) child = DragToResizeArea(child: child);
+        if (kIsLinux) {
+          child = DragToResizeArea(child: child);
+        }
 
         return child;
       },
