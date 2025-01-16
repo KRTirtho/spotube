@@ -94,10 +94,11 @@ class SettingsAppearanceSection extends HookConsumerWidget {
           horizontal: 15,
           vertical: 5,
         ),
-        trailing: ColorTile.compact(
+        trailing: ColorChip(
           color: preferences.accentColorScheme,
+          name: preferences.accentColorScheme.name,
           onPressed: pickColorScheme(),
-          isActive: true,
+          isActive: false,
         ),
         onTap: pickColorScheme(),
       ),

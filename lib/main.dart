@@ -26,6 +26,7 @@ import 'package:spotube/hooks/configurators/use_fix_window_stretching.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/hooks/configurators/use_has_touch.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/glance/glance.dart';
@@ -43,7 +44,6 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/utils/migrations/sandbox.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:system_theme/system_theme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
@@ -82,8 +82,6 @@ Future<void> main(List<String> rawArgs) async {
     if (kIsDesktop) {
       await windowManager.setPreventClose(true);
     }
-
-    await SystemTheme.accentColor.load();
 
     if (!kIsWeb) {
       MetadataGod.initialize();
@@ -133,8 +131,8 @@ class Spotube extends HookConsumerWidget {
     final themeMode =
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
-    // final accentMaterialColor =
-    //     ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
+    final accentMaterialColor =
+        ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
     // final isAmoledTheme =
     //     ref.watch(userPreferencesProvider.select((s) => s.amoledDarkTheme));
     // final paletteColor =
@@ -217,14 +215,18 @@ class Spotube extends HookConsumerWidget {
       theme: ThemeData(
         radius: .5,
         iconTheme: const IconThemeProperties(),
-        colorScheme: ColorSchemes.lightOrange(),
+        colorScheme:
+            colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.light) ??
+                ColorSchemes.lightOrange(),
         surfaceOpacity: .8,
         surfaceBlur: 10,
       ),
       darkTheme: ThemeData(
         radius: .5,
         iconTheme: const IconThemeProperties(),
-        colorScheme: ColorSchemes.darkOrange(),
+        colorScheme:
+            colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.dark) ??
+                ColorSchemes.darkOrange(),
         surfaceOpacity: .8,
         surfaceBlur: 10,
       ),

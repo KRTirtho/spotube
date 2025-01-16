@@ -74,7 +74,6 @@ class HomeGenresSection extends HookConsumerWidget {
                 onPressed: () {
                   context.pushNamed(GenrePage.name);
                 },
-                trailing: const Icon(SpotubeIcons.angleRight),
                 child: Text(
                   context.l10n.browse_all,
                 ).muted(),
