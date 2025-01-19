@@ -120,16 +120,6 @@ class HomePlayerWidget : GlanceAppWidget() {
                     }
                 ,
             ) {
-                Image(
-                    provider = FlutterAssetImageProvider(
-                        context,
-                        "assets/backgrounds/xmas-effect.png"
-                    ),
-                    contentDescription = "Background",
-                    modifier = GlanceModifier
-                        .fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
                 Box(
                     modifier = GlanceModifier
                         .background(
