@@ -188,6 +188,7 @@ flutter:
     - packages/flutter_undraw/assets/undraw/follow_me_drone.svg
     - packages/flutter_undraw/assets/undraw/taken.svg
     - packages/flutter_undraw/assets/undraw/empty.svg
+    - packages/flutter_undraw/assets/undraw/no_data.svg
   fonts:
     - family: GeistSans
       fonts:

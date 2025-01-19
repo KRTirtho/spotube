@@ -414,5 +414,6 @@
   "no_tracks": "Looks like there are no tracks here",
   "no_tracks_listened_yet": "Looks like you haven't listened to anything yet",
   "not_following_artists": "You're not following any artists",
-  "no_favorite_albums_yet": "Looks like you haven't added any albums to your favorites yet"
+  "no_favorite_albums_yet": "Looks like you haven't added any albums to your favorites yet",
+  "no_logs_found": "No logs found"
 }

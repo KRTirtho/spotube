@@ -1,9 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart' show FilledButton, ButtonStyle, ListTile;
+import 'package:flutter/material.dart' show ListTile;
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide ButtonStyle;
-import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
@@ -44,16 +43,25 @@ class SettingsAboutSection extends HookConsumerWidget {
                 ),
               ),
             ),
-            trailing: (context, update) => FilledButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.red[100]),
-                foregroundColor: const WidgetStatePropertyAll(Colors.pink),
-                padding: const WidgetStatePropertyAll(EdgeInsets.all(15)),
-                shape: WidgetStatePropertyAll(
-                  RoundedRectangleBorder(
-                    borderRadius: context.theme.borderRadiusLg,
-                  ),
-                ),
+            trailing: (context, update) => Button(
+              style: ButtonVariance.primary.copyWith(
+                decoration: (context, states, value) {
+                  final decoration = ButtonVariance.primary
+                      .decoration(context, states) as BoxDecoration;
+
+                  if (states.contains(WidgetState.hovered)) {
+                    return decoration.copyWith(color: Colors.pink[400]);
+                  } else if (states.contains(WidgetState.focused)) {
+                    return decoration.copyWith(color: Colors.pink[300]);
+                  } else if (states.isNotEmpty) {
+                    return decoration;
+                  }
+
+                  return decoration.copyWith(color: Colors.pink);
+                },
+                textStyle: (context, states, value) => ButtonVariance.primary
+                    .textStyle(context, states)
+                    .copyWith(color: Colors.white),
               ),
               onPressed: () {
                 launchUrlString(

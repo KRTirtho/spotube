@@ -14,7 +14,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "bn": [
@@ -32,7 +33,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "ca": [
@@ -50,7 +52,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "cs": [
@@ -68,7 +71,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "de": [
@@ -86,7 +90,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "es": [
@@ -104,7 +109,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "eu": [
@@ -122,7 +128,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "fa": [
@@ -140,7 +147,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "fi": [
@@ -158,7 +166,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "fr": [
@@ -176,7 +185,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "hi": [
@@ -194,7 +204,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "id": [
@@ -212,7 +223,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "it": [
@@ -230,7 +242,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "ja": [
@@ -248,7 +261,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "ka": [
@@ -266,7 +280,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "ko": [
@@ -284,7 +299,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "ne": [
@@ -302,7 +318,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "nl": [
@@ -320,7 +337,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "pl": [
@@ -338,7 +356,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "pt": [
@@ -356,7 +375,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "ru": [
@@ -374,7 +394,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "th": [
@@ -392,7 +413,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "tr": [
@@ -410,7 +432,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "uk": [
@@ -428,7 +451,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "vi": [
@@ -446,7 +470,8 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ],
 
   "zh": [
@@ -464,6 +489,7 @@
     "no_tracks",
     "no_tracks_listened_yet",
     "not_following_artists",
-    "no_favorite_albums_yet"
+    "no_favorite_albums_yet",
+    "no_logs_found"
   ]
 }
