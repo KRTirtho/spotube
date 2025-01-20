@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:spotube/services/logger/logger.dart';
@@ -33,6 +34,10 @@ class ConnectionCheckerService with WidgetsBindingObserver {
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
       }
+    });
+
+    Connectivity().onConnectivityChanged.listen((event) async {
+      await isConnected;
     });
   }
 
@@ -77,8 +82,9 @@ class ConnectionCheckerService with WidgetsBindingObserver {
     }
 
     return interfaces.any(
-      (interface) =>
-          vpnNames.any((name) => interface.name.toLowerCase().contains(name)),
+      (interface) => vpnNames.any(
+        (name) => interface.name.toLowerCase().contains(name),
+      ),
     );
   }
 
@@ -109,10 +115,10 @@ class ConnectionCheckerService with WidgetsBindingObserver {
 
   Future<bool> get isConnected async {
     final connected = await _isConnected();
-    isConnectedSync = connected;
     if (connected != isConnectedSync /*previous value*/) {
       _connectionStreamController.add(connected);
     }
+    isConnectedSync = connected;
     return connected;
   }
 

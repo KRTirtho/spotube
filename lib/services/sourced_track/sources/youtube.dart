@@ -82,14 +82,11 @@ class YoutubeSourcedTrack extends SourcedTrack {
       );
     }
     final item = await youtubeClient.videos.get(cachedSource.sourceId);
-    final manifest = await youtubeClient.videos.streamsClient
-        .getManifest(
-          cachedSource.sourceId,
-        )
-        .timeout(
-          const Duration(seconds: 5),
-          onTimeout: () => throw ClientException("Timeout"),
-        );
+    final manifest = await youtubeClient.videos.streamsClient.getManifest(
+      cachedSource.sourceId,
+      requireWatchPage: false,
+      ytClients: [YoutubeApiClient.tv],
+    );
     return YoutubeSourcedTrack(
       ref: ref,
       siblings: [],

@@ -45,7 +45,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
     var playlist =
         await database.select(database.playlistTable).getSingleOrNull();
-    var medias = await database.select(database.playlistMediaTable).get();
+    final medias = await database.select(database.playlistMediaTable).get();
 
     if (playlist == null) {
       await database.into(database.playlistTable).insert(
