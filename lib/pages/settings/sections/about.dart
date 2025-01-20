@@ -69,14 +69,8 @@ class SettingsAboutSection extends HookConsumerWidget {
                   mode: LaunchMode.externalApplication,
                 );
               },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(SpotubeIcons.heart),
-                  const SizedBox(width: 5),
-                  Text(context.l10n.please_sponsor),
-                ],
-              ),
+              leading: const Icon(SpotubeIcons.heart),
+              child: Text(context.l10n.please_sponsor),
             ),
           ),
         if (Env.enableUpdateChecker)
