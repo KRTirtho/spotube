@@ -20,6 +20,7 @@ class ConnectionCheckerService with WidgetsBindingObserver {
     onConnectivityChanged.listen((connected) {
       try {
         if (!connected && timer == null) {
+          // check every 30 seconds if we are connected when we are not connected
           timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
             if (WidgetsBinding.instance.lifecycleState ==
                 AppLifecycleState.paused) {
@@ -111,7 +112,7 @@ class ConnectionCheckerService with WidgetsBindingObserver {
         await isVpnActive(); // when VPN is active that means we are connected
   }
 
-  bool isConnectedSync = false;
+  bool isConnectedSync = true;
 
   Future<bool> get isConnected async {
     final connected = await _isConnected();

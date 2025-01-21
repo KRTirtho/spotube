@@ -85,7 +85,13 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final manifest = await youtubeClient.videos.streamsClient.getManifest(
       cachedSource.sourceId,
       requireWatchPage: false,
-      ytClients: [YoutubeApiClient.tv],
+      ytClients: [
+        YoutubeApiClient.mediaConnect,
+        YoutubeApiClient.ios,
+        YoutubeApiClient.android,
+        YoutubeApiClient.mweb,
+        YoutubeApiClient.tv,
+      ],
     );
     return YoutubeSourcedTrack(
       ref: ref,
@@ -138,11 +144,17 @@ class YoutubeSourcedTrack extends SourcedTrack {
   ) async {
     SourceMap? sourceMap;
     if (index == 0) {
-      final manifest =
-          await youtubeClient.videos.streamsClient.getManifest(item.id).timeout(
-                const Duration(seconds: 5),
-                onTimeout: () => throw ClientException("Timeout"),
-              );
+      final manifest = await youtubeClient.videos.streamsClient.getManifest(
+        item.id,
+        requireWatchPage: false,
+        ytClients: [
+          YoutubeApiClient.mediaConnect,
+          YoutubeApiClient.ios,
+          YoutubeApiClient.android,
+          YoutubeApiClient.mweb,
+          YoutubeApiClient.tv,
+        ],
+      );
       sourceMap = toSourceMap(manifest);
     }
 
