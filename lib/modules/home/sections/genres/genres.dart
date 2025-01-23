@@ -111,21 +111,13 @@ class HomeGenresSection extends HookConsumerWidget {
               left: 0,
               child: Container(
                 height: 280 * theme.scaling,
-                width: (mediaQuery.mdAndUp ? 80 : 50) * theme.scaling,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      theme.colorScheme.background.withAlpha(255),
-                      theme.colorScheme.background.withAlpha(0),
-                    ],
-                  ),
-                ),
+                width: (mediaQuery.mdAndUp ? 60 : 40) * theme.scaling,
                 alignment: Alignment.center,
-                child: IconButton.ghost(
-                  size:
-                      mediaQuery.mdAndUp ? ButtonSize.normal : ButtonSize.small,
+                child: IconButton.secondary(
+                  shape: ButtonShape.circle,
+                  size: mediaQuery.mdAndUp
+                      ? const ButtonSize(1.3)
+                      : ButtonSize.normal,
                   icon: const Icon(SpotubeIcons.angleLeft),
                   onPressed: () {
                     controller.animatePrevious(
@@ -140,21 +132,13 @@ class HomeGenresSection extends HookConsumerWidget {
               right: 0,
               child: Container(
                 height: 280 * theme.scaling,
-                width: (mediaQuery.mdAndUp ? 80 : 50) * theme.scaling,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      theme.colorScheme.background.withAlpha(0),
-                      theme.colorScheme.background.withAlpha(255),
-                    ],
-                  ),
-                ),
+                width: (mediaQuery.mdAndUp ? 60 : 40) * theme.scaling,
                 alignment: Alignment.center,
-                child: IconButton.ghost(
-                  size:
-                      mediaQuery.mdAndUp ? ButtonSize.normal : ButtonSize.small,
+                child: IconButton.secondary(
+                  shape: ButtonShape.circle,
+                  size: mediaQuery.mdAndUp
+                      ? const ButtonSize(1.3)
+                      : ButtonSize.normal,
                   icon: const Icon(SpotubeIcons.angleRight),
                   onPressed: () {
                     controller.animateNext(
