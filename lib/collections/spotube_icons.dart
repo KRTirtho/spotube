@@ -37,6 +37,7 @@ abstract class SpotubeIcons {
   static const share = FeatherIcons.share2;
   static const playlistAdd = Icons.playlist_add_rounded;
   static const playlistRemove = Icons.playlist_remove_rounded;
+  static const playlist = Icons.playlist_play_rounded;
   static const trash = FeatherIcons.trash2;
   static const clock = FeatherIcons.clock;
   static const lyrics = Icons.lyrics_rounded;
@@ -132,4 +133,5 @@ abstract class SpotubeIcons {
   static const radioUnchecked = Icons.radio_button_off_rounded;
   static const grid = FeatherIcons.grid;
   static const list = FeatherIcons.list;
+  static const device = FeatherIcons.smartphone;
 }

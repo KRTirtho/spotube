@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
@@ -14,6 +13,7 @@ import 'package:spotube/models/database/database.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/connect/connect_device.dart';
+import 'package:spotube/pages/library/user_downloads.dart';
 import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
@@ -47,8 +47,6 @@ class Sidebar extends HookConsumerWidget {
     final routerState = GoRouterState.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
-
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
@@ -57,7 +55,14 @@ class Sidebar extends HookConsumerWidget {
       [context.l10n],
     );
 
-    final selectedIndex = sidebarTileList.indexWhere(
+    final sidebarLibraryTileList = useMemoized(
+      () => getSidebarLibraryTileList(context.l10n),
+      [context.l10n],
+    );
+
+    final tileList = [...sidebarTileList, ...sidebarLibraryTileList];
+
+    final selectedIndex = tileList.indexWhere(
       (e) => routerState.namedLocation(e.name) == routerState.matchedLocation,
     );
 
@@ -73,16 +78,8 @@ class Sidebar extends HookConsumerWidget {
       for (final tile in sidebarTileList)
         NavigationButton(
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
-          child: Badge(
-            backgroundColor: context.theme.colorScheme.primary,
-            isLabelVisible: tile.title == "Library" && downloadCount > 0,
-            label: Text(
-              downloadCount.toString(),
-              style: TextStyle(
-                color: context.theme.colorScheme.primaryForeground,
-                fontSize: 10,
-              ),
-            ),
+          child: Tooltip(
+            tooltip: TooltipContainer(child: Text(tile.title)),
             child: Icon(tile.icon),
           ),
           onChanged: (value) {
@@ -90,6 +87,22 @@ class Sidebar extends HookConsumerWidget {
               context.goNamed(tile.name);
             }
           },
+        ),
+      const NavigationDivider(),
+      if (mediaQuery.lgAndUp)
+        NavigationLabel(child: Text(context.l10n.library)),
+      for (final tile in sidebarLibraryTileList)
+        NavigationButton(
+          label: mediaQuery.lgAndUp ? Text(tile.title) : null,
+          onChanged: (value) {
+            if (value) {
+              context.goNamed(tile.name);
+            }
+          },
+          child: Tooltip(
+            tooltip: TooltipContainer(child: Text(tile.title)),
+            child: Icon(tile.icon),
+          ),
         ),
     ];
 
@@ -103,7 +116,7 @@ class Sidebar extends HookConsumerWidget {
                   ? NavigationSidebar(
                       index: selectedIndex,
                       onSelected: (index) {
-                        final tile = sidebarTileList[index];
+                        final tile = tileList[index];
                         context.goNamed(tile.name);
                       },
                       children: navigationButtons,
@@ -112,7 +125,7 @@ class Sidebar extends HookConsumerWidget {
                       alignment: NavigationRailAlignment.start,
                       index: selectedIndex,
                       onSelected: (index) {
-                        final tile = sidebarTileList[index];
+                        final tile = tileList[index];
                         context.goNamed(tile.name);
                       },
                       children: navigationButtons,
@@ -138,8 +151,10 @@ class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final me = ref.watch(meProvider);
-    final data = me.asData?.value;
+    final routerState = GoRouterState.of(context);
+    final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
+    final userSnapshot = ref.watch(meProvider);
+    final data = userSnapshot.asData?.value;
 
     final avatarImg = (data?.images).asUrlString(
       index: (data?.images?.length ?? 1) - 1,
@@ -149,10 +164,30 @@ class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
     final auth = ref.watch(authenticationProvider);
 
     if (mediaQuery.mdAndDown) {
-      return IconButton(
-        variance: ButtonVariance.ghost,
-        icon: const Icon(SpotubeIcons.settings),
-        onPressed: () => ServiceUtils.navigateNamed(context, SettingsPage.name),
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 10,
+        children: [
+          Badge(
+            isLabelVisible: downloadCount > 0,
+            label: Text(downloadCount.toString()),
+            child: IconButton(
+              variance: routerState.topRoute?.name == UserDownloadsPage.name
+                  ? ButtonVariance.secondary
+                  : ButtonVariance.ghost,
+              icon: const Icon(SpotubeIcons.download),
+              onPressed: () =>
+                  ServiceUtils.navigateNamed(context, UserDownloadsPage.name),
+            ),
+          ),
+          const ConnectDeviceButton.sidebar(),
+          IconButton(
+            variance: ButtonVariance.ghost,
+            icon: const Icon(SpotubeIcons.settings),
+            onPressed: () =>
+                ServiceUtils.navigateNamed(context, SettingsPage.name),
+          ),
+        ],
       );
     }
 
@@ -161,9 +196,27 @@ class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
       width: 180,
       child: Column(
         mainAxisSize: MainAxisSize.min,
+        spacing: 10,
         children: [
+          SizedBox(
+            width: double.infinity,
+            child: Button(
+              style: routerState.topRoute?.name == UserDownloadsPage.name
+                  ? ButtonVariance.secondary
+                  : ButtonVariance.outline,
+              onPressed: () {
+                ServiceUtils.navigateNamed(context, UserDownloadsPage.name);
+              },
+              leading: const Icon(SpotubeIcons.download),
+              trailing: downloadCount > 0
+                  ? PrimaryBadge(
+                      child: Text(downloadCount.toString()),
+                    )
+                  : null,
+              child: Text(context.l10n.downloads),
+            ),
+          ),
           const ConnectDeviceButton.sidebar(),
-          const Gap(10),
           Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

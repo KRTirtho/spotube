@@ -8,7 +8,6 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
@@ -33,14 +32,7 @@ class LyricsPage extends HookConsumerWidget {
       [playlist.activeTrack?.album?.images],
     );
     final palette = usePaletteColor(albumArt, ref);
-    final route = ModalRoute.of(context);
     final selectedIndex = useState(0);
-
-    final resetStatusBar = useCustomStatusBarColor(
-      palette.color,
-      route?.isCurrent ?? false,
-      noSetBGColor: true,
-    );
 
     Widget tabbar = Padding(
       padding: const EdgeInsets.all(10),
@@ -93,51 +85,47 @@ class LyricsPage extends HookConsumerWidget {
     );
 
     if (isModal) {
-      return PopScope(
-        canPop: true,
-        onPopInvokedWithResult: (_, __) => resetStatusBar(),
-        child: SafeArea(
-          bottom: false,
-          child: SurfaceCard(
-            surfaceBlur: context.theme.surfaceBlur,
-            surfaceOpacity: context.theme.surfaceOpacity,
-            padding: EdgeInsets.zero,
-            borderRadius: BorderRadius.zero,
-            borderWidth: 0,
-            child: Column(
-              children: [
-                const SizedBox(height: 5),
-                Container(
-                  height: 7,
-                  width: 150,
-                  decoration: BoxDecoration(
-                    color: palette.titleTextColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+      return SafeArea(
+        bottom: false,
+        child: SurfaceCard(
+          surfaceBlur: context.theme.surfaceBlur,
+          surfaceOpacity: context.theme.surfaceOpacity,
+          padding: EdgeInsets.zero,
+          borderRadius: BorderRadius.zero,
+          borderWidth: 0,
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              Container(
+                height: 7,
+                width: 150,
+                decoration: BoxDecoration(
+                  color: palette.titleTextColor,
+                  borderRadius: BorderRadius.circular(10),
                 ),
-                Row(
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: tabbar,
+                  ),
+                  IconButton.ghost(
+                    icon: const Icon(SpotubeIcons.minimize),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  const SizedBox(width: 5),
+                ],
+              ),
+              Expanded(
+                child: IndexedStack(
+                  index: selectedIndex.value,
                   children: [
-                    Expanded(
-                      child: tabbar,
-                    ),
-                    IconButton.ghost(
-                      icon: const Icon(SpotubeIcons.minimize),
-                      onPressed: () => Navigator.of(context).pop(),
-                    ),
-                    const SizedBox(width: 5),
+                    SyncedLyrics(palette: palette, isModal: isModal),
+                    PlainLyrics(palette: palette, isModal: isModal),
                   ],
                 ),
-                Expanded(
-                  child: IndexedStack(
-                    index: selectedIndex.value,
-                    children: [
-                      SyncedLyrics(palette: palette, isModal: isModal),
-                      PlainLyrics(palette: palette, isModal: isModal),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       );

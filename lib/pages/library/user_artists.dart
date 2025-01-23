@@ -19,8 +19,9 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
-class UserArtists extends HookConsumerWidget {
-  const UserArtists({super.key});
+class UserArtistsPage extends HookConsumerWidget {
+  static const name = 'user_artists';
+  const UserArtistsPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

@@ -24,8 +24,9 @@ enum SortBy {
   album,
 }
 
-class UserLocalTracks extends HookConsumerWidget {
-  const UserLocalTracks({super.key});
+class UserLocalLibraryPage extends HookConsumerWidget {
+  static const name = 'user_local_library';
+  const UserLocalLibraryPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

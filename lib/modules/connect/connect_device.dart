@@ -1,6 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/connect/connect.dart';
 import 'package:spotube/provider/connect/clients.dart';
@@ -19,6 +20,17 @@ class ConnectDeviceButton extends HookConsumerWidget {
         connectClients.asData?.value.services.isNotEmpty == true;
 
     if (_sidebar) {
+      final mediaQuery = MediaQuery.sizeOf(context);
+
+      if (mediaQuery.mdAndDown) {
+        return IconButton.ghost(
+          icon: const Icon(SpotubeIcons.speaker),
+          onPressed: () {
+            ServiceUtils.pushNamed(context, ConnectPage.name);
+          },
+        );
+      }
+
       return SizedBox(
         width: double.infinity,
         child: Button.primary(

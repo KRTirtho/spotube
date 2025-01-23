@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:html/dom.dart' hide Text;
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Element;
 import 'package:spotify/spotify.dart';
-import 'package:spotube/modules/library/user_local_tracks.dart';
+import 'package:spotube/pages/library/user_local_tracks.dart';
 import 'package:spotube/modules/root/update_dialog.dart';
 
 import 'package:spotube/models/lyrics.dart';

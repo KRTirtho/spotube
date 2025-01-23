@@ -34,32 +34,35 @@ class GettingStarting extends HookConsumerWidget {
 
     return Scaffold(
       headers: [
-        TitleBar(
-          backgroundColor: Colors.transparent,
-          surfaceBlur: 0,
-          trailing: [
-            ListenableBuilder(
-              listenable: pageController,
-              builder: (context, _) {
-                return AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: pageController.hasClients &&
-                          (pageController.page == 0 || pageController.page == 3)
-                      ? const SizedBox()
-                      : Button.secondary(
-                          onPressed: () {
-                            pageController.animateToPage(
-                              3,
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          },
-                          child: Text(context.l10n.skip_this_nonsense),
-                        ),
-                );
-              },
-            ),
-          ],
+        SafeArea(
+          child: TitleBar(
+            backgroundColor: Colors.transparent,
+            surfaceBlur: 0,
+            trailing: [
+              ListenableBuilder(
+                listenable: pageController,
+                builder: (context, _) {
+                  return AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: pageController.hasClients &&
+                            (pageController.page == 0 ||
+                                pageController.page == 3)
+                        ? const SizedBox()
+                        : Button.secondary(
+                            onPressed: () {
+                              pageController.animateToPage(
+                                3,
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            },
+                            child: Text(context.l10n.skip_this_nonsense),
+                          ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
       ],
       floatingHeader: true,

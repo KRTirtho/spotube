@@ -264,12 +264,32 @@ class Spotube extends HookConsumerWidget {
           LogicalKeyboardKey.digit3,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.library),
+        ): HomeTabIntent(ref, tab: HomeTabs.lyrics),
         LogicalKeySet(
           LogicalKeyboardKey.digit4,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.lyrics),
+        ): HomeTabIntent(ref, tab: HomeTabs.userPlaylists),
+        LogicalKeySet(
+          LogicalKeyboardKey.digit5,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
+        ): HomeTabIntent(ref, tab: HomeTabs.userArtists),
+        LogicalKeySet(
+          LogicalKeyboardKey.digit6,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
+        ): HomeTabIntent(ref, tab: HomeTabs.userAlbums),
+        LogicalKeySet(
+          LogicalKeyboardKey.digit7,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
+        ): HomeTabIntent(ref, tab: HomeTabs.userLocalLibrary),
+        LogicalKeySet(
+          LogicalKeyboardKey.digit8,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
+        ): HomeTabIntent(ref, tab: HomeTabs.userDownloads),
         LogicalKeySet(
           LogicalKeyboardKey.keyW,
           LogicalKeyboardKey.control,

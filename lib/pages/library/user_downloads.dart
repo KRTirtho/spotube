@@ -6,8 +6,9 @@ import 'package:spotube/modules/library/user_downloads/download_item.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 
-class UserDownloads extends HookConsumerWidget {
-  const UserDownloads({super.key});
+class UserDownloadsPage extends HookConsumerWidget {
+  static const name = 'user_downloads';
+  const UserDownloadsPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

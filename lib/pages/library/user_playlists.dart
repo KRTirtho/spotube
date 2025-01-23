@@ -20,8 +20,9 @@ import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
 
-class UserPlaylists extends HookConsumerWidget {
-  const UserPlaylists({super.key});
+class UserPlaylistsPage extends HookConsumerWidget {
+  static const name = 'user_playlists';
+  const UserPlaylistsPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
