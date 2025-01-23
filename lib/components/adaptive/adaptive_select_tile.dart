@@ -23,6 +23,9 @@ class AdaptiveSelectTile<T> extends HookWidget {
 
   final bool? breakLayout;
 
+  final BoxConstraints? popupConstraints;
+  final PopoverConstraint? popupWidthConstraint;
+
   const AdaptiveSelectTile({
     required this.title,
     required this.value,
@@ -34,6 +37,8 @@ class AdaptiveSelectTile<T> extends HookWidget {
     this.breakLayout,
     this.showValueWhenUnfolded = true,
     super.key,
+    this.popupConstraints,
+    this.popupWidthConstraint,
   });
 
   @override
@@ -47,6 +52,8 @@ class AdaptiveSelectTile<T> extends HookWidget {
       },
       value: value,
       onChanged: onChanged,
+      popupConstraints: popupConstraints ?? const BoxConstraints(maxWidth: 200),
+      popupWidthConstraint: popupWidthConstraint ?? PopoverConstraint.flexible,
       children: options,
     );
 

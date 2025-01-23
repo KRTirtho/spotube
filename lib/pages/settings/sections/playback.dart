@@ -281,6 +281,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         if (preferences.audioSource != AudioSource.jiosaavn) ...[
           AdaptiveSelectTile<SourceCodecs>(
+            popupConstraints: const BoxConstraints(maxWidth: 300),
             secondary: const Icon(SpotubeIcons.stream),
             title: Text(context.l10n.streaming_music_codec),
             value: preferences.streamMusicCodec,
@@ -300,6 +301,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             },
           ),
           AdaptiveSelectTile<SourceCodecs>(
+            popupConstraints: const BoxConstraints(maxWidth: 300),
             secondary: const Icon(SpotubeIcons.file),
             title: Text(context.l10n.download_music_codec),
             value: preferences.downloadMusicCodec,
