@@ -70,10 +70,12 @@ jobs:
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
-      - uses: flutter-actions/setup-flutter@v4
+      - uses: subosito/flutter-action@v2
         with:
-          version: ${{ env.FLUTTER_VERSION  }}
+          flutter-version: ${{ env.FLUTTER_VERSION  }}
           channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: false
+          
       - name: Setup Java
         if: ${{matrix.platform == 'android'}}
         uses: actions/setup-java@v4
