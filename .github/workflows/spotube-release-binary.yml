@@ -107,7 +107,7 @@ jobs:
           echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
           echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
       
-      - name: Unessary hosted tools
+      - name: Uncessary hosted tools
         if: ${{matrix.platform == 'linux_arm'}}
         uses: jlumbroso/free-disk-space@main
         with:
@@ -128,6 +128,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
+          name: ${{matrix.platform}}
           path: ${{matrix.files}}
 
       - name: Debug With SSH When fails
@@ -163,7 +164,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Spotube-Release-Binaries
+          name: sums
           path: |
             RELEASE.md5sum
             RELEASE.sha256sum
@@ -196,3 +197,10 @@ jobs:
             
             Nightly release includes newest features but may contain bugs
             It is preferred to use the stable version unless you know what you're doing
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
