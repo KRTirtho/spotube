@@ -21,7 +21,7 @@ on:
 
 env:
   FLUTTER_VERSION: 3.28.0-0.1.pre
-  FLUTTER_CHANNEL: beta
+  FLUTTER_CHANNEL: master
 
 permissions:
   contents: write
