@@ -142,8 +142,9 @@ jobs:
       - name: Generate Checksums
         run: |
           tree .
-          md5sum Spotube-Release-Binaries/* >> RELEASE.md5sum
-          sha256sum Spotube-Release-Binaries/* >> RELEASE.sha256sum
+          find Spotube-Release-Binaries -type f -exec md5sum {} \; >> RELEASE.md5sum
+          find Spotube-Release-Binaries -type f -exec sha256sum {} \; >> RELEASE.sha256sum
+          sed -i 's|Spotube-Release-Binaries/.*/\([^/]*\)$|\1|' RELEASE.sha256sum RELEASE.md5sum
           sed -i 's|Spotube-Release-Binaries/||' RELEASE.sha256sum RELEASE.md5sum
       
       - name: Extract pubspec version
