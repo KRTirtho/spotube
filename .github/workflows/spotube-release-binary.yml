@@ -169,7 +169,7 @@ jobs:
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: Spotube-Release-Binaries/*,RELEASE.sha256sum,RELEASE.md5sum
+          artifacts: Spotube-Release-Binaries/**/*,RELEASE.sha256sum,RELEASE.md5sum
 
       - name: Upload Release Binaries (nightly)
         if: ${{ !inputs.dry_run && inputs.channel == 'nightly' }}
@@ -181,7 +181,7 @@ jobs:
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: Spotube-Release-Binaries/*,RELEASE.sha256sum,RELEASE.md5sum
+          artifacts: Spotube-Release-Binaries/**/*,RELEASE.sha256sum,RELEASE.md5sum
           body: |
             Build Number: ${{github.run_number}}
             
