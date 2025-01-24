@@ -128,7 +128,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Spotube-Release-Binaries
           path: ${{matrix.files}}
 
       - name: Debug With SSH When fails
@@ -145,7 +144,6 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/download-artifact@v4
         with:
-          name: Spotube-Release-Binaries
           path: ./Spotube-Release-Binaries
 
       - name: Install dependencies
