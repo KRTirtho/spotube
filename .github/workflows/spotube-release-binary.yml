@@ -74,7 +74,7 @@ jobs:
         with:
           flutter-version: ${{ env.FLUTTER_VERSION  }}
           channel: ${{ env.FLUTTER_CHANNEL }}
-          cache: false
+          cache: true
           git-source: https://github.com/flutter/flutter.git
           
       - name: Setup Java
@@ -117,7 +117,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: ${{matrix.platform}}
+          name: ${{matrix.platform}}-${{matrix.arch}}
           path: ${{matrix.files}}
 
       - name: Debug With SSH When fails
