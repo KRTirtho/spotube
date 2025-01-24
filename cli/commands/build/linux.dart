@@ -47,7 +47,7 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     }
 
     final tempDir = join(Directory.systemTemp.path, "spotube-tar");
-
+    final bundleArchName = architecture == "x86" ? "x86_64" : "aarch64";
     final bundleDirPath = join(
       cwd.path,
       "build",
@@ -62,7 +62,7 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
       "dist",
       "spotube-linux-"
           "${CliEnv.channel == BuildChannel.nightly ? "nightly" : versionWithoutBuildNumber}"
-          "-${architecture == "x86" ? "x86_64" : "aarch64"}.tar.xz",
+          "-$bundleArchName.tar.xz",
     ));
 
     await copyPath(bundleDirPath, tempDir);
@@ -91,7 +91,11 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
       ),
     );
     await ogDeb.copy(
-      join(cwd.path, "dist", "Spotube-linux-x86_64.deb"),
+      join(
+        cwd.path,
+        "dist",
+        "Spotube-linux-$bundleArchName.deb",
+      ),
     );
     await ogDeb.delete();
 
@@ -106,7 +110,7 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
       );
 
       await ogRpm.copy(
-        join(cwd.path, "dist", "Spotube-linux-x86_64.rpm"),
+        join(cwd.path, "dist", "Spotube-linux-$bundleArchName.rpm"),
       );
 
       await ogRpm.delete();

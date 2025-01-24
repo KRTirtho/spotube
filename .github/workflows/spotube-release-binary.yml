@@ -31,7 +31,7 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: linux
             arch: x86
             files: |
@@ -44,7 +44,7 @@ jobs:
             files: |
               dist/Spotube-linux-aarch64.deb
               dist/spotube-linux-*-aarch64.tar.xz
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: android
             arch: all
             files: |
@@ -127,7 +127,7 @@ jobs:
           limit-access-to-actor: true
 
   upload:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - build_platform
     steps:
