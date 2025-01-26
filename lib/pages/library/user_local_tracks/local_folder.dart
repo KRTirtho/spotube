@@ -16,7 +16,7 @@ import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/string.dart';
 import 'package:spotube/modules/library/local_folder/cache_export_dialog.dart';
-import 'package:spotube/pages/library/user_local_tracks.dart';
+import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/components/expandable_search/expandable_search.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';

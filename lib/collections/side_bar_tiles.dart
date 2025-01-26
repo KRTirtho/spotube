@@ -4,7 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/library/user_albums.dart';
 import 'package:spotube/pages/library/user_artists.dart';
-import 'package:spotube/pages/library/user_local_tracks.dart';
+import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/pages/library/user_playlists.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/pages/search/search.dart';

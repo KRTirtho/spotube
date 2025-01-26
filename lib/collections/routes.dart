@@ -13,13 +13,13 @@ import 'package:spotube/pages/home/genres/genre_playlists.dart';
 import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/lastfm_login/lastfm_login.dart';
-import 'package:spotube/pages/library/local_folder.dart';
+import 'package:spotube/pages/library/user_local_tracks/local_folder.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate_result.dart';
 import 'package:spotube/pages/library/user_albums.dart';
 import 'package:spotube/pages/library/user_artists.dart';
 import 'package:spotube/pages/library/user_downloads.dart';
-import 'package:spotube/pages/library/user_local_tracks.dart';
+import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/pages/library/user_playlists.dart';
 import 'package:spotube/pages/lyrics/mini_lyrics.dart';
 import 'package:spotube/pages/playlist/liked_playlist.dart';
@@ -127,11 +127,28 @@ final routerProvider = Provider((ref) {
                     const SpotubePage(child: UserAlbumsPage()),
               ),
               GoRoute(
-                path: "/library/local",
-                name: UserLocalLibraryPage.name,
-                pageBuilder: (context, state) =>
-                    const SpotubePage(child: UserLocalLibraryPage()),
-              ),
+                  path: "/library/local",
+                  name: UserLocalLibraryPage.name,
+                  pageBuilder: (context, state) =>
+                      const SpotubePage(child: UserLocalLibraryPage()),
+                  routes: [
+                    GoRoute(
+                      path: "folder",
+                      name: LocalLibraryPage.name,
+                      parentNavigatorKey: shellRouteNavigatorKey,
+                      pageBuilder: (context, state) {
+                        assert(state.extra is String);
+                        return SpotubePage(
+                          child: LocalLibraryPage(
+                            state.extra as String,
+                            isDownloads:
+                                state.uri.queryParameters["downloads"] != null,
+                            isCache: state.uri.queryParameters["cache"] != null,
+                          ),
+                        );
+                      },
+                    ),
+                  ]),
               GoRoute(
                 path: "/library/downloads",
                 name: UserDownloadsPage.name,
@@ -156,20 +173,6 @@ final routerProvider = Provider((ref) {
                 ),
               )
             ],
-          ),
-          GoRoute(
-            path: "/library/local",
-            name: LocalLibraryPage.name,
-            pageBuilder: (context, state) {
-              assert(state.extra is String);
-              return SpotubePage(
-                child: LocalLibraryPage(
-                  state.extra as String,
-                  isDownloads: state.uri.queryParameters["downloads"] != null,
-                  isCache: state.uri.queryParameters["cache"] != null,
-                ),
-              );
-            },
           ),
           GoRoute(
             path: "/lyrics",

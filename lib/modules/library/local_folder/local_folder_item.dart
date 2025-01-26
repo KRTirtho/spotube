@@ -12,7 +12,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/string.dart';
-import 'package:spotube/pages/library/local_folder.dart';
+import 'package:spotube/pages/library/user_local_tracks/local_folder.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
@@ -59,7 +59,7 @@ class LocalFolderItem extends HookConsumerWidget {
 
     return Button(
       onPressed: () {
-        context.goNamed(
+        context.pushNamed(
           LocalLibraryPage.name,
           queryParameters: {
             if (isDownloadFolder) "downloads": "true",

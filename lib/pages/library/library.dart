@@ -4,9 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/pages/library/user_downloads.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 
 class LibraryPage extends HookConsumerWidget {
@@ -18,7 +20,15 @@ class LibraryPage extends HookConsumerWidget {
     final downloadingCount = ref.watch(downloadManagerProvider).$downloadCount;
     final routerState = GoRouterState.of(context);
     final sidebarLibraryTileList = useMemoized(
-      () => getSidebarLibraryTileList(context.l10n),
+      () => [
+        ...getSidebarLibraryTileList(context.l10n),
+        SideBarTiles(
+          id: "downloads",
+          title: context.l10n.downloads,
+          name: UserDownloadsPage.name,
+          icon: SpotubeIcons.download,
+        ),
+      ],
       [context.l10n],
     );
     final index = sidebarLibraryTileList.indexWhere(
