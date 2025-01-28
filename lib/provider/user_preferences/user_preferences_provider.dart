@@ -7,9 +7,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
-import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
-import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -144,11 +142,11 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   void setAlbumColorSync(bool sync) {
     setData(PreferencesTableCompanion(albumColorSync: Value(sync)));
 
-    if (!sync) {
-      ref.read(paletteProvider.notifier).state = null;
-    } else {
-      ref.read(audioPlayerStreamListenersProvider).updatePalette();
-    }
+    // if (!sync) {
+    //   ref.read(paletteProvider.notifier).state = null;
+    // } else {
+    //   ref.read(audioPlayerStreamListenersProvider).updatePalette();
+    // }
   }
 
   void setCheckUpdate(bool check) {

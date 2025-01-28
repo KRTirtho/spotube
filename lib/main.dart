@@ -133,10 +133,6 @@ class Spotube extends HookConsumerWidget {
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
     final accentMaterialColor =
         ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
-    // final isAmoledTheme =
-    //     ref.watch(userPreferencesProvider.select((s) => s.amoledDarkTheme));
-    // final paletteColor =
-    //     ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
     final router = ref.watch(routerProvider);
     final hasTouchSupport = useHasTouch();
 
@@ -165,19 +161,6 @@ class Spotube extends HookConsumerWidget {
         audioPlayer.dispose();
       };
     }, []);
-
-    // final lightTheme = useMemoized(
-    //   () => theme(paletteColor ?? accentMaterialColor, Brightness.light, false),
-    //   [paletteColor, accentMaterialColor],
-    // );
-    // final darkTheme = useMemoized(
-    //   () => theme(
-    //     paletteColor ?? accentMaterialColor,
-    //     Brightness.dark,
-    //     isAmoledTheme,
-    //   ),
-    //   [paletteColor, accentMaterialColor, isAmoledTheme],
-    // );
 
     return ShadcnApp.router(
       supportedLocales: L10n.all,
