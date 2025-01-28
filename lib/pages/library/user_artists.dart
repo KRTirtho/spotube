@@ -82,7 +82,7 @@ class UserArtistsPage extends HookConsumerWidget {
                     ),
                   ),
                   const SliverGap(10),
-                  if (filteredArtists.isNotEmpty)
+                  if (filteredArtists.isNotEmpty || artistQuery.isLoading)
                     SliverLayoutBuilder(builder: (context, constrains) {
                       return SliverGrid.builder(
                         itemCount: filteredArtists.length + 1,

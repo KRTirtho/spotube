@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -35,29 +33,6 @@ class HomeGenresSection extends HookConsumerWidget {
       [categoriesQuery.asData?.value],
     );
     final controller = useMemoized(() => CarouselController(), []);
-    final interactedRef = useRef(false);
-
-    useEffect(() {
-      int times = 0;
-      final timer = Timer.periodic(
-        const Duration(seconds: 5),
-        (timer) {
-          if (times > 5 || interactedRef.value) {
-            timer.cancel();
-            return;
-          }
-          controller.animateNext(
-            const Duration(seconds: 2),
-          );
-          times++;
-        },
-      );
-
-      return () {
-        timer.cancel();
-        controller.dispose();
-      };
-    }, []);
 
     return SliverList.list(
       children: [
@@ -123,7 +98,6 @@ class HomeGenresSection extends HookConsumerWidget {
                     controller.animatePrevious(
                       const Duration(seconds: 1),
                     );
-                    interactedRef.value = true;
                   },
                 ),
               ),
@@ -144,7 +118,6 @@ class HomeGenresSection extends HookConsumerWidget {
                     controller.animateNext(
                       const Duration(seconds: 1),
                     );
-                    interactedRef.value = true;
                   },
                 ),
               ),

@@ -34,25 +34,38 @@ class PresentationStateNotifier
     extends AutoDisposeFamilyNotifier<PresentationState, Object> {
   @override
   PresentationState build(collection) {
-    final isPlaylist = arg is PlaylistSimple;
-
-    if ((isPlaylist && (arg as PlaylistSimple).id != "user-liked-tracks") ||
-        arg is AlbumSimple) {
-      ref.listen(
-        isPlaylist
-            ? playlistTracksProvider((arg as PlaylistSimple).id!)
-            : albumTracksProvider((arg as AlbumSimple)),
-        (previous, next) {
-          next.whenData((value) {
-            state = state.copyWith(
-              presentationTracks: ServiceUtils.sortTracks(
-                value.items,
-                state.sortBy,
-              ),
-            );
-          });
-        },
-      );
+    if (arg case PlaylistSimple() || AlbumSimple()) {
+      if (isSavedTrackPlaylist) {
+        ref.listen(
+          likedTracksProvider,
+          (previous, next) {
+            next.whenData((value) {
+              state = state.copyWith(
+                presentationTracks: ServiceUtils.sortTracks(
+                  value,
+                  state.sortBy,
+                ),
+              );
+            });
+          },
+        );
+      } else {
+        ref.listen(
+          arg is PlaylistSimple
+              ? playlistTracksProvider((arg as PlaylistSimple).id!)
+              : albumTracksProvider((arg as AlbumSimple)),
+          (previous, next) {
+            next.whenData((value) {
+              state = state.copyWith(
+                presentationTracks: ServiceUtils.sortTracks(
+                  value.items,
+                  state.sortBy,
+                ),
+              );
+            });
+          },
+        );
+      }
     }
 
     return PresentationState(
@@ -62,6 +75,10 @@ class PresentationStateNotifier
     );
   }
 
+  bool get isSavedTrackPlaylist =>
+      arg is PlaylistSimple &&
+      (arg as PlaylistSimple).id == "user-liked-tracks";
+
   List<Track> get tracks {
     assert(
       arg is PlaylistSimple || arg is AlbumSimple,
@@ -69,8 +86,7 @@ class PresentationStateNotifier
     );
 
     final isPlaylist = arg is PlaylistSimple;
-    final isSavedTrackPlaylist =
-        isPlaylist && (arg as PlaylistSimple).id == "user-liked-tracks";
+
     final tracks = switch ((isPlaylist, isSavedTrackPlaylist)) {
           (true, true) => ref.read(likedTracksProvider).asData?.value,
           (true, false) => ref

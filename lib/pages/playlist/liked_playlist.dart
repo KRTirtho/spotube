@@ -26,7 +26,7 @@ class LikedPlaylistPage extends HookConsumerWidget {
         image: "assets/liked-tracks.jpg",
         pagination: PaginationProps(
           hasNextPage: false,
-          isLoading: false,
+          isLoading: likedTracks.isLoading,
           onFetchMore: () {},
           onFetchAll: () async {
             return tracks.toList();
