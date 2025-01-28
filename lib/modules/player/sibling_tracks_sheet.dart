@@ -10,6 +10,7 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/hooks/utils/use_debounce.dart';
@@ -193,7 +194,11 @@ class SiblingTracksSheet extends HookConsumerWidget {
             if (!isFetchingActiveTrack &&
                 sourceInfo.id != (activeTrack as SourcedTrack).sourceInfo.id) {
               activeTrackNotifier.swapSibling(sourceInfo);
-              closeDrawer(context);
+              if (MediaQuery.sizeOf(context).mdAndUp) {
+                closeOverlay(context);
+              } else {
+                closeDrawer(context);
+              }
             }
           },
         );
