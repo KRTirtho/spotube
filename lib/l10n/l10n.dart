@@ -16,7 +16,7 @@
 
 library l10n;
 
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class L10n {
   static final all = [

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -19,7 +19,7 @@ class NoWebviewRuntimeDialog extends StatelessWidget {
           },
           child: Text(context.l10n.cancel),
         ),
-        FilledButton(
+        Button.primary(
           onPressed: () async {
             final url = switch (platform) {
               TargetPlatform.windows =>
@@ -30,8 +30,15 @@ class NoWebviewRuntimeDialog extends StatelessWidget {
               _ => "",
             };
             if (url.isEmpty) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Unsupported platform')),
+              showToast(
+                context: context,
+                builder: (context, overlay) {
+                  return const SurfaceCard(
+                    child: Basic(
+                      title: Text('Unsupported platform'),
+                    ),
+                  );
+                },
               );
             }
 

@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
@@ -28,12 +27,13 @@ class StatsMinutesPage extends HookConsumerWidget {
     final tracksData = topTracks.asData?.value.items ?? [];
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
-        title: Text(context.l10n.minutes_listened),
-        centerTitle: false,
-        automaticallyImplyLeading: true,
-      ),
-      body: Skeletonizer(
+      headers: [
+        TitleBar(
+          title: Text(context.l10n.minutes_listened),
+          automaticallyImplyLeading: true,
+        )
+      ],
+      child: Skeletonizer(
         enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,
         child: InfiniteList(
           separatorBuilder: (context, index) => const Gap(8),

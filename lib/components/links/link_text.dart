@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/components/links/anchor_button.dart';
 import 'package:spotube/utils/service_utils.dart';
 

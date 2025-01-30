@@ -1,55 +1,49 @@
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-import 'package:spotube/components/titlebar/window_button.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/extensions/button_variance.dart';
 
-class MinimizeWindowButton extends WindowButton {
-  MinimizeWindowButton(
-      {super.key, super.colors, super.onPressed, bool? animate})
-      : super(
-          animate: animate ?? false,
-          iconBuilder: (buttonContext) =>
-              MinimizeIcon(color: buttonContext.iconColor),
-        );
+class ShadcnWindowButton extends StatelessWidget {
+  final Widget icon;
+  final VoidCallback onPressed;
+  final Color? hoverBackgroundColor;
+
+  const ShadcnWindowButton({
+    super.key,
+    required this.icon,
+    required this.onPressed,
+    this.hoverBackgroundColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 45,
+      height: 32,
+      child: IconButton(
+        variance: ButtonVariance.ghost.copyWith(
+          decoration: (context, states) {
+            final decoration = ButtonVariance.ghost.decoration(context, states)
+                as BoxDecoration;
+            if (hoverBackgroundColor != null &&
+                states.contains(WidgetState.hovered)) {
+              return decoration.copyWith(
+                borderRadius: BorderRadius.zero,
+                color: hoverBackgroundColor,
+              );
+            }
+
+            return decoration.copyWith(
+              borderRadius: BorderRadius.zero,
+            );
+          },
+        ),
+        icon: icon,
+        onPressed: onPressed,
+      ),
+    );
+  }
 }
-
-class MaximizeWindowButton extends WindowButton {
-  MaximizeWindowButton(
-      {super.key, super.colors, super.onPressed, bool? animate})
-      : super(
-          animate: animate ?? false,
-          iconBuilder: (buttonContext) =>
-              MaximizeIcon(color: buttonContext.iconColor),
-        );
-}
-
-class RestoreWindowButton extends WindowButton {
-  RestoreWindowButton({super.key, super.colors, super.onPressed, bool? animate})
-      : super(
-          animate: animate ?? false,
-          iconBuilder: (buttonContext) =>
-              RestoreIcon(color: buttonContext.iconColor),
-        );
-}
-
-final _defaultCloseButtonColors = WindowButtonColors(
-    mouseOver: const Color(0xFFD32F2F),
-    mouseDown: const Color(0xFFB71C1C),
-    iconNormal: const Color(0xFF805306),
-    iconMouseOver: const Color(0xFFFFFFFF));
-
-class CloseWindowButton extends WindowButton {
-  CloseWindowButton(
-      {super.key, WindowButtonColors? colors, super.onPressed, bool? animate})
-      : super(
-          colors: colors ?? _defaultCloseButtonColors,
-          animate: animate ?? false,
-          iconBuilder: (buttonContext) =>
-              CloseIcon(color: buttonContext.iconColor),
-        );
-}
-
-// Switched to CustomPaint icons by https://github.com/esDotDev
 
 /// Close
 class CloseIcon extends StatelessWidget {
@@ -149,8 +143,9 @@ class _AlignedPaint extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-        alignment: Alignment.center,
-        child: CustomPaint(size: const Size(10, 10), painter: painter));
+      alignment: Alignment.center,
+      child: CustomPaint(size: const Size(10, 10), painter: painter),
+    );
   }
 }
 

@@ -2,6 +2,7 @@ package oss.krtirtho.spotube.glance
 
 import HomeWidgetGlanceState
 import HomeWidgetGlanceStateDefinition
+import android.R
 import android.content.Context
 import android.graphics.drawable.Icon
 import android.net.Uri
@@ -119,16 +120,6 @@ class HomePlayerWidget : GlanceAppWidget() {
                     }
                 ,
             ) {
-                Image(
-                    provider = FlutterAssetImageProvider(
-                        context,
-                        "assets/backgrounds/xmas-effect.png"
-                    ),
-                    contentDescription = "Background",
-                    modifier = GlanceModifier
-                        .fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
                 Box(
                     modifier = GlanceModifier
                         .background(

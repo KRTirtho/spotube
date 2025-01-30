@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/spotify/views/home_section.dart';
 
 class HomeFeedSectionPage extends HookConsumerWidget {
@@ -19,49 +20,72 @@ class HomeFeedSectionPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final homeFeedSection = ref.watch(homeSectionViewProvider(sectionUri));
     final section = homeFeedSection.asData?.value ?? FakeData.feedSection;
+    final controller = useScrollController();
+    final isArtist = section.items.every((item) => item.artist != null);
 
     return Skeletonizer(
       enabled: homeFeedSection.isLoading,
       child: Scaffold(
-        appBar: PageWindowTitleBar(
-          title: Text(section.title ?? ""),
-          centerTitle: false,
-          automaticallyImplyLeading: true,
-          titleSpacing: 0,
-        ),
-        body: CustomScrollView(
-          slivers: [
-            SliverLayoutBuilder(
-              builder: (context, constrains) {
-                return SliverGrid.builder(
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+        headers: [
+          TitleBar(
+            title: Text(section.title ?? ""),
+            automaticallyImplyLeading: true,
+          )
+        ],
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: CustomScrollView(
+            controller: controller,
+            slivers: [
+              if (isArtist)
+                SliverGrid.builder(
+                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                     maxCrossAxisExtent: 200,
-                    mainAxisExtent: constrains.smAndDown ? 225 : 250,
+                    mainAxisExtent: 250,
                     crossAxisSpacing: 8,
                     mainAxisSpacing: 8,
                   ),
                   itemCount: section.items.length,
                   itemBuilder: (context, index) {
                     final item = section.items[index];
-
+                    return ArtistCard(item.artist!.asArtist);
+                  },
+                )
+              else
+                PlaybuttonView(
+                  controller: controller,
+                  itemCount: section.items.length,
+                  hasMore: false,
+                  isLoading: false,
+                  onRequestMore: () => {},
+                  listItemBuilder: (context, index) {
+                    final item = section.items[index];
+                    if (item.album != null) {
+                      return AlbumCard.tile(item.album!.asAlbum);
+                    }
+                    if (item.playlist != null) {
+                      return PlaylistCard.tile(item.playlist!.asPlaylist);
+                    }
+                    return const SizedBox.shrink();
+                  },
+                  gridItemBuilder: (context, index) {
+                    final item = section.items[index];
                     if (item.album != null) {
                       return AlbumCard(item.album!.asAlbum);
-                    } else if (item.artist != null) {
-                      return ArtistCard(item.artist!.asArtist);
-                    } else if (item.playlist != null) {
+                    }
+                    if (item.playlist != null) {
                       return PlaylistCard(item.playlist!.asPlaylist);
                     }
-                    return const SizedBox();
+                    return const SizedBox.shrink();
                   },
-                );
-              },
-            ),
-            const SliverToBoxAdapter(
-              child: SafeArea(
-                child: SizedBox(),
+                ),
+              const SliverToBoxAdapter(
+                child: SafeArea(
+                  child: SizedBox(),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

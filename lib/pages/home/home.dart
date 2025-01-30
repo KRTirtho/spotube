@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/database/database.dart';
@@ -9,7 +10,7 @@ import 'package:spotube/modules/connect/connect_device.dart';
 import 'package:spotube/modules/home/sections/featured.dart';
 import 'package:spotube/modules/home/sections/feed.dart';
 import 'package:spotube/modules/home/sections/friends.dart';
-import 'package:spotube/modules/home/sections/genres.dart';
+import 'package:spotube/modules/home/sections/genres/genres.dart';
 import 'package:spotube/modules/home/sections/made_for_user.dart';
 import 'package:spotube/modules/home/sections/new_releases.dart';
 import 'package:spotube/modules/home/sections/recent.dart';
@@ -34,18 +35,22 @@ class HomePage extends HookConsumerWidget {
     return SafeArea(
         bottom: false,
         child: Scaffold(
-          appBar: kIsMobile || kIsMacOS ? null : const PageWindowTitleBar(),
-          body: CustomScrollView(
+          headers: [
+            if (kTitlebarVisible) const TitleBar(height: 30),
+          ],
+          child: CustomScrollView(
             controller: controller,
             slivers: [
               if (mediaQuery.smAndDown || layoutMode == LayoutMode.compact)
                 SliverAppBar(
                   floating: true,
                   title: Assets.spotubeLogoPng.image(height: 45),
+                  backgroundColor: context.theme.colorScheme.background,
+                  foregroundColor: context.theme.colorScheme.foreground,
                   actions: [
                     const ConnectDeviceButton(),
                     const Gap(10),
-                    IconButton(
+                    IconButton.ghost(
                       icon: const Icon(SpotubeIcons.settings, size: 20),
                       onPressed: () {
                         ServiceUtils.pushNamed(context, SettingsPage.name);

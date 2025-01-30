@@ -1,8 +1,9 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/modules/home/sections/friends/friend_item.dart';
@@ -75,7 +76,7 @@ class HomePageFriendsSection extends HookConsumerWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 context.l10n.friends,
-                style: Theme.of(context).textTheme.titleMedium,
+                style: context.theme.typography.h4,
               ),
             ),
           ),

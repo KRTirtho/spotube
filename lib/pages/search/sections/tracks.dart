@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart' hide Page;
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
@@ -37,7 +38,7 @@ class SearchTracksSection extends HookConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: Text(
               context.l10n.songs,
-              style: theme.textTheme.titleLarge!,
+              style: theme.typography.h4,
             ),
           ),
         if (searchTrack.isLoading)
@@ -53,6 +54,8 @@ class SearchTracksSection extends HookConsumerWidget {
               onTap: () async {
                 final isRemoteDevice =
                     await showSelectDeviceDialog(context, ref);
+
+                if (isRemoteDevice == null) return;
 
                 if (isRemoteDevice) {
                   final remotePlayback = ref.read(connectProvider.notifier);

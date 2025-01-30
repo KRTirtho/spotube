@@ -1,5 +1,5 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -16,7 +16,7 @@ class ArtistPageFooter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final ThemeData(:textTheme) = Theme.of(context);
+    final ThemeData(:typography) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final artistImage = artist.images.asUrlString(
@@ -26,7 +26,7 @@ class ArtistPageFooter extends ConsumerWidget {
     if (summary.asData?.value == null) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.all(16),
+      margin: const EdgeInsets.all(8),
       padding: mediaQuery.smAndDown
           ? const EdgeInsets.all(20)
           : const EdgeInsets.all(30),
@@ -50,7 +50,7 @@ class ArtistPageFooter extends ConsumerWidget {
       alignment: Alignment.center,
       child: RichText(
         text: TextSpan(
-          style: textTheme.bodyLarge?.copyWith(
+          style: typography.semiBold.copyWith(
             color: Colors.white,
           ),
           children: [
@@ -64,7 +64,7 @@ class ArtistPageFooter extends ConsumerWidget {
             ),
             TextSpan(
               text: " Wikipedia",
-              style: textTheme.titleLarge?.copyWith(
+              style: typography.large.copyWith(
                 color: Colors.white,
               ),
             ),
@@ -74,10 +74,10 @@ class ArtistPageFooter extends ConsumerWidget {
             ),
             TextSpan(
               text: '\n...read more at wikipedia',
-              style: textTheme.bodyLarge?.copyWith(
-                color: Colors.lightBlue[300],
+              style: typography.semiBold.copyWith(
+                color: Colors.sky[300],
                 decoration: TextDecoration.underline,
-                decorationColor: Colors.lightBlue[300],
+                decorationColor: Colors.sky[300],
               ),
               recognizer: TapGestureRecognizer()
                 ..onTap = () async {

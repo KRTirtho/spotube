@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/hyper_link.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
@@ -26,14 +27,16 @@ class AboutSpotube extends HookConsumerWidget {
     final license = ref.watch(_licenseProvider);
     final theme = Theme.of(context);
 
-    const colon = Text(":");
+    const colon = TableCell(child: Text(":"));
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
-        leading: const BackButton(),
-        title: Text(context.l10n.about_spotube),
-      ),
-      body: SingleChildScrollView(
+      headers: [
+        TitleBar(
+          leading: const [BackButton()],
+          title: Text(context.l10n.about_spotube),
+        )
+      ],
+      child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
@@ -45,76 +48,85 @@ class AboutSpotube extends HookConsumerWidget {
               Center(
                 child: Column(
                   children: [
-                    Text(
-                      context.l10n.spotube_description,
-                      style: theme.textTheme.titleLarge,
-                    ),
+                    Text(context.l10n.spotube_description).semiBold().large(),
                     const SizedBox(height: 20),
                     Table(
                       columnWidths: const {
-                        0: FixedColumnWidth(95),
-                        1: FixedColumnWidth(10),
-                        2: IntrinsicColumnWidth(),
+                        0: FixedTableSize(95),
+                        1: FixedTableSize(10),
+                        2: IntrinsicTableSize(),
                       },
-                      children: [
+                      defaultRowHeight: const FixedTableSize(40),
+                      rows: [
                         TableRow(
-                          children: [
-                            Text(context.l10n.founder),
+                          cells: [
+                            TableCell(child: Text(context.l10n.founder)),
                             colon,
-                            Hyperlink(
-                              context.l10n.kingkor_roy_tirtho,
-                              "https://github.com/KRTirtho",
+                            TableCell(
+                              child: Hyperlink(
+                                context.l10n.kingkor_roy_tirtho,
+                                "https://github.com/KRTirtho",
+                              ),
                             )
                           ],
                         ),
                         TableRow(
-                          children: [
-                            Text(context.l10n.version),
+                          cells: [
+                            TableCell(child: Text(context.l10n.version)),
                             colon,
-                            Text("v${packageInfo.version}")
+                            TableCell(child: Text("v${packageInfo.version}"))
                           ],
                         ),
                         TableRow(
-                          children: [
-                            Text(context.l10n.channel),
+                          cells: [
+                            TableCell(child: Text(context.l10n.channel)),
                             colon,
-                            Text(Env.releaseChannel.name)
+                            TableCell(child: Text(Env.releaseChannel.name))
                           ],
                         ),
                         TableRow(
-                          children: [
-                            Text(context.l10n.build_number),
+                          cells: [
+                            TableCell(child: Text(context.l10n.build_number)),
                             colon,
-                            Text(packageInfo.buildNumber.replaceAll(".", " "))
+                            TableCell(
+                              child: Text(
+                                  packageInfo.buildNumber.replaceAll(".", " ")),
+                            )
                           ],
                         ),
                         TableRow(
-                          children: [
-                            Text(context.l10n.repository),
+                          cells: [
+                            TableCell(child: Text(context.l10n.repository)),
                             colon,
-                            const Hyperlink(
-                              "github.com/KRTirtho/spotube",
-                              "https://github.com/KRTirtho/spotube",
+                            const TableCell(
+                              child: Hyperlink(
+                                "github.com/KRTirtho/spotube",
+                                "https://github.com/KRTirtho/spotube",
+                              ),
                             ),
                           ],
                         ),
                         TableRow(
-                          children: [
-                            Text(context.l10n.license),
+                          cells: [
+                            TableCell(child: Text(context.l10n.license)),
                             colon,
-                            const Hyperlink(
-                              "BSD-4-Clause",
-                              "https://raw.githubusercontent.com/KRTirtho/spotube/master/LICENSE",
+                            const TableCell(
+                              child: Hyperlink(
+                                "BSD-4-Clause",
+                                "https://raw.githubusercontent.com/KRTirtho/spotube/master/LICENSE",
+                              ),
                             ),
                           ],
                         ),
                         TableRow(
-                          children: [
-                            Text(context.l10n.bug_issues),
+                          cells: [
+                            TableCell(child: Text(context.l10n.bug_issues)),
                             colon,
-                            const Hyperlink(
-                              "github.com/KRTirtho/spotube/issues",
-                              "https://github.com/KRTirtho/spotube/issues",
+                            const TableCell(
+                              child: Hyperlink(
+                                "github.com/KRTirtho/spotube/issues",
+                                "https://github.com/KRTirtho/spotube/issues",
+                              ),
                             ),
                           ],
                         ),
@@ -141,12 +153,12 @@ class AboutSpotube extends HookConsumerWidget {
               Text(
                 context.l10n.made_with,
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodySmall,
+                style: theme.typography.small,
               ),
               Text(
                 context.l10n.copyright(DateTime.now().year),
                 textAlign: TextAlign.center,
-                style: theme.textTheme.bodySmall,
+                style: theme.typography.small,
               ),
               const SizedBox(height: 20),
               ConstrainedBox(
@@ -156,7 +168,7 @@ class AboutSpotube extends HookConsumerWidget {
                     data: (data) {
                       return Text(
                         data,
-                        style: theme.textTheme.bodySmall,
+                        style: theme.typography.small,
                       );
                     },
                     loading: () {
@@ -167,7 +179,7 @@ class AboutSpotube extends HookConsumerWidget {
                     error: (e, s) {
                       return Text(
                         e.toString(),
-                        style: theme.textTheme.bodySmall,
+                        style: theme.typography.small,
                       );
                     },
                   ),

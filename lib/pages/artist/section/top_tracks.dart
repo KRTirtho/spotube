@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
@@ -19,7 +19,6 @@ class ArtistPageTopTracks extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
 
     final playlist = ref.watch(audioPlayerProvider);
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
@@ -44,6 +43,9 @@ class ArtistPageTopTracks extends HookConsumerWidget {
       currentTrack ??= tracks.first;
 
       final isRemoteDevice = await showSelectDeviceDialog(context, ref);
+
+      if (isRemoteDevice == null) return;
+
       if (isRemoteDevice) {
         final remotePlayback = ref.read(connectProvider.notifier);
         final remotePlaylist = ref.read(queueProvider);
@@ -90,46 +92,46 @@ class ArtistPageTopTracks extends HookConsumerWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
                   context.l10n.top_tracks,
-                  style: theme.textTheme.headlineSmall,
+                  style: theme.typography.h4,
                 ),
               ),
               if (!isPlaylistPlaying)
-                IconButton(
+                IconButton.outline(
                   icon: const Icon(
                     SpotubeIcons.queueAdd,
                   ),
                   onPressed: () {
                     playlistNotifier.addTracks(topTracks.toList());
-                    scaffoldMessenger.showSnackBar(
-                      SnackBar(
-                        width: 300,
-                        behavior: SnackBarBehavior.floating,
-                        content: Text(
-                          context.l10n.added_to_queue(
-                            topTracks.length,
+                    showToast(
+                      context: context,
+                      location: ToastLocation.topRight,
+                      builder: (context, overlay) {
+                        return SurfaceCard(
+                          child: Text(
+                            context.l10n.added_to_queue(
+                              topTracks.length,
+                            ),
                           ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                        );
+                      },
                     );
                   },
                 ),
               const SizedBox(width: 5),
-              IconButton(
+              IconButton.primary(
+                shape: ButtonShape.circle,
+                enabled: !isPlaylistPlaying,
                 icon: Skeleton.keep(
                   child: Icon(
-                    isPlaylistPlaying ? SpotubeIcons.stop : SpotubeIcons.play,
-                    color: Colors.white,
+                    isPlaylistPlaying ? SpotubeIcons.pause : SpotubeIcons.play,
                   ),
-                ),
-                style: IconButton.styleFrom(
-                  backgroundColor: theme.colorScheme.primary,
                 ),
                 onPressed: () => playPlaylist(topTracks.toList()),
               )
             ],
           ),
         ),
+        const SliverGap(10),
         SliverList.builder(
           itemCount: topTracks.length,
           itemBuilder: (context, index) {

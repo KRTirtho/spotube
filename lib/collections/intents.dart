@@ -7,7 +7,11 @@ import 'package:go_router/go_router.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/modules/player/player_controls.dart';
 import 'package:spotube/pages/home/home.dart';
-import 'package:spotube/pages/library/library.dart';
+import 'package:spotube/pages/library/user_albums.dart';
+import 'package:spotube/pages/library/user_artists.dart';
+import 'package:spotube/pages/library/user_downloads.dart';
+import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
+import 'package:spotube/pages/library/user_playlists.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
@@ -52,8 +56,13 @@ class NavigationAction extends Action<NavigationIntent> {
 enum HomeTabs {
   browse,
   search,
-  library,
+
   lyrics,
+  userPlaylists,
+  userArtists,
+  userAlbums,
+  userLocalLibrary,
+  userDownloads,
 }
 
 class HomeTabIntent extends Intent {
@@ -73,11 +82,23 @@ class HomeTabAction extends Action<HomeTabIntent> {
       case HomeTabs.search:
         router.goNamed(SearchPage.name);
         break;
-      case HomeTabs.library:
-        router.goNamed(LibraryPage.name);
-        break;
       case HomeTabs.lyrics:
         router.goNamed(LyricsPage.name);
+        break;
+      case HomeTabs.userPlaylists:
+        router.goNamed(UserPlaylistsPage.name);
+        break;
+      case HomeTabs.userArtists:
+        router.goNamed(UserArtistsPage.name);
+        break;
+      case HomeTabs.userAlbums:
+        router.goNamed(UserAlbumsPage.name);
+        break;
+      case HomeTabs.userLocalLibrary:
+        router.goNamed(UserLocalLibraryPage.name);
+        break;
+      case HomeTabs.userDownloads:
+        router.goNamed(UserDownloadsPage.name);
         break;
     }
     return null;

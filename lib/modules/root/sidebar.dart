@@ -1,33 +1,28 @@
-import 'package:collection/collection.dart';
+import 'package:flutter/material.dart' show Badge;
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter/material.dart';
-import 'package:sidebarx/sidebarx.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/models/database/database.dart';
-import 'package:spotube/modules/connect/connect_device.dart';
 import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/extensions/image.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
-import 'package:spotube/hooks/utils/use_brightness_value.dart';
-import 'package:spotube/hooks/controllers/use_sidebarx_controller.dart';
+import 'package:spotube/modules/connect/connect_device.dart';
+import 'package:spotube/pages/library/user_downloads.dart';
 import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/settings/settings.dart';
-import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:window_manager/window_manager.dart';
 
 class Sidebar extends HookConsumerWidget {
   final Widget child;
@@ -52,8 +47,6 @@ class Sidebar extends HookConsumerWidget {
     final routerState = GoRouterState.of(context);
     final mediaQuery = MediaQuery.of(context);
 
-    final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
-
     final layoutMode =
         ref.watch(userPreferencesProvider.select((s) => s.layoutMode));
 
@@ -62,177 +55,94 @@ class Sidebar extends HookConsumerWidget {
       [context.l10n],
     );
 
-    final selectedIndex = sidebarTileList.indexWhere(
+    final sidebarLibraryTileList = useMemoized(
+      () => getSidebarLibraryTileList(context.l10n),
+      [context.l10n],
+    );
+
+    final tileList = [...sidebarTileList, ...sidebarLibraryTileList];
+
+    final selectedIndex = tileList.indexWhere(
       (e) => routerState.namedLocation(e.name) == routerState.matchedLocation,
     );
 
-    final controller = useSidebarXController(
-      selectedIndex: selectedIndex,
-      extended: mediaQuery.lgAndUp,
-    );
-
-    final theme = Theme.of(context);
-    final bg = theme.colorScheme.surfaceContainerHighest;
-
-    final bgColor = useBrightnessValue(
-      Color.lerp(bg, Colors.white, 0.6),
-      Color.lerp(bg, Colors.black, 0.45)!,
-    );
-
-    useEffect(() {
-      if (!context.mounted) return;
-      if (mediaQuery.lgAndUp && !controller.extended) {
-        controller.setExtended(true);
-      } else if (mediaQuery.mdAndDown && controller.extended) {
-        controller.setExtended(false);
-      }
-      return null;
-    }, [mediaQuery, controller]);
-
-    useEffect(() {
-      if (controller.selectedIndex != selectedIndex) {
-        controller.selectIndex(selectedIndex);
-      }
-      return null;
-    }, [selectedIndex]);
-
     if (layoutMode == LayoutMode.compact ||
         (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive)) {
-      return Scaffold(body: child);
+      return Scaffold(child: child);
     }
 
-    return Row(
-      children: [
-        SafeArea(
-          child: SidebarX(
-            controller: controller,
-            items: sidebarTileList.mapIndexed(
-              (index, e) {
-                return SidebarXItem(
-                  onTap: () {
-                    context.goNamed(e.name);
-                  },
-                  iconBuilder: (selected, hovered) {
-                    return Badge(
-                      backgroundColor: theme.colorScheme.primary,
-                      isLabelVisible: e.title == "Library" && downloadCount > 0,
-                      label: Text(
-                        downloadCount.toString(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 10,
-                        ),
-                      ),
-                      child: Icon(
-                        e.icon,
-                        color: selected || hovered
-                            ? theme.colorScheme.primary
-                            : null,
-                      ),
-                    );
-                  },
-                  label: e.title,
-                );
-              },
-            ).toList(),
-            headerBuilder: (_, __) => const SidebarHeader(),
-            footerBuilder: (_, __) => const Padding(
-              padding: EdgeInsets.only(bottom: 5),
-              child: SidebarFooter(),
-            ),
-            showToggleButton: false,
-            theme: SidebarXTheme(
-              width: 50,
-              margin: EdgeInsets.only(bottom: 10, top: kIsMacOS ? 35 : 5),
-              selectedItemDecoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: theme.colorScheme.primary.withOpacity(0.1),
-              ),
-              selectedIconTheme: IconThemeData(
-                color: theme.colorScheme.primary,
-              ),
-            ),
-            extendedTheme: SidebarXTheme(
-              width: 250,
-              margin: EdgeInsets.only(
-                bottom: 10,
-                left: 0,
-                top: kIsMacOS ? 0 : 5,
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              decoration: BoxDecoration(
-                color: bgColor?.withOpacity(0.8),
-                borderRadius: const BorderRadius.only(
-                  topRight: Radius.circular(10),
-                  bottomRight: Radius.circular(10),
-                ),
-              ),
-              selectedItemDecoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: theme.colorScheme.primary.withOpacity(0.1),
-              ),
-              selectedIconTheme: IconThemeData(
-                color: theme.colorScheme.primary,
-              ),
-              selectedTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.primary,
-                fontWeight: FontWeight.w600,
-              ),
-              itemTextPadding: const EdgeInsets.only(left: 10),
-              selectedItemTextPadding: const EdgeInsets.only(left: 10),
-              hoverTextStyle: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.primary,
-              ),
-            ),
+    final navigationButtons = [
+      NavigationLabel(
+        child: mediaQuery.lgAndUp ? const Text("Spotube") : const Text(""),
+      ),
+      for (final tile in sidebarTileList)
+        NavigationButton(
+          label: mediaQuery.lgAndUp ? Text(tile.title) : null,
+          child: Tooltip(
+            tooltip: TooltipContainer(child: Text(tile.title)),
+            child: Icon(tile.icon),
+          ),
+          onChanged: (value) {
+            if (value) {
+              context.goNamed(tile.name);
+            }
+          },
+        ),
+      const NavigationDivider(),
+      if (mediaQuery.lgAndUp)
+        NavigationLabel(child: Text(context.l10n.library)),
+      for (final tile in sidebarLibraryTileList)
+        NavigationButton(
+          label: mediaQuery.lgAndUp ? Text(tile.title) : null,
+          onChanged: (value) {
+            if (value) {
+              context.goNamed(tile.name);
+            }
+          },
+          child: Tooltip(
+            tooltip: TooltipContainer(child: Text(tile.title)),
+            child: Icon(tile.icon),
           ),
         ),
-        Expanded(child: child)
+    ];
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          children: [
+            Expanded(
+              child: mediaQuery.lgAndUp
+                  ? NavigationSidebar(
+                      index: selectedIndex,
+                      onSelected: (index) {
+                        final tile = tileList[index];
+                        context.goNamed(tile.name);
+                      },
+                      children: navigationButtons,
+                    )
+                  : NavigationRail(
+                      alignment: NavigationRailAlignment.start,
+                      index: selectedIndex,
+                      onSelected: (index) {
+                        final tile = tileList[index];
+                        context.goNamed(tile.name);
+                      },
+                      children: navigationButtons,
+                    ),
+            ),
+            const SidebarFooter(),
+            if (mediaQuery.lgAndUp) const Gap(130) else const Gap(65),
+          ],
+        ),
+        const VerticalDivider(),
+        Expanded(child: child),
       ],
     );
   }
 }
 
-class SidebarHeader extends HookWidget {
-  const SidebarHeader({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final theme = Theme.of(context);
-
-    if (mediaQuery.mdAndDown) {
-      return Container(
-        height: 40,
-        width: 40,
-        margin: const EdgeInsets.only(bottom: 5),
-        child: Sidebar.brandLogo(),
-      );
-    }
-
-    return DragToMoveArea(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            if (kIsMacOS) const SizedBox(height: 25),
-            Row(
-              children: [
-                Sidebar.brandLogo(),
-                const SizedBox(width: 10),
-                Text(
-                  "Spotube",
-                  style: theme.textTheme.titleLarge,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SidebarFooter extends HookConsumerWidget {
+class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
   const SidebarFooter({
     super.key,
   });
@@ -241,8 +151,10 @@ class SidebarFooter extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final me = ref.watch(meProvider);
-    final data = me.asData?.value;
+    final routerState = GoRouterState.of(context);
+    final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
+    final userSnapshot = ref.watch(meProvider);
+    final data = userSnapshot.asData?.value;
 
     final avatarImg = (data?.images).asUrlString(
       index: (data?.images?.length ?? 1) - 1,
@@ -252,19 +164,59 @@ class SidebarFooter extends HookConsumerWidget {
     final auth = ref.watch(authenticationProvider);
 
     if (mediaQuery.mdAndDown) {
-      return IconButton(
-        icon: const Icon(SpotubeIcons.settings),
-        onPressed: () => ServiceUtils.navigateNamed(context, SettingsPage.name),
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 10,
+        children: [
+          Badge(
+            isLabelVisible: downloadCount > 0,
+            label: Text(downloadCount.toString()),
+            child: IconButton(
+              variance: routerState.topRoute?.name == UserDownloadsPage.name
+                  ? ButtonVariance.secondary
+                  : ButtonVariance.ghost,
+              icon: const Icon(SpotubeIcons.download),
+              onPressed: () =>
+                  ServiceUtils.navigateNamed(context, UserDownloadsPage.name),
+            ),
+          ),
+          const ConnectDeviceButton.sidebar(),
+          IconButton(
+            variance: ButtonVariance.ghost,
+            icon: const Icon(SpotubeIcons.settings),
+            onPressed: () =>
+                ServiceUtils.navigateNamed(context, SettingsPage.name),
+          ),
+        ],
       );
     }
 
     return Container(
       padding: const EdgeInsets.only(left: 12),
-      width: 250,
+      width: 180,
       child: Column(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 10,
         children: [
+          SizedBox(
+            width: double.infinity,
+            child: Button(
+              style: routerState.topRoute?.name == UserDownloadsPage.name
+                  ? ButtonVariance.secondary
+                  : ButtonVariance.outline,
+              onPressed: () {
+                ServiceUtils.navigateNamed(context, UserDownloadsPage.name);
+              },
+              leading: const Icon(SpotubeIcons.download),
+              trailing: downloadCount > 0
+                  ? PrimaryBadge(
+                      child: Text(downloadCount.toString()),
+                    )
+                  : null,
+              child: Text(context.l10n.downloads),
+            ),
+          ),
           const ConnectDeviceButton.sidebar(),
-          const Gap(10),
           Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -273,21 +225,16 @@ class SidebarFooter extends HookConsumerWidget {
                 const CircularProgressIndicator()
               else if (data != null)
                 Flexible(
-                  child: InkWell(
+                  child: GestureDetector(
                     onTap: () {
                       ServiceUtils.pushNamed(context, ProfilePage.name);
                     },
-                    borderRadius: BorderRadius.circular(30),
                     child: Row(
                       children: [
-                        CircleAvatar(
-                          backgroundImage:
-                              UniversalImage.imageProvider(avatarImg),
-                          onBackgroundImageError: (exception, stackTrace) =>
-                              Assets.userPlaceholder.image(
-                            height: 16,
-                            width: 16,
-                          ),
+                        Avatar(
+                          initials:
+                              Avatar.getInitials(data.displayName ?? "User"),
+                          provider: UniversalImage.imageProvider(avatarImg),
                         ),
                         const SizedBox(width: 10),
                         Flexible(
@@ -296,8 +243,8 @@ class SidebarFooter extends HookConsumerWidget {
                             maxLines: 1,
                             softWrap: false,
                             overflow: TextOverflow.fade,
-                            style: theme.textTheme.bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.bold),
+                            style: theme.typography.normal
+                                .copyWith(fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],
@@ -305,6 +252,7 @@ class SidebarFooter extends HookConsumerWidget {
                   ),
                 ),
               IconButton(
+                variance: ButtonVariance.ghost,
                 icon: const Icon(SpotubeIcons.settings),
                 onPressed: () {
                   ServiceUtils.pushNamed(context, SettingsPage.name);
@@ -316,4 +264,7 @@ class SidebarFooter extends HookConsumerWidget {
       ),
     );
   }
+
+  @override
+  bool get selectable => false;
 }

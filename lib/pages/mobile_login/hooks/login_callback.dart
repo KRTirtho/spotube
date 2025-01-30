@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:desktop_webview_window/desktop_webview_window.dart';
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
@@ -28,7 +28,8 @@ Future<void> Function() useLoginCallback(WidgetRef ref) {
       final exp = RegExp(r"https:\/\/accounts.spotify.com\/.+\/status");
       final applicationSupportDir = await getApplicationSupportDirectory();
       final userDataFolder = Directory(
-          join(applicationSupportDir.path, "webview_window_Webview2"));
+        join(applicationSupportDir.path, "webview_window_Webview2"),
+      );
 
       if (!await userDataFolder.exists()) {
         await userDataFolder.create();

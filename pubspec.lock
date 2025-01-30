@@ -159,12 +159,13 @@ packages:
     source: hosted
     version: "5.1.10"
   bonsoir_android:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: bonsoir_android
-      sha256: a72d83a78780c1f238e3178d0585e5604fbd9f2503206293737cdfab899ce8d0
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/bonsoir_android"
+      ref: HEAD
+      resolved-ref: aa5604628ba41e3a7153769f4465a3d375488f2e
+      url: "https://github.com/KRTirtho/Bonsoir.git"
+    source: git
     version: "5.1.5"
   bonsoir_darwin:
     dependency: transitive
@@ -278,14 +279,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.9.2"
-  buttons_tabbar:
-    dependency: "direct main"
-    description:
-      name: buttons_tabbar
-      sha256: "6e541377ab96d4223d8f072bc4f35c9d32dafe042005cad93530e0cd9d02801f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.3.14"
   cached_network_image:
     dependency: "direct main"
     description:
@@ -382,6 +375,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  connectivity_plus:
+    dependency: "direct main"
+    description:
+      name: connectivity_plus
+      sha256: "8a68739d3ee113e51ad35583fdf9ab82c55d09d693d3c39da1aebab87c938412"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.1.2"
+  connectivity_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: connectivity_plus_platform_interface
+      sha256: "42657c1715d48b167930d5f34d00222ac100475f73d10162ddf43e714932f204"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   convert:
     dependency: transitive
     description:
@@ -390,6 +399,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.2"
+  country_flags:
+    dependency: transitive
+    description:
+      name: country_flags
+      sha256: dad797491167a5b8dee465b969cb756795d842fdfc3fc1ff93f22e9c1884b73d
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   coverage:
     dependency: transitive
     description:
@@ -422,14 +439,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
-  curved_navigation_bar:
-    dependency: "direct main"
-    description:
-      name: curved_navigation_bar
-      sha256: bb4ab128fcb6f4a9f0f1f72d227db531818b20218984789777f049fcbf919279
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.6"
   dart_des:
     dependency: transitive
     description:
@@ -462,6 +471,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  data_widget:
+    dependency: transitive
+    description:
+      name: data_widget
+      sha256: "95388df890189014f702b7e93f9de6bcf7d45143a99f6288f31899f10be441ba"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   dbus:
     dependency: transitive
     description:
@@ -514,10 +531,11 @@ packages:
   disable_battery_optimization:
     dependency: "direct main"
     description:
-      name: disable_battery_optimization
-      sha256: "6b2ba802f984af141faf1b6b5fb956d5ef01f9cd555597c35b9cc335a03185ba"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: aa77a61946849fff495091fc13dcc390948cc60b
+      url: "https://github.com/KRTirtho/Disable-Battery-Optimizations.git"
+    source: git
     version: "1.1.1"
   draggable_scrollbar:
     dependency: "direct main"
@@ -552,6 +570,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.15"
+  email_validator:
+    dependency: transitive
+    description:
+      name: email_validator
+      sha256: b19aa5d92fdd76fbc65112060c94d45ba855105a28bb6e462de7ff03b12fa1fb
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   encrypt:
     dependency: "direct main"
     description:
@@ -747,6 +773,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0+1"
+  flutter_form_builder:
+    dependency: "direct main"
+    description:
+      name: flutter_form_builder
+      sha256: "39aee5a2548df0b3979a83eea38468116a888341fbca8a92c4be18a486a7bb57"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.6.0"
   flutter_gen_core:
     dependency: transitive
     description:
@@ -945,23 +979,39 @@ packages:
     source: hosted
     version: "1.1.1"
   flutter_svg:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       name: flutter_svg
-      sha256: "6ff9fa12892ae074092de2fa6a9938fb21dbabfdaa2ff57dc697ff912fc8d4b2"
+      sha256: c200fd79c918a40c5cd50ea0877fa13f81bdaf6f0a5d3dbcc2a13e3285d6aa1b
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.6"
+    version: "2.0.17"
   flutter_test:
     dependency: "direct dev"
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_undraw:
+    dependency: "direct main"
+    description:
+      name: flutter_undraw
+      sha256: a38083350fac9e0d44ddde0e53a39f00730498ed4a110f967a38c6fb1a161755
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.0"
+  form_builder_validators:
+    dependency: "direct main"
+    description:
+      name: form_builder_validators
+      sha256: "517fb884183fff7a0ef3db7d375981011da26ee452f20fb3d2e788ad527ad01d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "11.1.1"
   form_validator:
     dependency: "direct main"
     description:
@@ -1256,10 +1306,10 @@ packages:
     dependency: "direct main"
     description:
       name: invidious
-      sha256: "7cb879c0b4b99aa06ec720af84f6988ff0080bb0434d041f6fb0c4add680ee36"
+      sha256: "27ef3a001df875665de15535dbc9099f44d12a59480018fb1e17377d4af0308d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   io:
     dependency: "direct dev"
     description:
@@ -1276,6 +1326,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.0"
+  jovial_misc:
+    dependency: transitive
+    description:
+      name: jovial_misc
+      sha256: "4b10a4cac4f492d9692e97699bff775efa84abdba29909124cbccf3126e31cea"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.0"
+  jovial_svg:
+    dependency: transitive
+    description:
+      name: jovial_svg
+      sha256: ca14d42956b9949c36333065c9141f100e930c918f57f4bd8dd59d35581bd3fc
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.24"
   js:
     dependency: transitive
     description:
@@ -1357,7 +1423,7 @@ packages:
     source: hosted
     version: "2.5.0"
   logging:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: logging
       sha256: c8245ada5f1717ed44271ed1c26b8ce85ca3228fd2ffdb75468ab01979309d61
@@ -1492,6 +1558,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
+  nm:
+    dependency: transitive
+    description:
+      name: nm
+      sha256: "2c9aae4127bdc8993206464fcc063611e0e36e72018696cd9631023a31b24254"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   node_preamble:
     dependency: transitive
     description:
@@ -1620,14 +1694,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.0"
-  path_drawing:
-    dependency: transitive
-    description:
-      name: path_drawing
-      sha256: bbb1934c0cbb03091af082a6389ca2080345291ef07a5fa6d6e078ba8682f977
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   path_parsing:
     dependency: transitive
     description:
@@ -1740,6 +1806,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.2"
+  phonecodes:
+    dependency: transitive
+    description:
+      name: phonecodes
+      sha256: "094a76b0ba3d8f9c1c83044ae8783d46e6906703c86eb08facd876844c264bf5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   piped_client:
     dependency: "direct main"
     description:
@@ -1780,14 +1854,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
-  popover:
-    dependency: "direct main"
-    description:
-      name: popover
-      sha256: "0606f3e10f92fc0459f5c52fd917738c29e7552323b28694d50c2d3312d0e1a2"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1"
   posix:
     dependency: transitive
     description:
@@ -1925,6 +1991,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  shadcn_flutter:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: d928e73cd734582046c63a3bed99cc42aeab6085
+      resolved-ref: d928e73cd734582046c63a3bed99cc42aeab6085
+      url: "https://github.com/KRTirtho/shadcn_flutter.git"
+    source: git
+    version: "0.0.24"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -2029,14 +2104,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.2"
-  sidebarx:
-    dependency: "direct main"
-    description:
-      name: sidebarx
-      sha256: abe39d6db237fb8e25c600e8039ffab80fa7fe71acab03e9c378c31f912d2766
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.17.1"
   simple_icons:
     dependency: "direct main"
     description:
@@ -2058,6 +2125,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  sliding_up_panel:
+    dependency: "direct main"
+    description:
+      name: sliding_up_panel
+      sha256: "578e90956a6212d1e406373250b2436a0f3afece29aee3c24c8360094d6cf968"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0+1"
   sliver_tools:
     dependency: "direct main"
     description:
@@ -2258,6 +2333,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.0+3"
+  syntax_highlight:
+    dependency: transitive
+    description:
+      name: syntax_highlight
+      sha256: ee33b6aa82cc722bb9b40152a792181dee222353b486c0255fde666a3e3a4997
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   system_theme:
     dependency: "direct main"
     description:
@@ -2466,6 +2549,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.1"
+  vector_graphics:
+    dependency: transitive
+    description:
+      name: vector_graphics
+      sha256: "27d5fefe86fb9aace4a9f8375b56b3c292b64d8c04510df230f849850d912cb7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.15"
   vector_graphics_codec:
     dependency: transitive
     description:
@@ -2629,11 +2720,12 @@ packages:
   youtube_explode_dart:
     dependency: "direct main"
     description:
-      name: youtube_explode_dart
-      sha256: "51ca5b2c03bf56060143d4f87df90ec3227592d7ae8a8003532533ae019d4291"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.6"
+      path: "."
+      ref: e519db65ad0b0a40b12f69285932f9db509da3cf
+      resolved-ref: e519db65ad0b0a40b12f69285932f9db509da3cf
+      url: "https://github.com/Hexer10/youtube_explode_dart.git"
+    source: git
+    version: "2.3.7"
 sdks:
-  dart: ">=3.5.3 <4.0.0"
-  flutter: ">=3.24.0"
+  dart: ">=3.6.0 <4.0.0"
+  flutter: ">=3.27.0"

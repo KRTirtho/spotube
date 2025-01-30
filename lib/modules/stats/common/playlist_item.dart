@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/string.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
@@ -14,8 +15,8 @@ class StatsPlaylistItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      horizontalTitleGap: 8,
+    return ButtonTile(
+      style: ButtonVariance.ghost,
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(4),
         child: UniversalImage(
@@ -33,7 +34,7 @@ class StatsPlaylistItem extends StatelessWidget {
         overflow: TextOverflow.ellipsis,
       ),
       trailing: info,
-      onTap: () {
+      onPressed: () {
         ServiceUtils.pushNamed(
           context,
           PlaylistPage.name,
