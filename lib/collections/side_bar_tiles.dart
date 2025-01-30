@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:spotube/pages/home/home.dart';

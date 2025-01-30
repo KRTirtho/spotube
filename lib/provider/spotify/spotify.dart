@@ -11,7 +11,7 @@ import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:lrc/lrc.dart';
 import 'package:package_info_plus/package_info_plus.dart';

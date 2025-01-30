@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 
 import 'package:spotube/provider/authentication/authentication.dart';
@@ -17,19 +18,21 @@ class WebViewLogin extends HookConsumerWidget {
 
     if (kIsDesktop) {
       const Scaffold(
-        body: Center(
+        child: Center(
           child: Text('This feature is not available on desktop'),
         ),
       );
     }
 
     return Scaffold(
-      appBar: const TitleBar(
-        leading: [BackButton(color: Colors.white)],
-        backgroundColor: Colors.transparent,
-      ),
-      extendBodyBehindAppBar: true,
-      body: InAppWebView(
+      headers: const [
+        TitleBar(
+          leading: [BackButton(color: Colors.white)],
+          backgroundColor: Colors.transparent,
+        ),
+      ],
+      floatingHeader: true,
+      child: InAppWebView(
         initialSettings: InAppWebViewSettings(
           userAgent:
               "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 safari/537.36",

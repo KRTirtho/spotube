@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 
@@ -53,14 +53,14 @@ class PlayerTrackDetails extends HookConsumerWidget {
                   "/track/${playback.activeTrack?.id}",
                   push: true,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium!.copyWith(
+                  style: theme.typography.normal.copyWith(
                     color: color,
                   ),
                 ),
                 Text(
                   playback.activeTrack?.artists?.asString() ?? "",
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall!.copyWith(color: color),
+                  style: theme.typography.small.copyWith(color: color),
                 )
               ],
             ),
