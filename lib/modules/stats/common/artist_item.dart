@@ -30,7 +30,7 @@ class StatsArtistItem extends StatelessWidget {
       ),
       trailing: info,
       onPressed: () {
-        context.pushRoute(ArtistRoute(artistId: artist.id!));
+        context.navigateTo(ArtistRoute(artistId: artist.id!));
       },
     );
   }

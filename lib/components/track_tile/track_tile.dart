@@ -234,7 +234,7 @@ class TrackTile extends HookConsumerWidget {
                               ),
                               onPressed: () {
                                 context
-                                    .pushRoute(TrackRoute(trackId: track.id!));
+                                    .navigateTo(TrackRoute(trackId: track.id!));
                               },
                               child: Text(
                                 track.name!,
@@ -284,7 +284,7 @@ class TrackTile extends HookConsumerWidget {
                         child: ArtistLink(
                           artists: track.artists ?? [],
                           onOverflowArtistClick: () {
-                            context.pushRoute(
+                            context.navigateTo(
                               TrackRoute(trackId: track.id!),
                             );
                           },

@@ -76,7 +76,7 @@ class GenreSectionCard extends HookConsumerWidget {
                 ).h3(),
                 Button.link(
                   onPressed: () {
-                    context.router.push(
+                    context.navigateTo(
                       GenrePlaylistsRoute(
                         id: category.id!,
                         category: category,

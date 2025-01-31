@@ -48,7 +48,7 @@ class HomeGenresSection extends HookConsumerWidget {
               ),
               Button.link(
                 onPressed: () {
-                  context.pushRoute(const GenreRoute());
+                  context.navigateTo(const GenreRoute());
                 },
                 child: Text(
                   context.l10n.browse_all,

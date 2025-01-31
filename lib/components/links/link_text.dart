@@ -28,7 +28,7 @@ class LinkText<T> extends StatelessWidget {
       text,
       onTap: () {
         if (push) {
-          context.pushRoute(route);
+          context.navigateTo(route);
         } else {
           context.navigateTo(route);
         }

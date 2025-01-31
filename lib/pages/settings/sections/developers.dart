@@ -21,7 +21,7 @@ class SettingsDevelopersSection extends HookWidget {
           title: Text(context.l10n.logs),
           trailing: const Icon(SpotubeIcons.angleRight),
           onTap: () {
-            context.pushRoute(const LogsRoute());
+            context.navigateTo(const LogsRoute());
           },
         )
       ],

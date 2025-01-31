@@ -40,7 +40,7 @@ class AnonymousFallback extends ConsumerWidget {
           Text(context.l10n.not_logged_in),
           Button.primary(
             child: Text(context.l10n.login_with_spotify),
-            onPressed: () => context.pushRoute(const SettingsRoute()),
+            onPressed: () => context.navigateTo(const SettingsRoute()),
           )
         ],
       ),

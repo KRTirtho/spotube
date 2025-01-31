@@ -81,10 +81,10 @@ class PlayerTrackDetails extends HookConsumerWidget {
                 ArtistLink(
                   artists: playback.activeTrack?.artists ?? [],
                   onRouteChange: (route) {
-                    context.router.pushNamed(route);
+                    context.router.navigateNamed(route);
                   },
                   onOverflowArtistClick: () =>
-                      context.pushRoute(TrackRoute(trackId: track!.id!)),
+                      context.navigateTo(TrackRoute(trackId: track!.id!)),
                 )
               ],
             ),

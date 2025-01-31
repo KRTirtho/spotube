@@ -52,12 +52,12 @@ class Sidebar extends HookConsumerWidget {
     final router = context.watchRouter;
 
     final selectedIndex = tileList.indexWhere(
-      (e) => router.topRoute.name == e.route.routeName,
+      (e) => router.currentPath.startsWith(e.pathPrefix),
     );
 
     if (layoutMode == LayoutMode.compact ||
         (mediaQuery.smAndDown && layoutMode == LayoutMode.adaptive)) {
-      return Scaffold(child: child);
+      return child;
     }
 
     final navigationButtons = [

@@ -40,7 +40,7 @@ class HomePageFeedSection extends HookConsumerWidget {
           titleTrailing: Button.text(
             child: Text(context.l10n.browse_all),
             onPressed: () {
-              context.pushRoute(HomeFeedSectionRoute(sectionUri: section.uri));
+              context.navigateTo(HomeFeedSectionRoute(sectionUri: section.uri));
             },
           ),
         );

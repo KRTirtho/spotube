@@ -97,7 +97,7 @@ class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
                 Flexible(
                   child: GestureDetector(
                     onTap: () {
-                      context.pushRoute(const ProfileRoute());
+                      context.navigateTo(const ProfileRoute());
                     },
                     child: Row(
                       children: [
@@ -125,7 +125,7 @@ class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
                 variance: ButtonVariance.ghost,
                 icon: const Icon(SpotubeIcons.settings),
                 onPressed: () {
-                  context.pushRoute(const SettingsRoute());
+                  context.navigateTo(const SettingsRoute());
                 },
               ),
             ],

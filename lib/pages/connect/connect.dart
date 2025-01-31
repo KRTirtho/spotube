@@ -72,7 +72,7 @@ class ConnectPage extends HookConsumerWidget {
                       : null,
                   onPressed: () {
                     if (selected) {
-                      context.pushRoute(const ConnectControlRoute());
+                      context.navigateTo(const ConnectControlRoute());
                     } else {
                       connectClientsNotifier.resolveService(device);
                     }

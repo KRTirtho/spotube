@@ -73,7 +73,7 @@ class PlaylistCard extends HookConsumerWidget {
     }
 
     void onTap() {
-      context.pushRoute(PlaylistRoute(id: playlist.id!, playlist: playlist));
+      context.navigateTo(PlaylistRoute(id: playlist.id!, playlist: playlist));
     }
 
     void onPlaybuttonPressed() async {

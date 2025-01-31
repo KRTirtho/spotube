@@ -35,12 +35,12 @@ class StatsTrackItem extends StatelessWidget {
         artists: track.artists!,
         mainAxisAlignment: WrapAlignment.start,
         onOverflowArtistClick: () {
-          context.pushRoute(TrackRoute(trackId: track.id!));
+          context.navigateTo(TrackRoute(trackId: track.id!));
         },
       ),
       trailing: info,
       onPressed: () {
-        context.pushRoute(TrackRoute(trackId: track.id!));
+        context.navigateTo(TrackRoute(trackId: track.id!));
       },
     );
   }

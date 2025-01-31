@@ -45,7 +45,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
                 description: context.l10n.summary_listened_to_music,
                 color: Colors.indigo,
                 onTap: () {
-                  context.pushRoute(const StatsMinutesRoute());
+                  context.navigateTo(const StatsMinutesRoute());
                 },
               ),
               SummaryCard(
@@ -54,7 +54,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
                 description: context.l10n.summary_streamed_overall,
                 color: Colors.blue,
                 onTap: () {
-                  context.pushRoute(const StatsStreamsRoute());
+                  context.navigateTo(const StatsStreamsRoute());
                 },
               ),
               SummaryCard.unformatted(
@@ -63,7 +63,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
                 description: context.l10n.summary_owed_to_artists,
                 color: Colors.green,
                 onTap: () {
-                  context.pushRoute(const StatsStreamsRoute());
+                  context.navigateTo(const StatsStreamsRoute());
                 },
               ),
               SummaryCard(
@@ -72,7 +72,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
                 description: context.l10n.summary_music_reached_you,
                 color: Colors.yellow,
                 onTap: () {
-                  context.pushRoute(const StatsArtistsRoute());
+                  context.navigateTo(const StatsArtistsRoute());
                 },
               ),
               SummaryCard(
@@ -81,7 +81,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
                 description: context.l10n.summary_got_your_love,
                 color: Colors.pink,
                 onTap: () {
-                  context.pushRoute(const StatsAlbumsRoute());
+                  context.navigateTo(const StatsAlbumsRoute());
                 },
               ),
               SummaryCard(
@@ -90,7 +90,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
                 description: context.l10n.summary_were_on_repeat,
                 color: Colors.teal,
                 onTap: () {
-                  context.pushRoute(const StatsPlaylistsRoute());
+                  context.navigateTo(const StatsPlaylistsRoute());
                 },
               ),
             ]),

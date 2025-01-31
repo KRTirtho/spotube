@@ -50,7 +50,7 @@ class FriendItem extends HookConsumerWidget {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
                           context
-                              .pushRoute(TrackRoute(trackId: friend.track.id));
+                              .navigateTo(TrackRoute(trackId: friend.track.id));
                         },
                     ),
                     const TextSpan(text: " • "),
@@ -64,7 +64,7 @@ class FriendItem extends HookConsumerWidget {
                       text: " ${friend.track.artist.name}",
                       recognizer: TapGestureRecognizer()
                         ..onTap = () {
-                          context.pushRoute(
+                          context.navigateTo(
                             ArtistRoute(artistId: friend.track.artist.id),
                           );
                         },
@@ -74,7 +74,7 @@ class FriendItem extends HookConsumerWidget {
                       text: friend.track.context.name,
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
-                          context.router.pushNamed(
+                          context.router.navigateNamed(
                             "/${friend.track.context.path}",
                             // extra:
                             //     !friend.track.context.path.startsWith("album")
@@ -98,7 +98,7 @@ class FriendItem extends HookConsumerWidget {
                           final album =
                               await spotify.albums.get(friend.track.album.id);
                           if (context.mounted) {
-                            context.pushRoute(
+                            context.navigateTo(
                               AlbumRoute(id: album.id!, album: album),
                             );
                           }

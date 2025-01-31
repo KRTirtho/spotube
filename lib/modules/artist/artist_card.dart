@@ -36,7 +36,7 @@ class ArtistCard extends HookConsumerWidget {
       width: 180,
       child: Button.card(
         onPressed: () {
-          context.pushRoute(ArtistRoute(artistId: artist.id!));
+          context.navigateTo(ArtistRoute(artistId: artist.id!));
         },
         child: Column(
           children: [

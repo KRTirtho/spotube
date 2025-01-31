@@ -28,19 +28,20 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
         switch (url.pathSegments.first) {
           case "album":
             final album = await spotify.albums.get(url.pathSegments.last);
-            router.push(
+            router.navigate(
               AlbumRoute(id: album.id!, album: album),
             );
             break;
           case "artist":
-            router.push(ArtistRoute(artistId: url.pathSegments.last));
+            router.navigate(ArtistRoute(artistId: url.pathSegments.last));
             break;
           case "playlist":
             final playlist = await spotify.playlists.get(url.pathSegments.last);
-            router.push(PlaylistRoute(id: playlist.id!, playlist: playlist));
+            router
+                .navigate(PlaylistRoute(id: playlist.id!, playlist: playlist));
             break;
           case "track":
-            router.push(TrackRoute(trackId: url.pathSegments.last));
+            router.navigate(TrackRoute(trackId: url.pathSegments.last));
             break;
           default:
             break;
@@ -65,19 +66,19 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
         switch (startSegment) {
           case "spotify:album":
             final album = await spotify.albums.get(endSegment);
-            await router.push(
+            await router.navigate(
               AlbumRoute(id: album.id!, album: album),
             );
             break;
           case "spotify:artist":
-            await router.push(ArtistRoute(artistId: endSegment));
+            await router.navigate(ArtistRoute(artistId: endSegment));
             break;
           case "spotify:track":
-            await router.push(TrackRoute(trackId: endSegment));
+            await router.navigate(TrackRoute(trackId: endSegment));
             break;
           case "spotify:playlist":
             final playlist = await spotify.playlists.get(endSegment);
-            await router.push(
+            await router.navigate(
               PlaylistRoute(id: playlist.id!, playlist: playlist),
             );
             break;

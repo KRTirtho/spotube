@@ -26,7 +26,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
         return IconButton.ghost(
           icon: const Icon(SpotubeIcons.speaker),
           onPressed: () {
-            context.pushRoute(const ConnectRoute());
+            context.navigateTo(const ConnectRoute());
           },
         );
       }
@@ -35,7 +35,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
         width: double.infinity,
         child: Button.primary(
           onPressed: () {
-            context.pushRoute(const ConnectRoute());
+            context.navigateTo(const ConnectRoute());
           },
           trailing: const Icon(SpotubeIcons.speaker),
           child: Text(
@@ -50,7 +50,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
       children: [
         SecondaryBadge(
           onPressed: () {
-            context.pushRoute(const ConnectRoute());
+            context.navigateTo(const ConnectRoute());
           },
           style: const ButtonStyle.secondary(size: ButtonSize(.8)),
           leading: connectClients.asData?.value.resolvedService != null
@@ -70,7 +70,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
         IconButton.primary(
           icon: const Icon(SpotubeIcons.speaker),
           onPressed: () {
-            context.pushRoute(const ConnectRoute());
+            context.navigateTo(const ConnectRoute());
           },
         )
       ],

@@ -67,7 +67,7 @@ class DownloadItem extends HookConsumerWidget {
         artists: track.artists ?? <Artist>[],
         mainAxisAlignment: WrapAlignment.start,
         onOverflowArtistClick: () {
-          context.pushRoute(TrackRoute(trackId: track.id!));
+          context.navigateTo(TrackRoute(trackId: track.id!));
         },
       ),
       trailing: isQueryingSourceInfo

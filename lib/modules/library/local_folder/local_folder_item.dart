@@ -59,7 +59,7 @@ class LocalFolderItem extends HookConsumerWidget {
 
     return Button(
       onPressed: () {
-        context.pushRoute(
+        context.navigateTo(
           LocalLibraryRoute(
             location: folder,
             isCache: isCacheFolder,

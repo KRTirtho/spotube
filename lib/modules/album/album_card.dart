@@ -69,7 +69,7 @@ class AlbumCard extends HookConsumerWidget {
         "${album.albumType?.formatted} • ${album.artists?.asString() ?? ""}";
 
     void onTap() {
-      context.pushRoute(AlbumRoute(id: album.id!, album: album));
+      context.navigateTo(AlbumRoute(id: album.id!, album: album));
     }
 
     void onPlaybuttonPressed() async {

@@ -268,7 +268,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           title: Text(context.l10n.blacklist),
           subtitle: Text(context.l10n.blacklist_description),
           onTap: () {
-            context.pushRoute(const BlackListRoute());
+            context.navigateTo(const BlackListRoute());
           },
           trailing: const Icon(SpotubeIcons.angleRight),
         ),

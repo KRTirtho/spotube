@@ -115,7 +115,7 @@ class ConnectControlPage extends HookConsumerWidget {
                               style: typography.h4,
                               onTap: () {
                                 if (playlist.activeTrack == null) return;
-                                context.pushRoute(
+                                context.navigateTo(
                                   TrackRoute(
                                       trackId: playlist.activeTrack!.id!),
                                 );
@@ -127,7 +127,7 @@ class ConnectControlPage extends HookConsumerWidget {
                               artists: playlist.activeTrack?.artists ?? [],
                               textStyle: typography.normal,
                               mainAxisAlignment: WrapAlignment.start,
-                              onOverflowArtistClick: () => context.pushRoute(
+                              onOverflowArtistClick: () => context.navigateTo(
                                 TrackRoute(trackId: playlist.activeTrack!.id!),
                               ),
                             ),

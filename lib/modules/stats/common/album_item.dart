@@ -37,14 +37,14 @@ class StatsAlbumItem extends StatelessWidget {
               artists: album.artists ?? [],
               mainAxisAlignment: WrapAlignment.start,
               onOverflowArtistClick: () =>
-                  context.pushRoute(AlbumRoute(id: album.id!, album: album)),
+                  context.navigateTo(AlbumRoute(id: album.id!, album: album)),
             ),
           ),
         ],
       ),
       trailing: info,
       onPressed: () {
-        context.pushRoute(AlbumRoute(id: album.id!, album: album));
+        context.navigateTo(AlbumRoute(id: album.id!, album: album));
       },
     );
   }

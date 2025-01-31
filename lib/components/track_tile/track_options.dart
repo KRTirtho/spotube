@@ -210,7 +210,7 @@ class TrackOptions extends HookConsumerWidget {
       onSelected: (value) async {
         switch (value) {
           case TrackOptionValue.album:
-            await context.pushRoute(
+            await context.navigateTo(
               AlbumRoute(id: track.album!.id!, album: track.album!),
             );
             break;
@@ -345,7 +345,7 @@ class TrackOptions extends HookConsumerWidget {
             alignment: Alignment.centerLeft,
             child: ArtistLink(
               artists: track.artists!,
-              onOverflowArtistClick: () => context.pushRoute(
+              onOverflowArtistClick: () => context.navigateTo(
                 TrackRoute(trackId: track.id!),
               ),
             ),

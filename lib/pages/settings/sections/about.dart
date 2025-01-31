@@ -90,7 +90,7 @@ class SettingsAboutSection extends HookConsumerWidget {
           title: Text(context.l10n.about_spotube),
           trailing: const Icon(SpotubeIcons.angleRight),
           onTap: () {
-            context.pushRoute(const AboutSpotubeRoute());
+            context.navigateTo(const AboutSpotubeRoute());
           },
         )
       ],

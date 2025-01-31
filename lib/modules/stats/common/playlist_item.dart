@@ -35,7 +35,7 @@ class StatsPlaylistItem extends StatelessWidget {
       ),
       trailing: info,
       onPressed: () {
-        context.pushRoute(PlaylistRoute(id: playlist.id!, playlist: playlist));
+        context.navigateTo(PlaylistRoute(id: playlist.id!, playlist: playlist));
       },
     );
   }

@@ -6,7 +6,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-import 'package:spotube/collections/routes.gr.dart';
 
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -35,23 +34,13 @@ class SpotubeNavigationBar extends HookConsumerWidget {
       [context.l10n],
     );
 
-    final libraryTiles = useMemoized(
-      () => getSidebarLibraryTileList(context.l10n)
-          .map((e) => e.route.routeName)
-          .toList(),
-      [context.l10n],
-    );
-
     final panelHeight = ref.watch(navigationPanelHeight);
 
     final router = context.watchRouter;
     final selectedIndex = max(
       0,
       navbarTileList.indexWhere(
-        (e) =>
-            router.topRoute.name == e.route.routeName ||
-            (libraryTiles.contains(router.topRoute.name) &&
-                e.route.routeName == LibraryRoute.name),
+        (e) => router.currentPath.startsWith(e.pathPrefix),
       ),
     );
 

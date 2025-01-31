@@ -21,7 +21,7 @@ Future<void> Function() useLoginCallback(WidgetRef ref) {
 
   return useCallback(() async {
     if (kIsMobile || kIsMacOS) {
-      context.pushRoute(const WebViewLoginRoute());
+      context.navigateTo(const WebViewLoginRoute());
       return;
     }
 

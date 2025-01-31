@@ -50,7 +50,7 @@ class ArtistLink extends StatelessWidget {
                       onRouteChange?.call("/artist/${artist.value.id}");
                     } else {
                       context
-                          .pushRoute(ArtistRoute(artistId: artist.value.id!));
+                          .navigateTo(ArtistRoute(artistId: artist.value.id!));
                     }
                   },
                   overflow: TextOverflow.ellipsis,

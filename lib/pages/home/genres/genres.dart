@@ -51,7 +51,7 @@ class GenrePage extends HookConsumerWidget {
             final gradient = gradients[Random().nextInt(gradients.length)];
             return CardImage(
               onPressed: () {
-                context.pushRoute(
+                context.navigateTo(
                   GenrePlaylistsRoute(
                     id: category.id!,
                     category: category,

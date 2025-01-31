@@ -93,7 +93,7 @@ class PlayerView extends HookConsumerWidget {
     }, [panelController.isAttached && panelController.isPanelOpen]);
 
     return AppPopScope(
-      canPop: context.watchRouter.canPop(),
+      canPop: false,
       onPopInvoked: (didPop) async {
         await panelController.close();
       },
@@ -209,9 +209,9 @@ class PlayerView extends HookConsumerWidget {
                                 .copyWith(fontWeight: FontWeight.bold),
                             onRouteChange: (route) {
                               panelController.close();
-                              context.router.pushNamed(route);
+                              context.router.navigateNamed(route);
                             },
-                            onOverflowArtistClick: () => context.pushRoute(
+                            onOverflowArtistClick: () => context.navigateTo(
                               TrackRoute(trackId: currentTrack!.id!),
                             ),
                           ),

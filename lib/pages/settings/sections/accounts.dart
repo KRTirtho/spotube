@@ -49,7 +49,7 @@ class SettingsAccountSection extends HookConsumerWidget {
               ),
             ),
             onTap: () {
-              context.pushRoute(ProfileRoute());
+              context.navigateTo(ProfileRoute());
             },
           ),
         if (auth.asData?.value == null)
@@ -112,7 +112,7 @@ class SettingsAccountSection extends HookConsumerWidget {
             trailing: Button.secondary(
               leading: const Icon(SpotubeIcons.lastFm),
               onPressed: () {
-                context.pushRoute(const LastFMLoginRoute());
+                context.navigateTo(const LastFMLoginRoute());
               },
               child: Text(context.l10n.connect),
             ),

@@ -114,7 +114,7 @@ class UserPlaylistsPage extends HookConsumerWidget {
                         leading: const Icon(SpotubeIcons.magic),
                         child: Text(context.l10n.generate),
                         onPressed: () {
-                          context.pushRoute(const PlaylistGeneratorRoute());
+                          context.navigateTo(const PlaylistGeneratorRoute());
                         },
                       ),
                       const Gap(10),

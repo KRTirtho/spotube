@@ -663,7 +663,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                                     min: min.value,
                                     target: target.value,
                                   );
-                                  context.pushRoute(
+                                  context.navigateTo(
                                     PlaylistGenerateResultRoute(
                                       state: routeState,
                                     ),

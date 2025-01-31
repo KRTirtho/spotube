@@ -24,6 +24,7 @@ class LibraryPage extends HookConsumerWidget {
         ...getSidebarLibraryTileList(context.l10n),
         SideBarTiles(
           id: "downloads",
+          pathPrefix: "library/downloads",
           title: context.l10n.downloads,
           route: const UserDownloadsRoute(),
           icon: SpotubeIcons.download,
@@ -32,42 +33,48 @@ class LibraryPage extends HookConsumerWidget {
       [context.l10n],
     );
     final index = sidebarLibraryTileList.indexWhere(
-      (e) => router.topRoute.name == e.route.routeName,
+      (e) => router.currentPath.startsWith(e.pathPrefix),
     );
 
-    return SafeArea(
-      bottom: false,
-      child: LayoutBuilder(builder: (context, constraints) {
-        return Scaffold(
-          headers: [
-            if (constraints.smAndDown)
-              TitleBar(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: TabList(
-                    index: index,
-                    children: [
-                      for (final tile in sidebarLibraryTileList)
-                        TabButton(
-                          child: Badge(
-                            isLabelVisible:
-                                tile.id == 'downloads' && downloadingCount > 0,
-                            label: Text(downloadingCount.toString()),
-                            child: Text(tile.title),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        context.navigateTo(const HomeRoute());
+      },
+      child: SafeArea(
+        bottom: false,
+        child: LayoutBuilder(builder: (context, constraints) {
+          return Scaffold(
+            headers: [
+              if (constraints.smAndDown)
+                TitleBar(
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: TabList(
+                      index: index,
+                      children: [
+                        for (final tile in sidebarLibraryTileList)
+                          TabButton(
+                            child: Badge(
+                              isLabelVisible: tile.id == 'downloads' &&
+                                  downloadingCount > 0,
+                              label: Text(downloadingCount.toString()),
+                              child: Text(tile.title),
+                            ),
+                            onPressed: () {
+                              context.navigateTo(tile.route);
+                            },
                           ),
-                          onPressed: () {
-                            context.navigateTo(tile.route);
-                          },
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            const Gap(10),
-          ],
-          child: const AutoRouter(),
-        );
-      }),
+              const Gap(10),
+            ],
+            child: const AutoRouter(),
+          );
+        }),
+      ),
     );
   }
 }

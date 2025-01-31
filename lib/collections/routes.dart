@@ -37,7 +37,7 @@ class AppRouter extends RootStackRouter {
           initial: true,
           children: [
             AutoRoute(
-              path: "browse",
+              path: "home",
               page: HomeRoute.page,
               initial: true,
             ),
@@ -70,7 +70,7 @@ class AppRouter extends RootStackRouter {
                   page: UserArtistsRoute.page,
                 ),
                 AutoRoute(
-                  path: "album",
+                  path: "albums",
                   page: UserAlbumsRoute.page,
                 ),
                 AutoRoute(

@@ -54,7 +54,7 @@ class HomePage extends HookConsumerWidget {
                     IconButton.ghost(
                       icon: const Icon(SpotubeIcons.settings, size: 20),
                       onPressed: () {
-                        context.pushRoute(const SettingsRoute());
+                        context.navigateTo(const SettingsRoute());
                       },
                     ),
                     const Gap(10),
