@@ -24,7 +24,8 @@ class StatsPage extends HookConsumerWidget {
         bottom: false,
         child: Scaffold(
           headers: [
-            if (kTitlebarVisible) const TitleBar(),
+            if (kTitlebarVisible)
+              const TitleBar(automaticallyImplyLeading: false),
           ],
           child: CustomScrollView(
             slivers: [

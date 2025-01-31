@@ -65,6 +65,7 @@ class UserAlbumsPage extends HookConsumerWidget {
               controller: controller,
               slivers: [
                 SliverAppBar(
+                  automaticallyImplyLeading: false,
                   backgroundColor: Theme.of(context).colorScheme.background,
                   floating: true,
                   flexibleSpace: Padding(

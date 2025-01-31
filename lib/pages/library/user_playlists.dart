@@ -91,6 +91,7 @@ class UserPlaylistsPage extends HookConsumerWidget {
             controller: controller,
             slivers: [
               SliverAppBar(
+                automaticallyImplyLeading: false,
                 floating: true,
                 backgroundColor: context.theme.colorScheme.background,
                 flexibleSpace: Container(

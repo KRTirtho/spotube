@@ -48,6 +48,7 @@ class LibraryPage extends HookConsumerWidget {
             headers: [
               if (constraints.smAndDown)
                 TitleBar(
+                  automaticallyImplyLeading: false,
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: TabList(
