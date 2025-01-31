@@ -1,10 +1,11 @@
 import 'package:collection/collection.dart';
 
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/button/back_button.dart';
@@ -23,9 +24,11 @@ import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:auto_route/auto_route.dart';
 
 const RecommendationAttribute zeroValues = (min: 0, target: 0, max: 0);
 
+@RoutePage()
 class PlaylistGeneratorPage extends HookConsumerWidget {
   static const name = "playlist_generator";
 
@@ -660,9 +663,10 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                                     min: min.value,
                                     target: target.value,
                                   );
-                                  GoRouter.of(context).push(
-                                    "/library/generate/result",
-                                    extra: routeState,
+                                  context.pushRoute(
+                                    PlaylistGenerateResultRoute(
+                                      state: routeState,
+                                    ),
                                   );
                                 },
                           child: Text(context.l10n.generate),

@@ -10,7 +10,9 @@ import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/tracks.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class StatsMinutesPage extends HookConsumerWidget {
   static const name = "stats_minutes";
 

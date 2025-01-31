@@ -1,13 +1,14 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/hover_builder.dart';
 import 'package:spotube/components/image/universal_image.dart';
@@ -21,12 +22,10 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class TrackTile extends HookConsumerWidget {
   /// [index] will not be shown if null
@@ -234,12 +233,8 @@ class TrackTile extends HookConsumerWidget {
                                 padding: (context, states) => EdgeInsets.zero,
                               ),
                               onPressed: () {
-                                context.pushNamed(
-                                  TrackPage.name,
-                                  pathParameters: {
-                                    "id": track.id!,
-                                  },
-                                );
+                                context
+                                    .pushRoute(TrackRoute(trackId: track.id!));
                               },
                               child: Text(
                                 track.name!,
@@ -266,8 +261,8 @@ class TrackTile extends HookConsumerWidget {
                           alignment: Alignment.centerLeft,
                           child: LinkText(
                             track.album!.name!,
-                            "/album/${track.album?.id}",
-                            extra: track.album,
+                            AlbumRoute(
+                                album: track.album!, id: track.album!.id!),
                             push: true,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -288,13 +283,11 @@ class TrackTile extends HookConsumerWidget {
                         constraints: const BoxConstraints(maxHeight: 40),
                         child: ArtistLink(
                           artists: track.artists ?? [],
-                          onOverflowArtistClick: () => ServiceUtils.pushNamed(
-                            context,
-                            TrackPage.name,
-                            pathParameters: {
-                              "id": track.id!,
-                            },
-                          ),
+                          onOverflowArtistClick: () {
+                            context.pushRoute(
+                              TrackRoute(trackId: track.id!),
+                            );
+                          },
                         ),
                       ),
                     ),

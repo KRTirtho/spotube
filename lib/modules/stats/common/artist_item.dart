@@ -1,10 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/pages/artist/artist.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class StatsArtistItem extends StatelessWidget {
   final Artist artist;
@@ -30,11 +30,7 @@ class StatsArtistItem extends StatelessWidget {
       ),
       trailing: info,
       onPressed: () {
-        ServiceUtils.pushNamed(
-          context,
-          ArtistPage.name,
-          pathParameters: {"id": artist.id!},
-        );
+        context.pushRoute(ArtistRoute(artistId: artist.id!));
       },
     );
   }

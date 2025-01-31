@@ -1,6 +1,7 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/hyper_link.dart';
@@ -32,8 +33,7 @@ class TrackDetailsDialog extends HookWidget {
       ),
       context.l10n.album: LinkText(
         track.album!.name!,
-        "/album/${track.album?.id}",
-        extra: track.album,
+        AlbumRoute(album: track.album!, id: track.album!.id!),
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(color: Colors.blue),
       ),

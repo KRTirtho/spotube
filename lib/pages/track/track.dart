@@ -1,10 +1,10 @@
 import 'dart:ui';
 
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
@@ -20,14 +20,16 @@ import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 import 'package:spotube/extensions/constrains.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class TrackPage extends HookConsumerWidget {
   static const name = "track";
 
   final String trackId;
   const TrackPage({
     super.key,
-    required this.trackId,
+    @PathParam("id") required this.trackId,
   });
 
   @override
@@ -138,9 +140,11 @@ class TrackPage extends HookConsumerWidget {
                                   Flexible(
                                     child: LinkText(
                                       track.album!.name!,
-                                      '/album/${track.album!.id}',
+                                      AlbumRoute(
+                                        id: track.album!.id!,
+                                        album: track.album!,
+                                      ),
                                       push: true,
-                                      extra: track.album,
                                     ),
                                   ),
                                 ],

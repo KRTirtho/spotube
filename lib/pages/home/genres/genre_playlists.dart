@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart' show CollapseMode, FlexibleSpaceBar;
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotify/spotify.dart' hide Offset;
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
@@ -16,12 +16,19 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class GenrePlaylistsPage extends HookConsumerWidget {
   static const name = "genre_playlists";
 
   final Category category;
-  const GenrePlaylistsPage({super.key, required this.category});
+  final String id;
+  const GenrePlaylistsPage({
+    super.key,
+    @PathParam("categoryId") required this.id,
+    required this.category,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -30,11 +37,10 @@ class GenrePlaylistsPage extends HookConsumerWidget {
     final playlistsNotifier =
         ref.read(categoryPlaylistsProvider(category.id!).notifier);
     final scrollController = useScrollController();
-    final routeName = GoRouterState.of(context).name;
 
     useCustomStatusBarColor(
       Colors.black,
-      routeName == GenrePlaylistsPage.name,
+      context.watchRouter.topRoute.name == GenrePlaylistsRoute.name,
       noSetBGColor: true,
       automaticSystemUiAdjustment: false,
     );

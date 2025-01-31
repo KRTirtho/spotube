@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/playbutton_view/playbutton_card.dart';
 import 'package:spotube/components/playbutton_view/playbutton_tile.dart';
@@ -10,14 +12,12 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/connect/connect.dart';
-import 'package:spotube/pages/album/album.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 extension FormattedAlbumType on AlbumType {
   String get formatted => name.replaceFirst(name[0], name[0].toUpperCase());
@@ -69,14 +69,7 @@ class AlbumCard extends HookConsumerWidget {
         "${album.albumType?.formatted} • ${album.artists?.asString() ?? ""}";
 
     void onTap() {
-      ServiceUtils.pushNamed(
-        context,
-        AlbumPage.name,
-        pathParameters: {
-          "id": album.id!,
-        },
-        extra: album,
-      );
+      context.pushRoute(AlbumRoute(id: album.id!, album: album));
     }
 
     void onPlaybuttonPressed() async {

@@ -1,10 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/player/player_actions.dart';
@@ -96,9 +97,8 @@ class BottomPlayer extends HookConsumerWidget {
                           const Duration(milliseconds: 100),
                           () async {
                             if (context.mounted) {
-                              context.go(
-                                '/mini-player',
-                                extra: prevSize,
+                              context.navigateTo(
+                                MiniLyricsRoute(prevSize: prevSize),
                               );
                             }
                           },

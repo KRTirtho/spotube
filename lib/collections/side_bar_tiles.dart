@@ -1,51 +1,45 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:spotube/pages/home/home.dart';
-import 'package:spotube/pages/library/user_albums.dart';
-import 'package:spotube/pages/library/user_artists.dart';
-import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
-import 'package:spotube/pages/library/user_playlists.dart';
-import 'package:spotube/pages/lyrics/lyrics.dart';
-import 'package:spotube/pages/search/search.dart';
-import 'package:spotube/pages/stats/stats.dart';
 
 class SideBarTiles {
   final IconData icon;
   final String title;
   final String id;
-  final String name;
+  final PageRouteInfo route;
 
   SideBarTiles({
     required this.icon,
     required this.title,
     required this.id,
-    required this.name,
+    required this.route,
   });
 }
 
 List<SideBarTiles> getSidebarTileList(AppLocalizations l10n) => [
       SideBarTiles(
         id: "browse",
-        name: HomePage.name,
+        route: const HomeRoute(),
         icon: SpotubeIcons.home,
         title: l10n.browse,
       ),
       SideBarTiles(
         id: "search",
-        name: SearchPage.name,
+        route: const SearchRoute(),
         icon: SpotubeIcons.search,
         title: l10n.search,
       ),
       SideBarTiles(
         id: "lyrics",
-        name: LyricsPage.name,
+        route: LyricsRoute(),
         icon: SpotubeIcons.music,
         title: l10n.lyrics,
       ),
       SideBarTiles(
         id: "stats",
-        name: StatsPage.name,
+        route: const StatsRoute(),
         icon: SpotubeIcons.chart,
         title: l10n.stats,
       ),
@@ -55,25 +49,25 @@ List<SideBarTiles> getSidebarLibraryTileList(AppLocalizations l10n) => [
       SideBarTiles(
         id: "playlists",
         title: l10n.playlists,
-        name: UserPlaylistsPage.name,
+        route: const UserPlaylistsRoute(),
         icon: SpotubeIcons.playlist,
       ),
       SideBarTiles(
         id: "artists",
         title: l10n.artists,
-        name: UserArtistsPage.name,
+        route: const UserArtistsRoute(),
         icon: SpotubeIcons.artist,
       ),
       SideBarTiles(
         id: "albums",
         title: l10n.albums,
-        name: UserAlbumsPage.name,
+        route: const UserAlbumsRoute(),
         icon: SpotubeIcons.album,
       ),
       SideBarTiles(
         id: "local_library",
         title: l10n.local_library,
-        name: UserLocalLibraryPage.name,
+        route: const UserLocalLibraryRoute(),
         icon: SpotubeIcons.device,
       ),
     ];
@@ -81,25 +75,25 @@ List<SideBarTiles> getSidebarLibraryTileList(AppLocalizations l10n) => [
 List<SideBarTiles> getNavbarTileList(AppLocalizations l10n) => [
       SideBarTiles(
         id: "browse",
-        name: HomePage.name,
+        route: const HomeRoute(),
         icon: SpotubeIcons.home,
         title: l10n.browse,
       ),
       SideBarTiles(
         id: "search",
-        name: SearchPage.name,
+        route: const SearchRoute(),
         icon: SpotubeIcons.search,
         title: l10n.search,
       ),
       SideBarTiles(
         id: "library",
-        name: UserPlaylistsPage.name,
+        route: const UserPlaylistsRoute(),
         icon: SpotubeIcons.library,
         title: l10n.library,
       ),
       SideBarTiles(
         id: "stats",
-        name: StatsPage.name,
+        route: const StatsRoute(),
         icon: SpotubeIcons.chart,
         title: l10n.stats,
       ),

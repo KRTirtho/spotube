@@ -29,7 +29,9 @@ import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class LocalLibraryPage extends HookConsumerWidget {
   static const name = "local_library_page";
 

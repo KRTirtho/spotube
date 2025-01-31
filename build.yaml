@@ -4,6 +4,16 @@ targets:
       exclude:
         - bin/*.dart
     builders:
+      auto_route_generator:auto_route_generator: # this for @RoutePage
+        options:
+          enable_cached_builds: true
+        generate_for:
+          - lib/pages/**/*.dart
+      auto_route_generator:auto_router_generator: # this for @AutoRouterConfig
+        options:
+          enable_cached_builds: true
+        generate_for:
+          - lib/collections/routes.dart
       json_serializable:
         options:
           any_map: true

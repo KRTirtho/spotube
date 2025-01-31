@@ -13,12 +13,17 @@ import 'package:spotube/pages/artist/section/header.dart';
 import 'package:spotube/pages/artist/section/related_artists.dart';
 import 'package:spotube/pages/artist/section/top_tracks.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class ArtistPage extends HookConsumerWidget {
   static const name = "artist";
 
   final String artistId;
-  const ArtistPage(this.artistId, {super.key});
+  const ArtistPage(
+    @PathParam("id") this.artistId, {
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

@@ -3,17 +3,19 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/gradients.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/home/genres/genre_playlists.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class GenrePage extends HookConsumerWidget {
   static const name = "genre";
   const GenrePage({super.key});
@@ -49,12 +51,11 @@ class GenrePage extends HookConsumerWidget {
             final gradient = gradients[Random().nextInt(gradients.length)];
             return CardImage(
               onPressed: () {
-                context.pushNamed(
-                  GenrePlaylistsPage.name,
-                  pathParameters: {
-                    "categoryId": category.id!,
-                  },
-                  extra: category,
+                context.pushRoute(
+                  GenrePlaylistsRoute(
+                    id: category.id!,
+                    category: category,
+                  ),
                 );
               },
               image: Stack(

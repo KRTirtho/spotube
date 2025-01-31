@@ -11,15 +11,17 @@ import 'package:spotube/hooks/controllers/use_package_info.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:auto_route/auto_route.dart';
 
 final _licenseProvider = FutureProvider<String>((ref) async {
   return await rootBundle.loadString("LICENSE");
 });
 
-class AboutSpotube extends HookConsumerWidget {
+@RoutePage()
+class AboutSpotubePage extends HookConsumerWidget {
   static const name = "about";
 
-  const AboutSpotube({super.key});
+  const AboutSpotubePage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

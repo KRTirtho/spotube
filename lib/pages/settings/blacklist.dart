@@ -11,7 +11,9 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class BlackListPage extends HookConsumerWidget {
   static const name = "blacklist";
 

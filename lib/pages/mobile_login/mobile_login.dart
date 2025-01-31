@@ -1,16 +1,19 @@
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:auto_route/auto_route.dart';
 
-class WebViewLogin extends HookConsumerWidget {
+@RoutePage()
+class WebViewLoginPage extends HookConsumerWidget {
   static const name = "login";
-  const WebViewLogin({super.key});
+  const WebViewLoginPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
@@ -64,7 +67,7 @@ class WebViewLogin extends HookConsumerWidget {
             await authenticationNotifier.login(cookieHeader);
             if (context.mounted) {
               // ignore: use_build_context_synchronously
-              GoRouter.of(context).go("/");
+              context.navigateTo(const HomeRoute());
             }
           }
         },

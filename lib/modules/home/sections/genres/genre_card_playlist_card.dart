@@ -1,12 +1,12 @@
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart' hide Image;
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/string.dart';
-import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:stroke_text/stroke_text.dart';
 
@@ -47,12 +47,8 @@ class GenreSectionCardPlaylistCard extends HookConsumerWidget {
             },
           ),
           onPressed: () {
-            context.pushNamed(
-              PlaylistPage.name,
-              pathParameters: {
-                "id": playlist.id!,
-              },
-              extra: playlist,
+            context.pushRoute(
+              PlaylistRoute(id: playlist.id!, playlist: playlist),
             );
           },
           child: Column(

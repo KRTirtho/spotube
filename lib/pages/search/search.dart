@@ -20,7 +20,9 @@ import 'package:spotube/pages/search/sections/tracks.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class SearchPage extends HookConsumerWidget {
   static const name = "search";
 

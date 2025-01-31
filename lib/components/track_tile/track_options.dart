@@ -1,14 +1,16 @@
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
@@ -22,7 +24,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
@@ -30,7 +31,6 @@ import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -166,7 +166,6 @@ class TrackOptions extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final mediaQuery = MediaQuery.of(context);
-    final router = GoRouter.of(context);
     final ThemeData(:colorScheme) = Theme.of(context);
 
     final playlist = ref.watch(audioPlayerProvider);
@@ -211,9 +210,8 @@ class TrackOptions extends HookConsumerWidget {
       onSelected: (value) async {
         switch (value) {
           case TrackOptionValue.album:
-            await router.push(
-              '/album/${track.album!.id}',
-              extra: track.album!,
+            await context.pushRoute(
+              AlbumRoute(id: track.album!.id!, album: track.album!),
             );
             break;
           case TrackOptionValue.delete:
@@ -347,12 +345,8 @@ class TrackOptions extends HookConsumerWidget {
             alignment: Alignment.centerLeft,
             child: ArtistLink(
               artists: track.artists!,
-              onOverflowArtistClick: () => ServiceUtils.pushNamed(
-                context,
-                TrackPage.name,
-                pathParameters: {
-                  "id": track.id!,
-                },
+              onOverflowArtistClick: () => context.pushRoute(
+                TrackRoute(trackId: track.id!),
               ),
             ),
           ),

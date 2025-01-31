@@ -5,7 +5,9 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/modules/library/user_downloads/download_item.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class UserDownloadsPage extends HookConsumerWidget {
   static const name = 'user_downloads';
   const UserDownloadsPage({super.key});

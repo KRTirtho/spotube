@@ -56,6 +56,7 @@ class StatsPageTopSection extends HookConsumerWidget {
             floating: true,
             elevation: 0,
             backgroundColor: context.theme.colorScheme.background,
+            automaticallyImplyLeading: false,
             flexibleSpace: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Row(

@@ -4,7 +4,9 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/stats/summary/summary.dart';
 import 'package:spotube/modules/stats/top/top.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class StatsPage extends HookConsumerWidget {
   static const name = "stats";
 

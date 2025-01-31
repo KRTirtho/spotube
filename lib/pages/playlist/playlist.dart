@@ -9,13 +9,17 @@ import 'package:spotube/components/track_presentation/use_is_user_playlist.dart'
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class PlaylistPage extends HookConsumerWidget {
   static const name = "playlist";
 
   final PlaylistSimple _playlist;
+  final String id;
   const PlaylistPage({
     super.key,
+    @PathParam("id") required this.id,
     required PlaylistSimple playlist,
   }) : _playlist = playlist;
 

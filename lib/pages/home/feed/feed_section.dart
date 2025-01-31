@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -10,11 +11,15 @@ import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/provider/spotify/views/home_section.dart';
 
+@RoutePage()
 class HomeFeedSectionPage extends HookConsumerWidget {
   static const name = "home_feed_section";
 
   final String sectionUri;
-  const HomeFeedSectionPage({super.key, required this.sectionUri});
+  const HomeFeedSectionPage({
+    super.key,
+    @PathParam("feedId") required this.sectionUri,
+  });
 
   @override
   Widget build(BuildContext context, ref) {

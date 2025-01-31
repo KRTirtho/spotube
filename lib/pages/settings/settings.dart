@@ -15,7 +15,9 @@ import 'package:spotube/pages/settings/sections/language_region.dart';
 import 'package:spotube/pages/settings/sections/playback.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class SettingsPage extends HookConsumerWidget {
   static const name = "settings";
 

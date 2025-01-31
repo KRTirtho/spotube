@@ -11,7 +11,9 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/logs/logs_provider.dart';
 import 'package:spotube/services/logger/logger.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class LogsPage extends HookConsumerWidget {
   static const name = "logs";
 

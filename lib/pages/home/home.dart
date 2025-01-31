@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/connect/connect_device.dart';
@@ -16,11 +18,10 @@ import 'package:spotube/modules/home/sections/new_releases.dart';
 import 'package:spotube/modules/home/sections/recent.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/pages/settings/settings.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/service_utils.dart';
 
+@RoutePage()
 class HomePage extends HookConsumerWidget {
   static const name = "home";
   const HomePage({super.key});
@@ -53,7 +54,7 @@ class HomePage extends HookConsumerWidget {
                     IconButton.ghost(
                       icon: const Icon(SpotubeIcons.settings, size: 20),
                       onPressed: () {
-                        ServiceUtils.pushNamed(context, SettingsPage.name);
+                        context.pushRoute(const SettingsRoute());
                       },
                     ),
                     const Gap(10),

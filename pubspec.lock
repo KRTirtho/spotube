@@ -142,6 +142,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.21"
+  auto_route:
+    dependency: "direct main"
+    description:
+      name: auto_route
+      sha256: "1d1bd908a1fec327719326d5d0791edd37f16caff6493c01003689fb03315ad7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.3.0+1"
+  auto_route_generator:
+    dependency: "direct dev"
+    description:
+      name: auto_route_generator
+      sha256: c9086eb07271e51b44071ad5cff34e889f3156710b964a308c2ab590769e79e6
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.0"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -1073,14 +1089,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  go_router:
-    dependency: "direct main"
-    description:
-      name: go_router
-      sha256: "2fd11229f59e23e967b0775df8d5948a519cd7e1e8b6e849729e010587b46539"
-      url: "https://pub.dev"
-    source: hosted
-    version: "14.6.2"
   google_fonts:
     dependency: "direct main"
     description:

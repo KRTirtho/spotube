@@ -1,18 +1,18 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/string.dart';
-import 'package:spotube/pages/library/user_local_tracks/local_folder.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
@@ -59,13 +59,12 @@ class LocalFolderItem extends HookConsumerWidget {
 
     return Button(
       onPressed: () {
-        context.pushNamed(
-          LocalLibraryPage.name,
-          queryParameters: {
-            if (isDownloadFolder) "downloads": "true",
-            if (isCacheFolder) "cache": "true",
-          },
-          extra: folder,
+        context.pushRoute(
+          LocalLibraryRoute(
+            location: folder,
+            isCache: isCacheFolder,
+            isDownloads: isDownloadFolder,
+          ),
         );
       },
       style: ButtonVariance.card.copyWith(

@@ -1,11 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/connect/connect.dart';
 import 'package:spotube/provider/connect/clients.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class ConnectDeviceButton extends HookConsumerWidget {
   final bool _sidebar;
@@ -26,7 +26,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
         return IconButton.ghost(
           icon: const Icon(SpotubeIcons.speaker),
           onPressed: () {
-            ServiceUtils.pushNamed(context, ConnectPage.name);
+            context.pushRoute(const ConnectRoute());
           },
         );
       }
@@ -35,7 +35,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
         width: double.infinity,
         child: Button.primary(
           onPressed: () {
-            ServiceUtils.pushNamed(context, ConnectPage.name);
+            context.pushRoute(const ConnectRoute());
           },
           trailing: const Icon(SpotubeIcons.speaker),
           child: Text(
@@ -50,7 +50,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
       children: [
         SecondaryBadge(
           onPressed: () {
-            ServiceUtils.pushNamed(context, ConnectPage.name);
+            context.pushRoute(const ConnectRoute());
           },
           style: const ButtonStyle.secondary(size: ButtonSize(.8)),
           leading: connectClients.asData?.value.resolvedService != null
@@ -70,7 +70,7 @@ class ConnectDeviceButton extends HookConsumerWidget {
         IconButton.primary(
           icon: const Icon(SpotubeIcons.speaker),
           onPressed: () {
-            ServiceUtils.pushNamed(context, ConnectPage.name);
+            context.pushRoute(const ConnectRoute());
           },
         )
       ],
