@@ -54,197 +54,200 @@ class TrackPage extends HookConsumerWidget {
       }
     }
 
-    return Scaffold(
-      headers: const [
-        TitleBar(
-          automaticallyImplyLeading: true,
-          backgroundColor: Colors.transparent,
-          surfaceBlur: 0,
-        )
-      ],
-      floatingHeader: true,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: UniversalImage.imageProvider(
-                    track.album!.images.asUrlString(
-                      placeholder: ImagePlaceholder.albumArt,
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: const [
+          TitleBar(
+            backgroundColor: Colors.transparent,
+            surfaceBlur: 0,
+          )
+        ],
+        floatingHeader: true,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: UniversalImage.imageProvider(
+                      track.album!.images.asUrlString(
+                        placeholder: ImagePlaceholder.albumArt,
+                      ),
                     ),
+                    fit: BoxFit.cover,
+                    colorFilter: ColorFilter.mode(
+                      colorScheme.background.withOpacity(0.5),
+                      BlendMode.srcOver,
+                    ),
+                    alignment: Alignment.topCenter,
                   ),
-                  fit: BoxFit.cover,
-                  colorFilter: ColorFilter.mode(
-                    colorScheme.background.withOpacity(0.5),
-                    BlendMode.srcOver,
-                  ),
-                  alignment: Alignment.topCenter,
                 ),
               ),
             ),
-          ),
-          Positioned.fill(
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-              child: Skeletonizer(
-                enabled: trackQuery.isLoading,
-                child: Container(
-                  alignment: Alignment.topCenter,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        colorScheme.background,
-                        Colors.transparent,
-                      ],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      stops: const [0.2, 1],
+            Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                child: Skeletonizer(
+                  enabled: trackQuery.isLoading,
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          colorScheme.background,
+                          Colors.transparent,
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        stops: const [0.2, 1],
+                      ),
                     ),
-                  ),
-                  child: SafeArea(
-                    child: Wrap(
-                      spacing: 20,
-                      runSpacing: 20,
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      runAlignment: WrapAlignment.center,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: UniversalImage(
-                            path: track.album!.images.asUrlString(
-                              placeholder: ImagePlaceholder.albumArt,
+                    child: SafeArea(
+                      child: Wrap(
+                        spacing: 20,
+                        runSpacing: 20,
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        runAlignment: WrapAlignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: UniversalImage(
+                              path: track.album!.images.asUrlString(
+                                placeholder: ImagePlaceholder.albumArt,
+                              ),
+                              height: 200,
+                              width: 200,
                             ),
-                            height: 200,
-                            width: 200,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          child: Column(
-                            crossAxisAlignment: mediaQuery.smAndDown
-                                ? CrossAxisAlignment.center
-                                : CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                track.name!,
-                              ).large().semiBold(),
-                              const Gap(10),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(SpotubeIcons.album),
-                                  const Gap(5),
-                                  Flexible(
-                                    child: LinkText(
-                                      track.album!.name!,
-                                      AlbumRoute(
-                                        id: track.album!.id!,
-                                        album: track.album!,
-                                      ),
-                                      push: true,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Gap(10),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  const Icon(SpotubeIcons.artist),
-                                  const Gap(5),
-                                  Flexible(
-                                    child: ArtistLink(
-                                      artists: track.artists!,
-                                      hideOverflowArtist: false,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const Gap(10),
-                              ConstrainedBox(
-                                constraints:
-                                    const BoxConstraints(maxWidth: 350),
-                                child: Row(
-                                  mainAxisSize: mediaQuery.smAndDown
-                                      ? MainAxisSize.max
-                                      : MainAxisSize.min,
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Column(
+                              crossAxisAlignment: mediaQuery.smAndDown
+                                  ? CrossAxisAlignment.center
+                                  : CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  track.name!,
+                                ).large().semiBold(),
+                                const Gap(10),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
+                                    const Icon(SpotubeIcons.album),
                                     const Gap(5),
-                                    if (!isActive &&
-                                        !playlist.tracks
-                                            .containsBy(track, (t) => t.id))
-                                      Button.outline(
-                                        leading:
-                                            const Icon(SpotubeIcons.queueAdd),
-                                        child: Text(context.l10n.queue),
-                                        onPressed: () {
-                                          playlistNotifier.addTrack(track);
-                                        },
-                                      ),
-                                    const Gap(5),
-                                    if (!isActive &&
-                                        !playlist.tracks
-                                            .containsBy(track, (t) => t.id))
-                                      Tooltip(
-                                        tooltip: TooltipContainer(
-                                          child: Text(context.l10n.play_next),
+                                    Flexible(
+                                      child: LinkText(
+                                        track.album!.name!,
+                                        AlbumRoute(
+                                          id: track.album!.id!,
+                                          album: track.album!,
                                         ),
-                                        child: IconButton.outline(
-                                          icon: const Icon(
-                                              SpotubeIcons.lightning),
-                                          onPressed: () {
-                                            playlistNotifier
-                                                .addTracksAtFirst([track]);
-                                          },
-                                        ),
-                                      ),
-                                    const Gap(5),
-                                    Tooltip(
-                                      tooltip: TooltipContainer(
-                                        child: Text(
-                                          isActive
-                                              ? context.l10n.pause_playback
-                                              : context.l10n.play,
-                                        ),
-                                      ),
-                                      child: IconButton.primary(
-                                        shape: ButtonShape.circle,
-                                        icon: Icon(
-                                          isActive
-                                              ? SpotubeIcons.pause
-                                              : SpotubeIcons.play,
-                                        ),
-                                        onPressed: onPlay,
+                                        push: true,
                                       ),
                                     ),
-                                    const Gap(5),
-                                    if (mediaQuery.smAndDown)
-                                      const Spacer()
-                                    else
-                                      const Gap(20),
-                                    TrackHeartButton(track: track),
-                                    TrackOptions(
-                                      track: track,
-                                      userPlaylist: false,
-                                    ),
-                                    const Gap(5),
                                   ],
                                 ),
-                              ),
-                            ],
+                                const Gap(10),
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(SpotubeIcons.artist),
+                                    const Gap(5),
+                                    Flexible(
+                                      child: ArtistLink(
+                                        artists: track.artists!,
+                                        hideOverflowArtist: false,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Gap(10),
+                                ConstrainedBox(
+                                  constraints:
+                                      const BoxConstraints(maxWidth: 350),
+                                  child: Row(
+                                    mainAxisSize: mediaQuery.smAndDown
+                                        ? MainAxisSize.max
+                                        : MainAxisSize.min,
+                                    children: [
+                                      const Gap(5),
+                                      if (!isActive &&
+                                          !playlist.tracks
+                                              .containsBy(track, (t) => t.id))
+                                        Button.outline(
+                                          leading:
+                                              const Icon(SpotubeIcons.queueAdd),
+                                          child: Text(context.l10n.queue),
+                                          onPressed: () {
+                                            playlistNotifier.addTrack(track);
+                                          },
+                                        ),
+                                      const Gap(5),
+                                      if (!isActive &&
+                                          !playlist.tracks
+                                              .containsBy(track, (t) => t.id))
+                                        Tooltip(
+                                          tooltip: TooltipContainer(
+                                            child: Text(context.l10n.play_next),
+                                          ),
+                                          child: IconButton.outline(
+                                            icon: const Icon(
+                                                SpotubeIcons.lightning),
+                                            onPressed: () {
+                                              playlistNotifier
+                                                  .addTracksAtFirst([track]);
+                                            },
+                                          ),
+                                        ),
+                                      const Gap(5),
+                                      Tooltip(
+                                        tooltip: TooltipContainer(
+                                          child: Text(
+                                            isActive
+                                                ? context.l10n.pause_playback
+                                                : context.l10n.play,
+                                          ),
+                                        ),
+                                        child: IconButton.primary(
+                                          shape: ButtonShape.circle,
+                                          icon: Icon(
+                                            isActive
+                                                ? SpotubeIcons.pause
+                                                : SpotubeIcons.play,
+                                          ),
+                                          onPressed: onPlay,
+                                        ),
+                                      ),
+                                      const Gap(5),
+                                      if (mediaQuery.smAndDown)
+                                        const Spacer()
+                                      else
+                                        const Gap(20),
+                                      TrackHeartButton(track: track),
+                                      TrackOptions(
+                                        track: track,
+                                        userPlaylist: false,
+                                      ),
+                                      const Gap(5),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

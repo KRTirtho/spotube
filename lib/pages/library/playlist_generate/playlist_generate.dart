@@ -256,426 +256,430 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
 
     final controller = useScrollController();
 
-    return Scaffold(
-      headers: [
-        TitleBar(
-          leading: const [BackButton()],
-          title: Text(context.l10n.generate),
-        )
-      ],
-      child: Scrollbar(
-        controller: controller,
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: Breakpoints.lg),
-            child: SafeArea(
-              child: LayoutBuilder(builder: (context, constrains) {
-                return ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context)
-                      .copyWith(scrollbars: false),
-                  child: ListView(
-                    controller: controller,
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      ValueListenableBuilder(
-                        valueListenable: limit,
-                        builder: (context, value, child) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                context.l10n.number_of_tracks_generate,
-                                style: typography.semiBold,
-                              ),
-                              Row(
-                                spacing: 5,
-                                children: [
-                                  Container(
-                                    width: 40,
-                                    height: 40,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: theme.colorScheme.primary
-                                          .withAlpha(25),
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Text(
-                                      value.round().toString(),
-                                      style: typography.large.copyWith(
-                                        color: theme.colorScheme.primary,
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: [
+          TitleBar(
+            leading: const [BackButton()],
+            title: Text(context.l10n.generate),
+          )
+        ],
+        child: Scrollbar(
+          controller: controller,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: Breakpoints.lg),
+              child: SafeArea(
+                child: LayoutBuilder(builder: (context, constrains) {
+                  return ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context)
+                        .copyWith(scrollbars: false),
+                    child: ListView(
+                      controller: controller,
+                      padding: const EdgeInsets.all(16),
+                      children: [
+                        ValueListenableBuilder(
+                          valueListenable: limit,
+                          builder: (context, value, child) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  context.l10n.number_of_tracks_generate,
+                                  style: typography.semiBold,
+                                ),
+                                Row(
+                                  spacing: 5,
+                                  children: [
+                                    Container(
+                                      width: 40,
+                                      height: 40,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: theme.colorScheme.primary
+                                            .withAlpha(25),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Text(
+                                        value.round().toString(),
+                                        style: typography.large.copyWith(
+                                          color: theme.colorScheme.primary,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    child: Slider(
-                                      value:
-                                          SliderValue.single(value.toDouble()),
-                                      min: 10,
-                                      max: 100,
-                                      divisions: 9,
-                                      onChanged: (value) {
-                                        limit.value = value.value.round();
-                                      },
-                                    ),
-                                  )
-                                ],
-                              )
+                                    Expanded(
+                                      child: Slider(
+                                        value: SliderValue.single(
+                                            value.toDouble()),
+                                        min: 10,
+                                        max: 100,
+                                        divisions: 9,
+                                        onChanged: (value) {
+                                          limit.value = value.value.round();
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        if (constrains.mdAndUp)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: countrySelector,
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: genreSelector,
+                              ),
                             ],
-                          );
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      if (constrains.mdAndUp)
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: countrySelector,
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: genreSelector,
-                            ),
-                          ],
-                        )
-                      else ...[
-                        countrySelector,
+                          )
+                        else ...[
+                          countrySelector,
+                          const SizedBox(height: 16),
+                          genreSelector,
+                        ],
                         const SizedBox(height: 16),
-                        genreSelector,
-                      ],
-                      const SizedBox(height: 16),
-                      if (constrains.mdAndUp)
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: artistAutoComplete,
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: tracksAutocomplete,
-                            ),
-                          ],
-                        )
-                      else ...[
-                        artistAutoComplete,
+                        if (constrains.mdAndUp)
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: artistAutoComplete,
+                              ),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: tracksAutocomplete,
+                              ),
+                            ],
+                          )
+                        else ...[
+                          artistAutoComplete,
+                          const SizedBox(height: 16),
+                          tracksAutocomplete,
+                        ],
                         const SizedBox(height: 16),
-                        tracksAutocomplete,
-                      ],
-                      const SizedBox(height: 16),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.acousticness),
-                        values: (
-                          target: target.value.acousticness?.toDouble() ?? 0,
-                          min: min.value.acousticness?.toDouble() ?? 0,
-                          max: max.value.acousticness?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            acousticness: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            acousticness: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            acousticness: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.danceability),
-                        values: (
-                          target: target.value.danceability?.toDouble() ?? 0,
-                          min: min.value.danceability?.toDouble() ?? 0,
-                          max: max.value.danceability?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            danceability: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            danceability: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            danceability: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.energy),
-                        values: (
-                          target: target.value.energy?.toDouble() ?? 0,
-                          min: min.value.energy?.toDouble() ?? 0,
-                          max: max.value.energy?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            energy: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            energy: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            energy: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.instrumentalness),
-                        values: (
-                          target:
-                              target.value.instrumentalness?.toDouble() ?? 0,
-                          min: min.value.instrumentalness?.toDouble() ?? 0,
-                          max: max.value.instrumentalness?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            instrumentalness: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            instrumentalness: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            instrumentalness: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.liveness),
-                        values: (
-                          target: target.value.liveness?.toDouble() ?? 0,
-                          min: min.value.liveness?.toDouble() ?? 0,
-                          max: max.value.liveness?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            liveness: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            liveness: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            liveness: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.loudness),
-                        values: (
-                          target: target.value.loudness?.toDouble() ?? 0,
-                          min: min.value.loudness?.toDouble() ?? 0,
-                          max: max.value.loudness?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            loudness: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            loudness: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            loudness: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.speechiness),
-                        values: (
-                          target: target.value.speechiness?.toDouble() ?? 0,
-                          min: min.value.speechiness?.toDouble() ?? 0,
-                          max: max.value.speechiness?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            speechiness: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            speechiness: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            speechiness: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.valence),
-                        values: (
-                          target: target.value.valence?.toDouble() ?? 0,
-                          min: min.value.valence?.toDouble() ?? 0,
-                          max: max.value.valence?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            valence: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            valence: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            valence: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.popularity),
-                        base: 100,
-                        values: (
-                          target: target.value.popularity?.toDouble() ?? 0,
-                          min: min.value.popularity?.toDouble() ?? 0,
-                          max: max.value.popularity?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            popularity: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            popularity: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            popularity: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeDials(
-                        title: Text(context.l10n.key),
-                        base: 11,
-                        values: (
-                          target: target.value.key?.toDouble() ?? 0,
-                          min: min.value.key?.toDouble() ?? 0,
-                          max: max.value.key?.toDouble() ?? 0,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            key: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            key: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            key: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeFields(
-                        title: Text(context.l10n.duration),
-                        values: (
-                          max: (max.value.durationMs ?? 0) / 1000,
-                          target: (target.value.durationMs ?? 0) / 1000,
-                          min: (min.value.durationMs ?? 0) / 1000,
-                        ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            durationMs: (value.target * 1000).toInt(),
-                          );
-                          min.value = min.value.copyWith(
-                            durationMs: (value.min * 1000).toInt(),
-                          );
-                          max.value = max.value.copyWith(
-                            durationMs: (value.max * 1000).toInt(),
-                          );
-                        },
-                        presets: {
-                          context.l10n.short: (min: 50, target: 90, max: 120),
-                          context.l10n.medium: (
-                            min: 120,
-                            target: 180,
-                            max: 200
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.acousticness),
+                          values: (
+                            target: target.value.acousticness?.toDouble() ?? 0,
+                            min: min.value.acousticness?.toDouble() ?? 0,
+                            max: max.value.acousticness?.toDouble() ?? 0,
                           ),
-                          context.l10n.long: (min: 480, target: 560, max: 640)
-                        },
-                      ),
-                      RecommendationAttributeFields(
-                        title: Text(context.l10n.tempo),
-                        values: (
-                          max: max.value.tempo?.toDouble() ?? 0,
-                          target: target.value.tempo?.toDouble() ?? 0,
-                          min: min.value.tempo?.toDouble() ?? 0,
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              acousticness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              acousticness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              acousticness: value.max,
+                            );
+                          },
                         ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            tempo: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            tempo: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            tempo: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeFields(
-                        title: Text(context.l10n.mode),
-                        values: (
-                          max: max.value.mode?.toDouble() ?? 0,
-                          target: target.value.mode?.toDouble() ?? 0,
-                          min: min.value.mode?.toDouble() ?? 0,
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.danceability),
+                          values: (
+                            target: target.value.danceability?.toDouble() ?? 0,
+                            min: min.value.danceability?.toDouble() ?? 0,
+                            max: max.value.danceability?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              danceability: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              danceability: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              danceability: value.max,
+                            );
+                          },
                         ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            mode: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            mode: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            mode: value.max,
-                          );
-                        },
-                      ),
-                      RecommendationAttributeFields(
-                        title: Text(context.l10n.time_signature),
-                        values: (
-                          max: max.value.timeSignature?.toDouble() ?? 0,
-                          target: target.value.timeSignature?.toDouble() ?? 0,
-                          min: min.value.timeSignature?.toDouble() ?? 0,
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.energy),
+                          values: (
+                            target: target.value.energy?.toDouble() ?? 0,
+                            min: min.value.energy?.toDouble() ?? 0,
+                            max: max.value.energy?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              energy: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              energy: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              energy: value.max,
+                            );
+                          },
                         ),
-                        onChanged: (value) {
-                          target.value = target.value.copyWith(
-                            timeSignature: value.target,
-                          );
-                          min.value = min.value.copyWith(
-                            timeSignature: value.min,
-                          );
-                          max.value = max.value.copyWith(
-                            timeSignature: value.max,
-                          );
-                        },
-                      ),
-                      const Gap(20),
-                      Center(
-                        child: Button.primary(
-                          leading: const Icon(SpotubeIcons.magic),
-                          onPressed: artists.value.isEmpty &&
-                                  tracks.value.isEmpty &&
-                                  genres.value.isEmpty
-                              ? null
-                              : () {
-                                  final routeState =
-                                      GeneratePlaylistProviderInput(
-                                    seedArtists: artists.value
-                                        .map((a) => a.id!)
-                                        .toList(),
-                                    seedTracks:
-                                        tracks.value.map((t) => t.id!).toList(),
-                                    seedGenres: genres.value,
-                                    limit: limit.value,
-                                    max: max.value,
-                                    min: min.value,
-                                    target: target.value,
-                                  );
-                                  context.navigateTo(
-                                    PlaylistGenerateResultRoute(
-                                      state: routeState,
-                                    ),
-                                  );
-                                },
-                          child: Text(context.l10n.generate),
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.instrumentalness),
+                          values: (
+                            target:
+                                target.value.instrumentalness?.toDouble() ?? 0,
+                            min: min.value.instrumentalness?.toDouble() ?? 0,
+                            max: max.value.instrumentalness?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              instrumentalness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              instrumentalness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              instrumentalness: value.max,
+                            );
+                          },
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.liveness),
+                          values: (
+                            target: target.value.liveness?.toDouble() ?? 0,
+                            min: min.value.liveness?.toDouble() ?? 0,
+                            max: max.value.liveness?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              liveness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              liveness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              liveness: value.max,
+                            );
+                          },
+                        ),
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.loudness),
+                          values: (
+                            target: target.value.loudness?.toDouble() ?? 0,
+                            min: min.value.loudness?.toDouble() ?? 0,
+                            max: max.value.loudness?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              loudness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              loudness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              loudness: value.max,
+                            );
+                          },
+                        ),
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.speechiness),
+                          values: (
+                            target: target.value.speechiness?.toDouble() ?? 0,
+                            min: min.value.speechiness?.toDouble() ?? 0,
+                            max: max.value.speechiness?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              speechiness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              speechiness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              speechiness: value.max,
+                            );
+                          },
+                        ),
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.valence),
+                          values: (
+                            target: target.value.valence?.toDouble() ?? 0,
+                            min: min.value.valence?.toDouble() ?? 0,
+                            max: max.value.valence?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              valence: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              valence: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              valence: value.max,
+                            );
+                          },
+                        ),
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.popularity),
+                          base: 100,
+                          values: (
+                            target: target.value.popularity?.toDouble() ?? 0,
+                            min: min.value.popularity?.toDouble() ?? 0,
+                            max: max.value.popularity?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              popularity: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              popularity: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              popularity: value.max,
+                            );
+                          },
+                        ),
+                        RecommendationAttributeDials(
+                          title: Text(context.l10n.key),
+                          base: 11,
+                          values: (
+                            target: target.value.key?.toDouble() ?? 0,
+                            min: min.value.key?.toDouble() ?? 0,
+                            max: max.value.key?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              key: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              key: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              key: value.max,
+                            );
+                          },
+                        ),
+                        RecommendationAttributeFields(
+                          title: Text(context.l10n.duration),
+                          values: (
+                            max: (max.value.durationMs ?? 0) / 1000,
+                            target: (target.value.durationMs ?? 0) / 1000,
+                            min: (min.value.durationMs ?? 0) / 1000,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              durationMs: (value.target * 1000).toInt(),
+                            );
+                            min.value = min.value.copyWith(
+                              durationMs: (value.min * 1000).toInt(),
+                            );
+                            max.value = max.value.copyWith(
+                              durationMs: (value.max * 1000).toInt(),
+                            );
+                          },
+                          presets: {
+                            context.l10n.short: (min: 50, target: 90, max: 120),
+                            context.l10n.medium: (
+                              min: 120,
+                              target: 180,
+                              max: 200
+                            ),
+                            context.l10n.long: (min: 480, target: 560, max: 640)
+                          },
+                        ),
+                        RecommendationAttributeFields(
+                          title: Text(context.l10n.tempo),
+                          values: (
+                            max: max.value.tempo?.toDouble() ?? 0,
+                            target: target.value.tempo?.toDouble() ?? 0,
+                            min: min.value.tempo?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              tempo: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              tempo: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              tempo: value.max,
+                            );
+                          },
+                        ),
+                        RecommendationAttributeFields(
+                          title: Text(context.l10n.mode),
+                          values: (
+                            max: max.value.mode?.toDouble() ?? 0,
+                            target: target.value.mode?.toDouble() ?? 0,
+                            min: min.value.mode?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              mode: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              mode: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              mode: value.max,
+                            );
+                          },
+                        ),
+                        RecommendationAttributeFields(
+                          title: Text(context.l10n.time_signature),
+                          values: (
+                            max: max.value.timeSignature?.toDouble() ?? 0,
+                            target: target.value.timeSignature?.toDouble() ?? 0,
+                            min: min.value.timeSignature?.toDouble() ?? 0,
+                          ),
+                          onChanged: (value) {
+                            target.value = target.value.copyWith(
+                              timeSignature: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              timeSignature: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              timeSignature: value.max,
+                            );
+                          },
+                        ),
+                        const Gap(20),
+                        Center(
+                          child: Button.primary(
+                            leading: const Icon(SpotubeIcons.magic),
+                            onPressed: artists.value.isEmpty &&
+                                    tracks.value.isEmpty &&
+                                    genres.value.isEmpty
+                                ? null
+                                : () {
+                                    final routeState =
+                                        GeneratePlaylistProviderInput(
+                                      seedArtists: artists.value
+                                          .map((a) => a.id!)
+                                          .toList(),
+                                      seedTracks: tracks.value
+                                          .map((t) => t.id!)
+                                          .toList(),
+                                      seedGenres: genres.value,
+                                      limit: limit.value,
+                                      max: max.value,
+                                      min: min.value,
+                                      target: target.value,
+                                    );
+                                    context.navigateTo(
+                                      PlaylistGenerateResultRoute(
+                                        state: routeState,
+                                      ),
+                                    );
+                                  },
+                            child: Text(context.l10n.generate),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ),
             ),
           ),
         ),

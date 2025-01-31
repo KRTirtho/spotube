@@ -75,7 +75,6 @@ class ConnectControlPage extends HookConsumerWidget {
         headers: [
           TitleBar(
             title: Text(resolvedService!.name),
-            automaticallyImplyLeading: true,
           )
         ],
         child: LayoutBuilder(builder: (context, constrains) {

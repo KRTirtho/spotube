@@ -34,7 +34,6 @@ class SettingsPage extends HookConsumerWidget {
         headers: [
           TitleBar(
             title: Text(context.l10n.settings),
-            automaticallyImplyLeading: true,
           )
         ],
         child: Scrollbar(

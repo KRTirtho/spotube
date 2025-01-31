@@ -28,34 +28,36 @@ class StatsMinutesPage extends HookConsumerWidget {
 
     final tracksData = topTracks.asData?.value.items ?? [];
 
-    return Scaffold(
-      headers: [
-        TitleBar(
-          title: Text(context.l10n.minutes_listened),
-          automaticallyImplyLeading: true,
-        )
-      ],
-      child: Skeletonizer(
-        enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,
-        child: InfiniteList(
-          separatorBuilder: (context, index) => const Gap(8),
-          onFetchData: () async {
-            await topTracksNotifier.fetchMore();
-          },
-          hasError: topTracks.hasError,
-          isLoading: topTracks.isLoading && !topTracks.isLoadingNextPage,
-          hasReachedMax: topTracks.asData?.value.hasMore ?? true,
-          itemCount: tracksData.length,
-          itemBuilder: (context, index) {
-            final track = tracksData[index];
-            return StatsTrackItem(
-              track: track.track,
-              info: Text(
-                context.l10n.count_mins(compactNumberFormatter
-                    .format(track.count * track.track.duration!.inMinutes)),
-              ),
-            );
-          },
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: [
+          TitleBar(
+            title: Text(context.l10n.minutes_listened),
+          )
+        ],
+        child: Skeletonizer(
+          enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,
+          child: InfiniteList(
+            separatorBuilder: (context, index) => const Gap(8),
+            onFetchData: () async {
+              await topTracksNotifier.fetchMore();
+            },
+            hasError: topTracks.hasError,
+            isLoading: topTracks.isLoading && !topTracks.isLoadingNextPage,
+            hasReachedMax: topTracks.asData?.value.hasMore ?? true,
+            itemCount: tracksData.length,
+            itemBuilder: (context, index) {
+              final track = tracksData[index];
+              return StatsTrackItem(
+                track: track.track,
+                info: Text(
+                  context.l10n.count_mins(compactNumberFormatter
+                      .format(track.count * track.track.duration!.inMinutes)),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

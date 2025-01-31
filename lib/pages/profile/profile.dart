@@ -44,7 +44,6 @@ class ProfilePage extends HookConsumerWidget {
         headers: [
           TitleBar(
             title: Text(context.l10n.profile),
-            automaticallyImplyLeading: true,
           )
         ],
         child: Skeletonizer(

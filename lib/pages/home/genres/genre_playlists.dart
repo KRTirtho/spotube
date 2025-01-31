@@ -45,93 +45,98 @@ class GenrePlaylistsPage extends HookConsumerWidget {
       automaticSystemUiAdjustment: false,
     );
 
-    return Scaffold(
-      headers: [
-        if (kIsDesktop)
-          const TitleBar(
-            leading: [
-              BackButton(),
-            ],
-            backgroundColor: Colors.transparent,
-            surfaceOpacity: 0,
-            surfaceBlur: 0,
-          )
-      ],
-      floatingHeader: true,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: UniversalImage.imageProvider(category.icons!.first.url!),
-            alignment: Alignment.topCenter,
-            fit: BoxFit.cover,
-            repeat: ImageRepeat.noRepeat,
-            matchTextDirection: true,
+    return SafeArea(
+      child: Scaffold(
+        headers: [
+          if (kIsDesktop)
+            const TitleBar(
+              leading: [
+                BackButton(),
+              ],
+              backgroundColor: Colors.transparent,
+              surfaceOpacity: 0,
+              surfaceBlur: 0,
+            )
+        ],
+        floatingHeader: true,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: UniversalImage.imageProvider(category.icons!.first.url!),
+              alignment: Alignment.topCenter,
+              fit: BoxFit.cover,
+              repeat: ImageRepeat.noRepeat,
+              matchTextDirection: true,
+            ),
           ),
-        ),
-        child: SurfaceCard(
-          borderRadius: BorderRadius.zero,
-          padding: EdgeInsets.zero,
-          child: CustomScrollView(
-            controller: scrollController,
-            slivers: [
-              SliverAppBar(
-                automaticallyImplyLeading: false,
-                leading: kIsMobile ? const BackButton() : null,
-                expandedHeight: mediaQuery.mdAndDown ? 200 : 150,
-                title: const Text(""),
-                backgroundColor: Colors.transparent,
-                flexibleSpace: FlexibleSpaceBar(
-                  centerTitle: kIsDesktop,
-                  title: Text(
-                    category.name!,
-                    style: context.theme.typography.h3.copyWith(
-                      color: Colors.white,
-                      letterSpacing: 3,
-                      shadows: [
-                        Shadow(
-                          offset: const Offset(-1.5, -1.5),
-                          color: Colors.black.withAlpha(138),
+          child: SurfaceCard(
+            borderRadius: BorderRadius.zero,
+            padding: EdgeInsets.zero,
+            child: CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                SliverSafeArea(
+                  bottom: false,
+                  sliver: SliverAppBar(
+                    automaticallyImplyLeading: false,
+                    leading: kIsMobile ? const BackButton() : null,
+                    expandedHeight: mediaQuery.mdAndDown ? 200 : 150,
+                    title: const Text(""),
+                    backgroundColor: Colors.transparent,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: kIsDesktop,
+                      title: Text(
+                        category.name!,
+                        style: context.theme.typography.h3.copyWith(
+                          color: Colors.white,
+                          letterSpacing: 3,
+                          shadows: [
+                            Shadow(
+                              offset: const Offset(-1.5, -1.5),
+                              color: Colors.black.withAlpha(138),
+                            ),
+                            Shadow(
+                              offset: const Offset(1.5, -1.5),
+                              color: Colors.black.withAlpha(138),
+                            ),
+                            Shadow(
+                              offset: const Offset(1.5, 1.5),
+                              color: Colors.black.withAlpha(138),
+                            ),
+                            Shadow(
+                              offset: const Offset(-1.5, 1.5),
+                              color: Colors.black.withAlpha(138),
+                            ),
+                          ],
                         ),
-                        Shadow(
-                          offset: const Offset(1.5, -1.5),
-                          color: Colors.black.withAlpha(138),
-                        ),
-                        Shadow(
-                          offset: const Offset(1.5, 1.5),
-                          color: Colors.black.withAlpha(138),
-                        ),
-                        Shadow(
-                          offset: const Offset(-1.5, 1.5),
-                          color: Colors.black.withAlpha(138),
-                        ),
-                      ],
+                      ),
+                      collapseMode: CollapseMode.parallax,
                     ),
                   ),
-                  collapseMode: CollapseMode.parallax,
                 ),
-              ),
-              const SliverGap(20),
-              SliverSafeArea(
-                top: false,
-                sliver: SliverPadding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: mediaQuery.mdAndDown ? 12 : 24,
-                  ),
-                  sliver: PlaybuttonView(
-                    controller: scrollController,
-                    itemCount: playlists.asData?.value.items.length ?? 0,
-                    isLoading: playlists.isLoading,
-                    hasMore: playlists.asData?.value.hasMore == true,
-                    onRequestMore: playlistsNotifier.fetchMore,
-                    listItemBuilder: (context, index) =>
-                        PlaylistCard.tile(playlists.asData!.value.items[index]),
-                    gridItemBuilder: (context, index) =>
-                        PlaylistCard(playlists.asData!.value.items[index]),
+                const SliverGap(20),
+                SliverSafeArea(
+                  top: false,
+                  sliver: SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: mediaQuery.mdAndDown ? 12 : 24,
+                    ),
+                    sliver: PlaybuttonView(
+                      controller: scrollController,
+                      itemCount: playlists.asData?.value.items.length ?? 0,
+                      isLoading: playlists.isLoading,
+                      hasMore: playlists.asData?.value.hasMore == true,
+                      onRequestMore: playlistsNotifier.fetchMore,
+                      listItemBuilder: (context, index) => PlaylistCard.tile(
+                          playlists.asData!.value.items[index]),
+                      gridItemBuilder: (context, index) =>
+                          PlaylistCard(playlists.asData!.value.items[index]),
+                    ),
                   ),
                 ),
-              ),
-              const SliverGap(20),
-            ],
+                const SliverGap(20),
+              ],
+            ),
           ),
         ),
       ),

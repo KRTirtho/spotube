@@ -32,7 +32,6 @@ class GenrePage extends HookConsumerWidget {
         headers: [
           TitleBar(
             title: Text(context.l10n.explore_genres),
-            automaticallyImplyLeading: true,
           )
         ],
         child: GridView.builder(

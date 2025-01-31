@@ -26,31 +26,33 @@ class StatsAlbumsPage extends HookConsumerWidget {
 
     final albumsData = topAlbums.asData?.value.items ?? [];
 
-    return Scaffold(
-      headers: [
-        TitleBar(
-          automaticallyImplyLeading: true,
-          title: Text(context.l10n.albums),
-        )
-      ],
-      child: Skeletonizer(
-        enabled: topAlbums.isLoading && !topAlbums.isLoadingNextPage,
-        child: InfiniteList(
-          onFetchData: () async {
-            await topAlbumsNotifier.fetchMore();
-          },
-          hasError: topAlbums.hasError,
-          isLoading: topAlbums.isLoading && !topAlbums.isLoadingNextPage,
-          hasReachedMax: topAlbums.asData?.value.hasMore ?? true,
-          itemCount: albumsData.length,
-          itemBuilder: (context, index) {
-            final album = albumsData[index];
-            return StatsAlbumItem(
-              album: album.album,
-              info: Text(context.l10n
-                  .count_plays(compactNumberFormatter.format(album.count))),
-            );
-          },
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: [
+          TitleBar(
+            title: Text(context.l10n.albums),
+          )
+        ],
+        child: Skeletonizer(
+          enabled: topAlbums.isLoading && !topAlbums.isLoadingNextPage,
+          child: InfiniteList(
+            onFetchData: () async {
+              await topAlbumsNotifier.fetchMore();
+            },
+            hasError: topAlbums.hasError,
+            isLoading: topAlbums.isLoading && !topAlbums.isLoadingNextPage,
+            hasReachedMax: topAlbums.asData?.value.hasMore ?? true,
+            itemCount: albumsData.length,
+            itemBuilder: (context, index) {
+              final album = albumsData[index];
+              return StatsAlbumItem(
+                album: album.album,
+                info: Text(context.l10n
+                    .count_plays(compactNumberFormatter.format(album.count))),
+              );
+            },
+          ),
         ),
       ),
     );
