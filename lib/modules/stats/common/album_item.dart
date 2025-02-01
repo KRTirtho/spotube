@@ -1,12 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/pages/album/album.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class StatsAlbumItem extends StatelessWidget {
   final AlbumSimple album;
@@ -36,25 +36,15 @@ class StatsAlbumItem extends StatelessWidget {
             child: ArtistLink(
               artists: album.artists ?? [],
               mainAxisAlignment: WrapAlignment.start,
-              onOverflowArtistClick: () => ServiceUtils.pushNamed(
-                context,
-                AlbumPage.name,
-                pathParameters: {
-                  "id": album.id!,
-                },
-              ),
+              onOverflowArtistClick: () =>
+                  context.navigateTo(AlbumRoute(id: album.id!, album: album)),
             ),
           ),
         ],
       ),
       trailing: info,
       onPressed: () {
-        ServiceUtils.pushNamed(
-          context,
-          AlbumPage.name,
-          pathParameters: {"id": album.id!},
-          extra: album,
-        );
+        context.navigateTo(AlbumRoute(id: album.id!, album: album));
       },
     );
   }

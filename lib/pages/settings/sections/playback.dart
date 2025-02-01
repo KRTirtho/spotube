@@ -1,12 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' show ListTile;
 
-import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
@@ -267,7 +268,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           title: Text(context.l10n.blacklist),
           subtitle: Text(context.l10n.blacklist_description),
           onTap: () {
-            GoRouter.of(context).push("/settings/blacklist");
+            context.navigateTo(const BlackListRoute());
           },
           trailing: const Icon(SpotubeIcons.angleRight),
         ),

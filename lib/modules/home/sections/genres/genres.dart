@@ -1,15 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/home/sections/genres/genre_card.dart';
-import 'package:spotube/pages/home/genres/genres.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class HomeGenresSection extends HookConsumerWidget {
@@ -47,7 +48,7 @@ class HomeGenresSection extends HookConsumerWidget {
               ),
               Button.link(
                 onPressed: () {
-                  context.pushNamed(GenrePage.name);
+                  context.navigateTo(const GenreRoute());
                 },
                 child: Text(
                   context.l10n.browse_all,

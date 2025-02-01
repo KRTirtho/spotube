@@ -7,6 +7,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart' hide Image;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
@@ -14,12 +15,12 @@ import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/service_utils.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class UserPlaylistsPage extends HookConsumerWidget {
   static const name = 'user_playlists';
   const UserPlaylistsPage({super.key});
@@ -90,6 +91,7 @@ class UserPlaylistsPage extends HookConsumerWidget {
             controller: controller,
             slivers: [
               SliverAppBar(
+                automaticallyImplyLeading: false,
                 floating: true,
                 backgroundColor: context.theme.colorScheme.background,
                 flexibleSpace: Container(
@@ -113,10 +115,7 @@ class UserPlaylistsPage extends HookConsumerWidget {
                         leading: const Icon(SpotubeIcons.magic),
                         child: Text(context.l10n.generate),
                         onPressed: () {
-                          ServiceUtils.pushNamed(
-                            context,
-                            PlaylistGeneratorPage.name,
-                          );
+                          context.navigateTo(const PlaylistGeneratorRoute());
                         },
                       ),
                       const Gap(10),

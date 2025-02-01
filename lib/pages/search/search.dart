@@ -6,6 +6,7 @@ import 'package:spotify/spotify.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/routes.gr.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
@@ -20,7 +21,9 @@ import 'package:spotube/pages/search/sections/tracks.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class SearchPage extends HookConsumerWidget {
   static const name = "search";
 
@@ -66,165 +69,174 @@ class SearchPage extends HookConsumerWidget {
       );
     }
 
-    return SafeArea(
-      bottom: false,
-      child: Scaffold(
-        headers: [
-          if (kTitlebarVisible)
-            const TitleBar(automaticallyImplyLeading: true, height: 30)
-        ],
-        child: auth.asData?.value == null
-            ? const AnonymousFallback()
-            : Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: ListenableBuilder(
-                              listenable: controller,
-                              builder: (context, _) {
-                                final suggestions = controller.text.isEmpty
-                                    ? KVStoreService.recentSearches
-                                    : KVStoreService.recentSearches
-                                        .where(
-                                          (s) =>
-                                              weightedRatio(
-                                                s.toLowerCase(),
-                                                controller.text.toLowerCase(),
-                                              ) >
-                                              50,
-                                        )
-                                        .toList();
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        context.navigateTo(const HomeRoute());
+      },
+      child: SafeArea(
+        bottom: false,
+        child: Scaffold(
+          headers: [
+            if (kTitlebarVisible)
+              const TitleBar(automaticallyImplyLeading: false, height: 30)
+          ],
+          child: auth.asData?.value == null
+              ? const AnonymousFallback()
+              : Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: ListenableBuilder(
+                                listenable: controller,
+                                builder: (context, _) {
+                                  final suggestions = controller.text.isEmpty
+                                      ? KVStoreService.recentSearches
+                                      : KVStoreService.recentSearches
+                                          .where(
+                                            (s) =>
+                                                weightedRatio(
+                                                  s.toLowerCase(),
+                                                  controller.text.toLowerCase(),
+                                                ) >
+                                                50,
+                                          )
+                                          .toList();
 
-                                return KeyboardListener(
-                                  focusNode: focusNode,
-                                  autofocus: true,
-                                  onKeyEvent: (value) {
-                                    final isEnter = value.logicalKey ==
-                                        LogicalKeyboardKey.enter;
-
-                                    if (isEnter) {
-                                      onSubmitted(controller.text);
-                                      focusNode.unfocus();
-                                    }
-                                  },
-                                  child: AutoComplete(
+                                  return KeyboardListener(
+                                    focusNode: focusNode,
                                     autofocus: true,
-                                    controller: controller,
-                                    suggestions: suggestions,
-                                    leading: const Icon(SpotubeIcons.search),
-                                    textInputAction: TextInputAction.search,
-                                    placeholder: Text(context.l10n.search),
-                                    trailing: AnimatedCrossFade(
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      crossFadeState: controller.text.isNotEmpty
-                                          ? CrossFadeState.showFirst
-                                          : CrossFadeState.showSecond,
-                                      firstChild: IconButton.ghost(
-                                        size: ButtonSize.small,
-                                        icon: const Icon(SpotubeIcons.close),
-                                        onPressed: () {
-                                          controller.clear();
-                                        },
-                                      ),
-                                      secondChild:
-                                          const SizedBox.square(dimension: 28),
-                                    ),
-                                    onAcceptSuggestion: (index) {
-                                      controller.text =
-                                          KVStoreService.recentSearches[index];
-                                      ref
-                                              .read(searchTermStateProvider
-                                                  .notifier)
-                                              .state =
-                                          KVStoreService.recentSearches[index];
+                                    onKeyEvent: (value) {
+                                      final isEnter = value.logicalKey ==
+                                          LogicalKeyboardKey.enter;
+
+                                      if (isEnter) {
+                                        onSubmitted(controller.text);
+                                        focusNode.unfocus();
+                                      }
                                     },
-                                    onChanged: (value) {},
-                                    onSubmitted: onSubmitted,
-                                  ),
-                                );
-                              }),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Expanded(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: switch ((searchTerm.isEmpty, isFetching)) {
-                        (true, false) => Column(
-                            children: [
-                              SizedBox(
-                                height: mediaQuery.height * 0.2,
-                              ),
-                              Undraw(
-                                illustration: UndrawIllustration.explore,
-                                color: theme.colorScheme.primary,
-                                height: 200 * theme.scaling,
-                              ),
-                              const SizedBox(height: 20),
-                              Text(context.l10n.search_to_get_results).large(),
-                            ],
+                                    child: AutoComplete(
+                                      autofocus: true,
+                                      controller: controller,
+                                      suggestions: suggestions,
+                                      leading: const Icon(SpotubeIcons.search),
+                                      textInputAction: TextInputAction.search,
+                                      placeholder: Text(context.l10n.search),
+                                      trailing: AnimatedCrossFade(
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        crossFadeState:
+                                            controller.text.isNotEmpty
+                                                ? CrossFadeState.showFirst
+                                                : CrossFadeState.showSecond,
+                                        firstChild: IconButton.ghost(
+                                          size: ButtonSize.small,
+                                          icon: const Icon(SpotubeIcons.close),
+                                          onPressed: () {
+                                            controller.clear();
+                                          },
+                                        ),
+                                        secondChild: const SizedBox.square(
+                                            dimension: 28),
+                                      ),
+                                      onAcceptSuggestion: (index) {
+                                        controller.text = KVStoreService
+                                            .recentSearches[index];
+                                        ref
+                                                .read(searchTermStateProvider
+                                                    .notifier)
+                                                .state =
+                                            KVStoreService
+                                                .recentSearches[index];
+                                      },
+                                      onChanged: (value) {},
+                                      onSubmitted: onSubmitted,
+                                    ),
+                                  );
+                                }),
                           ),
-                        (false, true) => Container(
-                            constraints: BoxConstraints(
-                              maxWidth: mediaQuery.lgAndUp
-                                  ? mediaQuery.width * 0.5
-                                  : mediaQuery.width,
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: switch ((searchTerm.isEmpty, isFetching)) {
+                          (true, false) => Column(
                               children: [
-                                Text(
-                                  context.l10n.crunching_results,
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w900,
-                                    color: theme.colorScheme.foreground
-                                        .withOpacity(0.7),
-                                  ),
+                                SizedBox(
+                                  height: mediaQuery.height * 0.2,
+                                ),
+                                Undraw(
+                                  illustration: UndrawIllustration.explore,
+                                  color: theme.colorScheme.primary,
+                                  height: 200 * theme.scaling,
                                 ),
                                 const SizedBox(height: 20),
-                                const LinearProgressIndicator(),
+                                Text(context.l10n.search_to_get_results)
+                                    .large(),
                               ],
                             ),
-                          ),
-                        _ => InterScrollbar(
-                            controller: scrollController,
-                            child: SingleChildScrollView(
+                          (false, true) => Container(
+                              constraints: BoxConstraints(
+                                maxWidth: mediaQuery.lgAndUp
+                                    ? mediaQuery.width * 0.5
+                                    : mediaQuery.width,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    context.l10n.crunching_results,
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900,
+                                      color: theme.colorScheme.foreground
+                                          .withOpacity(0.7),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  const LinearProgressIndicator(),
+                                ],
+                              ),
+                            ),
+                          _ => InterScrollbar(
                               controller: scrollController,
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8),
-                                child: SafeArea(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SearchTracksSection(),
-                                      SearchPlaylistsSection(),
-                                      Gap(20),
-                                      SearchArtistsSection(),
-                                      Gap(20),
-                                      SearchAlbumsSection(),
-                                    ],
+                              child: SingleChildScrollView(
+                                controller: scrollController,
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8),
+                                  child: SafeArea(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SearchTracksSection(),
+                                        SearchPlaylistsSection(),
+                                        Gap(20),
+                                        SearchArtistsSection(),
+                                        Gap(20),
+                                        SearchAlbumsSection(),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }

@@ -1,73 +1,81 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart' show Badge;
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/library/user_downloads.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 
+@RoutePage()
 class LibraryPage extends HookConsumerWidget {
-  final Widget child;
-  const LibraryPage({super.key, required this.child});
+  const LibraryPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
     final downloadingCount = ref.watch(downloadManagerProvider).$downloadCount;
-    final routerState = GoRouterState.of(context);
+    final router = context.watchRouter;
     final sidebarLibraryTileList = useMemoized(
       () => [
         ...getSidebarLibraryTileList(context.l10n),
         SideBarTiles(
           id: "downloads",
+          pathPrefix: "library/downloads",
           title: context.l10n.downloads,
-          name: UserDownloadsPage.name,
+          route: const UserDownloadsRoute(),
           icon: SpotubeIcons.download,
         ),
       ],
       [context.l10n],
     );
     final index = sidebarLibraryTileList.indexWhere(
-      (e) => routerState.namedLocation(e.name) == routerState.matchedLocation,
+      (e) => router.currentPath.startsWith(e.pathPrefix),
     );
 
-    return SafeArea(
-      bottom: false,
-      child: LayoutBuilder(builder: (context, constraints) {
-        return Scaffold(
-          headers: [
-            if (constraints.smAndDown)
-              TitleBar(
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: TabList(
-                    index: index,
-                    children: [
-                      for (final tile in sidebarLibraryTileList)
-                        TabButton(
-                          child: Badge(
-                            isLabelVisible:
-                                tile.id == 'downloads' && downloadingCount > 0,
-                            label: Text(downloadingCount.toString()),
-                            child: Text(tile.title),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        context.navigateTo(const HomeRoute());
+      },
+      child: SafeArea(
+        bottom: false,
+        child: LayoutBuilder(builder: (context, constraints) {
+          return Scaffold(
+            headers: [
+              if (constraints.smAndDown)
+                TitleBar(
+                  automaticallyImplyLeading: false,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: TabList(
+                      index: index,
+                      children: [
+                        for (final tile in sidebarLibraryTileList)
+                          TabButton(
+                            child: Badge(
+                              isLabelVisible: tile.id == 'downloads' &&
+                                  downloadingCount > 0,
+                              label: Text(downloadingCount.toString()),
+                              child: Text(tile.title),
+                            ),
+                            onPressed: () {
+                              context.navigateTo(tile.route);
+                            },
                           ),
-                          onPressed: () {
-                            context.goNamed(tile.name);
-                          },
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            const Gap(10),
-          ],
-          child: child,
-        );
-      }),
+              const Gap(10),
+            ],
+            child: const AutoRouter(),
+          );
+        }),
+      ),
     );
   }
 }

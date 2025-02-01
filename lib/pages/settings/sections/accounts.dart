@@ -1,20 +1,20 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart' show ListTile;
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/mobile_login/hooks/login_callback.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class SettingsAccountSection extends HookConsumerWidget {
   const SettingsAccountSection({super.key});
@@ -22,7 +22,6 @@ class SettingsAccountSection extends HookConsumerWidget {
   @override
   Widget build(context, ref) {
     final theme = Theme.of(context);
-    final router = GoRouter.of(context);
 
     final auth = ref.watch(authenticationProvider);
     final scrobbler = ref.watch(scrobblerProvider);
@@ -50,7 +49,7 @@ class SettingsAccountSection extends HookConsumerWidget {
               ),
             ),
             onTap: () {
-              ServiceUtils.pushNamed(context, ProfilePage.name);
+              context.navigateTo(ProfileRoute());
             },
           ),
         if (auth.asData?.value == null)
@@ -99,7 +98,7 @@ class SettingsAccountSection extends HookConsumerWidget {
               trailing: Button.destructive(
                 onPressed: () async {
                   ref.read(authenticationProvider.notifier).logout();
-                  GoRouter.of(context).pop();
+                  context.maybePop();
                 },
                 child: Text(context.l10n.logout),
               ),
@@ -113,7 +112,7 @@ class SettingsAccountSection extends HookConsumerWidget {
             trailing: Button.secondary(
               leading: const Icon(SpotubeIcons.lastFm),
               onPressed: () {
-                router.push("/lastfm-login");
+                context.navigateTo(const LastFMLoginRoute());
               },
               child: Text(context.l10n.connect),
             ),

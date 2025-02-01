@@ -5,7 +5,9 @@ import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/track_presentation.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class LikedPlaylistPage extends HookConsumerWidget {
   static const name = PlaylistPage.name;
 

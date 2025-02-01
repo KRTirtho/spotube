@@ -1,13 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart' show showModalBottomSheet;
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/framework/app_pop_scope.dart';
 import 'package:spotube/modules/player/player_actions.dart';
@@ -25,13 +26,11 @@ import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/pages/lyrics/lyrics.dart';
-import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -94,7 +93,7 @@ class PlayerView extends HookConsumerWidget {
     }, [panelController.isAttached && panelController.isPanelOpen]);
 
     return AppPopScope(
-      canPop: context.canPop(),
+      canPop: false,
       onPopInvoked: (didPop) async {
         await panelController.close();
       },
@@ -210,14 +209,10 @@ class PlayerView extends HookConsumerWidget {
                                 .copyWith(fontWeight: FontWeight.bold),
                             onRouteChange: (route) {
                               panelController.close();
-                              GoRouter.of(context).push(route);
+                              context.router.navigateNamed(route);
                             },
-                            onOverflowArtistClick: () => ServiceUtils.pushNamed(
-                              context,
-                              TrackPage.name,
-                              pathParameters: {
-                                "id": currentTrack!.id!,
-                              },
+                            onOverflowArtistClick: () => context.navigateTo(
+                              TrackRoute(trackId: currentTrack!.id!),
                             ),
                           ),
                       ],

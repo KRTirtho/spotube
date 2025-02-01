@@ -1,18 +1,18 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/services/download_manager/download_status.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class DownloadItem extends HookConsumerWidget {
   final Track track;
@@ -66,13 +66,9 @@ class DownloadItem extends HookConsumerWidget {
       subtitle: ArtistLink(
         artists: track.artists ?? <Artist>[],
         mainAxisAlignment: WrapAlignment.start,
-        onOverflowArtistClick: () => ServiceUtils.pushNamed(
-          context,
-          TrackPage.name,
-          pathParameters: {
-            "id": track.id!,
-          },
-        ),
+        onOverflowArtistClick: () {
+          context.navigateTo(TrackRoute(trackId: track.id!));
+        },
       ),
       trailing: isQueryingSourceInfo
           ? Text(context.l10n.querying_info).small()

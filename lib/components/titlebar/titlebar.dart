@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -73,6 +74,10 @@ class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
           final hasFullscreen =
               MediaQuery.sizeOf(context).width == constraints.maxWidth;
 
+          final canPop = leading.isEmpty &&
+              automaticallyImplyLeading &&
+              (Navigator.canPop(context) || context.watchRouter.canPop());
+
           return GestureDetector(
             onHorizontalDragStart: (_) => onDrag(ref),
             onVerticalDragStart: (_) => onDrag(ref),
@@ -94,13 +99,7 @@ class TitleBar extends HookConsumerWidget implements PreferredSizeWidget {
               }
             },
             child: AppBar(
-              leading: leading.isEmpty &&
-                      automaticallyImplyLeading &&
-                      Navigator.canPop(context)
-                  ? [
-                      const BackButton(),
-                    ]
-                  : leading,
+              leading: canPop ? [const BackButton()] : leading,
               trailing: [
                 ...trailing,
                 Align(

@@ -1,8 +1,9 @@
 import 'dart:typed_data';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:html/dom.dart' hide Text;
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Element;
 import 'package:spotify/spotify.dart';
@@ -274,70 +275,6 @@ abstract class ServiceUtils {
     );
 
     return subtitle;
-  }
-
-  static void navigate(BuildContext context, String location, {Object? extra}) {
-    if (GoRouterState.of(context).matchedLocation == location) return;
-    GoRouter.of(context).go(location, extra: extra);
-  }
-
-  static void navigateNamed(
-    BuildContext context,
-    String name, {
-    Object? extra,
-    Map<String, String>? pathParameters,
-    Map<String, dynamic>? queryParameters,
-  }) {
-    if (GoRouterState.of(context).matchedLocation == name) return;
-    GoRouter.of(context).goNamed(
-      name,
-      pathParameters: pathParameters ?? const {},
-      queryParameters: queryParameters ?? const {},
-      extra: extra,
-    );
-  }
-
-  static void push(BuildContext context, String location, {Object? extra}) {
-    final router = GoRouter.of(context);
-    final routerState = GoRouterState.of(context);
-    final routerStack = router.routerDelegate.currentConfiguration.matches
-        .map((e) => e.matchedLocation);
-
-    if (routerState.matchedLocation == location ||
-        routerStack.contains(location)) {
-      return;
-    }
-    router.push(location, extra: extra);
-  }
-
-  static void pushNamed(
-    BuildContext context,
-    String name, {
-    Object? extra,
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-  }) {
-    final router = GoRouter.of(context);
-    final routerState = GoRouterState.of(context);
-    final routerStack = router.routerDelegate.currentConfiguration.matches
-        .map((e) => e.matchedLocation);
-
-    final nameLocation = routerState.namedLocation(
-      name,
-      pathParameters: pathParameters,
-      queryParameters: queryParameters,
-    );
-
-    if (routerState.matchedLocation == nameLocation ||
-        routerStack.contains(nameLocation)) {
-      return;
-    }
-    router.pushNamed(
-      name,
-      pathParameters: pathParameters,
-      queryParameters: queryParameters,
-      extra: extra,
-    );
   }
 
   static DateTime parseSpotifyAlbumDate(AlbumSimple? album) {

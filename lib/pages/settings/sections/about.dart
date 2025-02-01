@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart' show ListTile;
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide ButtonStyle;
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/adaptive/adaptive_list_tile.dart';
@@ -88,7 +90,7 @@ class SettingsAboutSection extends HookConsumerWidget {
           title: Text(context.l10n.about_spotube),
           trailing: const Icon(SpotubeIcons.angleRight),
           onTap: () {
-            GoRouter.of(context).push("/settings/about");
+            context.navigateTo(const AboutSpotubeRoute());
           },
         )
       ],

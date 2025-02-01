@@ -11,7 +11,9 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class BlackListPage extends HookConsumerWidget {
   static const name = "blacklist";
 
@@ -45,50 +47,52 @@ class BlackListPage extends HookConsumerWidget {
       [blacklist, searchText.value],
     );
 
-    return Scaffold(
-      headers: [
-        TitleBar(
-          title: Text(context.l10n.blacklist),
-          leading: const [BackButton()],
-        )
-      ],
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              onChanged: (value) => searchText.value = value,
-              placeholder: Text(context.l10n.search),
-              leading: const Icon(SpotubeIcons.search),
-            ),
-          ),
-          InterScrollbar(
-            controller: controller,
-            child: ListView.builder(
-              controller: controller,
-              shrinkWrap: true,
-              itemCount: filteredBlacklist.length,
-              itemBuilder: (context, index) {
-                final item = filteredBlacklist.elementAt(index);
-                return ButtonTile(
-                  style: ButtonVariance.ghost,
-                  leading: Text("${index + 1}."),
-                  title: Text("${item.name} (${item.elementType.name})"),
-                  subtitle: Text(item.elementId),
-                  trailing: IconButton.ghost(
-                    icon: Icon(SpotubeIcons.trash, color: Colors.red[400]),
-                    onPressed: () {
-                      ref
-                          .read(blacklistProvider.notifier)
-                          .remove(filteredBlacklist.elementAt(index).elementId);
-                    },
-                  ),
-                );
-              },
-            ),
-          ),
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: [
+          TitleBar(
+            title: Text(context.l10n.blacklist),
+            leading: const [BackButton()],
+          )
         ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TextField(
+                onChanged: (value) => searchText.value = value,
+                placeholder: Text(context.l10n.search),
+                leading: const Icon(SpotubeIcons.search),
+              ),
+            ),
+            InterScrollbar(
+              controller: controller,
+              child: ListView.builder(
+                controller: controller,
+                shrinkWrap: true,
+                itemCount: filteredBlacklist.length,
+                itemBuilder: (context, index) {
+                  final item = filteredBlacklist.elementAt(index);
+                  return ButtonTile(
+                    style: ButtonVariance.ghost,
+                    leading: Text("${index + 1}."),
+                    title: Text("${item.name} (${item.elementType.name})"),
+                    subtitle: Text(item.elementId),
+                    trailing: IconButton.ghost(
+                      icon: Icon(SpotubeIcons.trash, color: Colors.red[400]),
+                      onPressed: () {
+                        ref.read(blacklistProvider.notifier).remove(
+                            filteredBlacklist.elementAt(index).elementId);
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

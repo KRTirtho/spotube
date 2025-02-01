@@ -12,7 +12,9 @@ import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/tracks.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class StatsStreamFeesPage extends HookConsumerWidget {
   static const name = "stats_stream_fees";
 
@@ -48,79 +50,83 @@ class StatsStreamFeesPage extends HookConsumerWidget {
       HistoryDuration.allTime: context.l10n.all_time,
     };
 
-    return Scaffold(
-      headers: [
-        TitleBar(
-          automaticallyImplyLeading: true,
-          title: Text(context.l10n.streaming_fees_hypothetical),
-        )
-      ],
-      child: CustomScrollView(
-        slivers: [
-          SliverCrossAxisConstrained(
-            maxCrossAxisExtent: 600,
-            alignment: -1,
-            child: SliverPadding(
-              padding: const EdgeInsets.all(16.0),
-              sliver: SliverToBoxAdapter(
-                child: Text(
-                  context.l10n.spotify_hipotetical_calculation,
-                ).small().muted(),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    context.l10n.total_money(usdFormatter.format(total)),
-                  ).semiBold().large(),
-                  Select<HistoryDuration>(
-                    value: duration.value,
-                    onChanged: (value) {
-                      if (value == null) return;
-                      duration.value = value;
-                    },
-                    itemBuilder: (context, value) => Text(translations[value]!),
-                    constraints: const BoxConstraints(maxWidth: 150),
-                    popupWidthConstraint: PopoverConstraint.anchorMaxSize,
-                    children: [
-                      for (final entry in translations.entries)
-                        SelectItemButton(
-                          value: entry.key,
-                          child: Text(entry.value),
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverSafeArea(
-            sliver: Skeletonizer.sliver(
-              enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,
-              child: SliverInfiniteList(
-                onFetchData: () async {
-                  await topTracksNotifier.fetchMore();
-                },
-                hasError: topTracks.hasError,
-                isLoading: topTracks.isLoading && !topTracks.isLoadingNextPage,
-                hasReachedMax: topTracks.asData?.value.hasMore ?? true,
-                itemCount: artistsData.length,
-                itemBuilder: (context, index) {
-                  final artist = artistsData[index];
-                  return StatsArtistItem(
-                    artist: artist.artist,
-                    info: Text(usdFormatter.format(artist.count * 0.005)),
-                  );
-                },
-              ),
-            ),
-          ),
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: [
+          TitleBar(
+            title: Text(context.l10n.streaming_fees_hypothetical),
+          )
         ],
+        child: CustomScrollView(
+          slivers: [
+            SliverCrossAxisConstrained(
+              maxCrossAxisExtent: 600,
+              alignment: -1,
+              child: SliverPadding(
+                padding: const EdgeInsets.all(16.0),
+                sliver: SliverToBoxAdapter(
+                  child: Text(
+                    context.l10n.spotify_hipotetical_calculation,
+                  ).small().muted(),
+                ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      context.l10n.total_money(usdFormatter.format(total)),
+                    ).semiBold().large(),
+                    Select<HistoryDuration>(
+                      value: duration.value,
+                      onChanged: (value) {
+                        if (value == null) return;
+                        duration.value = value;
+                      },
+                      itemBuilder: (context, value) =>
+                          Text(translations[value]!),
+                      constraints: const BoxConstraints(maxWidth: 150),
+                      popupWidthConstraint: PopoverConstraint.anchorMaxSize,
+                      children: [
+                        for (final entry in translations.entries)
+                          SelectItemButton(
+                            value: entry.key,
+                            child: Text(entry.value),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SliverSafeArea(
+              sliver: Skeletonizer.sliver(
+                enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,
+                child: SliverInfiniteList(
+                  onFetchData: () async {
+                    await topTracksNotifier.fetchMore();
+                  },
+                  hasError: topTracks.hasError,
+                  isLoading:
+                      topTracks.isLoading && !topTracks.isLoadingNextPage,
+                  hasReachedMax: topTracks.asData?.value.hasMore ?? true,
+                  itemCount: artistsData.length,
+                  itemBuilder: (context, index) {
+                    final artist = artistsData[index];
+                    return StatsArtistItem(
+                      artist: artist.artist,
+                      info: Text(usdFormatter.format(artist.count * 0.005)),
+                    );
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

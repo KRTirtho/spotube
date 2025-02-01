@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -24,6 +25,7 @@ enum SortBy {
   album,
 }
 
+@RoutePage()
 class UserLocalLibraryPage extends HookConsumerWidget {
   static const name = 'user_local_library';
   const UserLocalLibraryPage({super.key});

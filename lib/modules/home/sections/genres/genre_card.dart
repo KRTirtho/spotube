@@ -1,17 +1,17 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/gradients.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/home/sections/genres/genre_card_playlist_card.dart';
-import 'package:spotube/pages/home/genres/genre_playlists.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 final random = Random();
@@ -76,10 +76,11 @@ class GenreSectionCard extends HookConsumerWidget {
                 ).h3(),
                 Button.link(
                   onPressed: () {
-                    context.pushNamed(
-                      GenrePlaylistsPage.name,
-                      pathParameters: {'categoryId': category.id!},
-                      extra: category,
+                    context.navigateTo(
+                      GenrePlaylistsRoute(
+                        id: category.id!,
+                        category: category,
+                      ),
                     );
                   },
                   child: Text(

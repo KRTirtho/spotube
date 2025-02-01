@@ -18,7 +18,9 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class UserArtistsPage extends HookConsumerWidget {
   static const name = 'user_artists';
   const UserArtistsPage({super.key});
@@ -70,6 +72,7 @@ class UserArtistsPage extends HookConsumerWidget {
                 controller: controller,
                 slivers: [
                   SliverAppBar(
+                    automaticallyImplyLeading: false,
                     backgroundColor: Theme.of(context).colorScheme.background,
                     floating: true,
                     flexibleSpace: SizedBox(

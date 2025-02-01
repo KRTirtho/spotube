@@ -1,11 +1,11 @@
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/mobile_login/hooks/login_callback.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -112,7 +112,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                   onPressed: () async {
                     await KVStoreService.setDoneGettingStarted(true);
                     if (context.mounted) {
-                      context.goNamed(HomePage.name);
+                      context.navigateTo(const HomeRoute());
                     }
                   },
                   child: Text(context.l10n.browse_anonymously),

@@ -12,7 +12,9 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class ProfilePage extends HookConsumerWidget {
   static const name = "profile";
 
@@ -42,7 +44,6 @@ class ProfilePage extends HookConsumerWidget {
         headers: [
           TitleBar(
             title: Text(context.l10n.profile),
-            automaticallyImplyLeading: true,
           )
         ],
         child: Skeletonizer(

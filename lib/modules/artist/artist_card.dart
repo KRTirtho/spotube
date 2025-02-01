@@ -1,16 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 
-import 'package:spotube/pages/artist/artist.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class ArtistCard extends HookConsumerWidget {
   final Artist artist;
@@ -36,13 +36,7 @@ class ArtistCard extends HookConsumerWidget {
       width: 180,
       child: Button.card(
         onPressed: () {
-          ServiceUtils.pushNamed(
-            context,
-            ArtistPage.name,
-            pathParameters: {
-              "id": artist.id!,
-            },
-          );
+          context.navigateTo(ArtistRoute(artistId: artist.id!));
         },
         child: Column(
           children: [

@@ -1,11 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/string.dart';
-import 'package:spotube/pages/playlist/playlist.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class StatsPlaylistItem extends StatelessWidget {
   final PlaylistSimple playlist;
@@ -35,12 +35,7 @@ class StatsPlaylistItem extends StatelessWidget {
       ),
       trailing: info,
       onPressed: () {
-        ServiceUtils.pushNamed(
-          context,
-          PlaylistPage.name,
-          pathParameters: {"id": playlist.id!},
-          extra: playlist,
-        );
+        context.navigateTo(PlaylistRoute(id: playlist.id!, playlist: playlist));
       },
     );
   }

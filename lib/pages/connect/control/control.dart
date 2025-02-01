@@ -1,7 +1,8 @@
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/player/volume_slider.dart';
@@ -13,11 +14,9 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
-import 'package:spotube/utils/service_utils.dart';
 
 class RemotePlayerQueue extends ConsumerWidget {
   const RemotePlayerQueue({super.key});
@@ -46,6 +45,7 @@ class RemotePlayerQueue extends ConsumerWidget {
   }
 }
 
+@RoutePage()
 class ConnectControlPage extends HookConsumerWidget {
   static const name = "connect_control";
 
@@ -65,7 +65,7 @@ class ConnectControlPage extends HookConsumerWidget {
 
     ref.listen(connectClientsProvider, (prev, next) {
       if (next.asData?.value.resolvedService == null) {
-        context.pop();
+        context.back();
       }
     });
 
@@ -75,7 +75,6 @@ class ConnectControlPage extends HookConsumerWidget {
         headers: [
           TitleBar(
             title: Text(resolvedService!.name),
-            automaticallyImplyLeading: true,
           )
         ],
         child: LayoutBuilder(builder: (context, constrains) {
@@ -115,12 +114,9 @@ class ConnectControlPage extends HookConsumerWidget {
                               style: typography.h4,
                               onTap: () {
                                 if (playlist.activeTrack == null) return;
-                                ServiceUtils.pushNamed(
-                                  context,
-                                  TrackPage.name,
-                                  pathParameters: {
-                                    "id": playlist.activeTrack!.id!,
-                                  },
+                                context.navigateTo(
+                                  TrackRoute(
+                                      trackId: playlist.activeTrack!.id!),
                                 );
                               },
                             ),
@@ -130,13 +126,8 @@ class ConnectControlPage extends HookConsumerWidget {
                               artists: playlist.activeTrack?.artists ?? [],
                               textStyle: typography.normal,
                               mainAxisAlignment: WrapAlignment.start,
-                              onOverflowArtistClick: () =>
-                                  ServiceUtils.pushNamed(
-                                context,
-                                TrackPage.name,
-                                pathParameters: {
-                                  "id": playlist.activeTrack!.id!,
-                                },
+                              onOverflowArtistClick: () => context.navigateTo(
+                                TrackRoute(trackId: playlist.activeTrack!.id!),
                               ),
                             ),
                           ),

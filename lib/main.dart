@@ -17,8 +17,8 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/initializers.dart';
-import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/collections/routes.dart';
 import 'package:spotube/hooks/configurators/use_close_behavior.dart';
 import 'package:spotube/hooks/configurators/use_deep_linking.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
@@ -133,7 +133,7 @@ class Spotube extends HookConsumerWidget {
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
     final accentMaterialColor =
         ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
-    final router = ref.watch(routerProvider);
+    final router = useMemoized(() => AppRouter(ref), []);
     final hasTouchSupport = useHasTouch();
 
     ref.listen(audioPlayerStreamListenersProvider, (_, __) {});
@@ -144,7 +144,7 @@ class Spotube extends HookConsumerWidget {
 
     useFixWindowStretching();
     useDisableBatteryOptimizations();
-    useDeepLinking(ref);
+    useDeepLinking(ref, router);
     useCloseBehavior(ref);
     useGetStoragePermissions(ref);
 
@@ -171,7 +171,7 @@ class Spotube extends HookConsumerWidget {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routerConfig: router,
+      routerConfig: router.config(),
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
       builder: (context, child) {
@@ -240,42 +240,42 @@ class Spotube extends HookConsumerWidget {
           LogicalKeyboardKey.digit1,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.browse),
+        ): HomeTabIntent(router, tab: HomeTabs.browse),
         LogicalKeySet(
           LogicalKeyboardKey.digit2,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.search),
+        ): HomeTabIntent(router, tab: HomeTabs.search),
         LogicalKeySet(
           LogicalKeyboardKey.digit3,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.lyrics),
+        ): HomeTabIntent(router, tab: HomeTabs.lyrics),
         LogicalKeySet(
           LogicalKeyboardKey.digit4,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.userPlaylists),
+        ): HomeTabIntent(router, tab: HomeTabs.userPlaylists),
         LogicalKeySet(
           LogicalKeyboardKey.digit5,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.userArtists),
+        ): HomeTabIntent(router, tab: HomeTabs.userArtists),
         LogicalKeySet(
           LogicalKeyboardKey.digit6,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.userAlbums),
+        ): HomeTabIntent(router, tab: HomeTabs.userAlbums),
         LogicalKeySet(
           LogicalKeyboardKey.digit7,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.userLocalLibrary),
+        ): HomeTabIntent(router, tab: HomeTabs.userLocalLibrary),
         LogicalKeySet(
           LogicalKeyboardKey.digit8,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.userDownloads),
+        ): HomeTabIntent(router, tab: HomeTabs.userDownloads),
         LogicalKeySet(
           LogicalKeyboardKey.keyW,
           LogicalKeyboardKey.control,

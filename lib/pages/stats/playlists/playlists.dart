@@ -10,7 +10,9 @@ import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/playlists.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class StatsPlaylistsPage extends HookConsumerWidget {
   static const name = "stats_playlists";
   const StatsPlaylistsPage({super.key});
@@ -25,33 +27,36 @@ class StatsPlaylistsPage extends HookConsumerWidget {
 
     final playlistsData = topPlaylists.asData?.value.items ?? [];
 
-    return Scaffold(
-      headers: [
-        TitleBar(
-          automaticallyImplyLeading: true,
-          title: Text(context.l10n.playlists),
-        )
-      ],
-      child: Skeletonizer(
-        enabled: topPlaylists.isLoading && !topPlaylists.isLoadingNextPage,
-        child: InfiniteList(
-          onFetchData: () async {
-            await topPlaylistsNotifier.fetchMore();
-          },
-          hasError: topPlaylists.hasError,
-          isLoading: topPlaylists.isLoading && !topPlaylists.isLoadingNextPage,
-          hasReachedMax: topPlaylists.asData?.value.hasMore ?? true,
-          itemCount: playlistsData.length,
-          itemBuilder: (context, index) {
-            final playlist = playlistsData[index];
-            return StatsPlaylistItem(
-              playlist: playlist.playlist,
-              info: Text(
-                context.l10n
-                    .count_plays(compactNumberFormatter.format(playlist.count)),
-              ),
-            );
-          },
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: [
+          TitleBar(
+            title: Text(context.l10n.playlists),
+          )
+        ],
+        child: Skeletonizer(
+          enabled: topPlaylists.isLoading && !topPlaylists.isLoadingNextPage,
+          child: InfiniteList(
+            onFetchData: () async {
+              await topPlaylistsNotifier.fetchMore();
+            },
+            hasError: topPlaylists.hasError,
+            isLoading:
+                topPlaylists.isLoading && !topPlaylists.isLoadingNextPage,
+            hasReachedMax: topPlaylists.asData?.value.hasMore ?? true,
+            itemCount: playlistsData.length,
+            itemBuilder: (context, index) {
+              final playlist = playlistsData[index];
+              return StatsPlaylistItem(
+                playlist: playlist.playlist,
+                info: Text(
+                  context.l10n.count_plays(
+                      compactNumberFormatter.format(playlist.count)),
+                ),
+              );
+            },
+          ),
         ),
       ),
     );

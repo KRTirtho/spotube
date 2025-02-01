@@ -15,7 +15,9 @@ import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class UserAlbumsPage extends HookConsumerWidget {
   static const name = 'user_albums';
   const UserAlbumsPage({super.key});
@@ -63,6 +65,7 @@ class UserAlbumsPage extends HookConsumerWidget {
               controller: controller,
               slivers: [
                 SliverAppBar(
+                  automaticallyImplyLeading: false,
                   backgroundColor: Theme.of(context).colorScheme.background,
                   floating: true,
                   flexibleSpace: Padding(

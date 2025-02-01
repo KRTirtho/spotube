@@ -8,11 +8,13 @@ import 'package:spotube/pages/getting_started/sections/greeting.dart';
 import 'package:spotube/pages/getting_started/sections/playback.dart';
 import 'package:spotube/pages/getting_started/sections/region.dart';
 import 'package:spotube/pages/getting_started/sections/support.dart';
+import 'package:auto_route/auto_route.dart';
 
-class GettingStarting extends HookConsumerWidget {
+@RoutePage()
+class GettingStartedPage extends HookConsumerWidget {
   static const name = "getting_started";
 
-  const GettingStarting({super.key});
+  const GettingStartedPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {

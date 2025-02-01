@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart' hide Offset, Image;
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/playbutton_view/playbutton_card.dart';
@@ -10,14 +12,12 @@ import 'package:spotube/components/playbutton_view/playbutton_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/connect/connect.dart';
-import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/utils/service_utils.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 class PlaylistCard extends HookConsumerWidget {
@@ -73,14 +73,7 @@ class PlaylistCard extends HookConsumerWidget {
     }
 
     void onTap() {
-      ServiceUtils.pushNamed(
-        context,
-        PlaylistPage.name,
-        pathParameters: {
-          "id": playlist.id!,
-        },
-        extra: playlist,
-      );
+      context.navigateTo(PlaylistRoute(id: playlist.id!, playlist: playlist));
     }
 
     void onPlaybuttonPressed() async {
