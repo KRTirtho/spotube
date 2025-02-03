@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/database/database.dart';
@@ -44,6 +43,18 @@ class YoutubeSourcedTrack extends SourcedTrack {
     required super.ref,
   });
 
+  static Future<StreamManifest> _getStreamManifest(String id) async {
+    return youtubeClient.videos.streamsClient.getManifest(
+      id,
+      requireWatchPage: false,
+      ytClients: [
+        YoutubeApiClient.android,
+        YoutubeApiClient.mweb,
+        YoutubeApiClient.safari,
+      ],
+    );
+  }
+
   static Future<YoutubeSourcedTrack> fetchFromTrack({
     required Track track,
     required Ref ref,
@@ -82,17 +93,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
       );
     }
     final item = await youtubeClient.videos.get(cachedSource.sourceId);
-    final manifest = await youtubeClient.videos.streamsClient.getManifest(
-      cachedSource.sourceId,
-      requireWatchPage: false,
-      ytClients: [
-        YoutubeApiClient.mediaConnect,
-        YoutubeApiClient.ios,
-        YoutubeApiClient.android,
-        YoutubeApiClient.mweb,
-        YoutubeApiClient.tv,
-      ],
-    );
+    final manifest = await _getStreamManifest(cachedSource.sourceId);
     return YoutubeSourcedTrack(
       ref: ref,
       siblings: [],
@@ -144,17 +145,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
   ) async {
     SourceMap? sourceMap;
     if (index == 0) {
-      final manifest = await youtubeClient.videos.streamsClient.getManifest(
-        item.id,
-        requireWatchPage: false,
-        ytClients: [
-          YoutubeApiClient.mediaConnect,
-          YoutubeApiClient.ios,
-          YoutubeApiClient.android,
-          YoutubeApiClient.mweb,
-          YoutubeApiClient.tv,
-        ],
-      );
+      final manifest = await _getStreamManifest(item.id);
       sourceMap = toSourceMap(manifest);
     }
 
@@ -294,12 +285,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
       ..insert(0, sourceInfo);
 
-    final manifest = await youtubeClient.videos.streamsClient
-        .getManifest(newSourceInfo.id)
-        .timeout(
-          const Duration(seconds: 5),
-          onTimeout: () => throw ClientException("Timeout"),
-        );
+    final manifest = await _getStreamManifest(newSourceInfo.id);
 
     final database = ref.read(databaseProvider);
 

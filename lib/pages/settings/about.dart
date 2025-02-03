@@ -128,7 +128,7 @@ class AboutSpotubePage extends HookConsumerWidget {
                               colon,
                               const TableCell(
                                 child: Hyperlink(
-                                  "Discord",
+                                  "Discord#chat",
                                   "https://discord.gg/uJ94vxB6vg",
                                 ),
                               ),

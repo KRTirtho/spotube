@@ -93,6 +93,7 @@ class PlayerControls extends HookConsumerWidget {
                           child: SizedBox(
                             width: mediaQuery.xlAndUp ? 600 : 500,
                             child: Slider(
+                              hintValue: SliderValue.single(bufferProgress),
                               value:
                                   SliderValue.single(progress.value.toDouble()),
                               onChanged: isFetchingActiveTrack
