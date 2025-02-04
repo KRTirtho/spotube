@@ -50,7 +50,6 @@ class YoutubeSourcedTrack extends SourcedTrack {
       ytClients: [
         YoutubeApiClient.android,
         YoutubeApiClient.mweb,
-        YoutubeApiClient.safari,
       ],
     );
   }
@@ -59,6 +58,23 @@ class YoutubeSourcedTrack extends SourcedTrack {
     required Track track,
     required Ref ref,
   }) async {
+    // Indicates the track is requesting a stream refresh
+    if (track is YoutubeSourcedTrack) {
+      final manifest = await _getStreamManifest(track.sourceInfo.id);
+
+      final sourcedTrack = YoutubeSourcedTrack(
+        ref: ref,
+        siblings: track.siblings,
+        source: toSourceMap(manifest),
+        sourceInfo: track.sourceInfo,
+        track: track,
+      );
+
+      AppLogger.log.i("Refreshing ${track.name}: ${sourcedTrack.url}");
+
+      return sourcedTrack;
+    }
+
     final database = ref.read(databaseProvider);
     final cachedSource = await (database.select(database.sourceMatchTable)
           ..where((s) => s.trackId.equals(track.id!))
@@ -94,7 +110,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     }
     final item = await youtubeClient.videos.get(cachedSource.sourceId);
     final manifest = await _getStreamManifest(cachedSource.sourceId);
-    return YoutubeSourcedTrack(
+    final sourcedTrack = YoutubeSourcedTrack(
       ref: ref,
       siblings: [],
       source: toSourceMap(manifest),
@@ -110,6 +126,10 @@ class YoutubeSourcedTrack extends SourcedTrack {
       ),
       track: track,
     );
+
+    AppLogger.log.i("${track.name}: ${sourcedTrack.url}");
+
+    return sourcedTrack;
   }
 
   static SourceMap toSourceMap(StreamManifest manifest) {

@@ -38,7 +38,7 @@ class AppLogger {
     if (!kDebugMode) return;
     logging.hierarchicalLoggingEnabled = true;
     logging.Logger('YoutubeExplode.StreamsClient')
-      ..level = logging.Level.ALL
+      ..level = logging.Level.SEVERE
       ..onRecord.listen(
         (record) {
           log.log(

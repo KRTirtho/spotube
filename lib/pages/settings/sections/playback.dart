@@ -197,7 +197,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
-          crossFadeState: preferences.audioSource != AudioSource.youtube
+          crossFadeState: preferences.audioSource == AudioSource.youtube
               ? CrossFadeState.showFirst
               : CrossFadeState.showSecond,
           firstChild: const SizedBox.shrink(),

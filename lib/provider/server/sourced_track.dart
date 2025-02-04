@@ -29,6 +29,19 @@ class SourcedTrackNotifier
     return sourcedTrack;
   }
 
+  Future<SourcedTrack?> refreshStreamingUrl() async {
+    if (arg == null) {
+      return null;
+    }
+
+    return await update((prev) async {
+      return await SourcedTrack.fetchFromTrack(
+        track: state.value!,
+        ref: ref,
+      );
+    });
+  }
+
   Future<SourcedTrack?> switchToAlternativeSources() async {
     if (arg == null) {
       return null;

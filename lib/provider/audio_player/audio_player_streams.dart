@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/local_track.dart';
@@ -103,16 +104,19 @@ class AudioPlayerStreamListeners {
   StreamSubscription subscribeToPosition() {
     String lastTrack = ""; // used to prevent multiple calls to the same track
     return audioPlayer.positionStream.listen((event) async {
+      final percentProgress =
+          (event.inSeconds / max(audioPlayer.duration.inSeconds, 1)) * 100;
       try {
-        if (event < const Duration(seconds: 3) ||
+        if (percentProgress < 80 ||
             audioPlayerState.playlist.index == -1 ||
             audioPlayerState.playlist.index ==
                 audioPlayerState.tracks.length - 1) {
           return;
         }
-        final nextTrack = SpotubeMedia.fromMedia(audioPlayerState
-            .playlist.medias
-            .elementAt(audioPlayerState.playlist.index + 1));
+        final nextTrack = SpotubeMedia.fromMedia(
+          audioPlayerState.playlist.medias
+              .elementAt(audioPlayerState.playlist.index + 1),
+        );
 
         if (lastTrack == nextTrack.track.id || nextTrack.track is LocalTrack) {
           return;

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dio/dio.dart' hide Response;
 import 'package:dio/dio.dart' as dio_lib;
@@ -10,6 +11,7 @@ import 'package:shelf/shelf.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/track.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/parser/range_headers.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
@@ -22,6 +24,20 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/service_utils.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
+const _deviceClients = {
+  YoutubeApiClient.android,
+  YoutubeApiClient.ios,
+  YoutubeApiClient.mweb,
+  YoutubeApiClient.safari,
+};
+
+String? get _randomUserAgent => _deviceClients
+    .elementAt(
+      Random().nextInt(_deviceClients.length),
+    )
+    .payload["context"]["client"]["userAgent"];
 
 class ServerPlaybackRoutes {
   final Ref ref;
@@ -47,9 +63,8 @@ class ServerPlaybackRoutes {
     var options = Options(
       headers: {
         ...headers,
-        "User-Agent":
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-        "Cache-Control": "max-age=0",
+        "user-agent": _randomUserAgent,
+        "Cache-Control": "max-age=3600",
         "Connection": "keep-alive",
         "host": Uri.parse(track.url).host,
       },
@@ -100,18 +115,35 @@ class ServerPlaybackRoutes {
       );
     }
 
-    final res =
-        await dio.get<Uint8List>(track.url, options: options).catchError(
-      (e, stack) async {
-        final sourcedTrack = await ref
-            .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
-            .switchToAlternativeSources();
+    final res = await dio
+        .get<Uint8List>(
+      track.url,
+      options: options.copyWith(headers: {
+        ...?options.headers,
+        "user-agent": _randomUserAgent,
+      }),
+    )
+        .catchError((e, stack) async {
+      AppLogger.reportError(e, stack);
+      final sourcedTrack = userPreferences.audioSource == AudioSource.youtube &&
+              e is DioException
+          ? await ref
+              .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
+              .refreshStreamingUrl()
+          : await ref
+              .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
+              .switchToAlternativeSources();
 
-        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
 
-        return await dio.get<Uint8List>(sourcedTrack!.url, options: options);
-      },
-    );
+      return await dio.get<Uint8List>(
+        sourcedTrack!.url,
+        options: options.copyWith(headers: {
+          ...?options.headers,
+          "user-agent": _randomUserAgent,
+        }),
+      );
+    });
 
     final bytes = res.data;
 
