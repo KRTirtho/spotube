@@ -2734,6 +2734,13 @@ packages:
       url: "https://github.com/Hexer10/youtube_explode_dart.git"
     source: git
     version: "2.3.7"
+  yt_dlp_dart:
+    dependency: "direct main"
+    description:
+      path: "../yt_dlp_dart"
+      relative: true
+    source: path
+    version: "1.0.0"
 sdks:
-  dart: ">=3.6.0 <4.0.0"
+  dart: ">=3.6.1 <4.0.0"
   flutter: ">=3.27.0"

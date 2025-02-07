@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/hooks/configurators/use_check_yt_dlp_installed.dart';
 import 'package:spotube/modules/root/bottom_player.dart';
 import 'package:spotube/modules/root/sidebar/sidebar.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
@@ -21,9 +22,11 @@ class RootAppPage extends HookConsumerWidget {
     final brightness = Theme.of(context).brightness;
 
     ref.listen(glanceProvider, (_, __) {});
+
     useGlobalSubscriptions(ref);
     useDownloaderDialogs(ref);
     useEndlessPlayback(ref);
+    useCheckYtDlpInstalled(ref);
 
     useEffect(() {
       SystemChrome.setSystemUIOverlayStyle(

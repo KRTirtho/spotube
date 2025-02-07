@@ -50,6 +50,7 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:window_manager/window_manager.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:yt_dlp_dart/yt_dlp_dart.dart';
 
 Future<void> main(List<String> rawArgs) async {
   if (rawArgs.contains("web_view_title_bar")) {
@@ -79,15 +80,15 @@ Future<void> main(List<String> rawArgs) async {
       await FlutterDisplayMode.setHighRefreshRate();
     }
 
-    if (kIsDesktop) {
-      await windowManager.setPreventClose(true);
-    }
-
     if (!kIsWeb) {
       MetadataGod.initialize();
     }
 
     if (kIsDesktop) {
+      await windowManager.setPreventClose(true);
+      await YtDlp.instance
+          .setBinaryLocation("yt-dlp${kIsWindows ? '.exe' : ''}")
+          .catchError((e, stack) => null);
       await FlutterDiscordRPC.initialize(Env.discordAppId);
     }
 

@@ -134,4 +134,5 @@ abstract class SpotubeIcons {
   static const grid = FeatherIcons.grid;
   static const list = FeatherIcons.list;
   static const device = FeatherIcons.smartphone;
+  static const engine = FeatherIcons.server;
 }

@@ -415,5 +415,9 @@
   "no_tracks_listened_yet": "Looks like you haven't listened to anything yet",
   "not_following_artists": "You're not following any artists",
   "no_favorite_albums_yet": "Looks like you haven't added any albums to your favorites yet",
-  "no_logs_found": "No logs found"
+  "no_logs_found": "No logs found",
+  "youtube_engine": "YouTube Engine",
+  "youtube_engine_not_installed_title": "{engine} is not installed",
+  "youtube_engine_not_installed_message": "{engine} is not installed in your system.\nPlease install it and make sure it's available in the PATH variable\n\nAfter installing, restart the app",
+  "download": "Download"
 }

@@ -13,11 +13,13 @@ import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/modules/settings/youtube_engine_not_installed_dialog.dart';
 import 'package:spotube/provider/audio_player/sources/invidious_instances_provider.dart';
 import 'package:spotube/provider/audio_player/sources/piped_instances_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 import 'package:spotube/services/sourced_track/enums.dart';
+import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 import 'package:spotube/utils/platform.dart';
 
 class SettingsPlaybackSection extends HookConsumerWidget {
@@ -195,28 +197,52 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             },
           ),
         ),
-        AnimatedCrossFade(
-          duration: const Duration(milliseconds: 300),
-          crossFadeState: preferences.audioSource == AudioSource.youtube
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
-          firstChild: const SizedBox.shrink(),
-          secondChild: AdaptiveSelectTile<SearchMode>(
-            secondary: const Icon(SpotubeIcons.search),
-            title: Text(context.l10n.search_mode),
-            value: preferences.searchMode,
-            options: SearchMode.values
-                .map((e) => SelectItemButton(
-                      value: e,
-                      child: Text(e.label),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              if (value == null) return;
-              preferencesNotifier.setSearchMode(value);
-            },
-          ),
-        ),
+        switch (preferences.audioSource) {
+          AudioSource.youtube => AdaptiveSelectTile<YoutubeClientEngine>(
+              secondary: const Icon(SpotubeIcons.engine),
+              title: Text(context.l10n.youtube_engine),
+              value: preferences.youtubeClientEngine,
+              options: YoutubeClientEngine.values
+                  .where((e) => e.isAvailableForPlatform())
+                  .map((e) => SelectItemButton(
+                        value: e,
+                        child: Text(e.label),
+                      ))
+                  .toList(),
+              onChanged: (value) async {
+                if (value == null) return;
+                if (value == YoutubeClientEngine.ytDlp &&
+                    !await YtDlpEngine.isInstalled() &&
+                    context.mounted) {
+                  await showDialog(
+                    context: context,
+                    builder: (context) =>
+                        YouTubeEngineNotInstalledDialog(engine: value),
+                  );
+                  return;
+                }
+                preferencesNotifier.setYoutubeClientEngine(value);
+              },
+            ),
+          AudioSource.piped ||
+          AudioSource.invidious =>
+            AdaptiveSelectTile<SearchMode>(
+              secondary: const Icon(SpotubeIcons.search),
+              title: Text(context.l10n.search_mode),
+              value: preferences.searchMode,
+              options: SearchMode.values
+                  .map((e) => SelectItemButton(
+                        value: e,
+                        child: Text(e.label),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                if (value == null) return;
+                preferencesNotifier.setSearchMode(value);
+              },
+            ),
+          _ => const SizedBox.shrink(),
+        },
         AnimatedCrossFade(
           duration: const Duration(milliseconds: 300),
           crossFadeState: preferences.searchMode == SearchMode.youtube &&
