@@ -252,7 +252,9 @@ class YoutubeSourcedTrack extends SourcedTrack {
           await toSiblingType(
             0,
             YoutubeVideoInfo.fromVideo(
-              await ref.read(youtubeEngineProvider).getVideo(ytLink!.url!),
+              await ref.read(youtubeEngineProvider).getVideo(
+                    Uri.parse(ytLink!.url!).queryParameters["v"]!,
+                  ),
             ),
             ref,
           )
