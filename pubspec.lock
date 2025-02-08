@@ -2737,9 +2737,11 @@ packages:
   yt_dlp_dart:
     dependency: "direct main"
     description:
-      path: "../yt_dlp_dart"
-      relative: true
-    source: path
+      path: "."
+      ref: e2d82305fab18566408d6f8758361017d1640c3d
+      resolved-ref: e2d82305fab18566408d6f8758361017d1640c3d
+      url: "https://github.com/KRTirtho/yt_dlp_dart.git"
+    source: git
     version: "1.0.0"
 sdks:
   dart: ">=3.6.1 <4.0.0"
