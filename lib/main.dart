@@ -84,10 +84,15 @@ Future<void> main(List<String> rawArgs) async {
       MetadataGod.initialize();
     }
 
+    await KVStoreService.initialize();
+
     if (kIsDesktop) {
       await windowManager.setPreventClose(true);
       await YtDlp.instance
-          .setBinaryLocation("yt-dlp${kIsWindows ? '.exe' : ''}")
+          .setBinaryLocation(
+            KVStoreService.getYoutubeEnginePath(YoutubeClientEngine.ytDlp) ??
+                "yt-dlp${kIsWindows ? '.exe' : ''}",
+          )
           .catchError((e, stack) => null);
       await FlutterDiscordRPC.initialize(Env.discordAppId);
     }
@@ -96,7 +101,6 @@ Future<void> main(List<String> rawArgs) async {
       await SMTCWindows.initialize();
     }
 
-    await KVStoreService.initialize();
     await EncryptedKvStoreService.initialize();
 
     final database = AppDatabase();

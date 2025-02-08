@@ -418,6 +418,9 @@
   "no_logs_found": "No logs found",
   "youtube_engine": "YouTube Engine",
   "youtube_engine_not_installed_title": "{engine} is not installed",
-  "youtube_engine_not_installed_message": "{engine} is not installed in your system.\nPlease install it and make sure it's available in the PATH variable\n\nAfter installing, restart the app",
-  "download": "Download"
+  "youtube_engine_not_installed_message": "{engine} is not installed in your system.",
+  "youtube_engine_set_path": "Make sure it's available in the PATH variable or\nset the absolute path to the {engine} executable below",
+  "youtube_engine_unix_issue_message": "In macOS/Linux/unix like OS's, setting path on .zshrc/.bashrc/.bash_profile etc. won't work.\nYou need to set the path in the shell configuration file",
+  "download": "Download",
+  "file_not_found": "File not found"
 }

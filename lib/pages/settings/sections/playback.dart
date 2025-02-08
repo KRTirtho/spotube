@@ -214,12 +214,12 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                 if (value == YoutubeClientEngine.ytDlp &&
                     !await YtDlpEngine.isInstalled() &&
                     context.mounted) {
-                  await showDialog(
+                  final hasInstalled = await showDialog<bool>(
                     context: context,
                     builder: (context) =>
                         YouTubeEngineNotInstalledDialog(engine: value),
                   );
-                  return;
+                  if (hasInstalled != true) return;
                 }
                 preferencesNotifier.setYoutubeClientEngine(value);
               },

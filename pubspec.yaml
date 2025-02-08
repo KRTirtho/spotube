@@ -141,9 +141,7 @@ dependencies:
       url: https://github.com/Hexer10/youtube_explode_dart.git
       ref: e519db65ad0b0a40b12f69285932f9db509da3cf
   yt_dlp_dart:
-    git:
-      url: https://github.com/KRTirtho/yt_dlp_dart.git
-      ref: 4199bb019542bae361fbb38b3448b3583fbca022
+    path: ../yt_dlp_dart
 
 dev_dependencies:
   build_runner: ^2.4.13

@@ -19,7 +19,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "bn": [
@@ -42,7 +45,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ca": [
@@ -65,7 +71,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "cs": [
@@ -88,7 +97,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "de": [
@@ -111,7 +123,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "es": [
@@ -134,7 +149,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "eu": [
@@ -157,7 +175,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "fa": [
@@ -180,7 +201,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "fi": [
@@ -203,7 +227,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "fr": [
@@ -226,7 +253,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "hi": [
@@ -249,7 +279,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "id": [
@@ -272,7 +305,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "it": [
@@ -295,7 +331,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ja": [
@@ -318,7 +357,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ka": [
@@ -341,7 +383,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ko": [
@@ -364,7 +409,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ne": [
@@ -387,7 +435,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "nl": [
@@ -410,7 +461,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "pl": [
@@ -433,7 +487,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "pt": [
@@ -456,7 +513,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ru": [
@@ -479,7 +539,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "th": [
@@ -502,7 +565,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "tr": [
@@ -525,7 +591,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "uk": [
@@ -548,7 +617,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "vi": [
@@ -571,7 +643,10 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "zh": [
@@ -594,6 +669,9 @@
     "youtube_engine",
     "youtube_engine_not_installed_title",
     "youtube_engine_not_installed_message",
-    "download"
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ]
 }
