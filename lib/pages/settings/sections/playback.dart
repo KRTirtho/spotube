@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
@@ -17,6 +19,7 @@ import 'package:spotube/modules/settings/youtube_engine_not_installed_dialog.dar
 import 'package:spotube/provider/audio_player/sources/invidious_instances_provider.dart';
 import 'package:spotube/provider/audio_player/sources/piped_instances_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/kv_store/kv_store.dart';
 
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
@@ -211,15 +214,19 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                   .toList(),
               onChanged: (value) async {
                 if (value == null) return;
-                if (value == YoutubeClientEngine.ytDlp &&
-                    !await YtDlpEngine.isInstalled() &&
-                    context.mounted) {
-                  final hasInstalled = await showDialog<bool>(
-                    context: context,
-                    builder: (context) =>
-                        YouTubeEngineNotInstalledDialog(engine: value),
-                  );
-                  if (hasInstalled != true) return;
+                if (value == YoutubeClientEngine.ytDlp) {
+                  final customPath = KVStoreService.getYoutubeEnginePath(value);
+                  if (!await YtDlpEngine.isInstalled() &&
+                      (customPath == null ||
+                          !await File(customPath).exists()) &&
+                      context.mounted) {
+                    final hasInstalled = await showDialog<bool>(
+                      context: context,
+                      builder: (context) =>
+                          YouTubeEngineNotInstalledDialog(engine: value),
+                    );
+                    if (hasInstalled != true) return;
+                  }
                 }
                 preferencesNotifier.setYoutubeClientEngine(value);
               },
