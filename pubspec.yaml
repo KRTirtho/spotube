@@ -145,7 +145,8 @@ dependencies:
       url: https://github.com/KRTirtho/yt_dlp_dart.git
       ref: e2d82305fab18566408d6f8758361017d1640c3d
   flutter_new_pipe_extractor:
-    path: ../flutter_new_pipe_extractor
+    git:
+      url: https://github.com/KRTirtho/flutter_new_pipe_extractor.git
   http_parser: ^4.1.2
 
 dev_dependencies:
