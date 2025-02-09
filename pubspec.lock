@@ -914,6 +914,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.3"
+  flutter_new_pipe_extractor:
+    dependency: "direct main"
+    description:
+      path: "../flutter_new_pipe_extractor"
+      relative: true
+    source: path
+    version: "0.1.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -1210,13 +1217,13 @@ packages:
     source: hosted
     version: "3.2.1"
   http_parser:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http_parser
-      sha256: "76d306a1c3afb33fe82e2bbacad62a61f409b5634c915fceb0d799de1a913360"
+      sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66571"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.1"
+    version: "4.1.2"
   image:
     dependency: transitive
     description:

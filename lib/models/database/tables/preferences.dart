@@ -34,8 +34,7 @@ enum YoutubeClientEngine {
       YoutubeClientEngine.youtubeExplode =>
         YouTubeExplodeEngine.isAvailableForPlatform,
       YoutubeClientEngine.ytDlp => YtDlpEngine.isAvailableForPlatform,
-      // TODO: Implement new pipe support
-      YoutubeClientEngine.newPipe => false,
+      YoutubeClientEngine.newPipe => NewPipeEngine.isAvailableForPlatform,
     };
   }
 }

@@ -51,6 +51,7 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:window_manager/window_manager.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:yt_dlp_dart/yt_dlp_dart.dart';
+import 'package:flutter_new_pipe_extractor/flutter_new_pipe_extractor.dart';
 
 Future<void> main(List<String> rawArgs) async {
   if (rawArgs.contains("web_view_title_bar")) {
@@ -78,6 +79,7 @@ Future<void> main(List<String> rawArgs) async {
     // force High Refresh Rate on some Android devices (like One Plus)
     if (kIsAndroid) {
       await FlutterDisplayMode.setHighRefreshRate();
+      await NewPipeExtractor.init();
     }
 
     if (!kIsWeb) {
