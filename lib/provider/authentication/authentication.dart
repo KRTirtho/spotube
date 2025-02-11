@@ -118,16 +118,9 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
             "User-Agent":
                 "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
           },
-          validateStatus: (status) => true,
         ),
       );
       final body = res.data;
-
-      if ((res.statusCode ?? 500) >= 400) {
-        throw Exception(
-          "Failed to get access token: ${body['error'] ?? res.statusMessage}",
-        );
-      }
 
       return AuthenticationTableCompanion.insert(
         id: const Value(0),
