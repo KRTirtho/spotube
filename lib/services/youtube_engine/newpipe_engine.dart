@@ -96,7 +96,7 @@ class NewPipeEngine implements YouTubeEngine {
   Future<List<Video>> searchVideos(String query) async {
     final results = await NewPipeExtractor.search(
       query,
-      contentFilters: [SearchContentFilters.musicSongs],
+      contentFilters: [SearchContentFilters.videos],
     );
 
     final resultsWithVideos = results

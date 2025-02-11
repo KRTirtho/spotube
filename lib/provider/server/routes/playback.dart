@@ -11,7 +11,6 @@ import 'package:shelf/shelf.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/track.dart';
-import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/parser/range_headers.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
@@ -125,14 +124,9 @@ class ServerPlaybackRoutes {
     )
         .catchError((e, stack) async {
       AppLogger.reportError(e, stack);
-      final sourcedTrack = userPreferences.audioSource == AudioSource.youtube &&
-              e is DioException
-          ? await ref
-              .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
-              .refreshStreamingUrl()
-          : await ref
-              .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
-              .switchToAlternativeSources();
+      final sourcedTrack = await ref
+          .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
+          .refreshStreamingUrl();
 
       ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
 

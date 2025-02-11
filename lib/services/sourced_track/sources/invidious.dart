@@ -50,6 +50,22 @@ class InvidiousSourcedTrack extends SourcedTrack {
     required Track track,
     required Ref ref,
   }) async {
+    // Indicates a stream url refresh
+    if (track is InvidiousSourcedTrack) {
+      final manifest = await ref
+          .read(invidiousProvider)
+          .videos
+          .get(track.sourceInfo.id, local: true);
+
+      return InvidiousSourcedTrack(
+        ref: ref,
+        siblings: track.siblings,
+        source: toSourceMap(manifest),
+        sourceInfo: track.sourceInfo,
+        track: track,
+      );
+    }
+
     final database = ref.read(databaseProvider);
     final cachedSource = await (database.select(database.sourceMatchTable)
           ..where((s) => s.trackId.equals(track.id!))

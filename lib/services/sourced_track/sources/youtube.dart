@@ -268,7 +268,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final query = SourcedTrack.getSearchTerm(track);
 
     final searchResults =
-        await ref.read(youtubeEngineProvider).searchVideos("$query - Topic");
+        await ref.read(youtubeEngineProvider).searchVideos(query);
 
     if (ServiceUtils.onlyContainsEnglish(query)) {
       return await Future.wait(searchResults
