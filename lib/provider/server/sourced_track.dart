@@ -41,18 +41,6 @@ class SourcedTrackNotifier
       );
     });
   }
-
-  Future<SourcedTrack?> switchToAlternativeSources() async {
-    if (arg == null) {
-      return null;
-    }
-    return await update((prev) async {
-      return await SourcedTrack.fetchFromTrackAltSource(
-        track: arg!.track,
-        ref: ref,
-      );
-    });
-  }
 }
 
 final sourcedTrackProvider = AsyncNotifierProviderFamily<SourcedTrackNotifier,

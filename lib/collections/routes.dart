@@ -15,21 +15,6 @@ class AppRouter extends RootStackRouter {
   AppRouter(this.ref) : super(navigatorKey: rootNavigatorKey);
 
   @override
-  List<AutoRouteGuard> get guards => [
-        AutoRouteGuardCallback(
-          (resolver, router) async {
-            final auth = await ref.read(authenticationProvider.future);
-
-            if (auth == null && !KVStoreService.doneGettingStarted) {
-              resolver.redirect(const GettingStartedRoute());
-            } else {
-              resolver.next(true);
-            }
-          },
-        ),
-      ];
-
-  @override
   List<AutoRoute> get routes => [
         AutoRoute(
           page: RootAppRoute.page,
@@ -40,6 +25,19 @@ class AppRouter extends RootStackRouter {
               path: "home",
               page: HomeRoute.page,
               initial: true,
+              guards: [
+                AutoRouteGuardCallback(
+                  (resolver, router) async {
+                    final auth = await ref.read(authenticationProvider.future);
+
+                    if (auth == null && !KVStoreService.doneGettingStarted) {
+                      resolver.redirect(const GettingStartedRoute());
+                    } else {
+                      resolver.next(true);
+                    }
+                  },
+                ),
+              ],
             ),
             AutoRoute(
               path: "home/genres",

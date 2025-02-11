@@ -15,7 +15,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "bn": [
@@ -34,7 +41,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ca": [
@@ -53,7 +67,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "cs": [
@@ -72,7 +93,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "de": [
@@ -91,7 +119,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "es": [
@@ -110,7 +145,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "eu": [
@@ -129,7 +171,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "fa": [
@@ -148,7 +197,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "fi": [
@@ -167,7 +223,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "fr": [
@@ -186,7 +249,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "hi": [
@@ -205,7 +275,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "id": [
@@ -224,7 +301,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "it": [
@@ -243,7 +327,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ja": [
@@ -262,7 +353,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ka": [
@@ -281,7 +379,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ko": [
@@ -300,7 +405,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ne": [
@@ -319,7 +431,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "nl": [
@@ -338,7 +457,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "pl": [
@@ -357,7 +483,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "pt": [
@@ -376,7 +509,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "ru": [
@@ -395,7 +535,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "th": [
@@ -414,7 +561,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "tr": [
@@ -433,7 +587,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "uk": [
@@ -452,7 +613,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "vi": [
@@ -471,7 +639,14 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ],
 
   "zh": [
@@ -490,6 +665,13 @@
     "no_tracks_listened_yet",
     "not_following_artists",
     "no_favorite_albums_yet",
-    "no_logs_found"
+    "no_logs_found",
+    "youtube_engine",
+    "youtube_engine_not_installed_title",
+    "youtube_engine_not_installed_message",
+    "youtube_engine_set_path",
+    "youtube_engine_unix_issue_message",
+    "download",
+    "file_not_found"
   ]
 }

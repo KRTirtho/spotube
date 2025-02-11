@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -110,7 +109,7 @@ final localTracksProvider =
             return null;
           }
         }),
-      ).then((value) => value.whereNotNull().toList());
+      ).then((value) => value.nonNulls.toList());
 
       final tracksFromMetadata = filesWithMetadata
           .map(

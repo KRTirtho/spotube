@@ -914,6 +914,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.3"
+  flutter_new_pipe_extractor:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: c5162e2c30967b197f20cd42aa30340a58efcd94
+      url: "https://github.com/KRTirtho/flutter_new_pipe_extractor.git"
+    source: git
+    version: "0.1.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -1210,13 +1219,13 @@ packages:
     source: hosted
     version: "3.2.1"
   http_parser:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http_parser
-      sha256: "76d306a1c3afb33fe82e2bbacad62a61f409b5634c915fceb0d799de1a913360"
+      sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66571"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.1"
+    version: "4.1.2"
   image:
     dependency: transitive
     description:
@@ -2734,6 +2743,15 @@ packages:
       url: "https://github.com/Hexer10/youtube_explode_dart.git"
     source: git
     version: "2.3.7"
+  yt_dlp_dart:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: e2d82305fab18566408d6f8758361017d1640c3d
+      resolved-ref: e2d82305fab18566408d6f8758361017d1640c3d
+      url: "https://github.com/KRTirtho/yt_dlp_dart.git"
+    source: git
+    version: "1.0.0"
 sdks:
-  dart: ">=3.6.0 <4.0.0"
+  dart: ">=3.6.1 <4.0.0"
   flutter: ">=3.27.0"

@@ -50,6 +50,8 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:window_manager/window_manager.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:yt_dlp_dart/yt_dlp_dart.dart';
+import 'package:flutter_new_pipe_extractor/flutter_new_pipe_extractor.dart';
 
 Future<void> main(List<String> rawArgs) async {
   if (rawArgs.contains("web_view_title_bar")) {
@@ -77,17 +79,23 @@ Future<void> main(List<String> rawArgs) async {
     // force High Refresh Rate on some Android devices (like One Plus)
     if (kIsAndroid) {
       await FlutterDisplayMode.setHighRefreshRate();
-    }
-
-    if (kIsDesktop) {
-      await windowManager.setPreventClose(true);
+      await NewPipeExtractor.init();
     }
 
     if (!kIsWeb) {
       MetadataGod.initialize();
     }
 
+    await KVStoreService.initialize();
+
     if (kIsDesktop) {
+      await windowManager.setPreventClose(true);
+      await YtDlp.instance
+          .setBinaryLocation(
+            KVStoreService.getYoutubeEnginePath(YoutubeClientEngine.ytDlp) ??
+                "yt-dlp${kIsWindows ? '.exe' : ''}",
+          )
+          .catchError((e, stack) => null);
       await FlutterDiscordRPC.initialize(Env.discordAppId);
     }
 
@@ -95,7 +103,6 @@ Future<void> main(List<String> rawArgs) async {
       await SMTCWindows.initialize();
     }
 
-    await KVStoreService.initialize();
     await EncryptedKvStoreService.initialize();
 
     final database = AppDatabase();

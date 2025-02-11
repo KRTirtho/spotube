@@ -39,7 +39,7 @@ class CategoryPlaylistsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
       (json) => PlaylistsFeatured.fromJson(json),
     ).getPage(limit, offset);
 
-    final items = playlists.items?.whereNotNull().toList() ?? [];
+    final items = playlists.items?.nonNulls.toList() ?? [];
 
     return (
       items: items,

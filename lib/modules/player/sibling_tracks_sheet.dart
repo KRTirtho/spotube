@@ -19,6 +19,7 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/provider/youtube_engine/youtube_engine.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/video_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
@@ -68,6 +69,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
     final playlist = ref.watch(audioPlayerProvider);
     final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
     final preferences = ref.watch(userPreferencesProvider);
+    final youtubeEngine = ref.watch(youtubeEngineProvider);
 
     final isSearching = useState(false);
     final searchMode = useState(preferences.searchMode);
@@ -115,14 +117,14 @@ class SiblingTracksSheet extends HookConsumerWidget {
             activeSourceInfo,
           );
       } else {
-        final resultsYt = await youtubeClient.search.search(searchTerm.trim());
+        final resultsYt = await youtubeEngine.searchVideos(searchTerm.trim());
 
         final searchResults = await Future.wait(
           resultsYt
               .map(YoutubeVideoInfo.fromVideo)
               .mapIndexed((i, video) async {
             final siblingType =
-                await YoutubeSourcedTrack.toSiblingType(i, video);
+                await YoutubeSourcedTrack.toSiblingType(i, video, ref);
             return siblingType.info;
           }),
         );
@@ -139,6 +141,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
       searchMode.value,
       activeTrack,
       preferences.audioSource,
+      youtubeEngine,
     ]);
 
     final siblings = useMemoized(
@@ -151,12 +154,15 @@ class SiblingTracksSheet extends HookConsumerWidget {
       [activeTrack, isFetchingActiveTrack],
     );
 
+    final previousActiveTrack = usePrevious(activeTrack);
     useEffect(() {
+      /// Populate sibling when active track changes
+      if (previousActiveTrack?.id == activeTrack?.id) return;
       if (activeTrack is SourcedTrack && activeTrack.siblings.isEmpty) {
         activeTrackNotifier.populateSibling();
       }
       return null;
-    }, [activeTrack]);
+    }, [activeTrack, previousActiveTrack]);
 
     final itemBuilder = useCallback(
       (SourceInfo sourceInfo) {

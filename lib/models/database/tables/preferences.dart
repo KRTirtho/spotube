@@ -20,6 +20,25 @@ enum AudioSource {
   String get label => name[0].toUpperCase() + name.substring(1);
 }
 
+enum YoutubeClientEngine {
+  ytDlp("yt-dlp"),
+  youtubeExplode("YouTubeExplode"),
+  newPipe("NewPipe");
+
+  final String label;
+
+  const YoutubeClientEngine(this.label);
+
+  bool isAvailableForPlatform() {
+    return switch (this) {
+      YoutubeClientEngine.youtubeExplode =>
+        YouTubeExplodeEngine.isAvailableForPlatform,
+      YoutubeClientEngine.ytDlp => YtDlpEngine.isAvailableForPlatform,
+      YoutubeClientEngine.newPipe => NewPipeEngine.isAvailableForPlatform,
+    };
+  }
+}
+
 enum MusicCodec {
   m4a._("M4a (Best for downloaded music)"),
   weba._("WebA (Best for streamed music)\nDoesn't support audio metadata");
@@ -84,6 +103,8 @@ class PreferencesTable extends Table {
       textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
   TextColumn get audioSource =>
       textEnum<AudioSource>().withDefault(Constant(AudioSource.youtube.name))();
+  TextColumn get youtubeClientEngine => textEnum<YoutubeClientEngine>()
+      .withDefault(Constant(YoutubeClientEngine.youtubeExplode.name))();
   TextColumn get streamMusicCodec =>
       textEnum<SourceCodecs>().withDefault(Constant(SourceCodecs.weba.name))();
   TextColumn get downloadMusicCodec =>
@@ -120,6 +141,7 @@ class PreferencesTable extends Table {
       invidiousInstance: "https://inv.nadeko.net",
       themeMode: ThemeMode.system,
       audioSource: AudioSource.youtube,
+      youtubeClientEngine: YoutubeClientEngine.youtubeExplode,
       streamMusicCodec: SourceCodecs.m4a,
       downloadMusicCodec: SourceCodecs.m4a,
       discordPresence: true,
