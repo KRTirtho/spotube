@@ -344,24 +344,24 @@ class TrackOptions extends HookConsumerWidget {
             title: Text(context.l10n.go_to_album),
             subtitle: Text(track.album!.name!),
           ),
-        if (!playlist.containsTrack(track)) ...[
+        if (!playlist.containsTrack(track))
           PopSheetEntry(
             value: TrackOptionValue.addToQueue,
             leading: const Icon(SpotubeIcons.queueAdd),
             title: Text(context.l10n.add_to_queue),
           ),
-          PopSheetEntry(
-            value: TrackOptionValue.playNext,
-            leading: const Icon(SpotubeIcons.lightning),
-            title: Text(context.l10n.play_next),
-          ),
-        ] else
+        else
           PopSheetEntry(
             value: TrackOptionValue.removeFromQueue,
             enabled: playlist.activeTrack?.id != track.id,
             leading: const Icon(SpotubeIcons.queueRemove),
             title: Text(context.l10n.remove_from_queue),
           ),
+        PopSheetEntry(
+          value: TrackOptionValue.playNext,
+          leading: const Icon(SpotubeIcons.lightning),
+          title: Text(context.l10n.play_next),
+        ),
         if (me.asData?.value != null && !isLocalTrack)
           PopSheetEntry(
             value: TrackOptionValue.favorite,
