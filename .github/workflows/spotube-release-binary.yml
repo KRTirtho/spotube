@@ -20,7 +20,7 @@ on:
         description: Dry run without uploading to release
 
 env:
-  FLUTTER_VERSION: 3.27.3
+  FLUTTER_VERSION: 3.29.0
   FLUTTER_CHANNEL: master
 
 permissions:
@@ -76,26 +76,26 @@ jobs:
           channel: ${{ env.FLUTTER_CHANNEL }}
           cache: true
           git-source: https://github.com/flutter/flutter.git
-          
+
       - name: Setup Java
         if: ${{matrix.platform == 'android'}}
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: 'gradle'
+          distribution: "zulu"
+          java-version: "17"
+          cache: "gradle"
           check-latest: true
-          
+
       - name: Setup Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-      
+
       - name: Install Xcode
         if: ${{matrix.platform == 'ios'}}
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '16.1'
+          xcode-version: "16.1"
 
       - name: Install ${{matrix.platform}} dependencies
         run: |
@@ -107,13 +107,13 @@ jobs:
         run: |
           echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
           echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
-      
+
       - name: Build ${{matrix.platform}} binaries
-        run: dart cli/cli.dart build --arch=${{matrix.arch}} ${{matrix.platform}} 
+        run: dart cli/cli.dart build --arch=${{matrix.arch}} ${{matrix.platform}}
         env:
           CHANNEL: ${{inputs.channel}}
           DOTENV: ${{secrets.DOTENV_RELEASE}}
-      
+
       - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
@@ -146,7 +146,7 @@ jobs:
           find Spotube-Release-Binaries -type f -exec sha256sum {} \; >> RELEASE.sha256sum
           sed -i 's|Spotube-Release-Binaries/.*/\([^/]*\)$|\1|' RELEASE.sha256sum RELEASE.md5sum
           sed -i 's|Spotube-Release-Binaries/||' RELEASE.sha256sum RELEASE.md5sum
-      
+
       - name: Extract pubspec version
         run: |
           echo "PUBSPEC_VERSION=$(grep -oP 'version:\s*\K[^+]+(?=\+)' pubspec.yaml)" >> $GITHUB_ENV
@@ -184,7 +184,7 @@ jobs:
           artifacts: Spotube-Release-Binaries/**/*,RELEASE.sha256sum,RELEASE.md5sum
           body: |
             Build Number: ${{github.run_number}}
-            
+
             Nightly release includes newest features but may contain bugs
             It is preferred to use the stable version unless you know what you're doing
 
@@ -193,4 +193,3 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-

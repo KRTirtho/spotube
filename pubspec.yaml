@@ -23,7 +23,6 @@ dependencies:
   auto_size_text: ^3.0.0
   bonsoir: ^5.1.10
   cached_network_image: ^3.3.1
-  collection: ^1.18.0
   connectivity_plus: ^6.1.2
   desktop_webview_window:
     git:
@@ -179,6 +178,7 @@ dependency_overrides:
   web: ^1.1.0
   meta: 1.16.0
   flutter_svg: ^2.0.17
+  collection: any
 
 flutter:
   generate: true

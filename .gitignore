@@ -82,3 +82,4 @@ tm.json
 .fvm/
 
 android/build
+android/app/.cxx
