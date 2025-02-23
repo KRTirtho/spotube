@@ -53,18 +53,18 @@ class LibraryPage extends HookConsumerWidget {
                     scrollDirection: Axis.horizontal,
                     child: TabList(
                       index: index,
+                      onChanged: (index) {
+                        context.navigateTo(sidebarLibraryTileList[index].route);
+                      },
                       children: [
                         for (final tile in sidebarLibraryTileList)
-                          TabButton(
+                          TabItem(
                             child: Badge(
                               isLabelVisible: tile.id == 'downloads' &&
                                   downloadingCount > 0,
                               label: Text(downloadingCount.toString()),
                               child: Text(tile.title),
                             ),
-                            onPressed: () {
-                              context.navigateTo(tile.route);
-                            },
                           ),
                       ],
                     ),

@@ -41,13 +41,12 @@ class LyricsPage extends HookConsumerWidget {
       child: isModal
           ? TabList(
               index: selectedIndex.value,
+              onChanged: (index) => selectedIndex.value = index,
               children: [
-                TabButton(
-                  onPressed: () => selectedIndex.value = 0,
+                TabItem(
                   child: Text(context.l10n.synced),
                 ),
-                TabButton(
-                  onPressed: () => selectedIndex.value = 1,
+                TabItem(
                   child: Text(context.l10n.plain),
                 ),
               ],
@@ -55,9 +54,9 @@ class LyricsPage extends HookConsumerWidget {
           : Tabs(
               index: selectedIndex.value,
               onChanged: (index) => selectedIndex.value = index,
-              tabs: [
-                Text(context.l10n.synced),
-                Text(context.l10n.plain),
+              children: [
+                TabItem(child: Text(context.l10n.synced)),
+                TabItem(child: Text(context.l10n.plain)),
               ],
             ),
     );

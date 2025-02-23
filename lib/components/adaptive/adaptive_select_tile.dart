@@ -44,7 +44,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
+    final mediaQuery = MediaQuery.sizeOf(context);
 
     Widget? control = Select<T>(
       itemBuilder: (context, item) {
@@ -83,24 +83,26 @@ class AdaptiveSelectTile<T> extends HookWidget {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    content: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: options.length,
-                      itemBuilder: (context, index) {
-                        final item = options[index];
+                    content: Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: options.length,
+                        itemBuilder: (context, index) {
+                          final item = options[index];
 
-                        return ListTile(
-                          iconColor: theme.colorScheme.primary,
-                          leading: item.value == value
-                              ? const Icon(SpotubeIcons.radioChecked)
-                              : const Icon(SpotubeIcons.radioUnchecked),
-                          title: item.child,
-                          onTap: () {
-                            onChanged?.call(item.value);
-                            Navigator.of(context).pop();
-                          },
-                        );
-                      },
+                          return ListTile(
+                            iconColor: theme.colorScheme.primary,
+                            leading: item.value == value
+                                ? const Icon(SpotubeIcons.radioChecked)
+                                : const Icon(SpotubeIcons.radioUnchecked),
+                            title: item.child,
+                            onTap: () {
+                              onChanged?.call(item.value);
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
+                      ),
                     ),
                   );
                 },

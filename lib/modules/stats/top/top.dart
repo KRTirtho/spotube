@@ -63,18 +63,18 @@ class StatsPageTopSection extends HookConsumerWidget {
                 children: [
                   TabList(
                     index: selectedIndex.value,
+                    onChanged: (value) {
+                      selectedIndex.value = value;
+                    },
                     children: [
-                      TabButton(
+                      TabItem(
                         child: Text(context.l10n.top_tracks),
-                        onPressed: () => selectedIndex.value = 0,
                       ),
-                      TabButton(
+                      TabItem(
                         child: Text(context.l10n.top_artists),
-                        onPressed: () => selectedIndex.value = 1,
                       ),
-                      TabButton(
+                      TabItem(
                         child: Text(context.l10n.top_albums),
-                        onPressed: () => selectedIndex.value = 2,
                       ),
                     ],
                   ),

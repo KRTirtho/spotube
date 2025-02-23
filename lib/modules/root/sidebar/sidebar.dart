@@ -71,10 +71,8 @@ class Sidebar extends HookConsumerWidget {
             tooltip: TooltipContainer(child: Text(tile.title)),
             child: Icon(tile.icon),
           ),
-          onChanged: (value) {
-            if (value) {
-              context.navigateTo(tile.route);
-            }
+          onPressed: () {
+            context.navigateTo(tile.route);
           },
         ),
       const NavigationDivider(),
@@ -83,10 +81,8 @@ class Sidebar extends HookConsumerWidget {
       for (final tile in sidebarLibraryTileList)
         NavigationButton(
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
-          onChanged: (value) {
-            if (value) {
-              context.navigateTo(tile.route);
-            }
+          onPressed: () {
+            context.navigateTo(tile.route);
           },
           child: Tooltip(
             tooltip: TooltipContainer(child: Text(tile.title)),

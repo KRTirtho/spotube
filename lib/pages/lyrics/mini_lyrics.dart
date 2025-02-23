@@ -81,9 +81,9 @@ class MiniLyricsPage extends HookConsumerWidget {
                         onChanged: (i) {
                           index.value = i;
                         },
-                        tabs: [
-                          Text(context.l10n.synced),
-                          Text(context.l10n.plain),
+                        children: [
+                          TabItem(child: Text(context.l10n.synced)),
+                          TabItem(child: Text(context.l10n.plain)),
                         ],
                       ),
                     const Spacer(),

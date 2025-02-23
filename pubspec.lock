@@ -2011,12 +2011,11 @@ packages:
   shadcn_flutter:
     dependency: "direct main"
     description:
-      path: "."
-      ref: d928e73cd734582046c63a3bed99cc42aeab6085
-      resolved-ref: d928e73cd734582046c63a3bed99cc42aeab6085
-      url: "https://github.com/KRTirtho/shadcn_flutter.git"
-    source: git
-    version: "0.0.24"
+      name: shadcn_flutter
+      sha256: a04b6ce51ff8486fe9c0c3b373605ab30b823507a79a4458fc74b056edc883d8
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.25"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -2754,4 +2753,4 @@ packages:
     version: "1.0.0"
 sdks:
   dart: ">=3.7.0-0 <4.0.0"
-  flutter: ">=3.27.0"
+  flutter: ">=3.29.0"

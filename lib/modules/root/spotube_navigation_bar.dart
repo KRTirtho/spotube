@@ -61,20 +61,20 @@ class SpotubeNavigationBar extends HookConsumerWidget {
               index: selectedIndex,
               surfaceBlur: context.theme.surfaceBlur,
               surfaceOpacity: context.theme.surfaceOpacity,
-              onSelected: (i) {
-                context.navigateTo(navbarTileList[i].route);
-              },
               children: [
                 for (final tile in navbarTileList)
                   NavigationButton(
-                    style: const ButtonStyle.muted(density: ButtonDensity.icon),
-                    selectedStyle:
-                        const ButtonStyle.fixed(density: ButtonDensity.icon),
+                    style: navbarTileList[selectedIndex] == tile
+                        ? const ButtonStyle.fixed(density: ButtonDensity.icon)
+                        : const ButtonStyle.muted(density: ButtonDensity.icon),
                     child: Badge(
                       isLabelVisible: tile.id == "library" && downloadCount > 0,
                       label: Text(downloadCount.toString()),
                       child: Icon(tile.icon),
                     ),
+                    onPressed: () {
+                      context.navigateTo(tile.route);
+                    },
                   )
               ],
             ),
