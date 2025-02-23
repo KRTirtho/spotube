@@ -52,7 +52,11 @@ class PlaybuttonCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: context.theme.borderRadiusMd,
                   image: DecorationImage(
-                    image: UniversalImage.imageProvider(imageUrl!),
+                    image: UniversalImage.imageProvider(
+                      imageUrl!,
+                      height: 200 * scale,
+                      width: 200 * scale,
+                    ),
                     fit: BoxFit.cover,
                   ),
                 ),

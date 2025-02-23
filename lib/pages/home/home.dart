@@ -62,12 +62,19 @@ class HomePage extends HookConsumerWidget {
                 )
               else if (kIsMacOS)
                 const SliverGap(10),
-              const HomeGenresSection(),
               const SliverGap(10),
-              const SliverToBoxAdapter(child: HomeRecentlyPlayedSection()),
-              const SliverToBoxAdapter(child: HomeFeaturedSection()),
-              const HomePageFriendsSection(),
-              const SliverToBoxAdapter(child: HomeNewReleasesSection()),
+              SliverList.builder(
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return switch (index) {
+                    0 => const HomeGenresSection(),
+                    1 => const HomeRecentlyPlayedSection(),
+                    2 => const HomeFeaturedSection(),
+                    3 => const HomePageFriendsSection(),
+                    _ => const HomeNewReleasesSection()
+                  };
+                },
+              ),
               const HomePageFeedSection(),
               const SliverSafeArea(sliver: HomeMadeForUserSection()),
             ],

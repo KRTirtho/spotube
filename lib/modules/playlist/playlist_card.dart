@@ -6,7 +6,6 @@ import 'package:spotify/spotify.dart' hide Offset, Image;
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
-import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/playbutton_view/playbutton_card.dart';
 import 'package:spotube/components/playbutton_view/playbutton_tile.dart';
 import 'package:spotube/extensions/context.dart';
@@ -200,16 +199,14 @@ class PlaylistCard extends HookConsumerWidget {
                   );
                 },
               )
-            : UniversalImage(
-                path: imageUrl,
-                fit: BoxFit.cover,
-              );
+            : null;
 
     if (_isTile) {
       return PlaybuttonTile(
         title: playlist.name!,
         description: playlist.description,
         image: image,
+        imageUrl: image == null ? imageUrl : null,
         isPlaying: isPlaylistPlaying,
         isLoading: isLoading,
         isOwner: isOwner,
@@ -223,6 +220,7 @@ class PlaylistCard extends HookConsumerWidget {
       title: playlist.name!,
       description: playlist.description,
       image: image,
+      imageUrl: image == null ? imageUrl : null,
       isPlaying: isPlaylistPlaying,
       isLoading: isLoading,
       isOwner: isOwner,

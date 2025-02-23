@@ -35,7 +35,8 @@ class HomeGenresSection extends HookConsumerWidget {
     );
     final controller = useMemoized(() => CarouselController(), []);
 
-    return SliverList.list(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
