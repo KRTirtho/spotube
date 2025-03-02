@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as material;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -49,51 +50,58 @@ class PlaylistPage extends HookConsumerWidget {
 
     final isUserPlaylist = useIsUserPlaylist(ref, playlist.id!);
 
-    return TrackPresentation(
-      options: TrackPresentationOptions(
-        collection: playlist,
-        image: playlist.images.asUrlString(
-          placeholder: ImagePlaceholder.collection,
-        ),
-        pagination: PaginationProps(
-          hasNextPage: tracks.asData?.value.hasMore ?? false,
-          isLoading: tracks.isLoading || tracks.isLoadingNextPage,
-          onFetchMore: tracksNotifier.fetchMore,
-          onRefresh: () async {
-            ref.invalidate(playlistTracksProvider(playlist.id!));
-          },
-          onFetchAll: () async {
-            return await tracksNotifier.fetchAll();
-          },
-        ),
-        title: playlist.name!,
-        description: playlist.description,
-        owner: playlist.owner?.displayName,
-        ownerImage: playlist.owner?.images?.lastOrNull?.url,
-        tracks: tracks.asData?.value.items ?? [],
-        routePath: '/playlist/${playlist.id}',
-        isLiked: isFavoritePlaylist.asData?.value ?? false,
-        shareUrl: playlist.externalUrls?.spotify ??
-            "https://open.spotify.com/playlist/${playlist.id}",
-        onHeart: isFavoritePlaylist.asData?.value == null
-            ? null
-            : () async {
-                final confirmed = isUserPlaylist
-                    ? await showPromptDialog(
-                        context: context,
-                        title: context.l10n.delete_playlist,
-                        message: context.l10n.delete_playlist_confirmation,
-                      )
-                    : true;
-                if (!confirmed) return null;
+    return material.RefreshIndicator.adaptive(
+      onRefresh: () async {
+        ref.invalidate(playlistTracksProvider(playlist.id!));
+        ref.invalidate(isFavoritePlaylistProvider(playlist.id!));
+        ref.invalidate(favoritePlaylistsProvider);
+      },
+      child: TrackPresentation(
+        options: TrackPresentationOptions(
+          collection: playlist,
+          image: playlist.images.asUrlString(
+            placeholder: ImagePlaceholder.collection,
+          ),
+          pagination: PaginationProps(
+            hasNextPage: tracks.asData?.value.hasMore ?? false,
+            isLoading: tracks.isLoading || tracks.isLoadingNextPage,
+            onFetchMore: tracksNotifier.fetchMore,
+            onRefresh: () async {
+              ref.invalidate(playlistTracksProvider(playlist.id!));
+            },
+            onFetchAll: () async {
+              return await tracksNotifier.fetchAll();
+            },
+          ),
+          title: playlist.name!,
+          description: playlist.description,
+          owner: playlist.owner?.displayName,
+          ownerImage: playlist.owner?.images?.lastOrNull?.url,
+          tracks: tracks.asData?.value.items ?? [],
+          routePath: '/playlist/${playlist.id}',
+          isLiked: isFavoritePlaylist.asData?.value ?? false,
+          shareUrl: playlist.externalUrls?.spotify ??
+              "https://open.spotify.com/playlist/${playlist.id}",
+          onHeart: isFavoritePlaylist.asData?.value == null
+              ? null
+              : () async {
+                  final confirmed = isUserPlaylist
+                      ? await showPromptDialog(
+                          context: context,
+                          title: context.l10n.delete_playlist,
+                          message: context.l10n.delete_playlist_confirmation,
+                        )
+                      : true;
+                  if (!confirmed) return null;
 
-                if (isFavoritePlaylist.asData!.value) {
-                  await favoritePlaylistsNotifier.removeFavorite(playlist);
-                } else {
-                  await favoritePlaylistsNotifier.addFavorite(playlist);
-                }
-                return isUserPlaylist;
-              },
+                  if (isFavoritePlaylist.asData!.value) {
+                    await favoritePlaylistsNotifier.removeFavorite(playlist);
+                  } else {
+                    await favoritePlaylistsNotifier.addFavorite(playlist);
+                  }
+                  return isUserPlaylist;
+                },
+        ),
       ),
     );
   }

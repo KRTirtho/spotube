@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/material.dart' as material;
 import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -342,9 +343,9 @@ class LocalLibraryPage extends HookConsumerWidget {
                             }
 
                             return Expanded(
-                              child: RefreshTrigger(
+                              child: material.RefreshIndicator.adaptive(
                                 onRefresh: () async {
-                                  // ref.invalidate(localTracksProvider);
+                                  ref.invalidate(localTracksProvider);
                                 },
                                 child: InterScrollbar(
                                   controller: controller,

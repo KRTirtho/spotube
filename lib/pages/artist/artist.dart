@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as material;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -42,45 +43,59 @@ class ArtistPage extends HookConsumerWidget {
           )
         ],
         floatingHeader: true,
-        child: Builder(builder: (context) {
-          if (artistQuery.hasError && artistQuery.asData?.value == null) {
-            return Center(child: Text(artistQuery.error.toString()));
-          }
-          return Skeletonizer(
-            enabled: artistQuery.isLoading,
-            child: CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                SliverToBoxAdapter(
-                  child: SafeArea(
-                    bottom: false,
-                    child: ArtistPageHeader(artistId: artistId),
-                  ),
-                ),
-                const SliverGap(20),
-                ArtistPageTopTracks(artistId: artistId),
-                const SliverGap(20),
-                SliverToBoxAdapter(child: ArtistAlbumList(artistId)),
-                SliverPadding(
-                  padding: const EdgeInsets.all(8.0),
-                  sliver: SliverToBoxAdapter(
-                    child: Text(
-                      context.l10n.fans_also_like,
-                      style: theme.typography.h4,
+        child: material.RefreshIndicator.adaptive(
+          onRefresh: () async {
+            ref.invalidate(artistProvider(artistId));
+            ref.invalidate(relatedArtistsProvider(artistId));
+            ref.invalidate(artistAlbumsProvider(artistId));
+            ref.invalidate(artistIsFollowingProvider(artistId));
+            ref.invalidate(artistTopTracksProvider(artistId));
+            if (artistQuery.hasValue) {
+              ref.invalidate(
+                  artistWikipediaSummaryProvider(artistQuery.asData!.value));
+            }
+          },
+          child: Builder(builder: (context) {
+            if (artistQuery.hasError && artistQuery.asData?.value == null) {
+              return Center(child: Text(artistQuery.error.toString()));
+            }
+            return Skeletonizer(
+              enabled: artistQuery.isLoading,
+              child: CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: SafeArea(
+                      bottom: false,
+                      child: ArtistPageHeader(artistId: artistId),
                     ),
                   ),
-                ),
-                ArtistPageRelatedArtists(artistId: artistId),
-                const SliverGap(20),
-                if (artistQuery.asData?.value != null)
-                  SliverToBoxAdapter(
-                    child: ArtistPageFooter(artist: artistQuery.asData!.value),
+                  const SliverGap(20),
+                  ArtistPageTopTracks(artistId: artistId),
+                  const SliverGap(20),
+                  SliverToBoxAdapter(child: ArtistAlbumList(artistId)),
+                  SliverPadding(
+                    padding: const EdgeInsets.all(8.0),
+                    sliver: SliverToBoxAdapter(
+                      child: Text(
+                        context.l10n.fans_also_like,
+                        style: theme.typography.h4,
+                      ),
+                    ),
                   ),
-                const SliverSafeArea(sliver: SliverGap(10)),
-              ],
-            ),
-          );
-        }),
+                  ArtistPageRelatedArtists(artistId: artistId),
+                  const SliverGap(20),
+                  if (artistQuery.asData?.value != null)
+                    SliverToBoxAdapter(
+                      child:
+                          ArtistPageFooter(artist: artistQuery.asData!.value),
+                    ),
+                  const SliverSafeArea(sliver: SliverGap(10)),
+                ],
+              ),
+            );
+          }),
+        ),
       ),
     );
   }

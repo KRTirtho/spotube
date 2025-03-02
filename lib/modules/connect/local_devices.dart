@@ -52,6 +52,7 @@ class ConnectPageLocalDevices extends HookWidget {
             );
           },
         ),
+        const SliverGap(200)
       ],
     );
   }

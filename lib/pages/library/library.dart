@@ -69,6 +69,13 @@ class LibraryPage extends HookConsumerWidget {
                       ],
                     ),
                   ),
+                )
+              else
+                const TitleBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.transparent,
+                  surfaceBlur: 0,
+                  height: 32,
                 ),
               const Gap(10),
             ],

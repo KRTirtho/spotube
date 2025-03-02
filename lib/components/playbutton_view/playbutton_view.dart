@@ -40,6 +40,8 @@ class PlaybuttonView extends StatelessWidget {
   final VoidCallback onRequestMore;
   final ScrollController controller;
 
+  final Widget? leading;
+
   const PlaybuttonView({
     super.key,
     required this.itemCount,
@@ -49,6 +51,7 @@ class PlaybuttonView extends StatelessWidget {
     required this.isLoading,
     required this.onRequestMore,
     required this.controller,
+    this.leading,
   });
 
   @override
@@ -74,6 +77,7 @@ class PlaybuttonView extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+                  if (leading != null) leading!,
                   Toggle(
                     value: isGrid.value,
                     style:

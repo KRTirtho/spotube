@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as material;
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -22,29 +23,34 @@ class LikedPlaylistPage extends HookConsumerWidget {
     final likedTracks = ref.watch(likedTracksProvider);
     final tracks = likedTracks.asData?.value ?? <Track>[];
 
-    return TrackPresentation(
-      options: TrackPresentationOptions(
-        collection: playlist,
-        image: "assets/liked-tracks.jpg",
-        pagination: PaginationProps(
-          hasNextPage: false,
-          isLoading: likedTracks.isLoading,
-          onFetchMore: () {},
-          onFetchAll: () async {
-            return tracks.toList();
-          },
-          onRefresh: () async {
-            ref.invalidate(likedTracksProvider);
-          },
+    return material.RefreshIndicator.adaptive(
+      onRefresh: () async {
+        ref.invalidate(likedTracksProvider);
+      },
+      child: TrackPresentation(
+        options: TrackPresentationOptions(
+          collection: playlist,
+          image: "assets/liked-tracks.jpg",
+          pagination: PaginationProps(
+            hasNextPage: false,
+            isLoading: likedTracks.isLoading,
+            onFetchMore: () {},
+            onFetchAll: () async {
+              return tracks.toList();
+            },
+            onRefresh: () async {
+              ref.invalidate(likedTracksProvider);
+            },
+          ),
+          title: playlist.name!,
+          description: playlist.description,
+          tracks: tracks,
+          routePath: '/playlist/${playlist.id}',
+          isLiked: false,
+          shareUrl: null,
+          onHeart: null,
+          owner: playlist.owner?.displayName,
         ),
-        title: playlist.name!,
-        description: playlist.description,
-        tracks: tracks,
-        routePath: '/playlist/${playlist.id}',
-        isLiked: false,
-        shareUrl: null,
-        onHeart: null,
-        owner: playlist.owner?.displayName,
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as material;
 import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -27,44 +28,51 @@ class AlbumPage extends HookConsumerWidget {
     final favoriteAlbumsNotifier = ref.watch(favoriteAlbumsProvider.notifier);
     final isSavedAlbum = ref.watch(albumsIsSavedProvider(album.id!));
 
-    return TrackPresentation(
-      options: TrackPresentationOptions(
-        collection: album,
-        image: album.images.asUrlString(
-          placeholder: ImagePlaceholder.albumArt,
+    return material.RefreshIndicator.adaptive(
+      onRefresh: () async {
+        ref.invalidate(albumTracksProvider(album));
+        ref.invalidate(favoriteAlbumsProvider);
+        ref.invalidate(albumsIsSavedProvider(album.id!));
+      },
+      child: TrackPresentation(
+        options: TrackPresentationOptions(
+          collection: album,
+          image: album.images.asUrlString(
+            placeholder: ImagePlaceholder.albumArt,
+          ),
+          title: album.name!,
+          description:
+              "${context.l10n.released} • ${album.releaseDate} • ${album.artists!.first.name}",
+          tracks: tracks.asData?.value.items ?? [],
+          pagination: PaginationProps(
+            hasNextPage: tracks.asData?.value.hasMore ?? false,
+            isLoading: tracks.isLoading || tracks.isLoadingNextPage,
+            onFetchMore: () async {
+              await tracksNotifier.fetchMore();
+            },
+            onFetchAll: () async {
+              return tracksNotifier.fetchAll();
+            },
+            onRefresh: () async {
+              ref.invalidate(albumTracksProvider(album));
+            },
+          ),
+          routePath: "/album/${album.id}",
+          shareUrl: album.externalUrls?.spotify ??
+              "https://open.spotify.com/album/${album.id}",
+          isLiked: isSavedAlbum.asData?.value ?? false,
+          owner: album.artists!.first.name,
+          onHeart: isSavedAlbum.asData?.value == null
+              ? null
+              : () async {
+                  if (isSavedAlbum.asData!.value) {
+                    await favoriteAlbumsNotifier.removeFavorites([album.id!]);
+                  } else {
+                    await favoriteAlbumsNotifier.addFavorites([album.id!]);
+                  }
+                  return null;
+                },
         ),
-        title: album.name!,
-        description:
-            "${context.l10n.released} • ${album.releaseDate} • ${album.artists!.first.name}",
-        tracks: tracks.asData?.value.items ?? [],
-        pagination: PaginationProps(
-          hasNextPage: tracks.asData?.value.hasMore ?? false,
-          isLoading: tracks.isLoading || tracks.isLoadingNextPage,
-          onFetchMore: () async {
-            await tracksNotifier.fetchMore();
-          },
-          onFetchAll: () async {
-            return tracksNotifier.fetchAll();
-          },
-          onRefresh: () async {
-            ref.invalidate(albumTracksProvider(album));
-          },
-        ),
-        routePath: "/album/${album.id}",
-        shareUrl: album.externalUrls?.spotify ??
-            "https://open.spotify.com/album/${album.id}",
-        isLiked: isSavedAlbum.asData?.value ?? false,
-        owner: album.artists!.first.name,
-        onHeart: isSavedAlbum.asData?.value == null
-            ? null
-            : () async {
-                if (isSavedAlbum.asData!.value) {
-                  await favoriteAlbumsNotifier.removeFavorites([album.id!]);
-                } else {
-                  await favoriteAlbumsNotifier.addFavorites([album.id!]);
-                }
-                return null;
-              },
       ),
     );
   }

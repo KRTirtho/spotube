@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as material;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_undraw/flutter_undraw.dart';
@@ -60,10 +61,10 @@ class UserArtistsPage extends HookConsumerWidget {
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        child: RefreshTrigger(
-          // onRefresh: () async {
-          //   ref.invalidate(followedArtistsProvider);
-          // },
+        child: material.RefreshIndicator.adaptive(
+          onRefresh: () async {
+            ref.invalidate(followedArtistsProvider);
+          },
           child: InterScrollbar(
             controller: controller,
             child: Padding(

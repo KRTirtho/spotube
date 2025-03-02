@@ -111,14 +111,17 @@ class TrackPage extends HookConsumerWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         runAlignment: WrapAlignment.center,
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: UniversalImage(
-                              path: track.album!.images.asUrlString(
-                                placeholder: ImagePlaceholder.albumArt,
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: UniversalImage(
+                                path: track.album!.images.asUrlString(
+                                  placeholder: ImagePlaceholder.albumArt,
+                                ),
+                                height: 200,
+                                width: 200,
                               ),
-                              height: 200,
-                              width: 200,
                             ),
                           ),
                           Padding(

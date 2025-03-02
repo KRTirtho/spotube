@@ -224,6 +224,11 @@ class Spotube extends HookConsumerWidget {
         surfaceBlur: 10,
       ),
       materialTheme: material.ThemeData(
+        brightness: switch (themeMode) {
+          ThemeMode.system => MediaQuery.platformBrightnessOf(context),
+          ThemeMode.light => Brightness.light,
+          ThemeMode.dark => Brightness.dark,
+        },
         splashFactory: material.NoSplash.splashFactory,
         appBarTheme: const material.AppBarTheme(
           surfaceTintColor: Colors.transparent,

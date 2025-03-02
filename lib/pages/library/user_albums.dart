@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' as material;
 import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Image;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -55,10 +56,10 @@ class UserAlbumsPage extends HookConsumerWidget {
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        child: RefreshTrigger(
-          // onRefresh: () async {
-          //   ref.invalidate(favoriteAlbumsProvider);
-          // },
+        child: material.RefreshIndicator.adaptive(
+          onRefresh: () async {
+            ref.invalidate(favoriteAlbumsProvider);
+          },
           child: InterScrollbar(
             controller: controller,
             child: CustomScrollView(
