@@ -1,4 +1,3 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
@@ -9,6 +8,7 @@ import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/presentation_state.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 
 class TrackPresentationModifiersSection extends HookConsumerWidget {
   final FocusNode? focusNode;
@@ -25,7 +25,7 @@ class TrackPresentationModifiersSection extends HookConsumerWidget {
       presentationStateProvider(options.collection).notifier,
     );
 
-    final controller = useTextEditingController();
+    final controller = useShadcnTextEditingController();
     final scale = context.theme.scaling;
 
     return LayoutBuilder(builder: (context, constrains) {

@@ -8,6 +8,7 @@ import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/form/text_form_field.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/utils/platform.dart';
@@ -28,7 +29,7 @@ class YouTubeEngineNotInstalledDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final controller = useTextEditingController();
+    final controller = useShadcnTextEditingController();
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>(), []);
 
     return AlertDialog(

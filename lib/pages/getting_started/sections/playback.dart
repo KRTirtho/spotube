@@ -84,20 +84,28 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
                   Text(value.name.capitalize()),
                 ],
               ),
-              children: [
-                for (final source in AudioSource.values)
-                  SelectItemButton(
-                    value: source,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 6,
-                      children: [
-                        audioSourceToIconMap[source]!,
-                        Text(source.name.capitalize()),
-                      ],
-                    ),
+              popup: (context) {
+                return SelectPopup(
+                  items: SelectItemBuilder(
+                    childCount: AudioSource.values.length,
+                    builder: (context, index) {
+                      final source = AudioSource.values[index];
+
+                      return SelectItemButton(
+                        value: source,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 6,
+                          children: [
+                            audioSourceToIconMap[source]!,
+                            Text(source.name.capitalize()),
+                          ],
+                        ),
+                      );
+                    },
                   ),
-              ],
+                );
+              },
             ),
             const Gap(16),
             Text(

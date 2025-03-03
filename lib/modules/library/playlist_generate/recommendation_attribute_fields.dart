@@ -1,5 +1,6 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_dials.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
@@ -21,10 +22,12 @@ class RecommendationAttributeFields extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final minController = useTextEditingController(text: values.min.toString());
+    final minController =
+        useShadcnTextEditingController(text: values.min.toString());
     final targetController =
-        useTextEditingController(text: values.target.toString());
-    final maxController = useTextEditingController(text: values.max.toString());
+        useShadcnTextEditingController(text: values.target.toString());
+    final maxController =
+        useShadcnTextEditingController(text: values.max.toString());
 
     useEffect(() {
       listener() {

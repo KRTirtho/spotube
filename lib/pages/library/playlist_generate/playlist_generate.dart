@@ -193,16 +193,11 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
 
     final genreSelector = MultiSelect<String>(
       value: genres.value,
-      searchFilter: (item, query) {
-        return item.toLowerCase().contains(query.toLowerCase()) ? 1 : 0;
-      },
       onChanged: (value) {
         if (!enabled) return;
-        genres.value = value;
+        genres.value = value?.toList() ?? [];
       },
       itemBuilder: (context, item) => Text(item),
-      searchPlaceholder: Text(context.l10n.select_genres),
-      orderSelectedFirst: false,
       popoverAlignment: Alignment.bottomCenter,
       popupConstraints: BoxConstraints(
         maxHeight: MediaQuery.sizeOf(context).height * .8,
@@ -213,13 +208,33 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
           context.l10n.genre,
         ),
       ),
-      children: [
-        for (final option in genresCollection.asData?.value ?? <String>[])
-          SelectItemButton(
-            value: option,
-            child: Text(option),
-          ),
-      ],
+      popup: SelectPopup.builder(
+        searchPlaceholder: Text(context.l10n.select_genres),
+        builder: (context, searchQuery) {
+          final filteredGenres = searchQuery?.isNotEmpty != true
+              ? genresCollection.asData?.value ?? []
+              : genresCollection.asData?.value
+                      .where(
+                        (item) => item
+                            .toLowerCase()
+                            .contains(searchQuery!.toLowerCase()),
+                      )
+                      .toList() ??
+                  [];
+
+          return SelectItemBuilder(
+            childCount: filteredGenres.length,
+            builder: (context, index) {
+              final option = filteredGenres[index];
+
+              return SelectItemButton(
+                value: option,
+                child: Text(option),
+              );
+            },
+          );
+        },
+      ).call,
     );
 
     final countrySelector = ValueListenableBuilder(
@@ -231,25 +246,35 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
           onChanged: (value) {
             market.value = value!;
           },
-          searchFilter: (item, query) {
-            return item.name.toLowerCase().contains(query.toLowerCase())
-                ? 1
-                : 0;
-          },
-          searchPlaceholder: Text(context.l10n.search),
           popupConstraints: BoxConstraints(
             maxHeight: MediaQuery.sizeOf(context).height * .8,
           ),
           popoverAlignment: Alignment.bottomCenter,
           itemBuilder: (context, value) => Text(value.name),
-          children: spotifyMarkets
-              .map(
-                (country) => SelectItemButton(
-                  value: country.$1,
-                  child: Text(country.$2),
-                ),
-              )
-              .toList(),
+          popup: SelectPopup.builder(
+            searchPlaceholder: Text(context.l10n.search),
+            builder: (context, searchQuery) {
+              final filteredMarkets = searchQuery == null || searchQuery.isEmpty
+                  ? spotifyMarkets
+                  : spotifyMarkets
+                      .where(
+                        (item) => item.$1.name
+                            .toLowerCase()
+                            .contains(searchQuery.toLowerCase()),
+                      )
+                      .toList();
+
+              return SelectItemBuilder(
+                childCount: filteredMarkets.length,
+                builder: (context, index) {
+                  return SelectItemButton(
+                    value: filteredMarkets[index].$1,
+                    child: Text(filteredMarkets[index].$2),
+                  );
+                },
+              );
+            },
+          ).call,
         );
       },
     );

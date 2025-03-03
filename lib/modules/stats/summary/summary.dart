@@ -63,7 +63,7 @@ class StatsPageSummarySection extends HookConsumerWidget {
                 description: context.l10n.summary_owed_to_artists,
                 color: Colors.green,
                 onTap: () {
-                  context.navigateTo(const StatsStreamsRoute());
+                  context.navigateTo(const StatsStreamFeesRoute());
                 },
               ),
               SummaryCard(

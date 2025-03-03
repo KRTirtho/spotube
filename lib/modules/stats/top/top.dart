@@ -30,24 +30,30 @@ class StatsPageTopSection extends HookConsumerWidget {
     };
 
     final dropdown = Select<HistoryDuration>(
-      popupConstraints: const BoxConstraints(maxWidth: 150),
-      popupWidthConstraint: PopoverConstraint.flexible,
-      padding: const EdgeInsets.all(4),
-      borderRadius: BorderRadius.circular(4),
-      value: historyDuration,
-      onChanged: (value) {
-        if (value == null) return;
-        historyDurationNotifier.update((_) => value);
-      },
-      itemBuilder: (context, item) => Text(translations[item]!),
-      children: [
-        for (final item in HistoryDuration.values)
-          SelectItemButton(
-            value: item,
-            child: Text(translations[item]!),
-          ),
-      ],
-    );
+        popupConstraints: const BoxConstraints(maxWidth: 150),
+        popupWidthConstraint: PopoverConstraint.flexible,
+        padding: const EdgeInsets.all(4),
+        borderRadius: BorderRadius.circular(4),
+        value: historyDuration,
+        onChanged: (value) {
+          if (value == null) return;
+          historyDurationNotifier.update((_) => value);
+        },
+        itemBuilder: (context, item) => Text(translations[item]!),
+        popup: (context) {
+          return SelectPopup(
+            items: SelectItemBuilder(
+              childCount: HistoryDuration.values.length,
+              builder: (context, index) {
+                final item = HistoryDuration.values[index];
+                return SelectItemButton(
+                  value: item,
+                  child: Text(translations[item]!),
+                );
+              },
+            ),
+          );
+        });
 
     return SliverLayoutBuilder(builder: (context, constraints) {
       return SliverMainAxisGroup(

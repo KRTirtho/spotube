@@ -13,6 +13,7 @@ import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/hooks/utils/use_debounce.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
@@ -85,7 +86,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
 
     final defaultSearchTerm =
         "$title - ${activeTrack?.artists?.asString() ?? ""}";
-    final searchController = useTextEditingController(
+    final searchController = useShadcnTextEditingController(
       text: defaultSearchTerm,
     );
 

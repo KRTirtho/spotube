@@ -16,6 +16,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/string.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/modules/library/local_folder/cache_export_dialog.dart';
 import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/components/expandable_search/expandable_search.dart';
@@ -79,7 +80,7 @@ class LocalLibraryPage extends HookConsumerWidget {
     final isPlaylistPlaying = playlist.containsTracks(
         trackSnapshot.asData?.value.values.flattened.toList() ?? []);
 
-    final searchController = useTextEditingController();
+    final searchController = useShadcnTextEditingController();
     useValueListenable(searchController);
     final searchFocus = useFocusNode();
     final isFiltering = useState(false);

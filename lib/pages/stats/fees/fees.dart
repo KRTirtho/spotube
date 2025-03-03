@@ -91,13 +91,18 @@ class StatsStreamFeesPage extends HookConsumerWidget {
                           Text(translations[value]!),
                       constraints: const BoxConstraints(maxWidth: 150),
                       popupWidthConstraint: PopoverConstraint.anchorMaxSize,
-                      children: [
-                        for (final entry in translations.entries)
-                          SelectItemButton(
-                            value: entry.key,
-                            child: Text(entry.value),
-                          ),
-                      ],
+                      popup: SelectPopup(
+                        items: SelectItemBuilder(
+                          childCount: translations.length,
+                          builder: (context, index) {
+                            final entry = translations.entries.elementAt(index);
+                            return SelectItemButton(
+                              value: entry.key,
+                              child: Text(entry.value),
+                            );
+                          },
+                        ),
+                      ).call,
                     ),
                   ],
                 ),

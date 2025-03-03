@@ -14,6 +14,7 @@ import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/pages/search/sections/albums.dart';
 import 'package:spotube/pages/search/sections/artists.dart';
 import 'package:spotube/pages/search/sections/playlists.dart';
@@ -35,7 +36,7 @@ class SearchPage extends HookConsumerWidget {
     final mediaQuery = MediaQuery.sizeOf(context);
 
     final scrollController = useScrollController();
-    final controller = useSearchController();
+    final controller = useShadcnTextEditingController();
     final focusNode = useFocusNode();
 
     final auth = ref.watch(authenticationProvider);
@@ -120,41 +121,34 @@ class SearchPage extends HookConsumerWidget {
                                       }
                                     },
                                     child: AutoComplete(
-                                      autofocus: true,
-                                      controller: controller,
                                       suggestions: suggestions,
-                                      leading: const Icon(SpotubeIcons.search),
-                                      textInputAction: TextInputAction.search,
-                                      placeholder: Text(context.l10n.search),
-                                      trailing: AnimatedCrossFade(
-                                        duration:
-                                            const Duration(milliseconds: 300),
-                                        crossFadeState:
-                                            controller.text.isNotEmpty
-                                                ? CrossFadeState.showFirst
-                                                : CrossFadeState.showSecond,
-                                        firstChild: IconButton.ghost(
-                                          size: ButtonSize.small,
-                                          icon: const Icon(SpotubeIcons.close),
-                                          onPressed: () {
-                                            controller.clear();
-                                          },
+                                      child: TextField(
+                                        autofocus: true,
+                                        controller: controller,
+                                        leading:
+                                            const Icon(SpotubeIcons.search),
+                                        textInputAction: TextInputAction.search,
+                                        placeholder: Text(context.l10n.search),
+                                        trailing: AnimatedCrossFade(
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          crossFadeState:
+                                              controller.text.isNotEmpty
+                                                  ? CrossFadeState.showFirst
+                                                  : CrossFadeState.showSecond,
+                                          firstChild: IconButton.ghost(
+                                            size: ButtonSize.small,
+                                            icon:
+                                                const Icon(SpotubeIcons.close),
+                                            onPressed: () {
+                                              controller.clear();
+                                            },
+                                          ),
+                                          secondChild: const SizedBox.square(
+                                              dimension: 28),
                                         ),
-                                        secondChild: const SizedBox.square(
-                                            dimension: 28),
+                                        onSubmitted: onSubmitted,
                                       ),
-                                      onAcceptSuggestion: (index) {
-                                        controller.text = KVStoreService
-                                            .recentSearches[index];
-                                        ref
-                                                .read(searchTermStateProvider
-                                                    .notifier)
-                                                .state =
-                                            KVStoreService
-                                                .recentSearches[index];
-                                      },
-                                      onChanged: (value) {},
-                                      onSubmitted: onSubmitted,
                                     ),
                                   );
                                 }),

@@ -54,7 +54,16 @@ class AdaptiveSelectTile<T> extends HookWidget {
       onChanged: onChanged,
       popupConstraints: popupConstraints ?? const BoxConstraints(maxWidth: 200),
       popupWidthConstraint: popupWidthConstraint ?? PopoverConstraint.flexible,
-      children: options,
+      popup: (context) {
+        return SelectPopup(
+          items: SelectItemBuilder(
+            childCount: options.length,
+            builder: (context, index) {
+              return options[index];
+            },
+          ),
+        );
+      },
     );
 
     if (mediaQuery.smAndDown) {

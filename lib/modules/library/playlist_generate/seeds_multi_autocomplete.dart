@@ -5,6 +5,7 @@ import 'package:flutter/material.dart' show Autocomplete;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 
 enum SelectedItemDisplayType {
   wrap,
@@ -49,7 +50,7 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
     useValueListenable(seeds);
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final seedController = useTextEditingController();
+    final seedController = useShadcnTextEditingController();
 
     final containerKey = useRef(GlobalKey());
 

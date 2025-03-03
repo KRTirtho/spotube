@@ -14,6 +14,22 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
   const GettingStartedPageLanguageRegionSection(
       {super.key, required this.onNext});
 
+  bool filterMarkets(Market item, String query) {
+    final market = spotifyMarkets
+        .firstWhere((element) => element.$1 == item)
+        .$2
+        .toLowerCase();
+
+    return market.contains(query.toLowerCase());
+  }
+
+  bool filterLocale(Locale locale, String query) {
+    final language =
+        LanguageLocals.getDisplayLanguage(locale.languageCode).toString();
+
+    return language.toLowerCase().contains(query.toLowerCase());
+  }
+
   @override
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
@@ -62,22 +78,30 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                             .firstWhere((element) => element.$1 == value)
                             .$2,
                       ),
-                      searchPlaceholder: Text(context.l10n.search),
-                      searchFilter: (item, query) {
-                        final market = spotifyMarkets
-                            .firstWhere((element) => element.$1 == item)
-                            .$2
-                            .toLowerCase();
-
-                        return market.contains(query.toLowerCase()) ? 1 : 0;
-                      },
-                      children: [
-                        for (final market in spotifyMarkets)
-                          SelectItemButton(
-                            value: market.$1,
-                            child: Text(market.$2),
-                          ),
-                      ],
+                      popup: SelectPopup.builder(
+                        searchPlaceholder: Text(context.l10n.search),
+                        builder: (context, searchQuery) {
+                          final filteredMarkets = searchQuery == null ||
+                                  searchQuery.isEmpty
+                              ? spotifyMarkets
+                              : spotifyMarkets
+                                  .where(
+                                    (element) =>
+                                        filterMarkets(element.$1, searchQuery),
+                                  )
+                                  .toList();
+                          return SelectItemBuilder(
+                            childCount: filteredMarkets.length,
+                            builder: (context, index) {
+                              final market = filteredMarkets[index];
+                              return SelectItemButton(
+                                value: market.$1,
+                                child: Text(market.$2),
+                              );
+                            },
+                          );
+                        },
+                      ).call,
                     ),
                   ),
                   const Gap(36),
@@ -106,33 +130,46 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                                           value.languageCode)
                                       .toString(),
                                 ),
-                      searchPlaceholder: Text(context.l10n.search),
-                      searchFilter: (locale, query) {
-                        final language = LanguageLocals.getDisplayLanguage(
-                                locale.languageCode)
-                            .toString();
+                      popup: SelectPopup.builder(
+                        searchPlaceholder: Text(context.l10n.search),
+                        builder: (context, searchQuery) {
+                          final filteredLocale = searchQuery?.isNotEmpty != true
+                              ? L10n.all
+                              : L10n.all
+                                  .where(
+                                    (element) =>
+                                        filterLocale(element, searchQuery!),
+                                  )
+                                  .toList();
 
-                        return language
-                                .toLowerCase()
-                                .contains(query.toLowerCase())
-                            ? 1
-                            : 0;
-                      },
-                      children: [
-                        SelectItemButton(
-                          value: const Locale("system", "system"),
-                          child: Text(context.l10n.system_default),
-                        ),
-                        for (final locale in L10n.all)
-                          SelectItemButton(
-                            value: locale,
-                            child: Text(
-                              LanguageLocals.getDisplayLanguage(
-                                      locale.languageCode)
-                                  .toString(),
-                            ),
-                          ),
-                      ],
+                          return SelectItemBuilder(
+                            childCount: filteredLocale.length + 1,
+                            builder: (context, index) {
+                              if (index == 0 &&
+                                  searchQuery?.isNotEmpty != true) {
+                                return SelectItemButton(
+                                  value: const Locale("system", "system"),
+                                  child: Text(context.l10n.system_default),
+                                );
+                              }
+
+                              final indexThen = searchQuery?.isNotEmpty != true
+                                  ? index
+                                  : index - 1;
+
+                              final locale = filteredLocale[indexThen];
+                              return SelectItemButton(
+                                value: locale,
+                                child: Text(
+                                  LanguageLocals.getDisplayLanguage(
+                                          locale.languageCode)
+                                      .toString(),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ).call,
                     ),
                   ),
                 ],
