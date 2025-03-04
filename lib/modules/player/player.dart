@@ -1,10 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart' show showModalBottomSheet;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
@@ -13,7 +11,6 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/framework/app_pop_scope.dart';
 import 'package:spotube/modules/player/player_actions.dart';
 import 'package:spotube/modules/player/player_controls.dart';
-import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/components/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/links/artist_link.dart';
@@ -25,7 +22,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
-import 'package:spotube/pages/lyrics/lyrics.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
@@ -235,39 +231,7 @@ class PlayerView extends HookConsumerWidget {
                           leading: const Icon(SpotubeIcons.queue),
                           child: Text(context.l10n.queue),
                           onPressed: () {
-                            openDrawer(
-                              context: context,
-                              barrierDismissible: true,
-                              draggable: true,
-                              barrierColor: Colors.black.withAlpha(100),
-                              borderRadius: BorderRadius.circular(10),
-                              transformBackdrop: false,
-                              position: OverlayPosition.bottom,
-                              surfaceBlur: context.theme.surfaceBlur,
-                              surfaceOpacity: 0.7,
-                              expands: true,
-                              builder: (context) => Consumer(
-                                builder: (context, ref, _) {
-                                  final playlist = ref.watch(
-                                    audioPlayerProvider,
-                                  );
-                                  final playlistNotifier =
-                                      ref.read(audioPlayerProvider.notifier);
-                                  return ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxHeight:
-                                          MediaQuery.of(context).size.height *
-                                              0.8,
-                                    ),
-                                    child: PlayerQueue.fromAudioPlayerNotifier(
-                                      floating: false,
-                                      playlist: playlist,
-                                      notifier: playlistNotifier,
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
+                            context.pushRoute(const PlayerQueueRoute());
                           },
                         ),
                       ),
@@ -278,22 +242,7 @@ class PlayerView extends HookConsumerWidget {
                             leading: const Icon(SpotubeIcons.music),
                             child: Text(context.l10n.lyrics),
                             onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                isDismissible: true,
-                                enableDrag: true,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.black.withAlpha(100),
-                                barrierColor: Colors.black.withAlpha(100),
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(20),
-                                    topRight: Radius.circular(20),
-                                  ),
-                                ),
-                                builder: (context) =>
-                                    const LyricsPage(isModal: true),
-                              );
+                              context.pushRoute(const PlayerLyricsRoute());
                             },
                           ),
                         ),

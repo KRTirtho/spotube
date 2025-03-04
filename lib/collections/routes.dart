@@ -191,6 +191,18 @@ class AppRouter extends RootStackRouter {
           ],
         ),
         AutoRoute(
+          path: "/player/queue",
+          page: PlayerQueueRoute.page,
+        ),
+        AutoRoute(
+          path: "/player/sources",
+          page: PlayerTrackSourcesRoute.page,
+        ),
+        AutoRoute(
+          path: "/player/lyrics",
+          page: PlayerLyricsRoute.page,
+        ),
+        AutoRoute(
           path: "/mini-player",
           page: MiniLyricsRoute.page,
           // parentNavigatorKey: rootNavigatorKey,

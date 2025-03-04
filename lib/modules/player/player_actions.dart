@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotube/collections/routes.gr.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -141,30 +143,7 @@ class PlayerActions extends HookConsumerWidget {
                     },
                   );
                 } else {
-                  openDrawer(
-                    context: context,
-                    position: OverlayPosition.bottom,
-                    barrierDismissible: true,
-                    draggable: true,
-                    barrierColor: Colors.black.withValues(alpha: .2),
-                    borderRadius: BorderRadius.circular(10),
-                    transformBackdrop: false,
-                    surfaceBlur: context.theme.surfaceBlur,
-                    surfaceOpacity: context.theme.surfaceOpacity,
-                    builder: (context) {
-                      return Card(
-                        borderWidth: 0,
-                        borderColor: Colors.transparent,
-                        padding: EdgeInsets.zero,
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxHeight: screenSize.height * .8,
-                          ),
-                          child: SiblingTracksSheet(floating: floatingQueue),
-                        ),
-                      );
-                    },
-                  );
+                  context.pushRoute(const PlayerTrackSourcesRoute());
                 }
               },
             ),

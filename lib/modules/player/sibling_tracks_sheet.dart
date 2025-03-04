@@ -6,6 +6,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/ui/button_tile.dart';
@@ -244,14 +245,15 @@ class SiblingTracksSheet extends HookConsumerWidget {
                         ),
                 ),
                 const Spacer(),
-                if (!isSearching.value)
+                if (!isSearching.value) ...[
                   IconButton.outline(
                     icon: const Icon(SpotubeIcons.search, size: 18),
                     onPressed: () {
                       isSearching.value = true;
                     },
-                  )
-                else ...[
+                  ),
+                  if (!floating) const BackButton(icon: SpotubeIcons.close)
+                ] else ...[
                   if (preferences.audioSource == AudioSource.piped)
                     IconButton.outline(
                       icon: const Icon(SpotubeIcons.filter, size: 18),
