@@ -1415,14 +1415,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
-  lists:
-    dependency: transitive
-    description:
-      name: lists
-      sha256: "4ca5c19ae4350de036a7e996cdd1ee39c93ac0a2b840f4915459b7d0a7d4ab27"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1"
   local_notifier:
     dependency: "direct main"
     description:
@@ -2128,6 +2120,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.1.3"
+  simple_sparse_list:
+    dependency: transitive
+    description:
+      name: simple_sparse_list
+      sha256: aa648fd240fa39b49dcd11c19c266990006006de6699a412de485695910fbc1f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4"
   skeletonizer:
     dependency: "direct main"
     description:
@@ -2465,10 +2465,10 @@ packages:
     dependency: transitive
     description:
       name: unicode
-      sha256: "0f69e46593d65245774d4f17125c6084d2c20b4e473a983f6e21b7d7762218f1"
+      sha256: "48f8b6c50ed70ba61647f4987d56ec505923041956bbdb651db2838ce7b47b58"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.1"
+    version: "1.1.7"
   universal_io:
     dependency: transitive
     description:
@@ -2736,12 +2736,11 @@ packages:
   youtube_explode_dart:
     dependency: "direct main"
     description:
-      path: "."
-      ref: e519db65ad0b0a40b12f69285932f9db509da3cf
-      resolved-ref: e519db65ad0b0a40b12f69285932f9db509da3cf
-      url: "https://github.com/Hexer10/youtube_explode_dart.git"
-    source: git
-    version: "2.3.7"
+      name: youtube_explode_dart
+      sha256: "3e1f1b5aa575670afc9dbc96cece23af78f9ec2044ce0d9f70d136fff6c53b53"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0-dev.1"
   yt_dlp_dart:
     dependency: "direct main"
     description:

@@ -25,12 +25,12 @@ import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-const _deviceClients = {
-  YoutubeApiClient.android,
+final _deviceClients = Set.unmodifiable({
   YoutubeApiClient.ios,
+  YoutubeApiClient.android,
   YoutubeApiClient.mweb,
   YoutubeApiClient.safari,
-};
+});
 
 String? get _randomUserAgent => _deviceClients
     .elementAt(
