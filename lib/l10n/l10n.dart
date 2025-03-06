@@ -1,5 +1,5 @@
 /// credits:
-///
+/// Hebrew yosef apps telegram
 /// Kingkor Roy Tirtho => English, Bengali
 /// ChatGPT (GPT 3.5) XD => Hindi, French
 /// maboroshin@github => Japanese
