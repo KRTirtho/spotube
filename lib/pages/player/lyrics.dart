@@ -48,7 +48,7 @@ class PlayerLyricsPage extends HookConsumerWidget {
         AppBar(
           leading: [tabbar],
           trailing: const [
-            BackButton(icon: SpotubeIcons.close),
+            BackButton(icon: SpotubeIcons.angleDown),
           ],
         ),
       ],

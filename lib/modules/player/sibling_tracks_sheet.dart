@@ -252,7 +252,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
                       isSearching.value = true;
                     },
                   ),
-                  if (!floating) const BackButton(icon: SpotubeIcons.close)
+                  if (!floating) const BackButton(icon: SpotubeIcons.angleDown)
                 ] else ...[
                   if (preferences.audioSource == AudioSource.piped)
                     IconButton.outline(

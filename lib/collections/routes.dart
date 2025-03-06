@@ -190,15 +190,24 @@ class AppRouter extends RootStackRouter {
             ),
           ],
         ),
-        AutoRoute(
+        CustomRoute(
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+          durationInMilliseconds: 200,
+          reverseDurationInMilliseconds: 200,
           path: "/player/queue",
           page: PlayerQueueRoute.page,
         ),
-        AutoRoute(
+        CustomRoute(
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+          durationInMilliseconds: 200,
+          reverseDurationInMilliseconds: 200,
           path: "/player/sources",
           page: PlayerTrackSourcesRoute.page,
         ),
-        AutoRoute(
+        CustomRoute(
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+          durationInMilliseconds: 200,
+          reverseDurationInMilliseconds: 200,
           path: "/player/lyrics",
           page: PlayerLyricsRoute.page,
         ),

@@ -9,6 +9,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/fallbacks/not_found.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
@@ -50,7 +51,7 @@ class PlayerQueue extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final mediaQuery = MediaQuery.of(context);
+    final mediaQuery = MediaQuery.sizeOf(context);
 
     final controller = useAutoScrollController();
     final searchText = useState('');
@@ -91,8 +92,7 @@ class PlayerQueue extends HookConsumerWidget {
             final searchBar = ConstrainedBox(
               constraints: BoxConstraints(
                 maxHeight: 40,
-                maxWidth:
-                    mediaQuery.smAndDown ? mediaQuery.size.width - 40 : 300,
+                maxWidth: mediaQuery.smAndDown ? mediaQuery.width - 40 : 300,
               ),
               child: TextField(
                 onChanged: (value) {
@@ -157,7 +157,7 @@ class PlayerQueue extends HookConsumerWidget {
                               isSearching.value = !isSearching.value;
                             },
                           ),
-                        if (mediaQuery.mdAndUp || !isSearching.value) ...[
+                        if (!isSearching.value) ...[
                           const SizedBox(width: 10),
                           Tooltip(
                             tooltip: TooltipContainer(
@@ -170,6 +170,9 @@ class PlayerQueue extends HookConsumerWidget {
                               },
                             ),
                           ),
+                          const Gap(5),
+                          if (mediaQuery.smAndDown)
+                            const BackButton(icon: SpotubeIcons.angleDown),
                         ],
                       ],
                     ),
