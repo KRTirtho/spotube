@@ -1,12 +1,16 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/modules/library/playlist_generate/multi_select_field.dart';
+import 'package:spotube/components/button/back_button.dart';
+import 'package:spotube/components/ui/button_tile.dart';
+
 import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_dials.dart';
 import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_fields.dart';
 import 'package:spotube/modules/library/playlist_generate/seeds_multi_autocomplete.dart';
@@ -20,9 +24,11 @@ import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:auto_route/auto_route.dart';
 
 const RecommendationAttribute zeroValues = (min: 0, target: 0, max: 0);
 
+@RoutePage()
 class PlaylistGeneratorPage extends HookConsumerWidget {
   static const name = "playlist_generator";
 
@@ -33,7 +39,7 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
     final spotify = ref.watch(spotifyProvider);
 
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+    final typography = theme.typography;
     final preferences = ref.watch(userPreferencesProvider);
 
     final genresCollection = ref.watch(categoryGenresProvider);
@@ -59,14 +65,11 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
     final artistAutoComplete = SeedsMultiAutocomplete<Artist>(
       seeds: artists,
       enabled: enabled,
-      inputDecoration: InputDecoration(
-        labelText: context.l10n.artists,
-        labelStyle: textTheme.titleMedium,
-        helperText: context.l10n.select_up_to_count_type(
-          leftSeedCount,
-          context.l10n.artists,
-        ),
-      ),
+      label: Text(context.l10n.artists),
+      placeholder: Text(context.l10n.select_up_to_count_type(
+        leftSeedCount,
+        context.l10n.artists,
+      )),
       fetchSeeds: (textEditingValue) => spotify.search
           .get(
             textEditingValue.text,
@@ -83,15 +86,15 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                 )
                 .toList(),
           ),
-      autocompleteOptionBuilder: (option, onSelected) => ListTile(
-        leading: CircleAvatar(
-          backgroundImage: UniversalImage.imageProvider(
+      autocompleteOptionBuilder: (option, onSelected) => ButtonTile(
+        leading: Avatar(
+          initials: "O",
+          provider: UniversalImage.imageProvider(
             option.images.asUrlString(
               placeholder: ImagePlaceholder.artist,
             ),
           ),
         ),
-        horizontalTitleGap: 20,
         title: Text(option.name!),
         subtitle: option.genres?.isNotEmpty != true
             ? null
@@ -101,34 +104,36 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                 children: option.genres!.mapIndexed(
                   (index, genre) {
                     return Chip(
-                      label: Text(genre),
-                      labelStyle: textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.secondary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      side: BorderSide.none,
-                      backgroundColor: theme.colorScheme.secondaryContainer,
+                      style: ButtonVariance.secondary,
+                      child: Text(genre),
                     );
                   },
                 ).toList(),
               ),
-        onTap: () => onSelected(option),
+        onPressed: () => onSelected(option),
+        style: ButtonVariance.ghost,
       ),
       displayStringForOption: (option) => option.name!,
-      selectedSeedBuilder: (artist) => Chip(
-        avatar: CircleAvatar(
-          backgroundImage: UniversalImage.imageProvider(
+      selectedSeedBuilder: (artist) => OutlineBadge(
+        leading: Avatar(
+          initials: artist.name!.substring(0, 1),
+          size: 30,
+          provider: UniversalImage.imageProvider(
             artist.images.asUrlString(
               placeholder: ImagePlaceholder.artist,
             ),
           ),
         ),
-        label: Text(artist.name!),
-        onDeleted: () {
-          artists.value = [
-            ...artists.value..removeWhere((element) => element.id == artist.id)
-          ];
-        },
+        trailing: IconButton.ghost(
+          icon: const Icon(SpotubeIcons.close),
+          onPressed: () {
+            artists.value = [
+              ...artists.value
+                ..removeWhere((element) => element.id == artist.id)
+            ];
+          },
+        ),
+        child: Text(artist.name!),
       ),
     );
 
@@ -136,14 +141,11 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       seeds: tracks,
       enabled: enabled,
       selectedItemDisplayType: SelectedItemDisplayType.list,
-      inputDecoration: InputDecoration(
-        labelText: context.l10n.tracks,
-        labelStyle: textTheme.titleMedium,
-        helperText: context.l10n.select_up_to_count_type(
-          leftSeedCount,
-          context.l10n.tracks,
-        ),
-      ),
+      label: Text(context.l10n.tracks),
+      placeholder: Text(context.l10n.select_up_to_count_type(
+        leftSeedCount,
+        context.l10n.tracks,
+      )),
       fetchSeeds: (textEditingValue) => spotify.search
           .get(
             textEditingValue.text,
@@ -160,22 +162,23 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                 )
                 .toList(),
           ),
-      autocompleteOptionBuilder: (option, onSelected) => ListTile(
-        leading: CircleAvatar(
-          backgroundImage: UniversalImage.imageProvider(
+      autocompleteOptionBuilder: (option, onSelected) => ButtonTile(
+        leading: Avatar(
+          initials: option.name!.substring(0, 1),
+          provider: UniversalImage.imageProvider(
             (option.album?.images).asUrlString(
               placeholder: ImagePlaceholder.artist,
             ),
           ),
         ),
-        horizontalTitleGap: 20,
         title: Text(option.name!),
         subtitle: Text(
           option.artists?.map((e) => e.name).join(", ") ??
               option.album?.name ??
               "",
         ),
-        onTap: () => onSelected(option),
+        onPressed: () => onSelected(option),
+        style: ButtonVariance.ghost,
       ),
       displayStringForOption: (option) => option.name!,
       selectedSeedBuilder: (option) => SimpleTrackTile(
@@ -188,63 +191,110 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       ),
     );
 
-    final genreSelector = MultiSelectField<String>(
-      options: genresCollection.asData?.value ?? [],
-      selectedOptions: genres.value,
-      getValueForOption: (option) => option,
-      onSelected: (value) {
-        genres.value = value;
+    final genreSelector = MultiSelect<String>(
+      value: genres.value,
+      onChanged: (value) {
+        if (!enabled) return;
+        genres.value = value?.toList() ?? [];
       },
-      dialogTitle: Text(context.l10n.select_genres),
-      label: Text(context.l10n.add_genres),
-      helperText: context.l10n.select_up_to_count_type(
-        leftSeedCount,
-        context.l10n.genre,
+      itemBuilder: (context, item) => Text(item),
+      popoverAlignment: Alignment.bottomCenter,
+      popupConstraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * .8,
       ),
-      enabled: enabled,
+      placeholder: Text(
+        context.l10n.select_up_to_count_type(
+          leftSeedCount,
+          context.l10n.genre,
+        ),
+      ),
+      popup: SelectPopup.builder(
+        searchPlaceholder: Text(context.l10n.select_genres),
+        builder: (context, searchQuery) {
+          final filteredGenres = searchQuery?.isNotEmpty != true
+              ? genresCollection.asData?.value ?? []
+              : genresCollection.asData?.value
+                      .where(
+                        (item) => item
+                            .toLowerCase()
+                            .contains(searchQuery!.toLowerCase()),
+                      )
+                      .toList() ??
+                  [];
+
+          return SelectItemBuilder(
+            childCount: filteredGenres.length,
+            builder: (context, index) {
+              final option = filteredGenres[index];
+
+              return SelectItemButton(
+                value: option,
+                child: Text(option),
+              );
+            },
+          );
+        },
+      ).call,
     );
+
     final countrySelector = ValueListenableBuilder(
       valueListenable: market,
       builder: (context, value, _) {
-        return DropdownButtonFormField<Market>(
-          decoration: InputDecoration(
-            labelText: context.l10n.country,
-            labelStyle: textTheme.titleMedium,
-          ),
-          isExpanded: true,
-          items: spotifyMarkets
-              .map(
-                (country) => DropdownMenuItem(
-                  value: country.$1,
-                  child: Text(country.$2),
-                ),
-              )
-              .toList(),
+        return Select<Market>(
+          placeholder: Text(context.l10n.country),
           value: market.value,
           onChanged: (value) {
             market.value = value!;
           },
+          popupConstraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * .8,
+          ),
+          popoverAlignment: Alignment.bottomCenter,
+          itemBuilder: (context, value) => Text(value.name),
+          popup: SelectPopup.builder(
+            searchPlaceholder: Text(context.l10n.search),
+            builder: (context, searchQuery) {
+              final filteredMarkets = searchQuery == null || searchQuery.isEmpty
+                  ? spotifyMarkets
+                  : spotifyMarkets
+                      .where(
+                        (item) => item.$1.name
+                            .toLowerCase()
+                            .contains(searchQuery.toLowerCase()),
+                      )
+                      .toList();
+
+              return SelectItemBuilder(
+                childCount: filteredMarkets.length,
+                builder: (context, index) {
+                  return SelectItemButton(
+                    value: filteredMarkets[index].$1,
+                    child: Text(filteredMarkets[index].$2),
+                  );
+                },
+              );
+            },
+          ).call,
         );
       },
     );
 
     final controller = useScrollController();
 
-    return Scaffold(
-      appBar: PageWindowTitleBar(
-        leading: const BackButton(),
-        title: Text(context.l10n.generate_playlist),
-        centerTitle: true,
-      ),
-      body: Scrollbar(
-        controller: controller,
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: Breakpoints.lg),
-            child: SliderTheme(
-              data: const SliderThemeData(
-                overlayShape: RoundSliderOverlayShape(),
-              ),
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: [
+          TitleBar(
+            leading: const [BackButton()],
+            title: Text(context.l10n.generate),
+          )
+        ],
+        child: Scrollbar(
+          controller: controller,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: Breakpoints.lg),
               child: SafeArea(
                 child: LayoutBuilder(builder: (context, constrains) {
                   return ScrollConfiguration(
@@ -262,35 +312,36 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                               children: [
                                 Text(
                                   context.l10n.number_of_tracks_generate,
-                                  style: textTheme.titleMedium,
+                                  style: typography.semiBold,
                                 ),
                                 Row(
+                                  spacing: 5,
                                   children: [
                                     Container(
                                       width: 40,
                                       height: 40,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color: theme.colorScheme.primary,
+                                        color: theme.colorScheme.primary
+                                            .withAlpha(25),
                                         shape: BoxShape.circle,
                                       ),
                                       child: Text(
                                         value.round().toString(),
-                                        style: textTheme.bodyLarge?.copyWith(
-                                          color: theme
-                                              .colorScheme.primaryContainer,
+                                        style: typography.large.copyWith(
+                                          color: theme.colorScheme.primary,
                                         ),
                                       ),
                                     ),
                                     Expanded(
                                       child: Slider(
-                                        value: value.toDouble(),
+                                        value: SliderValue.single(
+                                            value.toDouble()),
                                         min: 10,
                                         max: 100,
                                         divisions: 9,
-                                        label: value.round().toString(),
                                         onChanged: (value) {
-                                          limit.value = value.round();
+                                          limit.value = value.value.round();
                                         },
                                       ),
                                     )
@@ -617,33 +668,37 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                             );
                           },
                         ),
-                        const SizedBox(height: 20),
-                        FilledButton.icon(
-                          icon: const Icon(SpotubeIcons.magic),
-                          label: Text(context.l10n.generate_playlist),
-                          onPressed: artists.value.isEmpty &&
-                                  tracks.value.isEmpty &&
-                                  genres.value.isEmpty
-                              ? null
-                              : () {
-                                  final routeState =
-                                      GeneratePlaylistProviderInput(
-                                    seedArtists: artists.value
-                                        .map((a) => a.id!)
-                                        .toList(),
-                                    seedTracks:
-                                        tracks.value.map((t) => t.id!).toList(),
-                                    seedGenres: genres.value,
-                                    limit: limit.value,
-                                    max: max.value,
-                                    min: min.value,
-                                    target: target.value,
-                                  );
-                                  GoRouter.of(context).push(
-                                    "/library/generate/result",
-                                    extra: routeState,
-                                  );
-                                },
+                        const Gap(20),
+                        Center(
+                          child: Button.primary(
+                            leading: const Icon(SpotubeIcons.magic),
+                            onPressed: artists.value.isEmpty &&
+                                    tracks.value.isEmpty &&
+                                    genres.value.isEmpty
+                                ? null
+                                : () {
+                                    final routeState =
+                                        GeneratePlaylistProviderInput(
+                                      seedArtists: artists.value
+                                          .map((a) => a.id!)
+                                          .toList(),
+                                      seedTracks: tracks.value
+                                          .map((t) => t.id!)
+                                          .toList(),
+                                      seedGenres: genres.value,
+                                      limit: limit.value,
+                                      max: max.value,
+                                      min: min.value,
+                                      target: target.value,
+                                    );
+                                    context.navigateTo(
+                                      PlaylistGenerateResultRoute(
+                                        state: routeState,
+                                      ),
+                                    );
+                                  },
+                            child: Text(context.l10n.generate),
+                          ),
                         ),
                       ],
                     ),

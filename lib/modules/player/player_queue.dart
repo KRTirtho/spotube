@@ -1,16 +1,15 @@
-import 'dart:ui';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/fallbacks/not_found.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
@@ -52,7 +51,7 @@ class PlayerQueue extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final mediaQuery = MediaQuery.of(context);
+    final mediaQuery = MediaQuery.sizeOf(context);
 
     final controller = useAutoScrollController();
     final searchText = useState('');
@@ -60,16 +59,6 @@ class PlayerQueue extends HookConsumerWidget {
     final isSearching = useState(false);
 
     final tracks = playlist.tracks;
-    final borderRadius = floating
-        ? const BorderRadius.only(
-            topLeft: Radius.circular(10),
-          )
-        : const BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          );
-    final theme = Theme.of(context);
-    final headlineColor = theme.textTheme.headlineSmall?.color;
 
     final filteredTracks = useMemoized(
       () {
@@ -92,217 +81,176 @@ class PlayerQueue extends HookConsumerWidget {
       [tracks, searchText.value],
     );
 
-    useEffect(() {
-      if (playlist.activeTrack == null) return null;
-
-      controller.scrollToIndex(
-        playlist.playlist.index,
-        preferPosition: AutoScrollPosition.middle,
-      );
-      return null;
-    }, []);
-
     if (tracks.isEmpty) {
-      return const NotFound(vertical: true);
+      return const NotFound();
     }
 
-    return LayoutBuilder(
-      builder: (context, constrains) {
-        return ClipRRect(
-          borderRadius: borderRadius,
-          clipBehavior: Clip.hardEdge,
-          child: BackdropFilter(
-            filter: ImageFilter.blur(
-              sigmaX: 15,
-              sigmaY: 15,
-            ),
-            child: Container(
-              padding: const EdgeInsets.only(
-                top: 5.0,
+    return Stack(
+      children: [
+        LayoutBuilder(
+          builder: (context, constrains) {
+            final searchBar = ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: 40,
+                maxWidth: mediaQuery.smAndDown ? mediaQuery.width - 40 : 300,
               ),
-              decoration: BoxDecoration(
-                color:
-                    theme.colorScheme.surfaceContainerHighest.withOpacity(0.5),
-                borderRadius: borderRadius,
-              ),
-              child: CallbackShortcuts(
-                bindings: {
-                  LogicalKeySet(LogicalKeyboardKey.escape): () {
-                    if (!isSearching.value) {
-                      Navigator.of(context).pop();
-                    }
-                    isSearching.value = false;
-                    searchText.value = '';
-                  }
+              child: TextField(
+                onChanged: (value) {
+                  searchText.value = value;
                 },
-                child: InterScrollbar(
-                  controller: controller,
-                  child: CustomScrollView(
-                    controller: controller,
-                    slivers: [
-                      if (!floating)
-                        SliverToBoxAdapter(
-                          child: Center(
-                            child: Container(
-                              height: 5,
-                              width: 100,
-                              margin: const EdgeInsets.only(bottom: 5, top: 2),
-                              decoration: BoxDecoration(
-                                color: headlineColor,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
+                placeholder: Text(context.l10n.search),
+              ),
+            );
+            return CallbackShortcuts(
+              bindings: {
+                LogicalKeySet(LogicalKeyboardKey.escape): () {
+                  if (!isSearching.value) {
+                    Navigator.of(context).pop();
+                  }
+                  isSearching.value = false;
+                  searchText.value = '';
+                }
+              },
+              child: Column(
+                children: [
+                  if (isSearching.value && mediaQuery.smAndDown)
+                    AppBar(
+                      backgroundColor: Colors.transparent,
+                      leading: [
+                        if (mediaQuery.smAndDown)
+                          IconButton.ghost(
+                            icon: const Icon(
+                              Icons.arrow_back_ios_new_outlined,
                             ),
-                          ),
-                        ),
-                      SliverAppBar(
-                        floating: true,
-                        pinned: false,
-                        snap: false,
-                        backgroundColor: Colors.transparent,
-                        elevation: 0,
-                        automaticallyImplyLeading: false,
-                        title: BackdropFilter(
-                          filter: ImageFilter.blur(
-                            sigmaX: 10,
-                            sigmaY: 10,
-                          ),
-                          child: SizedBox(
-                            height: kToolbarHeight,
-                            child: mediaQuery.mdAndUp || !isSearching.value
-                                ? Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      context.l10n
-                                          .tracks_in_queue(tracks.length),
-                                      style: TextStyle(
-                                        color: headlineColor,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18,
-                                      ),
-                                    ),
-                                  )
-                                : null,
-                          ),
-                        ),
-                        actions: [
-                          if (mediaQuery.mdAndUp || isSearching.value)
-                            TextField(
-                              onChanged: (value) {
-                                searchText.value = value;
-                              },
-                              decoration: InputDecoration(
-                                hintText: context.l10n.search,
-                                isDense: true,
-                                prefixIcon: mediaQuery.smAndDown
-                                    ? IconButton(
-                                        icon: const Icon(
-                                          Icons.arrow_back_ios_new_outlined,
-                                        ),
-                                        onPressed: () {
-                                          isSearching.value = false;
-                                          searchText.value = '';
-                                        },
-                                        style: IconButton.styleFrom(
-                                          padding: EdgeInsets.zero,
-                                          minimumSize: const Size.square(20),
-                                        ),
-                                      )
-                                    : const Icon(SpotubeIcons.filter),
-                                constraints: BoxConstraints(
-                                  maxHeight: 40,
-                                  maxWidth: mediaQuery.smAndDown
-                                      ? mediaQuery.size.width - 40
-                                      : 300,
-                                ),
+                            onPressed: () {
+                              isSearching.value = false;
+                              searchText.value = '';
+                            },
+                          )
+                      ],
+                      surfaceBlur: 0,
+                      surfaceOpacity: 0,
+                      child: searchBar,
+                    )
+                  else
+                    AppBar(
+                      trailingGap: 0,
+                      backgroundColor: Colors.transparent,
+                      surfaceBlur: 0,
+                      surfaceOpacity: 0,
+                      title: mediaQuery.mdAndUp || !isSearching.value
+                          ? SizedBox(
+                              height: 30,
+                              child: AutoSizeText(
+                                context.l10n.tracks_in_queue(tracks.length),
+                                maxLines: 1,
                               ),
                             )
-                          else
-                            IconButton.filledTonal(
-                              icon: const Icon(SpotubeIcons.filter),
-                              onPressed: () {
-                                isSearching.value = !isSearching.value;
-                              },
-                            ),
-                          if (mediaQuery.mdAndUp || !isSearching.value) ...[
-                            const SizedBox(width: 10),
-                            FilledButton(
-                              style: FilledButton.styleFrom(
-                                backgroundColor: theme.scaffoldBackgroundColor
-                                    .withOpacity(0.5),
-                                foregroundColor:
-                                    theme.textTheme.headlineSmall?.color,
-                              ),
-                              child: Row(
-                                children: [
-                                  const Icon(SpotubeIcons.playlistRemove),
-                                  const SizedBox(width: 5),
-                                  Text(context.l10n.clear_all),
-                                ],
-                              ),
+                          : null,
+                      trailing: [
+                        if (mediaQuery.mdAndUp)
+                          searchBar
+                        else
+                          IconButton.ghost(
+                            icon: const Icon(SpotubeIcons.filter),
+                            onPressed: () {
+                              isSearching.value = !isSearching.value;
+                            },
+                          ),
+                        if (!isSearching.value) ...[
+                          const SizedBox(width: 10),
+                          Tooltip(
+                            tooltip: TooltipContainer(
+                                child: Text(context.l10n.clear_all)),
+                            child: IconButton.outline(
+                              icon: const Icon(SpotubeIcons.playlistRemove),
                               onPressed: () {
                                 onStop();
-                                Navigator.of(context).pop();
+                                closeDrawer(context);
                               },
                             ),
-                            const SizedBox(width: 10),
-                          ],
+                          ),
+                          const Gap(5),
+                          if (mediaQuery.smAndDown)
+                            const BackButton(icon: SpotubeIcons.angleDown),
                         ],
-                      ),
-                      const SliverGap(10),
-                      SliverReorderableList(
-                        onReorder: onReorder,
-                        itemCount: filteredTracks.length,
-                        onReorderStart: (index) {
-                          HapticFeedback.selectionClick();
-                        },
-                        onReorderEnd: (index) {
-                          HapticFeedback.selectionClick();
-                        },
-                        itemBuilder: (context, i) {
-                          final track = filteredTracks.elementAt(i);
-                          return AutoScrollTag(
-                            key: ValueKey<int>(i),
-                            controller: controller,
-                            index: i,
-                            child: Material(
-                              color: Colors.transparent,
-                              child: TrackTile(
-                                playlist: playlist,
+                      ],
+                    ),
+                  const Divider(),
+                  Expanded(
+                    child: InterScrollbar(
+                      controller: controller,
+                      child: CustomScrollView(
+                        controller: controller,
+                        slivers: [
+                          const SliverGap(10),
+                          SliverReorderableList(
+                            onReorder: onReorder,
+                            itemCount: filteredTracks.length,
+                            onReorderStart: (index) {
+                              HapticFeedback.selectionClick();
+                            },
+                            onReorderEnd: (index) {
+                              HapticFeedback.selectionClick();
+                            },
+                            itemBuilder: (context, i) {
+                              final track = filteredTracks.elementAt(i);
+                              return AutoScrollTag(
+                                key: ValueKey<int>(i),
+                                controller: controller,
                                 index: i,
-                                track: track,
-                                onTap: () async {
-                                  if (playlist.activeTrack?.id == track.id) {
-                                    return;
-                                  }
-                                  await onJump(track);
-                                },
-                                leadingActions: [
-                                  if (!isSearching.value &&
-                                      searchText.value.isEmpty)
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 8.0),
-                                      child: ReorderableDragStartListener(
-                                        index: i,
-                                        child: const Icon(
-                                          SpotubeIcons.dragHandle,
+                                child: TrackTile(
+                                  playlist: playlist,
+                                  index: i,
+                                  track: track,
+                                  onTap: () async {
+                                    if (playlist.activeTrack?.id == track.id) {
+                                      return;
+                                    }
+                                    await onJump(track);
+                                  },
+                                  leadingActions: [
+                                    if (!isSearching.value &&
+                                        searchText.value.isEmpty)
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: ReorderableDragStartListener(
+                                          index: i,
+                                          child: const Icon(
+                                            SpotubeIcons.dragHandle,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                          const SliverSafeArea(sliver: SliverGap(100)),
+                        ],
                       ),
-                      const SliverGap(100),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
-            ),
+            );
+          },
+        ),
+        Positioned(
+          right: 20,
+          bottom: 20,
+          child: IconButton.secondary(
+            icon: const Icon(SpotubeIcons.angleDown),
+            onPressed: () {
+              controller.scrollToIndex(
+                playlist.playlist.index,
+                preferPosition: AutoScrollPosition.middle,
+              );
+            },
           ),
-        );
-      },
+        )
+      ],
     );
   }
 }

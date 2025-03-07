@@ -1,8 +1,12 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotube/components/hover_builder.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/titlebar/titlebar_icon_buttons.dart';
-import 'package:spotube/components/titlebar/window_button.dart';
+
+import 'package:spotube/hooks/configurators/use_window_listener.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:titlebar_buttons/titlebar_buttons.dart';
@@ -25,6 +29,15 @@ class WindowTitleBarButtons extends HookConsumerWidget {
       await windowManager.close();
     }
 
+    useWindowListener(
+      onWindowMaximize: () {
+        isMaximized.value = true;
+      },
+      onWindowUnmaximize: () {
+        isMaximized.value = false;
+      },
+    );
+
     useEffect(() {
       if (kIsDesktop) {
         windowManager.isMaximized().then((value) {
@@ -34,91 +47,73 @@ class WindowTitleBarButtons extends HookConsumerWidget {
       return null;
     }, []);
 
-    if (!kIsDesktop || kIsMacOS || preferences.systemTitleBar) {
+    if (!kTitlebarVisible || preferences.systemTitleBar) {
       return const SizedBox.shrink();
     }
 
     if (kIsWindows) {
-      final theme = Theme.of(context);
-      final colors = WindowButtonColors(
-        normal: Colors.transparent,
-        iconNormal: foregroundColor ?? theme.colorScheme.onSurface,
-        mouseOver: theme.colorScheme.onSurface.withOpacity(0.1),
-        mouseDown: theme.colorScheme.onSurface.withOpacity(0.2),
-        iconMouseOver: theme.colorScheme.onSurface,
-        iconMouseDown: theme.colorScheme.onSurface,
-      );
-
-      final closeColors = WindowButtonColors(
-        normal: Colors.transparent,
-        iconNormal: foregroundColor ?? theme.colorScheme.onSurface,
-        mouseOver: Colors.red,
-        mouseDown: Colors.red[800]!,
-        iconMouseOver: Colors.white,
-        iconMouseDown: Colors.black,
-      );
-
-      return Padding(
-        padding: const EdgeInsets.only(bottom: 25),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            MinimizeWindowButton(
-              onPressed: windowManager.minimize,
-              colors: colors,
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ShadcnWindowButton(
+            icon: MinimizeIcon(color: context.theme.colorScheme.foreground),
+            onPressed: windowManager.minimize,
+          ),
+          if (isMaximized.value != true)
+            ShadcnWindowButton(
+              icon: MaximizeIcon(color: context.theme.colorScheme.foreground),
+              onPressed: () {
+                windowManager.maximize();
+                isMaximized.value = true;
+              },
+            )
+          else
+            ShadcnWindowButton(
+              icon: RestoreIcon(color: context.theme.colorScheme.foreground),
+              onPressed: () {
+                windowManager.unmaximize();
+                isMaximized.value = false;
+              },
             ),
-            if (isMaximized.value != true)
-              MaximizeWindowButton(
-                colors: colors,
-                onPressed: () {
-                  windowManager.maximize();
-                  isMaximized.value = true;
-                },
-              )
-            else
-              RestoreWindowButton(
-                colors: colors,
-                onPressed: () {
-                  windowManager.unmaximize();
-                  isMaximized.value = false;
-                },
+          HoverBuilder(builder: (context, isHovered) {
+            return ShadcnWindowButton(
+              icon: CloseIcon(
+                color: isHovered
+                    ? Colors.white
+                    : context.theme.colorScheme.foreground,
               ),
-            CloseWindowButton(
-              colors: closeColors,
               onPressed: onClose,
-            ),
-          ],
-        ),
+              hoverBackgroundColor: const Color(0xFFD32F2F),
+            );
+          }),
+        ],
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 20, left: 10),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          DecoratedMinimizeButton(
-            type: type,
-            onPressed: windowManager.minimize,
-          ),
-          DecoratedMaximizeButton(
-            type: type,
-            onPressed: () async {
-              if (await windowManager.isMaximized()) {
-                await windowManager.unmaximize();
-                isMaximized.value = false;
-              } else {
-                await windowManager.maximize();
-                isMaximized.value = true;
-              }
-            },
-          ),
-          DecoratedCloseButton(
-            type: type,
-            onPressed: onClose,
-          ),
-        ],
-      ),
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        DecoratedMinimizeButton(
+          type: type,
+          onPressed: windowManager.minimize,
+        ),
+        DecoratedMaximizeButton(
+          type: type,
+          onPressed: () async {
+            if (await windowManager.isMaximized()) {
+              await windowManager.unmaximize();
+              isMaximized.value = false;
+            } else {
+              await windowManager.maximize();
+              isMaximized.value = true;
+            }
+          },
+        ),
+        DecoratedCloseButton(
+          type: type,
+          onPressed: onClose,
+        ),
+      ],
     );
   }
 }

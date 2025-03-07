@@ -14,6 +14,10 @@ final serverRouterProvider = Provider((ref) {
 
   router.get("/stream/<trackId>", playbackRoutes.getStreamTrackId);
 
+  router.get("/playback/toggle-playback", playbackRoutes.togglePlayback);
+  router.get("/playback/previous", playbackRoutes.previousTrack);
+  router.get("/playback/next", playbackRoutes.nextTrack);
+
   router.all("/ws", connectRoutes.websocket);
 
   return router;

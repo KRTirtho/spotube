@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -10,7 +10,7 @@ class ConnectPageLocalDevices extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData(:textTheme) = Theme.of(context);
+    final ThemeData(:typography) = Theme.of(context);
     final devicesFuture = useFuture(audioPlayer.devices);
     final devicesStream = useStream(audioPlayer.devicesStream);
     final selectedDeviceFuture = useFuture(audioPlayer.selectedDevice);
@@ -32,7 +32,7 @@ class ConnectPageLocalDevices extends HookWidget {
           sliver: SliverToBoxAdapter(
             child: Text(
               context.l10n.this_device,
-              style: textTheme.titleMedium,
+              style: typography.bold,
             ),
           ),
         ),
@@ -43,17 +43,16 @@ class ConnectPageLocalDevices extends HookWidget {
           itemBuilder: (context, index) {
             final device = devices[index];
 
-            return Card(
-              child: ListTile(
-                leading: const Icon(SpotubeIcons.speaker),
-                title: Text(device.description),
-                subtitle: Text(device.name),
-                selected: selectedDevice == device,
-                onTap: () => audioPlayer.setAudioDevice(device),
-              ),
+            return ButtonTile(
+              selected: selectedDevice == device,
+              onPressed: () => audioPlayer.setAudioDevice(device),
+              leading: const Icon(SpotubeIcons.speaker),
+              title: Text(device.description),
+              subtitle: Text(device.name),
             );
           },
         ),
+        const SliverGap(200)
       ],
     );
   }

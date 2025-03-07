@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
@@ -29,23 +29,21 @@ class RecommendationAttributeDials extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final animation = useAnimationController(
-      duration: const Duration(milliseconds: 300),
-    );
-    final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
+    final labelStyle = Theme.of(context).typography.small.copyWith(
           fontWeight: FontWeight.w500,
         );
 
     final minSlider = Row(
+      spacing: 5,
       children: [
         Text(context.l10n.min, style: labelStyle),
         Expanded(
           child: Slider(
-            value: values.min / base,
+            value: SliderValue.single(values.min / base),
             min: 0,
             max: 1,
             onChanged: (value) => onChanged((
-              min: value * base,
+              min: value.value * base,
               target: values.target,
               max: values.max,
             )),
@@ -55,16 +53,17 @@ class RecommendationAttributeDials extends HookWidget {
     );
 
     final targetSlider = Row(
+      spacing: 5,
       children: [
         Text(context.l10n.target, style: labelStyle),
         Expanded(
           child: Slider(
-            value: values.target / base,
+            value: SliderValue.single(values.target / base),
             min: 0,
             max: 1,
             onChanged: (value) => onChanged((
               min: values.min,
-              target: value * base,
+              target: value.value * base,
               max: values.max,
             )),
           ),
@@ -73,109 +72,111 @@ class RecommendationAttributeDials extends HookWidget {
     );
 
     final maxSlider = Row(
+      spacing: 5,
       children: [
         Text(context.l10n.max, style: labelStyle),
         Expanded(
           child: Slider(
-            value: values.max / base,
+            value: SliderValue.single(values.max / base),
             min: 0,
             max: 1,
             onChanged: (value) => onChanged((
               min: values.min,
               target: values.target,
-              max: value * base,
+              max: value.value * base,
             )),
           ),
         ),
       ],
     );
 
-    return LayoutBuilder(builder: (context, constrain) {
-      return Card(
-        child: ExpansionTile(
-          title: DefaultTextStyle(
-            style: Theme.of(context).textTheme.titleSmall!,
-            child: title,
-          ),
-          shape: const Border(),
-          leading: AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Transform.rotate(
-                angle: (animation.value * 3.14) / 2,
-                child: child,
-              );
-            },
-            child: const Icon(Icons.chevron_right),
-          ),
-          trailing: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: ToggleButtons(
-              borderRadius: BorderRadius.circular(8),
-              textStyle: labelStyle,
-              isSelected: [
-                values == lowValues(base),
-                values == moderateValues(base),
-                values == highValues(base),
-              ],
-              onPressed: (index) {
-                RecommendationAttribute newValues = zeroValues;
-                switch (index) {
-                  case 0:
-                    newValues = lowValues(base);
-                    break;
-                  case 1:
-                    newValues = moderateValues(base);
-                    break;
-                  case 2:
-                    newValues = highValues(base);
-                    break;
-                }
+    void onSelected(int index) {
+      RecommendationAttribute newValues = zeroValues;
+      switch (index) {
+        case 0:
+          newValues = lowValues(base);
+          break;
+        case 1:
+          newValues = moderateValues(base);
+          break;
+        case 2:
+          newValues = highValues(base);
+          break;
+      }
 
-                if (newValues == values) {
-                  onChanged(zeroValues);
-                } else {
-                  onChanged(newValues);
-                }
-              },
+      if (newValues == values) {
+        onChanged(zeroValues);
+      } else {
+        onChanged(newValues);
+      }
+    }
+
+    return LayoutBuilder(builder: (context, constrain) {
+      return Accordion(
+        items: [
+          AccordionItem(
+            trigger: AccordionTrigger(
+              child: SizedBox(
+                width: double.infinity,
+                child: Basic(
+                  title: title.semiBold(),
+                  trailing: Row(
+                    spacing: 5,
+                    children: [
+                      Toggle(
+                        value: values == lowValues(base),
+                        onChanged: (value) => onSelected(0),
+                        style:
+                            const ButtonStyle.outline(size: ButtonSize.small),
+                        child: Text(context.l10n.low),
+                      ),
+                      Toggle(
+                        value: values == moderateValues(base),
+                        onChanged: (value) => onSelected(1),
+                        style:
+                            const ButtonStyle.outline(size: ButtonSize.small),
+                        child: Text(context.l10n.moderate),
+                      ),
+                      Toggle(
+                        value: values == highValues(base),
+                        onChanged: (value) => onSelected(2),
+                        style:
+                            const ButtonStyle.outline(size: ButtonSize.small),
+                        child: Text(context.l10n.high),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(context.l10n.low),
-                Text("  ${context.l10n.moderate}  "),
-                Text(context.l10n.high),
+                if (constrain.mdAndUp)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const SizedBox(width: 16),
+                      Expanded(child: minSlider),
+                      Expanded(child: targetSlider),
+                      Expanded(child: maxSlider),
+                    ],
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Column(
+                      children: [
+                        minSlider,
+                        targetSlider,
+                        maxSlider,
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),
-          onExpansionChanged: (value) {
-            if (value) {
-              animation.forward();
-            } else {
-              animation.reverse();
-            }
-          },
-          children: [
-            if (constrain.mdAndUp)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const SizedBox(width: 16),
-                  Expanded(child: minSlider),
-                  Expanded(child: targetSlider),
-                  Expanded(child: maxSlider),
-                ],
-              )
-            else
-              Padding(
-                padding: const EdgeInsets.only(left: 16),
-                child: Column(
-                  children: [
-                    minSlider,
-                    targetSlider,
-                    maxSlider,
-                  ],
-                ),
-              ),
-          ],
-        ),
+        ],
       );
     });
   }

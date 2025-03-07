@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:html/dom.dart' hide Text;
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Element;
 import 'package:spotify/spotify.dart';
-import 'package:spotube/modules/library/user_local_tracks.dart';
+import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/modules/root/update_dialog.dart';
 
 import 'package:spotube/models/lyrics.dart';
@@ -20,7 +22,6 @@ import 'package:html/parser.dart' as parser;
 
 import 'dart:async';
 
-import 'package:flutter/material.dart' hide Element;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotube/collections/env.dart';
@@ -276,68 +277,6 @@ abstract class ServiceUtils {
     return subtitle;
   }
 
-  static void navigate(BuildContext context, String location, {Object? extra}) {
-    if (GoRouterState.of(context).matchedLocation == location) return;
-    GoRouter.of(context).go(location, extra: extra);
-  }
-
-  static void navigateNamed(
-    BuildContext context,
-    String name, {
-    Object? extra,
-    Map<String, String>? pathParameters,
-    Map<String, dynamic>? queryParameters,
-  }) {
-    if (GoRouterState.of(context).matchedLocation == name) return;
-    GoRouter.of(context).goNamed(
-      name,
-      pathParameters: pathParameters ?? const {},
-      queryParameters: queryParameters ?? const {},
-      extra: extra,
-    );
-  }
-
-  static void push(BuildContext context, String location, {Object? extra}) {
-    final router = GoRouter.of(context);
-    final routerState = GoRouterState.of(context);
-    final routerStack = router.routerDelegate.currentConfiguration.matches
-        .map((e) => e.matchedLocation);
-
-    if (routerState.matchedLocation == location ||
-        routerStack.contains(location)) return;
-    router.push(location, extra: extra);
-  }
-
-  static void pushNamed(
-    BuildContext context,
-    String name, {
-    Object? extra,
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-  }) {
-    final router = GoRouter.of(context);
-    final routerState = GoRouterState.of(context);
-    final routerStack = router.routerDelegate.currentConfiguration.matches
-        .map((e) => e.matchedLocation);
-
-    final nameLocation = routerState.namedLocation(
-      name,
-      pathParameters: pathParameters,
-      queryParameters: queryParameters,
-    );
-
-    if (routerState.matchedLocation == nameLocation ||
-        routerStack.contains(nameLocation)) {
-      return;
-    }
-    router.pushNamed(
-      name,
-      pathParameters: pathParameters,
-      queryParameters: queryParameters,
-      extra: extra,
-    );
-  }
-
   static DateTime parseSpotifyAlbumDate(AlbumSimple? album) {
     if (album == null || album.releaseDate == null) {
       return DateTime.parse("1975-01-01");
@@ -418,7 +357,7 @@ abstract class ServiceUtils {
       await showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: Colors.black26,
+        barrierColor: Colors.black.withAlpha(66),
         builder: (context) {
           return RootAppUpdateDialog.nightly(nightlyBuildNum: buildNum);
         },
@@ -439,14 +378,16 @@ abstract class ServiceUtils {
       if (currentVersion == null ||
           latestVersion == null ||
           (latestVersion.isPreRelease && !currentVersion.isPreRelease) ||
-          (!latestVersion.isPreRelease && currentVersion.isPreRelease)) return;
+          (!latestVersion.isPreRelease && currentVersion.isPreRelease)) {
+        return;
+      }
 
       if (latestVersion <= currentVersion || !context.mounted) return;
 
       showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: Colors.black26,
+        barrierColor: Colors.black.withAlpha(66),
         builder: (context) {
           return RootAppUpdateDialog(version: latestVersion);
         },

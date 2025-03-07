@@ -29,7 +29,7 @@ class SpotifySectionPlaylist with _$SpotifySectionPlaylist {
       ..description = description
       ..collaborative = false
       ..images = images.map((e) => e.asImage).toList()
-      ..owner = (User()..displayName = "Spotify")
+      ..owner = (User()..displayName = owner)
       ..uri = uri
       ..type = "playlist";
   }

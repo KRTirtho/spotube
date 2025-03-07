@@ -1,12 +1,16 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart' hide Page;
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
@@ -20,7 +24,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
@@ -28,7 +31,6 @@ import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/spotify_provider.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -67,16 +69,20 @@ class TrackOptions extends HookConsumerWidget {
   void actionShare(BuildContext context, Track track) {
     final data = "https://open.spotify.com/track/${track.id}";
     Clipboard.setData(ClipboardData(text: data)).then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          width: 300,
-          behavior: SnackBarBehavior.floating,
-          content: Text(
-            context.l10n.copied_to_clipboard(data),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
+      if (context.mounted) {
+        showToast(
+          context: context,
+          location: ToastLocation.topRight,
+          builder: (context, overlay) {
+            return SurfaceCard(
+              child: Text(
+                context.l10n.copied_to_clipboard(data),
+                textAlign: TextAlign.center,
+              ),
+            );
+          },
+        );
+      }
     });
   }
 
@@ -159,9 +165,7 @@ class TrackOptions extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final router = GoRouter.of(context);
     final ThemeData(:colorScheme) = Theme.of(context);
 
     final playlist = ref.watch(audioPlayerProvider);
@@ -202,12 +206,12 @@ class TrackOptions extends HookConsumerWidget {
     final isLocalTrack = track is LocalTrack;
 
     final adaptivePopSheetList = AdaptivePopSheetList<TrackOptionValue>(
+      tooltip: context.l10n.more_actions,
       onSelected: (value) async {
         switch (value) {
           case TrackOptionValue.album:
-            await router.push(
-              '/album/${track.album!.id}',
-              extra: track.album!,
+            await context.navigateTo(
+              AlbumRoute(id: track.album!.id!, album: track.album!),
             );
             break;
           case TrackOptionValue.delete:
@@ -217,36 +221,57 @@ class TrackOptions extends HookConsumerWidget {
           case TrackOptionValue.addToQueue:
             await playback.addTrack(track);
             if (context.mounted) {
-              scaffoldMessenger.showSnackBar(
-                SnackBar(
-                  content: Text(
-                    context.l10n.added_track_to_queue(track.name!),
-                  ),
-                ),
+              showToast(
+                context: context,
+                location: ToastLocation.topRight,
+                builder: (context, overlay) {
+                  return SurfaceCard(
+                    child: Text(
+                      context.l10n.added_track_to_queue(track.name!),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
               );
             }
             break;
           case TrackOptionValue.playNext:
             playback.addTracksAtFirst([track]);
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Text(
-                  context.l10n.track_will_play_next(track.name!),
-                ),
-              ),
-            );
+
+            if (context.mounted) {
+              showToast(
+                context: context,
+                location: ToastLocation.topRight,
+                builder: (context, overlay) {
+                  return SurfaceCard(
+                    child: Text(
+                      context.l10n.track_will_play_next(track.name!),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+              );
+            }
             break;
           case TrackOptionValue.removeFromQueue:
             playback.removeTrack(track.id!);
-            scaffoldMessenger.showSnackBar(
-              SnackBar(
-                content: Text(
-                  context.l10n.removed_track_from_queue(
-                    track.name!,
-                  ),
-                ),
-              ),
-            );
+
+            if (context.mounted) {
+              showToast(
+                context: context,
+                location: ToastLocation.topRight,
+                builder: (context, overlay) {
+                  return SurfaceCard(
+                    child: Text(
+                      context.l10n.removed_track_from_queue(
+                        track.name!,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  );
+                },
+              );
+            }
             break;
           case TrackOptionValue.favorite:
             favorites.toggleTrackLike(track);
@@ -283,7 +308,10 @@ class TrackOptions extends HookConsumerWidget {
           case TrackOptionValue.details:
             showDialog(
               context: context,
-              builder: (context) => TrackDetailsDialog(track: track),
+              builder: (context) => ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 400),
+                child: TrackDetailsDialog(track: track),
+              ),
             );
             break;
           case TrackOptionValue.download:
@@ -296,8 +324,7 @@ class TrackOptions extends HookConsumerWidget {
       },
       icon: icon ?? const Icon(SpotubeIcons.moreHorizontal),
       headings: [
-        ListTile(
-          dense: true,
+        Basic(
           leading: AspectRatio(
             aspectRatio: 1,
             child: ClipRRect(
@@ -313,18 +340,13 @@ class TrackOptions extends HookConsumerWidget {
             track.name!,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
+          ).semiBold(),
           subtitle: Align(
             alignment: Alignment.centerLeft,
             child: ArtistLink(
               artists: track.artists!,
-              onOverflowArtistClick: () => ServiceUtils.pushNamed(
-                context,
-                TrackPage.name,
-                pathParameters: {
-                  "id": track.id!,
-                },
+              onOverflowArtistClick: () => context.navigateTo(
+                TrackRoute(trackId: track.id!),
               ),
             ),
           ),
@@ -332,38 +354,47 @@ class TrackOptions extends HookConsumerWidget {
       ],
       children: [
         if (isLocalTrack)
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.delete,
             leading: const Icon(SpotubeIcons.trash),
-            title: Text(context.l10n.delete),
+            child: Text(context.l10n.delete),
           ),
         if (mediaQuery.smAndDown && !isLocalTrack)
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.album,
             leading: const Icon(SpotubeIcons.album),
-            title: Text(context.l10n.go_to_album),
-            subtitle: Text(track.album!.name!),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(context.l10n.go_to_album),
+                Text(
+                  track.album!.name!,
+                  style: context.theme.typography.xSmall,
+                ),
+              ],
+            ),
           ),
         if (!playlist.containsTrack(track)) ...[
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.addToQueue,
             leading: const Icon(SpotubeIcons.queueAdd),
-            title: Text(context.l10n.add_to_queue),
+            child: Text(context.l10n.add_to_queue),
           ),
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.playNext,
             leading: const Icon(SpotubeIcons.lightning),
-            title: Text(context.l10n.play_next),
+            child: Text(context.l10n.play_next),
           ),
         ] else
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.removeFromQueue,
             enabled: playlist.activeTrack?.id != track.id,
             leading: const Icon(SpotubeIcons.queueRemove),
-            title: Text(context.l10n.remove_from_queue),
+            child: Text(context.l10n.remove_from_queue),
           ),
         if (me.asData?.value != null && !isLocalTrack)
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.favorite,
             leading: favorites.isLiked
                 ? const Icon(
@@ -371,32 +402,32 @@ class TrackOptions extends HookConsumerWidget {
                     color: Colors.pink,
                   )
                 : const Icon(SpotubeIcons.heart),
-            title: Text(
+            child: Text(
               favorites.isLiked
                   ? context.l10n.remove_from_favorites
                   : context.l10n.save_as_favorite,
             ),
           ),
         if (auth.asData?.value != null && !isLocalTrack) ...[
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.startRadio,
             leading: const Icon(SpotubeIcons.radio),
-            title: Text(context.l10n.start_a_radio),
+            child: Text(context.l10n.start_a_radio),
           ),
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.addToPlaylist,
             leading: const Icon(SpotubeIcons.playlistAdd),
-            title: Text(context.l10n.add_to_playlist),
+            child: Text(context.l10n.add_to_playlist),
           ),
         ],
         if (userPlaylist && auth.asData?.value != null && !isLocalTrack)
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.removeFromPlaylist,
             leading: const Icon(SpotubeIcons.removeFilled),
-            title: Text(context.l10n.remove_from_playlist),
+            child: Text(context.l10n.remove_from_playlist),
           ),
         if (!isLocalTrack)
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.download,
             enabled: !isInQueue,
             leading: isInQueue
@@ -407,55 +438,58 @@ class TrackOptions extends HookConsumerWidget {
                     );
                   })
                 : const Icon(SpotubeIcons.download),
-            title: Text(context.l10n.download_track),
+            child: Text(context.l10n.download_track),
           ),
         if (!isLocalTrack)
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.blacklist,
-            leading: const Icon(SpotubeIcons.playlistRemove),
-            iconColor: isBlackListed != true ? Colors.red[400] : null,
-            textColor: isBlackListed != true ? Colors.red[400] : null,
-            title: Text(
+            leading: Icon(
+              SpotubeIcons.playlistRemove,
+              color: isBlackListed != true ? Colors.red[400] : null,
+            ),
+            child: Text(
               isBlackListed == true
                   ? context.l10n.remove_from_blacklist
                   : context.l10n.add_to_blacklist,
+              style: TextStyle(
+                color: isBlackListed != true ? Colors.red[400] : null,
+              ),
             ),
           ),
         if (!isLocalTrack)
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.share,
             leading: const Icon(SpotubeIcons.share),
-            title: Text(context.l10n.share),
+            child: Text(context.l10n.share),
           ),
         if (!isLocalTrack)
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.songlink,
             leading: Assets.logos.songlinkTransparent.image(
               width: 22,
               height: 22,
-              color: colorScheme.onSurface.withOpacity(0.5),
+              color: colorScheme.foreground.withOpacity(0.5),
             ),
-            title: Text(context.l10n.song_link),
+            child: Text(context.l10n.song_link),
           ),
         if (!isLocalTrack)
-          PopSheetEntry(
+          AdaptiveMenuButton(
             value: TrackOptionValue.details,
             leading: const Icon(SpotubeIcons.info),
-            title: Text(context.l10n.details),
+            child: Text(context.l10n.details),
           ),
       ],
     );
 
     //! This is the most ANTI pattern I've ever done, but it works
     showMenuCbRef?.value = (relativeRect) {
-      adaptivePopSheetList.showPopupMenu(context, relativeRect);
+      final offsetFromRect = Offset(
+        relativeRect.left,
+        relativeRect.top,
+      );
+      adaptivePopSheetList.showDropdownMenu(context, offsetFromRect);
     };
 
-    return ListTileTheme(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: adaptivePopSheetList,
-    );
+    return adaptivePopSheetList;
   }
 }

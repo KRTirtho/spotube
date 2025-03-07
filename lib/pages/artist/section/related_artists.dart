@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/provider/spotify/spotify.dart';

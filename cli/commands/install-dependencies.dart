@@ -24,6 +24,13 @@ class InstallDependenciesCommand extends Command {
       ],
       mandatory: true,
     );
+
+    argParser.addOption(
+      "arch",
+      abbr: "a",
+      allowed: ["x86", "arm64", "all"],
+      defaultsTo: "x86",
+    );
   }
 
   @override
@@ -38,14 +45,6 @@ class InstallDependenciesCommand extends Command {
           """
           sudo apt-get update -y
           sudo apt-get install -y tar clang cmake ninja-build pkg-config libgtk-3-dev make python3-pip python3-setuptools desktop-file-utils libgdk-pixbuf2.0-dev fakeroot strace fuse libunwind-dev locate patchelf gir1.2-appindicator3-0.1 libappindicator3-1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev mpv libmpv-dev libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libsoup-3.0-0 libsoup-3.0-dev
-          """,
-        );
-        break;
-      case "linux_arm":
-        await shell.run(
-          """
-          sudo apt-get update -y
-          sudo apt-get install -y pkg-config make python3-pip python3-setuptools
           """,
         );
         break;

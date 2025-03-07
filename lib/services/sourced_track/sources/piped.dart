@@ -50,6 +50,19 @@ class PipedSourcedTrack extends SourcedTrack {
     required Track track,
     required Ref ref,
   }) async {
+    // Means it wants a refresh of the stream
+    if (track is PipedSourcedTrack) {
+      final manifest =
+          await ref.read(pipedProvider).streams(track.sourceInfo.id);
+      return PipedSourcedTrack(
+        ref: ref,
+        siblings: track.siblings,
+        sourceInfo: track.sourceInfo,
+        source: toSourceMap(manifest),
+        track: track,
+      );
+    }
+
     final database = ref.read(databaseProvider);
     final cachedSource = await (database.select(database.sourceMatchTable)
           ..where((s) => s.trackId.equals(track.id!))
@@ -173,7 +186,7 @@ class PipedSourcedTrack extends SourcedTrack {
     final PipedSearchResult(items: searchResults) = await pipedClient.search(
       query,
       preference.searchMode == SearchMode.youtube
-          ? PipedFilter.video
+          ? PipedFilter.videos
           : PipedFilter.musicSongs,
     );
 
@@ -183,11 +196,8 @@ class PipedSourcedTrack extends SourcedTrack {
         : preference.searchMode == SearchMode.youtubeMusic;
 
     if (isYouTubeMusic) {
-      final artists = (track.artists ?? [])
-          .map((ar) => ar.name)
-          .toList()
-          .whereNotNull()
-          .toList();
+      final artists =
+          (track.artists ?? []).map((ar) => ar.name).toList().nonNulls.toList();
 
       return await Future.wait(
         searchResults

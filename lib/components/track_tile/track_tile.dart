@@ -1,29 +1,31 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/hover_builder.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/components/track_tile/track_options.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/button_variance.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class TrackTile extends HookConsumerWidget {
   /// [index] will not be shown if null
@@ -88,9 +90,10 @@ class TrackTile extends HookConsumerWidget {
         },
         child: HoverBuilder(
           permanentState: isSelected || constrains.smAndDown ? true : null,
-          builder: (context, isHovering) => ListTile(
+          builder: (context, isHovering) => ButtonTile(
             selected: isSelected,
-            onTap: () async {
+            onPressed: () async {
+              if (isBlackListed) return;
               try {
                 isLoading.value = true;
                 await onTap?.call();
@@ -101,46 +104,58 @@ class TrackTile extends HookConsumerWidget {
               }
             },
             onLongPress: onLongPress,
-            enabled: !isBlackListed,
-            contentPadding: EdgeInsets.zero,
-            tileColor: isBlackListed ? theme.colorScheme.errorContainer : null,
-            horizontalTitleGap: 12,
-            leadingAndTrailingTextStyle: theme.textTheme.bodyMedium,
+            style: (isBlackListed
+                    ? ButtonVariance.destructive
+                    : ButtonVariance.ghost)
+                .copyWith(
+              padding: (context, states) =>
+                  const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
+            ),
             leading: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 ...?leadingActions,
-                if (index != null && onChanged == null && constrains.mdAndUp)
-                  SizedBox(
-                    width: 50,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6),
-                      child: Text(
-                        '${(index ?? 0) + 1}',
-                        maxLines: 1,
-                        style: theme.textTheme.bodySmall,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                else if (constrains.smAndDown)
-                  const SizedBox(width: 16),
-                if (onChanged != null)
-                  Checkbox(
-                    value: selected,
-                    onChanged: onChanged,
+                AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 300),
+                  crossFadeState: index != null && onChanged == null
+                      ? CrossFadeState.showSecond
+                      : CrossFadeState.showFirst,
+                  firstChild: Checkbox(
+                    state: selected
+                        ? CheckboxState.checked
+                        : CheckboxState.unchecked,
+                    onChanged: (state) =>
+                        onChanged?.call(state == CheckboxState.checked),
                   ),
+                  secondChild: constrains.smAndDown
+                      ? const SizedBox(width: 16)
+                      : SizedBox(
+                          width: 50,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 6),
+                            child: Text(
+                              '${(index ?? 0) + 1}',
+                              maxLines: 1,
+                              style: theme.typography.small,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                ),
                 Stack(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(4),
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: UniversalImage(
-                          path: (track.album?.images).asUrlString(
-                            placeholder: ImagePlaceholder.albumArt,
-                          ),
+                    Container(
+                      height: 40,
+                      width: 40,
+                      decoration: BoxDecoration(
+                        borderRadius: theme.borderRadiusMd,
+                        image: DecorationImage(
                           fit: BoxFit.cover,
+                          image: UniversalImage.imageProvider(
+                            (track.album?.images).asUrlString(
+                              placeholder: ImagePlaceholder.albumArt,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -148,46 +163,49 @@ class TrackTile extends HookConsumerWidget {
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: theme.borderRadiusMd,
                           color: isHovering
-                              ? Colors.black.withOpacity(0.4)
+                              ? Colors.black.withAlpha(102)
                               : Colors.transparent,
                         ),
                       ),
                     ),
                     Positioned.fill(
                       child: Center(
-                        child: IconTheme(
-                          data: theme.iconTheme
-                              .copyWith(size: 26, color: Colors.white),
-                          child: Skeleton.ignore(
-                            child: Consumer(
-                              builder: (context, ref, _) {
-                                final isFetchingActiveTrack =
-                                    ref.watch(queryingTrackInfoProvider);
-                                return AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 300),
-                                  child: (isPlaying && isFetchingActiveTrack) ||
-                                          isLoading.value
-                                      ? const SizedBox(
-                                          width: 26,
-                                          height: 26,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 1.5,
-                                            color: Colors.white,
-                                          ),
-                                        )
-                                      : isPlaying
-                                          ? Icon(
-                                              SpotubeIcons.pause,
-                                              color: theme.colorScheme.primary,
-                                            )
-                                          : !isHovering
-                                              ? const SizedBox.shrink()
-                                              : const Icon(SpotubeIcons.play),
-                                );
-                              },
-                            ),
+                        child: Skeleton.ignore(
+                          child: Consumer(
+                            builder: (context, ref, _) {
+                              final isFetchingActiveTrack =
+                                  ref.watch(queryingTrackInfoProvider);
+                              return AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 300),
+                                child: switch ((
+                                  isPlaying,
+                                  isFetchingActiveTrack,
+                                  isPlaying,
+                                  isHovering,
+                                  isLoading.value
+                                )) {
+                                  (true, true, _, _, _) ||
+                                  (_, _, _, _, true) =>
+                                    const SizedBox(
+                                      width: 26,
+                                      height: 26,
+                                      child:
+                                          CircularProgressIndicator(size: 1.5),
+                                    ),
+                                  (_, _, true, _, _) => Icon(
+                                      SpotubeIcons.pause,
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  (_, _, _, true, _) => const Icon(
+                                      SpotubeIcons.play,
+                                      color: Colors.white,
+                                    ),
+                                  _ => const SizedBox.shrink(),
+                                },
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -206,12 +224,26 @@ class TrackTile extends HookConsumerWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                    _ => LinkText(
-                        track.name!,
-                        "/track/${track.id}",
-                        push: true,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                    _ => Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Flexible(
+                            child: Button(
+                              style: ButtonVariance.link.copyWith(
+                                padding: (context, states) => EdgeInsets.zero,
+                              ),
+                              onPressed: () {
+                                context
+                                    .navigateTo(TrackRoute(trackId: track.id!));
+                              },
+                              child: Text(
+                                track.name!,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                   },
                 ),
@@ -229,8 +261,8 @@ class TrackTile extends HookConsumerWidget {
                           alignment: Alignment.centerLeft,
                           child: LinkText(
                             track.album!.name!,
-                            "/album/${track.album?.id}",
-                            extra: track.album,
+                            AlbumRoute(
+                                album: track.album!, id: track.album!.id!),
                             push: true,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -251,13 +283,11 @@ class TrackTile extends HookConsumerWidget {
                         constraints: const BoxConstraints(maxHeight: 40),
                         child: ArtistLink(
                           artists: track.artists ?? [],
-                          onOverflowArtistClick: () => ServiceUtils.pushNamed(
-                            context,
-                            TrackPage.name,
-                            pathParameters: {
-                              "id": track.id!,
-                            },
-                          ),
+                          onOverflowArtistClick: () {
+                            context.navigateTo(
+                              TrackRoute(trackId: track.id!),
+                            );
+                          },
                         ),
                       ),
                     ),

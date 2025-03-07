@@ -3,12 +3,26 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:logging/logging.dart' as logging;
+
+final _loggingToLoggerLevel = {
+  logging.Level.ALL: Level.all,
+  logging.Level.FINEST: Level.trace,
+  logging.Level.FINER: Level.debug,
+  logging.Level.FINE: Level.info,
+  logging.Level.CONFIG: Level.info,
+  logging.Level.INFO: Level.info,
+  logging.Level.WARNING: Level.warning,
+  logging.Level.SEVERE: Level.error,
+  logging.Level.SHOUT: Level.fatal,
+  logging.Level.OFF: Level.off,
+};
 
 class AppLogger {
   static late final Logger log;
@@ -18,6 +32,24 @@ class AppLogger {
     log = Logger(
       level: kDebugMode || (verbose && kReleaseMode) ? Level.all : Level.info,
     );
+  }
+
+  static void _initInternalPackageLoggers() {
+    if (!kDebugMode) return;
+    logging.hierarchicalLoggingEnabled = true;
+    logging.Logger('YoutubeExplode.StreamsClient')
+      ..level = logging.Level.SEVERE
+      ..onRecord.listen(
+        (record) {
+          log.log(
+            _loggingToLoggerLevel[record.level] ?? Level.info,
+            record.message,
+            error: record.error,
+            stackTrace: record.stackTrace,
+            time: record.time,
+          );
+        },
+      );
   }
 
   static R? runZoned<R>(R Function() body) {
@@ -45,6 +77,8 @@ class AppLogger {
             }).sendPort,
           );
         }
+
+        _initInternalPackageLoggers();
 
         getLogsPath().then((value) => logFile = value);
 

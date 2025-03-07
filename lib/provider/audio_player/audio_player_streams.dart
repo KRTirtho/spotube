@@ -1,15 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:palette_generator/palette_generator.dart';
-import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/provider/skip_segments/skip_segments.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
@@ -48,36 +45,12 @@ class AudioPlayerStreamListeners {
   PlaybackHistoryActions get history =>
       ref.read(playbackHistoryActionsProvider);
 
-  Future<void> updatePalette() async {
-    final palette = ref.read(paletteProvider);
-    if (!preferences.albumColorSync) {
-      if (palette != null) ref.read(paletteProvider.notifier).state = null;
-      return;
-    }
-    return Future.microtask(() async {
-      final activeTrack = ref.read(audioPlayerProvider).activeTrack;
-      if (activeTrack == null) return;
-
-      final palette = await PaletteGenerator.fromImageProvider(
-        UniversalImage.imageProvider(
-          (activeTrack.album?.images).asUrlString(
-            placeholder: ImagePlaceholder.albumArt,
-          ),
-          height: 50,
-          width: 50,
-        ),
-      );
-      ref.read(paletteProvider.notifier).state = palette;
-    });
-  }
-
   StreamSubscription subscribeToPlaylist() {
     return audioPlayer.playlistStream.listen((mpvPlaylist) {
       try {
         if (audioPlayerState.activeTrack == null) return;
         notificationService.addTrack(audioPlayerState.activeTrack!);
         discord.updatePresence(audioPlayerState.activeTrack!);
-        updatePalette();
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
       }
@@ -131,16 +104,19 @@ class AudioPlayerStreamListeners {
   StreamSubscription subscribeToPosition() {
     String lastTrack = ""; // used to prevent multiple calls to the same track
     return audioPlayer.positionStream.listen((event) async {
+      final percentProgress =
+          (event.inSeconds / max(audioPlayer.duration.inSeconds, 1)) * 100;
       try {
-        if (event < const Duration(seconds: 3) ||
+        if (percentProgress < 80 ||
             audioPlayerState.playlist.index == -1 ||
             audioPlayerState.playlist.index ==
                 audioPlayerState.tracks.length - 1) {
           return;
         }
-        final nextTrack = SpotubeMedia.fromMedia(audioPlayerState
-            .playlist.medias
-            .elementAt(audioPlayerState.playlist.index + 1));
+        final nextTrack = SpotubeMedia.fromMedia(
+          audioPlayerState.playlist.medias
+              .elementAt(audioPlayerState.playlist.index + 1),
+        );
 
         if (lastTrack == nextTrack.track.id || nextTrack.track is LocalTrack) {
           return;

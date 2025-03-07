@@ -1,58 +1,87 @@
-import 'package:flutter/material.dart' hide Image;
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart' show Badge;
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
-import 'package:spotube/modules/library/user_local_tracks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
+import 'package:spotube/collections/side_bar_tiles.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/modules/library/user_albums.dart';
-import 'package:spotube/modules/library/user_artists.dart';
-import 'package:spotube/modules/library/user_downloads.dart';
-import 'package:spotube/modules/library/user_playlists.dart';
-import 'package:spotube/components/themed_button_tab_bar.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 
+@RoutePage()
 class LibraryPage extends HookConsumerWidget {
-  static const name = "library";
-
   const LibraryPage({super.key});
+
   @override
   Widget build(BuildContext context, ref) {
     final downloadingCount = ref.watch(downloadManagerProvider).$downloadCount;
+    final router = context.watchRouter;
+    final sidebarLibraryTileList = useMemoized(
+      () => [
+        ...getSidebarLibraryTileList(context.l10n),
+        SideBarTiles(
+          id: "downloads",
+          pathPrefix: "library/downloads",
+          title: context.l10n.downloads,
+          route: const UserDownloadsRoute(),
+          icon: SpotubeIcons.download,
+        ),
+      ],
+      [context.l10n],
+    );
+    final index = sidebarLibraryTileList.indexWhere(
+      (e) => router.currentPath.startsWith(e.pathPrefix),
+    );
 
-    return DefaultTabController(
-      length: 5,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        context.navigateTo(const HomeRoute());
+      },
       child: SafeArea(
         bottom: false,
-        child: Scaffold(
-          appBar: PageWindowTitleBar(
-            centerTitle: true,
-            leading: ThemedButtonsTabBar(
-              tabs: [
-                Tab(text: "  ${context.l10n.playlists}  "),
-                Tab(text: "  ${context.l10n.local_tab}  "),
-                Tab(
-                  child: Badge(
-                    isLabelVisible: downloadingCount > 0,
-                    label: Text(downloadingCount.toString()),
-                    child: Text("  ${context.l10n.downloads}  "),
+        child: LayoutBuilder(builder: (context, constraints) {
+          return Scaffold(
+            headers: [
+              if (constraints.smAndDown)
+                TitleBar(
+                  automaticallyImplyLeading: false,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: TabList(
+                      index: index,
+                      onChanged: (index) {
+                        context.navigateTo(sidebarLibraryTileList[index].route);
+                      },
+                      children: [
+                        for (final tile in sidebarLibraryTileList)
+                          TabItem(
+                            child: Badge(
+                              isLabelVisible: tile.id == 'downloads' &&
+                                  downloadingCount > 0,
+                              label: Text(downloadingCount.toString()),
+                              child: Text(tile.title),
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
+                )
+              else
+                const TitleBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.transparent,
+                  surfaceBlur: 0,
+                  height: 32,
                 ),
-                Tab(text: "  ${context.l10n.artists}  "),
-                Tab(text: "  ${context.l10n.albums}  "),
-              ],
-            ),
-            leadingWidth: double.infinity,
-          ),
-          body: const TabBarView(
-            children: [
-              UserPlaylists(),
-              UserLocalTracks(),
-              UserDownloads(),
-              UserArtists(),
-              UserAlbums(),
+              const Gap(10),
             ],
-          ),
-        ),
+            child: const AutoRouter(),
+          );
+        }),
       ),
     );
   }

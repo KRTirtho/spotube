@@ -1,19 +1,20 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart' show ListTile;
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/pages/profile/profile.dart';
 import 'package:spotube/pages/mobile_login/hooks/login_callback.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class SettingsAccountSection extends HookConsumerWidget {
   const SettingsAccountSection({super.key});
@@ -21,17 +22,11 @@ class SettingsAccountSection extends HookConsumerWidget {
   @override
   Widget build(context, ref) {
     final theme = Theme.of(context);
-    final router = GoRouter.of(context);
 
     final auth = ref.watch(authenticationProvider);
     final scrobbler = ref.watch(scrobblerProvider);
     final me = ref.watch(meProvider);
     final meData = me.asData?.value;
-
-    final logoutBtnStyle = FilledButton.styleFrom(
-      backgroundColor: Colors.red,
-      foregroundColor: Colors.white,
-    );
 
     final onLogin = useLoginCallback(ref);
 
@@ -44,8 +39,9 @@ class SettingsAccountSection extends HookConsumerWidget {
             title: Text(context.l10n.user_profile),
             trailing: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: CircleAvatar(
-                backgroundImage: UniversalImage.imageProvider(
+              child: Avatar(
+                initials: Avatar.getInitials(meData?.displayName ?? "User"),
+                provider: UniversalImage.imageProvider(
                   (meData?.images).asUrlString(
                     placeholder: ImagePlaceholder.artist,
                   ),
@@ -53,7 +49,7 @@ class SettingsAccountSection extends HookConsumerWidget {
               ),
             ),
             onTap: () {
-              ServiceUtils.pushNamed(context, ProfilePage.name);
+              context.navigateTo(ProfileRoute());
             },
           ),
         if (auth.asData?.value == null)
@@ -76,15 +72,8 @@ class SettingsAccountSection extends HookConsumerWidget {
               onTap: constrains.mdAndUp ? null : onLogin,
               trailing: constrains.smAndDown
                   ? null
-                  : FilledButton(
+                  : Button.primary(
                       onPressed: onLogin,
-                      style: ButtonStyle(
-                        shape: WidgetStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25.0),
-                          ),
-                        ),
-                      ),
                       child: Text(
                         context.l10n.connect_with_spotify.toUpperCase(),
                       ),
@@ -106,11 +95,10 @@ class SettingsAccountSection extends HookConsumerWidget {
                   ),
                 ),
               ),
-              trailing: FilledButton(
-                style: logoutBtnStyle,
+              trailing: Button.destructive(
                 onPressed: () async {
                   ref.read(authenticationProvider.notifier).logout();
-                  GoRouter.of(context).pop();
+                  context.maybePop();
                 },
                 child: Text(context.l10n.logout),
               ),
@@ -121,27 +109,22 @@ class SettingsAccountSection extends HookConsumerWidget {
             leading: const Icon(SpotubeIcons.lastFm),
             title: Text(context.l10n.login_with_lastfm),
             subtitle: Text(context.l10n.scrobble_to_lastfm),
-            trailing: FilledButton.icon(
-              icon: const Icon(SpotubeIcons.lastFm),
-              label: Text(context.l10n.connect),
+            trailing: Button.secondary(
+              leading: const Icon(SpotubeIcons.lastFm),
               onPressed: () {
-                router.push("/lastfm-login");
+                context.navigateTo(const LastFMLoginRoute());
               },
-              style: FilledButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 186, 0, 0),
-                foregroundColor: Colors.white,
-              ),
+              child: Text(context.l10n.connect),
             ),
           )
         else
           ListTile(
             leading: const Icon(SpotubeIcons.lastFm),
             title: Text(context.l10n.disconnect_lastfm),
-            trailing: FilledButton(
+            trailing: Button.destructive(
               onPressed: () {
                 ref.read(scrobblerProvider.notifier).logout();
               },
-              style: logoutBtnStyle,
               child: Text(context.l10n.disconnect),
             ),
           ),

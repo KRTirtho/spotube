@@ -4,7 +4,7 @@ on:
     inputs:
       version:
         description: Version to publish (x.x.x)
-        default: 3.8.3
+        default: 4.0.0
         required: true
       dry_run:
         description: Dry run
@@ -55,7 +55,7 @@ jobs:
       - uses: dsaltares/fetch-gh-release-asset@master
         with:
           version: tags/v${{ inputs.version }} # mind the "v" prefix
-          file: spotube-linux-${{inputs.version}}-x86_64.tar.xz 
+          file: spotube-linux-${{inputs.version}}-x86_64.tar.xz
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update PKGBUILD versions
@@ -111,7 +111,7 @@ jobs:
     steps:
       - name: Tagname (workflow dispatch)
         run: echo 'TAG_NAME=${{inputs.version}}' >> $GITHUB_ENV
-        
+
       - uses: robinraju/release-downloader@main
         with:
           repository: KRTirtho/spotube
@@ -120,11 +120,11 @@ jobs:
           zipBall: false
           out-file-path: dist
           fileName: "Spotube-playstore-all-arch.aab"
-      
+
       - name: Create service-account.json
         run: |
           echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_BASE64 }}" | base64 -d > service-account.json
-      
+
       - name: Upload Android Release to Play Store
         if: ${{!inputs.dry_run}}
         uses: r0adkll/upload-google-play@v1

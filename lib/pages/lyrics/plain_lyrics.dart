@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shimmers/shimmer_lyrics.dart';
@@ -30,7 +30,7 @@ class PlainLyrics extends HookConsumerWidget {
     final playlist = ref.watch(audioPlayerProvider);
     final lyricsQuery = ref.watch(syncedLyricsProvider(playlist.activeTrack));
     final mediaQuery = MediaQuery.of(context);
-    final textTheme = Theme.of(context).textTheme;
+    final typography = Theme.of(context).typography;
 
     final textZoomLevel = useState<int>(defaultTextZoom);
 
@@ -44,9 +44,8 @@ class PlainLyrics extends HookConsumerWidget {
                 child: Text(
                   playlist.activeTrack?.name ?? "",
                   style: mediaQuery.mdAndUp
-                      ? textTheme.displaySmall
-                      : textTheme.headlineMedium?.copyWith(
-                          fontSize: 25,
+                      ? typography.h3
+                      : typography.h4.copyWith(
                           color: palette.titleTextColor,
                         ),
                 ),
@@ -54,10 +53,10 @@ class PlainLyrics extends HookConsumerWidget {
               Center(
                 child: Text(
                   playlist.activeTrack?.artists?.asString() ?? "",
-                  style: (mediaQuery.mdAndUp
-                          ? textTheme.headlineSmall
-                          : textTheme.titleLarge)
-                      ?.copyWith(color: palette.bodyTextColor),
+                  style: (mediaQuery.mdAndUp ? typography.h4 : typography.large)
+                      .copyWith(
+                    color: palette.bodyTextColor,
+                  ),
                 ),
               )
             ],
@@ -79,7 +78,7 @@ class PlainLyrics extends HookConsumerWidget {
                               children: [
                                 Text(
                                   context.l10n.no_lyrics_available,
-                                  style: textTheme.bodyLarge?.copyWith(
+                                  style: typography.large.copyWith(
                                     color: palette.bodyTextColor,
                                   ),
                                   textAlign: TextAlign.center,
@@ -107,7 +106,9 @@ class PlainLyrics extends HookConsumerWidget {
                         return AnimatedDefaultTextStyle(
                           duration: const Duration(milliseconds: 200),
                           style: TextStyle(
-                            color: palette.bodyTextColor,
+                            color: isModal == true
+                                ? context.theme.colorScheme.foreground
+                                : palette.bodyTextColor,
                             fontSize: 24 * textZoomLevel.value / 100,
                             height: textZoomLevel.value < 70
                                 ? 1.5

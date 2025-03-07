@@ -1,329 +1,235 @@
-import 'package:flutter/foundation.dart' hide Category;
-import 'package:flutter/widgets.dart';
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart' hide Search;
-import 'package:spotube/models/spotify/recommendation_seeds.dart';
-import 'package:spotube/pages/album/album.dart';
-import 'package:spotube/pages/connect/connect.dart';
-import 'package:spotube/pages/connect/control/control.dart';
-import 'package:spotube/pages/getting_started/getting_started.dart';
-import 'package:spotube/pages/home/feed/feed_section.dart';
-import 'package:spotube/pages/home/genres/genre_playlists.dart';
-import 'package:spotube/pages/home/genres/genres.dart';
-import 'package:spotube/pages/home/home.dart';
-import 'package:spotube/pages/lastfm_login/lastfm_login.dart';
-import 'package:spotube/pages/library/local_folder.dart';
-import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
-import 'package:spotube/pages/library/playlist_generate/playlist_generate_result.dart';
-import 'package:spotube/pages/lyrics/mini_lyrics.dart';
-import 'package:spotube/pages/playlist/liked_playlist.dart';
-import 'package:spotube/pages/playlist/playlist.dart';
-import 'package:spotube/pages/profile/profile.dart';
-import 'package:spotube/pages/search/search.dart';
-import 'package:spotube/pages/settings/blacklist.dart';
-import 'package:spotube/pages/settings/about.dart';
-import 'package:spotube/pages/settings/logs.dart';
-import 'package:spotube/pages/stats/albums/albums.dart';
-import 'package:spotube/pages/stats/artists/artists.dart';
-import 'package:spotube/pages/stats/fees/fees.dart';
-import 'package:spotube/pages/stats/minutes/minutes.dart';
-import 'package:spotube/pages/stats/playlists/playlists.dart';
-import 'package:spotube/pages/stats/stats.dart';
-import 'package:spotube/pages/stats/streams/streams.dart';
-import 'package:spotube/pages/track/track.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
-import 'package:spotube/components/spotube_page_route.dart';
-import 'package:spotube/pages/artist/artist.dart';
-import 'package:spotube/pages/library/library.dart';
-import 'package:spotube/pages/lyrics/lyrics.dart';
-import 'package:spotube/pages/root/root_app.dart';
-import 'package:spotube/pages/settings/settings.dart';
-import 'package:spotube/pages/mobile_login/mobile_login.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
-final shellRouteNavigatorKey = GlobalKey<NavigatorState>();
-final routerProvider = Provider((ref) {
-  return GoRouter(
-    navigatorKey: rootNavigatorKey,
-    routes: [
-      ShellRoute(
-        navigatorKey: shellRouteNavigatorKey,
-        builder: (context, state, child) => RootApp(child: child),
-        routes: [
-          GoRoute(
-            path: "/",
-            name: HomePage.name,
-            redirect: (context, state) async {
-              final auth = await ref.read(authenticationProvider.future);
 
-              if (auth == null && !KVStoreService.doneGettingStarted) {
-                return "/getting-started";
-              }
+@AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
+class AppRouter extends RootStackRouter {
+  final WidgetRef ref;
 
-              return null;
-            },
-            pageBuilder: (context, state) =>
-                const SpotubePage(child: HomePage()),
-            routes: [
-              GoRoute(
-                path: "genres",
-                name: GenrePage.name,
-                pageBuilder: (context, state) =>
-                    const SpotubePage(child: GenrePage()),
-              ),
-              GoRoute(
-                path: "genre/:categoryId",
-                name: GenrePlaylistsPage.name,
-                pageBuilder: (context, state) => SpotubePage(
-                  child: GenrePlaylistsPage(
-                    category: state.extra as Category,
-                  ),
-                ),
-              ),
-              GoRoute(
-                path: "feeds/:feedId",
-                name: HomeFeedSectionPage.name,
-                pageBuilder: (context, state) => SpotubePage(
-                  child: HomeFeedSectionPage(
-                    sectionUri: state.pathParameters["feedId"] as String,
-                  ),
-                ),
-              )
-            ],
-          ),
-          GoRoute(
-            path: "/search",
-            name: SearchPage.name,
-            pageBuilder: (context, state) =>
-                const SpotubePage(child: SearchPage()),
-          ),
-          GoRoute(
-              path: "/library",
-              name: LibraryPage.name,
-              pageBuilder: (context, state) =>
-                  const SpotubePage(child: LibraryPage()),
-              routes: [
-                GoRoute(
-                  path: "generate",
-                  name: PlaylistGeneratorPage.name,
-                  pageBuilder: (context, state) =>
-                      const SpotubePage(child: PlaylistGeneratorPage()),
-                  routes: [
-                    GoRoute(
-                      path: "result",
-                      name: PlaylistGenerateResultPage.name,
-                      pageBuilder: (context, state) => SpotubePage(
-                        child: PlaylistGenerateResultPage(
-                          state: state.extra as GeneratePlaylistProviderInput,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                GoRoute(
-                  path: "local",
-                  name: LocalLibraryPage.name,
-                  pageBuilder: (context, state) {
-                    assert(state.extra is String);
-                    return SpotubePage(
-                      child: LocalLibraryPage(
-                        state.extra as String,
-                        isDownloads:
-                            state.uri.queryParameters["downloads"] != null,
-                        isCache: state.uri.queryParameters["cache"] != null,
-                      ),
-                    );
+  AppRouter(this.ref) : super(navigatorKey: rootNavigatorKey);
+
+  @override
+  List<AutoRoute> get routes => [
+        AutoRoute(
+          page: RootAppRoute.page,
+          path: "/",
+          initial: true,
+          children: [
+            AutoRoute(
+              path: "home",
+              page: HomeRoute.page,
+              initial: true,
+              guards: [
+                AutoRouteGuardCallback(
+                  (resolver, router) async {
+                    final auth = await ref.read(authenticationProvider.future);
+
+                    if (auth == null && !KVStoreService.doneGettingStarted) {
+                      resolver.redirect(const GettingStartedRoute());
+                    } else {
+                      resolver.next(true);
+                    }
                   },
                 ),
-              ]),
-          GoRoute(
-            path: "/lyrics",
-            name: LyricsPage.name,
-            pageBuilder: (context, state) =>
-                const SpotubePage(child: LyricsPage()),
-          ),
-          GoRoute(
-            path: "/settings",
-            name: SettingsPage.name,
-            pageBuilder: (context, state) => const SpotubePage(
-              child: SettingsPage(),
+              ],
             ),
-            routes: [
-              GoRoute(
-                path: "blacklist",
-                name: BlackListPage.name,
-                pageBuilder: (context, state) => SpotubeSlidePage(
-                  child: const BlackListPage(),
-                ),
-              ),
-              if (!kIsWeb)
-                GoRoute(
-                  path: "logs",
-                  name: LogsPage.name,
-                  pageBuilder: (context, state) => SpotubeSlidePage(
-                    child: const LogsPage(),
-                  ),
-                ),
-              GoRoute(
-                path: "about",
-                name: AboutSpotube.name,
-                pageBuilder: (context, state) => SpotubeSlidePage(
-                  child: const AboutSpotube(),
-                ),
-              ),
-            ],
-          ),
-          GoRoute(
-            path: "/album/:id",
-            name: AlbumPage.name,
-            pageBuilder: (context, state) {
-              assert(state.extra is AlbumSimple);
-              return SpotubePage(
-                child: AlbumPage(album: state.extra as AlbumSimple),
-              );
-            },
-          ),
-          GoRoute(
-            path: "/artist/:id",
-            name: ArtistPage.name,
-            pageBuilder: (context, state) {
-              assert(state.pathParameters["id"] != null);
-              return SpotubePage(
-                  child: ArtistPage(state.pathParameters["id"]!));
-            },
-          ),
-          GoRoute(
-            path: "/playlist/:id",
-            name: PlaylistPage.name,
-            pageBuilder: (context, state) {
-              assert(state.extra is PlaylistSimple);
-              return SpotubePage(
-                child: state.pathParameters["id"] == "user-liked-tracks"
-                    ? LikedPlaylistPage(playlist: state.extra as PlaylistSimple)
-                    : PlaylistPage(playlist: state.extra as PlaylistSimple),
-              );
-            },
-          ),
-          GoRoute(
-            path: "/track/:id",
-            name: TrackPage.name,
-            pageBuilder: (context, state) {
-              final id = state.pathParameters["id"]!;
-              return SpotubePage(
-                child: TrackPage(trackId: id),
-              );
-            },
-          ),
-          GoRoute(
-            path: "/connect",
-            name: ConnectPage.name,
-            pageBuilder: (context, state) => const SpotubePage(
-              child: ConnectPage(),
+            AutoRoute(
+              path: "home/genres",
+              page: GenreRoute.page,
             ),
-            routes: [
-              GoRoute(
-                path: "control",
-                name: ConnectControlPage.name,
-                pageBuilder: (context, state) {
-                  return const SpotubePage(
-                    child: ConnectControlPage(),
-                  );
-                },
-              )
-            ],
-          ),
-          GoRoute(
-            path: "/profile",
-            name: ProfilePage.name,
-            pageBuilder: (context, state) =>
-                const SpotubePage(child: ProfilePage()),
-          ),
-          GoRoute(
-            path: "/stats",
-            name: StatsPage.name,
-            pageBuilder: (context, state) => const SpotubePage(
-              child: StatsPage(),
+            AutoRoute(
+              path: "home/genre/:categoryId",
+              page: GenrePlaylistsRoute.page,
             ),
-            routes: [
-              GoRoute(
-                path: "minutes",
-                name: StatsMinutesPage.name,
-                pageBuilder: (context, state) => const SpotubePage(
-                  child: StatsMinutesPage(),
+            AutoRoute(
+              path: "home/feeds/:feedId",
+              page: HomeFeedSectionRoute.page,
+            ),
+            AutoRoute(
+              path: "search",
+              page: SearchRoute.page,
+            ),
+            AutoRoute(
+              path: "library",
+              page: LibraryRoute.page,
+              children: [
+                AutoRoute(
+                  path: "playlists",
+                  page: UserPlaylistsRoute.page,
                 ),
-              ),
-              GoRoute(
-                path: "streams",
-                name: StatsStreamsPage.name,
-                pageBuilder: (context, state) => const SpotubePage(
-                  child: StatsStreamsPage(),
+                AutoRoute(
+                  path: "artists",
+                  page: UserArtistsRoute.page,
                 ),
-              ),
-              GoRoute(
-                path: "fees",
-                name: StatsStreamFeesPage.name,
-                pageBuilder: (context, state) => const SpotubePage(
-                  child: StatsStreamFeesPage(),
+                AutoRoute(
+                  path: "albums",
+                  page: UserAlbumsRoute.page,
                 ),
-              ),
-              GoRoute(
-                path: "artists",
-                name: StatsArtistsPage.name,
-                pageBuilder: (context, state) => const SpotubePage(
-                  child: StatsArtistsPage(),
+                AutoRoute(
+                  path: "local",
+                  page: UserLocalLibraryRoute.page,
                 ),
-              ),
-              GoRoute(
-                path: "albums",
-                name: StatsAlbumsPage.name,
-                pageBuilder: (context, state) => const SpotubePage(
-                  child: StatsAlbumsPage(),
+                AutoRoute(
+                  path: "local/folder",
+                  page: LocalLibraryRoute.page,
+                  // parentNavigatorKey: shellRouteNavigatorKey,
                 ),
-              ),
-              GoRoute(
-                path: "playlists",
-                name: StatsPlaylistsPage.name,
-                pageBuilder: (context, state) => const SpotubePage(
-                  child: StatsPlaylistsPage(),
+                AutoRoute(
+                  path: "downloads",
+                  page: UserDownloadsRoute.page,
                 ),
+              ],
+            ),
+            AutoRoute(
+              path: "library/generate",
+              page: PlaylistGeneratorRoute.page,
+            ),
+            AutoRoute(
+              path: "library/generate/result",
+              page: PlaylistGenerateResultRoute.page,
+            ),
+            AutoRoute(
+              path: "lyrics",
+              page: LyricsRoute.page,
+            ),
+            AutoRoute(
+              path: "settings",
+              page: SettingsRoute.page,
+            ),
+            AutoRoute(
+              path: "settings/blacklist",
+              page: BlackListRoute.page,
+            ),
+            if (!kIsWeb)
+              AutoRoute(
+                path: "settings/logs",
+                page: LogsRoute.page,
               ),
-            ],
-          )
-        ],
-      ),
-      GoRoute(
-        path: "/mini-player",
-        name: MiniLyricsPage.name,
-        parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (context, state) => SpotubePage(
-          child: MiniLyricsPage(prevSize: state.extra as Size),
+            AutoRoute(
+              path: "settings/about",
+              page: AboutSpotubeRoute.page,
+            ),
+            AutoRoute(
+              path: "album/:id",
+              page: AlbumRoute.page,
+            ),
+            AutoRoute(
+              path: "artist/:id",
+              page: ArtistRoute.page,
+            ),
+            AutoRoute(
+              path: "liked-tracks",
+              page: LikedPlaylistRoute.page,
+            ),
+            AutoRoute(
+              path: "playlist/:id",
+              page: PlaylistRoute.page,
+              guards: [
+                AutoRouteGuard.redirect(
+                  (resolver) {
+                    final PlaylistRouteArgs(:id, :playlist) =
+                        resolver.route.args as PlaylistRouteArgs;
+                    if (id == "user-liked-tracks") {
+                      return LikedPlaylistRoute(playlist: playlist);
+                    }
+
+                    return null;
+                  },
+                ),
+              ],
+            ),
+            AutoRoute(
+              path: "track/:id",
+              page: TrackRoute.page,
+            ),
+            AutoRoute(
+              path: "connect",
+              page: ConnectRoute.page,
+            ),
+            AutoRoute(
+              path: "connect/control",
+              page: ConnectControlRoute.page,
+            ),
+            AutoRoute(
+              path: "profile",
+              page: ProfileRoute.page,
+            ),
+            AutoRoute(
+              path: "stats",
+              page: StatsRoute.page,
+            ),
+            AutoRoute(
+              path: "stats/minutes",
+              page: StatsMinutesRoute.page,
+            ),
+            AutoRoute(
+              path: "stats/streams",
+              page: StatsStreamsRoute.page,
+            ),
+            AutoRoute(
+              path: "stats/fees",
+              page: StatsStreamFeesRoute.page,
+            ),
+            AutoRoute(
+              path: "stats/artists",
+              page: StatsArtistsRoute.page,
+            ),
+            AutoRoute(
+              path: "stats/albums",
+              page: StatsAlbumsRoute.page,
+            ),
+            AutoRoute(
+              path: "stats/playlists",
+              page: StatsPlaylistsRoute.page,
+            ),
+          ],
         ),
-      ),
-      GoRoute(
-        path: "/getting-started",
-        name: GettingStarting.name,
-        parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (context, state) => const SpotubePage(
-          child: GettingStarting(),
+        CustomRoute(
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+          durationInMilliseconds: 200,
+          reverseDurationInMilliseconds: 200,
+          path: "/player/queue",
+          page: PlayerQueueRoute.page,
         ),
-      ),
-      GoRoute(
-        path: "/login",
-        name: WebViewLogin.name,
-        parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (context, state) => const SpotubePage(
-          child: WebViewLogin(),
+        CustomRoute(
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+          durationInMilliseconds: 200,
+          reverseDurationInMilliseconds: 200,
+          path: "/player/sources",
+          page: PlayerTrackSourcesRoute.page,
         ),
-      ),
-      GoRoute(
-        path: "/lastfm-login",
-        name: LastFMLoginPage.name,
-        parentNavigatorKey: rootNavigatorKey,
-        pageBuilder: (context, state) =>
-            const SpotubePage(child: LastFMLoginPage()),
-      ),
-    ],
-  );
-});
+        CustomRoute(
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+          durationInMilliseconds: 200,
+          reverseDurationInMilliseconds: 200,
+          path: "/player/lyrics",
+          page: PlayerLyricsRoute.page,
+        ),
+        AutoRoute(
+          path: "/mini-player",
+          page: MiniLyricsRoute.page,
+          // parentNavigatorKey: rootNavigatorKey,
+        ),
+        AutoRoute(
+          path: "/getting-started",
+          page: GettingStartedRoute.page,
+          // parentNavigatorKey: rootNavigatorKey,
+        ),
+        AutoRoute(
+          path: "/login",
+          page: WebViewLoginRoute.page,
+          // parentNavigatorKey: rootNavigatorKey,
+        ),
+        AutoRoute(
+          path: "/lastfm-login",
+          page: LastFMLoginRoute.page,
+          // parentNavigatorKey: rootNavigatorKey,
+        ),
+      ];
+}

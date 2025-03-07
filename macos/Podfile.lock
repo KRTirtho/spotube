@@ -8,6 +8,9 @@ PODS:
   - bonsoir_darwin (0.0.1):
     - Flutter
     - FlutterMacOS
+  - connectivity_plus (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - desktop_webview_window (0.0.1):
     - FlutterMacOS
   - device_info_plus (0.0.1):
@@ -46,20 +49,21 @@ PODS:
   - sqflite_darwin (0.0.4):
     - Flutter
     - FlutterMacOS
-  - sqlite3 (3.47.0):
-    - sqlite3/common (= 3.47.0)
-  - sqlite3/common (3.47.0)
-  - sqlite3/dbstatvtab (3.47.0):
+  - sqlite3 (3.47.2):
+    - sqlite3/common (= 3.47.2)
+  - sqlite3/common (3.47.2)
+  - sqlite3/dbstatvtab (3.47.2):
     - sqlite3/common
-  - sqlite3/fts5 (3.47.0):
+  - sqlite3/fts5 (3.47.2):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.47.0):
+  - sqlite3/perf-threadsafe (3.47.2):
     - sqlite3/common
-  - sqlite3/rtree (3.47.0):
+  - sqlite3/rtree (3.47.2):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
+    - Flutter
     - FlutterMacOS
-    - sqlite3 (~> 3.47.0)
+    - sqlite3 (~> 3.47.1)
     - sqlite3/dbstatvtab
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
@@ -78,6 +82,7 @@ DEPENDENCIES:
   - audio_service (from `Flutter/ephemeral/.symlinks/plugins/audio_service/macos`)
   - audio_session (from `Flutter/ephemeral/.symlinks/plugins/audio_session/macos`)
   - bonsoir_darwin (from `Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin`)
+  - connectivity_plus (from `Flutter/ephemeral/.symlinks/plugins/connectivity_plus/darwin`)
   - desktop_webview_window (from `Flutter/ephemeral/.symlinks/plugins/desktop_webview_window/macos`)
   - device_info_plus (from `Flutter/ephemeral/.symlinks/plugins/device_info_plus/macos`)
   - file_selector_macos (from `Flutter/ephemeral/.symlinks/plugins/file_selector_macos/macos`)
@@ -95,7 +100,7 @@ DEPENDENCIES:
   - screen_retriever_macos (from `Flutter/ephemeral/.symlinks/plugins/screen_retriever_macos/macos`)
   - shared_preferences_foundation (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite_darwin (from `Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin`)
-  - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos`)
+  - sqlite3_flutter_libs (from `Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/darwin`)
   - system_theme (from `Flutter/ephemeral/.symlinks/plugins/system_theme/macos`)
   - tray_manager (from `Flutter/ephemeral/.symlinks/plugins/tray_manager/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
@@ -115,6 +120,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/audio_session/macos
   bonsoir_darwin:
     :path: Flutter/ephemeral/.symlinks/plugins/bonsoir_darwin/darwin
+  connectivity_plus:
+    :path: Flutter/ephemeral/.symlinks/plugins/connectivity_plus/darwin
   desktop_webview_window:
     :path: Flutter/ephemeral/.symlinks/plugins/desktop_webview_window/macos
   device_info_plus:
@@ -150,7 +157,7 @@ EXTERNAL SOURCES:
   sqflite_darwin:
     :path: Flutter/ephemeral/.symlinks/plugins/sqflite_darwin/darwin
   sqlite3_flutter_libs:
-    :path: Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/macos
+    :path: Flutter/ephemeral/.symlinks/plugins/sqlite3_flutter_libs/darwin
   system_theme:
     :path: Flutter/ephemeral/.symlinks/plugins/system_theme/macos
   tray_manager:
@@ -161,34 +168,35 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
-  app_links: 10e0a0ab602ffaf34d142cd4862f29d34b303b2a
-  audio_service: b88ff778e0e3915efd4cd1a5ad6f0beef0c950a9
-  audio_session: dea1f41890dbf1718f04a56f1d6150fd50039b72
-  bonsoir_darwin: e3b8526c42ca46a885142df84229131dfabea842
-  desktop_webview_window: 89bb3d691f4c80314a10be312f4cd35db93a9d5a
-  device_info_plus: 1b14eed9bf95428983aed283a8d51cce3d8c4215
-  file_selector_macos: cc3858c981fe6889f364731200d6232dac1d812d
-  flutter_discord_rpc: 67a7c10ea24d9d3bf35d01af643f48fbcfa7c24f
-  flutter_inappwebview_macos: bdf207b8f4ebd58e86ae06cd96b147de99a67c9b
-  flutter_secure_storage_macos: 59459653abe1adb92abbc8ea747d79f8d19866c9
+  app_links: 9028728e32c83a0831d9db8cf91c526d16cc5468
+  audio_service: 0d9e4e25347bb3efb768f3b9f005911a81e587a7
+  audio_session: 48ab6500f7a5e7c64363e206565a5dfe5a0c1441
+  bonsoir_darwin: 29c7ccf356646118844721f36e1de4b61f6cbd0e
+  connectivity_plus: 2256d3e20624a7749ed21653aafe291a46446fee
+  desktop_webview_window: 2f0cdefecc06e21208a51589bd3d1580a87a703c
+  device_info_plus: 4fb280989f669696856f8b129e4a5e3cd6c48f76
+  file_selector_macos: 6280b52b459ae6c590af5d78fc35c7267a3c4b31
+  flutter_discord_rpc: 90614fcca26f3cebfd33263557ea7875936d184b
+  flutter_inappwebview_macos: c2d68649f9f8f1831bfcd98d73fd6256366d9d1d
+  flutter_secure_storage_macos: b2d62a774c23b060f0b99d0173b0b36abb4a8632
   FlutterMacOS: 8f6f14fa908a6fb3fba0cd85dbd81ec4b251fb24
-  local_notifier: e9506bc66fc70311e8bc7291fb70f743c081e4ff
-  media_kit_libs_macos_audio: 3871782a4f3f84c77f04d7666c87800a781c24da
-  media_kit_native_event_loop: 7321675377cb9ae8596a29bddf3a3d2b5e8792c5
-  metadata_god: 829f61208b44ac1173e7cd32ab740d8776be5435
-  open_file_mac: 0e554648e2a87ce59e9438e3e5ca3e552e90d89a
+  local_notifier: ebf072651e35ae5e47280ad52e2707375cb2ae4e
+  media_kit_libs_macos_audio: 06f3cf88d6d89c7c3c87eae57689d1c6adb335b2
+  media_kit_native_event_loop: a5833d1e4d5bedb6f691e9909fa57f15f436f2c8
+  metadata_god: 8029e6ff4b1400ae4f13c38d2c478e8633f0e58b
+  open_file_mac: 01874b6d6a2c1485ac9b126d7105b99102dea2cf
   OrderedSet: e539b66b644ff081c73a262d24ad552a69be3a94
-  package_info_plus: fa739dd842b393193c5ca93c26798dff6e3d0e0c
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
-  screen_retriever_macos: 776e0fa5d42c6163d2bf772d22478df4b302b161
-  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  sqflite_darwin: 5a7236e3b501866c1c9befc6771dfd73ffb8702d
-  sqlite3: 0aa20658a9b238a3b1ff7175eb7bdd863b0ab4fd
-  sqlite3_flutter_libs: f0b7a85544d8bac7b8bac12eac7d05bcfdd786d0
-  system_theme: c7b9f6659a5caa26c9bc2284da096781e9a6fcbc
-  tray_manager: 9064e219c56d75c476e46b9a21182087930baf90
-  url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
-  window_manager: 3a1844359a6295ab1e47659b1a777e36773cd6e8
+  package_info_plus: a8a591e70e87ce97ce5d21b2594f69cea9e0312f
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
+  screen_retriever_macos: 452e51764a9e1cdb74b3c541238795849f21557f
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
+  sqlite3: 7559e33dae4c78538df563795af3a86fc887ee71
+  sqlite3_flutter_libs: f0b59f6bb2a18597d0796558725007e5a7428397
+  system_theme: ed74293ad07d3a05e3e2d0059ff342360346f1a0
+  tray_manager: a104b5c81b578d83f3c3d0f40a997c8b10810166
+  url_launcher_macos: 0fba8ddabfc33ce0a9afe7c5fef5aab3d8d2d673
+  window_manager: 1d01fa7ac65a6e6f83b965471b1a7fdd3f06166c
 
 PODFILE CHECKSUM: 0d3963a09fc94f580682bd88480486da345dc3f0
 

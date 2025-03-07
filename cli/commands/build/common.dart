@@ -63,4 +63,6 @@ mixin BuildCommandCommonSteps on Command {
       """,
     );
   }
+
+  String get architecture => parent?.argResults?.option("arch") as String;
 }

@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show Autocomplete;
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 
 enum SelectedItemDisplayType {
   wrap,
@@ -20,10 +22,13 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
   final Widget Function(T option) selectedSeedBuilder;
   final String Function(T option) displayStringForOption;
 
-  final InputDecoration? inputDecoration;
   final bool enabled;
 
   final SelectedItemDisplayType selectedItemDisplayType;
+  final Widget? placeholder;
+  final Widget? leading;
+  final Widget? trailing;
+  final Widget? label;
 
   const SeedsMultiAutocomplete({
     super.key,
@@ -32,9 +37,12 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
     required this.autocompleteOptionBuilder,
     required this.displayStringForOption,
     required this.selectedSeedBuilder,
-    this.inputDecoration,
     this.enabled = true,
     this.selectedItemDisplayType = SelectedItemDisplayType.wrap,
+    this.placeholder,
+    this.leading,
+    this.trailing,
+    this.label,
   });
 
   @override
@@ -42,7 +50,7 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
     useValueListenable(seeds);
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final seedController = useTextEditingController();
+    final seedController = useShadcnTextEditingController();
 
     final containerKey = useRef(GlobalKey());
 
@@ -61,6 +69,10 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (label != null) ...[
+          label!.semiBold(),
+          const Gap(8),
+        ],
         LayoutBuilder(builder: (context, constrains) {
           return Container(
             key: containerKey.value,
@@ -101,13 +113,15 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
                 focusNode,
                 onFieldSubmitted,
               ) {
-                return TextFormField(
+                return TextField(
                   controller: seedController,
                   onChanged: (value) => textEditingController.text = value,
                   focusNode: focusNode,
-                  onFieldSubmitted: (_) => onFieldSubmitted(),
+                  onSubmitted: (_) => onFieldSubmitted(),
                   enabled: enabled,
-                  decoration: inputDecoration,
+                  leading: leading,
+                  trailing: trailing,
+                  placeholder: placeholder,
                 );
               },
             ),
@@ -120,22 +134,27 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
               runSpacing: 4,
               children: seeds.value.map(selectedSeedBuilder).toList(),
             ),
-          SelectedItemDisplayType.list => Card(
-              margin: EdgeInsets.zero,
-              child: Column(
-                children: [
-                  for (final seed in seeds.value) ...[
-                    selectedSeedBuilder(seed),
-                    if (seeds.value.length > 1 && seed != seeds.value.last)
-                      Divider(
-                        color: theme.colorScheme.primaryContainer,
-                        height: 1,
-                        indent: 12,
-                        endIndent: 12,
+          SelectedItemDisplayType.list => AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: seeds.value.isEmpty
+                  ? const SizedBox.shrink()
+                  : Card(
+                      child: Column(
+                        children: [
+                          for (final seed in seeds.value) ...[
+                            selectedSeedBuilder(seed),
+                            if (seeds.value.length > 1 &&
+                                seed != seeds.value.last)
+                              Divider(
+                                color: theme.colorScheme.secondary,
+                                height: 1,
+                                indent: 12,
+                                endIndent: 12,
+                              ),
+                          ],
+                        ],
                       ),
-                  ],
-                ],
-              ),
+                    ),
             ),
         },
       ],

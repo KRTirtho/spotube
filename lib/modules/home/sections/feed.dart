@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/collections/spotube_icons.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/home/feed/feed_section.dart';
 import 'package:spotube/provider/spotify/views/home.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class HomePageFeedSection extends HookConsumerWidget {
   const HomePageFeedSection({super.key});
@@ -38,19 +37,11 @@ class HomePageFeedSection extends HookConsumerWidget {
           hasNextPage: false,
           isLoadingNextPage: false,
           onFetchMore: () {},
-          titleTrailing: Directionality(
-            textDirection: TextDirection.rtl,
-            child: TextButton.icon(
-              label: Text(context.l10n.browse_more),
-              icon: const Icon(SpotubeIcons.angleRight),
-              onPressed: () => ServiceUtils.pushNamed(
-                context,
-                HomeFeedSectionPage.name,
-                pathParameters: {
-                  "feedId": section.uri,
-                },
-              ),
-            ),
+          titleTrailing: Button.text(
+            child: Text(context.l10n.browse_all),
+            onPressed: () {
+              context.navigateTo(HomeFeedSectionRoute(sectionUri: section.uri));
+            },
           ),
         );
       },

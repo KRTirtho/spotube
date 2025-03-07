@@ -1,14 +1,14 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
-import 'package:spotube/hooks/utils/use_breakpoint_value.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class HorizontalPlaybuttonCardView<T> extends HookWidget {
@@ -36,14 +36,9 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData(:textTheme) = Theme.of(context);
     final scrollController = useScrollController();
-    final height = useBreakpointValue<double>(
-      xs: 226,
-      sm: 226,
-      md: 236,
-      others: 266,
-    );
+    final isArtist = items.every((s) => s is Artist);
+    final scale = context.theme.scaling;
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -54,15 +49,21 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              DefaultTextStyle(
-                style: textTheme.titleMedium!,
-                child: title,
+              Flexible(
+                child: DefaultTextStyle(
+                  style: context.theme.typography.h4.copyWith(
+                    color: context.theme.colorScheme.foreground,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  child: title,
+                ),
               ),
               if (titleTrailing != null) titleTrailing!,
             ],
           ),
           SizedBox(
-            height: height,
+            height: isArtist ? 250 : 225,
             child: NotificationListener(
               // disable multiple scrollbar to use this
               onNotification: (notification) => true,
@@ -86,10 +87,13 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                         onFetchData: onFetchMore,
                         loadingBuilder: (context) => Skeletonizer(
                               enabled: true,
-                              child: AlbumCard(FakeData.albumSimple),
+                              child: isArtist
+                                  ? ArtistCard(FakeData.artist)
+                                  : AlbumCard(FakeData.albumSimple),
                             ),
                         isLoading: isLoadingNextPage,
                         hasReachedMax: !hasNextPage,
+                        separatorBuilder: (context, index) => Gap(12 * scale),
                         itemBuilder: (context, index) {
                           final item = items[index];
 
@@ -97,11 +101,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                             PlaylistSimple() =>
                               PlaylistCard(item as PlaylistSimple),
                             AlbumSimple() => AlbumCard(item as AlbumSimple),
-                            Artist() => Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12.0),
-                                child: ArtistCard(item as Artist),
-                              ),
+                            Artist() => ArtistCard(item as Artist),
                             _ => const SizedBox.shrink(),
                           };
                         }),

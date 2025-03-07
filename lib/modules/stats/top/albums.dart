@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/modules/stats/common/album_item.dart';
@@ -31,6 +33,24 @@ class TopAlbums extends HookConsumerWidget {
         isLoading: topAlbums.isLoading && !topAlbums.isLoadingNextPage,
         hasReachedMax: topAlbums.asData?.value.hasMore ?? true,
         itemCount: albumsData.length,
+        emptyBuilder: (context) => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Gap(50),
+              Undraw(
+                illustration: UndrawIllustration.happyMusic,
+                color: context.theme.colorScheme.primary,
+                height: 200 * context.theme.scaling,
+              ),
+              Text(
+                context.l10n.no_tracks_listened_yet,
+                textAlign: TextAlign.center,
+              ).muted().small(),
+            ],
+          ),
+        ),
         itemBuilder: (context, index) {
           final album = albumsData[index];
           return StatsAlbumItem(

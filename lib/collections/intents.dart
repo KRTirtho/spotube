@@ -3,13 +3,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:spotube/collections/routes.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/modules/player/player_controls.dart';
-import 'package:spotube/pages/home/home.dart';
-import 'package:spotube/pages/library/library.dart';
-import 'package:spotube/pages/lyrics/lyrics.dart';
-import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
@@ -36,7 +32,7 @@ class PlayPauseAction extends Action<PlayPauseIntent> {
 }
 
 class NavigationIntent extends Intent {
-  final GoRouter router;
+  final AppRouter router;
   final String path;
   const NavigationIntent(this.router, this.path);
 }
@@ -44,7 +40,7 @@ class NavigationIntent extends Intent {
 class NavigationAction extends Action<NavigationIntent> {
   @override
   invoke(intent) {
-    intent.router.go(intent.path);
+    intent.router.navigateNamed(intent.path);
     return null;
   }
 }
@@ -52,32 +48,49 @@ class NavigationAction extends Action<NavigationIntent> {
 enum HomeTabs {
   browse,
   search,
-  library,
+
   lyrics,
+  userPlaylists,
+  userArtists,
+  userAlbums,
+  userLocalLibrary,
+  userDownloads,
 }
 
 class HomeTabIntent extends Intent {
-  final WidgetRef ref;
+  final AppRouter router;
   final HomeTabs tab;
-  const HomeTabIntent(this.ref, {required this.tab});
+  const HomeTabIntent(this.router, {required this.tab});
 }
 
 class HomeTabAction extends Action<HomeTabIntent> {
   @override
   invoke(intent) {
-    final router = intent.ref.read(routerProvider);
+    final router = intent.router;
     switch (intent.tab) {
       case HomeTabs.browse:
-        router.goNamed(HomePage.name);
+        router.navigate(const HomeRoute());
         break;
       case HomeTabs.search:
-        router.goNamed(SearchPage.name);
-        break;
-      case HomeTabs.library:
-        router.goNamed(LibraryPage.name);
+        router.navigate(const SearchRoute());
         break;
       case HomeTabs.lyrics:
-        router.goNamed(LyricsPage.name);
+        router.navigate(LyricsRoute());
+        break;
+      case HomeTabs.userPlaylists:
+        router.navigate(const UserPlaylistsRoute());
+        break;
+      case HomeTabs.userArtists:
+        router.navigate(const UserArtistsRoute());
+        break;
+      case HomeTabs.userAlbums:
+        router.navigate(const UserAlbumsRoute());
+        break;
+      case HomeTabs.userLocalLibrary:
+        router.navigate(const UserLocalLibraryRoute());
+        break;
+      case HomeTabs.userDownloads:
+        router.navigate(const UserDownloadsRoute());
         break;
     }
     return null;

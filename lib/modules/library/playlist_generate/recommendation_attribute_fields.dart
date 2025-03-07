@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_dials.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
@@ -21,17 +22,12 @@ class RecommendationAttributeFields extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final animation = useAnimationController(
-      duration: const Duration(milliseconds: 300),
-    );
-    final labelStyle = Theme.of(context).textTheme.labelSmall?.copyWith(
-          fontWeight: FontWeight.w500,
-        );
-
-    final minController = useTextEditingController(text: values.min.toString());
+    final minController =
+        useShadcnTextEditingController(text: values.min.toString());
     final targetController =
-        useTextEditingController(text: values.target.toString());
-    final maxController = useTextEditingController(text: values.max.toString());
+        useShadcnTextEditingController(text: values.target.toString());
+    final maxController =
+        useShadcnTextEditingController(text: values.max.toString());
 
     useEffect(() {
       listener() {
@@ -53,126 +49,133 @@ class RecommendationAttributeFields extends HookWidget {
       };
     }, [values]);
 
-    final minField = TextField(
-      controller: minController,
-      decoration: InputDecoration(
-        labelText: context.l10n.min,
-        isDense: true,
-      ),
-      keyboardType: const TextInputType.numberWithOptions(
-        decimal: false,
-        signed: true,
-      ),
+    final minField = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 5,
+      children: [
+        Text(context.l10n.min).semiBold(),
+        NumberInput(
+          controller: minController,
+          allowDecimals: false,
+        ),
+      ],
     );
 
-    final targetField = TextField(
-      controller: targetController,
-      decoration: InputDecoration(
-        labelText: context.l10n.target,
-        isDense: true,
-      ),
-      keyboardType: const TextInputType.numberWithOptions(
-        decimal: false,
-        signed: true,
-      ),
+    final targetField = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 5,
+      children: [
+        Text(context.l10n.target).semiBold(),
+        NumberInput(
+          controller: targetController,
+          allowDecimals: false,
+        ),
+      ],
     );
 
-    final maxField = TextField(
-      controller: maxController,
-      decoration: InputDecoration(
-        labelText: context.l10n.max,
-        isDense: true,
-      ),
-      keyboardType: const TextInputType.numberWithOptions(
-        decimal: false,
-        signed: true,
-      ),
+    final maxField = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 5,
+      children: [
+        Text(context.l10n.max).semiBold(),
+        NumberInput(
+          controller: maxController,
+          allowDecimals: false,
+        ),
+      ],
     );
 
-    return LayoutBuilder(builder: (context, constrain) {
-      return Card(
-        child: ExpansionTile(
-          title: DefaultTextStyle(
-            style: Theme.of(context).textTheme.titleSmall!,
-            child: title,
-          ),
-          shape: const Border(),
-          leading: AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return Transform.rotate(
-                angle: (animation.value * 3.14) / 2,
-                child: child,
-              );
-            },
-            child: const Icon(Icons.chevron_right),
-          ),
-          trailing: presets == null
-              ? const SizedBox.shrink()
-              : Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ToggleButtons(
-                    borderRadius: BorderRadius.circular(8),
-                    textStyle: labelStyle,
-                    isSelected: presets!.values
-                        .map((value) => value == values)
-                        .toList(),
-                    onPressed: (index) {
-                      RecommendationAttribute newValues =
-                          presets!.values.elementAt(index);
-                      if (newValues == values) {
-                        onChanged(zeroValues);
-                        minController.text = zeroValues.min.toString();
-                        targetController.text = zeroValues.target.toString();
-                        maxController.text = zeroValues.max.toString();
-                      } else {
-                        onChanged(newValues);
-                        minController.text = newValues.min.toString();
-                        targetController.text = newValues.target.toString();
-                        maxController.text = newValues.max.toString();
-                      }
-                    },
-                    children: presets!.keys.map((key) => Text(key)).toList(),
-                  ),
-                ),
-          onExpansionChanged: (value) {
-            if (value) {
-              animation.forward();
-            } else {
-              animation.reverse();
-            }
-          },
-          children: [
-            const SizedBox(height: 8),
-            if (constrain.mdAndUp)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const SizedBox(width: 16),
-                  Expanded(child: minField),
-                  const SizedBox(width: 16),
-                  Expanded(child: targetField),
-                  const SizedBox(width: 16),
-                  Expanded(child: maxField),
-                  const SizedBox(width: 16),
-                ],
-              )
-            else
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  children: [
-                    minField,
-                    const SizedBox(height: 16),
-                    targetField,
-                    const SizedBox(height: 16),
-                    maxField,
-                  ],
+    void onSelected(int index) {
+      RecommendationAttribute newValues = presets!.values.elementAt(index);
+      if (newValues == values) {
+        onChanged(zeroValues);
+        minController.text = zeroValues.min.toString();
+        targetController.text = zeroValues.target.toString();
+        maxController.text = zeroValues.max.toString();
+      } else {
+        onChanged(newValues);
+        minController.text = newValues.min.toString();
+        targetController.text = newValues.target.toString();
+        maxController.text = newValues.max.toString();
+      }
+    }
+
+    return LayoutBuilder(builder: (context, constraints) {
+      return Accordion(
+        items: [
+          AccordionItem(
+            trigger: AccordionTrigger(
+              child: SizedBox(
+                width: double.infinity,
+                child: Basic(
+                  title: title.semiBold(),
+                  trailing: presets == null
+                      ? const SizedBox.shrink()
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          child: Row(
+                            spacing: 5,
+                            children: [
+                              for (final presetEntry in presets?.entries
+                                      .toList() ??
+                                  <MapEntry<String, RecommendationAttribute>>[])
+                                Toggle(
+                                  value: presetEntry.value == values,
+                                  style: const ButtonStyle.outline(
+                                    size: ButtonSize.small,
+                                  ),
+                                  onChanged: (value) {
+                                    onSelected(
+                                      presets!.entries.toList().indexWhere(
+                                          (s) => s.key == presetEntry.key),
+                                    );
+                                  },
+                                  child: Text(presetEntry.key),
+                                ),
+                            ],
+                          ),
+                        ),
                 ),
               ),
-            const SizedBox(height: 8),
-          ],
-        ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 8),
+                if (constraints.mdAndUp)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const SizedBox(width: 16),
+                      Expanded(child: minField),
+                      const SizedBox(width: 16),
+                      Expanded(child: targetField),
+                      const SizedBox(width: 16),
+                      Expanded(child: maxField),
+                      const SizedBox(width: 16),
+                    ],
+                  )
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        minField,
+                        const SizedBox(height: 16),
+                        targetField,
+                        const SizedBox(height: 16),
+                        maxField,
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 8),
+              ],
+            ),
+          ),
+        ],
       );
     });
   }

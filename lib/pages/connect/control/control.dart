@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/player/volume_slider.dart';
@@ -13,11 +14,9 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
-import 'package:spotube/pages/track/track.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
-import 'package:spotube/utils/service_utils.dart';
 
 class RemotePlayerQueue extends ConsumerWidget {
   const RemotePlayerQueue({super.key});
@@ -46,6 +45,7 @@ class RemotePlayerQueue extends ConsumerWidget {
   }
 }
 
+@RoutePage()
 class ConnectControlPage extends HookConsumerWidget {
   static const name = "connect_control";
 
@@ -53,7 +53,7 @@ class ConnectControlPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
+    final ThemeData(:typography, :colorScheme) = Theme.of(context);
 
     final resolvedService =
         ref.watch(connectClientsProvider).asData?.value.resolvedService;
@@ -63,36 +63,21 @@ class ConnectControlPage extends HookConsumerWidget {
     final shuffled = ref.watch(shuffleProvider);
     final loopMode = ref.watch(loopModeProvider);
 
-    final resumePauseStyle = IconButton.styleFrom(
-      backgroundColor: colorScheme.primary,
-      foregroundColor: colorScheme.onPrimary,
-      padding: const EdgeInsets.all(12),
-      iconSize: 24,
-    );
-    final buttonStyle = IconButton.styleFrom(
-      backgroundColor: colorScheme.surface.withOpacity(0.4),
-      minimumSize: const Size(28, 28),
-    );
-
-    final activeButtonStyle = IconButton.styleFrom(
-      backgroundColor: colorScheme.primaryContainer,
-      foregroundColor: colorScheme.onPrimaryContainer,
-      minimumSize: const Size(28, 28),
-    );
-
     ref.listen(connectClientsProvider, (prev, next) {
       if (next.asData?.value.resolvedService == null) {
-        context.pop();
+        context.back();
       }
     });
 
     return SafeArea(
+      bottom: false,
       child: Scaffold(
-        appBar: PageWindowTitleBar(
-          title: Text(resolvedService!.name),
-          automaticallyImplyLeading: true,
-        ),
-        body: LayoutBuilder(builder: (context, constrains) {
+        headers: [
+          TitleBar(
+            title: Text(resolvedService!.name),
+          )
+        ],
+        child: LayoutBuilder(builder: (context, constrains) {
           return Row(
             children: [
               Expanded(
@@ -106,7 +91,7 @@ class ConnectControlPage extends HookConsumerWidget {
                           vertical: 10,
                         ).copyWith(top: 0),
                         constraints:
-                            const BoxConstraints(maxHeight: 400, maxWidth: 400),
+                            const BoxConstraints(maxHeight: 350, maxWidth: 350),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: UniversalImage(
@@ -126,15 +111,12 @@ class ConnectControlPage extends HookConsumerWidget {
                           SliverToBoxAdapter(
                             child: AnchorButton(
                               playlist.activeTrack?.name ?? "",
-                              style: textTheme.titleLarge!,
+                              style: typography.h4,
                               onTap: () {
                                 if (playlist.activeTrack == null) return;
-                                ServiceUtils.pushNamed(
-                                  context,
-                                  TrackPage.name,
-                                  pathParameters: {
-                                    "id": playlist.activeTrack!.id!,
-                                  },
+                                context.navigateTo(
+                                  TrackRoute(
+                                      trackId: playlist.activeTrack!.id!),
                                 );
                               },
                             ),
@@ -142,15 +124,10 @@ class ConnectControlPage extends HookConsumerWidget {
                           SliverToBoxAdapter(
                             child: ArtistLink(
                               artists: playlist.activeTrack?.artists ?? [],
-                              textStyle: textTheme.bodyMedium!,
+                              textStyle: typography.normal,
                               mainAxisAlignment: WrapAlignment.start,
-                              onOverflowArtistClick: () =>
-                                  ServiceUtils.pushNamed(
-                                context,
-                                TrackPage.name,
-                                pathParameters: {
-                                  "id": playlist.activeTrack!.id!,
-                                },
+                              onOverflowArtistClick: () => context.navigateTo(
+                                TrackRoute(trackId: playlist.activeTrack!.id!),
                               ),
                             ),
                           ),
@@ -164,19 +141,25 @@ class ConnectControlPage extends HookConsumerWidget {
                           final position = ref.watch(positionProvider);
                           final duration = ref.watch(durationProvider);
 
+                          final progress = duration.inSeconds == 0
+                              ? 0
+                              : position.inSeconds / duration.inSeconds;
+
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 12),
                             child: Column(
                               children: [
                                 Slider(
-                                  value: position > duration
-                                      ? 0
-                                      : position.inSeconds.toDouble(),
-                                  min: 0,
-                                  max: duration.inSeconds.toDouble(),
+                                  value:
+                                      SliderValue.single(progress.toDouble()),
                                   onChanged: (value) {
-                                    connectNotifier
-                                        .seek(Duration(seconds: value.toInt()));
+                                    connectNotifier.seek(
+                                      Duration(
+                                        seconds:
+                                            (value.value * duration.inSeconds)
+                                                .toInt(),
+                                      ),
+                                    );
                                   },
                                 ),
                                 Row(
@@ -196,93 +179,156 @@ class ConnectControlPage extends HookConsumerWidget {
                     SliverToBoxAdapter(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 20,
                         children: [
-                          IconButton(
-                            tooltip: shuffled
-                                ? context.l10n.unshuffle_playlist
-                                : context.l10n.shuffle_playlist,
-                            icon: const Icon(SpotubeIcons.shuffle),
-                            style: shuffled ? activeButtonStyle : buttonStyle,
-                            onPressed: playlist.activeTrack == null
-                                ? null
-                                : () {
-                                    connectNotifier.setShuffle(!shuffled);
-                                  },
-                          ),
-                          IconButton(
-                            tooltip: context.l10n.previous_track,
-                            icon: const Icon(SpotubeIcons.skipBack),
-                            onPressed: playlist.activeTrack == null
-                                ? null
-                                : connectNotifier.previous,
-                          ),
-                          IconButton(
-                            tooltip: playing
-                                ? context.l10n.pause_playback
-                                : context.l10n.resume_playback,
-                            icon: playlist.activeTrack == null
-                                ? SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: colorScheme.onPrimary,
-                                    ),
-                                  )
-                                : Icon(
-                                    playing
-                                        ? SpotubeIcons.pause
-                                        : SpotubeIcons.play,
-                                  ),
-                            style: resumePauseStyle,
-                            onPressed: playlist.activeTrack == null
-                                ? null
-                                : () {
-                                    if (playing) {
-                                      connectNotifier.pause();
-                                    } else {
-                                      connectNotifier.resume();
-                                    }
-                                  },
-                          ),
-                          IconButton(
-                            tooltip: context.l10n.next_track,
-                            icon: const Icon(SpotubeIcons.skipForward),
-                            onPressed: playlist.activeTrack == null
-                                ? null
-                                : connectNotifier.next,
-                          ),
-                          IconButton(
-                            tooltip: loopMode == PlaylistMode.single
-                                ? context.l10n.loop_track
-                                : loopMode == PlaylistMode.loop
-                                    ? context.l10n.repeat_playlist
-                                    : null,
-                            icon: Icon(
-                              loopMode == PlaylistMode.single
-                                  ? SpotubeIcons.repeatOne
-                                  : SpotubeIcons.repeat,
+                          Tooltip(
+                            tooltip: TooltipContainer(
+                              child: Text(
+                                shuffled
+                                    ? context.l10n.unshuffle_playlist
+                                    : context.l10n.shuffle_playlist,
+                              ),
                             ),
-                            style: loopMode == PlaylistMode.single ||
-                                    loopMode == PlaylistMode.loop
-                                ? activeButtonStyle
-                                : buttonStyle,
-                            onPressed: playlist.activeTrack == null
-                                ? null
-                                : () async {
-                                    connectNotifier.setLoopMode(
-                                      switch (loopMode) {
-                                        PlaylistMode.loop =>
-                                          PlaylistMode.single,
-                                        PlaylistMode.single =>
-                                          PlaylistMode.none,
-                                        PlaylistMode.none => PlaylistMode.loop,
-                                      },
-                                    );
-                                  },
+                            child: IconButton(
+                              icon: const Icon(SpotubeIcons.shuffle),
+                              variance: shuffled
+                                  ? ButtonVariance.secondary
+                                  : ButtonVariance.ghost,
+                              onPressed: playlist.activeTrack == null
+                                  ? null
+                                  : () {
+                                      connectNotifier.setShuffle(!shuffled);
+                                    },
+                            ),
+                          ),
+                          Tooltip(
+                            tooltip: TooltipContainer(
+                              child: Text(context.l10n.previous_track),
+                            ),
+                            child: IconButton.ghost(
+                              icon: const Icon(SpotubeIcons.skipBack),
+                              onPressed: playlist.activeTrack == null
+                                  ? null
+                                  : connectNotifier.previous,
+                            ),
+                          ),
+                          Tooltip(
+                            tooltip: TooltipContainer(
+                              child: Text(
+                                playing
+                                    ? context.l10n.pause_playback
+                                    : context.l10n.resume_playback,
+                              ),
+                            ),
+                            child: IconButton.primary(
+                              shape: ButtonShape.circle,
+                              icon: playlist.activeTrack == null
+                                  ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                          onSurface: false),
+                                    )
+                                  : Icon(
+                                      playing
+                                          ? SpotubeIcons.pause
+                                          : SpotubeIcons.play,
+                                    ),
+                              onPressed: playlist.activeTrack == null
+                                  ? null
+                                  : () {
+                                      if (playing) {
+                                        connectNotifier.pause();
+                                      } else {
+                                        connectNotifier.resume();
+                                      }
+                                    },
+                            ),
+                          ),
+                          Tooltip(
+                            tooltip: TooltipContainer(
+                                child: Text(context.l10n.next_track)),
+                            child: IconButton.ghost(
+                              icon: const Icon(SpotubeIcons.skipForward),
+                              onPressed: playlist.activeTrack == null
+                                  ? null
+                                  : connectNotifier.next,
+                            ),
+                          ),
+                          Tooltip(
+                            tooltip: TooltipContainer(
+                              child: Text(
+                                loopMode == PlaylistMode.single
+                                    ? context.l10n.loop_track
+                                    : loopMode == PlaylistMode.loop
+                                        ? context.l10n.repeat_playlist
+                                        : context.l10n.no_loop,
+                              ),
+                            ),
+                            child: IconButton(
+                              icon: Icon(
+                                loopMode == PlaylistMode.single
+                                    ? SpotubeIcons.repeatOne
+                                    : SpotubeIcons.repeat,
+                              ),
+                              variance: loopMode == PlaylistMode.single ||
+                                      loopMode == PlaylistMode.loop
+                                  ? ButtonVariance.secondary
+                                  : ButtonVariance.ghost,
+                              onPressed: playlist.activeTrack == null
+                                  ? null
+                                  : () async {
+                                      connectNotifier.setLoopMode(
+                                        switch (loopMode) {
+                                          PlaylistMode.loop =>
+                                            PlaylistMode.single,
+                                          PlaylistMode.single =>
+                                            PlaylistMode.none,
+                                          PlaylistMode.none =>
+                                            PlaylistMode.loop,
+                                        },
+                                      );
+                                    },
+                            ),
                           )
                         ],
                       ),
                     ),
+                    const SliverGap(30),
+                    if (constrains.mdAndDown)
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        sliver: SliverToBoxAdapter(
+                          child: Button.outline(
+                            leading: const Icon(SpotubeIcons.queue),
+                            child: Text(context.l10n.queue),
+                            onPressed: () {
+                              openDrawer(
+                                context: context,
+                                barrierDismissible: true,
+                                draggable: true,
+                                barrierColor: Colors.black.withAlpha(100),
+                                borderRadius: BorderRadius.circular(10),
+                                transformBackdrop: false,
+                                position: OverlayPosition.bottom,
+                                surfaceBlur: context.theme.surfaceBlur,
+                                surfaceOpacity: 0.7,
+                                expands: true,
+                                builder: (context) {
+                                  return ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxHeight:
+                                          MediaQuery.sizeOf(context).height *
+                                              0.8,
+                                    ),
+                                    child: const RemotePlayerQueue(),
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ),
                     const SliverGap(30),
                     SliverPadding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -300,25 +346,7 @@ class ConnectControlPage extends HookConsumerWidget {
                         }),
                       ),
                     ),
-                    const SliverGap(30),
-                    if (constrains.mdAndDown)
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        sliver: SliverToBoxAdapter(
-                          child: OutlinedButton.icon(
-                            icon: const Icon(SpotubeIcons.queue),
-                            label: Text(context.l10n.queue),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                builder: (context) {
-                                  return const RemotePlayerQueue();
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      )
+                    const SliverSafeArea(sliver: SliverGap(10)),
                   ],
                 ),
               ),

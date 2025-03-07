@@ -30,6 +30,17 @@
       "request": "launch",
       "program": "lib/main.dart",
       "flutterMode": "release"
+    },
+    {
+      "name": "spotube (mobile) (release)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "args": [
+        "--flavor",
+        "dev"
+      ]
     }
   ],
   "compounds": []

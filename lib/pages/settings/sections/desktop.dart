@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:flutter/material.dart' show ListTile;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
@@ -25,11 +25,11 @@ class SettingsDesktopSection extends HookConsumerWidget {
           title: Text(context.l10n.close_behavior),
           value: preferences.closeBehavior,
           options: [
-            DropdownMenuItem(
+            SelectItemButton(
               value: CloseBehavior.close,
               child: Text(context.l10n.close),
             ),
-            DropdownMenuItem(
+            SelectItemButton(
               value: CloseBehavior.minimizeToTray,
               child: Text(context.l10n.minimize_to_tray),
             ),
@@ -40,23 +40,29 @@ class SettingsDesktopSection extends HookConsumerWidget {
             }
           },
         ),
-        SwitchListTile(
-          secondary: const Icon(SpotubeIcons.tray),
+        ListTile(
+          leading: const Icon(SpotubeIcons.tray),
           title: Text(context.l10n.show_tray_icon),
-          value: preferences.showSystemTrayIcon,
-          onChanged: preferencesNotifier.setShowSystemTrayIcon,
+          trailing: Switch(
+            value: preferences.showSystemTrayIcon,
+            onChanged: preferencesNotifier.setShowSystemTrayIcon,
+          ),
         ),
-        SwitchListTile(
-          secondary: const Icon(SpotubeIcons.window),
+        ListTile(
+          leading: const Icon(SpotubeIcons.window),
           title: Text(context.l10n.use_system_title_bar),
-          value: preferences.systemTitleBar,
-          onChanged: preferencesNotifier.setSystemTitleBar,
+          trailing: Switch(
+            value: preferences.systemTitleBar,
+            onChanged: preferencesNotifier.setSystemTitleBar,
+          ),
         ),
-        SwitchListTile(
-          secondary: const Icon(SpotubeIcons.discord),
+        ListTile(
+          leading: const Icon(SpotubeIcons.discord),
           title: Text(context.l10n.discord_rich_presence),
-          value: preferences.discordPresence,
-          onChanged: preferencesNotifier.setDiscordPresence,
+          trailing: Switch(
+            value: preferences.discordPresence,
+            onChanged: preferencesNotifier.setDiscordPresence,
+          ),
         ),
       ],
     );
