@@ -31,7 +31,7 @@
 	const drawerStore = getDrawerStore();
 </script>
 
-<main class="p-2 md:p-4 flex flex-col min-h-[90vh]">
+<main class="p-2 md:p-4 min-h-[90vh]">
 	<Drawer>
 		{#if $drawerStore.id === 'navdrawer'}
 			<NavDrawer />

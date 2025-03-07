@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  FLUTTER_VERSION: 3.24.5
+  FLUTTER_VERSION: 3.29.0
 
 jobs:
   lint:
@@ -27,7 +27,6 @@ jobs:
           LASTFM_API_SECRET: xxx
           RELEASE_CHANNEL: nightly
           HIDE_DONATIONS: 0
-
 
       - name: Configure repo
         run: |

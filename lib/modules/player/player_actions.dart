@@ -1,9 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotube/collections/routes.gr.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
@@ -76,38 +81,72 @@ class PlayerActions extends HookConsumerWidget {
       mainAxisAlignment: mainAxisAlignment,
       children: [
         if (showQueue)
-          IconButton(
-            icon: const Icon(SpotubeIcons.queue),
-            tooltip: context.l10n.queue,
-            onPressed: playlist.activeTrack != null
-                ? () {
-                    Scaffold.of(context).openEndDrawer();
-                  }
-                : null,
+          Tooltip(
+            tooltip: TooltipContainer(child: Text(context.l10n.queue)),
+            child: IconButton.ghost(
+              icon: const Icon(SpotubeIcons.queue),
+              enabled: playlist.activeTrack != null,
+              onPressed: () {
+                openDrawer(
+                  context: context,
+                  position: OverlayPosition.right,
+                  transformBackdrop: false,
+                  draggable: false,
+                  surfaceBlur: context.theme.surfaceBlur,
+                  surfaceOpacity: 0.7,
+                  builder: (context) {
+                    return Container(
+                      constraints: const BoxConstraints(maxWidth: 800),
+                      child: Consumer(
+                        builder: (context, ref, _) {
+                          final playlist = ref.watch(audioPlayerProvider);
+                          final playlistNotifier =
+                              ref.read(audioPlayerProvider.notifier);
+
+                          return PlayerQueue.fromAudioPlayerNotifier(
+                            floating: true,
+                            playlist: playlist,
+                            notifier: playlistNotifier,
+                          );
+                        },
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           ),
         if (!isLocalTrack)
-          IconButton(
-            icon: const Icon(SpotubeIcons.alternativeRoute),
-            tooltip: context.l10n.alternative_track_sources,
-            onPressed: playlist.activeTrack != null
-                ? () {
-                    showModalBottomSheet(
-                      context: context,
-                      isDismissible: true,
-                      enableDrag: true,
-                      isScrollControlled: true,
-                      backgroundColor: Colors.black12,
-                      barrierColor: Colors.black12,
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      builder: (context) {
-                        return SiblingTracksSheet(floating: floatingQueue);
-                      },
-                    );
-                  }
-                : null,
+          Tooltip(
+            tooltip: TooltipContainer(
+                child: Text(context.l10n.alternative_track_sources)),
+            child: IconButton.ghost(
+              enabled: playlist.activeTrack != null,
+              icon: const Icon(SpotubeIcons.alternativeRoute),
+              onPressed: () {
+                final screenSize = MediaQuery.sizeOf(context);
+                if (screenSize.mdAndUp) {
+                  showPopover(
+                    alignment: Alignment.bottomCenter,
+                    context: context,
+                    builder: (context) {
+                      return SurfaceCard(
+                        padding: EdgeInsets.zero,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            maxHeight: 600,
+                            maxWidth: 500,
+                          ),
+                          child: SiblingTracksSheet(floating: floatingQueue),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  context.pushRoute(const PlayerTrackSourcesRoute());
+                }
+              },
+            ),
           ),
         if (!kIsWeb && !isLocalTrack)
           if (isInQueue)
@@ -115,24 +154,28 @@ class PlayerActions extends HookConsumerWidget {
               height: 20,
               width: 20,
               child: CircularProgressIndicator(
-                strokeWidth: 2,
+                size: 2,
               ),
             )
           else
-            IconButton(
-              tooltip: context.l10n.download_track,
-              icon: Icon(
-                isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,
+            Tooltip(
+              tooltip:
+                  TooltipContainer(child: Text(context.l10n.download_track)),
+              child: IconButton.ghost(
+                icon: Icon(
+                  isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,
+                ),
+                onPressed: playlist.activeTrack != null
+                    ? () => downloader.addToQueue(playlist.activeTrack!)
+                    : null,
               ),
-              onPressed: playlist.activeTrack != null
-                  ? () => downloader.addToQueue(playlist.activeTrack!)
-                  : null,
             ),
         if (playlist.activeTrack != null &&
             !isLocalTrack &&
             auth.asData?.value != null)
           TrackHeartButton(track: playlist.activeTrack!),
-        AdaptivePopSheetList(
+        AdaptivePopSheetList<Duration>(
+          tooltip: context.l10n.sleep_timer,
           offset: Offset(0, -50 * (sleepTimerEntries.values.length + 2)),
           headings: [
             Text(context.l10n.sleep_timer),
@@ -150,24 +193,47 @@ class PlayerActions extends HookConsumerWidget {
           },
           children: [
             for (final entry in sleepTimerEntries.entries)
-              PopSheetEntry(
+              AdaptiveMenuButton(
                 value: entry.value,
                 enabled: sleepTimer != entry.value,
-                title: Text(entry.key),
+                child: Text(entry.key),
               ),
-            PopSheetEntry(
-              title: Text(
-                customHoursEnabled
-                    ? context.l10n.custom_hours
-                    : sleepTimer.format(abbreviated: true),
-              ),
-              // only enabled when there's no preset timers selected
+            AdaptiveMenuButton(
               enabled: customHoursEnabled,
-              onTap: () async {
+              onPressed: (context) async {
                 final currentTime = TimeOfDay.now();
-                final time = await showTimePicker(
+                final time = await showDialog<TimeOfDay?>(
                   context: context,
-                  initialTime: currentTime,
+                  builder: (context) => HookBuilder(builder: (context) {
+                    final timeRef = useRef<TimeOfDay?>(null);
+                    return AlertDialog(
+                      trailing: IconButton.ghost(
+                        size: ButtonSize.xSmall,
+                        icon: const Icon(SpotubeIcons.close),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      title: Text(
+                        ShadcnLocalizations.of(context).placeholderTimePicker,
+                      ),
+                      content: TimePickerDialog(
+                        use24HourFormat: false,
+                        initialValue: TimeOfDay.fromDateTime(
+                          DateTime.now().add(sleepTimer ?? Duration.zero),
+                        ),
+                        onChanged: (value) => timeRef.value = value,
+                      ),
+                      actions: [
+                        Button.primary(
+                          onPressed: () {
+                            Navigator.of(context).pop(timeRef.value);
+                          },
+                          child: Text(context.l10n.save),
+                        ),
+                      ],
+                    );
+                  }),
                 );
 
                 if (time != null) {
@@ -179,12 +245,19 @@ class PlayerActions extends HookConsumerWidget {
                   );
                 }
               },
+              child: Text(
+                customHoursEnabled
+                    ? context.l10n.custom_hours
+                    : sleepTimer.format(abbreviated: true),
+              ),
             ),
-            PopSheetEntry(
+            AdaptiveMenuButton(
               value: Duration.zero,
               enabled: sleepTimer != Duration.zero && sleepTimer != null,
-              textColor: Colors.green,
-              title: Text(context.l10n.cancel),
+              child: Text(
+                context.l10n.cancel,
+                style: const TextStyle(color: Colors.green),
+              ),
             ),
           ],
         ),

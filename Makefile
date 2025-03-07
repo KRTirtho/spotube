@@ -46,3 +46,10 @@ gensums:
 
 migrate:
 				dart run drift_dev make-migrations
+
+dmg:
+		flutter build macos &&\
+		if [ -f dist/Spotube-macos-universal.dmg ];\
+		then rm dist/Spotube-macos-universal.dmg;\
+		fi &&\
+		appdmg appdmg.json dist/Spotube-macos-universal.dmg

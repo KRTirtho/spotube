@@ -6,6 +6,8 @@ author: Kingkor Roy Tirtho
 <script lang="ts">
 	import { faLinux, faWindows, faApple } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
+  import Ads from '$lib/components/ads/ads.svelte';
+  import { ADS_SLOTS } from '$lib';
 </script>
 
 <div class="p-4 md:ps-24">
@@ -40,6 +42,14 @@ $ pamac install spotube-bin
 $ paru -Sy spotube-bin
 ```
 
+<Ads
+  style="display:block; text-align:center;"
+  adSlot={ADS_SLOTS.packagePageArticle}
+  adLayout="in-article"
+  adFormat="fluid"
+  fullWidthResponsive={false}
+/>
+
 ## <Fa class="inline" icon={faApple} /> MacOS
 
 ### Homebrew🍻
@@ -50,6 +60,14 @@ Spotube can be installed through Homebrew. We host our own cask definition thus 
 $ brew tap krtirtho/apps
 $ brew install --cask spotube
 ```
+
+<Ads
+  style="display:block; text-align:center;"
+  adSlot={ADS_SLOTS.packagePageArticle}
+  adLayout="in-article"
+  adFormat="fluid"
+  fullWidthResponsive={false}
+/>
 
 ## <Fa class="inline" icon={faWindows} color="#00A2F0" /> Windows
 

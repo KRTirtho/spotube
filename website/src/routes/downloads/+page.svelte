@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { extendedDownloadLinks } from '$lib';
+	import { ADS_SLOTS, extendedDownloadLinks } from '$lib';
 	import { Download } from 'lucide-svelte';
 	import { History, Sparkles, Package } from 'lucide-svelte';
 	import DownloadItems from '$lib/components/downloads/download-items.svelte';
+	import Ads from '$lib/components/ads/ads.svelte';
 
 	const otherDownloads: [string, string, any][] = [
 		['/downloads/packages', 'CLI Packages Managers', Package],
@@ -11,7 +12,7 @@
 	];
 </script>
 
-<section class="p-4 md:p-16">
+<section class="p-4 md:p-16 md:pb-4">
 	<h2 class="h2 flex items-center gap-4">
 		Download
 		<Download class="inline" size={30} />
@@ -22,7 +23,9 @@
 
 	<DownloadItems links={extendedDownloadLinks} />
 
-	<br /><br /><br />
+	<br />
+	<Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
+	<br />
 
 	<h2 class="h2">Other Downloads</h2>
 	<br /><br />
@@ -36,4 +39,6 @@
 			</a>
 		{/each}
 	</div>
+	<br />
+	<Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
 </section>

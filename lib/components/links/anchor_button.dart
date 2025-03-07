@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class AnchorButton<T> extends HookWidget {
   final String text;

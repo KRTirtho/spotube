@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/modules/stats/common/track_item.dart';
@@ -33,6 +35,24 @@ class TopTracks extends HookConsumerWidget {
         isLoading: topTracks.isLoading && !topTracks.isLoadingNextPage,
         hasReachedMax: topTracks.asData?.value.hasMore ?? true,
         itemCount: tracksData.length,
+        emptyBuilder: (context) => Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Gap(50),
+              Undraw(
+                illustration: UndrawIllustration.happyMusic,
+                color: context.theme.colorScheme.primary,
+                height: 200 * context.theme.scaling,
+              ),
+              Text(
+                context.l10n.no_tracks_listened_yet,
+                textAlign: TextAlign.center,
+              ).muted().small(),
+            ],
+          ),
+        ),
         itemBuilder: (context, index) {
           final track = tracksData[index];
           return StatsTrackItem(

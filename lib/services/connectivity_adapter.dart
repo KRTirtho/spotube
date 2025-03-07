@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/widgets.dart';
 import 'package:spotube/services/logger/logger.dart';
@@ -19,6 +20,7 @@ class ConnectionCheckerService with WidgetsBindingObserver {
     onConnectivityChanged.listen((connected) {
       try {
         if (!connected && timer == null) {
+          // check every 30 seconds if we are connected when we are not connected
           timer = Timer.periodic(const Duration(seconds: 30), (timer) async {
             if (WidgetsBinding.instance.lifecycleState ==
                 AppLifecycleState.paused) {
@@ -33,6 +35,10 @@ class ConnectionCheckerService with WidgetsBindingObserver {
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
       }
+    });
+
+    Connectivity().onConnectivityChanged.listen((event) async {
+      await isConnected;
     });
   }
 
@@ -77,8 +83,9 @@ class ConnectionCheckerService with WidgetsBindingObserver {
     }
 
     return interfaces.any(
-      (interface) =>
-          vpnNames.any((name) => interface.name.toLowerCase().contains(name)),
+      (interface) => vpnNames.any(
+        (name) => interface.name.toLowerCase().contains(name),
+      ),
     );
   }
 
@@ -105,14 +112,14 @@ class ConnectionCheckerService with WidgetsBindingObserver {
         await isVpnActive(); // when VPN is active that means we are connected
   }
 
-  bool isConnectedSync = false;
+  bool isConnectedSync = true;
 
   Future<bool> get isConnected async {
     final connected = await _isConnected();
-    isConnectedSync = connected;
     if (connected != isConnectedSync /*previous value*/) {
       _connectionStreamController.add(connected);
     }
+    isConnectedSync = connected;
     return connected;
   }
 

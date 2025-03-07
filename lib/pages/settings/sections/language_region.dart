@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/language_codes.dart';
 import 'package:spotube/collections/spotify_markets.dart';
@@ -24,7 +23,6 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.language_region,
       children: [
-        const Gap(10),
         AdaptiveSelectTile<Locale>(
           value: preferences.locale,
           onChanged: (locale) {
@@ -34,12 +32,12 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
           title: Text(context.l10n.language),
           secondary: const Icon(SpotubeIcons.language),
           options: [
-            DropdownMenuItem(
+            SelectItemButton(
               value: const Locale("system", "system"),
               child: Text(context.l10n.system_default),
             ),
             for (final locale in L10n.all)
-              DropdownMenuItem(
+              SelectItemButton(
                 value: locale,
                 child: Builder(builder: (context) {
                   final isoCodeName = LanguageLocals.getDisplayLanguage(
@@ -64,7 +62,7 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
           },
           options: spotifyMarkets
               .map(
-                (country) => DropdownMenuItem(
+                (country) => SelectItemButton(
                   value: country.$1,
                   child: Text(country.$2),
                 ),

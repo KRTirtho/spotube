@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dio/dio.dart' hide Response;
 import 'package:dio/dio.dart' as dio_lib;
@@ -22,6 +23,20 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/service_utils.dart';
+import 'package:youtube_explode_dart/youtube_explode_dart.dart';
+
+final _deviceClients = Set.unmodifiable({
+  YoutubeApiClient.ios,
+  YoutubeApiClient.android,
+  YoutubeApiClient.mweb,
+  YoutubeApiClient.safari,
+});
+
+String? get _randomUserAgent => _deviceClients
+    .elementAt(
+      Random().nextInt(_deviceClients.length),
+    )
+    .payload["context"]["client"]["userAgent"];
 
 class ServerPlaybackRoutes {
   final Ref ref;
@@ -47,9 +62,8 @@ class ServerPlaybackRoutes {
     var options = Options(
       headers: {
         ...headers,
-        "User-Agent":
-            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36",
-        "Cache-Control": "max-age=0",
+        "user-agent": _randomUserAgent,
+        "Cache-Control": "max-age=3600",
         "Connection": "keep-alive",
         "host": Uri.parse(track.url).host,
       },
@@ -100,18 +114,30 @@ class ServerPlaybackRoutes {
       );
     }
 
-    final res =
-        await dio.get<Uint8List>(track.url, options: options).catchError(
-      (e, stack) async {
-        final sourcedTrack = await ref
-            .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
-            .switchToAlternativeSources();
+    final res = await dio
+        .get<Uint8List>(
+      track.url,
+      options: options.copyWith(headers: {
+        ...?options.headers,
+        "user-agent": _randomUserAgent,
+      }),
+    )
+        .catchError((e, stack) async {
+      AppLogger.reportError(e, stack);
+      final sourcedTrack = await ref
+          .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
+          .refreshStreamingUrl();
 
-        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
 
-        return await dio.get<Uint8List>(sourcedTrack!.url, options: options);
-      },
-    );
+      return await dio.get<Uint8List>(
+        sourcedTrack!.url,
+        options: options.copyWith(headers: {
+          ...?options.headers,
+          "user-agent": _randomUserAgent,
+        }),
+      );
+    });
 
     final bytes = res.data;
 
@@ -187,6 +213,27 @@ class ServerPlaybackRoutes {
       AppLogger.reportError(e, stack);
       return Response.internalServerError();
     }
+  }
+
+  /// @get('/playback/toggle-playback')
+  Future<Response> togglePlayback(Request request) async {
+    audioPlayer.isPlaying
+        ? await audioPlayer.pause()
+        : await audioPlayer.resume();
+
+    return Response.ok("Playback toggled");
+  }
+
+  /// @get('/playback/previous')
+  Future<Response> previousTrack(Request request) async {
+    await audioPlayer.skipToPrevious();
+    return Response.ok("Previous track");
+  }
+
+  /// @get('/playback/next')
+  Future<Response> nextTrack(Request request) async {
+    await audioPlayer.skipToNext();
+    return Response.ok("Next track");
   }
 }
 

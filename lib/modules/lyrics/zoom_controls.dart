@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 
@@ -32,7 +33,7 @@ class ZoomControls extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final actions = [
-      IconButton(
+      IconButton.ghost(
         icon: decreaseIcon,
         onPressed: () {
           if (value == min) return;
@@ -40,7 +41,7 @@ class ZoomControls extends HookWidget {
         },
       ),
       Text("$value$unit"),
-      IconButton(
+      IconButton.ghost(
         icon: increaseIcon,
         onPressed: () {
           if (value == max) return;
@@ -50,27 +51,28 @@ class ZoomControls extends HookWidget {
     ];
 
     return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(10),
-      ),
       constraints: BoxConstraints(
         maxHeight: direction == Axis.horizontal ? 50 : 200,
         maxWidth: direction == Axis.vertical ? 50 : double.infinity,
       ),
       margin: const EdgeInsets.all(8),
-      child: direction == Axis.horizontal
-          ? Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              children: actions,
-            )
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.min,
-              verticalDirection: VerticalDirection.up,
-              children: actions,
-            ),
+      child: SurfaceCard(
+        surfaceBlur: context.theme.surfaceBlur,
+        surfaceOpacity: context.theme.surfaceOpacity,
+        padding: EdgeInsets.zero,
+        child: direction == Axis.horizontal
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: actions,
+              )
+            : Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                verticalDirection: VerticalDirection.up,
+                children: actions,
+              ),
+      ),
     );
   }
 }

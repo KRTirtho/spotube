@@ -4,6 +4,7 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/routes.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/provider/spotify_provider.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
@@ -13,10 +14,9 @@ import 'package:spotube/utils/platform.dart';
 final appLinks = AppLinks();
 final linkStream = appLinks.stringLinkStream.asBroadcastStream();
 
-void useDeepLinking(WidgetRef ref) {
+void useDeepLinking(WidgetRef ref, AppRouter router) {
   // single instance no worries
   final spotify = ref.watch(spotifyProvider);
-  final router = ref.watch(routerProvider);
 
   useEffect(() {
     void uriListener(List<SharedFile> files) async {
@@ -27,24 +27,21 @@ void useDeepLinking(WidgetRef ref) {
 
         switch (url.pathSegments.first) {
           case "album":
-            router.push(
-              "/album/${url.pathSegments.last}",
-              extra: await spotify.albums.get(url.pathSegments.last),
+            final album = await spotify.albums.get(url.pathSegments.last);
+            router.navigate(
+              AlbumRoute(id: album.id!, album: album),
             );
             break;
           case "artist":
-            router.push("/artist/${url.pathSegments.last}");
+            router.navigate(ArtistRoute(artistId: url.pathSegments.last));
             break;
           case "playlist":
-            router.push(
-              "/playlist/${url.pathSegments.last}",
-              extra: await spotify.playlists.get(url.pathSegments.last),
-            );
+            final playlist = await spotify.playlists.get(url.pathSegments.last);
+            router
+                .navigate(PlaylistRoute(id: playlist.id!, playlist: playlist));
             break;
           case "track":
-            router.push(
-              "/track/${url.pathSegments.last}",
-            );
+            router.navigate(TrackRoute(trackId: url.pathSegments.last));
             break;
           default:
             break;
@@ -68,21 +65,21 @@ void useDeepLinking(WidgetRef ref) {
 
         switch (startSegment) {
           case "spotify:album":
-            await router.push(
-              "/album/$endSegment",
-              extra: await spotify.albums.get(endSegment),
+            final album = await spotify.albums.get(endSegment);
+            await router.navigate(
+              AlbumRoute(id: album.id!, album: album),
             );
             break;
           case "spotify:artist":
-            await router.push("/artist/$endSegment");
+            await router.navigate(ArtistRoute(artistId: endSegment));
             break;
           case "spotify:track":
-            await router.push("/track/$endSegment");
+            await router.navigate(TrackRoute(trackId: endSegment));
             break;
           case "spotify:playlist":
-            await router.push(
-              "/playlist/$endSegment",
-              extra: await spotify.playlists.get(endSegment),
+            final playlist = await spotify.playlists.get(endSegment);
+            await router.navigate(
+              PlaylistRoute(id: playlist.id!, playlist: playlist),
             );
             break;
           default:

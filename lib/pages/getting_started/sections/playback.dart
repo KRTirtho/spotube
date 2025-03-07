@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
@@ -14,14 +14,14 @@ final audioSourceToIconMap = {
   AudioSource.youtube: const Icon(
     SpotubeIcons.youtube,
     color: Colors.red,
-    size: 30,
+    size: 20,
   ),
-  AudioSource.piped: const Icon(SpotubeIcons.piped, size: 30),
+  AudioSource.piped: const Icon(SpotubeIcons.piped, size: 20),
   AudioSource.invidious: ClipRRect(
-    borderRadius: BorderRadius.circular(48),
-    child: Assets.invidious.image(width: 48, height: 48),
+    borderRadius: BorderRadius.circular(26),
+    child: Assets.invidious.image(width: 26, height: 26),
   ),
-  AudioSource.jiosaavn: Assets.jiosaavn.image(width: 48, height: 48),
+  AudioSource.jiosaavn: Assets.jiosaavn.image(width: 20, height: 20),
 };
 
 class GettingStartedPagePlaybackSection extends HookConsumerWidget {
@@ -36,8 +36,6 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final ThemeData(:textTheme, :colorScheme, :dividerColor) =
-        Theme.of(context);
     final preferences = ref.watch(userPreferencesProvider);
     final preferencesNotifier = ref.read(userPreferencesProvider.notifier);
 
@@ -62,76 +60,64 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
               children: [
                 const Icon(SpotubeIcons.album, size: 16),
                 const Gap(8),
-                Text(context.l10n.playback, style: textTheme.titleMedium),
+                Text(context.l10n.playback).semiBold().large(),
               ],
             ),
             const Gap(16),
-            ListTile(
-              title: Text(
-                context.l10n.select_audio_source,
-                style: textTheme.titleMedium,
-              ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(context.l10n.select_audio_source).semiBold().large(),
             ),
             const Gap(16),
-            ToggleButtons(
-              isSelected: [
-                for (final source in AudioSource.values)
-                  preferences.audioSource == source,
-              ],
-              onPressed: (index) {
-                preferencesNotifier.setAudioSource(AudioSource.values[index]);
+            Select<AudioSource>(
+              value: preferences.audioSource,
+              onChanged: (value) {
+                if (value == null) return;
+                preferencesNotifier.setAudioSource(value);
               },
-              borderRadius: BorderRadius.circular(8),
-              children: [
-                for (final source in AudioSource.values)
-                  SizedBox.square(
-                    dimension: 84,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        audioSourceToIconMap[source]!,
-                        const Gap(8),
-                        Text(
-                          source.name.capitalize(),
-                          style: textTheme.bodySmall!.copyWith(
-                            color: preferences.audioSource == source
-                                ? colorScheme.primary
-                                : null,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-            ListTile(
-              title: Align(
-                alignment: switch (preferences.audioSource) {
-                  AudioSource.youtube => Alignment.centerLeft,
-                  AudioSource.piped ||
-                  AudioSource.invidious =>
-                    Alignment.center,
-                  AudioSource.jiosaavn => Alignment.centerRight,
-                },
-                child: Text(
-                  audioSourceToDescription[preferences.audioSource]!,
-                  style: textTheme.bodySmall?.copyWith(
-                    color: dividerColor,
-                  ),
-                ),
+              placeholder: Text(preferences.audioSource.name.capitalize()),
+              itemBuilder: (context, value) => Row(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 6,
+                children: [
+                  audioSourceToIconMap[value]!,
+                  Text(value.name.capitalize()),
+                ],
               ),
+              popup: (context) {
+                return SelectPopup(
+                  items: SelectItemBuilder(
+                    childCount: AudioSource.values.length,
+                    builder: (context, index) {
+                      final source = AudioSource.values[index];
+
+                      return SelectItemButton(
+                        value: source,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          spacing: 6,
+                          children: [
+                            audioSourceToIconMap[source]!,
+                            Text(source.name.capitalize()),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                );
+              },
             ),
             const Gap(16),
-            ListTile(
+            Text(
+              audioSourceToDescription[preferences.audioSource]!,
+            ).small().muted(),
+            const Gap(16),
+            ButtonTile(
               title: Text(context.l10n.endless_playback),
               subtitle: Text(
                 context.l10n.endless_playback_description,
-                style: textTheme.bodySmall?.copyWith(
-                  color: dividerColor,
-                ),
-              ),
-              onTap: () {
+              ).small().muted(),
+              onPressed: () {
                 preferencesNotifier
                     .setEndlessPlayback(!preferences.endlessPlayback);
               },
@@ -146,17 +132,17 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                FilledButton.icon(
-                  icon: const Icon(SpotubeIcons.angleLeft),
-                  label: Text(context.l10n.previous),
+                Button.secondary(
+                  leading: const Icon(SpotubeIcons.angleLeft),
                   onPressed: onPrevious,
+                  child: Text(context.l10n.previous),
                 ),
                 Directionality(
                   textDirection: TextDirection.rtl,
-                  child: FilledButton.icon(
-                    icon: const Icon(SpotubeIcons.angleRight),
-                    label: Text(context.l10n.next),
+                  child: Button.primary(
+                    leading: const Icon(SpotubeIcons.angleRight),
                     onPressed: onNext,
+                    child: Text(context.l10n.next),
                   ),
                 ),
               ],

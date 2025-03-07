@@ -26,7 +26,10 @@ class FollowedArtistsState extends CursorPaginatedState<Artist> {
 
 class FollowedArtistsNotifier
     extends CursorPaginatedAsyncNotifier<Artist, FollowedArtistsState> {
-  FollowedArtistsNotifier() : super();
+  final Dio dio;
+  FollowedArtistsNotifier()
+      : dio = Dio(),
+        super();
 
   @override
   fetch(offset, limit) async {
@@ -50,9 +53,44 @@ class FollowedArtistsNotifier
     );
   }
 
+  Future<void> _followArtists(List<String> artistIds) async {
+    try {
+      final creds = await spotify.getCredentials();
+
+      await dio.post(
+        "https://api-partner.spotify.com/pathfinder/v1/query",
+        data: {
+          "variables": {
+            "uris": artistIds.map((id) => "spotify:artist:$id").toList()
+          },
+          "operationName": "addToLibrary",
+          "extensions": {
+            "persistedQuery": {
+              "version": 1,
+              "sha256Hash":
+                  "a3c1ff58e6a36fec5fe1e3a193dc95d9071d96b9ba53c5ba9c1494fb1ee73915"
+            }
+          }
+        },
+        options: Options(
+          headers: {
+            "accept": "application/json",
+            'app-platform': 'WebPlayer',
+            'authorization': 'Bearer ${creds.accessToken}',
+            'content-type': 'application/json;charset=UTF-8',
+          },
+          responseType: ResponseType.json,
+        ),
+      );
+    } on DioException catch (e, stack) {
+      AppLogger.reportError(e, stack);
+    }
+  }
+
   Future<void> saveArtists(List<String> artistIds) async {
     if (state.value == null) return;
-    await spotify.me.follow(FollowingType.artist, artistIds);
+    // await spotify.me.follow(FollowingType.artist, artistIds);
+    await _followArtists(artistIds);
 
     state = await AsyncValue.guard(() async {
       final artists = await spotify.artists.list(artistIds);

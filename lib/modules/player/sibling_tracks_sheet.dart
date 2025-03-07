@@ -1,25 +1,27 @@
-import 'dart:ui';
-
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-
+import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/hooks/utils/use_debounce.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-
+import 'package:spotube/provider/youtube_engine/youtube_engine.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/video_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
@@ -69,6 +71,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
     final playlist = ref.watch(audioPlayerProvider);
     final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
     final preferences = ref.watch(userPreferencesProvider);
+    final youtubeEngine = ref.watch(youtubeEngineProvider);
 
     final isSearching = useState(false);
     final searchMode = useState(preferences.searchMode);
@@ -84,7 +87,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
 
     final defaultSearchTerm =
         "$title - ${activeTrack?.artists?.asString() ?? ""}";
-    final searchController = useTextEditingController(
+    final searchController = useShadcnTextEditingController(
       text: defaultSearchTerm,
     );
 
@@ -116,14 +119,14 @@ class SiblingTracksSheet extends HookConsumerWidget {
             activeSourceInfo,
           );
       } else {
-        final resultsYt = await youtubeClient.search.search(searchTerm.trim());
+        final resultsYt = await youtubeEngine.searchVideos(searchTerm.trim());
 
         final searchResults = await Future.wait(
           resultsYt
               .map(YoutubeVideoInfo.fromVideo)
               .mapIndexed((i, video) async {
             final siblingType =
-                await YoutubeSourcedTrack.toSiblingType(i, video);
+                await YoutubeSourcedTrack.toSiblingType(i, video, ref);
             return siblingType.info;
           }),
         );
@@ -140,6 +143,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
       searchMode.value,
       activeTrack,
       preferences.audioSource,
+      youtubeEngine,
     ]);
 
     final siblings = useMemoized(
@@ -152,52 +156,57 @@ class SiblingTracksSheet extends HookConsumerWidget {
       [activeTrack, isFetchingActiveTrack],
     );
 
-    final borderRadius = floating
-        ? BorderRadius.circular(10)
-        : const BorderRadius.only(
-            topLeft: Radius.circular(10),
-            topRight: Radius.circular(10),
-          );
-
+    final previousActiveTrack = usePrevious(activeTrack);
     useEffect(() {
+      /// Populate sibling when active track changes
+      if (previousActiveTrack?.id == activeTrack?.id) return;
       if (activeTrack is SourcedTrack && activeTrack.siblings.isEmpty) {
         activeTrackNotifier.populateSibling();
       }
       return null;
-    }, [activeTrack]);
+    }, [activeTrack, previousActiveTrack]);
 
     final itemBuilder = useCallback(
       (SourceInfo sourceInfo) {
         final icon = sourceInfoToIconMap[sourceInfo.runtimeType];
-        return ListTile(
-          title: Text(sourceInfo.title),
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: UniversalImage(
-              path: sourceInfo.thumbnail,
-              height: 60,
-              width: 60,
-            ),
+        return ButtonTile(
+          style: ButtonVariance.ghost,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          title: Text(
+            sourceInfo.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
+          leading: UniversalImage(
+            path: sourceInfo.thumbnail,
+            height: 60,
+            width: 60,
           ),
           trailing: Text(sourceInfo.duration.toHumanReadableString()),
           subtitle: Row(
             children: [
               if (icon != null) icon,
-              Text(" • ${sourceInfo.artist}"),
+              Flexible(
+                child: Text(
+                  " • ${sourceInfo.artist}",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
             ],
           ),
           enabled: !isFetchingActiveTrack,
           selected: !isFetchingActiveTrack &&
               sourceInfo.id == (activeTrack as SourcedTrack).sourceInfo.id,
-          selectedTileColor: theme.popupMenuTheme.color,
-          onTap: () {
+          onPressed: () {
             if (!isFetchingActiveTrack &&
                 sourceInfo.id != (activeTrack as SourcedTrack).sourceInfo.id) {
               activeTrackNotifier.swapSibling(sourceInfo);
-              Navigator.of(context).pop();
+              if (MediaQuery.sizeOf(context).mdAndUp) {
+                closeOverlay(context);
+              } else {
+                closeDrawer(context);
+              }
             }
           },
         );
@@ -205,131 +214,124 @@ class SiblingTracksSheet extends HookConsumerWidget {
       [activeTrack, siblings],
     );
 
-    final mediaQuery = MediaQuery.of(context);
+    final scale = context.theme.scaling;
+
     return SafeArea(
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        clipBehavior: Clip.hardEdge,
-        child: BackdropFilter(
-          filter: ImageFilter.blur(
-            sigmaX: 12.0,
-            sigmaY: 12.0,
-          ),
-          child: AnimatedSize(
-            duration: const Duration(milliseconds: 300),
-            child: Container(
-              height: isSearching.value && mediaQuery.smAndDown
-                  ? mediaQuery.size.height - 50
-                  : mediaQuery.size.height * .6,
-              decoration: BoxDecoration(
-                borderRadius: borderRadius,
-                color:
-                    theme.colorScheme.surfaceContainerHighest.withOpacity(.5),
-              ),
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: AppBar(
-                  centerTitle: true,
-                  title: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: !isSearching.value
-                        ? Text(
-                            context.l10n.alternative_track_sources,
-                            style: theme.textTheme.headlineSmall,
-                          )
-                        : TextField(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16),
+            child: Row(
+              spacing: 5,
+              children: [
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  child: !isSearching.value
+                      ? Text(
+                          context.l10n.alternative_track_sources,
+                        ).bold()
+                      : ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxWidth: 320 * scale,
+                            maxHeight: 38 * scale,
+                          ),
+                          child: TextField(
                             autofocus: true,
                             controller: searchController,
-                            decoration: InputDecoration(
-                              hintText: context.l10n.search,
-                              hintStyle: theme.textTheme.headlineSmall,
-                              border: InputBorder.none,
-                            ),
-                            style: theme.textTheme.headlineSmall,
+                            placeholder: Text(context.l10n.search),
+                            style: theme.typography.bold,
                           ),
-                  ),
-                  automaticallyImplyLeading: false,
-                  backgroundColor: Colors.transparent,
-                  actions: [
-                    if (!isSearching.value)
-                      IconButton(
-                        icon: const Icon(SpotubeIcons.search, size: 18),
-                        onPressed: () {
-                          isSearching.value = true;
-                        },
-                      )
-                    else ...[
-                      if (preferences.audioSource == AudioSource.piped)
-                        PopupMenuButton(
-                          icon: const Icon(SpotubeIcons.filter, size: 18),
-                          onSelected: (SearchMode mode) {
-                            searchMode.value = mode;
-                          },
-                          initialValue: searchMode.value,
-                          itemBuilder: (context) => SearchMode.values
-                              .map(
-                                (e) => PopupMenuItem(
-                                  value: e,
-                                  child: Text(e.label),
-                                ),
-                              )
-                              .toList(),
                         ),
-                      IconButton(
-                        icon: const Icon(SpotubeIcons.close, size: 18),
-                        onPressed: () {
-                          isSearching.value = false;
-                        },
-                      ),
-                    ]
-                  ],
                 ),
-                body: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    transitionBuilder: (child, animation) =>
-                        FadeTransition(opacity: animation, child: child),
-                    child: InterScrollbar(
-                      controller: controller,
-                      child: switch (isSearching.value) {
-                        false => ListView.builder(
-                            controller: controller,
-                            itemCount: siblings.length,
-                            itemBuilder: (context, index) =>
-                                itemBuilder(siblings[index]),
-                          ),
-                        true => FutureBuilder(
-                            future: searchRequest,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasError) {
-                                return Center(
-                                  child: Text(snapshot.error.toString()),
-                                );
-                              } else if (!snapshot.hasData) {
-                                return const Center(
-                                    child: CircularProgressIndicator());
-                              }
-
-                              return InterScrollbar(
-                                controller: controller,
-                                child: ListView.builder(
-                                  controller: controller,
-                                  itemCount: snapshot.data!.length,
-                                  itemBuilder: (context, index) =>
-                                      itemBuilder(snapshot.data![index]),
-                                ),
-                              );
-                            },
-                          ),
+                const Spacer(),
+                if (!isSearching.value) ...[
+                  IconButton.outline(
+                    icon: const Icon(SpotubeIcons.search, size: 18),
+                    onPressed: () {
+                      isSearching.value = true;
+                    },
+                  ),
+                  if (!floating) const BackButton(icon: SpotubeIcons.angleDown)
+                ] else ...[
+                  if (preferences.audioSource == AudioSource.piped)
+                    IconButton.outline(
+                      icon: const Icon(SpotubeIcons.filter, size: 18),
+                      onPressed: () {
+                        showPopover(
+                          context: context,
+                          alignment: Alignment.bottomRight,
+                          builder: (context) {
+                            return DropdownMenu(
+                              children: SearchMode.values
+                                  .map(
+                                    (e) => MenuButton(
+                                      onPressed: (context) {
+                                        searchMode.value = e;
+                                      },
+                                      enabled: searchMode.value != e,
+                                      child: Text(e.label),
+                                    ),
+                                  )
+                                  .toList(),
+                            );
+                          },
+                        );
                       },
                     ),
+                  IconButton.outline(
+                    icon: const Icon(SpotubeIcons.close, size: 18),
+                    onPressed: () {
+                      isSearching.value = false;
+                    },
                   ),
-                ),
+                ]
+              ],
+            ),
+          ),
+          Expanded(
+            child: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) =>
+                  FadeTransition(opacity: animation, child: child),
+              child: InterScrollbar(
+                controller: controller,
+                child: switch (isSearching.value) {
+                  false => ListView.separated(
+                      padding: const EdgeInsets.all(8.0),
+                      controller: controller,
+                      itemCount: siblings.length,
+                      separatorBuilder: (context, index) => const Gap(8),
+                      itemBuilder: (context, index) =>
+                          itemBuilder(siblings[index]),
+                    ),
+                  true => FutureBuilder(
+                      future: searchRequest,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Text(snapshot.error.toString()),
+                          );
+                        } else if (!snapshot.hasData) {
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }
+
+                        return ListView.separated(
+                          padding: const EdgeInsets.all(8.0),
+                          controller: controller,
+                          itemCount: snapshot.data!.length,
+                          separatorBuilder: (context, index) => const Gap(8),
+                          itemBuilder: (context, index) =>
+                              itemBuilder(snapshot.data![index]),
+                        );
+                      },
+                    ),
+                },
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

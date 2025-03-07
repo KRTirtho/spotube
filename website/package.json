@@ -1,6 +1,6 @@
 {
   "name": "website",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -50,6 +50,7 @@
     "highlight.js": "11.9.0",
     "lucide-svelte": "^0.323.0",
     "mdsvex-relative-images": "^1.0.3",
+    "rehype-auto-ads": "^1.2.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
     "remark-container": "^0.1.2",

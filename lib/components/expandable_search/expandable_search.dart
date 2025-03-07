@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/context.dart';
 
@@ -39,11 +39,8 @@ class ExpandableSearchField extends StatelessWidget {
               child: TextField(
                 focusNode: searchFocus,
                 controller: searchController,
-                decoration: InputDecoration(
-                  hintText: context.l10n.search_tracks,
-                  isDense: true,
-                  prefixIcon: const Icon(SpotubeIcons.search),
-                ),
+                placeholder: Text(context.l10n.search_tracks),
+                leading: const Icon(SpotubeIcons.search),
               ),
             ),
           ),
@@ -69,16 +66,9 @@ class ExpandableSearchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return IconButton(
       icon: icon,
-      style: IconButton.styleFrom(
-        backgroundColor:
-            isFiltering ? theme.colorScheme.secondaryContainer : null,
-        foregroundColor: isFiltering ? theme.colorScheme.secondary : null,
-        minimumSize: const Size(25, 25),
-      ),
+      variance: isFiltering ? ButtonVariance.secondary : ButtonVariance.outline,
       onPressed: () {
         if (isFiltering) {
           searchFocus.requestFocus();

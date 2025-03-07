@@ -20,7 +20,8 @@ on:
         description: Dry run without uploading to release
 
 env:
-  FLUTTER_VERSION: 3.24.5
+  FLUTTER_VERSION: 3.29.0
+  FLUTTER_CHANNEL: master
 
 permissions:
   contents: write
@@ -30,63 +31,71 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: linux
+            arch: x86
             files: |
               dist/Spotube-linux-x86_64.deb
               dist/Spotube-linux-x86_64.rpm
               dist/spotube-linux-*-x86_64.tar.xz
-          - os: ubuntu-latest
-            platform: linux_arm
+          - os: ubuntu-22.04-arm
+            platform: linux
+            arch: arm64
             files: |
               dist/Spotube-linux-aarch64.deb
               dist/spotube-linux-*-aarch64.tar.xz
-          - os: ubuntu-latest
+          - os: ubuntu-22.04
             platform: android
+            arch: all
             files: |
               build/Spotube-android-all-arch.apk
               build/Spotube-playstore-all-arch.aab
           - os: windows-latest
             platform: windows
+            arch: x86
             files: |
               dist/Spotube-windows-x86_64.nupkg
               dist/Spotube-windows-x86_64-setup.exe
           - os: macos-latest
             platform: ios
+            arch: all
             files: |
               Spotube-iOS.ipa
           - os: macos-14
             platform: macos
+            arch: all
             files: |
               build/Spotube-macos-universal.dmg
               build/Spotube-macos-universal.pkg
     runs-on: ${{matrix.os}}
     steps:
       - uses: actions/checkout@v4
-      - uses: subosito/flutter-action@v2.12.0
+      - uses: subosito/flutter-action@v2.18.0
         with:
-          cache: true
-          cache-key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.yaml') }}
           flutter-version: ${{ env.FLUTTER_VERSION  }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+          git-source: https://github.com/flutter/flutter.git
+
       - name: Setup Java
         if: ${{matrix.platform == 'android'}}
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
-          cache: 'gradle'
+          distribution: "zulu"
+          java-version: "17"
+          cache: "gradle"
           check-latest: true
-      - name: Set up QEMU
-        if: ${{matrix.platform == 'linux_arm'}}
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        if: ${{matrix.platform == 'linux_arm'}}
-        uses: docker/setup-buildx-action@v3
+
       - name: Setup Rust toolchain
-        if: ${{matrix.platform != 'linux_arm'}}
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
+
+      - name: Install Xcode
+        if: ${{matrix.platform == 'ios'}}
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: "16.1"
 
       - name: Install ${{matrix.platform}} dependencies
         run: |
@@ -98,29 +107,17 @@ jobs:
         run: |
           echo '${{ secrets.KEYSTORE }}' | base64 --decode > android/app/upload-keystore.jks
           echo '${{ secrets.KEY_PROPERTIES }}' > android/key.properties
-      
-      - name: Unessary hosted tools
-        if: ${{matrix.platform == 'linux_arm'}}
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: false
-          swap-storage: false
-          android: true
-          dotnet: true
-          haskell: true
-          large-packages: true
-          docker-images: true
-      
+
       - name: Build ${{matrix.platform}} binaries
-        run: dart cli/cli.dart build ${{matrix.platform}}
+        run: dart cli/cli.dart build --arch=${{matrix.arch}} ${{matrix.platform}}
         env:
           CHANNEL: ${{inputs.channel}}
           DOTENV: ${{secrets.DOTENV_RELEASE}}
-      
-      - uses: actions/upload-artifact@v3
+
+      - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Spotube-Release-Binaries
+          name: ${{matrix.platform}}-${{matrix.arch}}
           path: ${{matrix.files}}
 
       - name: Debug With SSH When fails
@@ -130,14 +127,13 @@ jobs:
           limit-access-to-actor: true
 
   upload:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - build_platform
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
-          name: Spotube-Release-Binaries
           path: ./Spotube-Release-Binaries
 
       - name: Install dependencies
@@ -146,18 +142,19 @@ jobs:
       - name: Generate Checksums
         run: |
           tree .
-          md5sum Spotube-Release-Binaries/* >> RELEASE.md5sum
-          sha256sum Spotube-Release-Binaries/* >> RELEASE.sha256sum
+          find Spotube-Release-Binaries -type f -exec md5sum {} \; >> RELEASE.md5sum
+          find Spotube-Release-Binaries -type f -exec sha256sum {} \; >> RELEASE.sha256sum
+          sed -i 's|Spotube-Release-Binaries/.*/\([^/]*\)$|\1|' RELEASE.sha256sum RELEASE.md5sum
           sed -i 's|Spotube-Release-Binaries/||' RELEASE.sha256sum RELEASE.md5sum
-      
+
       - name: Extract pubspec version
         run: |
           echo "PUBSPEC_VERSION=$(grep -oP 'version:\s*\K[^+]+(?=\+)' pubspec.yaml)" >> $GITHUB_ENV
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           if-no-files-found: error
-          name: Spotube-Release-Binaries
+          name: sums
           path: |
             RELEASE.md5sum
             RELEASE.sha256sum
@@ -172,7 +169,7 @@ jobs:
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: Spotube-Release-Binaries/*,RELEASE.sha256sum,RELEASE.md5sum
+          artifacts: Spotube-Release-Binaries/**/*,RELEASE.sha256sum,RELEASE.md5sum
 
       - name: Upload Release Binaries (nightly)
         if: ${{ !inputs.dry_run && inputs.channel == 'nightly' }}
@@ -184,9 +181,15 @@ jobs:
           omitNameDuringUpdate: true
           omitPrereleaseDuringUpdate: true
           allowUpdates: true
-          artifacts: Spotube-Release-Binaries/*,RELEASE.sha256sum,RELEASE.md5sum
+          artifacts: Spotube-Release-Binaries/**/*,RELEASE.sha256sum,RELEASE.md5sum
           body: |
             Build Number: ${{github.run_number}}
-            
+
             Nightly release includes newest features but may contain bugs
             It is preferred to use the stable version unless you know what you're doing
+
+      - name: Debug With SSH When fails
+        if: ${{ failure() && inputs.debug && inputs.channel == 'nightly' }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true

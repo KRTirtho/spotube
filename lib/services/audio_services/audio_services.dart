@@ -1,7 +1,8 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
@@ -27,8 +28,14 @@ class AudioServices with WidgetsBindingObserver {
         ? await AudioService.init(
             builder: () => MobileAudioService(playback),
             config: AudioServiceConfig(
-              androidNotificationChannelId:
-                  kIsLinux ? 'spotube' : 'com.krtirtho.Spotube',
+              androidNotificationChannelId: switch ((
+                kIsLinux,
+                Env.releaseChannel
+              )) {
+                (true, _) => "spotube",
+                (_, ReleaseChannel.stable) => "com.krtirtho.Spotube",
+                (_, ReleaseChannel.nightly) => "com.krtirtho.Spotube.nightly",
+              },
               androidNotificationChannelName: 'Spotube',
               androidNotificationOngoing: false,
               androidStopForegroundOnPause: false,

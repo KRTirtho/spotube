@@ -1,26 +1,34 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show CollapseMode, FlexibleSpaceBar;
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:skeletonizer/skeletonizer.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+
 import 'package:spotify/spotify.dart' hide Offset;
-import 'package:spotube/collections/fake.dart';
+import 'package:spotube/collections/routes.gr.dart';
+import 'package:spotube/components/button/back_button.dart';
+import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:collection/collection.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class GenrePlaylistsPage extends HookConsumerWidget {
   static const name = "genre_playlists";
 
   final Category category;
-  const GenrePlaylistsPage({super.key, required this.category});
+  final String id;
+  const GenrePlaylistsPage({
+    super.key,
+    @PathParam("categoryId") required this.id,
+    required this.category,
+  });
 
   @override
   Widget build(BuildContext context, ref) {
@@ -29,133 +37,107 @@ class GenrePlaylistsPage extends HookConsumerWidget {
     final playlistsNotifier =
         ref.read(categoryPlaylistsProvider(category.id!).notifier);
     final scrollController = useScrollController();
-    final routeName = GoRouterState.of(context).name;
 
     useCustomStatusBarColor(
       Colors.black,
-      routeName == GenrePlaylistsPage.name,
+      context.watchRouter.topRoute.name == GenrePlaylistsRoute.name,
       noSetBGColor: true,
       automaticSystemUiAdjustment: false,
     );
 
-    return Scaffold(
-      appBar: kIsDesktop
-          ? const PageWindowTitleBar(
-              leading: BackButton(color: Colors.white),
+    return SafeArea(
+      child: Scaffold(
+        headers: [
+          if (kIsDesktop)
+            const TitleBar(
+              leading: [
+                BackButton(),
+              ],
               backgroundColor: Colors.transparent,
-              foregroundColor: Colors.white,
+              surfaceOpacity: 0,
+              surfaceBlur: 0,
             )
-          : null,
-      extendBodyBehindAppBar: true,
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: UniversalImage.imageProvider(category.icons!.first.url!),
-            alignment: Alignment.topCenter,
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.5),
-              BlendMode.darken,
+        ],
+        floatingHeader: true,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: UniversalImage.imageProvider(category.icons!.first.url!),
+              alignment: Alignment.topCenter,
+              fit: BoxFit.cover,
+              repeat: ImageRepeat.noRepeat,
+              matchTextDirection: true,
             ),
-            repeat: ImageRepeat.noRepeat,
-            matchTextDirection: true,
           ),
-        ),
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: [
-            SliverAppBar(
-              automaticallyImplyLeading: kIsMobile,
-              expandedHeight: mediaQuery.mdAndDown ? 200 : 150,
-              title: const Text(""),
-              backgroundColor: Colors.transparent,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: kIsDesktop,
-                title: Text(
-                  category.name!,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Colors.white,
-                    letterSpacing: 3,
-                    shadows: [
-                      const Shadow(
-                        offset: Offset(-1.5, -1.5),
-                        color: Colors.black54,
+          child: SurfaceCard(
+            borderRadius: BorderRadius.zero,
+            padding: EdgeInsets.zero,
+            child: CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                SliverSafeArea(
+                  bottom: false,
+                  sliver: SliverAppBar(
+                    automaticallyImplyLeading: false,
+                    leading: kIsMobile ? const BackButton() : null,
+                    expandedHeight: mediaQuery.mdAndDown ? 200 : 150,
+                    title: const Text(""),
+                    backgroundColor: Colors.transparent,
+                    flexibleSpace: FlexibleSpaceBar(
+                      centerTitle: kIsDesktop,
+                      title: Text(
+                        category.name!,
+                        style: context.theme.typography.h3.copyWith(
+                          color: Colors.white,
+                          letterSpacing: 3,
+                          shadows: [
+                            Shadow(
+                              offset: const Offset(-1.5, -1.5),
+                              color: Colors.black.withAlpha(138),
+                            ),
+                            Shadow(
+                              offset: const Offset(1.5, -1.5),
+                              color: Colors.black.withAlpha(138),
+                            ),
+                            Shadow(
+                              offset: const Offset(1.5, 1.5),
+                              color: Colors.black.withAlpha(138),
+                            ),
+                            Shadow(
+                              offset: const Offset(-1.5, 1.5),
+                              color: Colors.black.withAlpha(138),
+                            ),
+                          ],
+                        ),
                       ),
-                      const Shadow(
-                        offset: Offset(1.5, -1.5),
-                        color: Colors.black54,
-                      ),
-                      const Shadow(
-                        offset: Offset(1.5, 1.5),
-                        color: Colors.black54,
-                      ),
-                      const Shadow(
-                        offset: Offset(-1.5, 1.5),
-                        color: Colors.black54,
-                      ),
-                    ],
+                      collapseMode: CollapseMode.parallax,
+                    ),
                   ),
                 ),
-                collapseMode: CollapseMode.parallax,
-              ),
-            ),
-            const SliverGap(20),
-            SliverSafeArea(
-              top: false,
-              sliver: SliverPadding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: mediaQuery.mdAndDown ? 12 : 24,
+                const SliverGap(20),
+                SliverSafeArea(
+                  top: false,
+                  sliver: SliverPadding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: mediaQuery.mdAndDown ? 12 : 24,
+                    ),
+                    sliver: PlaybuttonView(
+                      controller: scrollController,
+                      itemCount: playlists.asData?.value.items.length ?? 0,
+                      isLoading: playlists.isLoading,
+                      hasMore: playlists.asData?.value.hasMore == true,
+                      onRequestMore: playlistsNotifier.fetchMore,
+                      listItemBuilder: (context, index) => PlaylistCard.tile(
+                          playlists.asData!.value.items[index]),
+                      gridItemBuilder: (context, index) =>
+                          PlaylistCard(playlists.asData!.value.items[index]),
+                    ),
+                  ),
                 ),
-                sliver: playlists.asData?.value.items.isNotEmpty != true
-                    ? Skeletonizer.sliver(
-                        child: SliverToBoxAdapter(
-                          child: Wrap(
-                            spacing: 12,
-                            runSpacing: 12,
-                            children: List.generate(
-                              6,
-                              (index) => PlaylistCard(FakeData.playlist),
-                            ),
-                          ),
-                        ),
-                      )
-                    : SliverGrid.builder(
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 190,
-                          mainAxisExtent: mediaQuery.mdAndDown ? 225 : 250,
-                          crossAxisSpacing: 12,
-                          mainAxisSpacing: 12,
-                        ),
-                        itemCount:
-                            (playlists.asData?.value.items.length ?? 0) + 1,
-                        itemBuilder: (context, index) {
-                          final playlist = playlists.asData?.value.items
-                              .elementAtOrNull(index);
-
-                          if (playlist == null) {
-                            if (playlists.asData?.value.hasMore == false) {
-                              return const SizedBox.shrink();
-                            }
-                            return Skeletonizer(
-                              enabled: true,
-                              child: Waypoint(
-                                controller: scrollController,
-                                isGrid: true,
-                                onTouchEdge: playlistsNotifier.fetchMore,
-                                child: PlaylistCard(FakeData.playlist),
-                              ),
-                            );
-                          }
-
-                          return Skeleton.keep(
-                            child: PlaylistCard(playlist),
-                          );
-                        },
-                      ),
-              ),
+                const SliverGap(20),
+              ],
             ),
-            const SliverGap(20),
-          ],
+          ),
         ),
       ),
     );
