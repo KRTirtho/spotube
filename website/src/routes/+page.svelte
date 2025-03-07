@@ -53,17 +53,9 @@
 				built with Electron (web technologies)
 			</p>
 			<br />
-			<div class="flex items-center">
-				<a
-					href="https://play.google.com/store/apps/details?id=oss.krtirtho.spotube"
-					target="_blank"
-				>
-					<img
-						class="-m-2"
-						src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png"
-						alt="Google PlayStore"
-						width="200"
-					/>
+			<div class="flex items-center gap-3">
+				<a href="https://news.ycombinator.com/item?id=39066136" target="_blank">
+					<img src="https://hackerbadge.vercel.app/api?id=39066136" alt="HackerNews" />
 				</a>
 				<a href="https://flathub.org/apps/com.github.KRTirtho.Spotube" target="_blank">
 					<img
@@ -73,12 +65,7 @@
 					/>
 				</a>
 			</div>
-			<br />
-			<a href="https://news.ycombinator.com/item?id=39066136" target="_blank">
-				<img src="https://hackerbadge.vercel.app/api?id=39066136" alt="HackerNews" />
-			</a>
 		</div>
-		<br class="hidden md:block" />
 		<div class="flex justify-center">
 			<a href="/downloads" class="flex gap-2 btn variant-filled-primary">
 				Download
