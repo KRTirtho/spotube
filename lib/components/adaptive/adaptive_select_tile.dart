@@ -8,6 +8,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
   final Widget title;
   final Widget? subtitle;
   final Widget? secondary;
+  final List<Widget>? trailing;
   final ListTileControlAffinity? controlAffinity;
   final T value;
   final ValueChanged<T?>? onChanged;
@@ -34,6 +35,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
     this.controlAffinity = ListTileControlAffinity.trailing,
     this.subtitle,
     this.secondary,
+    this.trailing,
     this.breakLayout,
     this.showValueWhenUnfolded = true,
     super.key,
@@ -54,8 +56,10 @@ class AdaptiveSelectTile<T> extends HookWidget {
       onChanged: onChanged,
       popupConstraints: popupConstraints ?? const BoxConstraints(maxWidth: 200),
       popupWidthConstraint: popupWidthConstraint ?? PopoverConstraint.flexible,
+      autoClosePopover: true,
       popup: (context) {
         return SelectPopup(
+          autoClose: true,
           items: SelectItemBuilder(
             childCount: options.length,
             builder: (context, index) {
@@ -82,9 +86,20 @@ class AdaptiveSelectTile<T> extends HookWidget {
       leading: controlAffinity != ListTileControlAffinity.leading
           ? secondary
           : control,
-      trailing: controlAffinity == ListTileControlAffinity.leading
-          ? secondary
-          : control,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        spacing: 5,
+        children: [
+          ...?trailing,
+          if (controlAffinity == ListTileControlAffinity.leading &&
+              secondary != null)
+            secondary!
+          else if (controlAffinity == ListTileControlAffinity.trailing &&
+              control != null)
+            control,
+        ],
+      ),
       onTap: breakLayout ?? mediaQuery.mdAndUp
           ? null
           : () {

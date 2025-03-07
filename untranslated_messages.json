@@ -22,7 +22,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "bn": [
@@ -48,7 +50,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "ca": [
@@ -74,7 +78,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "cs": [
@@ -100,7 +106,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "de": [
@@ -126,7 +134,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "es": [
@@ -152,7 +162,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "eu": [
@@ -178,7 +190,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "fa": [
@@ -204,7 +218,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "fi": [
@@ -230,7 +246,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "fr": [
@@ -256,7 +274,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "hi": [
@@ -282,7 +302,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "id": [
@@ -308,7 +330,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "it": [
@@ -334,7 +358,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "ja": [
@@ -360,7 +386,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "ka": [
@@ -386,7 +414,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "ko": [
@@ -412,7 +442,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "ne": [
@@ -438,7 +470,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "nl": [
@@ -464,7 +498,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "pl": [
@@ -490,7 +526,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "pt": [
@@ -516,7 +554,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "ru": [
@@ -542,7 +582,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "th": [
@@ -568,7 +610,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "tr": [
@@ -594,7 +638,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "uk": [
@@ -620,7 +666,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "vi": [
@@ -646,7 +694,9 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ],
 
   "zh": [
@@ -672,6 +722,8 @@
     "youtube_engine_set_path",
     "youtube_engine_unix_issue_message",
     "download",
-    "file_not_found"
+    "file_not_found",
+    "custom",
+    "add_custom_url"
   ]
 }

@@ -4,6 +4,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' show ListTile;
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,6 +14,8 @@ import 'package:piped_client/piped_client.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/form/text_form_field.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
@@ -97,32 +102,127 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                     ),
                     value: preferences.pipedInstance,
                     showValueWhenUnfolded: false,
-                    options: data
-                        .sortedBy((e) => e.name)
-                        .map(
-                          (e) => SelectItemButton(
-                            value: e.apiUrl,
-                            child: RichText(
-                              text: TextSpan(
-                                style: theme.typography.normal.copyWith(
-                                  color: theme.colorScheme.foreground,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: "${e.name.trim()}\n",
-                                  ),
-                                  TextSpan(
-                                    text: e.locations
-                                        .map(countryCodeToEmoji)
-                                        .join(""),
-                                    style: GoogleFonts.notoColorEmoji(),
-                                  ),
-                                ],
+                    trailing: [
+                      Tooltip(
+                        tooltip: TooltipContainer(
+                          child: Text(context.l10n.add_custom_url),
+                        ),
+                        child: IconButton.outline(
+                          icon: const Icon(SpotubeIcons.edit),
+                          size: ButtonSize.small,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              barrierColor: Colors.black.withValues(alpha: 0.5),
+                              builder: (context) => HookBuilder(
+                                builder: (context) {
+                                  final controller =
+                                      useShadcnTextEditingController(
+                                    text: preferences.pipedInstance,
+                                  );
+                                  final formKey = useMemoized(
+                                      () => GlobalKey<FormBuilderState>(), []);
+
+                                  return Alert(
+                                    title:
+                                        Text(context.l10n.piped_instance).h4(),
+                                    content: FormBuilder(
+                                      key: formKey,
+                                      child: Column(
+                                        children: [
+                                          const Gap(10),
+                                          TextFormBuilderField(
+                                            name: "url",
+                                            controller: controller,
+                                            placeholder: Text(
+                                                context.l10n.piped_instance),
+                                            validator:
+                                                FormBuilderValidators.url(),
+                                          ),
+                                          const Gap(10),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Button.secondary(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child:
+                                                      Text(context.l10n.cancel),
+                                                ),
+                                              ),
+                                              const Gap(10),
+                                              Expanded(
+                                                child: Button.primary(
+                                                  onPressed: () {
+                                                    if (!formKey.currentState!
+                                                        .saveAndValidate()) {
+                                                      return;
+                                                    }
+                                                    preferencesNotifier
+                                                        .setPipedInstance(
+                                                      controller.text,
+                                                    );
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child:
+                                                      Text(context.l10n.save),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
                               ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                    options: [
+                      if (data
+                          .none((e) => e.apiUrl == preferences.pipedInstance))
+                        SelectItemButton(
+                          value: preferences.pipedInstance,
+                          child: Text.rich(
+                            TextSpan(
+                              style: theme.typography.xSmall.copyWith(
+                                color: theme.colorScheme.foreground,
+                              ),
+                              children: [
+                                TextSpan(text: context.l10n.custom),
+                                const TextSpan(text: "\n"),
+                                TextSpan(text: preferences.pipedInstance),
+                              ],
                             ),
                           ),
-                        )
-                        .toList(),
+                        ),
+                      for (final e in data.sortedBy((e) => e.name))
+                        SelectItemButton(
+                          value: e.apiUrl,
+                          child: RichText(
+                            text: TextSpan(
+                              style: theme.typography.normal.copyWith(
+                                color: theme.colorScheme.foreground,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "${e.name.trim()}\n",
+                                ),
+                                TextSpan(
+                                  text: e.locations
+                                      .map(countryCodeToEmoji)
+                                      .join(""),
+                                  style: GoogleFonts.notoColorEmoji(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
                     onChanged: (value) {
                       if (value != null) {
                         preferencesNotifier.setPipedInstance(value);
@@ -157,34 +257,129 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                       "${context.l10n.invidious_description}\n"
                       "${context.l10n.invidious_warning}",
                     ),
+                    trailing: [
+                      Tooltip(
+                        tooltip: TooltipContainer(
+                          child: Text(context.l10n.add_custom_url),
+                        ),
+                        child: IconButton.outline(
+                          icon: const Icon(SpotubeIcons.edit),
+                          size: ButtonSize.small,
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              barrierColor: Colors.black.withValues(alpha: 0.5),
+                              builder: (context) => HookBuilder(
+                                builder: (context) {
+                                  final controller =
+                                      useShadcnTextEditingController(
+                                    text: preferences.invidiousInstance,
+                                  );
+                                  final formKey = useMemoized(
+                                      () => GlobalKey<FormBuilderState>(), []);
+
+                                  return Alert(
+                                    title: Text(context.l10n.invidious_instance)
+                                        .h4(),
+                                    content: FormBuilder(
+                                      key: formKey,
+                                      child: Column(
+                                        children: [
+                                          const Gap(10),
+                                          TextFormBuilderField(
+                                            name: "url",
+                                            controller: controller,
+                                            placeholder: Text(context
+                                                .l10n.invidious_instance),
+                                            validator:
+                                                FormBuilderValidators.url(),
+                                          ),
+                                          const Gap(10),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: Button.secondary(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child:
+                                                      Text(context.l10n.cancel),
+                                                ),
+                                              ),
+                                              const Gap(10),
+                                              Expanded(
+                                                child: Button.primary(
+                                                  onPressed: () {
+                                                    if (!formKey.currentState!
+                                                        .saveAndValidate()) {
+                                                      return;
+                                                    }
+                                                    preferencesNotifier
+                                                        .setInvidiousInstance(
+                                                      controller.text,
+                                                    );
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child:
+                                                      Text(context.l10n.save),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      )
+                    ],
                     value: preferences.invidiousInstance,
                     showValueWhenUnfolded: false,
-                    options: data
-                        .sortedBy((e) => e.name)
-                        .map(
-                          (e) => SelectItemButton(
-                            value: e.details.uri,
-                            child: RichText(
-                              text: TextSpan(
-                                style: theme.typography.normal.copyWith(
-                                  color: theme.colorScheme.foreground,
-                                ),
-                                children: [
-                                  TextSpan(
-                                    text: "${e.name.trim()}\n",
-                                  ),
-                                  TextSpan(
-                                    text: countryCodeToEmoji(
-                                      e.details.region,
-                                    ),
-                                    style: GoogleFonts.notoColorEmoji(),
-                                  ),
-                                ],
+                    options: [
+                      if (data.none((e) =>
+                          e.details.uri == preferences.invidiousInstance))
+                        SelectItemButton(
+                          value: preferences.invidiousInstance,
+                          child: Text.rich(
+                            TextSpan(
+                              style: theme.typography.xSmall.copyWith(
+                                color: theme.colorScheme.foreground,
                               ),
+                              children: [
+                                TextSpan(text: context.l10n.custom),
+                                const TextSpan(text: "\n"),
+                                TextSpan(text: preferences.invidiousInstance),
+                              ],
                             ),
                           ),
-                        )
-                        .toList(),
+                        ),
+                      for (final e in data.sortedBy((e) => e.name))
+                        SelectItemButton(
+                          value: e.details.uri,
+                          child: RichText(
+                            text: TextSpan(
+                              style: theme.typography.normal.copyWith(
+                                color: theme.colorScheme.foreground,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "${e.name.trim()}\n",
+                                ),
+                                TextSpan(
+                                  text: countryCodeToEmoji(
+                                    e.details.region,
+                                  ),
+                                  style: GoogleFonts.notoColorEmoji(),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
                     onChanged: (value) {
                       if (value != null) {
                         preferencesNotifier.setInvidiousInstance(value);
