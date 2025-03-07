@@ -1,8 +1,8 @@
 pkgbase = spotube-bin
 pkgdesc = Open source Spotify client that doesn't require Premium nor uses Electron! Available for both desktop & mobile!
-pkgver = 3.7.1
-pkgrel = 2
-url = https://github.com/KRTirtho/spotube/
+pkgver = 4.0.0
+pkgrel = 1
+url = https://spotube.krtirtho.dev
 arch = x86_64
 license = BSD-4-Clause
 depends = mpv

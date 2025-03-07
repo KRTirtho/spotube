@@ -3,14 +3,14 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 3.9.0+38
+version: 4.0.0+39
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  flutter: ">=3.29.0"
 
 dependencies:
   app_links: ^6.3.2
@@ -71,8 +71,6 @@ dependencies:
   fuzzywuzzy: ^1.1.6
   gap: ^3.0.1
   google_fonts: ^6.2.1
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
   home_widget: ^0.7.0
   hooks_riverpod: ^2.5.1
   html: ^0.15.1
@@ -154,7 +152,6 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
-  hive_generator: ^2.0.0
   json_serializable: ^6.6.2
   freezed: ^2.5.2
   process_run: ^0.14.2

@@ -98,6 +98,18 @@ class AboutSpotubePage extends HookConsumerWidget {
                               )
                             ],
                           ),
+                          const TableRow(
+                            cells: [
+                              TableCell(child: Text("Website")),
+                              colon,
+                              TableCell(
+                                child: Hyperlink(
+                                  "spotube.krtirtho.dev",
+                                  "https://spotube.krtirtho.dev",
+                                ),
+                              ),
+                            ],
+                          ),
                           TableRow(
                             cells: [
                               TableCell(child: Text(context.l10n.repository)),
