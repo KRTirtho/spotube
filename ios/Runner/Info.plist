@@ -72,11 +72,5 @@
     <array>
       <string>_spotube._tcp</string>
     </array>
-    <key>UIFileSharingEnabled</key>
-    <true/>
-    <key>LSSupportsOpeningDocumentsInPlace</key>
-    <true/>
-    <key>UISupportsDocumentBrowser</key>
-    <true/>
   </dict>
 </plist>
