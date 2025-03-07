@@ -107,16 +107,24 @@ abstract class SourcedTrack extends Track {
     required Ref ref,
   }) async {
     final preferences = ref.read(userPreferencesProvider);
-    return switch (preferences.audioSource) {
-      AudioSource.youtube =>
-        await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref),
-      AudioSource.piped =>
-        await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref),
-      AudioSource.invidious =>
-        await InvidiousSourcedTrack.fetchFromTrack(track: track, ref: ref),
-      AudioSource.jiosaavn =>
-        await JioSaavnSourcedTrack.fetchFromTrack(track: track, ref: ref),
-    };
+    try {
+      return switch (preferences.audioSource) {
+        AudioSource.youtube =>
+          await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref),
+        AudioSource.piped =>
+          await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref),
+        AudioSource.invidious =>
+          await InvidiousSourcedTrack.fetchFromTrack(track: track, ref: ref),
+        AudioSource.jiosaavn =>
+          await JioSaavnSourcedTrack.fetchFromTrack(track: track, ref: ref),
+      };
+    } catch (e) {
+      if (preferences.audioSource == AudioSource.youtube) {
+        rethrow;
+      }
+
+      return await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref);
+    }
   }
 
   static Future<List<SiblingType>> fetchSiblings({

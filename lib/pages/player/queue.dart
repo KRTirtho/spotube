@@ -15,10 +15,13 @@ class PlayerQueuePage extends HookConsumerWidget {
     );
     final playlistNotifier = ref.read(audioPlayerProvider.notifier);
     return Scaffold(
-      child: PlayerQueue.fromAudioPlayerNotifier(
-        floating: false,
-        playlist: playlist,
-        notifier: playlistNotifier,
+      child: SafeArea(
+        bottom: false,
+        child: PlayerQueue.fromAudioPlayerNotifier(
+          floating: false,
+          playlist: playlist,
+          notifier: playlistNotifier,
+        ),
       ),
     );
   }

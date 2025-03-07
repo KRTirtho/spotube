@@ -97,7 +97,7 @@ dependencies:
   path: ^1.9.0
   path_provider: ^2.1.3
   permission_handler: ^11.3.1
-  piped_client: ^0.1.1
+  piped_client: ^0.1.2
   riverpod: ^2.5.1
   scrobblenaut:
     git:
