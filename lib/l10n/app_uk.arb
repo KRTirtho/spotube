@@ -160,7 +160,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "Ліцензія",
   "add_spotify_credentials": "Додайте свої облікові дані Spotify, щоб почати",
-  "credentials_will_not_be_shared_disclaimer": "Не хвилюйтеся, жодні ваші облікові дані не будуть зібрані або передані кому-небудь",
+  "credentials_will_not_be_shared_disclaimer": "Не хвилюйтеся, жодні ваші облікові дані не будуть зібрані чи комусь надані",
   "know_how_to_login": "Не знаєте, як це зробити?",
   "follow_step_by_step_guide": "Дотримуйтесь покрокової інструкції",
   "spotify_cookie": "Кукі-файл Spotify {name}",

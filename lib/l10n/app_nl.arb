@@ -160,7 +160,7 @@
   "copyright": "© 2021-{current_year} Kingkor Roy Tirtho",
   "license": "Licentie",
   "add_spotify_credentials": "Voeg om te beginnen je spotify-aanmeldgegevens toe",
-  "credentials_will_not_be_shared_disclaimer": "Maak je geen zorgen, je gegevens worden niet verzameld of gedeeld met anderen.",
+  "credentials_will_not_be_shared_disclaimer": "Maak je geen zorgen, er worden geen gegevens van je verzameld of met iemand gedeeld.",
   "know_how_to_login": "Weet je niet hoe je dit moet doen?",
   "follow_step_by_step_guide": "Volg de stapsgewijze handleiding",
   "spotify_cookie": "Spotify {name} Cookie",
