@@ -43,13 +43,16 @@ class RootAppPage extends HookConsumerWidget {
     final scaffold = MediaQuery.removeViewInsets(
       context: context,
       removeBottom: true,
-      child: const Scaffold(
-        footers: [
-          BottomPlayer(),
-          SpotubeNavigationBar(),
-        ],
-        floatingFooter: true,
-        child: Sidebar(child: AutoRouter()),
+      child: const SafeArea(
+        top: false,
+        child: Scaffold(
+          footers: [
+            BottomPlayer(),
+            SpotubeNavigationBar(),
+          ],
+          floatingFooter: true,
+          child: Sidebar(child: AutoRouter()),
+        ),
       ),
     );
 

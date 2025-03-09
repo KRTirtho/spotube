@@ -48,7 +48,7 @@ class PlayerView extends HookConsumerWidget {
         ref.watch(audioPlayerProvider.select((s) => s.activeTrack));
     final currentTrack = sourcedCurrentTrack ?? currentActiveTrack;
     final isLocalTrack = currentTrack is LocalTrack;
-    final mediaQuery = MediaQuery.of(context);
+    final mediaQuery = MediaQuery.sizeOf(context);
 
     final shouldHide = useState(true);
 
@@ -101,6 +101,8 @@ class PlayerView extends HookConsumerWidget {
           backgroundColor: Colors.transparent,
           headers: [
             SafeArea(
+              minimum: const EdgeInsets.only(top: 80),
+              bottom: false,
               child: TitleBar(
                 surfaceOpacity: 0,
                 surfaceBlur: 0,
