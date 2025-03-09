@@ -44,6 +44,8 @@
     <key>UIBackgroundModes</key>
     <array>
       <string>audio</string>
+      <string>fetch</string>
+      <string>remote-notification</string>
     </array>
     <key>UILaunchStoryboardName</key>
     <string>LaunchScreen</string>
@@ -78,5 +80,13 @@
     <true/>
     <key>UISupportsDocumentBrowser</key>
     <true/>
+    <key>NSSiriUsageDescription</key>
+    <string>This app uses Siri to control playback.</string>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>audio</string>
+      <string>fetch</string>
+      <string>remote-notification</string>
+    </array>
   </dict>
 </plist>

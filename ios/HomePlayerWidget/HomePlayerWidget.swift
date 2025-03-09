@@ -1,10 +1,3 @@
-//
-//  HomePlayerWidget.swift
-//  HomePlayerWidget
-//
-//  Created by Kingkor Roy Tirtho on 15/12/24.
-//
-
 import WidgetKit
 import SwiftUI
 
@@ -12,11 +5,11 @@ private let widgetGroupId = "group.spotube_home_player_widget"
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
+        SimpleEntry(date: Date(), emoji: "😀", trackTitle: "Track Title", artistName: "Artist Name", albumArt: UIImage())
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
+        let entry = SimpleEntry(date: Date(), emoji: "😀", trackTitle: "Track Title", artistName: "Artist Name", albumArt: UIImage())
         completion(entry)
     }
 
@@ -27,22 +20,21 @@ struct Provider: TimelineProvider {
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
+            let entry = SimpleEntry(date: entryDate, emoji: "😀", trackTitle: "Track Title", artistName: "Artist Name", albumArt: UIImage())
             entries.append(entry)
         }
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
     }
-
-//    func relevances() async -> WidgetRelevances<Void> {
-//        // Generate a list containing the contexts this widget is relevant in.
-//    }
 }
 
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let emoji: String
+    let trackTitle: String
+    let artistName: String
+    let albumArt: UIImage
 }
 
 struct HomePlayerWidgetEntryView : View {
@@ -55,6 +47,16 @@ struct HomePlayerWidgetEntryView : View {
 
             Text("Emoji:")
             Text(entry.emoji)
+
+            Text("Track Title:")
+            Text(entry.trackTitle)
+
+            Text("Artist Name:")
+            Text(entry.artistName)
+
+            Image(uiImage: entry.albumArt)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
         }
     }
 }
@@ -81,6 +83,6 @@ struct HomePlayerWidget: Widget {
 #Preview(as: .systemSmall) {
     HomePlayerWidget()
 } timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
+    SimpleEntry(date: .now, emoji: "😀", trackTitle: "Track Title", artistName: "Artist Name", albumArt: UIImage())
+    SimpleEntry(date: .now, emoji: "🤩", trackTitle: "Track Title", artistName: "Artist Name", albumArt: UIImage())
 }
