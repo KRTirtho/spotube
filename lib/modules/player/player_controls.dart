@@ -14,6 +14,7 @@ import 'package:spotube/modules/player/use_progress.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/provider/volume_provider.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final PaletteGenerator? palette;
@@ -35,11 +36,20 @@ class PlayerControls extends HookConsumerWidget {
                   SeekIntent(ref, true),
               const SingleActivator(LogicalKeyboardKey.arrowLeft):
                   SeekIntent(ref, false),
+              const SingleActivator(LogicalKeyboardKey.space):
+                  PlayPauseIntent(ref),
+              const SingleActivator(LogicalKeyboardKey.arrowUp):
+                  VolumeUpIntent(ref),
+              const SingleActivator(LogicalKeyboardKey.arrowDown):
+                  VolumeDownIntent(ref),
             },
         [ref]);
     final actions = useMemoized(
         () => {
               SeekIntent: SeekAction(),
+              PlayPauseIntent: PlayPauseAction(),
+              VolumeUpIntent: VolumeUpAction(),
+              VolumeDownIntent: VolumeDownAction(),
             },
         []);
     final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
@@ -256,11 +266,50 @@ class PlayerControls extends HookConsumerWidget {
                   }),
                 ],
               ),
-              const SizedBox(height: 5)
+              const SizedBox(height: 5),
+              Consumer(builder: (context, ref, _) {
+                final volume = ref.watch(volumeProvider);
+                return VolumeSlider(
+                  value: volume,
+                  onChanged: (value) {
+                    ref.read(volumeProvider.notifier).setVolume(value);
+                  },
+                );
+              }),
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class VolumeUpIntent extends Intent {
+  final WidgetRef ref;
+  const VolumeUpIntent(this.ref);
+}
+
+class VolumeUpAction extends Action<VolumeUpIntent> {
+  @override
+  invoke(intent) async {
+    final volume = intent.ref.read(volumeProvider);
+    final newVolume = (volume + 0.1).clamp(0.0, 1.0);
+    await intent.ref.read(volumeProvider.notifier).setVolume(newVolume);
+    return null;
+  }
+}
+
+class VolumeDownIntent extends Intent {
+  final WidgetRef ref;
+  const VolumeDownIntent(this.ref);
+}
+
+class VolumeDownAction extends Action<VolumeDownIntent> {
+  @override
+  invoke(intent) async {
+    final volume = intent.ref.read(volumeProvider);
+    final newVolume = (volume - 0.1).clamp(0.0, 1.0);
+    await intent.ref.read(volumeProvider.notifier).setVolume(newVolume);
+    return null;
   }
 }

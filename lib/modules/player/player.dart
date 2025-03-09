@@ -143,7 +143,20 @@ class PlayerView extends HookConsumerWidget {
                                   });
                             },
                     ),
-                  )
+                  ),
+                  Tooltip(
+                    tooltip: TooltipContainer(
+                      child: Text(context.l10n.lyrics),
+                    ),
+                    child: IconButton.ghost(
+                      icon: const Icon(SpotubeIcons.lyrics, size: 18),
+                      onPressed: currentTrack == null
+                          ? null
+                          : () {
+                              context.pushRoute(const PlayerLyricsRoute());
+                            },
+                    ),
+                  ),
                 ],
               ),
             ),
