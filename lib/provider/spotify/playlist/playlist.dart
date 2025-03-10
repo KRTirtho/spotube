@@ -98,6 +98,23 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
       }
     });
   }
+
+  Future<void> addTracks(List<String> trackIds, [ValueChanged? onError]) async {
+    try {
+      if (state.value == null) return;
+
+      final spotify = ref.read(spotifyProvider);
+
+      await spotify.playlists.addTracks(
+        trackIds.map((id) => "spotify:track:$id").toList(),
+        state.value!.id!,
+      );
+    } catch (e, stack) {
+      onError?.call(e);
+      AppLogger.reportError(e, stack);
+      rethrow;
+    }
+  }
 }
 
 final playlistProvider =
