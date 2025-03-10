@@ -133,37 +133,38 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                       popup: SelectPopup.builder(
                         searchPlaceholder: Text(context.l10n.search),
                         builder: (context, searchQuery) {
-                          final filteredLocale = searchQuery?.isNotEmpty != true
-                              ? L10n.all
+                          final hasNotQueried =
+                              searchQuery == null || searchQuery.trim().isEmpty;
+                          final filteredLocale = hasNotQueried
+                              ? [
+                                  const Locale("system", "system"),
+                                  ...L10n.all,
+                                ]
                               : L10n.all
                                   .where(
-                                    (element) =>
-                                        filterLocale(element, searchQuery!),
+                                    (element) => filterLocale(
+                                      element,
+                                      searchQuery.trim(),
+                                    ),
                                   )
                                   .toList();
 
                           return SelectItemBuilder(
-                            childCount: filteredLocale.length + 1,
+                            childCount: filteredLocale.length,
                             builder: (context, index) {
-                              if (index == 0 &&
-                                  searchQuery?.isNotEmpty != true) {
+                              final locale = filteredLocale[index];
+                              if (locale == const Locale("system", "system")) {
                                 return SelectItemButton(
-                                  value: const Locale("system", "system"),
+                                  value: locale,
                                   child: Text(context.l10n.system_default),
                                 );
                               }
-
-                              final indexThen = searchQuery?.isNotEmpty != true
-                                  ? index
-                                  : index - 1;
-
-                              final locale = filteredLocale[indexThen];
                               return SelectItemButton(
                                 value: locale,
                                 child: Text(
                                   LanguageLocals.getDisplayLanguage(
-                                          locale.languageCode)
-                                      .toString(),
+                                    locale.languageCode,
+                                  ).toString(),
                                 ),
                               );
                             },
