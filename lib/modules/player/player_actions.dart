@@ -191,7 +191,7 @@ class PlayerActions extends HookConsumerWidget {
               sleepTimerNotifier.setSleepTimer(value);
             }
           },
-          children: [
+          items: (context) => [
             for (final entry in sleepTimerEntries.entries)
               AdaptiveMenuButton(
                 value: entry.value,

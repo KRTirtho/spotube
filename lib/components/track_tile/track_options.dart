@@ -366,7 +366,7 @@ class TrackOptions extends HookConsumerWidget {
           ),
         ),
       ],
-      children: [
+      items: (context) => [
         if (isLocalTrack)
           AdaptiveMenuButton(
             value: TrackOptionValue.delete,

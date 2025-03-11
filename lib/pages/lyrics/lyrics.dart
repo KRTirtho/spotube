@@ -81,6 +81,7 @@ class LyricsPage extends HookConsumerWidget {
                   title: tabbar,
                   height: 58 * context.theme.scaling,
                   surfaceBlur: 0,
+                  automaticallyImplyLeading: false,
                 )
               : tabbar
         ],

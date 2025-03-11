@@ -166,7 +166,7 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
       },
       icon: const Icon(SpotubeIcons.moreVertical),
       variance: ButtonVariance.outline,
-      children: [
+      items: (context) => [
         AdaptiveMenuButton(
           value: "download",
           leading: const Icon(SpotubeIcons.download),

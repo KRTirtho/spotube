@@ -23,7 +23,7 @@ class SortTracksDropdown extends StatelessWidget {
       onSelected: onChanged,
       tooltip: context.l10n.sort_tracks,
       icon: const Icon(SpotubeIcons.sort),
-      children: [
+      items: (context) => [
         AdaptiveMenuButton(
           value: SortBy.none,
           enabled: value != SortBy.none,

@@ -28,7 +28,7 @@ class AdaptiveMenuButton<T> extends MenuButton {
 /// or equal to 640px
 /// In smaller screen, a [IconButton] with a [showModalBottomSheet] is shown
 class AdaptivePopSheetList<T> extends StatelessWidget {
-  final List<AdaptiveMenuButton<T>> children;
+  final List<AdaptiveMenuButton<T>> Function(BuildContext context) items;
   final Widget? icon;
   final Widget? child;
   final bool useRootNavigator;
@@ -43,7 +43,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
   const AdaptivePopSheetList({
     super.key,
-    required this.children,
+    required this.items,
     this.icon,
     this.child,
     this.useRootNavigator = true,
@@ -59,27 +59,28 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
   Future<void> showDropdownMenu(BuildContext context, Offset position) async {
     final mediaQuery = MediaQuery.of(context);
-    final childrenModified = children.map((s) {
-      if (s.onPressed == null) {
-        return MenuButton(
-          key: s.key,
-          autoClose: s.autoClose,
-          enabled: s.enabled,
-          leading: s.leading,
-          focusNode: s.focusNode,
-          onPressed: (context) {
-            if (s.value != null) {
-              onSelected?.call(s.value as T);
-            }
-          },
-          popoverController: s.popoverController,
-          subMenu: s.subMenu,
-          trailing: s.trailing,
-          child: s.child,
-        );
-      }
-      return s;
-    }).toList();
+    List<MenuButton> childrenModified(BuildContext context) =>
+        items(context).map((s) {
+          if (s.onPressed == null) {
+            return MenuButton(
+              key: s.key,
+              autoClose: s.autoClose,
+              enabled: s.enabled,
+              leading: s.leading,
+              focusNode: s.focusNode,
+              onPressed: (context) {
+                if (s.value != null) {
+                  onSelected?.call(s.value as T);
+                }
+              },
+              popoverController: s.popoverController,
+              subMenu: s.subMenu,
+              trailing: s.trailing,
+              child: s.child,
+            );
+          }
+          return s;
+        }).toList();
 
     if (mediaQuery.mdAndUp) {
       await showDropdown<T?>(
@@ -92,7 +93,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
         position: position,
         builder: (context) {
           return DropdownMenu(
-            children: childrenModified,
+            children: childrenModified(context),
           );
         },
       ).future;
@@ -109,11 +110,12 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       ),
       backgroundColor: context.theme.colorScheme.card,
       builder: (context) {
+        final children = childrenModified(context);
         return ListView.builder(
-          itemCount: childrenModified.length,
+          itemCount: children.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            final data = childrenModified[index];
+            final data = children[index];
 
             return Button(
               enabled: data.enabled,
