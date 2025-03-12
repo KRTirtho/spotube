@@ -24,6 +24,9 @@ const supportedAudioTypes = [
   "audio/opus",
   "audio/wav",
   "audio/aac",
+  "audio/flac",
+  "audio/x-flac",
+  "audio/x-wav",
 ];
 
 const imgMimeToExt = {
@@ -68,13 +71,16 @@ final localTracksProvider =
               await Directory(location).list(recursive: true).toList();
 
           entities.addAll(
-            dirEntities
-                .where(
-                  (e) =>
-                      e is File &&
-                      supportedAudioTypes.contains(lookupMimeType(e.path)),
-                )
-                .cast<File>(),
+            dirEntities.where(
+              (e) {
+                final mime = lookupMimeType(e.path) ??
+                    (extension(e.path) == ".opus" ? "audio/opus" : null);
+
+                print("${basename(e.path)}: $mime");
+
+                return e is File && supportedAudioTypes.contains(mime);
+              },
+            ).cast<File>(),
           );
         } catch (e, stack) {
           AppLogger.reportError(e, stack);
