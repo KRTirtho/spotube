@@ -13,7 +13,6 @@
 /// sappho192@github => Korean
 /// watchakorn-18k@github => Thai
 /// Microsoft Copilot, Tutislav@github => Czech
-/// Claude 3.7, JusArthur => Tagalog (Filipino)
 
 library l10n;
 
