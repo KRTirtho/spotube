@@ -166,6 +166,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.0"
+  base32:
+    dependency: transitive
+    description:
+      name: base32
+      sha256: ddad4ebfedf93d4500818ed8e61443b734ffe7cf8a45c668c9b34ef6adde02e2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.3"
   bonsoir:
     dependency: "direct main"
     description:
@@ -440,7 +448,7 @@ packages:
     source: hosted
     version: "0.3.4+2"
   crypto:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: crypto
       sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
@@ -1639,6 +1647,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.3"
+  otp_util:
+    dependency: "direct main"
+    description:
+      name: otp_util
+      sha256: dd8956c6472bacc3ffabe62c03f8a9782d1e5a5a3f2674420970f549d642b1cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.2"
   package_config:
     dependency: transitive
     description:

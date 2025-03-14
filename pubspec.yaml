@@ -140,10 +140,10 @@ dependencies:
       url: https://github.com/KRTirtho/flutter_new_pipe_extractor.git
   http_parser: ^4.1.2
   collection: any
+  otp_util: ^1.0.2
 
 dev_dependencies:
   build_runner: ^2.4.13
-  crypto: ^3.0.3
   envied_generator: ^1.0.0
   flutter_gen_runner: ^5.4.0
   flutter_launcher_icons: ^0.14.2
