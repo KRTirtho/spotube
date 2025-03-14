@@ -13,6 +13,7 @@
 /// sappho192@github => Korean
 /// watchakorn-18k@github => Thai
 /// Microsoft Copilot, Tutislav@github => Czech
+/// Claude 3.7, JusArthur => Tagalog (Filipino)
 
 library l10n;
 
@@ -41,6 +42,7 @@ class L10n {
     const Locale('pl', 'PL'),
     const Locale('pt', 'PT'),
     const Locale('ru', 'RU'),
+    const Locale('tl', 'PH'),
     const Locale('uk', 'UA'),
     const Locale('th', 'TH'),
     const Locale('tr', 'TR'),

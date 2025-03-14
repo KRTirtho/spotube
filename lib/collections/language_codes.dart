@@ -653,10 +653,10 @@ abstract class LanguageLocals {
     //   name: "Turkmen",
     //   nativeName: "Türkmen, Түркмен",
     // ),
-    // "tl": const ISOLanguageName(
-    //   name: "Tagalog",
-    //   nativeName: "Wikang Tagalog, ᜏᜒᜃᜅ᜔ ᜆᜄᜎᜓᜄ᜔",
-    // ),
+    "tl": const ISOLanguageName(
+      name: "Tagalog",
+      nativeName: "Wikang Tagalog",
+    ),
     // "tn": const ISOLanguageName(
     //   name: "Tswana",
     //   nativeName: "Setswana",
