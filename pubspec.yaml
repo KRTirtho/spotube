@@ -141,6 +141,7 @@ dependencies:
   http_parser: ^4.1.2
   collection: any
   otp_util: ^1.0.2
+  dio_http2_adapter: ^2.6.0
 
 dev_dependencies:
   build_runner: ^2.4.13

@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
+import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'
     hide X509Certificate;
@@ -34,13 +35,18 @@ extension ExpirationAuthenticationTableData on AuthenticationTableData {
 
 class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
   static final Dio dio = () {
-    final dio = Dio();
+    final dio = Dio()
+      ..httpClientAdapter = Http2Adapter(
+        ConnectionManager(
+          idleTimeout: const Duration(seconds: 10),
+        ),
+      );
 
-    (dio.httpClientAdapter as IOHttpClientAdapter)
-        .createHttpClient = () => HttpClient()
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) {
-        return host.endsWith("spotify.com") && port == 443;
-      };
+    // (dio.httpClientAdapter as IOHttpClientAdapter)
+    //     .createHttpClient = () => HttpClient()
+    //   ..badCertificateCallback = (X509Certificate cert, String host, int port) {
+    //     return host.endsWith("spotify.com") && port == 443;
+    //   };
 
     return dio;
   }();
