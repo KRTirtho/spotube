@@ -117,7 +117,6 @@ class CustomSpotifyEndpoints {
   }
 
   Future<SpotifyHomeFeed> getHomeFeed({
-    required String spTCookie,
     required Market country,
   }) async {
     final headers = {
@@ -137,7 +136,7 @@ class CustomSpotifyEndpoints {
           "operationName": "home",
           "variables": jsonEncode({
             "timeZone": tz.local.name,
-            "sp_t": spTCookie,
+            "sp_t": "",
             "country": country.name,
             "facet": null,
             "sectionItemsLimit": 10
@@ -169,7 +168,6 @@ class CustomSpotifyEndpoints {
 
   Future<SpotifyHomeFeedSection> getHomeFeedSection(
     String sectionUri, {
-    required String spTCookie,
     required Market country,
   }) async {
     final headers = {
@@ -189,7 +187,7 @@ class CustomSpotifyEndpoints {
           "operationName": "homeSection",
           "variables": jsonEncode({
             "timeZone": tz.local.name,
-            "sp_t": spTCookie,
+            "sp_t": "",
             "country": country.name,
             "uri": sectionUri
           }),
