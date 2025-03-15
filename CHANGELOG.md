@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.0.1](https://github.com/krtirtho/spotube/compare/v4.0.0...v4.0.1) (2025-03-15)
+
+### Bug Fixes
+
+- **android**: navigation overlaying in app navigation
+- add to playlist not working in smaller screen devices
+- language picker search broken
+- **generate_playlist**: create playlist not adding tracks nor navigating to playlist page
+- **desktop**: double titlebar in local library folders and massive space in overlay player
+- lastfm form broken in other locales #2447
+- spotify login broken due to new totp requirement #2494
+- spotify authentication 429 errors
+
+### Features
+
+- **local_library**: add support for x-flac, opus and x-wav
+- **translation**: add tagalog language support #2504
+- **translation**: add tamil translation for spotube #2501
+
 ## [4.0.0](https://github.com/krtirtho/spotube/compare/v3.9.0...v4.0.0) (2025-03-07)
 
 ## Changes
