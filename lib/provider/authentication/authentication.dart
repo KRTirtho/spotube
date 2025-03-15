@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
@@ -38,14 +39,13 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
       ..httpClientAdapter = Http2Adapter(
         ConnectionManager(
           idleTimeout: const Duration(seconds: 10),
+          onClientCreate: (uri, clientSettings) {
+            clientSettings.onBadCertificate = (X509Certificate cert) {
+              return uri.host.endsWith("spotify.com");
+            };
+          },
         ),
       );
-
-    // (dio.httpClientAdapter as IOHttpClientAdapter)
-    //     .createHttpClient = () => HttpClient()
-    //   ..badCertificateCallback = (X509Certificate cert, String host, int port) {
-    //     return host.endsWith("spotify.com") && port == 443;
-    //   };
 
     return dio;
   }();
