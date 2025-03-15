@@ -15,6 +15,7 @@ import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/database/database.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:otp_util/otp_util.dart';
 // ignore: implementation_imports
@@ -197,6 +198,34 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
     );
   }
 
+  Future<Response> getToken({
+    required String totp,
+    required int timestamp,
+    String mode = "transport",
+    String? spDc,
+  }) async {
+    assert(mode == "transport" || mode == "init");
+
+    final accessTokenUrl = Uri.parse(
+      "https://open.spotify.com/get_access_token?reason=$mode&productType=web-player"
+      "&totp=$totp&totpVer=5&ts=$timestamp",
+    );
+
+    final res = await dio.getUri(
+      accessTokenUrl,
+      options: Options(
+        headers: {
+          "Cookie": spDc ?? "",
+          "User-Agent": ServiceUtils.randomUserAgent(
+            kIsDesktop ? UserAgentDevice.desktop : UserAgentDevice.mobile,
+          ),
+        },
+      ),
+    );
+
+    return res;
+  }
+
   Future<AuthenticationTableCompanion> credentialsFromCookie(
     String cookie,
   ) async {
@@ -207,24 +236,34 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
           ?.trim();
 
       final totp = await generateTotp();
+
       final timestamp = (DateTime.now().millisecondsSinceEpoch / 1000).floor();
 
-      final accessTokenUrl = Uri.parse(
-        "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"
-        "&totp=$totp&totpVer=5&ts=$timestamp",
+      var res = await getToken(
+        totp: totp,
+        timestamp: timestamp,
+        spDc: spDc,
+        mode: "transport",
       );
 
-      final res = await dio.getUri(
-        accessTokenUrl,
-        options: Options(
-          headers: {
-            "Cookie": spDc ?? "",
-            "User-Agent":
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-          },
-        ),
-      );
-      final body = res.data;
+      if ((res.data["accessToken"]?.length ?? 0) != 374) {
+        res = await getToken(
+          totp: totp,
+          timestamp: timestamp,
+          spDc: spDc,
+          mode: "init",
+        );
+      }
+
+      final body = res.data as Map<String, dynamic>;
+
+      if (body["accessToken"] == null) {
+        AppLogger.reportError(
+          "The access token is only ${body["accessToken"]?.length} characters long instead of 374\n"
+          "Your authentication probably doesn't work",
+          StackTrace.current,
+        );
+      }
 
       return AuthenticationTableCompanion.insert(
         id: const Value(0),
