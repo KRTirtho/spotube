@@ -76,8 +76,6 @@ final localTracksProvider =
                 final mime = lookupMimeType(e.path) ??
                     (extension(e.path) == ".opus" ? "audio/opus" : null);
 
-                print("${basename(e.path)}: $mime");
-
                 return e is File && supportedAudioTypes.contains(mime);
               },
             ).cast<File>(),
