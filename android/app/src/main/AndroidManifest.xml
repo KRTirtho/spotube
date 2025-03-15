@@ -25,9 +25,9 @@
     android:requestLegacyExternalStorage="true"
     android:usesCleartextTraffic="true">
     <!-- Enable Impeller -->
-    <meta-data
+    <!-- <meta-data
       android:name="io.flutter.embedding.android.EnableImpeller"
-      android:value="false" />
+      android:value="false" /> -->
 
     <activity
       android:name="com.ryanheise.audioservice.AudioServiceActivity"
