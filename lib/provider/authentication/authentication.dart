@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
 import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'
@@ -20,6 +18,7 @@ import 'package:spotube/utils/platform.dart';
 import 'package:otp_util/otp_util.dart';
 // ignore: implementation_imports
 import 'package:otp_util/src/utils/generic_util.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 extension ExpirationAuthenticationTableData on AuthenticationTableData {
   bool get isExpired => DateTime.now().isAfter(expiration);
@@ -169,7 +168,18 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
 
     final secret = base32FromBytes(secretBytes, secretSauce);
 
-    final res = await dio.get("https://open.spotify.com/server-time");
+    final res = await dio.get(
+      "https://open.spotify.com/server-time",
+      options: Options(
+        headers: {
+          "Host": "open.spotify.com",
+          "User-Agent": ServiceUtils.randomUserAgent(
+            kIsDesktop ? UserAgentDevice.desktop : UserAgentDevice.mobile,
+          ),
+          "accept": "*/*",
+        },
+      ),
+    );
     final serverTimeSeconds = res.data["serverTime"] as int;
 
     final totp = TOTP(
