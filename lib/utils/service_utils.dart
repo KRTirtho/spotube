@@ -1,6 +1,6 @@
+import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -27,6 +27,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotube/collections/env.dart';
 
 import 'package:version/version.dart';
+
+enum UserAgentDevice {
+  desktop,
+  mobile,
+}
 
 abstract class ServiceUtils {
   static final _englishMatcherRegex = RegExp(
@@ -415,6 +420,18 @@ abstract class ServiceUtils {
     } catch (e, stackTrace) {
       AppLogger.reportError(e, stackTrace);
       return null;
+    }
+  }
+
+  static int randomNumber(int min, int max) {
+    return min + Random().nextInt(max - min);
+  }
+
+  static String randomUserAgent(UserAgentDevice type) {
+    if (type == UserAgentDevice.desktop) {
+      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_${randomNumber(11, 15)}_${randomNumber(4, 9)}) AppleWebKit/${randomNumber(530, 537)}.${randomNumber(30, 37)} (KHTML, like Gecko) Chrome/${randomNumber(80, 105)}.0.${randomNumber(3000, 4500)}.${randomNumber(60, 125)} Safari/${randomNumber(530, 537)}.${randomNumber(30, 36)}";
+    } else {
+      return "Mozilla/5.0 (Linux; Android ${randomNumber(8, 13)}) AppleWebKit/${randomNumber(530, 537)}.${randomNumber(30, 36)} (KHTML, like Gecko) Chrome/${randomNumber(101, 116)}.0.${randomNumber(3000, 6000)}.${randomNumber(60, 125)} Mobile Safari/${randomNumber(530, 537)}.${randomNumber(30, 36)}";
     }
   }
 }

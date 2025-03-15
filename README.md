@@ -325,8 +325,9 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - A port in dart of the youtube explode library. Supports several API functions without the need of Youtube API Key.
 1. [http_parser](https://pub.dev/packages/http_parser) - A platform-independent package for parsing and serializing HTTP formats.
 1. [collection](https://pub.dev/packages/collection) - Collections and utilities functions and classes related to collections.
+1. [otp_util](https://github.com/dushiling) - otp_util is a dart package to generate and verify one-time passwords,it It provides two methods TOPT and HOTP.They are Time-based OTPs and Counter-based OTPs.
+1. [dio_http2_adapter](https://github.com/cfug/dio) - An adapter that combines HTTP/2 and dio. Supports reusing connections, header compression, etc.
 1. [build_runner](https://pub.dev/packages/build_runner) - A build system for Dart code generation and modular compilation.
-1. [crypto](https://pub.dev/packages/crypto) - Implementations of SHA, MD5, and HMAC cryptographic functions.
 1. [envied_generator](https://github.com/petercinibulk/envied) - Generator for the Envied package. See https://pub.dev/packages/envied.
 1. [flutter_gen_runner](https://github.com/FlutterGen/flutter_gen) - The Flutter code generator for your assets, fonts, colors, … — Get rid of all String-based APIs.
 1. [flutter_launcher_icons](https://github.com/fluttercommunity/flutter_launcher_icons) - A package which simplifies the task of updating your Flutter app's launcher icon.

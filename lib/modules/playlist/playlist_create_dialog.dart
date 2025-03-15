@@ -101,11 +101,17 @@ class PlaylistCreateDialog extends HookConsumerWidget {
         } else {
           await playlistNotifier.create(payload, onError);
         }
+
+        if (trackIds.isNotEmpty) {
+          await playlistNotifier.addTracks(trackIds, onError);
+        }
       } finally {
         isSubmitting.value = false;
         if (context.mounted &&
             !ref.read(playlistProvider(playlistId ?? "")).hasError) {
-          context.router.maybePop();
+          context.router.maybePop<Playlist>(
+            await ref.read(playlistProvider(playlistId ?? "").future),
+          );
         }
       }
     }

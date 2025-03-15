@@ -13,12 +13,6 @@ class FontFamily {
   /// Font family: BootstrapIcons
   static const String bootstrapIcons = 'BootstrapIcons';
 
-  /// Font family: GeistMono
-  static const String geistMono = 'GeistMono';
-
-  /// Font family: GeistSans
-  static const String geistSans = 'GeistSans';
-
   /// Font family: RadixIcons
   static const String radixIcons = 'RadixIcons';
 }

@@ -12,11 +12,13 @@
 /// doannc2212@github => Vietnamese
 /// sappho192@github => Korean
 /// watchakorn-18k@github => Thai
+/// llama3, vishnumur777@github => Tamil
 /// Microsoft Copilot, Tutislav@github => Czech
 
 library l10n;
 
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+export 'package:spotube/l10n/generated/app_localizations.dart';
 
 class L10n {
   static final all = [
@@ -41,8 +43,10 @@ class L10n {
     const Locale('pl', 'PL'),
     const Locale('pt', 'PT'),
     const Locale('ru', 'RU'),
+    const Locale('tl', 'PH'),
     const Locale('uk', 'UA'),
     const Locale('th', 'TH'),
+    const Locale('ta', 'IN'),
     const Locale('tr', 'TR'),
     const Locale('zh', 'CN'),
     const Locale('vi', 'VN'),

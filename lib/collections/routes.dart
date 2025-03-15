@@ -76,15 +76,15 @@ class AppRouter extends RootStackRouter {
                   page: UserLocalLibraryRoute.page,
                 ),
                 AutoRoute(
-                  path: "local/folder",
-                  page: LocalLibraryRoute.page,
-                  // parentNavigatorKey: shellRouteNavigatorKey,
-                ),
-                AutoRoute(
                   path: "downloads",
                   page: UserDownloadsRoute.page,
                 ),
               ],
+            ),
+            AutoRoute(
+              path: "local/folder",
+              page: LocalLibraryRoute.page,
+              // parentNavigatorKey: shellRouteNavigatorKey,
             ),
             AutoRoute(
               path: "library/generate",

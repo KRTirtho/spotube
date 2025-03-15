@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:dio/dio.dart';
-import 'package:dio/io.dart';
+import 'package:dio_http2_adapter/dio_http2_adapter.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'
     hide X509Certificate;
@@ -15,6 +16,10 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:otp_util/otp_util.dart';
+// ignore: implementation_imports
+import 'package:otp_util/src/utils/generic_util.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 extension ExpirationAuthenticationTableData on AuthenticationTableData {
   bool get isExpired => DateTime.now().isAfter(expiration);
@@ -30,13 +35,17 @@ extension ExpirationAuthenticationTableData on AuthenticationTableData {
 
 class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
   static final Dio dio = () {
-    final dio = Dio();
-
-    (dio.httpClientAdapter as IOHttpClientAdapter)
-        .createHttpClient = () => HttpClient()
-      ..badCertificateCallback = (X509Certificate cert, String host, int port) {
-        return host.endsWith("spotify.com") && port == 443;
-      };
+    final dio = Dio()
+      ..httpClientAdapter = Http2Adapter(
+        ConnectionManager(
+          idleTimeout: const Duration(seconds: 10),
+          onClientCreate: (uri, clientSettings) {
+            clientSettings.onBadCertificate = (X509Certificate cert) {
+              return uri.host.endsWith("spotify.com");
+            };
+          },
+        ),
+      );
 
     return dio;
   }();
@@ -100,6 +109,94 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
         .insert(refreshedCredentials, mode: InsertMode.replace);
   }
 
+  String base32FromBytes(Uint8List e, String secretSauce) {
+    var t = 0;
+    var n = 0;
+    var r = "";
+    for (int i = 0; i < e.length; i++) {
+      n = n << 8 | e[i];
+      t += 8;
+      while (t >= 5) {
+        r += secretSauce[n >>> t - 5 & 31];
+        t -= 5;
+      }
+    }
+    if (t > 0) {
+      r += secretSauce[n << 5 - t & 31];
+    }
+    return r;
+  }
+
+  Uint8List cleanBuffer(String e) {
+    e = e.replaceAll(" ", "");
+    final t = List.filled(e.length ~/ 2, 0);
+    final n = Uint8List.fromList(t);
+    for (int r = 0; r < e.length; r += 2) {
+      n[r ~/ 2] = int.parse(e.substring(r, r + 2), radix: 16);
+    }
+    return n;
+  }
+
+  Future<String> generateTotp() async {
+    const secretSauce = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+    final secretCipherBytes = const [
+      12,
+      56,
+      76,
+      33,
+      88,
+      44,
+      88,
+      33,
+      78,
+      78,
+      11,
+      66,
+      22,
+      22,
+      55,
+      69,
+      54
+    ].mapIndexed((t, e) => e ^ t % 33 + 9).toList();
+
+    final secretBytes = cleanBuffer(
+      utf8
+          .encode(secretCipherBytes.join(""))
+          .map((e) => e.toRadixString(16))
+          .join(),
+    );
+
+    final secret = base32FromBytes(secretBytes, secretSauce);
+
+    final res = await dio.get(
+      "https://open.spotify.com/server-time",
+      options: Options(
+        headers: {
+          "Host": "open.spotify.com",
+          "User-Agent": ServiceUtils.randomUserAgent(
+            kIsDesktop ? UserAgentDevice.desktop : UserAgentDevice.mobile,
+          ),
+          "accept": "*/*",
+        },
+      ),
+    );
+    final serverTimeSeconds = res.data["serverTime"] as int;
+
+    final totp = TOTP(
+      secret: secret,
+      algorithm: OTPAlgorithm.SHA1,
+      digits: 6,
+      interval: 30,
+    );
+
+    return totp.generateOTP(
+      input: Util.timeFormat(
+        time: DateTime.fromMillisecondsSinceEpoch(serverTimeSeconds * 1000),
+        interval: 30,
+      ),
+    );
+  }
+
   Future<AuthenticationTableCompanion> credentialsFromCookie(
     String cookie,
   ) async {
@@ -108,10 +205,17 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
           .split("; ")
           .firstWhereOrNull((c) => c.trim().startsWith("sp_dc="))
           ?.trim();
+
+      final totp = await generateTotp();
+      final timestamp = (DateTime.now().millisecondsSinceEpoch / 1000).floor();
+
+      final accessTokenUrl = Uri.parse(
+        "https://open.spotify.com/get_access_token?reason=transport&productType=web_player"
+        "&totp=$totp&totpVer=5&ts=$timestamp",
+      );
+
       final res = await dio.getUri(
-        Uri.parse(
-          "https://open.spotify.com/get_access_token?reason=transport&productType=web_player",
-        ),
+        accessTokenUrl,
         options: Options(
           headers: {
             "Cookie": spDc ?? "",

@@ -3,7 +3,7 @@ description: Open source Spotify client that doesn't require Premium nor uses El
 
 publish_to: "none"
 
-version: 4.0.0+39
+version: 4.0.1+40
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -88,7 +88,7 @@ dependencies:
   media_kit: ^1.1.10+1
   media_kit_libs_audio: ^1.0.4
   metadata_god: ^1.0.0
-  mime: ^1.0.2
+  mime: ^2.0.0
   open_file: ^3.5.10
   package_info_plus: ^6.0.0
   palette_generator: ^0.3.3
@@ -140,10 +140,11 @@ dependencies:
       url: https://github.com/KRTirtho/flutter_new_pipe_extractor.git
   http_parser: ^4.1.2
   collection: any
+  otp_util: ^1.0.2
+  dio_http2_adapter: ^2.6.0
 
 dev_dependencies:
   build_runner: ^2.4.13
-  crypto: ^3.0.3
   envied_generator: ^1.0.0
   flutter_gen_runner: ^5.4.0
   flutter_launcher_icons: ^0.14.2
@@ -193,46 +194,6 @@ flutter:
     - packages/flutter_undraw/assets/undraw/empty.svg
     - packages/flutter_undraw/assets/undraw/no_data.svg
   fonts:
-    - family: GeistSans
-      fonts:
-        - asset: packages/shadcn_flutter/fonts/Geist-Black.otf
-          weight: 800
-        - asset: packages/shadcn_flutter/fonts/Geist-Bold.otf
-          weight: 700
-        - asset: packages/shadcn_flutter/fonts/Geist-Light.otf
-          weight: 300
-        - asset: packages/shadcn_flutter/fonts/Geist-Medium.otf
-          weight: 500
-        - asset: packages/shadcn_flutter/fonts/Geist-SemiBold.otf
-          weight: 600
-        - asset: packages/shadcn_flutter/fonts/Geist-Thin.otf
-          weight: 100
-        - asset: packages/shadcn_flutter/fonts/Geist-UltraBlack.otf
-          weight: 900
-        - asset: packages/shadcn_flutter/fonts/Geist-UltraLight.otf
-          weight: 200
-        - asset: packages/shadcn_flutter/fonts/Geist-Regular.otf
-          weight: 400
-    - family: GeistMono
-      fonts:
-        - asset: packages/shadcn_flutter/fonts/GeistMono-Black.otf
-          weight: 800
-        - asset: packages/shadcn_flutter/fonts/GeistMono-Bold.otf
-          weight: 700
-        - asset: packages/shadcn_flutter/fonts/GeistMono-Light.otf
-          weight: 300
-        - asset: packages/shadcn_flutter/fonts/GeistMono-Medium.otf
-          weight: 500
-        - asset: packages/shadcn_flutter/fonts/GeistMono-Regular.otf
-          weight: 400
-        - asset: packages/shadcn_flutter/fonts/GeistMono-SemiBold.otf
-          weight: 600
-        - asset: packages/shadcn_flutter/fonts/GeistMono-Thin.otf
-          weight: 100
-        - asset: packages/shadcn_flutter/fonts/GeistMono-UltraBlack.otf
-          weight: 900
-        - asset: packages/shadcn_flutter/fonts/GeistMono-UltraLight.otf
-          weight: 200
     - family: RadixIcons
       fonts:
         - asset: packages/shadcn_flutter/icons/RadixIcons.otf

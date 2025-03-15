@@ -27,6 +27,7 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
+import 'package:spotube/utils/platform.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -48,7 +49,7 @@ class PlayerView extends HookConsumerWidget {
         ref.watch(audioPlayerProvider.select((s) => s.activeTrack));
     final currentTrack = sourcedCurrentTrack ?? currentActiveTrack;
     final isLocalTrack = currentTrack is LocalTrack;
-    final mediaQuery = MediaQuery.of(context);
+    final mediaQuery = MediaQuery.sizeOf(context);
 
     final shouldHide = useState(true);
 
@@ -101,6 +102,9 @@ class PlayerView extends HookConsumerWidget {
           backgroundColor: Colors.transparent,
           headers: [
             SafeArea(
+              minimum:
+                  kIsMobile ? const EdgeInsets.only(top: 80) : EdgeInsets.zero,
+              bottom: false,
               child: TitleBar(
                 surfaceOpacity: 0,
                 surfaceBlur: 0,
