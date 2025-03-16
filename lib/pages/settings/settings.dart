@@ -63,6 +63,17 @@ class SettingsPage extends HookConsumerWidget {
                         ),
                       ),
                       const SizedBox(height: 200),
+                      ListTile(
+                        title: Text('Dark Mode'),
+                        trailing: Switch(
+                          value: ref.watch(userPreferencesProvider).themeMode == ThemeMode.dark,
+                          onChanged: (value) {
+                            ref.read(userPreferencesProvider.notifier).setThemeMode(
+                              value ? ThemeMode.dark : ThemeMode.light,
+                            );
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
