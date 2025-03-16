@@ -30,12 +30,31 @@ class FeaturedPlaylistsNotifier
 
   @override
   fetch(int offset, int limit) async {
-    final playlists = await spotify.playlists.featured.getPage(
-      limit,
-      offset,
-    );
+    try {
+      final playlists = await spotify.playlists.featured.getPage(
+        limit,
+        offset,
+      );
 
-    return playlists.items?.toList() ?? [];
+      return playlists.items?.toList() ?? [];
+    } catch (e) {
+      /// This check only needs to be done once. Since this is one of the very first
+      /// request
+      ///
+      /// If the token is invalid, we refresh it and retry the request.
+      /// Same goes for expired tokens
+      if ((e is AuthorizationException && e.error == 'invalid_token') ||
+          e is ExpirationException) {
+        await ref.read(authenticationProvider.notifier).refreshCredentials();
+
+        final playlists = await spotify.playlists.featured.getPage(
+          limit,
+          offset,
+        );
+        return playlists.items?.toList() ?? [];
+      }
+      rethrow;
+    }
   }
 
   @override
