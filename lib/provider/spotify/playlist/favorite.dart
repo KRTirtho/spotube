@@ -30,9 +30,11 @@ class FavoritePlaylistsNotifier
 
   @override
   fetch(int offset, int limit) async {
-    final playlists = await spotify.playlists.me.getPage(
-      limit,
-      offset,
+    final playlists = await spotify.invoke(
+      (api) => api.playlists.me.getPage(
+        limit,
+        offset,
+      ),
     );
 
     return playlists.items?.toList() ?? [];
@@ -67,7 +69,9 @@ class FavoritePlaylistsNotifier
 
   Future<void> addFavorite(PlaylistSimple playlist) async {
     await update((state) async {
-      await spotify.playlists.followPlaylist(playlist.id!);
+      await spotify.invoke(
+        (api) => api.playlists.followPlaylist(playlist.id!),
+      );
       return state.copyWith(
         items: [...state.items, playlist],
       );
@@ -78,7 +82,9 @@ class FavoritePlaylistsNotifier
 
   Future<void> removeFavorite(PlaylistSimple playlist) async {
     await update((state) async {
-      await spotify.playlists.unfollowPlaylist(playlist.id!);
+      await spotify.invoke(
+        (api) => api.playlists.unfollowPlaylist(playlist.id!),
+      );
       return state.copyWith(
         items: state.items.where((e) => e.id != playlist.id).toList(),
       );
@@ -92,9 +98,11 @@ class FavoritePlaylistsNotifier
 
     final spotify = ref.read(spotifyProvider);
 
-    await spotify.playlists.addTracks(
-      trackIds.map((id) => 'spotify:track:$id').toList(),
-      playlistId,
+    await spotify.invoke(
+      (api) => api.playlists.addTracks(
+        trackIds.map((id) => 'spotify:track:$id').toList(),
+        playlistId,
+      ),
     );
 
     ref.invalidate(playlistTracksProvider(playlistId));
@@ -105,9 +113,11 @@ class FavoritePlaylistsNotifier
 
     final spotify = ref.read(spotifyProvider);
 
-    await spotify.playlists.removeTracks(
-      trackIds.map((id) => 'spotify:track:$id').toList(),
-      playlistId,
+    await spotify.invoke(
+      (api) => api.playlists.removeTracks(
+        trackIds.map((id) => 'spotify:track:$id').toList(),
+        playlistId,
+      ),
     );
 
     ref.invalidate(playlistTracksProvider(playlistId));
@@ -128,8 +138,8 @@ final isFavoritePlaylistProvider = FutureProvider.family<bool, String>(
       return false;
     }
 
-    final follows =
-        await spotify.playlists.followedByUsers(id, [me.value!.id!]);
+    final follows = await spotify
+        .invoke((api) => api.playlists.followedByUsers(id, [me.value!.id!]));
 
     return follows[me.value!.id!] ?? false;
   },

@@ -191,8 +191,7 @@ class TrackTile extends HookConsumerWidget {
                                     const SizedBox(
                                       width: 26,
                                       height: 26,
-                                      child:
-                                          CircularProgressIndicator(size: 1.5),
+                                      child: CircularProgressIndicator(),
                                     ),
                                   (_, _, true, _, _) => Icon(
                                       SpotubeIcons.pause,

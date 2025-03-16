@@ -138,7 +138,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
 
       SubtitleSimple? lyrics = cachedLyrics;
 
-      final token = await spotify.getCredentials();
+      final token = await spotify.invoke((api) => api.getCredentials());
 
       if ((lyrics == null || lyrics.lyrics.isEmpty) && auth != null) {
         lyrics = await getSpotifyLyrics(token.accessToken);

@@ -22,11 +22,14 @@ class FavoriteAlbumState extends PaginatedState<AlbumSimple> {
 class FavoriteAlbumNotifier
     extends PaginatedAsyncNotifier<AlbumSimple, FavoriteAlbumState> {
   @override
-  Future<List<AlbumSimple>> fetch(int offset, int limit) {
-    return spotify.me
-        .savedAlbums()
-        .getPage(limit, offset)
-        .then((value) => value.items?.toList() ?? []);
+  Future<List<AlbumSimple>> fetch(int offset, int limit) async {
+    return await spotify
+        .invoke(
+          (api) => api.me.savedAlbums().getPage(limit, offset),
+        )
+        .then(
+          (value) => value.items?.toList() ?? <AlbumSimple>[],
+        );
   }
 
   @override
@@ -45,8 +48,10 @@ class FavoriteAlbumNotifier
     if (state.value == null) return;
 
     state = await AsyncValue.guard(() async {
-      await spotify.me.saveAlbums(ids);
-      final albums = await spotify.albums.list(ids);
+      await spotify.invoke((api) => api.me.saveAlbums(ids));
+      final albums = await spotify.invoke(
+        (api) => api.albums.list(ids),
+      );
 
       return state.value!.copyWith(
         items: [
@@ -65,7 +70,7 @@ class FavoriteAlbumNotifier
     if (state.value == null) return;
 
     state = await AsyncValue.guard(() async {
-      await spotify.me.removeAlbums(ids);
+      await spotify.invoke((api) => api.me.removeAlbums(ids));
 
       return state.value!.copyWith(
         items: state.value!.items

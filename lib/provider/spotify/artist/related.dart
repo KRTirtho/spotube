@@ -5,7 +5,9 @@ final relatedArtistsProvider = FutureProvider.autoDispose
   ref.cacheFor();
 
   final spotify = ref.watch(spotifyProvider);
-  final artists = await spotify.artists.relatedArtists(artistId);
+  final artists = await spotify.invoke(
+    (api) => api.artists.relatedArtists(artistId),
+  );
 
   return artists.toList();
 });

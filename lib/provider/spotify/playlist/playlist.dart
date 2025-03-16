@@ -12,7 +12,9 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
   @override
   FutureOr<Playlist> build(String arg) {
     final spotify = ref.watch(spotifyProvider);
-    return spotify.playlists.get(arg);
+    return spotify.invoke(
+      (api) => api.playlists.get(arg),
+    );
   }
 
   Future<void> create(PlaylistInput input, [ValueChanged? onError]) async {
@@ -26,18 +28,22 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
 
     state = await AsyncValue.guard(() async {
       try {
-        final playlist = await spotify.playlists.createPlaylist(
-          me.value!.id!,
-          input.playlistName,
-          collaborative: input.collaborative,
-          description: input.description,
-          public: input.public,
+        final playlist = await spotify.invoke(
+          (api) => api.playlists.createPlaylist(
+            me.value!.id!,
+            input.playlistName,
+            collaborative: input.collaborative,
+            description: input.description,
+            public: input.public,
+          ),
         );
 
         if (input.base64Image != null) {
-          await spotify.playlists.updatePlaylistImage(
-            playlist.id!,
-            input.base64Image!,
+          await spotify.invoke(
+            (api) => api.playlists.updatePlaylistImage(
+              playlist.id!,
+              input.base64Image!,
+            ),
           );
         }
 
@@ -58,21 +64,27 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
 
     await update((state) async {
       try {
-        await spotify.playlists.updatePlaylist(
-          state.id!,
-          input.playlistName,
-          collaborative: input.collaborative,
-          description: input.description,
-          public: input.public,
+        await spotify.invoke(
+          (api) => api.playlists.updatePlaylist(
+            state.id!,
+            input.playlistName,
+            collaborative: input.collaborative,
+            description: input.description,
+            public: input.public,
+          ),
         );
 
         if (input.base64Image != null) {
-          await spotify.playlists.updatePlaylistImage(
-            state.id!,
-            input.base64Image!,
+          await spotify.invoke(
+            (api) => api.playlists.updatePlaylistImage(
+              state.id!,
+              input.base64Image!,
+            ),
           );
 
-          final playlist = await spotify.playlists.get(state.id!);
+          final playlist = await spotify.invoke(
+            (api) => api.playlists.get(state.id!),
+          );
 
           ref.read(favoritePlaylistsProvider.notifier).updatePlaylist(playlist);
           return playlist;
@@ -105,9 +117,11 @@ class PlaylistNotifier extends FamilyAsyncNotifier<Playlist, String> {
 
       final spotify = ref.read(spotifyProvider);
 
-      await spotify.playlists.addTracks(
-        trackIds.map((id) => "spotify:track:$id").toList(),
-        state.value!.id!,
+      await spotify.invoke(
+        (api) => api.playlists.addTracks(
+          trackIds.map((id) => "spotify:track:$id").toList(),
+          state.value!.id!,
+        ),
       );
     } catch (e, stack) {
       onError?.call(e);

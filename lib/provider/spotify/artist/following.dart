@@ -33,10 +33,12 @@ class FollowedArtistsNotifier
 
   @override
   fetch(offset, limit) async {
-    final artists = await spotify.me.following(FollowingType.artist).getPage(
-          limit,
-          offset ?? '',
-        );
+    final artists = await spotify.invoke(
+      (api) => api.me.following(FollowingType.artist).getPage(
+            limit,
+            offset ?? '',
+          ),
+    );
 
     return (artists.items?.toList() ?? [], artists.after);
   }
@@ -55,7 +57,9 @@ class FollowedArtistsNotifier
 
   Future<void> _followArtists(List<String> artistIds) async {
     try {
-      final creds = await spotify.getCredentials();
+      final creds = await spotify.invoke(
+        (api) => api.getCredentials(),
+      );
 
       await dio.post(
         "https://api-partner.spotify.com/pathfinder/v1/query",
@@ -93,7 +97,9 @@ class FollowedArtistsNotifier
     await _followArtists(artistIds);
 
     state = await AsyncValue.guard(() async {
-      final artists = await spotify.artists.list(artistIds);
+      final artists = await spotify.invoke(
+        (api) => api.artists.list(artistIds),
+      );
 
       return state.value!.copyWith(
         items: [
@@ -110,7 +116,9 @@ class FollowedArtistsNotifier
 
   Future<void> removeArtists(List<String> artistIds) async {
     if (state.value == null) return;
-    await spotify.me.unfollow(FollowingType.artist, artistIds);
+    await spotify.invoke(
+      (api) => api.me.unfollow(FollowingType.artist, artistIds),
+    );
 
     state = await AsyncValue.guard(() async {
       final artists = state.value!.items.where((artist) {
@@ -136,7 +144,9 @@ final followedArtistsProvider =
 final allFollowedArtistsProvider = FutureProvider<List<Artist>>(
   (ref) async {
     final spotify = ref.watch(spotifyProvider);
-    final artists = await spotify.me.following(FollowingType.artist).all();
+    final artists = await spotify.invoke(
+      (api) => api.me.following(FollowingType.artist).all(),
+    );
     return artists.toList();
   },
 );

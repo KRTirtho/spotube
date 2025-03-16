@@ -30,9 +30,9 @@ class PlaylistTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
 
   @override
   fetch(arg, offset, limit) async {
-    final tracks = await spotify.playlists
-        .getTracksByPlaylistId(arg)
-        .getPage(limit, offset);
+    final tracks = await spotify.invoke(
+      (api) => api.playlists.getTracksByPlaylistId(arg).getPage(limit, offset),
+    );
 
     /// Filter out tracks with null id because some personal playlists
     /// may contain local tracks that are not available in the Spotify catalog

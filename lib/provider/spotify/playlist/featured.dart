@@ -30,9 +30,8 @@ class FeaturedPlaylistsNotifier
 
   @override
   fetch(int offset, int limit) async {
-    final playlists = await spotify.playlists.featured.getPage(
-      limit,
-      offset,
+    final playlists = await spotify.invoke(
+      (api) => api.playlists.featured.getPage(limit, offset),
     );
 
     return playlists.items?.toList() ?? [];

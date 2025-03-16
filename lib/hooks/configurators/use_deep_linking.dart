@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/routes.gr.dart';
-import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
 import 'package:spotube/services/logger/logger.dart';
@@ -27,7 +27,9 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
 
         switch (url.pathSegments.first) {
           case "album":
-            final album = await spotify.albums.get(url.pathSegments.last);
+            final album = await spotify.invoke((api) {
+              return api.albums.get(url.pathSegments.last);
+            });
             router.navigate(
               AlbumRoute(id: album.id!, album: album),
             );
@@ -36,7 +38,9 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
             router.navigate(ArtistRoute(artistId: url.pathSegments.last));
             break;
           case "playlist":
-            final playlist = await spotify.playlists.get(url.pathSegments.last);
+            final playlist = await spotify.invoke((api) {
+              return api.playlists.get(url.pathSegments.last);
+            });
             router
                 .navigate(PlaylistRoute(id: playlist.id!, playlist: playlist));
             break;
@@ -65,7 +69,9 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
 
         switch (startSegment) {
           case "spotify:album":
-            final album = await spotify.albums.get(endSegment);
+            final album = await spotify.invoke((api) {
+              return api.albums.get(endSegment);
+            });
             await router.navigate(
               AlbumRoute(id: album.id!, album: album),
             );
@@ -77,7 +83,9 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
             await router.navigate(TrackRoute(trackId: endSegment));
             break;
           case "spotify:playlist":
-            final playlist = await spotify.playlists.get(endSegment);
+            final playlist = await spotify.invoke((api) {
+              return api.playlists.get(endSegment);
+            });
             await router.navigate(
               PlaylistRoute(id: playlist.id!, playlist: playlist),
             );

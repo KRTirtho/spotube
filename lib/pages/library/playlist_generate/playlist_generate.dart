@@ -22,7 +22,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -70,22 +69,24 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
         leftSeedCount,
         context.l10n.artists,
       )),
-      fetchSeeds: (textEditingValue) => spotify.search
-          .get(
-            textEditingValue.text,
-            types: [SearchType.artist],
-          )
-          .first(6)
-          .then(
-            (v) => List.castFrom<dynamic, Artist>(
-              v.expand((e) => e.items ?? []).toList(),
+      fetchSeeds: (textEditingValue) => spotify.invoke(
+        (api) => api.search
+            .get(
+              textEditingValue.text,
+              types: [SearchType.artist],
             )
-                .where(
-                  (element) =>
-                      artists.value.none((artist) => element.id == artist.id),
-                )
-                .toList(),
-          ),
+            .first(6)
+            .then(
+              (v) => List.castFrom<dynamic, Artist>(
+                v.expand((e) => e.items ?? []).toList(),
+              )
+                  .where(
+                    (element) =>
+                        artists.value.none((artist) => element.id == artist.id),
+                  )
+                  .toList(),
+            ),
+      ),
       autocompleteOptionBuilder: (option, onSelected) => ButtonTile(
         leading: Avatar(
           initials: "O",
@@ -146,22 +147,24 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
         leftSeedCount,
         context.l10n.tracks,
       )),
-      fetchSeeds: (textEditingValue) => spotify.search
-          .get(
-            textEditingValue.text,
-            types: [SearchType.track],
-          )
-          .first(6)
-          .then(
-            (v) => List.castFrom<dynamic, Track>(
-              v.expand((e) => e.items ?? []).toList(),
+      fetchSeeds: (textEditingValue) => spotify.invoke(
+        (api) => api.search
+            .get(
+              textEditingValue.text,
+              types: [SearchType.track],
             )
-                .where(
-                  (element) =>
-                      tracks.value.none((track) => element.id == track.id),
-                )
-                .toList(),
-          ),
+            .first(6)
+            .then(
+              (v) => List.castFrom<dynamic, Track>(
+                v.expand((e) => e.items ?? []).toList(),
+              )
+                  .where(
+                    (element) =>
+                        tracks.value.none((track) => element.id == track.id),
+                  )
+                  .toList(),
+            ),
+      ),
       autocompleteOptionBuilder: (option, onSelected) => ButtonTile(
         leading: Avatar(
           initials: option.name!.substring(0, 1),

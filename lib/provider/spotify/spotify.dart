@@ -5,6 +5,7 @@ import 'dart:math';
 
 import 'package:drift/drift.dart';
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/database/database.dart';
@@ -25,10 +26,10 @@ import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
 import 'package:spotube/models/spotify_friends.dart';
 import 'package:spotube/provider/custom_spotify_endpoint_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/wikipedia/wikipedia.dart';
+import 'package:spotube/utils/primitive_utils.dart';
 
 import 'package:wikipedia_api/wikipedia_api.dart';
 
@@ -76,3 +77,57 @@ part 'utils/provider/paginated.dart';
 part 'utils/provider/cursor.dart';
 part 'utils/provider/paginated_family.dart';
 part 'utils/provider/cursor_family.dart';
+
+class SpotifyApiWrapper {
+  final SpotifyApi api;
+
+  final Ref ref;
+  SpotifyApiWrapper(
+    this.ref,
+    this.api,
+  );
+
+  bool _isRefreshing = false;
+
+  FutureOr<T> invoke<T>(
+    FutureOr<T> Function(SpotifyApi api) fn,
+  ) async {
+    try {
+      return await fn(api);
+    } catch (e) {
+      if (((e is AuthorizationException && e.error == 'invalid_token') ||
+              e is ExpirationException) &&
+          !_isRefreshing) {
+        _isRefreshing = true;
+        await ref.read(authenticationProvider.notifier).refreshCredentials();
+
+        _isRefreshing = false;
+        return await fn(api);
+      }
+      rethrow;
+    }
+  }
+}
+
+final spotifyProvider = Provider<SpotifyApiWrapper>(
+  (ref) {
+    final authState = ref.watch(authenticationProvider);
+    final anonCred = PrimitiveUtils.getRandomElement(Env.spotifySecrets);
+
+    final wrapper = SpotifyApiWrapper(
+      ref,
+      authState.asData?.value == null
+          ? SpotifyApi(
+              SpotifyApiCredentials(
+                anonCred["clientId"],
+                anonCred["clientSecret"],
+              ),
+            )
+          : SpotifyApi.withAccessToken(
+              authState.asData!.value!.accessToken.value,
+            ),
+    );
+
+    return wrapper;
+  },
+);

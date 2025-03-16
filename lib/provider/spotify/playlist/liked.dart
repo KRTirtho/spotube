@@ -4,7 +4,9 @@ class LikedTracksNotifier extends AsyncNotifier<List<Track>> {
   @override
   FutureOr<List<Track>> build() async {
     final spotify = ref.watch(spotifyProvider);
-    final savedTracked = await spotify.tracks.me.saved.all();
+    final savedTracked = await spotify.invoke(
+      (api) => api.tracks.me.saved.all(),
+    );
 
     return savedTracked.map((e) => e.track!).toList();
   }
@@ -17,10 +19,14 @@ class LikedTracksNotifier extends AsyncNotifier<List<Track>> {
       final isLiked = tracks.map((e) => e.id).contains(track.id);
 
       if (isLiked) {
-        await spotify.tracks.me.removeOne(track.id!);
+        await spotify.invoke(
+          (api) => api.tracks.me.removeOne(track.id!),
+        );
         return tracks.where((e) => e.id != track.id).toList();
       } else {
-        await spotify.tracks.me.saveOne(track.id!);
+        await spotify.invoke(
+          (api) => api.tracks.me.saveOne(track.id!),
+        );
         return [track, ...tracks];
       }
     });
