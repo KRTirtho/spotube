@@ -30,7 +30,6 @@ import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:spotube/provider/spotify_provider.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -122,8 +121,9 @@ class TrackOptions extends HookConsumerWidget {
     final playlist = ref.read(audioPlayerProvider);
     final spotify = ref.read(spotifyProvider);
     final query = "${track.name} Radio";
-    final pages =
-        await spotify.search.get(query, types: [SearchType.playlist]).first();
+    final pages = await spotify.invoke(
+      (api) => api.search.get(query, types: [SearchType.playlist]).first(),
+    );
 
     final radios = pages
         .expand((e) => e.items?.cast<PlaylistSimple>().toList() ?? [])
@@ -165,8 +165,9 @@ class TrackOptions extends HookConsumerWidget {
       await playback.addTrack(track);
     }
 
-    final tracks =
-        await spotify.playlists.getTracksByPlaylistId(radio.id!).all();
+    final tracks = await spotify.invoke(
+      (api) => api.playlists.getTracksByPlaylistId(radio.id!).all(),
+    );
 
     await playback.addTracks(
       tracks.toList()

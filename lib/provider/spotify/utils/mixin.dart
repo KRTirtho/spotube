@@ -2,7 +2,7 @@ part of '../spotify.dart';
 
 // ignore: invalid_use_of_internal_member
 mixin SpotifyMixin<T> on AsyncNotifierBase<T> {
-  SpotifyApi get spotify => ref.read(spotifyProvider);
+  SpotifyApiWrapper get spotify => ref.read(spotifyProvider);
 }
 
 extension on AutoDisposeAsyncNotifierProviderRef {

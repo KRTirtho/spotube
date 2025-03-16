@@ -8,7 +8,7 @@ import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/models/spotify_friends.dart';
-import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
 class FriendItem extends HookConsumerWidget {
   final SpotifyFriendActivity friend;
@@ -95,8 +95,9 @@ class FriendItem extends HookConsumerWidget {
                       text: " ${friend.track.album.name}",
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
-                          final album =
-                              await spotify.albums.get(friend.track.album.id);
+                          final album = await spotify.invoke(
+                            (api) => api.albums.get(friend.track.album.id),
+                          );
                           if (context.mounted) {
                             context.navigateTo(
                               AlbumRoute(id: album.id!, album: album),

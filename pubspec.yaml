@@ -13,7 +13,7 @@ environment:
   flutter: ">=3.29.0"
 
 dependencies:
-  app_links: ^6.3.2
+  app_links: ^6.4.0
   args: ^2.5.0
   async: ^2.11.0
   audio_service: ^0.18.13
