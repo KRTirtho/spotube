@@ -1,45 +1,28 @@
-part of 'audio_player.dart';
-
 final audioPlayer = SpotubeAudioPlayer();
 
-class SpotubeAudioPlayer extends AudioPlayerInterface
-    with SpotubeAudioPlayersStreams {
-  Future<void> pause() async {
-    await _mkPlayer.pause();
-  }
+class SpotubeAudioPlayer extends AudioPlayerInterface with SpotubeAudioPlayersStreams {
+  // Playback control methods
+  Future<void> pause() async => await player.pause();
 
-  Future<void> resume() async {
-    await _mkPlayer.play();
-  }
+  Future<void> resume() async => await player.play();
 
-  Future<void> stop() async {
-    await _mkPlayer.stop();
-  }
+  Future<void> stop() async => await player.stop();
 
-  Future<void> seek(Duration position) async {
-    await _mkPlayer.seek(position);
-  }
+  Future<void> seek(Duration position) async => await player.seek(position);
 
-  /// Volume is between 0 and 1
+  /// Set volume between 0 and 1
   Future<void> setVolume(double volume) async {
     assert(volume >= 0 && volume <= 1);
-    await _mkPlayer.setVolume(volume * 100);
+    await player.setVolume(volume * 100);
   }
 
-  Future<void> setSpeed(double speed) async {
-    await _mkPlayer.setRate(speed);
-  }
+  Future<void> setSpeed(double speed) async => await player.setRate(speed);
 
-  Future<void> setAudioDevice(mk.AudioDevice device) async {
-    await _mkPlayer.setAudioDevice(device);
-  }
+  Future<void> setAudioDevice(mk.AudioDevice device) async => await player.setAudioDevice(device);
 
-  Future<void> dispose() async {
-    await _mkPlayer.dispose();
-  }
+  Future<void> dispose() async => await player.dispose();
 
-  // Playlist related
-
+  // Playlist control methods
   Future<void> openPlaylist(
     List<mk.Media> tracks, {
     bool autoPlay = true,
@@ -47,88 +30,59 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   }) async {
     assert(tracks.isNotEmpty);
     assert(initialIndex <= tracks.length - 1);
-    await _mkPlayer.open(
+
+    await player.open(
       mk.Playlist(tracks, index: initialIndex),
       play: autoPlay,
     );
   }
 
-  List<String> get sources {
-    return _mkPlayer.state.playlist.medias.map((e) => e.uri).toList();
-  }
+  // Helper methods for playlist sources
+  List<String> get sources => player.state.playlist.medias.map((e) => e.uri).toList();
 
   String? get currentSource {
-    if (_mkPlayer.state.playlist.index == -1) return null;
-    return _mkPlayer.state.playlist.medias
-        .elementAtOrNull(_mkPlayer.state.playlist.index)
-        ?.uri;
+    final index = player.state.playlist.index;
+    if (index == -1) return null;
+    return player.state.playlist.medias.elementAtOrNull(index)?.uri;
   }
 
   String? get nextSource {
-    if (loopMode == PlaylistMode.loop &&
-        _mkPlayer.state.playlist.index ==
-            _mkPlayer.state.playlist.medias.length - 1) {
-      return sources.first;
-    }
+    final isLastTrack = player.state.playlist.index == player.state.playlist.medias.length - 1;
+    if (loopMode == PlaylistMode.loop && isLastTrack) return sources.first;
 
-    return _mkPlayer.state.playlist.medias
-        .elementAtOrNull(_mkPlayer.state.playlist.index + 1)
-        ?.uri;
+    return player.state.playlist.medias.elementAtOrNull(player.state.playlist.index + 1)?.uri;
   }
 
   String? get previousSource {
-    if (loopMode == PlaylistMode.loop && _mkPlayer.state.playlist.index == 0) {
-      return sources.last;
-    }
+    if (loopMode == PlaylistMode.loop && player.state.playlist.index == 0) return sources.last;
 
-    return _mkPlayer.state.playlist.medias
-        .elementAtOrNull(_mkPlayer.state.playlist.index - 1)
-        ?.uri;
+    return player.state.playlist.medias.elementAtOrNull(player.state.playlist.index - 1)?.uri;
   }
 
-  int get currentIndex => _mkPlayer.state.playlist.index;
+  int get currentIndex => player.state.playlist.index;
 
-  Future<void> skipToNext() async {
-    await _mkPlayer.next();
-  }
+  // Playlist navigation methods
+  Future<void> skipToNext() async => await player.next();
 
-  Future<void> skipToPrevious() async {
-    await _mkPlayer.previous();
-  }
+  Future<void> skipToPrevious() async => await player.previous();
 
-  Future<void> jumpTo(int index) async {
-    await _mkPlayer.jump(index);
-  }
+  Future<void> jumpTo(int index) async => await player.jump(index);
 
-  Future<void> addTrack(mk.Media media) async {
-    await _mkPlayer.add(media);
-  }
+  // Playlist management methods
+  Future<void> addTrack(mk.Media media) async => await player.add(media);
 
-  Future<void> addTrackAt(mk.Media media, int index) async {
-    await _mkPlayer.insert(index, media);
-  }
+  Future<void> addTrackAt(mk.Media media, int index) async => await player.insert(index, media);
 
-  Future<void> removeTrack(int index) async {
-    await _mkPlayer.remove(index);
-  }
+  Future<void> removeTrack(int index) async => await player.remove(index);
 
-  Future<void> moveTrack(int from, int to) async {
-    await _mkPlayer.move(from, to);
-  }
+  Future<void> moveTrack(int from, int to) async => await player.move(from, to);
 
-  Future<void> clearPlaylist() async {
-    _mkPlayer.stop();
-  }
+  Future<void> clearPlaylist() async => await player.stop();
 
-  Future<void> setShuffle(bool shuffle) async {
-    await _mkPlayer.setShuffle(shuffle);
-  }
+  // Shuffle and loop mode control
+  Future<void> setShuffle(bool shuffle) async => await player.setShuffle(shuffle);
 
-  Future<void> setLoopMode(PlaylistMode loop) async {
-    await _mkPlayer.setPlaylistMode(loop);
-  }
+  Future<void> setLoopMode(PlaylistMode loop) async => await player.setPlaylistMode(loop);
 
-  Future<void> setAudioNormalization(bool normalize) async {
-    await _mkPlayer.setAudioNormalization(normalize);
-  }
+  Future<void> setAudioNormalization(bool normalize) async => await player.setAudioNormalization(normalize);
 }
