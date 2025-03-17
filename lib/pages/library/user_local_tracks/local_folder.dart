@@ -138,8 +138,10 @@ class LocalLibraryPage extends HookConsumerWidget {
                     icon: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(SpotubeIcons.delete),
-                        Text(context.l10n.clear_cache)
+                        const Expanded(child: Icon(SpotubeIcons.delete)),
+                        Text(
+                          context.l10n.clear_cache,
+                        )
                       ],
                     ).xSmall().iconSmall(),
                     onPressed: () async {
@@ -180,7 +182,7 @@ class LocalLibraryPage extends HookConsumerWidget {
                     icon: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        const Icon(SpotubeIcons.export),
+                        const Expanded(child: Icon(SpotubeIcons.export)),
                         Text(
                           context.l10n.export,
                         )
