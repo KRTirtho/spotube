@@ -54,7 +54,8 @@ class AlbumCard extends HookConsumerWidget {
 
     Future<List<Track>> fetchAllTrack() async {
       if (album.tracks != null && album.tracks!.isNotEmpty) {
-        return album.tracks!.map((track) => track.asTrack(album)).toList();
+        return await Future.wait(
+            album.tracks!.map((track) => track.asTrack(album, ref)));
       }
       await ref.read(albumTracksProvider(album).future);
       return ref.read(albumTracksProvider(album).notifier).fetchAll();

@@ -4,7 +4,9 @@ import 'dart:typed_data';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 extension TrackExtensions on Track {
   Track fromFile(
@@ -68,26 +70,34 @@ extension TrackExtensions on Track {
 }
 
 extension TrackSimpleExtensions on TrackSimple {
-  Track asTrack(AlbumSimple album) {
-    Track track = Track();
-    track.name = name;
-    track.album = album;
-    track.artists = artists;
-    track.availableMarkets = availableMarkets;
-    track.discNumber = discNumber;
-    track.durationMs = durationMs;
-    track.explicit = explicit;
-    track.externalUrls = externalUrls;
-    track.href = href;
-    track.id = id;
-    track.isPlayable = isPlayable;
-    track.linkedFrom = linkedFrom;
-    track.name = name;
-    track.previewUrl = previewUrl;
-    track.trackNumber = trackNumber;
-    track.type = type;
-    track.uri = uri;
-    return track;
+  Future<Track> asTrack(AlbumSimple album, ref) async {
+    try {
+      final spotify = ref.read(spotifyProvider);
+      return await spotify.invoke((api) => api.tracks.get(id!));
+    } catch (e, stack) {
+      // Ignore errors and create the track locally
+      AppLogger.reportError(e, stack);
+
+      Track track = Track();
+      track.name = name;
+      track.album = album;	
+      track.artists = artists;	
+      track.availableMarkets = availableMarkets;	
+      track.discNumber = discNumber;	
+      track.durationMs = durationMs;	
+      track.explicit = explicit;	
+      track.externalUrls = externalUrls;	
+      track.href = href;	
+      track.id = id;	
+      track.isPlayable = isPlayable;	
+      track.linkedFrom = linkedFrom;	
+      track.name = name;	
+      track.previewUrl = previewUrl;	
+      track.trackNumber = trackNumber;	
+      track.type = type;	
+      track.uri = uri;	
+      return track;
+    }
   }
 }
 
