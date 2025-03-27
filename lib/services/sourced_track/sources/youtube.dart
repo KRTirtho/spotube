@@ -284,12 +284,13 @@ class YoutubeSourcedTrack extends SourcedTrack {
   }) async {
     final videoResults = <YoutubeVideoInfo>[];
 
-    videoResults.addAll(await fetchFromIsrc(track: track, provider: youtubeEngineProvider, ref: ref));
+    final isrcResults = await fetchFromIsrc(track: track, provider: youtubeEngineProvider, ref: ref);
+    videoResults.addAll(isrcResults);
 
     final links = await SongLinkService.links(track.id!);
     final ytLink = links.firstWhereOrNull((link) => link.platform == "youtube");
 
-    if (ytLink?.url != null) {
+    if (isrcResults.isEmpty && ytLink?.url != null) {
       try {
         videoResults.add(
             YoutubeVideoInfo.fromVideo(
