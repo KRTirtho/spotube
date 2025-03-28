@@ -128,7 +128,10 @@ class ServerPlaybackRoutes {
           .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
           .refreshStreamingUrl();
 
-      ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      if (playlist.activeTrack?.id == sourcedTrack?.id &&
+          sourcedTrack != null) {
+        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      }
 
       return await dio.get<Uint8List>(
         sourcedTrack!.url,
@@ -199,7 +202,10 @@ class ServerPlaybackRoutes {
           ? activeSourcedTrack
           : await ref.read(sourcedTrackProvider(SpotubeMedia(track)).future);
 
-      ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      if (playlist.activeTrack?.id == sourcedTrack?.id &&
+          sourcedTrack != null) {
+        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      }
 
       final (bytes: audioBytes, response: res) =
           await streamTrack(sourcedTrack!, request.headers);

@@ -238,32 +238,28 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
   static Future<List<YoutubeVideoInfo>> fetchFromIsrc({
     required Track track,
-    required Provider provider,
     required Ref ref,
   }) async {
     final isrcResults = <YoutubeVideoInfo>[];
     final isrc = track.externalIds?.isrc;
     if (isrc != null && isrc.isNotEmpty) {
-      final searchedVideos = await ref
-          .read(provider)
-          .searchVideos(isrc.toString());
+      final searchedVideos =
+          await ref.read(youtubeEngineProvider).searchVideos(isrc.toString());
       if (searchedVideos.isNotEmpty) {
         isrcResults.addAll(searchedVideos
             .map<YoutubeVideoInfo>(YoutubeVideoInfo.fromVideo)
             .map((YoutubeVideoInfo videoInfo) {
-              final ytWords =
-                  videoInfo.title
-                      .toLowerCase()
-                      .replaceAll(RegExp(r'[^a-zA-Z0-9\s]+'), '')
-                      .split(RegExp(r'\s+'))
-                      .where((item) => item.isNotEmpty);
-              final spWords =
-                  track.name!
-                      .toLowerCase()
-                      .replaceAll(RegExp(r'\((.*)\)'), '')
-                      .replaceAll(RegExp(r'[^a-zA-Z0-9\s]+'), '')
-                      .split(RegExp(r'\s+'))
-                      .where((item) => item.isNotEmpty);
+              final ytWords = videoInfo.title
+                  .toLowerCase()
+                  .replaceAll(RegExp(r'[^a-zA-Z0-9\s]+'), '')
+                  .split(RegExp(r'\s+'))
+                  .where((item) => item.isNotEmpty);
+              final spWords = track.name!
+                  .toLowerCase()
+                  .replaceAll(RegExp(r'\((.*)\)'), '')
+                  .replaceAll(RegExp(r'[^a-zA-Z0-9\s]+'), '')
+                  .split(RegExp(r'\s+'))
+                  .where((item) => item.isNotEmpty);
               // Word match to filter out unrelated results
               final matchCount =
                   ytWords.where((word) => spWords.contains(word)).length;
@@ -271,8 +267,9 @@ class YoutubeSourcedTrack extends SourcedTrack {
                 return videoInfo;
               }
               return null;
-            }
-        ).whereType<YoutubeVideoInfo>().toList());
+            })
+            .whereType<YoutubeVideoInfo>()
+            .toList());
       }
     }
     return isrcResults;
@@ -284,22 +281,31 @@ class YoutubeSourcedTrack extends SourcedTrack {
   }) async {
     final videoResults = <YoutubeVideoInfo>[];
 
-    final isrcResults = await fetchFromIsrc(track: track, provider: youtubeEngineProvider, ref: ref);
-    videoResults.addAll(isrcResults);
+    if (track is! SourcedTrack) {
+      final isrcResults = await fetchFromIsrc(
+        track: track,
+        ref: ref,
+      );
 
-    final links = await SongLinkService.links(track.id!);
-    final ytLink = links.firstWhereOrNull((link) => link.platform == "youtube");
+      videoResults.addAll(isrcResults);
 
-    if (isrcResults.isEmpty && ytLink?.url != null) {
-      try {
-        videoResults.add(
-            YoutubeVideoInfo.fromVideo(
-                await ref.read(youtubeEngineProvider)
-                    .getVideo(Uri.parse(ytLink!.url!).queryParameters["v"]!)
-        ));
-      } on VideoUnplayableException catch (e, stack) {
-        // Ignore this error and continue with the search
-        AppLogger.reportError(e, stack);
+      if (isrcResults.isEmpty) {
+        final links = await SongLinkService.links(track.id!);
+        final ytLink = links.firstWhereOrNull(
+          (link) => link.platform == "youtube",
+        );
+        if (ytLink?.url != null) {
+          try {
+            videoResults.add(
+              YoutubeVideoInfo.fromVideo(await ref
+                  .read(youtubeEngineProvider)
+                  .getVideo(Uri.parse(ytLink!.url!).queryParameters["v"]!)),
+            );
+          } on VideoUnplayableException catch (e, stack) {
+            // Ignore this error and continue with the search
+            AppLogger.reportError(e, stack);
+          }
+        }
       }
     }
 
@@ -309,13 +315,12 @@ class YoutubeSourcedTrack extends SourcedTrack {
         await ref.read(youtubeEngineProvider).searchVideos(query);
 
     if (ServiceUtils.onlyContainsEnglish(query)) {
-      videoResults.addAll(
-          searchResults.map(YoutubeVideoInfo.fromVideo).toList()
-      );
+      videoResults
+          .addAll(searchResults.map(YoutubeVideoInfo.fromVideo).toList());
     } else {
       videoResults.addAll(rankResults(
-          searchResults.map(YoutubeVideoInfo.fromVideo).toList(),
-          track,
+        searchResults.map(YoutubeVideoInfo.fromVideo).toList(),
+        track,
       ));
     }
 
