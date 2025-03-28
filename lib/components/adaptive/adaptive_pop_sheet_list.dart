@@ -92,8 +92,10 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
         // ),
         position: position,
         builder: (context) {
-          return DropdownMenu(
-            children: childrenModified(context),
+          return WidgetStatesProvider.boundary(
+            child: DropdownMenu(
+              children: childrenModified(context),
+            ),
           );
         },
       ).future;
