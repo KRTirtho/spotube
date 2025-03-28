@@ -94,6 +94,7 @@ abstract class FakeData {
     ..trackNumber = 1
     ..type = "type"
     ..uri = "uri"
+    ..externalIds = externalIds
     ..isPlayable = true
     ..explicit = false
     ..linkedFrom = trackLink;
