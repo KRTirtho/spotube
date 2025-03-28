@@ -13,7 +13,7 @@ class HeartButton extends HookConsumerWidget {
   final IconData? icon;
   final Color? color;
   final String? tooltip;
-  final ButtonVariance variance;
+  final AbstractButtonStyle variance;
   final ButtonSize size;
   const HeartButton({
     required this.isLiked,

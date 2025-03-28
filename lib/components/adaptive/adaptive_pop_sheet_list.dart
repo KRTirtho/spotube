@@ -39,7 +39,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
   final Offset offset;
 
-  final ButtonVariance variance;
+  final AbstractButtonStyle variance;
 
   const AdaptivePopSheetList({
     super.key,

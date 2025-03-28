@@ -11,7 +11,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:piped_client/piped_client.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/form/text_form_field.dart';
@@ -106,7 +106,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                       Tooltip(
                         tooltip: TooltipContainer(
                           child: Text(context.l10n.add_custom_url),
-                        ),
+                        ).call,
                         child: IconButton.outline(
                           icon: const Icon(SpotubeIcons.edit),
                           size: ButtonSize.small,
@@ -261,7 +261,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                       Tooltip(
                         tooltip: TooltipContainer(
                           child: Text(context.l10n.add_custom_url),
-                        ),
+                        ).call,
                         child: IconButton.outline(
                           icon: const Icon(SpotubeIcons.edit),
                           size: ButtonSize.small,

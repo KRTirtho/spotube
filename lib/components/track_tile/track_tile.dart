@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.gr.dart';
@@ -17,7 +17,6 @@ import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/components/track_tile/track_options.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
-import 'package:spotube/extensions/button_variance.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
@@ -108,7 +107,7 @@ class TrackTile extends HookConsumerWidget {
                     ? ButtonVariance.destructive
                     : ButtonVariance.ghost)
                 .copyWith(
-              padding: (context, states) =>
+              padding: (context, states, value) =>
                   const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
             ),
             leading: Row(
@@ -229,7 +228,8 @@ class TrackTile extends HookConsumerWidget {
                           Flexible(
                             child: Button(
                               style: ButtonVariance.link.copyWith(
-                                padding: (context, states) => EdgeInsets.zero,
+                                padding: (context, states, value) =>
+                                    EdgeInsets.zero,
                               ),
                               onPressed: () {
                                 context

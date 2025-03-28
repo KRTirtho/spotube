@@ -2012,10 +2012,10 @@ packages:
     dependency: "direct main"
     description:
       name: shadcn_flutter
-      sha256: "1e5f40484a42217a69af254952168783d1305025d56dabc45ab16396dba84d5e"
+      sha256: "2b6faf9a93628469c29a534e653295e26781f2799efe5dc971b91e91062ebf52"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.26"
+    version: "0.0.32"
   shared_preferences:
     dependency: "direct main"
     description:
