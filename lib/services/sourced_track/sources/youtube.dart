@@ -251,19 +251,18 @@ class YoutubeSourcedTrack extends SourcedTrack {
             .map((YoutubeVideoInfo videoInfo) {
               final ytWords = videoInfo.title
                   .toLowerCase()
-                  .replaceAll(RegExp(r'[^a-zA-Z0-9\s]+'), '')
-                  .split(RegExp(r'\s+'))
+                  .replaceAll(RegExp(r'[^\p{L}\p{N}\p{Z}]+', unicode: true), '')
+                  .split(RegExp(r'\p{Z}+', unicode: true))
                   .where((item) => item.isNotEmpty);
               final spWords = track.name!
                   .toLowerCase()
-                  .replaceAll(RegExp(r'\((.*)\)'), '')
-                  .replaceAll(RegExp(r'[^a-zA-Z0-9\s]+'), '')
-                  .split(RegExp(r'\s+'))
+                  .replaceAll(RegExp(r'[^\p{L}\p{N}\p{Z}]+', unicode: true), '')
+                  .split(RegExp(r'\p{Z}+', unicode: true))
                   .where((item) => item.isNotEmpty);
-              // Word match to filter out unrelated results
-              final matchCount =
-                  ytWords.where((word) => spWords.contains(word)).length;
-              if (matchCount > spWords.length ~/ 2) {
+              // Single word and duration match with 3 second tolerance
+              if (ytWords.any((word) => spWords.contains(word)) &&
+                  (videoInfo.duration - track.duration!)
+                      .abs().inMilliseconds <= 3000) {
                 return videoInfo;
               }
               return null;
