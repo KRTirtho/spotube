@@ -82,7 +82,7 @@ class PlayerActions extends HookConsumerWidget {
       children: [
         if (showQueue)
           Tooltip(
-            tooltip: TooltipContainer(child: Text(context.l10n.queue)),
+            tooltip: TooltipContainer(child: Text(context.l10n.queue)).call,
             child: IconButton.ghost(
               icon: const Icon(SpotubeIcons.queue),
               enabled: playlist.activeTrack != null,
@@ -119,7 +119,8 @@ class PlayerActions extends HookConsumerWidget {
         if (!isLocalTrack)
           Tooltip(
             tooltip: TooltipContainer(
-                child: Text(context.l10n.alternative_track_sources)),
+              child: Text(context.l10n.alternative_track_sources),
+            ).call,
             child: IconButton.ghost(
               enabled: playlist.activeTrack != null,
               icon: const Icon(SpotubeIcons.alternativeRoute),
@@ -160,7 +161,8 @@ class PlayerActions extends HookConsumerWidget {
           else
             Tooltip(
               tooltip:
-                  TooltipContainer(child: Text(context.l10n.download_track)),
+                  TooltipContainer(child: Text(context.l10n.download_track))
+                      .call,
               child: IconButton.ghost(
                 icon: Icon(
                   isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,

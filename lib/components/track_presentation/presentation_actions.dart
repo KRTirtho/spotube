@@ -74,6 +74,26 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
         ref.watch(presentationStateProvider(options.collection).notifier);
     final selectedTracks = state.selectedTracks;
 
+    Future<void> actionDownloadTracks({
+      required BuildContext context,
+      required List<Track> tracks,
+      required String action,
+    }) async {
+      final confirmed = audioSource == AudioSource.piped ||
+          (await showDialog<bool>(
+                context: context,
+                builder: (context) {
+                  return const ConfirmDownloadDialog();
+                },
+              ) ??
+              false);
+      if (confirmed != true) return;
+      downloader.batchAddToQueue(tracks);
+      notifier.deselectAllTracks();
+      if (!context.mounted) return;
+      showToastForAction(context, action, tracks.length);
+    }
+
     return AdaptivePopSheetList(
       tooltip: context.l10n.more_actions,
       headings: [
@@ -95,22 +115,12 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
 
         switch (action) {
           case "download":
-            {
-              final confirmed = audioSource == AudioSource.piped ||
-                  (await showDialog<bool?>(
-                        context: context,
-                        builder: (context) {
-                          return const ConfirmDownloadDialog();
-                        },
-                      ) ??
-                      false);
-              if (confirmed != true) return;
-              downloader.batchAddToQueue(tracks);
-              notifier.deselectAllTracks();
-              if (!context.mounted) return;
-              showToastForAction(context, action, tracks.length);
-              break;
-            }
+            await actionDownloadTracks(
+              context: context,
+              tracks: tracks,
+              action: action,
+            );
+            break;
           case "add-to-playlist":
             {
               if (context.mounted) {

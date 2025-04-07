@@ -132,7 +132,7 @@ class PlayerView extends HookConsumerWidget {
                   Tooltip(
                     tooltip: TooltipContainer(
                       child: Text(context.l10n.details),
-                    ),
+                    ).call,
                     child: IconButton.ghost(
                       icon: const Icon(SpotubeIcons.info, size: 18),
                       onPressed: currentTrack == null
