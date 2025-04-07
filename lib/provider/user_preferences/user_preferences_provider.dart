@@ -90,9 +90,9 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   Future<void> reset() async {
     final db = ref.read(databaseProvider);
 
-    final query = db.update(db.preferencesTable)..where((t) => t.id.equals(0));
+    final query = db.update(db.preferencesTable);
 
-    await query.replace(PreferencesTableCompanion.insert());
+    await query.replace(PreferencesTableCompanion.insert(id: const Value(0)));
   }
 
   static Future<String> getMusicCacheDir() async {
