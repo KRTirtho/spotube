@@ -1,18 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/button/back_button.dart';
-import 'package:spotube/modules/library/playlist_generate/simple_track_tile.dart';
-import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
+import 'package:spotube/modules/library/playlist_generate/simple_track_tile.dart';
+import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 

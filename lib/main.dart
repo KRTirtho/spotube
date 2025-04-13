@@ -6,14 +6,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/services.dart';
 import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
+import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_new_pipe_extractor/flutter_new_pipe_extractor.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_notifier/local_notifier.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:smtc_windows/smtc_windows.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/initializers.dart';
@@ -25,16 +28,16 @@ import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.da
 import 'package:spotube/hooks/configurators/use_fix_window_stretching.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/hooks/configurators/use_has_touch.dart';
+import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
+import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/glance/glance.dart';
 import 'package:spotube/provider/server/bonsoir.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/provider/tray_manager/tray_manager.dart';
-import 'package:spotube/l10n/l10n.dart';
-import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
@@ -44,13 +47,9 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:spotube/utils/migrations/sandbox.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:window_manager/window_manager.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:yt_dlp_dart/yt_dlp_dart.dart';
-import 'package:flutter_new_pipe_extractor/flutter_new_pipe_extractor.dart';
 
 Future<void> main(List<String> rawArgs) async {
   if (rawArgs.contains("web_view_title_bar")) {
@@ -75,7 +74,6 @@ Future<void> main(List<String> rawArgs) async {
 
     await migrateMacOsFromSandboxToNoSandbox();
 
-    // force High Refresh Rate on some Android devices (like One Plus)
     if (kIsAndroid) {
       await FlutterDisplayMode.setHighRefreshRate();
       await NewPipeExtractor.init();
@@ -162,8 +160,10 @@ class Spotube extends HookConsumerWidget {
       }
 
       return () {
-        /// For enabling hot reload for audio player
-        if (!kDebugMode) return;
+        if (!kDebugMode) {
+          return;
+        }
+
         audioPlayer.dispose();
       };
     }, []);

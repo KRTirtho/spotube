@@ -1,11 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:media_kit/media_kit.dart' hide Track;
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/modules/player/player_queue.dart';
-import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/anchor_button.dart';
 import 'package:spotube/components/links/artist_link.dart';
@@ -14,9 +13,10 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/modules/player/player_queue.dart';
+import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/connect/connect.dart';
-import 'package:media_kit/media_kit.dart' hide Track;
 
 class RemotePlayerQueue extends ConsumerWidget {
   const RemotePlayerQueue({super.key});
@@ -185,7 +185,7 @@ class ConnectControlPage extends HookConsumerWidget {
                             tooltip: TooltipContainer(
                               child: Text(
                                 shuffled
-                                    ? context.l10n.unshuffle_playlist
+                                    ? context.l10n.not_shuffle_playlist
                                     : context.l10n.shuffle_playlist,
                               ),
                             ),

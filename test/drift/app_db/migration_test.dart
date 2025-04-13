@@ -3,8 +3,8 @@ import 'package:drift/drift.dart';
 import 'package:drift_dev/api/migrations.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:test/test.dart';
-import 'generated/schema.dart';
 
+import 'generated/schema.dart';
 import 'generated/schema_v1.dart' as v1;
 import 'generated/schema_v2.dart' as v2;
 

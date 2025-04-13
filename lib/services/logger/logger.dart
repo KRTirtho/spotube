@@ -3,13 +3,13 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:logging/logging.dart' as logging;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
 import 'package:spotube/utils/platform.dart';
-import 'package:logging/logging.dart' as logging;
 
 final _loggingToLoggerLevel = {
   logging.Level.ALL: Level.all,

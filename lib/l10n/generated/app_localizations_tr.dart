@@ -315,7 +315,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get shuffle_playlist => 'Oynatma listesini karıştır';
 
   @override
-  String get unshuffle_playlist => 'Oynatma listesinin karışıklığını kaldır';
+  String get not_shuffle_playlist => 'Oynatma listesinin karışıklığını kaldır';
 
   @override
   String get previous_track => 'Önceki parça';
@@ -590,7 +590,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get step_2 => '2. Adım';
 
   @override
-  String get step_2_steps => '1. Oturum açtıktan sonra, tarayıcı geliştirme araçlarını açmak için F12\'ye veya fareye sağ tıklayın > İncele\'ye basın.\n2. Daha sonra \"Uygulama\" sekmesine (Chrome, Edge, Brave vb..) veya \"Depolama\" sekmesine (Firefox, Palemoon vb..) gidin\n3. \"Çerezler\" bölümüne, ardından \"https://accounts.spotify.com\" alt bölümüne gidin';
+  String get step_2_steps => '1. Oturum açtıktan sonra, tarayıcı geliştirme araçlarını açmak için F12\'ye veya fareye sağ tıklayın > İncele\'ye basın.\n2. Daha sonra \"Uygulama\" sekmesine (Chrome, Edge, Brave vb..) veya \"Depolama\" sekmesine (Firefox, Pale Moon vb..) gidin\n3. \"Çerezler\" bölümüne, ardından \"https://accounts.spotify.com\" alt bölümüne gidin';
 
   @override
   String get step_3 => '3. Adım';
@@ -672,16 +672,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get number_of_tracks_generate => 'Oluşturulacak parça sayısı';
 
   @override
-  String get acousticness => 'Akustiklik';
+  String get not_acoustic => 'Akustiklik';
 
   @override
-  String get danceability => 'Dans Edilebilirlik';
+  String get dance_ability => 'Dans Edilebilirlik';
 
   @override
   String get energy => 'Enerji';
 
   @override
-  String get instrumentalness => 'Araçsallık';
+  String get not_instrumental => 'Araçsallık';
 
   @override
   String get liveness => 'Canlılık';
@@ -690,7 +690,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get loudness => 'Ses yüksekliği';
 
   @override
-  String get speechiness => 'Konuşkanlık';
+  String get talkative => 'Konuşkanlık';
 
   @override
   String get valence => 'Değerlik';
@@ -809,7 +809,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get sleep_timer => 'Uyku Zamanlayıcısı';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes Dakika';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get failed_to_encrypt => 'Şifreleme başarısız oldu';
 
   @override
-  String get encryption_failed_warning => 'Spotube, verilerinizi güvenli bir şekilde depolamak için şifreleme kullanır. Ancak bunu başaramadı. Bu nedenle, güvensiz depolamaya geri dönecektir\nLinux kullanıyorsanız, lütfen gnome-keyring, kde-wallet, keepassxc vb. herhangi bir gizli servisin yüklü olduğundan emin olun.';
+  String get encryption_failed_warning => 'Spotube, verilerinizi güvenli bir şekilde depolamak için şifreleme kullanır. Ancak bunu başaramadı. Bu nedenle, güvensiz depolamaya geri dönecektir\nLinux kullanıyorsanız, lütfen gnome-keyring, kde-wallet, KeePassXC vb. herhangi bir gizli servisin yüklü olduğundan emin olun.';
 
   @override
   String get querying_info => 'Bilgi sorgulanıyor...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsTr extends AppLocalizations {
   String get owned_by_you => 'Sahip olduğunuz';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl panoya kopyalandı';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Bu, Spotify\'ın her yayın başına ödemenin\n\$0.003 ile \$0.005 arasında olduğu varsayımıyla hesaplanmıştır. Bu\nhipotetik bir hesaplamadır, kullanıcıya şarkılarını Spotify\'da dinlediklerinde\nsanatçılara ne kadar ödeme yapacaklarını gösterir.';
+  String get spotify_hypothetical_calculation => '*Bu, Spotify\'ın her yayın başına ödemenin\n\$0.003 ile \$0.005 arasında olduğu varsayımıyla hesaplanmıştır. Bu\nhipotetik bir hesaplamadır, kullanıcıya şarkılarını Spotify\'da dinlediklerinde\nsanatçılara ne kadar ödeme yapacaklarını gösterir.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes dk';
   }
 

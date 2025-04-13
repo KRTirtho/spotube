@@ -8,8 +8,8 @@ import 'package:spotube/components/links/hyper_link.dart';
 import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class TrackDetailsDialog extends HookWidget {
   final Track track;

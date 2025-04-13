@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+// ignore: depend_on_referenced_packages
+import 'package:http_parser/http_parser.dart';
 import 'package:spotube/services/youtube_engine/youtube_engine.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:yt_dlp_dart/yt_dlp_dart.dart';
-// ignore: depend_on_referenced_packages
-import 'package:http_parser/http_parser.dart';
 
 class YtDlpEngine implements YouTubeEngine {
   StreamManifest _parseFormats(List formats, videoId) {

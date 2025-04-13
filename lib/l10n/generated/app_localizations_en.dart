@@ -315,7 +315,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shuffle_playlist => 'Shuffle playlist';
 
   @override
-  String get unshuffle_playlist => 'Unshuffle playlist';
+  String get not_shuffle_playlist => 'Unshuffle playlist';
 
   @override
   String get previous_track => 'Previous track';
@@ -590,7 +590,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get step_2 => 'Step 2';
 
   @override
-  String get step_2_steps => '1. Once you\'re logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection';
+  String get step_2_steps => '1. Once you\'re logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Pale Moon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection';
 
   @override
   String get step_3 => 'Step 3';
@@ -672,16 +672,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get number_of_tracks_generate => 'Number of tracks to generate';
 
   @override
-  String get acousticness => 'Acousticness';
+  String get not_acoustic => 'not_acoustic';
 
   @override
-  String get danceability => 'Danceability';
+  String get dance_ability => 'dance_ability';
 
   @override
   String get energy => 'Energy';
 
   @override
-  String get instrumentalness => 'Instrumentalness';
+  String get not_instrumental => 'not_instrumental';
 
   @override
   String get liveness => 'Liveness';
@@ -690,7 +690,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loudness => 'Loudness';
 
   @override
-  String get speechiness => 'Speechiness';
+  String get talkative => 'talkative';
 
   @override
   String get valence => 'Valence';
@@ -809,7 +809,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get sleep_timer => 'Sleep Timer';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes Minutes';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get failed_to_encrypt => 'Failed to encrypt';
 
   @override
-  String get encryption_failed_warning => 'Spotube uses encryption to securely store your data. But failed to do so. So it\'ll fallback to insecure storage\nIf you\'re using linux, please make sure you\'ve any secret-service (gnome-keyring, kde-wallet, keepassxc etc) installed';
+  String get encryption_failed_warning => 'Spotube uses encryption to securely store your data. But failed to do so. So it\'ll fallback to insecure storage\nIf you\'re using linux, please make sure you\'ve any secret-service (gnome-keyring, kde-wallet, KeePassXC etc) installed';
 
   @override
   String get querying_info => 'Querying info...';
@@ -1207,16 +1207,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get owned_by_you => 'Owned by you';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return 'Copied $shareUrl to clipboard';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*This is calculated based on Spotify\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in Spotify.';
+  String get spotify_hypothetical_calculation => '*This is calculated based on Spotify\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in Spotify.';
 
   @override
-  String count_mins(Object minutes) {
-    return '$minutes mins';
+  String count_minutes(Object minutes) {
+    return '$minutes minutes';
   }
 
   @override

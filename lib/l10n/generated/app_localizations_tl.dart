@@ -315,7 +315,7 @@ class AppLocalizationsTl extends AppLocalizations {
   String get shuffle_playlist => 'I-shuffle ang playlist';
 
   @override
-  String get unshuffle_playlist => 'I-unshuffle ang playlist';
+  String get not_shuffle_playlist => 'I-unshuffle ang playlist';
 
   @override
   String get previous_track => 'Nakaraang track';
@@ -590,7 +590,7 @@ class AppLocalizationsTl extends AppLocalizations {
   String get step_2 => 'Hakbang 2';
 
   @override
-  String get step_2_steps => '1. Kapag naka-log in ka na, pindutin ang F12 o i-right click ang Mouse > Inspect para Buksan ang Browser devtools.\n2. Pagkatapos ay pumunta sa \"Application\" Tab (Chrome, Edge, Brave atbp..) o \"Storage\" Tab (Firefox, Palemoon atbp..)\n3. Pumunta sa \"Cookies\" na seksyon at pagkatapos sa \"https://accounts.spotify.com\" na subseksyon';
+  String get step_2_steps => '1. Kapag naka-log in ka na, pindutin ang F12 o i-right click ang Mouse > Inspect para Buksan ang Browser devtools.\n2. Pagkatapos ay pumunta sa \"Application\" Tab (Chrome, Edge, Brave atbp..) o \"Storage\" Tab (Firefox, Pale Moon atbp..)\n3. Pumunta sa \"Cookies\" na seksyon at pagkatapos sa \"https://accounts.spotify.com\" na subseksyon';
 
   @override
   String get step_3 => 'Hakbang 3';
@@ -672,16 +672,16 @@ class AppLocalizationsTl extends AppLocalizations {
   String get number_of_tracks_generate => 'Bilang ng mga track na gagawin';
 
   @override
-  String get acousticness => 'Acoustic-ness';
+  String get not_acoustic => 'Acoustic-ness';
 
   @override
-  String get danceability => 'Kakayahang Sayawin';
+  String get dance_ability => 'Kakayahang Sayawin';
 
   @override
   String get energy => 'Enerhiya';
 
   @override
-  String get instrumentalness => 'Instrumental-ness';
+  String get not_instrumental => 'Instrumental-ness';
 
   @override
   String get liveness => 'Liveness';
@@ -690,7 +690,7 @@ class AppLocalizationsTl extends AppLocalizations {
   String get loudness => 'Lakas';
 
   @override
-  String get speechiness => 'Pagsasalita';
+  String get talkative => 'Pagsasalita';
 
   @override
   String get valence => 'Valence';
@@ -809,7 +809,7 @@ class AppLocalizationsTl extends AppLocalizations {
   String get sleep_timer => 'Sleep Timer';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes Minuto';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsTl extends AppLocalizations {
   String get failed_to_encrypt => 'Nabigong i-encrypt';
 
   @override
-  String get encryption_failed_warning => 'Gumagamit ng encryption ang Spotube para ligtas na i-store ang iyong data. Ngunit nabigo. Kaya babalik ito sa hindi secure na storage\nKung gumagamit ka ng linux, mangyaring tiyakin na mayroon kang anumang secret-service na naka-install (gnome-keyring, kde-wallet, keepassxc atbp)';
+  String get encryption_failed_warning => 'Gumagamit ng encryption ang Spotube para ligtas na i-store ang iyong data. Ngunit nabigo. Kaya babalik ito sa hindi secure na storage\nKung gumagamit ka ng linux, mangyaring tiyakin na mayroon kang anumang secret-service na naka-install (gnome-keyring, kde-wallet, KeePassXC atbp)';
 
   @override
   String get querying_info => 'Kinukuha ang impormasyon...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsTl extends AppLocalizations {
   String get owned_by_you => 'Pag-aari mo';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return 'Na-kopya ang $shareUrl sa clipboard';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Ito ay kinalkula batay sa bawat stream\nna bayad ng Spotify na \$0.003 hanggang \$0.005. Ito ay isang hypothetical\nna pagkalkula para bigyan ang user ng ideya kung magkano\nang kanilang ibabayad sa mga artista kung sila ay nakikinig\nng kanilang kanta sa Spotify.';
+  String get spotify_hypothetical_calculation => '*Ito ay kinalkula batay sa bawat stream\nna bayad ng Spotify na \$0.003 hanggang \$0.005. Ito ay isang hypothetical\nna pagkalkula para bigyan ang user ng ideya kung magkano\nang kanilang ibabayad sa mga artista kung sila ay nakikinig\nng kanilang kanta sa Spotify.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes minuto';
   }
 

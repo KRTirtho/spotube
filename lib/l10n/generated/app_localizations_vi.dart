@@ -315,7 +315,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get shuffle_playlist => 'Xáo trộn bài hát';
 
   @override
-  String get unshuffle_playlist => 'Hủy xáo trộn bài hát';
+  String get not_shuffle_playlist => 'Hủy xáo trộn bài hát';
 
   @override
   String get previous_track => 'Bài hát trước';
@@ -590,7 +590,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get step_2 => 'Bước 2';
 
   @override
-  String get step_2_steps => '1. Sau khi đăng nhập, nhấn F12 hoặc Chuột phải > Mở devtools của trình duyệt.\n2. Sau đó, chuyển đến Tab \"Ứng dụng/Application\" (Chrome, Edge, Brave, v.v.) hoặc Tab \"Lưu trữ/Storage\" (Firefox, Palemoon, v.v.)\n3. Chuyển đến phần \"Cookie\" sau đó phần con \"https://accounts.spotify.com\"';
+  String get step_2_steps => '1. Sau khi đăng nhập, nhấn F12 hoặc Chuột phải > Mở devtools của trình duyệt.\n2. Sau đó, chuyển đến Tab \"Ứng dụng/Application\" (Chrome, Edge, Brave, v.v.) hoặc Tab \"Lưu trữ/Storage\" (Firefox, Pale Moon, v.v.)\n3. Chuyển đến phần \"Cookie\" sau đó phần con \"https://accounts.spotify.com\"';
 
   @override
   String get step_3 => 'Bước 3';
@@ -672,16 +672,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get number_of_tracks_generate => 'Số lượng bài hát để tạo';
 
   @override
-  String get acousticness => 'Độ âm thanh';
+  String get not_acoustic => 'Độ âm thanh';
 
   @override
-  String get danceability => 'Khả năng nhảy';
+  String get dance_ability => 'Khả năng nhảy';
 
   @override
   String get energy => 'Năng lượng';
 
   @override
-  String get instrumentalness => 'Độ nhạc cụ';
+  String get not_instrumental => 'Độ nhạc cụ';
 
   @override
   String get liveness => 'Sống động';
@@ -690,7 +690,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get loudness => 'Độ ồn';
 
   @override
-  String get speechiness => 'Độ nói';
+  String get talkative => 'Độ nói';
 
   @override
   String get valence => 'Tính tích cực';
@@ -809,7 +809,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get sleep_timer => 'Hẹn giờ tắt';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes Phút';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsVi extends AppLocalizations {
   String get failed_to_encrypt => 'Mã hóa không thành công';
 
   @override
-  String get encryption_failed_warning => 'Spotube không thành công trong việc mã hóa nhằm lưu trữ dữ liêu an toàn. vậy nên sẽ chuyển về lưu trữ không an toàn\nNếu bạn đang sử dụng Linux, đảm bảo rằng bạn có sử dụng dịch vụ bảo mật (gnome-keyring, kde-wallet, keepassxc, v.v.)';
+  String get encryption_failed_warning => 'Spotube không thành công trong việc mã hóa nhằm lưu trữ dữ liêu an toàn. vậy nên sẽ chuyển về lưu trữ không an toàn\nNếu bạn đang sử dụng Linux, đảm bảo rằng bạn có sử dụng dịch vụ bảo mật (gnome-keyring, kde-wallet, KeePassXC, v.v.)';
 
   @override
   String get querying_info => 'Đang truy vấn thông tin...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get owned_by_you => 'Thuộc sở hữu của bạn';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl đã sao chép vào bảng tạm';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Được tính toán dựa trên khoản thanh toán của Spotify cho mỗi lượt phát\ntừ \$0.003 đến \$0.005. Đây là một tính toán giả định để\ncung cấp cho người dùng cái nhìn về số tiền họ sẽ phải trả\ncho các nghệ sĩ nếu họ nghe bài hát của họ trên Spotify.';
+  String get spotify_hypothetical_calculation => '*Được tính toán dựa trên khoản thanh toán của Spotify cho mỗi lượt phát\ntừ \$0.003 đến \$0.005. Đây là một tính toán giả định để\ncung cấp cho người dùng cái nhìn về số tiền họ sẽ phải trả\ncho các nghệ sĩ nếu họ nghe bài hát của họ trên Spotify.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes phút';
   }
 

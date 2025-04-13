@@ -1,8 +1,9 @@
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
-import 'package:path/path.dart';
 import 'package:crypto/crypto.dart';
+import 'package:path/path.dart';
+
 import 'common.dart';
 
 class WindowsBuildCommand extends Command with BuildCommandCommonSteps {

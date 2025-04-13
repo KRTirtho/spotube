@@ -1,5 +1,5 @@
-import 'package:html_unescape/html_unescape.dart';
 import 'package:html/parser.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 final htmlEscape = HtmlUnescape();
 

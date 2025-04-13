@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:spotube/extensions/track.dart';
-import 'package:spotube/services/logger/logger.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,8 +9,10 @@ import 'package:path/path.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/extensions/track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/download_manager/download_manager.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';

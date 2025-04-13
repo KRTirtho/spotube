@@ -1,11 +1,11 @@
 <div align="center">
-  <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
+  <img width="124" src="assets/spotube-logo-stable-notWallpaper.png" alt="Spotube Logo">
 
 An open source, cross-platform Spotify client compatible across multiple platforms<br />
-utilizing Spotify's data API and YouTube, Piped.video or JioSaavn as an audio source,<br />
+utilizing Spotify's data API and YouTube, piped.video or JioSaavn as an audio source,<br />
 eliminating the need for Spotify Premium
 
-Btw it's not just another Electron app 😉
+Btw it's not just another Electron app 
 
 <a href="https://spotube.krtirtho.dev"><img alt="Visit the website" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/website_vector.svg"></a>
 <a href="https://discord.gg/uJ94vxB6vg"><img alt="Discord Server" height="56" src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/social/discord-plural_vector.svg"></a>
@@ -25,27 +25,27 @@ Btw it's not just another Electron app 😉
 
 </div>
 
-## 🌃 Features
+## Features
 
-- 🚫 No ads, thanks to the use of public & free Spotify and YT Music APIs¹
-- ⬇️ Freely downloadable tracks
-- 🖥️ 📱 Cross-platform support
-- 🪶 Small size & less data usage
-- 🕵️ Anonymous/guest login
-- 🕒 Time synced lyrics
-- ✋ No telemetry, diagnostics or user data collection
-- 🚀 Native performance
-- 📖 Open source/libre software
-- 🔉 Playback control is done locally, not on the server
+- No ads, thanks to the use of public & free Spotify and YT Music APIs¹
+- Freely downloadable tracks
+- Cross-platform support
+- Small size & less data usage
+- Anonymous/guest login
+- Time synced lyrics
+- No telemetry, diagnostics or user data collection
+- Native performance
+- Open source/libre software
+- Playback control is done locally, not on the server
 
 **¹** It is still **recommended** to support creators by engaging with their YouTube channels/Spotify tracks (or preferably by buying their merch/concert tickets/physical media).
 
-### ❌ Unsupported features
+### Unsupported features
 
-- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts will <ins>**never be supported**</ins> because the audio tracks are <ins>_only_</ins> available on Spotify and accessing them would require Spotify Premium.
-- 🎧 **Spotify Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
+- **Spotify Shows & Podcasts:** Shows and Podcasts will <ins>**never be supported**</ins> because the audio tracks are <ins>_only_</ins> available on Spotify and accessing them would require Spotify Premium.
+- **Spotify Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
 
-## 📜 ⬇️ Installation guide
+## Installation guide
 
 New versions usually release every 3-4 months.<br />
 This handy table lists all the methods you can use to install Spotube:
@@ -176,17 +176,17 @@ brew install --cask spotube
   </tr>
 </table>
 
-### 🔄 Nightly Builds
+### Nightly Builds
 
 Grab the latest nightly builds of Spotube [from the GitHub Releases](https://github.com/KRTirtho/spotube/releases/tag/nightly).
 
-## 🕳️ Building from source
+## Building from source
 
 <a href="https://github.com/KRTirtho/spotube/actions"><img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/KRTirtho/spotube/spotube-release-binary.yml?+label=Build%20Status"></a>
 
 You can compile Spotube's source code by [following these instructions](CONTRIBUTION.md#your-first-code-contribution).
 
-## 👥 The Spotube team
+## The Spotube team
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
 - [RaptaG](https://github.com/RaptaG) - The GitHub Moderator and Community Manager
@@ -195,7 +195,7 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 - [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
-## 💼 License
+## License
 
 Spotube is open source and licensed under the [BSD-4-Clause](/LICENSE) License.
 
@@ -203,9 +203,10 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 
 <details>
   <summary>
-    <h2><code>[Click to show]</code> 🙏 Services/Package/Plugin Credits</h2>
+    <h2><code>[Click to show]</code></h2>
   </summary>
 
+## Services/Package/Plugin Credits
 ### Services
 
 1. [Flutter](https://flutter.dev) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
@@ -350,4 +351,4 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [flutter_new_pipe_extractor](https://github.com/KRTirtho/flutter_new_pipe_extractor) - NewPipeExtractor binding for Flutter (Android only)
 </details>
 
-<div align="center"><h4>© Copyright Spotube 2024</h4></div>
+<div align="center"><h4>© Copyright Spotube 2025</h4></div>

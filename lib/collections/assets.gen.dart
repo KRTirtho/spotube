@@ -136,8 +136,6 @@ class Assets {
   static const AssetGenImage albumPlaceholder =
       AssetGenImage('assets/album-placeholder.png');
   static const $AssetsBackgroundsGen backgrounds = $AssetsBackgroundsGen();
-  static const AssetGenImage bengaliPatternsBg =
-      AssetGenImage('assets/bengali-patterns-bg.jpg');
   static const AssetGenImage branding = AssetGenImage('assets/branding.png');
   static const AssetGenImage emptyBox = AssetGenImage('assets/empty_box.png');
   static const AssetGenImage invidious = AssetGenImage('assets/invidious.jpg');
@@ -148,38 +146,12 @@ class Assets {
   static const $AssetsPatternsGen patterns = $AssetsPatternsGen();
   static const AssetGenImage placeholder =
       AssetGenImage('assets/placeholder.png');
-  static const AssetGenImage spotubeHeroBanner =
-      AssetGenImage('assets/spotube-hero-banner.png');
-  static const AssetGenImage spotubeLogoForeground =
-      AssetGenImage('assets/spotube-logo-foreground.jpg');
-  static const AssetGenImage spotubeLogoMacos =
-      AssetGenImage('assets/spotube-logo-macos.png');
-  static const AssetGenImage spotubeLogoBmp =
-      AssetGenImage('assets/spotube-logo.bmp');
-  static const String spotubeLogoIco = 'assets/spotube-logo.ico';
-  static const AssetGenImage spotubeLogoPng =
-      AssetGenImage('assets/spotube-logo.png');
-  static const String spotubeLogoSvg = 'assets/spotube-logo.svg';
-  static const AssetGenImage spotubeLogoAndroid12 =
-      AssetGenImage('assets/spotube-logo_android12.png');
-  static const AssetGenImage spotubeNightlyLogoForeground =
-      AssetGenImage('assets/spotube-nightly-logo-foreground.jpg');
-  static const AssetGenImage spotubeNightlyLogoPng =
-      AssetGenImage('assets/spotube-nightly-logo.png');
-  static const String spotubeNightlyLogoSvg = 'assets/spotube-nightly-logo.svg';
-  static const AssetGenImage spotubeNightlyLogoAndroid12 =
-      AssetGenImage('assets/spotube-nightly-logo_android12.png');
-  static const AssetGenImage spotubeScreenshot =
-      AssetGenImage('assets/spotube-screenshot.png');
-  static const AssetGenImage spotubeTallCapsule =
-      AssetGenImage('assets/spotube-tall-capsule.png');
-  static const AssetGenImage spotubeWideCapsuleLarge =
-      AssetGenImage('assets/spotube-wide-capsule-large.png');
-  static const AssetGenImage spotubeWideCapsuleSmall =
-      AssetGenImage('assets/spotube-wide-capsule-small.png');
-  static const AssetGenImage spotubeBanner =
-      AssetGenImage('assets/spotube_banner.png');
-  static const AssetGenImage success = AssetGenImage('assets/success.png');
+  static const AssetGenImage spotubeLogoNightlyNotWallpaper =
+      AssetGenImage('assets/spotube-logo-nightly-notWallpaper.png');
+  static const AssetGenImage spotubeLogoStableNotWallpaper =
+      AssetGenImage('assets/spotube-logo-stable-notWallpaper.png');
+  static const AssetGenImage spotubeLogoStableWallpaper =
+      AssetGenImage('assets/spotube-logo-stable-wallpaper.png');
   static const $AssetsTutorialGen tutorial = $AssetsTutorialGen();
   static const AssetGenImage userPlaceholder =
       AssetGenImage('assets/user-placeholder.png');
@@ -188,31 +160,15 @@ class Assets {
   static List<dynamic> get values => [
         license,
         albumPlaceholder,
-        bengaliPatternsBg,
         branding,
         emptyBox,
         invidious,
         jiosaavn,
         likedTracks,
         placeholder,
-        spotubeHeroBanner,
-        spotubeLogoForeground,
-        spotubeLogoMacos,
-        spotubeLogoBmp,
-        spotubeLogoIco,
-        spotubeLogoPng,
-        spotubeLogoSvg,
-        spotubeLogoAndroid12,
-        spotubeNightlyLogoForeground,
-        spotubeNightlyLogoPng,
-        spotubeNightlyLogoSvg,
-        spotubeNightlyLogoAndroid12,
-        spotubeScreenshot,
-        spotubeTallCapsule,
-        spotubeWideCapsuleLarge,
-        spotubeWideCapsuleSmall,
-        spotubeBanner,
-        success,
+        spotubeLogoNightlyNotWallpaper,
+        spotubeLogoStableNotWallpaper,
+        spotubeLogoStableWallpaper,
         userPlaceholder
       ];
 }

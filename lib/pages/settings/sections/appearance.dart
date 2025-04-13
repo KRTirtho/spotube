@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart' show ListTile;
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
-import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
-import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class SettingsAppearanceSection extends HookConsumerWidget {
@@ -49,10 +49,10 @@ class SettingsAppearanceSection extends HookConsumerWidget {
             value: LayoutMode.compact,
             child: Text(context.l10n.compact),
           ),
-          SelectItemButton(
-            value: LayoutMode.extended,
-            child: Text(context.l10n.extended),
-          ),
+          // SelectItemButton(
+          //   value: LayoutMode.extended,
+          //   child: Text(context.l10n.extended),
+          // ),
         ],
       ),
       AdaptiveSelectTile<ThemeMode>(

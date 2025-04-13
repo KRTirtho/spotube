@@ -2,7 +2,7 @@ part of '../database.dart';
 
 enum LayoutMode {
   compact,
-  extended,
+  // extended,
   adaptive,
 }
 
@@ -128,7 +128,7 @@ class PreferencesTable extends Table {
       normalizeAudio: false,
       showSystemTrayIcon: false,
       systemTitleBar: false,
-      skipNonMusic: false,
+      skipNonMusic: true,
       closeBehavior: CloseBehavior.close,
       accentColorScheme: SpotubeColor(Colors.blue.value, name: "Blue"),
       layoutMode: LayoutMode.adaptive,

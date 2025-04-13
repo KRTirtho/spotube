@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/extensions/context.dart';
-
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class SpotubeColor extends Color {

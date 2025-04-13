@@ -1,9 +1,9 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
-import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_dials.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
+import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_dials.dart';
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart';
 
 class RecommendationAttributeFields extends HookWidget {

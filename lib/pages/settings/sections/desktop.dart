@@ -2,10 +2,10 @@ import 'package:flutter/material.dart' show ListTile;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/models/database/database.dart';
-import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class SettingsDesktopSection extends HookConsumerWidget {

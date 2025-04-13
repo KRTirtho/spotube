@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:io/io.dart';
 import 'package:args/command_runner.dart';
 import 'package:intl/intl.dart';
+import 'package:io/io.dart';
 import 'package:path/path.dart';
 
 import '../../core/env.dart';

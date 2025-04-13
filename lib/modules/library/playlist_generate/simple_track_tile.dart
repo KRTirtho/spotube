@@ -2,7 +2,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/image.dart';

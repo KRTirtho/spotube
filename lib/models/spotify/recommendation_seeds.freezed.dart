@@ -347,18 +347,18 @@ RecommendationSeeds _$RecommendationSeedsFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$RecommendationSeeds {
-  num? get acousticness => throw _privateConstructorUsedError;
-  num? get danceability => throw _privateConstructorUsedError;
+  num? get not_acoustic => throw _privateConstructorUsedError;
+  num? get dance_ability => throw _privateConstructorUsedError;
   @JsonKey(name: "duration_ms")
   num? get durationMs => throw _privateConstructorUsedError;
   num? get energy => throw _privateConstructorUsedError;
-  num? get instrumentalness => throw _privateConstructorUsedError;
+  num? get not_instrumental => throw _privateConstructorUsedError;
   num? get key => throw _privateConstructorUsedError;
   num? get liveness => throw _privateConstructorUsedError;
   num? get loudness => throw _privateConstructorUsedError;
   num? get mode => throw _privateConstructorUsedError;
   num? get popularity => throw _privateConstructorUsedError;
-  num? get speechiness => throw _privateConstructorUsedError;
+  num? get talkative => throw _privateConstructorUsedError;
   num? get tempo => throw _privateConstructorUsedError;
   @JsonKey(name: "time_signature")
   num? get timeSignature => throw _privateConstructorUsedError;
@@ -381,17 +381,17 @@ abstract class $RecommendationSeedsCopyWith<$Res> {
       _$RecommendationSeedsCopyWithImpl<$Res, RecommendationSeeds>;
   @useResult
   $Res call(
-      {num? acousticness,
-      num? danceability,
+      {num? not_acoustic,
+      num? dance_ability,
       @JsonKey(name: "duration_ms") num? durationMs,
       num? energy,
-      num? instrumentalness,
+      num? not_instrumental,
       num? key,
       num? liveness,
       num? loudness,
       num? mode,
       num? popularity,
-      num? speechiness,
+      num? talkative,
       num? tempo,
       @JsonKey(name: "time_signature") num? timeSignature,
       num? valence});
@@ -412,29 +412,29 @@ class _$RecommendationSeedsCopyWithImpl<$Res, $Val extends RecommendationSeeds>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? acousticness = freezed,
-    Object? danceability = freezed,
+    Object? not_acoustic = freezed,
+    Object? dance_ability = freezed,
     Object? durationMs = freezed,
     Object? energy = freezed,
-    Object? instrumentalness = freezed,
+    Object? not_instrumental = freezed,
     Object? key = freezed,
     Object? liveness = freezed,
     Object? loudness = freezed,
     Object? mode = freezed,
     Object? popularity = freezed,
-    Object? speechiness = freezed,
+    Object? talkative = freezed,
     Object? tempo = freezed,
     Object? timeSignature = freezed,
     Object? valence = freezed,
   }) {
     return _then(_value.copyWith(
-      acousticness: freezed == acousticness
-          ? _value.acousticness
-          : acousticness // ignore: cast_nullable_to_non_nullable
+      not_acoustic: freezed == not_acoustic
+          ? _value.not_acoustic
+          : not_acoustic // ignore: cast_nullable_to_non_nullable
               as num?,
-      danceability: freezed == danceability
-          ? _value.danceability
-          : danceability // ignore: cast_nullable_to_non_nullable
+      dance_ability: freezed == dance_ability
+          ? _value.dance_ability
+          : dance_ability // ignore: cast_nullable_to_non_nullable
               as num?,
       durationMs: freezed == durationMs
           ? _value.durationMs
@@ -444,9 +444,9 @@ class _$RecommendationSeedsCopyWithImpl<$Res, $Val extends RecommendationSeeds>
           ? _value.energy
           : energy // ignore: cast_nullable_to_non_nullable
               as num?,
-      instrumentalness: freezed == instrumentalness
-          ? _value.instrumentalness
-          : instrumentalness // ignore: cast_nullable_to_non_nullable
+      not_instrumental: freezed == not_instrumental
+          ? _value.not_instrumental
+          : not_instrumental // ignore: cast_nullable_to_non_nullable
               as num?,
       key: freezed == key
           ? _value.key
@@ -468,9 +468,9 @@ class _$RecommendationSeedsCopyWithImpl<$Res, $Val extends RecommendationSeeds>
           ? _value.popularity
           : popularity // ignore: cast_nullable_to_non_nullable
               as num?,
-      speechiness: freezed == speechiness
-          ? _value.speechiness
-          : speechiness // ignore: cast_nullable_to_non_nullable
+      talkative: freezed == talkative
+          ? _value.talkative
+          : talkative // ignore: cast_nullable_to_non_nullable
               as num?,
       tempo: freezed == tempo
           ? _value.tempo
@@ -497,17 +497,17 @@ abstract class _$$RecommendationSeedsImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {num? acousticness,
-      num? danceability,
+      {num? not_acoustic,
+      num? dance_ability,
       @JsonKey(name: "duration_ms") num? durationMs,
       num? energy,
-      num? instrumentalness,
+      num? not_instrumental,
       num? key,
       num? liveness,
       num? loudness,
       num? mode,
       num? popularity,
-      num? speechiness,
+      num? talkative,
       num? tempo,
       @JsonKey(name: "time_signature") num? timeSignature,
       num? valence});
@@ -526,29 +526,29 @@ class __$$RecommendationSeedsImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? acousticness = freezed,
-    Object? danceability = freezed,
+    Object? not_acoustic = freezed,
+    Object? dance_ability = freezed,
     Object? durationMs = freezed,
     Object? energy = freezed,
-    Object? instrumentalness = freezed,
+    Object? not_instrumental = freezed,
     Object? key = freezed,
     Object? liveness = freezed,
     Object? loudness = freezed,
     Object? mode = freezed,
     Object? popularity = freezed,
-    Object? speechiness = freezed,
+    Object? talkative = freezed,
     Object? tempo = freezed,
     Object? timeSignature = freezed,
     Object? valence = freezed,
   }) {
     return _then(_$RecommendationSeedsImpl(
-      acousticness: freezed == acousticness
-          ? _value.acousticness
-          : acousticness // ignore: cast_nullable_to_non_nullable
+      not_acoustic: freezed == not_acoustic
+          ? _value.not_acoustic
+          : not_acoustic // ignore: cast_nullable_to_non_nullable
               as num?,
-      danceability: freezed == danceability
-          ? _value.danceability
-          : danceability // ignore: cast_nullable_to_non_nullable
+      dance_ability: freezed == dance_ability
+          ? _value.dance_ability
+          : dance_ability // ignore: cast_nullable_to_non_nullable
               as num?,
       durationMs: freezed == durationMs
           ? _value.durationMs
@@ -558,9 +558,9 @@ class __$$RecommendationSeedsImplCopyWithImpl<$Res>
           ? _value.energy
           : energy // ignore: cast_nullable_to_non_nullable
               as num?,
-      instrumentalness: freezed == instrumentalness
-          ? _value.instrumentalness
-          : instrumentalness // ignore: cast_nullable_to_non_nullable
+      not_instrumental: freezed == not_instrumental
+          ? _value.not_instrumental
+          : not_instrumental // ignore: cast_nullable_to_non_nullable
               as num?,
       key: freezed == key
           ? _value.key
@@ -582,9 +582,9 @@ class __$$RecommendationSeedsImplCopyWithImpl<$Res>
           ? _value.popularity
           : popularity // ignore: cast_nullable_to_non_nullable
               as num?,
-      speechiness: freezed == speechiness
-          ? _value.speechiness
-          : speechiness // ignore: cast_nullable_to_non_nullable
+      talkative: freezed == talkative
+          ? _value.talkative
+          : talkative // ignore: cast_nullable_to_non_nullable
               as num?,
       tempo: freezed == tempo
           ? _value.tempo
@@ -606,17 +606,17 @@ class __$$RecommendationSeedsImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$RecommendationSeedsImpl implements _RecommendationSeeds {
   _$RecommendationSeedsImpl(
-      {this.acousticness,
-      this.danceability,
+      {this.not_acoustic,
+      this.dance_ability,
       @JsonKey(name: "duration_ms") this.durationMs,
       this.energy,
-      this.instrumentalness,
+      this.not_instrumental,
       this.key,
       this.liveness,
       this.loudness,
       this.mode,
       this.popularity,
-      this.speechiness,
+      this.talkative,
       this.tempo,
       @JsonKey(name: "time_signature") this.timeSignature,
       this.valence});
@@ -625,16 +625,16 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
       _$$RecommendationSeedsImplFromJson(json);
 
   @override
-  final num? acousticness;
+  final num? not_acoustic;
   @override
-  final num? danceability;
+  final num? dance_ability;
   @override
   @JsonKey(name: "duration_ms")
   final num? durationMs;
   @override
   final num? energy;
   @override
-  final num? instrumentalness;
+  final num? not_instrumental;
   @override
   final num? key;
   @override
@@ -646,7 +646,7 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
   @override
   final num? popularity;
   @override
-  final num? speechiness;
+  final num? talkative;
   @override
   final num? tempo;
   @override
@@ -657,7 +657,7 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
 
   @override
   String toString() {
-    return 'RecommendationSeeds(acousticness: $acousticness, danceability: $danceability, durationMs: $durationMs, energy: $energy, instrumentalness: $instrumentalness, key: $key, liveness: $liveness, loudness: $loudness, mode: $mode, popularity: $popularity, speechiness: $speechiness, tempo: $tempo, timeSignature: $timeSignature, valence: $valence)';
+    return 'RecommendationSeeds(not_acoustic: $not_acoustic, dance_ability: $dance_ability, durationMs: $durationMs, energy: $energy, not_instrumental: $not_instrumental, key: $key, liveness: $liveness, loudness: $loudness, mode: $mode, popularity: $popularity, talkative: $talkative, tempo: $tempo, timeSignature: $timeSignature, valence: $valence)';
   }
 
   @override
@@ -665,15 +665,15 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RecommendationSeedsImpl &&
-            (identical(other.acousticness, acousticness) ||
-                other.acousticness == acousticness) &&
-            (identical(other.danceability, danceability) ||
-                other.danceability == danceability) &&
+            (identical(other.not_acoustic, not_acoustic) ||
+                other.not_acoustic == not_acoustic) &&
+            (identical(other.dance_ability, dance_ability) ||
+                other.dance_ability == dance_ability) &&
             (identical(other.durationMs, durationMs) ||
                 other.durationMs == durationMs) &&
             (identical(other.energy, energy) || other.energy == energy) &&
-            (identical(other.instrumentalness, instrumentalness) ||
-                other.instrumentalness == instrumentalness) &&
+            (identical(other.not_instrumental, not_instrumental) ||
+                other.not_instrumental == not_instrumental) &&
             (identical(other.key, key) || other.key == key) &&
             (identical(other.liveness, liveness) ||
                 other.liveness == liveness) &&
@@ -682,8 +682,8 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
             (identical(other.mode, mode) || other.mode == mode) &&
             (identical(other.popularity, popularity) ||
                 other.popularity == popularity) &&
-            (identical(other.speechiness, speechiness) ||
-                other.speechiness == speechiness) &&
+            (identical(other.talkative, talkative) ||
+                other.talkative == talkative) &&
             (identical(other.tempo, tempo) || other.tempo == tempo) &&
             (identical(other.timeSignature, timeSignature) ||
                 other.timeSignature == timeSignature) &&
@@ -694,17 +694,17 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      acousticness,
-      danceability,
+      not_acoustic,
+      dance_ability,
       durationMs,
       energy,
-      instrumentalness,
+      not_instrumental,
       key,
       liveness,
       loudness,
       mode,
       popularity,
-      speechiness,
+      talkative,
       tempo,
       timeSignature,
       valence);
@@ -728,17 +728,17 @@ class _$RecommendationSeedsImpl implements _RecommendationSeeds {
 
 abstract class _RecommendationSeeds implements RecommendationSeeds {
   factory _RecommendationSeeds(
-      {final num? acousticness,
-      final num? danceability,
+      {final num? not_acoustic,
+      final num? dance_ability,
       @JsonKey(name: "duration_ms") final num? durationMs,
       final num? energy,
-      final num? instrumentalness,
+      final num? not_instrumental,
       final num? key,
       final num? liveness,
       final num? loudness,
       final num? mode,
       final num? popularity,
-      final num? speechiness,
+      final num? talkative,
       final num? tempo,
       @JsonKey(name: "time_signature") final num? timeSignature,
       final num? valence}) = _$RecommendationSeedsImpl;
@@ -747,16 +747,16 @@ abstract class _RecommendationSeeds implements RecommendationSeeds {
       _$RecommendationSeedsImpl.fromJson;
 
   @override
-  num? get acousticness;
+  num? get not_acoustic;
   @override
-  num? get danceability;
+  num? get dance_ability;
   @override
   @JsonKey(name: "duration_ms")
   num? get durationMs;
   @override
   num? get energy;
   @override
-  num? get instrumentalness;
+  num? get not_instrumental;
   @override
   num? get key;
   @override
@@ -768,7 +768,7 @@ abstract class _RecommendationSeeds implements RecommendationSeeds {
   @override
   num? get popularity;
   @override
-  num? get speechiness;
+  num? get talkative;
   @override
   num? get tempo;
   @override

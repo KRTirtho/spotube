@@ -1,7 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
-
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
@@ -9,21 +8,19 @@ import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/button/back_button.dart';
-import 'package:spotube/components/ui/button_tile.dart';
-
-import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_dials.dart';
-import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_fields.dart';
-import 'package:spotube/modules/library/playlist_generate/seeds_multi_autocomplete.dart';
-import 'package:spotube/modules/library/playlist_generate/simple_track_tile.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/spotify/recommendation_seeds.dart';
+import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_dials.dart';
+import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_fields.dart';
+import 'package:spotube/modules/library/playlist_generate/seeds_multi_autocomplete.dart';
+import 'package:spotube/modules/library/playlist_generate/simple_track_tile.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:auto_route/auto_route.dart';
 
 const RecommendationAttribute zeroValues = (min: 0, target: 0, max: 0);
 
@@ -394,40 +391,40 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                         ],
                         const SizedBox(height: 16),
                         RecommendationAttributeDials(
-                          title: Text(context.l10n.acousticness),
+                          title: Text(context.l10n.not_acoustic),
                           values: (
-                            target: target.value.acousticness?.toDouble() ?? 0,
-                            min: min.value.acousticness?.toDouble() ?? 0,
-                            max: max.value.acousticness?.toDouble() ?? 0,
+                            target: target.value.not_acoustic?.toDouble() ?? 0,
+                            min: min.value.not_acoustic?.toDouble() ?? 0,
+                            max: max.value.not_acoustic?.toDouble() ?? 0,
                           ),
                           onChanged: (value) {
                             target.value = target.value.copyWith(
-                              acousticness: value.target,
+                              not_acoustic: value.target,
                             );
                             min.value = min.value.copyWith(
-                              acousticness: value.min,
+                              not_acoustic: value.min,
                             );
                             max.value = max.value.copyWith(
-                              acousticness: value.max,
+                              not_acoustic: value.max,
                             );
                           },
                         ),
                         RecommendationAttributeDials(
-                          title: Text(context.l10n.danceability),
+                          title: Text(context.l10n.dance_ability),
                           values: (
-                            target: target.value.danceability?.toDouble() ?? 0,
-                            min: min.value.danceability?.toDouble() ?? 0,
-                            max: max.value.danceability?.toDouble() ?? 0,
+                            target: target.value.dance_ability?.toDouble() ?? 0,
+                            min: min.value.dance_ability?.toDouble() ?? 0,
+                            max: max.value.dance_ability?.toDouble() ?? 0,
                           ),
                           onChanged: (value) {
                             target.value = target.value.copyWith(
-                              danceability: value.target,
+                              dance_ability: value.target,
                             );
                             min.value = min.value.copyWith(
-                              danceability: value.min,
+                              dance_ability: value.min,
                             );
                             max.value = max.value.copyWith(
-                              danceability: value.max,
+                              dance_ability: value.max,
                             );
                           },
                         ),
@@ -451,22 +448,22 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                           },
                         ),
                         RecommendationAttributeDials(
-                          title: Text(context.l10n.instrumentalness),
+                          title: Text(context.l10n.not_instrumental),
                           values: (
                             target:
-                                target.value.instrumentalness?.toDouble() ?? 0,
-                            min: min.value.instrumentalness?.toDouble() ?? 0,
-                            max: max.value.instrumentalness?.toDouble() ?? 0,
+                                target.value.not_instrumental?.toDouble() ?? 0,
+                            min: min.value.not_instrumental?.toDouble() ?? 0,
+                            max: max.value.not_instrumental?.toDouble() ?? 0,
                           ),
                           onChanged: (value) {
                             target.value = target.value.copyWith(
-                              instrumentalness: value.target,
+                              not_instrumental: value.target,
                             );
                             min.value = min.value.copyWith(
-                              instrumentalness: value.min,
+                              not_instrumental: value.min,
                             );
                             max.value = max.value.copyWith(
-                              instrumentalness: value.max,
+                              not_instrumental: value.max,
                             );
                           },
                         ),
@@ -509,21 +506,21 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                           },
                         ),
                         RecommendationAttributeDials(
-                          title: Text(context.l10n.speechiness),
+                          title: Text(context.l10n.talkative),
                           values: (
-                            target: target.value.speechiness?.toDouble() ?? 0,
-                            min: min.value.speechiness?.toDouble() ?? 0,
-                            max: max.value.speechiness?.toDouble() ?? 0,
+                            target: target.value.talkative?.toDouble() ?? 0,
+                            min: min.value.talkative?.toDouble() ?? 0,
+                            max: max.value.talkative?.toDouble() ?? 0,
                           ),
                           onChanged: (value) {
                             target.value = target.value.copyWith(
-                              speechiness: value.target,
+                              talkative: value.target,
                             );
                             min.value = min.value.copyWith(
-                              speechiness: value.min,
+                              talkative: value.min,
                             );
                             max.value = max.value.copyWith(
-                              speechiness: value.max,
+                              talkative: value.max,
                             );
                           },
                         ),

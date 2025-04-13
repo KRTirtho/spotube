@@ -8,8 +8,8 @@ import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
-import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistPageTopTracks extends HookConsumerWidget {

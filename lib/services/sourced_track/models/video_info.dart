@@ -1,7 +1,6 @@
 import 'package:invidious/invidious.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:spotube/models/database/database.dart';
-
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class YoutubeVideoInfo {

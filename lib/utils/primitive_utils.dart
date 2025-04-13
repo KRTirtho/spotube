@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:uuid/uuid.dart';
 
 abstract class PrimitiveUtils {

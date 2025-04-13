@@ -1,7 +1,7 @@
 // dart format width=80
-import 'package:drift/internal/versioned_schema.dart' as i0;
 import 'package:drift/drift.dart' as i1;
 import 'package:drift/drift.dart';
+import 'package:drift/internal/versioned_schema.dart' as i0;
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';

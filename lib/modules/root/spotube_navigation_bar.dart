@@ -6,7 +6,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
@@ -44,11 +43,11 @@ class SpotubeNavigationBar extends HookConsumerWidget {
       ),
     );
 
-    if (layoutMode == LayoutMode.extended ||
-        (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive) ||
-        panelHeight < 10) {
-      return const SizedBox();
-    }
+    // if (layoutMode == LayoutMode.extended ||
+    //     (mediaQuery.mdAndUp && layoutMode == LayoutMode.adaptive) ||
+    //     panelHeight < 10) {
+    //   return const SizedBox();
+    // }
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 100),

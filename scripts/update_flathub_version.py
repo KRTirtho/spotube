@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import hashlib
-import sys
 import requests
+import sys
 import yaml
 
 REPO = "KRTirtho/spotube"

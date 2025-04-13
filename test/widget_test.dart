@@ -7,7 +7,6 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-
 import 'package:spotube/main.dart';
 
 void main() {

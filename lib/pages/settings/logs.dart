@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_undraw/flutter_undraw.dart';
@@ -11,7 +12,6 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/logs/logs_provider.dart';
 import 'package:spotube/services/logger/logger.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class LogsPage extends HookConsumerWidget {

@@ -1,16 +1,15 @@
 import 'dart:convert';
 
-import 'package:media_kit/media_kit.dart' hide Track;
-import 'package:spotube/provider/audio_player/state.dart';
-import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/models/connect/connect.dart';
-
+import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/connect/clients.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:web_socket_channel/status.dart' as status;
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 final playingProvider = StateProvider<bool>(
   (ref) => false,

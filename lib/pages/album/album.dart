@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart' as material;
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';

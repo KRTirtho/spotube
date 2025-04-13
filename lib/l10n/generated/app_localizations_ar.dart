@@ -315,7 +315,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get shuffle_playlist => 'قائمة تشغيل عشوائية';
 
   @override
-  String get unshuffle_playlist => 'إلغاء ترتيب قائمة التشغيل';
+  String get not_shuffle_playlist => 'إلغاء ترتيب قائمة التشغيل';
 
   @override
   String get previous_track => 'المقطوعة السابقة';
@@ -590,7 +590,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get step_2 => 'الخطوة 2';
 
   @override
-  String get step_2_steps => '1. بمجرد تسجيل الدخول، اضغط على F12 أو انقر بزر الماوس الأيمن > فحص لفتح أدوات تطوير المتصفح.\n2. ثم انتقل إلى علامة التبويب \"التطبيقات\" (Chrome وEdge وBrave وما إلى ذلك.) أو علامة التبويب \"التخزين\" (Firefox وPalemoon وما إلى ذلك..)\n3. انتقل إلى قسم \"ملفات تعريف الارتباط\" ثم القسم الفرعي \"https://accounts.spotify.com\"';
+  String get step_2_steps => '1. بمجرد تسجيل الدخول، اضغط على F12 أو انقر بزر الماوس الأيمن > فحص لفتح أدوات تطوير المتصفح.\n2. ثم انتقل إلى علامة التبويب \"التطبيقات\" (Chrome وEdge وBrave وما إلى ذلك.) أو علامة التبويب \"التخزين\" (Firefox وPale Moon وما إلى ذلك..)\n3. انتقل إلى قسم \"ملفات تعريف الارتباط\" ثم القسم الفرعي \"https://accounts.spotify.com\"';
 
   @override
   String get step_3 => 'الخطوة 3';
@@ -672,16 +672,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get number_of_tracks_generate => 'عدد المسارات المقطوعات المراد توليدها';
 
   @override
-  String get acousticness => 'صوتية';
+  String get not_acoustic => 'صوتية';
 
   @override
-  String get danceability => 'قدرة على الرقص';
+  String get dance_ability => 'قدرة على الرقص';
 
   @override
   String get energy => 'طاقة';
 
   @override
-  String get instrumentalness => 'نفعية';
+  String get not_instrumental => 'نفعية';
 
   @override
   String get liveness => 'حيوية';
@@ -690,7 +690,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loudness => 'بريق';
 
   @override
-  String get speechiness => 'كلام';
+  String get talkative => 'كلام';
 
   @override
   String get valence => 'تكافؤ';
@@ -809,7 +809,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sleep_timer => 'مؤقت النوم';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes دقائق';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get failed_to_encrypt => 'فشل في التشفير';
 
   @override
-  String get encryption_failed_warning => 'يستخدم Spotube التشفير لتخزين بياناتك بشكل آمن. لكنها فشلت في القيام بذلك. لذلك سيعود الأمر إلى التخزين غير الآمن\nإذا كنت تستخدم Linux، فيرجى التأكد من تثبيت أي خدمة سرية (gnome-keyring، kde-wallet، keepassxc، إلخ)';
+  String get encryption_failed_warning => 'يستخدم Spotube التشفير لتخزين بياناتك بشكل آمن. لكنها فشلت في القيام بذلك. لذلك سيعود الأمر إلى التخزين غير الآمن\nإذا كنت تستخدم Linux، فيرجى التأكد من تثبيت أي خدمة سرية (gnome-keyring، kde-wallet، KeePassXC، إلخ)';
 
   @override
   String get querying_info => 'جارٍ الاستعلام عن معلومات...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get owned_by_you => 'مملوك لك';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return 'تم نسخ $shareUrl إلى الحافظة';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*هذا محسوب بناءً على الدفع لكل بث من سبوتيفاي\nبقيمة 0.003 إلى 0.005 دولار. هذا حساب افتراضي\nلإعطاء المستخدم فكرة عن المبلغ الذي\nكان سيدفعه للفنانين إذا كانوا قد استمعوا\nإلى أغنيتهم على سبوتيفاي.';
+  String get spotify_hypothetical_calculation => '*هذا محسوب بناءً على الدفع لكل بث من سبوتيفاي\nبقيمة 0.003 إلى 0.005 دولار. هذا حساب افتراضي\nلإعطاء المستخدم فكرة عن المبلغ الذي\nكان سيدفعه للفنانين إذا كانوا قد استمعوا\nإلى أغنيتهم على سبوتيفاي.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes دقيقة';
   }
 

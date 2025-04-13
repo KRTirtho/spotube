@@ -315,7 +315,7 @@ class AppLocalizationsNe extends AppLocalizations {
   String get shuffle_playlist => 'प्लेलिस्ट शफल गर्नुहोस्';
 
   @override
-  String get unshuffle_playlist => 'प्लेलिस्ट शफल नगर्नुहोस्';
+  String get not_shuffle_playlist => 'प्लेलिस्ट शफल नगर्नुहोस्';
 
   @override
   String get previous_track => 'पूर्व ट्र्याक';
@@ -590,7 +590,7 @@ class AppLocalizationsNe extends AppLocalizations {
   String get step_2 => 'कदम 2';
 
   @override
-  String get step_2_steps => '1. एकबार तपाईं लगइन गरे पछि, F12 थिच्नुहोस् वा माउस राइट क्लिक गर्नुहोस् > इन्स्पेक्ट गर्नुहोस् भने ब्राउजर डेभटुलहरू खुलाउनका लागि।\n2. तपाईंको \"एप्लिकेसन\" ट्याबमा जानुहोस् (Chrome, Edge, Brave इत्यादि) वा \"स्टोरेज\" ट्याबमा जानुहोस् (Firefox, Palemoon इत्यादि)\n3. तपाईंको इन्सेक्ट गरेको ब्राउजर डेभटुलहरूमा \"कुकीहरू\" खण्डमा जानुहोस् अनि \"https://accounts.spotify.com\" उपकोणमा जानुहोस्';
+  String get step_2_steps => '1. एकबार तपाईं लगइन गरे पछि, F12 थिच्नुहोस् वा माउस राइट क्लिक गर्नुहोस् > इन्स्पेक्ट गर्नुहोस् भने ब्राउजर डेभटुलहरू खुलाउनका लागि।\n2. तपाईंको \"एप्लिकेसन\" ट्याबमा जानुहोस् (Chrome, Edge, Brave इत्यादि) वा \"स्टोरेज\" ट्याबमा जानुहोस् (Firefox, Pale Moon इत्यादि)\n3. तपाईंको इन्सेक्ट गरेको ब्राउजर डेभटुलहरूमा \"कुकीहरू\" खण्डमा जानुहोस् अनि \"https://accounts.spotify.com\" उपकोणमा जानुहोस्';
 
   @override
   String get step_3 => 'कदम 3';
@@ -672,16 +672,16 @@ class AppLocalizationsNe extends AppLocalizations {
   String get number_of_tracks_generate => 'बनाउनका लागि ट्र्याकहरूको संख्या';
 
   @override
-  String get acousticness => 'एकोस्टिकनेस';
+  String get not_acoustic => 'एकोस्टिकनेस';
 
   @override
-  String get danceability => 'नृत्यक्षमता';
+  String get dance_ability => 'नृत्यक्षमता';
 
   @override
   String get energy => 'ऊर्जा';
 
   @override
-  String get instrumentalness => 'साजा रहेकोता';
+  String get not_instrumental => 'साजा रहेकोता';
 
   @override
   String get liveness => 'प्राणिकता';
@@ -690,7 +690,7 @@ class AppLocalizationsNe extends AppLocalizations {
   String get loudness => 'शोर';
 
   @override
-  String get speechiness => 'भाषण';
+  String get talkative => 'भाषण';
 
   @override
   String get valence => 'मानसिक स्वभाव';
@@ -809,7 +809,7 @@ class AppLocalizationsNe extends AppLocalizations {
   String get sleep_timer => 'सुत्ने टाइमर';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes मिनेटहरू';
   }
 
@@ -1207,15 +1207,15 @@ class AppLocalizationsNe extends AppLocalizations {
   String get owned_by_you => 'तपाईंले स्वामित्व गरेको';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl क्लिपबोर्डमा कपी गरियो';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*यो Spotify को प्रति स्ट्रीम भुगतानको आधारमा\n\$0.003 देखि \$0.005 को बीचमा गणना गरिएको हो। यो एक काल्पनिक\nगणना हो जसले प्रयोगकर्तालाई देखाउँछ कि उनीहरूले कति\nअर्टिस्टहरूलाई तिनीहरूका गीतहरू Spotify मा सुनेमा\nभुक्तान गर्नुपर्ने थियो।';
+  String get spotify_hypothetical_calculation => '*यो Spotify को प्रति स्ट्रीम भुगतानको आधारमा\n\$0.003 देखि \$0.005 को बीचमा गणना गरिएको हो। यो एक काल्पनिक\nगणना हो जसले प्रयोगकर्तालाई देखाउँछ कि उनीहरूले कति\nअर्टिस्टहरूलाई तिनीहरूका गीतहरू Spotify मा सुनेमा\nभुक्तान गर्नुपर्ने थियो।';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes मिनेट';
   }
 

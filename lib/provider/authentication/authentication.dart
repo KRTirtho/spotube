@@ -10,6 +10,9 @@ import 'package:drift/drift.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart'
     hide X509Certificate;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:otp_util/otp_util.dart';
+// ignore: implementation_imports
+import 'package:otp_util/src/utils/generic_util.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/extensions/context.dart';
@@ -17,9 +20,6 @@ import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:otp_util/otp_util.dart';
-// ignore: implementation_imports
-import 'package:otp_util/src/utils/generic_util.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 extension ExpirationAuthenticationTableData on AuthenticationTableData {

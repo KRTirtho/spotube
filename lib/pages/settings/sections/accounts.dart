@@ -1,16 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart' show ListTile;
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/pages/mobile_login/hooks/login_callback.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
@@ -49,7 +48,7 @@ class SettingsAccountSection extends HookConsumerWidget {
               ),
             ),
             onTap: () {
-              context.navigateTo(ProfileRoute());
+              context.navigateTo(const ProfileRoute());
             },
           ),
         if (auth.asData?.value == null)

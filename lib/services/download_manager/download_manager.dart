@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
-import 'package:collection/collection.dart';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
-
 import 'package:spotube/services/download_manager/chunked_download.dart';
 import 'package:spotube/services/download_manager/download_request.dart';
 import 'package:spotube/services/download_manager/download_status.dart';

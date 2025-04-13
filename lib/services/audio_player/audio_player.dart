@@ -1,21 +1,19 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:media_kit/media_kit.dart' hide Track;
-import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
+import 'package:media_kit/media_kit.dart' as mk;
+import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/services/audio_player/custom_player.dart';
-import 'dart:async';
-
-import 'package:media_kit/media_kit.dart' as mk;
-
 import 'package:spotube/services/audio_player/playback_state.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/platform.dart';
 
-part 'audio_players_streams_mixin.dart';
 part 'audio_player_impl.dart';
+part 'audio_players_streams_mixin.dart';
 
 class SpotubeMedia extends mk.Media {
   final Track track;
@@ -63,20 +61,20 @@ class SpotubeMedia extends mk.Media {
     );
   }
 
-  // @override
-  // operator ==(Object other) {
-  //   if (other is! SpotubeMedia) return false;
+  @override
+  operator == (Object other) {
+    if (other is! SpotubeMedia) return false;
 
-  //   final isLocal = track is LocalTrack && other.track is LocalTrack;
-  //   return isLocal
-  //       ? (other.track as LocalTrack).path == (track as LocalTrack).path
-  //       : other.track.id == track.id;
-  // }
+    final isLocal = track is LocalTrack && other.track is LocalTrack;
+    return isLocal
+        ? (other.track as LocalTrack).path == (track as LocalTrack).path
+        : other.track.id == track.id;
+  }
 
-  // @override
-  // int get hashCode => track is LocalTrack
-  //     ? (track as LocalTrack).path.hashCode
-  //     : track.id.hashCode;
+  @override
+  int get hashCode => track is LocalTrack
+      ? (track as LocalTrack).path.hashCode
+      : track.id.hashCode;
 }
 
 abstract class AudioPlayerInterface {

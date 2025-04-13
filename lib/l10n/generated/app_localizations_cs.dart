@@ -315,7 +315,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get shuffle_playlist => 'Zamíchat playlist';
 
   @override
-  String get unshuffle_playlist => 'Zrušit zamíchání playlistu';
+  String get not_shuffle_playlist => 'Zrušit zamíchání playlistu';
 
   @override
   String get previous_track => 'Předchozí skladba';
@@ -590,7 +590,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get step_2 => 'Krok 2';
 
   @override
-  String get step_2_steps => '1. Jakmile jste přihlášeni, stiskněte F12 nebo pravé tlačítko myši > Prozkoumat, abyste otevřeli nástroje pro vývojáře prohlížeče.\n2. Poté přejděte na kartu \"Aplikace\" (Chrome, Edge, Brave atd.) nebo kartu \"Úložiště\" (Firefox, Palemoon atd.)\n3. Přejděte do sekce \"Cookies\" a pak do podsekce \"https://accounts.spotify.com\"';
+  String get step_2_steps => '1. Jakmile jste přihlášeni, stiskněte F12 nebo pravé tlačítko myši > Prozkoumat, abyste otevřeli nástroje pro vývojáře prohlížeče.\n2. Poté přejděte na kartu \"Aplikace\" (Chrome, Edge, Brave atd.) nebo kartu \"Úložiště\" (Firefox, Pale Moon atd.)\n3. Přejděte do sekce \"Cookies\" a pak do podsekce \"https://accounts.spotify.com\"';
 
   @override
   String get step_3 => 'Krok 3';
@@ -672,16 +672,16 @@ class AppLocalizationsCs extends AppLocalizations {
   String get number_of_tracks_generate => 'Počet skladeb k vygenerování';
 
   @override
-  String get acousticness => 'Akustičnost';
+  String get not_acoustic => 'Akustičnost';
 
   @override
-  String get danceability => 'Tanečnost';
+  String get dance_ability => 'Tanečnost';
 
   @override
   String get energy => 'Energie';
 
   @override
-  String get instrumentalness => 'Instrumentálnost';
+  String get not_instrumental => 'Instrumentálnost';
 
   @override
   String get liveness => 'Živost';
@@ -690,7 +690,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get loudness => 'Hlasitost';
 
   @override
-  String get speechiness => 'Mluvnost';
+  String get talkative => 'Mluvnost';
 
   @override
   String get valence => 'Valence';
@@ -809,7 +809,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get sleep_timer => 'Časovač spánku';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes Minut';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get failed_to_encrypt => 'Šifrování selhalo';
 
   @override
-  String get encryption_failed_warning => 'Spotube používá šifrování k bezpečnému ukládání vašich dat. Ale selhalo. Takže se vrátí k nezabezpečenému úložišti\nPokud používáte linux, ujistěte se, že máte nainstalovanou jakoukoli službu k ukládání bezpečnostních pověření (gnome-keyring, kde-wallet, keepassxc atd.)';
+  String get encryption_failed_warning => 'Spotube používá šifrování k bezpečnému ukládání vašich dat. Ale selhalo. Takže se vrátí k nezabezpečenému úložišti\nPokud používáte linux, ujistěte se, že máte nainstalovanou jakoukoli službu k ukládání bezpečnostních pověření (gnome-keyring, kde-wallet, KeePassXC atd.)';
 
   @override
   String get querying_info => 'Získávání informací...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get owned_by_you => 'Vlastněno vámi';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return 'Zkopírováno $shareUrl do schránky';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Toto je vypočítáno na základě výplaty\nza stream Spotify od \$0.003 do \$0.005.\nToto je hypotetický výpočet,\nabyste měli představu o tom, kolik\nbyste zaplatili umělcům,\npokud byste poslouchali jejich píseň na Spotify.';
+  String get spotify_hypothetical_calculation => '*Toto je vypočítáno na základě výplaty\nza stream Spotify od \$0.003 do \$0.005.\nToto je hypotetický výpočet,\nabyste měli představu o tom, kolik\nbyste zaplatili umělcům,\npokud byste poslouchali jejich píseň na Spotify.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes minut';
   }
 

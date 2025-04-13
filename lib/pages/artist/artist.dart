@@ -1,20 +1,18 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/components/button/back_button.dart';
-
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/modules/artist/artist_album_list.dart';
 import 'package:spotube/extensions/context.dart';
-
+import 'package:spotube/modules/artist/artist_album_list.dart';
 import 'package:spotube/pages/artist/section/footer.dart';
 import 'package:spotube/pages/artist/section/header.dart';
 import 'package:spotube/pages/artist/section/related_artists.dart';
 import 'package:spotube/pages/artist/section/top_tracks.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class ArtistPage extends HookConsumerWidget {

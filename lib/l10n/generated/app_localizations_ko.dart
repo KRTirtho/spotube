@@ -315,7 +315,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get shuffle_playlist => '플레이리스트를 섞기';
 
   @override
-  String get unshuffle_playlist => '플레이리스트를 섞지 않기';
+  String get not_shuffle_playlist => '플레이리스트를 섞지 않기';
 
   @override
   String get previous_track => '이전 곡';
@@ -590,7 +590,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get step_2 => '2단계';
 
   @override
-  String get step_2_steps => '1. 로그인에 성공하면、F12나 마우스 우클릭 ＞ 검사(Inspect)을 눌러 브라우저의 개발자 도구(devtools)를 열어주세요.\n2. 애플리케이션 (Application) 탭 (Chrome, Edge, Brave 등) 또는 스토리지 탭 (Firefox, Palemoon 등)을 열어주세요.\n3. 쿠키 (Cookies) 섹션으로 들어가서, https://accounts.spotify.com 서브섹션으로 들어가주세요.';
+  String get step_2_steps => '1. 로그인에 성공하면、F12나 마우스 우클릭 ＞ 검사(Inspect)을 눌러 브라우저의 개발자 도구(devtools)를 열어주세요.\n2. 애플리케이션 (Application) 탭 (Chrome, Edge, Brave 등) 또는 스토리지 탭 (Firefox, Pale Moon 등)을 열어주세요.\n3. 쿠키 (Cookies) 섹션으로 들어가서, https://accounts.spotify.com 서브섹션으로 들어가주세요.';
 
   @override
   String get step_3 => '3단계';
@@ -672,16 +672,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get number_of_tracks_generate => '생성할 곡 수';
 
   @override
-  String get acousticness => '반주 구간 (Acousticness)';
+  String get not_acoustic => '반주 구간 (not_acoustic)';
 
   @override
-  String get danceability => '흥겨운 정도 (Danceability)';
+  String get dance_ability => '흥겨운 정도 (dance_ability)';
 
   @override
   String get energy => '에너지 (Energy)';
 
   @override
-  String get instrumentalness => '기악성 (Instrumentalness)';
+  String get not_instrumental => '기악성 (not_instrumental)';
 
   @override
   String get liveness => '생동감 (Liveness)';
@@ -690,7 +690,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get loudness => '라우드니스 (Loudness)';
 
   @override
-  String get speechiness => '회화성 (Speechniss)';
+  String get talkative => '회화성 (Speechniss)';
 
   @override
   String get valence => '감정가 (Valence)';
@@ -809,7 +809,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get sleep_timer => '취침 타이머';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes 분';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get failed_to_encrypt => '암호화에 실패했습니다';
 
   @override
-  String get encryption_failed_warning => 'Spotube는 암호화를 사용하여 데이터를 안전하게 저장합니다. 하지만 그렇게 하지 못했습니다. 따라서 안전하지 않은 저장소로 대체됩니다.\n리눅스를 사용하는 경우, 비밀 서비스(gnome-keyring, kde-wallet, keepassxc 등)가 설치되어 있는지 확인하세요.';
+  String get encryption_failed_warning => 'Spotube는 암호화를 사용하여 데이터를 안전하게 저장합니다. 하지만 그렇게 하지 못했습니다. 따라서 안전하지 않은 저장소로 대체됩니다.\n리눅스를 사용하는 경우, 비밀 서비스(gnome-keyring, kde-wallet, KeePassXC 등)가 설치되어 있는지 확인하세요.';
 
   @override
   String get querying_info => '정보를 얻는 중...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsKo extends AppLocalizations {
   String get owned_by_you => '당신이 소유';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl를 클립보드에 복사했습니다';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Spotify의 스트림당 지불금 \$0.003에서 \$0.005까지의\n기준으로 계산되었습니다. 이는 사용자가 Spotify에서\n곡을 들을 때 아티스트에게 얼마를 지불했을지를\n알려주기 위한 가상의 계산입니다.';
+  String get spotify_hypothetical_calculation => '*Spotify의 스트림당 지불금 \$0.003에서 \$0.005까지의\n기준으로 계산되었습니다. 이는 사용자가 Spotify에서\n곡을 들을 때 아티스트에게 얼마를 지불했을지를\n알려주기 위한 가상의 계산입니다.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes 분';
   }
 

@@ -4,11 +4,10 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/modules/library/local_folder/local_folder_item.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/modules/library/local_folder/local_folder_item.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
@@ -49,10 +48,9 @@ class UserLocalLibraryPage extends HookConsumerWidget {
         String? dirStr = await getDirectoryPath(
           initialDirectory: preferences.downloadLocation,
         );
-        if (dirStr == null) return;
         if (preferences.localLibraryLocation.contains(dirStr)) return;
         preferencesNotifier.setLocalLibraryLocation(
-            [...preferences.localLibraryLocation, dirStr]);
+            [...preferences.localLibraryLocation, dirStr!]);
       }
     }, [preferences.localLibraryLocation]);
 

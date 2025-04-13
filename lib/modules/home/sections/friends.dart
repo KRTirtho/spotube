@@ -5,8 +5,8 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
-import 'package:spotube/modules/home/sections/friends/friend_item.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/modules/home/sections/friends/friend_item.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 

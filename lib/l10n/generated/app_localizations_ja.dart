@@ -315,7 +315,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get shuffle_playlist => '再生リストをシャッフル';
 
   @override
-  String get unshuffle_playlist => '再生リストのシャッフル解除';
+  String get not_shuffle_playlist => '再生リストのシャッフル解除';
 
   @override
   String get previous_track => '前の曲';
@@ -590,7 +590,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get step_2 => 'ステップ 2';
 
   @override
-  String get step_2_steps => '1. ログインしたら、F12を押すか、マウス右クリック ＞ 調査（検証）でブラウザの開発者ツール (devtools) を開きます。\n2. アプリケーション (Application) タブ (Chrome, Edge, Brave など) またはストレージタブ (Firefox, Palemoon など)\n3. Cookies 欄を選択し、https://accounts.spotify.com の枝を選びます';
+  String get step_2_steps => '1. ログインしたら、F12を押すか、マウス右クリック ＞ 調査（検証）でブラウザの開発者ツール (devtools) を開きます。\n2. アプリケーション (Application) タブ (Chrome, Edge, Brave など) またはストレージタブ (Firefox, Pale Moon など)\n3. Cookies 欄を選択し、https://accounts.spotify.com の枝を選びます';
 
   @override
   String get step_3 => 'ステップ 3';
@@ -672,16 +672,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get number_of_tracks_generate => '生成する曲数';
 
   @override
-  String get acousticness => 'アコースティック感';
+  String get not_acoustic => 'アコースティック感';
 
   @override
-  String get danceability => 'ダンス感';
+  String get dance_ability => 'ダンス感';
 
   @override
   String get energy => 'エネルギー';
 
   @override
-  String get instrumentalness => 'インストゥルメンタル';
+  String get not_instrumental => 'インストゥルメンタル';
 
   @override
   String get liveness => 'ライブ感';
@@ -690,7 +690,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get loudness => 'ラウドネス';
 
   @override
-  String get speechiness => '会話感';
+  String get talkative => '会話感';
 
   @override
   String get valence => '多幸性';
@@ -809,7 +809,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sleep_timer => 'スリープタイマー';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes 分';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get failed_to_encrypt => '暗号化に失敗しました';
 
   @override
-  String get encryption_failed_warning => 'Spotubeはデータを安全に保存するために暗号化を使用しています。しかし、失敗しました。したがって、安全でないストレージにフォールバックします\nLinuxを使用している場合は、gnome-keyring、kde-wallet、keepassxcなどのシークレットサービスがインストールされていることを確認してください';
+  String get encryption_failed_warning => 'Spotubeはデータを安全に保存するために暗号化を使用しています。しかし、失敗しました。したがって、安全でないストレージにフォールバックします\nLinuxを使用している場合は、gnome-keyring、kde-wallet、KeePassXCなどのシークレットサービスがインストールされていることを確認してください';
 
   @override
   String get querying_info => '情報を取得中...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsJa extends AppLocalizations {
   String get owned_by_you => 'あなたが所有';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl をクリップボードにコピーしました';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*これは、Spotifyのストリームごとの支払い\nが \$0.003 から \$0.005 の範囲で計算されています。これは仮想的な\n計算で、Spotify で曲を聴いた場合に、アーティストに\nどれくらい支払ったかをユーザーに示すためのものです。';
+  String get spotify_hypothetical_calculation => '*これは、Spotifyのストリームごとの支払い\nが \$0.003 から \$0.005 の範囲で計算されています。これは仮想的な\n計算で、Spotify で曲を聴いた場合に、アーティストに\nどれくらい支払ったかをユーザーに示すためのものです。';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes 分';
   }
 

@@ -4,9 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-
-import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
@@ -144,7 +143,7 @@ class PlayerControls extends HookConsumerWidget {
                       tooltip: TooltipContainer(
                         child: Text(
                           shuffled
-                              ? context.l10n.unshuffle_playlist
+                              ? context.l10n.not_shuffle_playlist
                               : context.l10n.shuffle_playlist,
                         ),
                       ),

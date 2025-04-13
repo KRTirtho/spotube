@@ -1,11 +1,10 @@
 import 'dart:io';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:local_notifier/local_notifier.dart';
 import 'package:spotube/hooks/configurators/use_window_listener.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-
-import 'package:local_notifier/local_notifier.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 
