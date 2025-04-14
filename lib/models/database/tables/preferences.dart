@@ -34,7 +34,9 @@ enum YoutubeClientEngine {
       YoutubeClientEngine.youtubeExplode =>
         YouTubeExplodeEngine.isAvailableForPlatform,
       YoutubeClientEngine.ytDlp => YtDlpEngine.isAvailableForPlatform,
-      YoutubeClientEngine.newPipe => NewPipeEngine.isAvailableForPlatform,
+      // YoutubeClientEngine.newPipe => NewPipeEngine.isAvailableForPlatform,
+      // TODO: Handle this case.
+      YoutubeClientEngine.newPipe => throw UnimplementedError(),
     };
   }
 }
@@ -125,7 +127,7 @@ class PreferencesTable extends Table {
       albumColorSync: true,
       amoledDarkTheme: false,
       checkUpdate: true,
-      normalizeAudio: false,
+      normalizeAudio: true,
       showSystemTrayIcon: false,
       systemTitleBar: false,
       skipNonMusic: true,

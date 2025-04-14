@@ -138,11 +138,11 @@ Do the following:
 - Create a `.env` in root of the project following the `.env.example` template
 - Now run the following to bootstrap the project
   ```bash
-  flutter pub get && dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+  flutter pub get && flutter pub run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
   ```
 - Finally run these following commands in the root of the project to start the Spotube Locally
   ```bash
-  flutter run -d <window|macos|linux|(<android-device-id>)>
+  flutter run -d [window|macos|linux|android-id]
   ```
 
 Do debugging/testing/build etc then submit to us with PR against the development branch (dev) & we'll review your code

@@ -18,7 +18,7 @@ import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
-import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
+// import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
 import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 import 'package:sqlite3/sqlite3.dart';

@@ -10,7 +10,7 @@ import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:flutter_new_pipe_extractor/flutter_new_pipe_extractor.dart';
+// import 'package:flutter_new_pipe_extractor/flutter_new_pipe_extractor.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:local_notifier/local_notifier.dart';
@@ -76,7 +76,7 @@ Future<void> main(List<String> rawArgs) async {
 
     if (kIsAndroid) {
       await FlutterDisplayMode.setHighRefreshRate();
-      await NewPipeExtractor.init();
+      // await NewPipeExtractor.init();
     }
 
     if (!kIsWeb) {

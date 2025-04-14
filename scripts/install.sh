@@ -5,7 +5,7 @@ fname="$(basename $0)"
 installDir='/usr/share/spotube'
 desktopFile='/usr/share/applications/spotube.desktop'
 appdata='/usr/share/appdata/spotube.appdata.xml'
-icon='/usr/share/icons/spotube/spotube-logo.png'
+icon='/usr/share/icons/spotube/spotube-icon.png'
 symlink='/usr/bin/spotube'
 temp='/tmp/spotube-installer'
 latestVer="$(wget -qO- "https://api.github.com/repos/KRTirtho/spotube/releases/latest" \ | grep -Po '"tag_name": "\K.*?(?=")')"
@@ -118,7 +118,7 @@ function install_spotube(){
     mv ${temp}/spotube.desktop ${desktopDir}
     mv ${temp}/com.github.KRTirtho.Spotube.appdata.xml ${appdata}
     mkdir -p /usr/share/icons/spotube
-    mv ${temp}/spotube-logo.png ${icon}
+    mv ${temp}/spotube-icon.png ${icon}
     ln -s /usr/share/spotube/spotube ${symlink}
 
     rm -rf ${temp}  # Remove temp dir

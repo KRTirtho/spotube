@@ -930,15 +930,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.3"
-  flutter_new_pipe_extractor:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "157930289f49d9c2b5016a3df6f771ebfdf2b1e7"
-      url: "https://github.com/KRTirtho/flutter_new_pipe_extractor.git"
-    source: git
-    version: "0.1.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:

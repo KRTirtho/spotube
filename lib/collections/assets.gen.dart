@@ -146,6 +146,8 @@ class Assets {
   static const $AssetsPatternsGen patterns = $AssetsPatternsGen();
   static const AssetGenImage placeholder =
       AssetGenImage('assets/placeholder.png');
+  static const AssetGenImage spotubeIcon =
+      AssetGenImage('assets/spotube-icon.png');
   static const AssetGenImage spotubeLogoNightlyNotWallpaper =
       AssetGenImage('assets/spotube-logo-nightly-notWallpaper.png');
   static const AssetGenImage spotubeLogoStableNotWallpaper =
@@ -166,6 +168,7 @@ class Assets {
         jiosaavn,
         likedTracks,
         placeholder,
+        spotubeIcon,
         spotubeLogoNightlyNotWallpaper,
         spotubeLogoStableNotWallpaper,
         spotubeLogoStableWallpaper,

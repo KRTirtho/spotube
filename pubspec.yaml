@@ -135,9 +135,6 @@ dependencies:
     git:
       url: https://github.com/KRTirtho/yt_dlp_dart.git
       ref: e2d82305fab18566408d6f8758361017d1640c3d
-  flutter_new_pipe_extractor:
-    git:
-      url: https://github.com/KRTirtho/flutter_new_pipe_extractor.git
   http_parser: ^4.1.2
   collection: any
   otp_util: ^1.0.2
@@ -205,11 +202,11 @@ flutter_gen:
   output: lib/collections
 
 flutter_native_splash:
-  background_image: assets/bengali-patterns-bg.jpg
-  image: assets/spotube-logo.png
+#  background_image: assets/bengali-patterns-bg.jpg
+  image: assets/spotube-icon.png
   branding: assets/branding.png
-  android_12:
-    image: assets/spotube-logo_android12.png
-    branding: assets/branding.png
-    color: "#000000"
-    icon_background_color: "#000000"
+#  android_12:
+#    image: assets/spotube-logo_android12.png
+#    branding: assets/branding.png
+#    color: "#000000"
+#    icon_background_color: "#000000"

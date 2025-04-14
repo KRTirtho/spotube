@@ -57,9 +57,17 @@ class SettingsPage extends HookConsumerWidget {
                       if (!kIsWeb) const SettingsDevelopersSection(),
                       const SettingsAboutSection(),
                       Center(
-                        child: Button.destructive(
-                          onPressed: preferencesNotifier.reset,
-                          child: Text(context.l10n.restore_defaults),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minWidth: 150,
+                            maxWidth: 250,
+                            minHeight: 40,
+                            maxHeight: 60,
+                          ),
+                          child: Button.destructive(
+                            onPressed: preferencesNotifier.reset,
+                            child: Text(context.l10n.restore_defaults),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 200),

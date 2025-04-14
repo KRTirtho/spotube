@@ -13,10 +13,10 @@ tar:
 		&& tar -cJf build/spotube-linux-${VERSION}-${PKG_ARCH}.tar.xz -C $(TEMP_DIR) .\
 		&& rm -rf $(TEMP_DIR)
 
-aursrcinfo:
+aurInfo:
 					 docker run -e EXPORT_SRC=1 -v ${PWD}/aur-struct:/pkg -v ${MIRRORLIST}:/etc/pacman.d/mirrorlist:ro whynothugo/makepkg
 
-publishaur: 
+aurPublish:
 					 echo '[Warning!]: you need SSH paired with AUR'\
 					 && rm -rf build/spotube\
 					 && git clone ssh://aur@aur.archlinux.org/spotube-bin.git build/spotube\
@@ -26,7 +26,7 @@ publishaur:
 					 && git commit -m "${MSG}"\
 					 && git push
 
-innoinstall:
+innoInstall:
 						powershell curl -o build\installer.exe http://files.jrsoftware.org/is/6/innosetup-${INNO_VERSION}.exe
 						powershell git clone https://github.com/DomGries/InnoDependencyInstaller.git  build\inno-depend
 		 				powershell build\installer.exe /verysilent /allusers /dir=build\iscc
@@ -41,7 +41,7 @@ choco:
 apk:
 		mv build/app/outputs/apk/release/app-release.apk build/Spotube-android-all-arch.apk
 
-gensums:
+genSums:
 				sh -c scripts/gensums.sh
 
 migrate:
