@@ -108,6 +108,7 @@
 	"always_on_top": "Always on top",
 	"exit_mini_player": "Exit Mini player",
 	"download_location": "Download location",
+	"file_name_format": "File name format",
 	"local_library": "Local library",
 	"add_library_location": "Add to library",
 	"remove_library_location": "Remove from library",

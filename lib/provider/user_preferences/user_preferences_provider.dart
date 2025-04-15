@@ -175,6 +175,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     setData(PreferencesTableCompanion(layoutMode: Value(mode)));
   }
 
+  void setFileNameFormat(FileNameFormat format) {
+    setData(PreferencesTableCompanion(fileNameFormat: Value(format)));
+  }
+
   void setCloseBehavior(CloseBehavior behavior) {
     setData(PreferencesTableCompanion(closeBehavior: Value(behavior)));
   }

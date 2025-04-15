@@ -368,6 +368,9 @@ class AppLocalizationsKa extends AppLocalizations {
   String get download_location => 'ჩამოტვირთვის მდებარეობა';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'ადგილობრივი ბიბლიოთეკა';
 
   @override

@@ -368,6 +368,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get download_location => '다운로드 경로';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => '로컬 도서관';
 
   @override

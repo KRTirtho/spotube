@@ -368,6 +368,9 @@ class AppLocalizationsEu extends AppLocalizations {
   String get download_location => 'Deskargen kokapena';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'Liburutegi lokala';
 
   @override

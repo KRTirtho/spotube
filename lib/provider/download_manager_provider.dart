@@ -18,6 +18,8 @@ import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';
 
+import '../models/database/database.dart';
+
 class DownloadManagerProvider extends ChangeNotifier {
   DownloadManagerProvider({required this.ref})
       : $history = <SourcedTrack>{},
@@ -82,6 +84,8 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   String get downloadDirectory =>
       ref.read(userPreferencesProvider.select((s) => s.downloadLocation));
+  FileNameFormat get fileNameFormat =>
+      ref.read(userPreferencesProvider.select((s) => s.fileNameFormat));
   SourceCodecs get downloadCodec =>
       ref.read(userPreferencesProvider.select((s) => s.downloadMusicCodec));
 
@@ -101,8 +105,16 @@ class DownloadManagerProvider extends ChangeNotifier {
   final DownloadManager dl;
 
   String getTrackFileUrl(Track track) {
-    final name =
-        "${track.name} - ${track.artists?.asString() ?? ""}.${downloadCodec.name}";
+    final String name;
+
+    if (fileNameFormat == FileNameFormat.titleArtists) {
+      name =
+          "${track.name} - ${track.artists?.asString() ?? ""}.${downloadCodec.name}";
+    } else {
+      name =
+          "${track.artists?.asString() ?? ""} - ${track.name}.${downloadCodec.name}";
+    }
+
     return join(downloadDirectory, PrimitiveUtils.toSafeFileName(name));
   }
 
@@ -129,13 +141,35 @@ class DownloadManagerProvider extends ChangeNotifier {
   Future<void> addToQueue(Track track) async {
     final savePath = getTrackFileUrl(track);
 
-    final oldFile = File(savePath);
-    if (await oldFile.exists() && !await onFileExists(track)) {
+    final downloads = await Directory(downloadDirectory).list().toList();
+    File? oldFile;
+
+    for (final element in downloads) {
+      if (element is File) {
+        final Metadata metadata;
+
+        try {
+          metadata = await MetadataGod.readMetadata(file: element.path);
+        } catch (exception) {
+          continue;
+        }
+
+        final artist = metadata.artist;
+        final title = metadata.title;
+
+        if (artist == track.artists?.asString() && title == track.name) {
+          oldFile = element;
+          break;
+        }
+      }
+    }
+
+    if ((await oldFile?.exists() == true) && !await onFileExists(track)) {
       return;
     }
 
-    if (await oldFile.exists()) {
-      await oldFile.rename("$savePath.old");
+    if ((await oldFile?.exists()) == true) {
+      await oldFile!.rename("$savePath.old");
     }
 
     if (track is SourcedTrack && track.codec == downloadCodec) {

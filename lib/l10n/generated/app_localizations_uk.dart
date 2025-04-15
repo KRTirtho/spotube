@@ -368,6 +368,9 @@ class AppLocalizationsUk extends AppLocalizations {
   String get download_location => 'Шлях завантаження';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'Місцева бібліотека';
 
   @override

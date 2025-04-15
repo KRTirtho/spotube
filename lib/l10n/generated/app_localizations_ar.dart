@@ -368,6 +368,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get download_location => 'تنزيل الموقع';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'المكتبة المحلية';
 
   @override

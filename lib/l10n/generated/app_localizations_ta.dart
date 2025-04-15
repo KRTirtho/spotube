@@ -368,6 +368,9 @@ class AppLocalizationsTa extends AppLocalizations {
   String get download_location => 'பதிவிறக்க இடம்';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'உள்ளூர் நூலகம்';
 
   @override

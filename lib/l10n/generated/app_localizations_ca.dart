@@ -368,6 +368,9 @@ class AppLocalizationsCa extends AppLocalizations {
   String get download_location => 'Ubicació de descàrregues';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'Biblioteca local';
 
   @override

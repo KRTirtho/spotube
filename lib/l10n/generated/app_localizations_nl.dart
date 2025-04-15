@@ -368,6 +368,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get download_location => 'Downloadlocatie';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'Lokale bibliotheek';
 
   @override

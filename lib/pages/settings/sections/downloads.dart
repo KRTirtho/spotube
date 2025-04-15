@@ -10,6 +10,9 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 
+import '../../../components/adaptive/adaptive_select_tile.dart';
+import '../../../models/database/database.dart';
+
 class SettingsDownloadsSection extends HookConsumerWidget {
   const SettingsDownloadsSection({super.key});
 
@@ -46,6 +49,26 @@ class SettingsDownloadsSection extends HookConsumerWidget {
             icon: const Icon(SpotubeIcons.folder),
           ),
           onTap: pickDownloadLocation,
+        ),
+        AdaptiveSelectTile<FileNameFormat>(
+          secondary: const Icon(SpotubeIcons.file),
+          title: Text(context.l10n.file_name_format),
+          value: preferences.fileNameFormat,
+          options: [
+            SelectItemButton(
+              value: FileNameFormat.titleArtists,
+              child: Text("${context.l10n.title} - ${context.l10n.artists}"),
+            ),
+            SelectItemButton(
+              value: FileNameFormat.artistsTitle,
+              child: Text("${context.l10n.artists} - ${context.l10n.title}"),
+            ),
+          ],
+          onChanged: (value) {
+            if (value != null) {
+              preferencesNotifier.setFileNameFormat(value);
+            }
+          },
         ),
       ],
     );

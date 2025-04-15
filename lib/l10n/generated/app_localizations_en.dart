@@ -368,6 +368,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get download_location => 'Download location';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'Local library';
 
   @override

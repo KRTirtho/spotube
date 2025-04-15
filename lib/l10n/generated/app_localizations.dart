@@ -803,6 +803,12 @@ abstract class AppLocalizations {
   /// **'Download location'**
   String get download_location;
 
+  /// No description provided for @file_name_format.
+  ///
+  /// In en, this message translates to:
+  /// **'File name format'**
+  String get file_name_format;
+
   /// No description provided for @local_library.
   ///
   /// In en, this message translates to:

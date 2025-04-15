@@ -368,6 +368,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String get download_location => 'İndirme konumu';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'Yerel kütüphane';
 
   @override

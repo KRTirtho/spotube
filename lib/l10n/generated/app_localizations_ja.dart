@@ -368,6 +368,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get download_location => 'ダウンロード先';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'ローカルライブラリ';
 
   @override

@@ -368,6 +368,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get download_location => '下载路径';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => '本地图书馆';
 
   @override

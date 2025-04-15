@@ -647,6 +647,17 @@ class $PreferencesTableTable extends PreferencesTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("skip_non_music" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _fileNameFormatMeta =
+      const VerificationMeta('fileNameFormat');
+  @override
+  late final GeneratedColumnWithTypeConverter<FileNameFormat, String>
+      fileNameFormat = GeneratedColumn<String>(
+              'file_name_format', aliasedName, false,
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: Constant(FileNameFormat.titleArtists.name))
+          .withConverter<FileNameFormat>(
+              $PreferencesTableTable.$converterfileNameFormat);
   static const VerificationMeta _closeBehaviorMeta =
       const VerificationMeta('closeBehavior');
   @override
@@ -844,6 +855,7 @@ class $PreferencesTableTable extends PreferencesTable
         showSystemTrayIcon,
         systemTitleBar,
         skipNonMusic,
+        fileNameFormat,
         closeBehavior,
         accentColorScheme,
         layoutMode,
@@ -921,6 +933,7 @@ class $PreferencesTableTable extends PreferencesTable
           skipNonMusic.isAcceptableOrUnknown(
               data['skip_non_music']!, _skipNonMusicMeta));
     }
+    context.handle(_fileNameFormatMeta, const VerificationResult.success());
     context.handle(_closeBehaviorMeta, const VerificationResult.success());
     context.handle(_accentColorSchemeMeta, const VerificationResult.success());
     context.handle(_layoutModeMeta, const VerificationResult.success());
@@ -1005,6 +1018,9 @@ class $PreferencesTableTable extends PreferencesTable
           .read(DriftSqlType.bool, data['${effectivePrefix}system_title_bar'])!,
       skipNonMusic: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}skip_non_music'])!,
+      fileNameFormat: $PreferencesTableTable.$converterfileNameFormat.fromSql(
+          attachedDatabase.typeMapping.read(DriftSqlType.string,
+              data['${effectivePrefix}file_name_format'])!),
       closeBehavior: $PreferencesTableTable.$convertercloseBehavior.fromSql(
           attachedDatabase.typeMapping.read(
               DriftSqlType.string, data['${effectivePrefix}close_behavior'])!),
@@ -1067,6 +1083,9 @@ class $PreferencesTableTable extends PreferencesTable
   static JsonTypeConverter2<SourceQualities, String, String>
       $converteraudioQuality =
       const EnumNameConverter<SourceQualities>(SourceQualities.values);
+  static JsonTypeConverter2<FileNameFormat, String, String>
+      $converterfileNameFormat =
+      const EnumNameConverter<FileNameFormat>(FileNameFormat.values);
   static JsonTypeConverter2<CloseBehavior, String, String>
       $convertercloseBehavior =
       const EnumNameConverter<CloseBehavior>(CloseBehavior.values);
@@ -1108,6 +1127,7 @@ class PreferencesTableData extends DataClass
   final bool showSystemTrayIcon;
   final bool systemTitleBar;
   final bool skipNonMusic;
+  final FileNameFormat fileNameFormat;
   final CloseBehavior closeBehavior;
   final SpotubeColor accentColorScheme;
   final LayoutMode layoutMode;
@@ -1137,6 +1157,7 @@ class PreferencesTableData extends DataClass
       required this.showSystemTrayIcon,
       required this.systemTitleBar,
       required this.skipNonMusic,
+      required this.fileNameFormat,
       required this.closeBehavior,
       required this.accentColorScheme,
       required this.layoutMode,
@@ -1171,6 +1192,11 @@ class PreferencesTableData extends DataClass
     map['show_system_tray_icon'] = Variable<bool>(showSystemTrayIcon);
     map['system_title_bar'] = Variable<bool>(systemTitleBar);
     map['skip_non_music'] = Variable<bool>(skipNonMusic);
+    {
+      map['file_name_format'] = Variable<String>($PreferencesTableTable
+          .$converterfileNameFormat
+          .toSql(fileNameFormat));
+    }
     {
       map['close_behavior'] = Variable<String>(
           $PreferencesTableTable.$convertercloseBehavior.toSql(closeBehavior));
@@ -1245,6 +1271,7 @@ class PreferencesTableData extends DataClass
       showSystemTrayIcon: Value(showSystemTrayIcon),
       systemTitleBar: Value(systemTitleBar),
       skipNonMusic: Value(skipNonMusic),
+      fileNameFormat: Value(fileNameFormat),
       closeBehavior: Value(closeBehavior),
       accentColorScheme: Value(accentColorScheme),
       layoutMode: Value(layoutMode),
@@ -1281,6 +1308,8 @@ class PreferencesTableData extends DataClass
       showSystemTrayIcon: serializer.fromJson<bool>(json['showSystemTrayIcon']),
       systemTitleBar: serializer.fromJson<bool>(json['systemTitleBar']),
       skipNonMusic: serializer.fromJson<bool>(json['skipNonMusic']),
+      fileNameFormat: $PreferencesTableTable.$converterfileNameFormat
+          .fromJson(serializer.fromJson<String>(json['fileNameFormat'])),
       closeBehavior: $PreferencesTableTable.$convertercloseBehavior
           .fromJson(serializer.fromJson<String>(json['closeBehavior'])),
       accentColorScheme:
@@ -1327,6 +1356,9 @@ class PreferencesTableData extends DataClass
       'showSystemTrayIcon': serializer.toJson<bool>(showSystemTrayIcon),
       'systemTitleBar': serializer.toJson<bool>(systemTitleBar),
       'skipNonMusic': serializer.toJson<bool>(skipNonMusic),
+      'fileNameFormat': serializer.toJson<String>($PreferencesTableTable
+          .$converterfileNameFormat
+          .toJson(fileNameFormat)),
       'closeBehavior': serializer.toJson<String>(
           $PreferencesTableTable.$convertercloseBehavior.toJson(closeBehavior)),
       'accentColorScheme': serializer.toJson<SpotubeColor>(accentColorScheme),
@@ -1372,6 +1404,7 @@ class PreferencesTableData extends DataClass
           bool? showSystemTrayIcon,
           bool? systemTitleBar,
           bool? skipNonMusic,
+          FileNameFormat? fileNameFormat,
           CloseBehavior? closeBehavior,
           SpotubeColor? accentColorScheme,
           LayoutMode? layoutMode,
@@ -1401,6 +1434,7 @@ class PreferencesTableData extends DataClass
         showSystemTrayIcon: showSystemTrayIcon ?? this.showSystemTrayIcon,
         systemTitleBar: systemTitleBar ?? this.systemTitleBar,
         skipNonMusic: skipNonMusic ?? this.skipNonMusic,
+        fileNameFormat: fileNameFormat ?? this.fileNameFormat,
         closeBehavior: closeBehavior ?? this.closeBehavior,
         accentColorScheme: accentColorScheme ?? this.accentColorScheme,
         layoutMode: layoutMode ?? this.layoutMode,
@@ -1447,6 +1481,9 @@ class PreferencesTableData extends DataClass
       skipNonMusic: data.skipNonMusic.present
           ? data.skipNonMusic.value
           : this.skipNonMusic,
+      fileNameFormat: data.fileNameFormat.present
+          ? data.fileNameFormat.value
+          : this.fileNameFormat,
       closeBehavior: data.closeBehavior.present
           ? data.closeBehavior.value
           : this.closeBehavior,
@@ -1509,6 +1546,7 @@ class PreferencesTableData extends DataClass
           ..write('showSystemTrayIcon: $showSystemTrayIcon, ')
           ..write('systemTitleBar: $systemTitleBar, ')
           ..write('skipNonMusic: $skipNonMusic, ')
+          ..write('fileNameFormat: $fileNameFormat, ')
           ..write('closeBehavior: $closeBehavior, ')
           ..write('accentColorScheme: $accentColorScheme, ')
           ..write('layoutMode: $layoutMode, ')
@@ -1543,6 +1581,7 @@ class PreferencesTableData extends DataClass
         showSystemTrayIcon,
         systemTitleBar,
         skipNonMusic,
+        fileNameFormat,
         closeBehavior,
         accentColorScheme,
         layoutMode,
@@ -1576,6 +1615,7 @@ class PreferencesTableData extends DataClass
           other.showSystemTrayIcon == this.showSystemTrayIcon &&
           other.systemTitleBar == this.systemTitleBar &&
           other.skipNonMusic == this.skipNonMusic &&
+          other.fileNameFormat == this.fileNameFormat &&
           other.closeBehavior == this.closeBehavior &&
           other.accentColorScheme == this.accentColorScheme &&
           other.layoutMode == this.layoutMode &&
@@ -1607,6 +1647,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<bool> showSystemTrayIcon;
   final Value<bool> systemTitleBar;
   final Value<bool> skipNonMusic;
+  final Value<FileNameFormat> fileNameFormat;
   final Value<CloseBehavior> closeBehavior;
   final Value<SpotubeColor> accentColorScheme;
   final Value<LayoutMode> layoutMode;
@@ -1636,6 +1677,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.showSystemTrayIcon = const Value.absent(),
     this.systemTitleBar = const Value.absent(),
     this.skipNonMusic = const Value.absent(),
+    this.fileNameFormat = const Value.absent(),
     this.closeBehavior = const Value.absent(),
     this.accentColorScheme = const Value.absent(),
     this.layoutMode = const Value.absent(),
@@ -1666,6 +1708,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.showSystemTrayIcon = const Value.absent(),
     this.systemTitleBar = const Value.absent(),
     this.skipNonMusic = const Value.absent(),
+    this.fileNameFormat = const Value.absent(),
     this.closeBehavior = const Value.absent(),
     this.accentColorScheme = const Value.absent(),
     this.layoutMode = const Value.absent(),
@@ -1696,6 +1739,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<bool>? showSystemTrayIcon,
     Expression<bool>? systemTitleBar,
     Expression<bool>? skipNonMusic,
+    Expression<String>? fileNameFormat,
     Expression<String>? closeBehavior,
     Expression<String>? accentColorScheme,
     Expression<String>? layoutMode,
@@ -1727,6 +1771,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
         'show_system_tray_icon': showSystemTrayIcon,
       if (systemTitleBar != null) 'system_title_bar': systemTitleBar,
       if (skipNonMusic != null) 'skip_non_music': skipNonMusic,
+      if (fileNameFormat != null) 'file_name_format': fileNameFormat,
       if (closeBehavior != null) 'close_behavior': closeBehavior,
       if (accentColorScheme != null) 'accent_color_scheme': accentColorScheme,
       if (layoutMode != null) 'layout_mode': layoutMode,
@@ -1762,6 +1807,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       Value<bool>? showSystemTrayIcon,
       Value<bool>? systemTitleBar,
       Value<bool>? skipNonMusic,
+      Value<FileNameFormat>? fileNameFormat,
       Value<CloseBehavior>? closeBehavior,
       Value<SpotubeColor>? accentColorScheme,
       Value<LayoutMode>? layoutMode,
@@ -1791,6 +1837,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       showSystemTrayIcon: showSystemTrayIcon ?? this.showSystemTrayIcon,
       systemTitleBar: systemTitleBar ?? this.systemTitleBar,
       skipNonMusic: skipNonMusic ?? this.skipNonMusic,
+      fileNameFormat: fileNameFormat ?? this.fileNameFormat,
       closeBehavior: closeBehavior ?? this.closeBehavior,
       accentColorScheme: accentColorScheme ?? this.accentColorScheme,
       layoutMode: layoutMode ?? this.layoutMode,
@@ -1844,6 +1891,11 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     }
     if (skipNonMusic.present) {
       map['skip_non_music'] = Variable<bool>(skipNonMusic.value);
+    }
+    if (fileNameFormat.present) {
+      map['file_name_format'] = Variable<String>($PreferencesTableTable
+          .$converterfileNameFormat
+          .toSql(fileNameFormat.value));
     }
     if (closeBehavior.present) {
       map['close_behavior'] = Variable<String>($PreferencesTableTable
@@ -1936,6 +1988,7 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('showSystemTrayIcon: $showSystemTrayIcon, ')
           ..write('systemTitleBar: $systemTitleBar, ')
           ..write('skipNonMusic: $skipNonMusic, ')
+          ..write('fileNameFormat: $fileNameFormat, ')
           ..write('closeBehavior: $closeBehavior, ')
           ..write('accentColorScheme: $accentColorScheme, ')
           ..write('layoutMode: $layoutMode, ')
@@ -4608,6 +4661,7 @@ typedef $$PreferencesTableTableCreateCompanionBuilder
   Value<bool> showSystemTrayIcon,
   Value<bool> systemTitleBar,
   Value<bool> skipNonMusic,
+  Value<FileNameFormat> fileNameFormat,
   Value<CloseBehavior> closeBehavior,
   Value<SpotubeColor> accentColorScheme,
   Value<LayoutMode> layoutMode,
@@ -4639,6 +4693,7 @@ typedef $$PreferencesTableTableUpdateCompanionBuilder
   Value<bool> showSystemTrayIcon,
   Value<bool> systemTitleBar,
   Value<bool> skipNonMusic,
+  Value<FileNameFormat> fileNameFormat,
   Value<CloseBehavior> closeBehavior,
   Value<SpotubeColor> accentColorScheme,
   Value<LayoutMode> layoutMode,
@@ -4702,6 +4757,11 @@ class $$PreferencesTableTableFilterComposer
 
   ColumnFilters<bool> get skipNonMusic => $composableBuilder(
       column: $table.skipNonMusic, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<FileNameFormat, FileNameFormat, String>
+      get fileNameFormat => $composableBuilder(
+          column: $table.fileNameFormat,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnWithTypeConverterFilters<CloseBehavior, CloseBehavior, String>
       get closeBehavior => $composableBuilder(
@@ -4833,6 +4893,10 @@ class $$PreferencesTableTableOrderingComposer
       column: $table.skipNonMusic,
       builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get fileNameFormat => $composableBuilder(
+      column: $table.fileNameFormat,
+      builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<String> get closeBehavior => $composableBuilder(
       column: $table.closeBehavior,
       builder: (column) => ColumnOrderings(column));
@@ -4940,6 +5004,10 @@ class $$PreferencesTableTableAnnotationComposer
   GeneratedColumn<bool> get skipNonMusic => $composableBuilder(
       column: $table.skipNonMusic, builder: (column) => column);
 
+  GeneratedColumnWithTypeConverter<FileNameFormat, String> get fileNameFormat =>
+      $composableBuilder(
+          column: $table.fileNameFormat, builder: (column) => column);
+
   GeneratedColumnWithTypeConverter<CloseBehavior, String> get closeBehavior =>
       $composableBuilder(
           column: $table.closeBehavior, builder: (column) => column);
@@ -5044,6 +5112,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<bool> showSystemTrayIcon = const Value.absent(),
             Value<bool> systemTitleBar = const Value.absent(),
             Value<bool> skipNonMusic = const Value.absent(),
+            Value<FileNameFormat> fileNameFormat = const Value.absent(),
             Value<CloseBehavior> closeBehavior = const Value.absent(),
             Value<SpotubeColor> accentColorScheme = const Value.absent(),
             Value<LayoutMode> layoutMode = const Value.absent(),
@@ -5075,6 +5144,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             showSystemTrayIcon: showSystemTrayIcon,
             systemTitleBar: systemTitleBar,
             skipNonMusic: skipNonMusic,
+            fileNameFormat: fileNameFormat,
             closeBehavior: closeBehavior,
             accentColorScheme: accentColorScheme,
             layoutMode: layoutMode,
@@ -5105,6 +5175,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             Value<bool> showSystemTrayIcon = const Value.absent(),
             Value<bool> systemTitleBar = const Value.absent(),
             Value<bool> skipNonMusic = const Value.absent(),
+            Value<FileNameFormat> fileNameFormat = const Value.absent(),
             Value<CloseBehavior> closeBehavior = const Value.absent(),
             Value<SpotubeColor> accentColorScheme = const Value.absent(),
             Value<LayoutMode> layoutMode = const Value.absent(),
@@ -5136,6 +5207,7 @@ class $$PreferencesTableTableTableManager extends RootTableManager<
             showSystemTrayIcon: showSystemTrayIcon,
             systemTitleBar: systemTitleBar,
             skipNonMusic: skipNonMusic,
+            fileNameFormat: fileNameFormat,
             closeBehavior: closeBehavior,
             accentColorScheme: accentColorScheme,
             layoutMode: layoutMode,

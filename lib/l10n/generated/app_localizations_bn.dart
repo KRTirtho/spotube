@@ -368,6 +368,9 @@ class AppLocalizationsBn extends AppLocalizations {
   String get download_location => 'ডাউনলোড স্থান';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'স্থানীয় লাইব্রেরি';
 
   @override

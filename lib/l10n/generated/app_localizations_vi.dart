@@ -368,6 +368,9 @@ class AppLocalizationsVi extends AppLocalizations {
   String get download_location => 'Vị trí tải xuống';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'Thư viện địa phương';
 
   @override

@@ -6,6 +6,11 @@ enum LayoutMode {
   adaptive,
 }
 
+enum FileNameFormat {
+  titleArtists,
+  artistsTitle,
+}
+
 enum CloseBehavior {
   minimizeToTray,
   close,
@@ -76,6 +81,8 @@ class PreferencesTable extends Table {
   BoolColumn get systemTitleBar =>
       boolean().withDefault(const Constant(false))();
   BoolColumn get skipNonMusic => boolean().withDefault(const Constant(false))();
+  TextColumn get fileNameFormat => textEnum<FileNameFormat>()
+      .withDefault(Constant(FileNameFormat.titleArtists.name))();
   TextColumn get closeBehavior => textEnum<CloseBehavior>()
       .withDefault(Constant(CloseBehavior.close.name))();
   TextColumn get accentColorScheme => text()
@@ -129,6 +136,7 @@ class PreferencesTable extends Table {
       showSystemTrayIcon: false,
       systemTitleBar: false,
       skipNonMusic: false,
+      fileNameFormat: FileNameFormat.titleArtists,
       closeBehavior: CloseBehavior.close,
       accentColorScheme: SpotubeColor(Colors.orange.value, name: "Orange"),
       layoutMode: LayoutMode.adaptive,

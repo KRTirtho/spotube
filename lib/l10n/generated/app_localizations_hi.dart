@@ -368,6 +368,9 @@ class AppLocalizationsHi extends AppLocalizations {
   String get download_location => 'डाउनलोड स्थान';
 
   @override
+  String get file_name_format => 'File name format';
+
+  @override
   String get local_library => 'स्थानीय पुस्तकालय';
 
   @override
