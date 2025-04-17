@@ -1,6 +1,6 @@
 **Privacy Policy**
 
-Kingkor Roy Tirtho built the Spotube app as an Open Source app. This SERVICE is provided by Kingkor Roy Tirtho at no
+Kingkor Roy Tirtho built the SpoTube app as an Open Source app. This SERVICE is provided by Kingkor Roy Tirtho at no
 cost and is intended for use as is.
 
 This page is used to inform visitors regarding my policies with the collection, use, and disclosure of Personal
@@ -11,7 +11,7 @@ Personal Information that I collect is used for providing and improving the Serv
 information with anyone except as described in this Privacy Policy.
 
 The terms used in this Privacy Policy have the same meanings as in our Terms and Conditions, which are accessible at
-Spotube unless otherwise defined in this Privacy Policy.
+SpoTube unless otherwise defined in this Privacy Policy.
 
 **Information Collection and Use**
 

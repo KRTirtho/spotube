@@ -50,7 +50,7 @@ preferably by buying their merch/concert tickets/physical media).
 ## Installation guide
 
 New versions usually release every 3-4 months.<br />
-This handy table lists all the methods you can use to install Spotube:
+This handy table lists all the methods you can use to install SpoTube:
 
 <table>
   <tr>

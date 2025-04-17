@@ -86,7 +86,6 @@ Future<void> main(List<String> rawArgs) async {
     await KVStoreService.initialize();
 
     if (kIsDesktop) {
-      await windowManager.setPreventClose(true);
       await YtDlp.instance
           .setBinaryLocation(
             KVStoreService.getYoutubeEnginePath(YoutubeClientEngine.ytDlp) ??
@@ -106,7 +105,6 @@ Future<void> main(List<String> rawArgs) async {
 
     if (kIsDesktop) {
       await localNotifier.setup(appName: "SpoTube");
-      await WindowManagerTools.initialize();
     }
 
     if (kIsIOS) {

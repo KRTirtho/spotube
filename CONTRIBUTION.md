@@ -1,4 +1,4 @@
-# Contributing to Spotube
+# Contributing to SpoTube
 
 First off, thanks for taking the time to contribute!
 
@@ -22,7 +22,7 @@ community looks forward to your contributions.
 
 ## Table of Contents
 
-- [Contributing to Spotube](#contributing-to-spotube)
+- [Contributing to SpoTube](#contributing-to-spotube)
     - [Table of Contents](#table-of-contents)
     - [Code of Conduct](#code-of-conduct)
     - [I Have a Question](#i-have-a-question)
@@ -39,7 +39,7 @@ community looks forward to your contributions.
 ## Code of Conduct
 
 This project and everyone participating in it is governed by the
-[Spotube Code of Conduct](https://github.com/KRTirtho/spotube/blob/master/CODE_OF_CONDUCT.md).
+[SpoTube Code of Conduct](https://github.com/KRTirtho/spotube/blob/master/CODE_OF_CONDUCT.md).
 By participating, you are expected to uphold this code. Please report unacceptable behavior
 to krtirtho@gmail.com.
 
