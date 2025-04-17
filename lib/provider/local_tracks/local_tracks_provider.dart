@@ -1,20 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
+// ignore: depend_on_referenced_packages
+import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FrbException;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-// ignore: depend_on_referenced_packages
-import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FrbException;
+import 'package:spotube/services/logger/logger.dart';
 
 const supportedAudioTypes = [
   "audio/webm",

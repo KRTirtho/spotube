@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
@@ -170,7 +169,7 @@ class PlayerQueue extends HookConsumerWidget {
                               },
                             ),
                           ),
-                          const Gap(5),
+                          const Gap(8),
                           if (mediaQuery.smAndDown)
                             const BackButton(icon: SpotubeIcons.angleDown),
                         ],
@@ -183,7 +182,7 @@ class PlayerQueue extends HookConsumerWidget {
                       child: CustomScrollView(
                         controller: controller,
                         slivers: [
-                          const SliverGap(10),
+                          const SliverGap(16),
                           SliverReorderableList(
                             onReorder: onReorder,
                             itemCount: filteredTracks.length,

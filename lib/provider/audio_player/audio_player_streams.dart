@@ -7,9 +7,9 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/skip_segments/skip_segments.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
+import 'package:spotube/provider/skip_segments/skip_segments.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
@@ -18,6 +18,7 @@ import 'package:spotube/services/logger/logger.dart';
 class AudioPlayerStreamListeners {
   final Ref ref;
   late final AudioServices notificationService;
+
   AudioPlayerStreamListeners(this.ref) {
     AudioServices.create(ref, ref.read(audioPlayerProvider.notifier)).then(
       (value) => notificationService = value,
@@ -39,9 +40,13 @@ class AudioPlayerStreamListeners {
   }
 
   ScrobblerNotifier get scrobbler => ref.read(scrobblerProvider.notifier);
+
   UserPreferences get preferences => ref.read(userPreferencesProvider);
+
   DiscordNotifier get discord => ref.read(discordProvider.notifier);
+
   AudioPlayerState get audioPlayerState => ref.read(audioPlayerProvider);
+
   PlaybackHistoryActions get history =>
       ref.read(playbackHistoryActionsProvider);
 
@@ -63,7 +68,9 @@ class AudioPlayerStreamListeners {
         final currentSegments = await ref.read(segmentProvider.future);
 
         if (currentSegments?.segments.isNotEmpty != true ||
-            position < const Duration(seconds: 3)) return;
+            position < const Duration(seconds: 3)) {
+          return;
+        }
 
         for (final segment in currentSegments!.segments) {
           final seconds = position.inSeconds;

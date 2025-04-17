@@ -3,10 +3,8 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/assets.gen.dart';
@@ -17,20 +15,17 @@ import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/heart_button/use_track_toggle_like.dart';
-import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
-import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-
 import 'package:url_launcher/url_launcher_string.dart';
 
 enum TrackOptionValue {
@@ -56,6 +51,7 @@ class TrackOptions extends HookConsumerWidget {
   final String? playlistId;
   final ObjectRef<ValueChanged<RelativeRect>?>? showMenuCbRef;
   final Widget? icon;
+
   const TrackOptions({
     super.key,
     required this.track,
@@ -99,7 +95,7 @@ class TrackOptions extends HookConsumerWidget {
           return FadeTransition(opacity: animation, child: child);
         },
         context: context,
-        barrierColor: Colors.black.withValues(alpha: 0.5),
+        // barrierColor: Colors.white.withValues(alpha: 0.5),
         builder: (context) {
           return Center(
             child: PlaylistAddTrackDialog(
@@ -159,7 +155,6 @@ class TrackOptions extends HookConsumerWidget {
       await playback.stop();
       await playback.load([track], autoPlay: true);
 
-      // we don't have to add those tracks as useEndlessPlayback will do it for us
       return;
     } else {
       await playback.addTrack(track);
@@ -337,19 +332,20 @@ class TrackOptions extends HookConsumerWidget {
             break;
         }
       },
-      icon: icon ?? const Icon(SpotubeIcons.moreHorizontal),
+      icon:
+          icon ?? const Icon(SpotubeIcons.moreHorizontal, color: Colors.white),
       headings: [
         Basic(
-          leading: AspectRatio(
+          leading: const AspectRatio(
             aspectRatio: 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: UniversalImage(
-                path: track.album!.images
-                    .asUrlString(placeholder: ImagePlaceholder.albumArt),
-                fit: BoxFit.cover,
-              ),
-            ),
+            // child: ClipRRect(
+            //   borderRadius: BorderRadius.circular(10),
+            //   child: UniversalImage(
+            //     path: track.album!.images
+            //         .asUrlString(placeholder: ImagePlaceholder.albumArt),
+            //     fit: BoxFit.cover,
+            //   ),
+            // ),
           ),
           title: Text(
             track.name!,

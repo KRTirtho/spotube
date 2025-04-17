@@ -5,20 +5,19 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/routes.gr.dart';
-
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/modules/player/player_queue.dart';
-import 'package:spotube/modules/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/modules/player/player_queue.dart';
+import 'package:spotube/modules/player/sibling_tracks_sheet.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/sleep_timer_provider.dart';
 
 class PlayerActions extends HookConsumerWidget {
@@ -67,8 +66,8 @@ class PlayerActions extends HookConsumerWidget {
 
     final sleepTimerEntries = useMemoized(
       () => {
-        context.l10n.mins(15): const Duration(minutes: 15),
-        context.l10n.mins(30): const Duration(minutes: 30),
+        context.l10n.minutes(15): const Duration(minutes: 15),
+        context.l10n.minutes(30): const Duration(minutes: 30),
         context.l10n.hour(1): const Duration(hours: 1),
         context.l10n.hour(2): const Duration(hours: 2),
       },

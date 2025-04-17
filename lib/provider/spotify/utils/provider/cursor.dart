@@ -1,7 +1,7 @@
 part of '../../spotify.dart';
 
 mixin CursorPaginatedAsyncNotifierMixin<K, T extends CursorPaginatedState<K>>
-    // ignore: invalid_use_of_internal_member
+// ignore: invalid_use_of_internal_member
     on AsyncNotifierBase<T> {
   Future<(List<K> items, String nextCursor)> fetch(String? offset, int limit);
 

@@ -70,7 +70,7 @@ class SummaryCard extends StatelessWidget {
                 ),
                 maxLines: 1,
               ),
-              const Gap(5),
+              const Gap(8),
               AutoSizeText(
                 description,
                 maxLines: description.contains("\n")

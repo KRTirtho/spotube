@@ -1,7 +1,7 @@
 // dart format width=80
-import 'package:drift/internal/versioned_schema.dart' as i0;
 import 'package:drift/drift.dart' as i1;
 import 'package:drift/drift.dart';
+import 'package:drift/internal/versioned_schema.dart' as i0;
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
@@ -224,12 +224,16 @@ final class Schema2 extends i0.VersionedSchema {
 
 class Shape0 extends i0.VersionedTable {
   Shape0({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<String> get cookie =>
       columnsByName['cookie']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get accessToken =>
       columnsByName['access_token']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<DateTime> get expiration =>
       columnsByName['expiration']! as i1.GeneratedColumn<DateTime>;
 }
@@ -240,24 +244,31 @@ i1.GeneratedColumn<int> _column_0(String aliasedName) =>
         type: i1.DriftSqlType.int,
         defaultConstraints:
             i1.GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+
 i1.GeneratedColumn<String> _column_1(String aliasedName) =>
     i1.GeneratedColumn<String>('cookie', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<String> _column_2(String aliasedName) =>
     i1.GeneratedColumn<String>('access_token', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<DateTime> _column_3(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('expiration', aliasedName, false,
         type: i1.DriftSqlType.dateTime);
 
 class Shape1 extends i0.VersionedTable {
   Shape1({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<String> get name =>
       columnsByName['name']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get elementType =>
       columnsByName['element_type']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get elementId =>
       columnsByName['element_id']! as i1.GeneratedColumn<String>;
 }
@@ -265,65 +276,93 @@ class Shape1 extends i0.VersionedTable {
 i1.GeneratedColumn<String> _column_4(String aliasedName) =>
     i1.GeneratedColumn<String>('name', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<String> _column_5(String aliasedName) =>
     i1.GeneratedColumn<String>('element_type', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<String> _column_6(String aliasedName) =>
     i1.GeneratedColumn<String>('element_id', aliasedName, false,
         type: i1.DriftSqlType.string);
 
 class Shape2 extends i0.VersionedTable {
   Shape2({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<String> get audioQuality =>
       columnsByName['audio_quality']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<bool> get albumColorSync =>
       columnsByName['album_color_sync']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get amoledDarkTheme =>
       columnsByName['amoled_dark_theme']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get checkUpdate =>
       columnsByName['check_update']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get normalizeAudio =>
       columnsByName['normalize_audio']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get showSystemTrayIcon =>
       columnsByName['show_system_tray_icon']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get systemTitleBar =>
       columnsByName['system_title_bar']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get skipNonMusic =>
       columnsByName['skip_non_music']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<String> get closeBehavior =>
       columnsByName['close_behavior']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get accentColorScheme =>
       columnsByName['accent_color_scheme']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get layoutMode =>
       columnsByName['layout_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get locale =>
       columnsByName['locale']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get market =>
       columnsByName['market']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get searchMode =>
       columnsByName['search_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get downloadLocation =>
       columnsByName['download_location']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get localLibraryLocation =>
       columnsByName['local_library_location']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get pipedInstance =>
       columnsByName['piped_instance']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get invidiousInstance =>
       columnsByName['invidious_instance']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get themeMode =>
       columnsByName['theme_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get audioSource =>
       columnsByName['audio_source']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get streamMusicCodec =>
       columnsByName['stream_music_codec']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get downloadMusicCodec =>
       columnsByName['download_music_codec']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<bool> get discordPresence =>
       columnsByName['discord_presence']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get endlessPlayback =>
       columnsByName['endless_playback']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get enableConnect =>
       columnsByName['enable_connect']! as i1.GeneratedColumn<bool>;
 }
@@ -332,114 +371,138 @@ i1.GeneratedColumn<String> _column_7(String aliasedName) =>
     i1.GeneratedColumn<String>('audio_quality', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: Constant(SourceQualities.high.name));
+
 i1.GeneratedColumn<bool> _column_8(String aliasedName) =>
     i1.GeneratedColumn<bool>('album_color_sync', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("album_color_sync" IN (0, 1))'),
         defaultValue: const Constant(true));
+
 i1.GeneratedColumn<bool> _column_9(String aliasedName) =>
     i1.GeneratedColumn<bool>('amoled_dark_theme', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("amoled_dark_theme" IN (0, 1))'),
         defaultValue: const Constant(false));
+
 i1.GeneratedColumn<bool> _column_10(String aliasedName) =>
     i1.GeneratedColumn<bool>('check_update', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("check_update" IN (0, 1))'),
         defaultValue: const Constant(true));
+
 i1.GeneratedColumn<bool> _column_11(String aliasedName) =>
     i1.GeneratedColumn<bool>('normalize_audio', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("normalize_audio" IN (0, 1))'),
         defaultValue: const Constant(false));
+
 i1.GeneratedColumn<bool> _column_12(String aliasedName) =>
     i1.GeneratedColumn<bool>('show_system_tray_icon', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("show_system_tray_icon" IN (0, 1))'),
         defaultValue: const Constant(false));
+
 i1.GeneratedColumn<bool> _column_13(String aliasedName) =>
     i1.GeneratedColumn<bool>('system_title_bar', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("system_title_bar" IN (0, 1))'),
         defaultValue: const Constant(false));
+
 i1.GeneratedColumn<bool> _column_14(String aliasedName) =>
     i1.GeneratedColumn<bool>('skip_non_music', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("skip_non_music" IN (0, 1))'),
         defaultValue: const Constant(false));
+
 i1.GeneratedColumn<String> _column_15(String aliasedName) =>
     i1.GeneratedColumn<String>('close_behavior', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: Constant(CloseBehavior.close.name));
+
 i1.GeneratedColumn<String> _column_16(String aliasedName) =>
     i1.GeneratedColumn<String>('accent_color_scheme', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: const Constant("Blue:0xFF2196F3"));
+
 i1.GeneratedColumn<String> _column_17(String aliasedName) =>
     i1.GeneratedColumn<String>('layout_mode', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: Constant(LayoutMode.adaptive.name));
+
 i1.GeneratedColumn<String> _column_18(String aliasedName) =>
     i1.GeneratedColumn<String>('locale', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue:
             const Constant('{"languageCode":"system","countryCode":"system"}'));
+
 i1.GeneratedColumn<String> _column_19(String aliasedName) =>
     i1.GeneratedColumn<String>('market', aliasedName, false,
         type: i1.DriftSqlType.string, defaultValue: Constant(Market.US.name));
+
 i1.GeneratedColumn<String> _column_20(String aliasedName) =>
     i1.GeneratedColumn<String>('search_mode', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: Constant(SearchMode.youtube.name));
+
 i1.GeneratedColumn<String> _column_21(String aliasedName) =>
     i1.GeneratedColumn<String>('download_location', aliasedName, false,
         type: i1.DriftSqlType.string, defaultValue: const Constant(""));
+
 i1.GeneratedColumn<String> _column_22(String aliasedName) =>
     i1.GeneratedColumn<String>('local_library_location', aliasedName, false,
         type: i1.DriftSqlType.string, defaultValue: const Constant(""));
+
 i1.GeneratedColumn<String> _column_23(String aliasedName) =>
     i1.GeneratedColumn<String>('piped_instance', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: const Constant("https://pipedapi.kavin.rocks"));
+
 i1.GeneratedColumn<String> _column_24(String aliasedName) =>
     i1.GeneratedColumn<String>('invidious_instance', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: const Constant("https://inv.nadeko.net"));
+
 i1.GeneratedColumn<String> _column_25(String aliasedName) =>
     i1.GeneratedColumn<String>('theme_mode', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: Constant(ThemeMode.system.name));
+
 i1.GeneratedColumn<String> _column_26(String aliasedName) =>
     i1.GeneratedColumn<String>('audio_source', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: Constant(AudioSource.youtube.name));
+
 i1.GeneratedColumn<String> _column_27(String aliasedName) =>
     i1.GeneratedColumn<String>('stream_music_codec', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: Constant(SourceCodecs.weba.name));
+
 i1.GeneratedColumn<String> _column_28(String aliasedName) =>
     i1.GeneratedColumn<String>('download_music_codec', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: Constant(SourceCodecs.m4a.name));
+
 i1.GeneratedColumn<bool> _column_29(String aliasedName) =>
     i1.GeneratedColumn<bool>('discord_presence', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("discord_presence" IN (0, 1))'),
         defaultValue: const Constant(true));
+
 i1.GeneratedColumn<bool> _column_30(String aliasedName) =>
     i1.GeneratedColumn<bool>('endless_playback', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("endless_playback" IN (0, 1))'),
         defaultValue: const Constant(true));
+
 i1.GeneratedColumn<bool> _column_31(String aliasedName) =>
     i1.GeneratedColumn<bool>('enable_connect', aliasedName, false,
         type: i1.DriftSqlType.bool,
@@ -449,12 +512,16 @@ i1.GeneratedColumn<bool> _column_31(String aliasedName) =>
 
 class Shape3 extends i0.VersionedTable {
   Shape3({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<DateTime> get createdAt =>
       columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
+
   i1.GeneratedColumn<String> get username =>
       columnsByName['username']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get passwordHash =>
       columnsByName['password_hash']! as i1.GeneratedColumn<String>;
 }
@@ -462,23 +529,30 @@ class Shape3 extends i0.VersionedTable {
 i1.GeneratedColumn<DateTime> _column_32(String aliasedName) =>
     i1.GeneratedColumn<DateTime>('created_at', aliasedName, false,
         type: i1.DriftSqlType.dateTime, defaultValue: currentDateAndTime);
+
 i1.GeneratedColumn<String> _column_33(String aliasedName) =>
     i1.GeneratedColumn<String>('username', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<String> _column_34(String aliasedName) =>
     i1.GeneratedColumn<String>('password_hash', aliasedName, false,
         type: i1.DriftSqlType.string);
 
 class Shape4 extends i0.VersionedTable {
   Shape4({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<int> get start =>
       columnsByName['start']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<int> get end =>
       columnsByName['end']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<String> get trackId =>
       columnsByName['track_id']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<DateTime> get createdAt =>
       columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
 }
@@ -486,23 +560,30 @@ class Shape4 extends i0.VersionedTable {
 i1.GeneratedColumn<int> _column_35(String aliasedName) =>
     i1.GeneratedColumn<int>('start', aliasedName, false,
         type: i1.DriftSqlType.int);
+
 i1.GeneratedColumn<int> _column_36(String aliasedName) =>
     i1.GeneratedColumn<int>('end', aliasedName, false,
         type: i1.DriftSqlType.int);
+
 i1.GeneratedColumn<String> _column_37(String aliasedName) =>
     i1.GeneratedColumn<String>('track_id', aliasedName, false,
         type: i1.DriftSqlType.string);
 
 class Shape5 extends i0.VersionedTable {
   Shape5({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<String> get trackId =>
       columnsByName['track_id']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get sourceId =>
       columnsByName['source_id']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get sourceType =>
       columnsByName['source_type']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<DateTime> get createdAt =>
       columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
 }
@@ -510,6 +591,7 @@ class Shape5 extends i0.VersionedTable {
 i1.GeneratedColumn<String> _column_38(String aliasedName) =>
     i1.GeneratedColumn<String>('source_id', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<String> _column_39(String aliasedName) =>
     i1.GeneratedColumn<String>('source_type', aliasedName, false,
         type: i1.DriftSqlType.string,
@@ -517,14 +599,19 @@ i1.GeneratedColumn<String> _column_39(String aliasedName) =>
 
 class Shape6 extends i0.VersionedTable {
   Shape6({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<bool> get playing =>
       columnsByName['playing']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<String> get loopMode =>
       columnsByName['loop_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<bool> get shuffled =>
       columnsByName['shuffled']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<String> get collections =>
       columnsByName['collections']! as i1.GeneratedColumn<String>;
 }
@@ -534,24 +621,30 @@ i1.GeneratedColumn<bool> _column_40(String aliasedName) =>
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("playing" IN (0, 1))'));
+
 i1.GeneratedColumn<String> _column_41(String aliasedName) =>
     i1.GeneratedColumn<String>('loop_mode', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<bool> _column_42(String aliasedName) =>
     i1.GeneratedColumn<bool>('shuffled', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("shuffled" IN (0, 1))'));
+
 i1.GeneratedColumn<String> _column_43(String aliasedName) =>
     i1.GeneratedColumn<String>('collections', aliasedName, false,
         type: i1.DriftSqlType.string);
 
 class Shape7 extends i0.VersionedTable {
   Shape7({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<int> get audioPlayerStateId =>
       columnsByName['audio_player_state_id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<int> get index =>
       columnsByName['index']! as i1.GeneratedColumn<int>;
 }
@@ -561,20 +654,26 @@ i1.GeneratedColumn<int> _column_44(String aliasedName) =>
         type: i1.DriftSqlType.int,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'REFERENCES audio_player_state_table (id)'));
+
 i1.GeneratedColumn<int> _column_45(String aliasedName) =>
     i1.GeneratedColumn<int>('index', aliasedName, false,
         type: i1.DriftSqlType.int);
 
 class Shape8 extends i0.VersionedTable {
   Shape8({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<int> get playlistId =>
       columnsByName['playlist_id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<String> get uri =>
       columnsByName['uri']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get extras =>
       columnsByName['extras']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get httpHeaders =>
       columnsByName['http_headers']! as i1.GeneratedColumn<String>;
 }
@@ -584,26 +683,34 @@ i1.GeneratedColumn<int> _column_46(String aliasedName) =>
         type: i1.DriftSqlType.int,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'REFERENCES playlist_table (id)'));
+
 i1.GeneratedColumn<String> _column_47(String aliasedName) =>
     i1.GeneratedColumn<String>('uri', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<String> _column_48(String aliasedName) =>
     i1.GeneratedColumn<String>('extras', aliasedName, true,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<String> _column_49(String aliasedName) =>
     i1.GeneratedColumn<String>('http_headers', aliasedName, true,
         type: i1.DriftSqlType.string);
 
 class Shape9 extends i0.VersionedTable {
   Shape9({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<DateTime> get createdAt =>
       columnsByName['created_at']! as i1.GeneratedColumn<DateTime>;
+
   i1.GeneratedColumn<String> get type =>
       columnsByName['type']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get itemId =>
       columnsByName['item_id']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get data =>
       columnsByName['data']! as i1.GeneratedColumn<String>;
 }
@@ -611,19 +718,24 @@ class Shape9 extends i0.VersionedTable {
 i1.GeneratedColumn<String> _column_50(String aliasedName) =>
     i1.GeneratedColumn<String>('type', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<String> _column_51(String aliasedName) =>
     i1.GeneratedColumn<String>('item_id', aliasedName, false,
         type: i1.DriftSqlType.string);
+
 i1.GeneratedColumn<String> _column_52(String aliasedName) =>
     i1.GeneratedColumn<String>('data', aliasedName, false,
         type: i1.DriftSqlType.string);
 
 class Shape10 extends i0.VersionedTable {
   Shape10({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<String> get trackId =>
       columnsByName['track_id']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get data =>
       columnsByName['data']! as i1.GeneratedColumn<String>;
 }
@@ -845,58 +957,85 @@ final class Schema3 extends i0.VersionedSchema {
 
 class Shape11 extends i0.VersionedTable {
   Shape11({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<String> get audioQuality =>
       columnsByName['audio_quality']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<bool> get albumColorSync =>
       columnsByName['album_color_sync']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get amoledDarkTheme =>
       columnsByName['amoled_dark_theme']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get checkUpdate =>
       columnsByName['check_update']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get normalizeAudio =>
       columnsByName['normalize_audio']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get showSystemTrayIcon =>
       columnsByName['show_system_tray_icon']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get systemTitleBar =>
       columnsByName['system_title_bar']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get skipNonMusic =>
       columnsByName['skip_non_music']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<String> get closeBehavior =>
       columnsByName['close_behavior']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get accentColorScheme =>
       columnsByName['accent_color_scheme']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get layoutMode =>
       columnsByName['layout_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get locale =>
       columnsByName['locale']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get market =>
       columnsByName['market']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get searchMode =>
       columnsByName['search_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get downloadLocation =>
       columnsByName['download_location']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get localLibraryLocation =>
       columnsByName['local_library_location']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get pipedInstance =>
       columnsByName['piped_instance']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get invidiousInstance =>
       columnsByName['invidious_instance']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get themeMode =>
       columnsByName['theme_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get audioSource =>
       columnsByName['audio_source']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get streamMusicCodec =>
       columnsByName['stream_music_codec']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get downloadMusicCodec =>
       columnsByName['download_music_codec']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<bool> get discordPresence =>
       columnsByName['discord_presence']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get endlessPlayback =>
       columnsByName['endless_playback']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get enableConnect =>
       columnsByName['enable_connect']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get cacheMusic =>
       columnsByName['cache_music']! as i1.GeneratedColumn<bool>;
 }
@@ -1126,60 +1265,88 @@ final class Schema4 extends i0.VersionedSchema {
 
 class Shape12 extends i0.VersionedTable {
   Shape12({required super.source, required super.alias}) : super.aliased();
+
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
+
   i1.GeneratedColumn<String> get audioQuality =>
       columnsByName['audio_quality']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<bool> get albumColorSync =>
       columnsByName['album_color_sync']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get amoledDarkTheme =>
       columnsByName['amoled_dark_theme']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get checkUpdate =>
       columnsByName['check_update']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get normalizeAudio =>
       columnsByName['normalize_audio']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get showSystemTrayIcon =>
       columnsByName['show_system_tray_icon']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get systemTitleBar =>
       columnsByName['system_title_bar']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get skipNonMusic =>
       columnsByName['skip_non_music']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<String> get closeBehavior =>
       columnsByName['close_behavior']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get accentColorScheme =>
       columnsByName['accent_color_scheme']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get layoutMode =>
       columnsByName['layout_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get locale =>
       columnsByName['locale']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get market =>
       columnsByName['market']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get searchMode =>
       columnsByName['search_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get downloadLocation =>
       columnsByName['download_location']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get localLibraryLocation =>
       columnsByName['local_library_location']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get pipedInstance =>
       columnsByName['piped_instance']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get invidiousInstance =>
       columnsByName['invidious_instance']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get themeMode =>
       columnsByName['theme_mode']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get audioSource =>
       columnsByName['audio_source']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get youtubeClientEngine =>
       columnsByName['youtube_client_engine']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get streamMusicCodec =>
       columnsByName['stream_music_codec']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<String> get downloadMusicCodec =>
       columnsByName['download_music_codec']! as i1.GeneratedColumn<String>;
+
   i1.GeneratedColumn<bool> get discordPresence =>
       columnsByName['discord_presence']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get endlessPlayback =>
       columnsByName['endless_playback']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get enableConnect =>
       columnsByName['enable_connect']! as i1.GeneratedColumn<bool>;
+
   i1.GeneratedColumn<bool> get cacheMusic =>
       columnsByName['cache_music']! as i1.GeneratedColumn<bool>;
 }
@@ -1188,6 +1355,7 @@ i1.GeneratedColumn<String> _column_54(String aliasedName) =>
     i1.GeneratedColumn<String>('youtube_client_engine', aliasedName, false,
         type: i1.DriftSqlType.string,
         defaultValue: Constant(YoutubeClientEngine.youtubeExplode.name));
+
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,

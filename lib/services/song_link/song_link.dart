@@ -2,18 +2,18 @@ library song_link;
 
 import 'dart:convert';
 
-import 'package:spotube/services/logger/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:html/parser.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 part 'model.dart';
-
 part 'song_link.freezed.dart';
 part 'song_link.g.dart';
 
 abstract class SongLinkService {
   static final dio = Dio();
+
   static Future<List<SongLink>> links(String spotifyId) async {
     try {
       final res = await dio.get(

@@ -4,6 +4,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 class BackButton extends StatelessWidget {
   final Color? color;
   final IconData icon;
+
   const BackButton({
     super.key,
     this.color,

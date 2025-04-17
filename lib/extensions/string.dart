@@ -1,15 +1,17 @@
-import 'package:html_unescape/html_unescape.dart';
 import 'package:html/parser.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 final htmlEscape = HtmlUnescape();
 
 extension UnescapeHtml on String {
   String cleanHtml() => parse("<p>$this</p>").documentElement!.text;
+
   String unescapeHtml() => htmlEscape.convert(this);
 }
 
 extension NullableUnescapeHtml on String? {
   String? cleanHtml() => this?.cleanHtml();
+
   String? unescapeHtml() => this?.unescapeHtml();
 }
 

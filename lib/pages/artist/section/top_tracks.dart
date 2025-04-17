@@ -8,12 +8,13 @@ import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
-import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistPageTopTracks extends HookConsumerWidget {
   final String artistId;
+
   const ArtistPageTopTracks({super.key, required this.artistId});
 
   @override
@@ -131,7 +132,7 @@ class ArtistPageTopTracks extends HookConsumerWidget {
             ],
           ),
         ),
-        const SliverGap(10),
+        const SliverGap(16),
         SliverList.builder(
           itemCount: topTracks.length,
           itemBuilder: (context, index) {

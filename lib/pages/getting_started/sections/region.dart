@@ -4,13 +4,13 @@ import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/language_codes.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
   final void Function() onNext;
+
   const GettingStartedPageLanguageRegionSection(
       {super.key, required this.onNext});
 
@@ -36,11 +36,17 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
 
     return SafeArea(
       child: Center(
-        child: BlurCard(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(
+            maxWidth: 600,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Icon(
                     SpotubeIcons.language,
@@ -50,15 +56,15 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                   Text(context.l10n.language_region).semiBold(),
                 ],
               ),
-              const Gap(30),
+              const Gap(32),
               Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(context.l10n.choose_your_region).semiBold(),
+                  // Text(context.l10n.choose_your_region).semiBold(),
                   Text(
                     context.l10n.choose_your_region_description,
-                  ).small().muted(),
+                  ).small().muted().center(),
                   const Gap(16),
                   Text(context.l10n.market_place_region).small(),
                   const Gap(8),
@@ -179,9 +185,15 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
               Align(
                 alignment: Alignment.centerRight,
                 child: Button.primary(
-                  trailing: const Icon(SpotubeIcons.angleRight),
+                  trailing: const Icon(
+                    SpotubeIcons.angleRight,
+                    color: Colors.white,
+                  ),
                   onPressed: onNext,
-                  child: Text(context.l10n.next),
+                  child: Text(
+                    context.l10n.next,
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ),
             ],

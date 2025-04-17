@@ -8,6 +8,7 @@ import 'package:uuid/uuid.dart';
 
 abstract class KVStoreService {
   static SharedPreferences? _sharedPreferences;
+
   static SharedPreferences get sharedPreferences => _sharedPreferences!;
 
   static Future<void> initialize() async {
@@ -16,11 +17,13 @@ abstract class KVStoreService {
 
   static bool get doneGettingStarted =>
       sharedPreferences.getBool('doneGettingStarted') ?? false;
+
   static Future<void> setDoneGettingStarted(bool value) async =>
       await sharedPreferences.setBool('doneGettingStarted', value);
 
   static bool get askedForBatteryOptimization =>
       sharedPreferences.getBool('askedForBatteryOptimization') ?? false;
+
   static Future<void> setAskedForBatteryOptimization(bool value) async =>
       await sharedPreferences.setBool('askedForBatteryOptimization', value);
 
@@ -81,11 +84,13 @@ abstract class KVStoreService {
   }
 
   static double get volume => sharedPreferences.getDouble('volume') ?? 1.0;
+
   static Future<void> setVolume(double value) async =>
       await sharedPreferences.setDouble('volume', value);
 
   static bool get hasMigratedToDrift =>
       sharedPreferences.getBool('hasMigratedToDrift') ?? false;
+
   static Future<void> setHasMigratedToDrift(bool value) async =>
       await sharedPreferences.setBool('hasMigratedToDrift', value);
 

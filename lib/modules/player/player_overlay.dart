@@ -1,10 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import 'package:spotube/modules/player/player_overlay_collapsed.dart';
-
-import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/modules/player/player.dart';
+import 'package:spotube/modules/player/player_overlay_collapsed.dart';
+import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 
 final playerOverlayControllerProvider = StateProvider<PanelController>((ref) {

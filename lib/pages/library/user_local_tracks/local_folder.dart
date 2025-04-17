@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:math';
 
-import 'package:flutter/material.dart' as material;
+import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
@@ -14,24 +15,23 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/button/back_button.dart';
-import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/extensions/string.dart';
-import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
-import 'package:spotube/modules/library/local_folder/cache_export_dialog.dart';
-import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/components/expandable_search/expandable_search.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/track_presentation/sort_tracks_dropdown.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/string.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/models/local_track.dart';
-import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
+import 'package:spotube/modules/library/local_folder/cache_export_dialog.dart';
+import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class LocalLibraryPage extends HookConsumerWidget {
@@ -40,6 +40,7 @@ class LocalLibraryPage extends HookConsumerWidget {
   final String location;
   final bool isDownloads;
   final bool isCache;
+
   const LocalLibraryPage(
     this.location, {
     super.key,
@@ -223,7 +224,7 @@ class LocalLibraryPage extends HookConsumerWidget {
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
                           children: [
-                            const Gap(5),
+                            const Gap(8),
                             Button.primary(
                               onPressed: trackSnapshot.asData?.value != null
                                   ? () async {
@@ -268,14 +269,14 @@ class LocalLibraryPage extends HookConsumerWidget {
                                   searchFocus: searchFocus,
                                 ),
                               ),
-                            const Gap(5),
+                            const Gap(8),
                             SortTracksDropdown(
                               value: sortBy.value,
                               onChanged: (value) {
                                 sortBy.value = value;
                               },
                             ),
-                            const Gap(5),
+                            const Gap(8),
                             IconButton.outline(
                               icon: const Icon(SpotubeIcons.refresh),
                               onPressed: () {
@@ -333,7 +334,7 @@ class LocalLibraryPage extends HookConsumerWidget {
                                       height: 200 * scale,
                                       color: context.theme.colorScheme.primary,
                                     ),
-                                    const Gap(10),
+                                    const Gap(16),
                                     Text(
                                       context.l10n.nothing_found,
                                       textAlign: TextAlign.center,

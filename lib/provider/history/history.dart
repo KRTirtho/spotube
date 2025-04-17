@@ -5,6 +5,7 @@ import 'package:spotube/provider/database/database.dart';
 
 class PlaybackHistoryActions {
   final Ref ref;
+
   AppDatabase get _db => ref.read(databaseProvider);
 
   PlaybackHistoryActions(this.ref);

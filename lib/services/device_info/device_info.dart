@@ -2,6 +2,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 
 class DeviceInfoService {
   final DeviceInfoPlugin deviceInfo;
+
   DeviceInfoService._() : deviceInfo = DeviceInfoPlugin();
 
   static final instance = DeviceInfoService._();

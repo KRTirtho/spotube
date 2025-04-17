@@ -21,6 +21,7 @@ final gradientState = StateProvider.family(
 
 class GenreSectionCard extends HookConsumerWidget {
   final Category category;
+
   const GenreSectionCard({
     super.key,
     required this.category,
@@ -98,7 +99,7 @@ class GenreSectionCard extends HookConsumerWidget {
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: playlistsData.length,
-                      separatorBuilder: (context, index) => const Gap(12),
+                      separatorBuilder: (context, index) => const Gap(24),
                       itemBuilder: (context, index) {
                         final playlist = playlistsData.elementAt(index);
 

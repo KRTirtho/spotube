@@ -3,10 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
-import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/collections/routes.gr.dart';
-import 'package:spotube/modules/stats/summary/summary_card.dart';
-import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/history/summary.dart';
 
@@ -22,80 +19,113 @@ class StatsPageSummarySection extends HookConsumerWidget {
       enabled: summary.isLoading,
       child: SliverPadding(
         padding: const EdgeInsets.all(10),
-        sliver: SliverLayoutBuilder(builder: (context, constrains) {
+        sliver: SliverLayoutBuilder(builder: (context, constraints) {
           return SliverGrid(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: constrains.isXs
-                  ? 2
-                  : constrains.smAndDown
-                      ? 3
-                      : constrains.mdAndDown
-                          ? 4
-                          : constrains.lgAndDown
-                              ? 5
-                              : 6,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: constrains.isXs ? 1.3 : 1.5,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 5,
+              crossAxisSpacing: 25,
+              mainAxisSpacing: 25,
+              childAspectRatio: 1.5,
             ),
             delegate: SliverChildListDelegate([
-              SummaryCard(
-                title: summaryData.duration.inMinutes.toDouble(),
+              _buildTile(
+                context,
+                title: summaryData.duration.inMinutes.toString(),
                 unit: context.l10n.summary_minutes,
-                description: context.l10n.summary_listened_to_music,
-                color: Colors.indigo,
-                onTap: () {
-                  context.navigateTo(const StatsMinutesRoute());
-                },
+                icon: Icons.access_time,
+                route: const StatsMinutesRoute(),
               ),
-              SummaryCard(
-                title: summaryData.tracks.toDouble(),
-                unit: context.l10n.summary_songs,
-                description: context.l10n.summary_streamed_overall,
-                color: Colors.blue,
-                onTap: () {
-                  context.navigateTo(const StatsStreamsRoute());
-                },
-              ),
-              SummaryCard.unformatted(
-                title: usdFormatter.format(summaryData.fees.toDouble()),
-                unit: "",
-                description: context.l10n.summary_owed_to_artists,
-                color: Colors.green,
-                onTap: () {
-                  context.navigateTo(const StatsStreamFeesRoute());
-                },
-              ),
-              SummaryCard(
-                title: summaryData.artists.toDouble(),
-                unit: context.l10n.summary_artists,
-                description: context.l10n.summary_music_reached_you,
-                color: Colors.yellow,
-                onTap: () {
-                  context.navigateTo(const StatsArtistsRoute());
-                },
-              ),
-              SummaryCard(
-                title: summaryData.albums.toDouble(),
+              _buildTile(
+                context,
+                title: summaryData.albums.toString(),
                 unit: context.l10n.summary_full_albums,
-                description: context.l10n.summary_got_your_love,
-                color: Colors.pink,
-                onTap: () {
-                  context.navigateTo(const StatsAlbumsRoute());
-                },
+                icon: Icons.album,
+                route: const StatsAlbumsRoute(),
               ),
-              SummaryCard(
-                title: summaryData.playlists.toDouble(),
+              _buildTile(
+                context,
+                title: summaryData.playlists.toString(),
                 unit: context.l10n.summary_playlists,
-                description: context.l10n.summary_were_on_repeat,
-                color: Colors.teal,
-                onTap: () {
-                  context.navigateTo(const StatsPlaylistsRoute());
-                },
+                icon: Icons.playlist_play,
+                route: const StatsPlaylistsRoute(),
+              ),
+              _buildTile(
+                context,
+                title: summaryData.artists.toString(),
+                unit: context.l10n.artists,
+                icon: Icons.person,
+                route: const StatsArtistsRoute(),
+              ),
+              _buildTile(
+                context,
+                title: "\$ ${summaryData.fees.toString()}",
+                unit: context.l10n.streaming_fees_hypothetical,
+                icon: Icons.monetization_on,
+                route: const StatsStreamFeesRoute(),
               ),
             ]),
           );
         }),
+      ),
+    );
+  }
+
+  Widget _buildTile(
+    BuildContext context, {
+    required String title,
+    required String unit,
+    required IconData icon,
+    required PageRouteInfo route,
+    VoidCallback? onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap ??
+          () {
+            context.navigateTo(route);
+          },
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 300),
+        padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary,
+          borderRadius: BorderRadius.circular(15),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              spreadRadius: 2,
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: Colors.white,
+              size: 35,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 6),
+            Text(
+              unit,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.white.withOpacity(0.7),
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
       ),
     );
   }

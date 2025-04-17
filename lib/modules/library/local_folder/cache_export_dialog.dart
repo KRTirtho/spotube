@@ -1,9 +1,9 @@
 import 'dart:io';
 
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart' as path;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -13,6 +13,7 @@ final codecs = SourceCodecs.values.map((s) => s.name);
 class LocalFolderCacheExportDialog extends HookConsumerWidget {
   final Directory exportDir;
   final Directory cacheDir;
+
   const LocalFolderCacheExportDialog({
     super.key,
     required this.exportDir,
@@ -66,7 +67,7 @@ class LocalFolderCacheExportDialog extends HookConsumerWidget {
                   Text(
                     context.l10n.found_n_files(files.value.length.toString()),
                   ),
-                  const Gap(10),
+                  const Gap(16),
                   Text.rich(
                     TextSpan(
                       children: [
@@ -93,7 +94,7 @@ class LocalFolderCacheExportDialog extends HookConsumerWidget {
                       filesExported.value.toString(),
                     ),
                   ),
-                  const Gap(10),
+                  const Gap(16),
                   LinearProgressIndicator(
                     value: filesExported.value / files.value.length,
                   ),

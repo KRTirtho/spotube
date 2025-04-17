@@ -315,7 +315,7 @@ class AppLocalizationsEu extends AppLocalizations {
   String get shuffle_playlist => 'Erreproduzitu zerrenda ausazko ordenean';
 
   @override
-  String get unshuffle_playlist => 'Desgaitu ausazko erreprodukzioa';
+  String get not_shuffle_playlist => 'Desgaitu ausazko erreprodukzioa';
 
   @override
   String get previous_track => 'Aurreko pista';
@@ -590,7 +590,7 @@ class AppLocalizationsEu extends AppLocalizations {
   String get step_2 => '2. pausua';
 
   @override
-  String get step_2_steps => '1. Saioa hasita duzularik, sakatu F12 edo saguaren eskuineko botoia klikatu > Ikuskatu nabigatzaileko garapen tresnak irekitzeko.\n2. Joan \"Aplikazio\" (Chrome, Edge, Brave, etab.) edo \"Biltegiratzea\" (Firefox, Palemoon, etab.)\n3. Joan \"Cookieak\" atalera eta gero \"https://accounts.spotify.com\" azpiatalera';
+  String get step_2_steps => '1. Saioa hasita duzularik, sakatu F12 edo saguaren eskuineko botoia klikatu > Ikuskatu nabigatzaileko garapen tresnak irekitzeko.\n2. Joan \"Aplikazio\" (Chrome, Edge, Brave, etab.) edo \"Biltegiratzea\" (Firefox, Pale Moon, etab.)\n3. Joan \"Cookieak\" atalera eta gero \"https://accounts.spotify.com\" azpiatalera';
 
   @override
   String get step_3 => '3. pausua';
@@ -672,16 +672,16 @@ class AppLocalizationsEu extends AppLocalizations {
   String get number_of_tracks_generate => 'Sortzeko kanta kopurua';
 
   @override
-  String get acousticness => 'Akustikotasuna';
+  String get not_acoustic => 'Akustikotasuna';
 
   @override
-  String get danceability => 'Dantzagarritasuna';
+  String get dance_ability => 'Dantzagarritasuna';
 
   @override
   String get energy => 'Energia';
 
   @override
-  String get instrumentalness => 'Instrumentaltasuna';
+  String get not_instrumental => 'Instrumentaltasuna';
 
   @override
   String get liveness => 'Zuzenean';
@@ -690,7 +690,7 @@ class AppLocalizationsEu extends AppLocalizations {
   String get loudness => 'Ozentasuna';
 
   @override
-  String get speechiness => 'Hitzaldia';
+  String get talkative => 'Hitzaldia';
 
   @override
   String get valence => 'Balentzia';
@@ -809,7 +809,7 @@ class AppLocalizationsEu extends AppLocalizations {
   String get sleep_timer => 'Itzaltzeko tenporizadorea';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes minutu';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsEu extends AppLocalizations {
   String get failed_to_encrypt => 'Errorea zifratzean';
 
   @override
-  String get encryption_failed_warning => 'Spotube-ek zifratzea darabil datuak modu seguruan biltegiratzeko. Baina huts egin du. Hori dela eta, biltegiratzea ez da segurua izango\nLinux erabiltzen ari bazara, ziurtatu edozein sekretu-zerbitzu (gnome-keyring, kde-wallet, keepassxc etab.) instalatuta duzula';
+  String get encryption_failed_warning => 'Spotube-ek zifratzea darabil datuak modu seguruan biltegiratzeko. Baina huts egin du. Hori dela eta, biltegiratzea ez da segurua izango\nLinux erabiltzen ari bazara, ziurtatu edozein sekretu-zerbitzu (gnome-keyring, kde-wallet, KeePassXC etab.) instalatuta duzula';
 
   @override
   String get querying_info => 'Informazioa egiaztatzen...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsEu extends AppLocalizations {
   String get owned_by_you => 'Zure jabetzakoa';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl arbelera kopiatua';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Sportify-k stream bakoitzeko duen \$0.003 eta \$0.005\nordainsarian oinarritua da. Kalkulu hipotetiko bat,\nkanta hauek Spotify-n entzun bazenitu,\nberaiek artistari zenbat ordaiduko lioketen jakin dezazun.';
+  String get spotify_hypothetical_calculation => '*Sportify-k stream bakoitzeko duen \$0.003 eta \$0.005\nordainsarian oinarritua da. Kalkulu hipotetiko bat,\nkanta hauek Spotify-n entzun bazenitu,\nberaiek artistari zenbat ordaiduko lioketen jakin dezazun.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes minutu';
   }
 

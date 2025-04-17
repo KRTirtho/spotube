@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -12,7 +13,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class ProfilePage extends HookConsumerWidget {
@@ -30,7 +30,7 @@ class ProfilePage extends HookConsumerWidget {
         context.l10n.email: meData.email ?? "N/A",
         context.l10n.profile_followers:
             meData.followers?.total.toString() ?? "N/A",
-        context.l10n.birthday: meData.birthdate ?? context.l10n.not_born,
+        context.l10n.birthday: meData.birthdate ?? "N/A",
         context.l10n.country: spotifyMarkets
             .firstWhere((market) => market.$1 == meData.country)
             .$2,
@@ -69,21 +69,21 @@ class ProfilePage extends HookConsumerWidget {
                   ],
                 ),
               ),
-              const SliverGap(10),
+              const SliverGap(16),
               SliverToBoxAdapter(
                 child: Text(
                   meData.displayName ?? context.l10n.no_name,
                   textAlign: TextAlign.center,
                 ).h4(),
               ),
-              const SliverGap(20),
+              const SliverGap(32),
               SliverCrossAxisConstrained(
                 maxCrossAxisExtent: 500,
                 child: SliverToBoxAdapter(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Button.text(
+                      Button.ghost(
                         leading: const Icon(SpotubeIcons.edit),
                         onPressed: () {
                           launchUrlString(
@@ -133,7 +133,7 @@ class ProfilePage extends HookConsumerWidget {
                   ),
                 ),
               ),
-              const SliverGap(200),
+              const SliverGap(256),
             ],
           ),
         ),

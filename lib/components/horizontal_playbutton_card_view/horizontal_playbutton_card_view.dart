@@ -93,7 +93,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                             ),
                         isLoading: isLoadingNextPage,
                         hasReachedMax: !hasNextPage,
-                        separatorBuilder: (context, index) => Gap(12 * scale),
+                        separatorBuilder: (context, index) => Gap(24 * scale),
                         itemBuilder: (context, index) {
                           final item = items[index];
 

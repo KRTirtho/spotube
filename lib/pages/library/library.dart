@@ -77,7 +77,7 @@ class LibraryPage extends HookConsumerWidget {
                   surfaceBlur: 0,
                   height: 32,
                 ),
-              const Gap(10),
+              const Gap(16),
             ],
             child: const AutoRouter(),
           );

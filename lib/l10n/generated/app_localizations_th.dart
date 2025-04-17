@@ -315,7 +315,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get shuffle_playlist => 'สุ่มเพลย์ลิสต์';
 
   @override
-  String get unshuffle_playlist => 'ยกเลิกการสุ่มเพลย์ลิสต์';
+  String get not_shuffle_playlist => 'ยกเลิกการสุ่มเพลย์ลิสต์';
 
   @override
   String get previous_track => 'แทร็กก่อนหน้า';
@@ -590,7 +590,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get step_2 => 'ขั้นที่ 2';
 
   @override
-  String get step_2_steps => '1. หลังจากเข้าสู่ระบบแล้ว กด F12 หรือ คลิกขวาที่เมาส์ > ตรวจสอบเพื่อเปิด Devtools เบราว์เซอร์\n2. จากนั้นไปที่แท็บ \"แอปพลิเคชัน\" (Chrome, Edge, Brave เป็นต้น) หรือแท็บ \"ที่เก็บข้อมูล\" (Firefox, Palemoon เป็นต้น)\n3. ไปที่ส่วน \"คุกกี้\" แล้วไปที่ subsection \"https: //accounts.spotify.com\"';
+  String get step_2_steps => '1. หลังจากเข้าสู่ระบบแล้ว กด F12 หรือ คลิกขวาที่เมาส์ > ตรวจสอบเพื่อเปิด Devtools เบราว์เซอร์\n2. จากนั้นไปที่แท็บ \"แอปพลิเคชัน\" (Chrome, Edge, Brave เป็นต้น) หรือแท็บ \"ที่เก็บข้อมูล\" (Firefox, Pale Moon เป็นต้น)\n3. ไปที่ส่วน \"คุกกี้\" แล้วไปที่ subsection \"https: //accounts.spotify.com\"';
 
   @override
   String get step_3 => 'ขั้นที่ 3';
@@ -672,16 +672,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get number_of_tracks_generate => 'จำนวนแทร็กที่จะสร้าง';
 
   @override
-  String get acousticness => 'อะคูสติก';
+  String get not_acoustic => 'อะคูสติก';
 
   @override
-  String get danceability => 'ความสามารถในการเต้น';
+  String get dance_ability => 'ความสามารถในการเต้น';
 
   @override
   String get energy => 'พลัง';
 
   @override
-  String get instrumentalness => 'บรรเลง';
+  String get not_instrumental => 'บรรเลง';
 
   @override
   String get liveness => 'ความสด';
@@ -690,7 +690,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get loudness => 'ความดัง';
 
   @override
-  String get speechiness => 'การพูด';
+  String get talkative => 'การพูด';
 
   @override
   String get valence => 'ความสุข';
@@ -809,7 +809,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get sleep_timer => 'ตั้งเวลาปิด';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes นาที';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get failed_to_encrypt => 'เข้ารหัสล้มเหลว';
 
   @override
-  String get encryption_failed_warning => 'Spotube ใช้การเข้ารหัสเพื่อเก็บข้อมูลของคุณอย่างปลอดภัย แต่ไม่สามารถทำได้ ดังนั้นจะเปลี่ยนเป็นการจัดเก็บที่ไม่ปลอดภัย\nหากคุณใช้ Linux โปรดตรวจสอบว่าคุณได้ติดตั้งบริการลับ (gnome-keyring, kde-wallet, keepassxc เป็นต้น)';
+  String get encryption_failed_warning => 'Spotube ใช้การเข้ารหัสเพื่อเก็บข้อมูลของคุณอย่างปลอดภัย แต่ไม่สามารถทำได้ ดังนั้นจะเปลี่ยนเป็นการจัดเก็บที่ไม่ปลอดภัย\nหากคุณใช้ Linux โปรดตรวจสอบว่าคุณได้ติดตั้งบริการลับ (gnome-keyring, kde-wallet, KeePassXC เป็นต้น)';
 
   @override
   String get querying_info => 'กำลังดึงข้อมูล...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsTh extends AppLocalizations {
   String get owned_by_you => 'เป็นเจ้าของโดยคุณ';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl คัดลอกไปที่คลิปบอร์ดแล้ว';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*คำนวณตามการจ่ายต่อสตรีมของ Spotify\nซึ่งอยู่ในช่วง \$0.003 ถึง \$0.005 นี่เป็นการคำนวณสมมุติ\nเพื่อให้ผู้ใช้ทราบว่าพวกเขาจะจ่ายเงินให้ศิลปินเท่าไหร่\nหากพวกเขาฟังเพลงของพวกเขาใน Spotify.';
+  String get spotify_hypothetical_calculation => '*คำนวณตามการจ่ายต่อสตรีมของ Spotify\nซึ่งอยู่ในช่วง \$0.003 ถึง \$0.005 นี่เป็นการคำนวณสมมุติ\nเพื่อให้ผู้ใช้ทราบว่าพวกเขาจะจ่ายเงินให้ศิลปินเท่าไหร่\nหากพวกเขาฟังเพลงของพวกเขาใน Spotify.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes นาที';
   }
 

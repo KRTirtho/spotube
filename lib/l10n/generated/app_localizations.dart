@@ -701,11 +701,11 @@ abstract class AppLocalizations {
   /// **'Shuffle playlist'**
   String get shuffle_playlist;
 
-  /// No description provided for @unshuffle_playlist.
+  /// No description provided for @not_shuffle_playlist.
   ///
   /// In en, this message translates to:
   /// **'Unshuffle playlist'**
-  String get unshuffle_playlist;
+  String get not_shuffle_playlist;
 
   /// No description provided for @previous_track.
   ///
@@ -1238,7 +1238,7 @@ abstract class AppLocalizations {
   /// No description provided for @step_2_steps.
   ///
   /// In en, this message translates to:
-  /// **'1. Once you\'re logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection'**
+  /// **'1. Once you\'re logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Pale Moon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection'**
   String get step_2_steps;
 
   /// No description provided for @step_3.
@@ -1391,17 +1391,17 @@ abstract class AppLocalizations {
   /// **'Number of tracks to generate'**
   String get number_of_tracks_generate;
 
-  /// No description provided for @acousticness.
+  /// No description provided for @not_acoustic.
   ///
   /// In en, this message translates to:
-  /// **'Acousticness'**
-  String get acousticness;
+  /// **'not_acoustic'**
+  String get not_acoustic;
 
-  /// No description provided for @danceability.
+  /// No description provided for @dance_ability.
   ///
   /// In en, this message translates to:
-  /// **'Danceability'**
-  String get danceability;
+  /// **'dance_ability'**
+  String get dance_ability;
 
   /// No description provided for @energy.
   ///
@@ -1409,11 +1409,11 @@ abstract class AppLocalizations {
   /// **'Energy'**
   String get energy;
 
-  /// No description provided for @instrumentalness.
+  /// No description provided for @not_instrumental.
   ///
   /// In en, this message translates to:
-  /// **'Instrumentalness'**
-  String get instrumentalness;
+  /// **'not_instrumental'**
+  String get not_instrumental;
 
   /// No description provided for @liveness.
   ///
@@ -1427,11 +1427,11 @@ abstract class AppLocalizations {
   /// **'Loudness'**
   String get loudness;
 
-  /// No description provided for @speechiness.
+  /// No description provided for @talkative.
   ///
   /// In en, this message translates to:
-  /// **'Speechiness'**
-  String get speechiness;
+  /// **'talkative'**
+  String get talkative;
 
   /// No description provided for @valence.
   ///
@@ -1661,11 +1661,11 @@ abstract class AppLocalizations {
   /// **'Sleep Timer'**
   String get sleep_timer;
 
-  /// No description provided for @mins.
+  /// No description provided for @minutes.
   ///
   /// In en, this message translates to:
   /// **'{minutes} Minutes'**
-  String mins(Object minutes);
+  String minutes(Object minutes);
 
   /// No description provided for @hours.
   ///
@@ -1730,7 +1730,7 @@ abstract class AppLocalizations {
   /// No description provided for @encryption_failed_warning.
   ///
   /// In en, this message translates to:
-  /// **'Spotube uses encryption to securely store your data. But failed to do so. So it\'ll fallback to insecure storage\nIf you\'re using linux, please make sure you\'ve any secret-service (gnome-keyring, kde-wallet, keepassxc etc) installed'**
+  /// **'Spotube uses encryption to securely store your data. But failed to do so. So it\'ll fallback to insecure storage\nIf you\'re using linux, please make sure you\'ve any secret-service (gnome-keyring, kde-wallet, KeePassXC etc) installed'**
   String get encryption_failed_warning;
 
   /// No description provided for @querying_info.
@@ -2405,23 +2405,23 @@ abstract class AppLocalizations {
   /// **'Owned by you'**
   String get owned_by_you;
 
-  /// No description provided for @copied_shareurl_to_clipboard.
+  /// No description provided for @copied_share_url_to_clipboard.
   ///
   /// In en, this message translates to:
   /// **'Copied {shareUrl} to clipboard'**
-  String copied_shareurl_to_clipboard(Object shareUrl);
+  String copied_share_url_to_clipboard(Object shareUrl);
 
-  /// No description provided for @spotify_hipotetical_calculation.
+  /// No description provided for @spotify_hypothetical_calculation.
   ///
   /// In en, this message translates to:
   /// **'*This is calculated based on Spotify\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in Spotify.'**
-  String get spotify_hipotetical_calculation;
+  String get spotify_hypothetical_calculation;
 
-  /// No description provided for @count_mins.
+  /// No description provided for @count_minutes.
   ///
   /// In en, this message translates to:
-  /// **'{minutes} mins'**
-  String count_mins(Object minutes);
+  /// **'{minutes} minutes'**
+  String count_minutes(Object minutes);
 
   /// No description provided for @summary_minutes.
   ///

@@ -1,27 +1,27 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/modules/player/player_controls.dart';
-import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/utils/use_force_update.dart';
+import 'package:spotube/modules/player/player_controls.dart';
+import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class MiniLyricsPage extends HookConsumerWidget {
   static const name = "mini_lyrics";
 
   final Size prevSize;
+
   const MiniLyricsPage({super.key, required this.prevSize});
 
   @override
@@ -73,7 +73,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                 child: Row(
                   spacing: 2,
                   children: [
-                    const Gap(10),
+                    const Gap(16),
                     if (kIsMacOS) const SizedBox(width: 65),
                     if (showLyrics.value)
                       Tabs(
@@ -187,7 +187,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                 ),
               )
             else
-              const Gap(20),
+              const Gap(32),
             AnimatedCrossFade(
               crossFadeState: areaActive.value
                   ? CrossFadeState.showFirst
@@ -268,7 +268,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                               const Duration(milliseconds: 200));
                         } finally {
                           if (context.mounted) {
-                            context.navigateTo(LyricsRoute());
+                            context.navigateTo(const LyricsRoute());
                           }
                         }
                       },

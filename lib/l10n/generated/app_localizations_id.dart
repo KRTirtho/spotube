@@ -315,7 +315,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get shuffle_playlist => 'Acak daftar putar';
 
   @override
-  String get unshuffle_playlist => 'Batalkan pengacakan daftar putar';
+  String get not_shuffle_playlist => 'Batalkan pengacakan daftar putar';
 
   @override
   String get previous_track => 'Lagu sebelumnya';
@@ -590,7 +590,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get step_2 => 'Langkah 2';
 
   @override
-  String get step_2_steps => '1. Setelah Anda masuk, tekan F12 atau Klik Kanan Mouse > Buka Browser Devtools.\n2. Lalu buka Tab \"Aplikasi\" (Chrome, Edge, Brave, dll.) atau Tab \"Penyimpanan\" (Firefox, Palemoon, dll.)\n3. Buka bagian \"Cookie\" lalu subbagian \"https://accounts.spotify.com\"';
+  String get step_2_steps => '1. Setelah Anda masuk, tekan F12 atau Klik Kanan Mouse > Buka Browser Devtools.\n2. Lalu buka Tab \"Aplikasi\" (Chrome, Edge, Brave, dll.) atau Tab \"Penyimpanan\" (Firefox, Pale Moon, dll.)\n3. Buka bagian \"Cookie\" lalu subbagian \"https://accounts.spotify.com\"';
 
   @override
   String get step_3 => 'Langkah 3';
@@ -672,16 +672,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get number_of_tracks_generate => 'Jumlah trek yang akan dihasilkan';
 
   @override
-  String get acousticness => 'Akustik';
+  String get not_acoustic => 'Akustik';
 
   @override
-  String get danceability => 'Menari';
+  String get dance_ability => 'Menari';
 
   @override
   String get energy => 'Energi';
 
   @override
-  String get instrumentalness => 'Instrumentalitas';
+  String get not_instrumental => 'Instrumentalitas';
 
   @override
   String get liveness => 'Kehidupan';
@@ -690,7 +690,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get loudness => 'Kekerasan';
 
   @override
-  String get speechiness => 'Berbicara';
+  String get talkative => 'Berbicara';
 
   @override
   String get valence => 'Valensi';
@@ -809,7 +809,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get sleep_timer => 'Pengatur Waktu Tidur';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes Menit';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get failed_to_encrypt => 'Gagal mengenkripsi';
 
   @override
-  String get encryption_failed_warning => 'Spotube menggunakan enkripsi untuk menyimpan data Anda dengan aman. Namun gagal melakukannya. Jadi itu akan kembali ke penyimpanan yang tidak aman\nJika Anda menggunakan linux, pastikan Anda telah menginstal layanan rahasia (gnome-keyring, kde-wallet, keepassxc, dll)';
+  String get encryption_failed_warning => 'Spotube menggunakan enkripsi untuk menyimpan data Anda dengan aman. Namun gagal melakukannya. Jadi itu akan kembali ke penyimpanan yang tidak aman\nJika Anda menggunakan linux, pastikan Anda telah menginstal layanan rahasia (gnome-keyring, kde-wallet, KeePassXC, dll)';
 
   @override
   String get querying_info => 'Mencari informasi...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get owned_by_you => 'Dimiliki oleh Anda';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl disalin ke clipboard';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Ini dihitung berdasarkan pembayaran\nper stream Spotify dari \$0,003 hingga \$0,005.\nIni adalah perhitungan hipotetis untuk memberi\npengguna gambaran tentang berapa banyak\nmereka akan membayar kepada artis jika\nmereka mendengarkan lagu mereka di Spotify.';
+  String get spotify_hypothetical_calculation => '*Ini dihitung berdasarkan pembayaran\nper stream Spotify dari \$0,003 hingga \$0,005.\nIni adalah perhitungan hipotetis untuk memberi\npengguna gambaran tentang berapa banyak\nmereka akan membayar kepada artis jika\nmereka mendengarkan lagu mereka di Spotify.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes menit';
   }
 

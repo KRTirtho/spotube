@@ -6,6 +6,7 @@ enum SourceCodecs {
   weba._("WebA (Best for streamed music)\nDoesn't support audio metadata");
 
   final String label;
+
   const SourceCodecs._(this.label);
 }
 

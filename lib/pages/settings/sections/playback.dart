@@ -3,29 +3,27 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart' show ListTile;
+import 'package:flutter/material.dart' show DropdownMenuItem, ListTile;
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:piped_client/piped_client.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/components/form/text_form_field.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
-import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
-import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/settings/youtube_engine_not_installed_dialog.dart';
 import 'package:spotube/provider/audio_player/sources/invidious_instances_provider.dart';
 import 'package:spotube/provider/audio_player/sources/piped_instances_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
-
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 import 'package:spotube/utils/platform.dart';
@@ -47,15 +45,15 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           title: Text(context.l10n.audio_quality),
           value: preferences.audioQuality,
           options: [
-            SelectItemButton(
+            DropdownMenuItem(
               value: SourceQualities.high,
               child: Text(context.l10n.high),
             ),
-            SelectItemButton(
+            DropdownMenuItem(
               value: SourceQualities.medium,
               child: Text(context.l10n.medium),
             ),
-            SelectItemButton(
+            DropdownMenuItem(
               value: SourceQualities.low,
               child: Text(context.l10n.low),
             ),
@@ -71,7 +69,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           title: Text(context.l10n.audio_source),
           value: preferences.audioSource,
           options: AudioSource.values
-              .map((e) => SelectItemButton(
+              .map((e) => DropdownMenuItem(
                     value: e,
                     child: Text(e.label),
                   ))
@@ -130,7 +128,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                                       key: formKey,
                                       child: Column(
                                         children: [
-                                          const Gap(10),
+                                          const Gap(16),
                                           TextFormBuilderField(
                                             name: "url",
                                             controller: controller,
@@ -139,7 +137,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                                             validator:
                                                 FormBuilderValidators.url(),
                                           ),
-                                          const Gap(10),
+                                          const Gap(16),
                                           Row(
                                             children: [
                                               Expanded(
@@ -151,7 +149,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                                                       Text(context.l10n.cancel),
                                                 ),
                                               ),
-                                              const Gap(10),
+                                              const Gap(16),
                                               Expanded(
                                                 child: Button.primary(
                                                   onPressed: () {
@@ -185,7 +183,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                     options: [
                       if (data
                           .none((e) => e.apiUrl == preferences.pipedInstance))
-                        SelectItemButton(
+                        DropdownMenuItem(
                           value: preferences.pipedInstance,
                           child: Text.rich(
                             TextSpan(
@@ -201,7 +199,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                           ),
                         ),
                       for (final e in data.sortedBy((e) => e.name))
-                        SelectItemButton(
+                        DropdownMenuItem(
                           value: e.apiUrl,
                           child: RichText(
                             text: TextSpan(
@@ -285,7 +283,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                                       key: formKey,
                                       child: Column(
                                         children: [
-                                          const Gap(10),
+                                          const Gap(16),
                                           TextFormBuilderField(
                                             name: "url",
                                             controller: controller,
@@ -294,7 +292,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                                             validator:
                                                 FormBuilderValidators.url(),
                                           ),
-                                          const Gap(10),
+                                          const Gap(16),
                                           Row(
                                             children: [
                                               Expanded(
@@ -306,7 +304,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                                                       Text(context.l10n.cancel),
                                                 ),
                                               ),
-                                              const Gap(10),
+                                              const Gap(16),
                                               Expanded(
                                                 child: Button.primary(
                                                   onPressed: () {
@@ -342,7 +340,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                     options: [
                       if (data.none((e) =>
                           e.details.uri == preferences.invidiousInstance))
-                        SelectItemButton(
+                        DropdownMenuItem(
                           value: preferences.invidiousInstance,
                           child: Text.rich(
                             TextSpan(
@@ -358,7 +356,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                           ),
                         ),
                       for (final e in data.sortedBy((e) => e.name))
-                        SelectItemButton(
+                        DropdownMenuItem(
                           value: e.details.uri,
                           child: RichText(
                             text: TextSpan(
@@ -402,7 +400,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               value: preferences.youtubeClientEngine,
               options: YoutubeClientEngine.values
                   .where((e) => e.isAvailableForPlatform())
-                  .map((e) => SelectItemButton(
+                  .map((e) => DropdownMenuItem(
                         value: e,
                         child: Text(e.label),
                       ))
@@ -433,7 +431,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               title: Text(context.l10n.search_mode),
               value: preferences.searchMode,
               options: SearchMode.values
-                  .map((e) => SelectItemButton(
+                  .map((e) => DropdownMenuItem(
                         value: e,
                         child: Text(e.label),
                       ))
@@ -510,13 +508,13 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         if (preferences.audioSource != AudioSource.jiosaavn) ...[
           AdaptiveSelectTile<SourceCodecs>(
-            popupConstraints: const BoxConstraints(maxWidth: 300),
+            popup: const BoxConstraints(maxWidth: 300),
             secondary: const Icon(SpotubeIcons.stream),
             title: Text(context.l10n.streaming_music_codec),
             value: preferences.streamMusicCodec,
             showValueWhenUnfolded: false,
             options: SourceCodecs.values
-                .map((e) => SelectItemButton(
+                .map((e) => DropdownMenuItem(
                       value: e,
                       child: Text(
                         e.label,
@@ -530,13 +528,13 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             },
           ),
           AdaptiveSelectTile<SourceCodecs>(
-            popupConstraints: const BoxConstraints(maxWidth: 300),
+            popup: const BoxConstraints(maxWidth: 300),
             secondary: const Icon(SpotubeIcons.file),
             title: Text(context.l10n.download_music_codec),
             value: preferences.downloadMusicCodec,
             showValueWhenUnfolded: false,
             options: SourceCodecs.values
-                .map((e) => SelectItemButton(
+                .map((e) => DropdownMenuItem(
                       value: e,
                       child: Text(
                         e.label,

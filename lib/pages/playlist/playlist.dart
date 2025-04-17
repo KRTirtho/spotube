@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart' as material;
+import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart' hide Page;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
@@ -10,7 +11,6 @@ import 'package:spotube/components/track_presentation/use_is_user_playlist.dart'
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class PlaylistPage extends HookConsumerWidget {
@@ -18,6 +18,7 @@ class PlaylistPage extends HookConsumerWidget {
 
   final PlaylistSimple _playlist;
   final String id;
+
   const PlaylistPage({
     super.key,
     @PathParam("id") required this.id,

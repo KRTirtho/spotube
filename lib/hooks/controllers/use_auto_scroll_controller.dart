@@ -1,6 +1,6 @@
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 /// Creates [AutoScrollController] that will be disposed automatically.
 ///

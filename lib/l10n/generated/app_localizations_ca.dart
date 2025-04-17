@@ -315,7 +315,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get shuffle_playlist => 'Mesclar la llista de reproducció';
 
   @override
-  String get unshuffle_playlist => 'No mesclar la llista de reproducció';
+  String get not_shuffle_playlist => 'No mesclar la llista de reproducció';
 
   @override
   String get previous_track => 'Cançó anterior';
@@ -590,7 +590,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get step_2 => 'Pas 2';
 
   @override
-  String get step_2_steps => '1. Una vegada que hagi iniciat sessió, premi F12 o faci clic dret amb el ratolí > Inspeccionar per obrir les eines de desenvolulpador del navegador.\n2. Després vagi a la pestanya \"Application\" (Chrome, Edge, Brave, etc.) o \"Storage\" (Firefox, Palemoon, etc.)\n3. Vagi a la secció \"Cookies\" i després a la subsecció \"https://accounts.spotify.com\"';
+  String get step_2_steps => '1. Una vegada que hagi iniciat sessió, premi F12 o faci clic dret amb el ratolí > Inspeccionar per obrir les eines de desenvolulpador del navegador.\n2. Després vagi a la pestanya \"Application\" (Chrome, Edge, Brave, etc.) o \"Storage\" (Firefox, Pale Moon, etc.)\n3. Vagi a la secció \"Cookies\" i després a la subsecció \"https://accounts.spotify.com\"';
 
   @override
   String get step_3 => 'Pas 3';
@@ -672,16 +672,16 @@ class AppLocalizationsCa extends AppLocalizations {
   String get number_of_tracks_generate => 'Número de cançons a generar';
 
   @override
-  String get acousticness => 'Acústica';
+  String get not_acoustic => 'Acústica';
 
   @override
-  String get danceability => 'Ballabilitat';
+  String get dance_ability => 'Ballabilitat';
 
   @override
   String get energy => 'Energia';
 
   @override
-  String get instrumentalness => 'Instrumental';
+  String get not_instrumental => 'Instrumental';
 
   @override
   String get liveness => 'En viu';
@@ -690,7 +690,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get loudness => 'Sonoritat';
 
   @override
-  String get speechiness => 'Parla';
+  String get talkative => 'Parla';
 
   @override
   String get valence => 'Valencia';
@@ -809,7 +809,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get sleep_timer => 'Temporitzador d\'apagat';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes minuts';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsCa extends AppLocalizations {
   String get failed_to_encrypt => 'Error al xifrar';
 
   @override
-  String get encryption_failed_warning => 'Spotube utilitza el xifrado per emmagatzemar les seves dades de forma segura. Però ha fallat. Per tant, tornarà a un emmagatzament no segur\nSi estè utilizant Linux, asseguri\'s de tenir instal·lats els serveis secrets com gnome-keyring, kde-wallet i keepassxc';
+  String get encryption_failed_warning => 'Spotube utilitza el xifrado per emmagatzemar les seves dades de forma segura. Però ha fallat. Per tant, tornarà a un emmagatzament no segur\nSi estè utilizant Linux, asseguri\'s de tenir instal·lats els serveis secrets com gnome-keyring, kde-wallet i KeePassXC';
 
   @override
   String get querying_info => 'Consultant informació...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsCa extends AppLocalizations {
   String get owned_by_you => 'De la teva propietat';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return 'S\'ha copiat $shareUrl al porta-retalls';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Això es calcula basant-se en els\npagaments per reproducció de Spotify de \$0.003 a \$0.005.\nAquest és un càlcul hipotètic per\ndonar als usuaris una idea de quant\nhaurien pagat als artistes si haguessin escoltat\nla seva cançó a Spotify.';
+  String get spotify_hypothetical_calculation => '*Això es calcula basant-se en els\npagaments per reproducció de Spotify de \$0.003 a \$0.005.\nAquest és un càlcul hipotètic per\ndonar als usuaris una idea de quant\nhaurien pagat als artistes si haguessin escoltat\nla seva cançó a Spotify.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes minuts';
   }
 

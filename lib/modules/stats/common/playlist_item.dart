@@ -10,6 +10,7 @@ import 'package:spotube/extensions/string.dart';
 class StatsPlaylistItem extends StatelessWidget {
   final PlaylistSimple playlist;
   final Widget info;
+
   const StatsPlaylistItem(
       {super.key, required this.playlist, required this.info});
 

@@ -4,15 +4,16 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/track_presentation/presentation_list.dart';
+import 'package:spotube/components/track_presentation/presentation_modifiers.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/presentation_top.dart';
-import 'package:spotube/components/track_presentation/presentation_modifiers.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/utils/platform.dart';
 
 class TrackPresentation extends HookConsumerWidget {
   final TrackPresentationOptions options;
+
   const TrackPresentation({
     super.key,
     required this.options,
@@ -88,7 +89,7 @@ class TrackPresentation extends HookConsumerWidget {
                 },
               ),
               const PresentationListSection(),
-              const SliverSafeArea(sliver: SliverGap(10)),
+              const SliverSafeArea(sliver: SliverGap(16)),
             ],
           ),
         ),

@@ -1,11 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/modules/stats/summary/summary.dart';
-import 'package:spotube/modules/stats/top/top.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class StatsPage extends HookConsumerWidget {
@@ -29,9 +28,9 @@ class StatsPage extends HookConsumerWidget {
           ],
           child: CustomScrollView(
             slivers: [
-              if (kIsMacOS) const SliverGap(20),
+              if (kIsMacOS) const SliverGap(32),
               const StatsPageSummarySection(),
-              const StatsPageTopSection(),
+              // const StatsPageTopSection(),
               const SliverToBoxAdapter(
                 child: SafeArea(
                   child: SizedBox(),

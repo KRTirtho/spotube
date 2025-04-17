@@ -315,7 +315,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get shuffle_playlist => 'ფლეილისტის არევა';
 
   @override
-  String get unshuffle_playlist => 'ფლეილისტის დალაგება';
+  String get not_shuffle_playlist => 'ფლეილისტის დალაგება';
 
   @override
   String get previous_track => 'წინა ტრეკი';
@@ -590,7 +590,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get step_2 => 'ნაბიჯი 2';
 
   @override
-  String get step_2_steps => '1. როცა შეხვალთ, დააჭირეთ F12-ს ან მაუსის მარჯვენა ღილაკს > Inspect to Open the Browser devtools.\n2. შემდეგ გახსენით \"Application\" განყოფილება (Chrome, Edge, Brave etc..) ან \"Storage\" განყოფილება (Firefox, Palemoon etc..)\n3. შედით \"Cookies\" სექციაში და შემდეგ \"https://accounts.spotify.com\" სუბსექციაში';
+  String get step_2_steps => '1. როცა შეხვალთ, დააჭირეთ F12-ს ან მაუსის მარჯვენა ღილაკს > Inspect to Open the Browser devtools.\n2. შემდეგ გახსენით \"Application\" განყოფილება (Chrome, Edge, Brave etc..) ან \"Storage\" განყოფილება (Firefox, Pale Moon etc..)\n3. შედით \"Cookies\" სექციაში და შემდეგ \"https://accounts.spotify.com\" სუბსექციაში';
 
   @override
   String get step_3 => 'ნაბიჯი 3';
@@ -672,16 +672,16 @@ class AppLocalizationsKa extends AppLocalizations {
   String get number_of_tracks_generate => 'დასაგენერირებელი ტრეკების რაოდენობა';
 
   @override
-  String get acousticness => 'Acousticness';
+  String get not_acoustic => 'not_acoustic';
 
   @override
-  String get danceability => 'Danceability';
+  String get dance_ability => 'dance_ability';
 
   @override
   String get energy => 'Energy';
 
   @override
-  String get instrumentalness => 'Instrumentalness';
+  String get not_instrumental => 'not_instrumental';
 
   @override
   String get liveness => 'Liveness';
@@ -690,7 +690,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get loudness => 'Loudness';
 
   @override
-  String get speechiness => 'Speechiness';
+  String get talkative => 'talkative';
 
   @override
   String get valence => 'Valence';
@@ -809,7 +809,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get sleep_timer => 'ძილის ტაიმერი';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes წუთი';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsKa extends AppLocalizations {
   String get failed_to_encrypt => 'დაშიფვრა ვერ მოხერხდა';
 
   @override
-  String get encryption_failed_warning => 'Spotube uses encryption to securely store your data. But failed to do so. So it\'ll fallback to insecure storage\nIf you\'re using linux, please make sure you\'ve any secret-service (gnome-keyring, kde-wallet, keepassxc etc) installed';
+  String get encryption_failed_warning => 'Spotube uses encryption to securely store your data. But failed to do so. So it\'ll fallback to insecure storage\nIf you\'re using linux, please make sure you\'ve any secret-service (gnome-keyring, kde-wallet, KeePassXC etc) installed';
 
   @override
   String get querying_info => 'Querying info...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsKa extends AppLocalizations {
   String get owned_by_you => 'შენ მიერ საკუთრებული';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl აიღო კლიპბორდზე';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*ეს გამოითვლება Spotify-ის თითოეულ სტრიმზე\nგადახდის შესაბამისად, რომელიც \$0.003 დან \$0.005-მდეა. ეს არის ჰიპოთეტური\nგამოთვლა, რომელიც აჩვენებს მომხმარებელს რამდენი გადაიხდიდა\nარტისტებს, თუკი ისინი უსმენდნენ მათ სიმღერებს Spotify-ზე.';
+  String get spotify_hypothetical_calculation => '*ეს გამოითვლება Spotify-ის თითოეულ სტრიმზე\nგადახდის შესაბამისად, რომელიც \$0.003 დან \$0.005-მდეა. ეს არის ჰიპოთეტური\nგამოთვლა, რომელიც აჩვენებს მომხმარებელს რამდენი გადაიხდიდა\nარტისტებს, თუკი ისინი უსმენდნენ მათ სიმღერებს Spotify-ზე.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes წუთი';
   }
 

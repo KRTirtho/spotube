@@ -99,7 +99,7 @@ class PlaybuttonCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const Gap(5),
+                      const Gap(8),
                       AnimatedScale(
                         curve: Curves.easeOutBack,
                         duration: const Duration(milliseconds: 150),

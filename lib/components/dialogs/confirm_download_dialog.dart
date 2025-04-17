@@ -78,6 +78,7 @@ class ConfirmDownloadDialog extends StatelessWidget {
 
 class BulletPoint extends StatelessWidget {
   final String text;
+
   const BulletPoint(this.text, {super.key});
 
   @override

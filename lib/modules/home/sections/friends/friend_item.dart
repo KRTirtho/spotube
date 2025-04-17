@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
@@ -12,6 +11,7 @@ import 'package:spotube/provider/spotify/spotify.dart';
 
 class FriendItem extends HookConsumerWidget {
   final SpotifyFriendActivity friend;
+
   const FriendItem({
     super.key,
     required this.friend,

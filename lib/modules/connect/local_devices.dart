@@ -26,7 +26,7 @@ class ConnectPageLocalDevices extends HookWidget {
 
     return SliverMainAxisGroup(
       slivers: [
-        const SliverGap(10),
+        const SliverGap(16),
         SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
           sliver: SliverToBoxAdapter(
@@ -36,10 +36,10 @@ class ConnectPageLocalDevices extends HookWidget {
             ),
           ),
         ),
-        const SliverGap(10),
+        const SliverGap(16),
         SliverList.separated(
           itemCount: devices.length,
-          separatorBuilder: (context, index) => const Gap(10),
+          separatorBuilder: (context, index) => const Gap(16),
           itemBuilder: (context, index) {
             final device = devices[index];
 
@@ -52,7 +52,7 @@ class ConnectPageLocalDevices extends HookWidget {
             );
           },
         ),
-        const SliverGap(200)
+        const SliverGap(256)
       ],
     );
   }

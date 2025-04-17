@@ -1,5 +1,5 @@
-import 'package:duration/locale.dart';
 import 'package:duration/duration.dart';
+import 'package:duration/locale.dart';
 
 extension DurationToHumanReadableString on Duration {
   String toHumanReadableString({padZero = true}) {

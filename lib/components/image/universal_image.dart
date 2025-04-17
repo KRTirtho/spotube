@@ -13,6 +13,7 @@ class UniversalImage extends HookWidget {
   final double scale;
   final String? placeholder;
   final BoxFit? fit;
+
   const UniversalImage({
     required this.path,
     this.height,

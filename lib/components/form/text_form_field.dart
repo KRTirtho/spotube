@@ -11,6 +11,7 @@ class TextFormBuilderField extends StatelessWidget {
   final TextEditingController? controller;
   final bool filled;
   final Widget? placeholder;
+
   // final AlignmentGeometry? placeholderAlignment;
   // final AlignmentGeometry? leadingAlignment;
   // final AlignmentGeometry? trailingAlignment;
@@ -41,6 +42,7 @@ class TextFormBuilderField extends StatelessWidget {
   final void Function(PointerDownEvent event)? onTapOutside;
   final List<TextInputFormatter>? inputFormatters;
   final TextStyle? style;
+
   // final EditableTextContextMenuBuilder? contextMenuBuilder;
   // final bool useNativeContextMenu;
   // final bool? isCollapsed;

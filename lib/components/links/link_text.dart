@@ -11,6 +11,7 @@ class LinkText<T> extends StatelessWidget {
   final int? maxLines;
 
   final bool push;
+
   const LinkText(
     this.text,
     this.route, {

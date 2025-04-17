@@ -1,8 +1,5 @@
-import 'package:flutter/material.dart' show ListTile, ListTileControlAffinity;
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/extensions/constrains.dart';
 
 class AdaptiveSelectTile<T> extends HookWidget {
   final Widget title;
@@ -13,7 +10,7 @@ class AdaptiveSelectTile<T> extends HookWidget {
   final T value;
   final ValueChanged<T?>? onChanged;
 
-  final List<SelectItemButton<T>> options;
+  final List<DropdownMenuItem<T>> options;
 
   /// Show the smaller value when the breakpoint is reached
   ///
@@ -24,8 +21,9 @@ class AdaptiveSelectTile<T> extends HookWidget {
 
   final bool? breakLayout;
 
-  final BoxConstraints? popupConstraints;
-  final PopoverConstraint? popupWidthConstraint;
+  final double? popupMaxWidth;
+
+  final dynamic popup;
 
   const AdaptiveSelectTile({
     required this.title,
@@ -39,87 +37,96 @@ class AdaptiveSelectTile<T> extends HookWidget {
     this.breakLayout,
     this.showValueWhenUnfolded = true,
     super.key,
-    this.popupConstraints,
-    this.popupWidthConstraint,
+    this.popupMaxWidth,
+    this.popup,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.sizeOf(context);
+    final mediaQuery = MediaQuery.of(context);
 
-    Widget? control = Select<T>(
-      itemBuilder: (context, item) {
-        return options.firstWhere((element) => element.value == item).child;
-      },
+    // Create control widget
+    Widget? control = DropdownButton<T>(
       value: value,
+      items: options,
       onChanged: onChanged,
-      popupConstraints: popupConstraints ?? const BoxConstraints(maxWidth: 200),
-      popupWidthConstraint: popupWidthConstraint ?? PopoverConstraint.flexible,
-      autoClosePopover: true,
-      popup: (context) {
-        return SelectPopup(
-          autoClose: true,
-          items: SelectItemBuilder(
-            childCount: options.length,
-            builder: (context, index) {
-              return options[index];
-            },
-          ),
-        );
-      },
+      underline: Container(),
     );
 
-    if (mediaQuery.smAndDown) {
-      if (showValueWhenUnfolded) {
-        control = OutlineBadge(
-          child: options.firstWhere((element) => element.value == value).child,
-        );
-      } else {
-        control = null;
-      }
+    if (mediaQuery.size.width < 600) {
+      control = showValueWhenUnfolded
+          ? Text(
+              options
+                  .firstWhere((item) => item.value == value)
+                  .child
+                  .toString(),
+              style: TextStyle(color: theme.colorScheme.primary),
+            )
+          : null;
     }
 
+    // Render the ListTile
     return ListTile(
-      title: title,
-      subtitle: subtitle,
-      leading: controlAffinity != ListTileControlAffinity.leading
-          ? secondary
-          : control,
+      contentPadding:
+          const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      title: DefaultTextStyle(
+        style:
+            theme.textTheme.titleMedium!.copyWith(fontWeight: FontWeight.bold),
+        child: title,
+      ),
+      subtitle: subtitle != null
+          ? Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: DefaultTextStyle(
+                style: theme.textTheme.bodySmall!
+                    .copyWith(color: theme.colorScheme.secondary),
+                child: subtitle!,
+              ),
+            )
+          : null,
+      leading: controlAffinity == ListTileControlAffinity.leading
+          ? control
+          : secondary,
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.end,
-        spacing: 5,
         children: [
           ...?trailing,
-          if (controlAffinity == ListTileControlAffinity.leading &&
-              secondary != null)
-            secondary!
-          else if (controlAffinity == ListTileControlAffinity.trailing &&
+          if (controlAffinity == ListTileControlAffinity.trailing &&
               control != null)
-            control,
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: control,
+            ),
         ],
       ),
-      onTap: breakLayout ?? mediaQuery.mdAndUp
+      onTap: breakLayout ?? mediaQuery.size.width >= 600
           ? null
           : () {
               showDialog(
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    content: Flexible(
+                    contentPadding: const EdgeInsets.all(16.0),
+                    content: Container(
+                      constraints:
+                          BoxConstraints(maxWidth: popupMaxWidth ?? 300),
                       child: ListView.builder(
                         shrinkWrap: true,
                         itemCount: options.length,
                         itemBuilder: (context, index) {
                           final item = options[index];
-
                           return ListTile(
-                            iconColor: theme.colorScheme.primary,
-                            leading: item.value == value
-                                ? const Icon(SpotubeIcons.radioChecked)
-                                : const Icon(SpotubeIcons.radioUnchecked),
-                            title: item.child,
+                            dense: true,
+                            leading: Icon(
+                              item.value == value
+                                  ? Icons.radio_button_checked
+                                  : Icons.radio_button_unchecked,
+                              color: item.value == value
+                                  ? theme.colorScheme.primary
+                                  : theme.colorScheme.secondary,
+                            ),
+                            title: Text(item.child.toString()),
                             onTap: () {
                               onChanged?.call(item.value);
                               Navigator.of(context).pop();

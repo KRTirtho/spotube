@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -307,7 +306,7 @@ class TrackTile extends HookConsumerWidget {
                   userPlaylist: userPlaylist,
                   showMenuCbRef: showOptionCbRef,
                 ),
-                if (kIsDesktop) const Gap(10),
+                if (kIsDesktop) const Gap(16),
               ],
             ),
           ),

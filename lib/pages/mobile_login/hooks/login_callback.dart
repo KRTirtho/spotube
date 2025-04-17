@@ -2,13 +2,12 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:desktop_webview_window/desktop_webview_window.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/pages/mobile_login/no_webview_runtime_dialog.dart';
 import 'package:spotube/provider/authentication/authentication.dart';

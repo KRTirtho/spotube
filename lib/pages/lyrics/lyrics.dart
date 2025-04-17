@@ -1,19 +1,18 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-
-import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/hooks/utils/use_palette_color.dart';
 import 'package:spotube/pages/lyrics/plain_lyrics.dart';
 import 'package:spotube/pages/lyrics/synced_lyrics.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/utils/platform.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:auto_route/auto_route.dart';
+import 'package:spotube/utils/platform.dart';
 
 @RoutePage()
 class LyricsPage extends HookConsumerWidget {
@@ -66,7 +65,7 @@ class LyricsPage extends HookConsumerWidget {
             );
           },
         ),
-        const Gap(5),
+        const Gap(8),
       ],
     );
 

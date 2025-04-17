@@ -315,7 +315,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get shuffle_playlist => 'Випадковий порядок відтворення плейлиста';
 
   @override
-  String get unshuffle_playlist => 'Відключити випадковий порядок відтворення плейлиста';
+  String get not_shuffle_playlist => 'Відключити випадковий порядок відтворення плейлиста';
 
   @override
   String get previous_track => 'Попередній трек';
@@ -590,7 +590,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get step_2 => 'Крок 2';
 
   @override
-  String get step_2_steps => '1. Після входу натисніть F12 або клацніть правою кнопкою миші > Інспектувати, щоб відкрити інструменти розробки браузера.\n2. Потім перейдіть на вкладку \'Програма\' (Chrome, Edge, Brave тощо) або вкладку \'Сховище\' (Firefox, Palemoon тощо).\n3. Перейдіть до розділу \'Кукі-файли\', а потім до підрозділу \'https://accounts.spotify.com\'';
+  String get step_2_steps => '1. Після входу натисніть F12 або клацніть правою кнопкою миші > Інспектувати, щоб відкрити інструменти розробки браузера.\n2. Потім перейдіть на вкладку \'Програма\' (Chrome, Edge, Brave тощо) або вкладку \'Сховище\' (Firefox, Pale Moon тощо).\n3. Перейдіть до розділу \'Кукі-файли\', а потім до підрозділу \'https://accounts.spotify.com\'';
 
   @override
   String get step_3 => 'Крок 3';
@@ -672,16 +672,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get number_of_tracks_generate => 'Кількість треків для створення';
 
   @override
-  String get acousticness => 'Акустичність';
+  String get not_acoustic => 'Акустичність';
 
   @override
-  String get danceability => 'Танцювальність';
+  String get dance_ability => 'Танцювальність';
 
   @override
   String get energy => 'Енергія';
 
   @override
-  String get instrumentalness => 'Інструментальність';
+  String get not_instrumental => 'Інструментальність';
 
   @override
   String get liveness => 'Живість';
@@ -690,7 +690,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get loudness => 'Гучність';
 
   @override
-  String get speechiness => 'Розмовність';
+  String get talkative => 'Розмовність';
 
   @override
   String get valence => 'Валентність';
@@ -809,7 +809,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get sleep_timer => 'Таймер сну';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes хвилин';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsUk extends AppLocalizations {
   String get failed_to_encrypt => 'Не вдалося зашифрувати';
 
   @override
-  String get encryption_failed_warning => 'Spotube використовує шифрування для безпечного зберігання ваших даних. Але не вдалося цього зробити. Тому він перейде до небезпечного зберігання\nЯкщо ви використовуєте Linux, переконайтеся, що у вас встановлено будь-який секретний сервіс (gnome-keyring, kde-wallet, keepassxc тощо)';
+  String get encryption_failed_warning => 'Spotube використовує шифрування для безпечного зберігання ваших даних. Але не вдалося цього зробити. Тому він перейде до небезпечного зберігання\nЯкщо ви використовуєте Linux, переконайтеся, що у вас встановлено будь-який секретний сервіс (gnome-keyring, kde-wallet, KeePassXC тощо)';
 
   @override
   String get querying_info => 'Запит інформації...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsUk extends AppLocalizations {
   String get owned_by_you => 'Ваша власність';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl скопійовано в буфер обміну';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Це розраховано на основі виплат Spotify за стрім\nвід \$0.003 до \$0.005. Це гіпотетичний розрахунок,\nщоб дати користувачеві уявлення про те, скільки б він заплатив\nартистам, якби слухав їхні пісні на Spotify.';
+  String get spotify_hypothetical_calculation => '*Це розраховано на основі виплат Spotify за стрім\nвід \$0.003 до \$0.005. Це гіпотетичний розрахунок,\nщоб дати користувачеві уявлення про те, скільки б він заплатив\nартистам, якби слухав їхні пісні на Spotify.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes хв';
   }
 

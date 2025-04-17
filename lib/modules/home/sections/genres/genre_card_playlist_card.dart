@@ -12,6 +12,7 @@ import 'package:stroke_text/stroke_text.dart';
 
 class GenreSectionCardPlaylistCard extends HookConsumerWidget {
   final PlaylistSimple playlist;
+
   const GenreSectionCardPlaylistCard({
     super.key,
     required this.playlist,

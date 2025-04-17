@@ -144,10 +144,10 @@ class AppRouter extends RootStackRouter {
                 ),
               ],
             ),
-            AutoRoute(
-              path: "track/:id",
-              page: TrackRoute.page,
-            ),
+            // AutoRoute(
+            //   path: "track/:id",
+            //   page: TrackRoute.page,
+            // ),
             AutoRoute(
               path: "connect",
               page: ConnectRoute.page,
@@ -214,22 +214,18 @@ class AppRouter extends RootStackRouter {
         AutoRoute(
           path: "/mini-player",
           page: MiniLyricsRoute.page,
-          // parentNavigatorKey: rootNavigatorKey,
         ),
         AutoRoute(
           path: "/getting-started",
           page: GettingStartedRoute.page,
-          // parentNavigatorKey: rootNavigatorKey,
         ),
         AutoRoute(
           path: "/login",
           page: WebViewLoginRoute.page,
-          // parentNavigatorKey: rootNavigatorKey,
         ),
         AutoRoute(
           path: "/lastfm-login",
           page: LastFMLoginRoute.page,
-          // parentNavigatorKey: rootNavigatorKey,
         ),
       ];
 }

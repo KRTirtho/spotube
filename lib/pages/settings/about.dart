@@ -1,4 +1,6 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/services.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/env.dart';
@@ -8,10 +10,7 @@ import 'package:spotube/components/links/hyper_link.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_package_info.dart';
-
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:auto_route/auto_route.dart';
 
 final _licenseProvider = FutureProvider<String>((ref) async {
   return await rootBundle.loadString("LICENSE");
@@ -45,7 +44,7 @@ class AboutSpotubePage extends HookConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               children: [
-                Assets.spotubeLogoPng.image(
+                Assets.spotubeLogoStableNotWallpaper.image(
                   height: 200,
                   width: 200,
                 ),

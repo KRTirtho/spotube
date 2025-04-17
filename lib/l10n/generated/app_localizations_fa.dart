@@ -315,7 +315,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get shuffle_playlist => 'پخش تصادفی';
 
   @override
-  String get unshuffle_playlist => 'خاموش کردن پخش تصادفی';
+  String get not_shuffle_playlist => 'خاموش کردن پخش تصادفی';
 
   @override
   String get previous_track => 'آهنگ قبلی';
@@ -590,7 +590,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get step_2 => 'گام 2';
 
   @override
-  String get step_2_steps => '1. پس از ورود به سیستم، F12 یا کلیک راست ماوس > Inspect را فشار دهید تا ابزارهای توسعه مرورگر باز شود..\n2. سپس به تب \"Application\" (Chrome, Edge, Brave etc..) یا \"Storage\" Tab (Firefox, Palemoon etc..)\n3. به قسمت \"Cookies\" و به پخش \"https://accounts.spotify.com\" بروید';
+  String get step_2_steps => '1. پس از ورود به سیستم، F12 یا کلیک راست ماوس > Inspect را فشار دهید تا ابزارهای توسعه مرورگر باز شود..\n2. سپس به تب \"Application\" (Chrome, Edge, Brave etc..) یا \"Storage\" Tab (Firefox, Pale Moon etc..)\n3. به قسمت \"Cookies\" و به پخش \"https://accounts.spotify.com\" بروید';
 
   @override
   String get step_3 => 'گام 3';
@@ -672,16 +672,16 @@ class AppLocalizationsFa extends AppLocalizations {
   String get number_of_tracks_generate => 'تعداد آهنگ های ساخته شده';
 
   @override
-  String get acousticness => 'آکوستیک';
+  String get not_acoustic => 'آکوستیک';
 
   @override
-  String get danceability => 'رقصیدن';
+  String get dance_ability => 'رقصیدن';
 
   @override
   String get energy => 'انرژی';
 
   @override
-  String get instrumentalness => 'بی کلام';
+  String get not_instrumental => 'بی کلام';
 
   @override
   String get liveness => 'حس زندگی';
@@ -690,7 +690,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get loudness => 'صدای بلند';
 
   @override
-  String get speechiness => 'دکلمه';
+  String get talkative => 'دکلمه';
 
   @override
   String get valence => 'ظرفیت';
@@ -809,7 +809,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get sleep_timer => 'زمان خواب';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes دقیقه';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsFa extends AppLocalizations {
   String get failed_to_encrypt => 'رمز گذاری نشده';
 
   @override
-  String get encryption_failed_warning => 'Spotube از رمزگذاری برای ذخیره ایمن داده های شما استفاده می کند. اما موفق به انجام این کار نشد. بنابراین به فضای ذخیره‌سازی ناامن تبدیل می‌شود\nاگر از لینوکس استفاده می‌کنید، لطفاً مطمئن شوید که سرویس مخفی (gnome-keyring، kde-wallet، keepassxc و غیره) را نصب کرده‌اید.';
+  String get encryption_failed_warning => 'Spotube از رمزگذاری برای ذخیره ایمن داده های شما استفاده می کند. اما موفق به انجام این کار نشد. بنابراین به فضای ذخیره‌سازی ناامن تبدیل می‌شود\nاگر از لینوکس استفاده می‌کنید، لطفاً مطمئن شوید که سرویس مخفی (gnome-keyring، kde-wallet، KeePassXC و غیره) را نصب کرده‌اید.';
 
   @override
   String get querying_info => 'جستجو درباره ';
@@ -1207,15 +1207,15 @@ class AppLocalizationsFa extends AppLocalizations {
   String get owned_by_you => 'توسط شما مالکیت شده';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl به کلیپ‌بورد کپی شد';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*این بر اساس پرداخت هر پخش اسپاتیفای\nبه مبلغ 0.003 تا 0.005 دلار محاسبه شده است.\nاین یک محاسبه فرضی است که به کاربران نشان دهد چقدر ممکن است\nبه هنرمندان پرداخت می‌کردند اگر ترانه آنها را در اسپاتیفای گوش می‌دادند.';
+  String get spotify_hypothetical_calculation => '*این بر اساس پرداخت هر پخش اسپاتیفای\nبه مبلغ 0.003 تا 0.005 دلار محاسبه شده است.\nاین یک محاسبه فرضی است که به کاربران نشان دهد چقدر ممکن است\nبه هنرمندان پرداخت می‌کردند اگر ترانه آنها را در اسپاتیفای گوش می‌دادند.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes دقیقه';
   }
 

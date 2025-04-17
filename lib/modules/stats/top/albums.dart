@@ -4,8 +4,8 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
-import 'package:spotube/modules/stats/common/album_item.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/modules/stats/common/album_item.dart';
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/albums.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
@@ -38,7 +38,7 @@ class TopAlbums extends HookConsumerWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Gap(50),
+              const Gap(64),
               Undraw(
                 illustration: UndrawIllustration.happyMusic,
                 color: context.theme.colorScheme.primary,

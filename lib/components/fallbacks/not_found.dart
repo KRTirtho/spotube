@@ -16,7 +16,7 @@ class NotFound extends StatelessWidget {
           height: 200 * context.theme.scaling,
           color: context.theme.colorScheme.primary,
         ),
-        const Gap(10),
+        const Gap(16),
         Text(
           context.l10n.nothing_found,
           textAlign: TextAlign.center,

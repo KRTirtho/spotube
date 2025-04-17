@@ -3,6 +3,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 class BlurCard extends HookConsumerWidget {
   final Widget child;
+
   const BlurCard({super.key, required this.child});
 
   @override

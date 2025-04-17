@@ -315,7 +315,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get shuffle_playlist => 'பாடல் பட்டியலை கலக்கு';
 
   @override
-  String get unshuffle_playlist => 'பாடல் பட்டியலை கலக்காதே';
+  String get not_shuffle_playlist => 'பாடல் பட்டியலை கலக்காதே';
 
   @override
   String get previous_track => 'முந்தைய பாடல்';
@@ -590,7 +590,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get step_2 => 'இரண்டாம் படி';
 
   @override
-  String get step_2_steps => '1. நீங்கள் உள்நுழைந்தவுடன், F12 ஐ அழுத்தவும் அல்லது வலது கிளிக் செய்து > ஆய்வு செய்யவும் உலாவி டெவ்டூல்களைத் திறக்கவும்.\n2. பின்னர் \"பயன்பாடு\" தாவலுக்குச் செல்லவும் (Chrome, Edge, Brave போன்றவை) அல்லது \"சேமிப்பகம்\" தாவல் (Firefox, Palemoon போன்றவை)\n3. \"குக்கிகள்\" பிரிவுக்குச் சென்று பின்னர் \"https://accounts.spotify.com\" பிரிவுக்குச் செல்லவும்';
+  String get step_2_steps => '1. நீங்கள் உள்நுழைந்தவுடன், F12 ஐ அழுத்தவும் அல்லது வலது கிளிக் செய்து > ஆய்வு செய்யவும் உலாவி டெவ்டூல்களைத் திறக்கவும்.\n2. பின்னர் \"பயன்பாடு\" தாவலுக்குச் செல்லவும் (Chrome, Edge, Brave போன்றவை) அல்லது \"சேமிப்பகம்\" தாவல் (Firefox, Pale Moon போன்றவை)\n3. \"குக்கிகள்\" பிரிவுக்குச் சென்று பின்னர் \"https://accounts.spotify.com\" பிரிவுக்குச் செல்லவும்';
 
   @override
   String get step_3 => 'மூன்றாம் படி';
@@ -672,16 +672,16 @@ class AppLocalizationsTa extends AppLocalizations {
   String get number_of_tracks_generate => 'உருவாக்க வேண்டிய பாடல்களின் எண்ணிக்கை';
 
   @override
-  String get acousticness => 'அகவுஸ்டிக்னெஸ்';
+  String get not_acoustic => 'அகவுஸ்டிக்னெஸ்';
 
   @override
-  String get danceability => 'நடனத்தன்மை';
+  String get dance_ability => 'நடனத்தன்மை';
 
   @override
   String get energy => 'ஆற்றல்';
 
   @override
-  String get instrumentalness => 'கருவித்தன்மை';
+  String get not_instrumental => 'கருவித்தன்மை';
 
   @override
   String get liveness => 'உயிர்ப்புத்தன்மை';
@@ -690,7 +690,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get loudness => 'ஒலி அளவு';
 
   @override
-  String get speechiness => 'பேச்சுத்தன்மை';
+  String get talkative => 'பேச்சுத்தன்மை';
 
   @override
   String get valence => 'உணர்வு';
@@ -809,7 +809,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get sleep_timer => 'உறக்க நேரம்';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes நிமிடங்கள்';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsTa extends AppLocalizations {
   String get failed_to_encrypt => 'குறியாக்கம் தோல்வியடைந்தது';
 
   @override
-  String get encryption_failed_warning => 'Spotube உங்கள் தரவை பாதுகாப்பாக சேமிக்க குறியாக்கத்தைப் பயன்படுத்துகிறது. ஆனால் அவ்வாறு செய்ய முடியவில்லை. எனவே இது பாதுகாப்பற்ற சேமிப்பகத்திற்கு மாறும்\nநீங்கள் லினக்ஸ் பயன்படுத்துகிறீர்கள் என்றால், எந்த ரகசிய சேவையும் (gnome-keyring, kde-wallet, keepassxc போன்றவை) நிறுவப்பட்டுள்ளதா என்பதை உறுதிப்படுத்தவும்';
+  String get encryption_failed_warning => 'Spotube உங்கள் தரவை பாதுகாப்பாக சேமிக்க குறியாக்கத்தைப் பயன்படுத்துகிறது. ஆனால் அவ்வாறு செய்ய முடியவில்லை. எனவே இது பாதுகாப்பற்ற சேமிப்பகத்திற்கு மாறும்\nநீங்கள் லினக்ஸ் பயன்படுத்துகிறீர்கள் என்றால், எந்த ரகசிய சேவையும் (gnome-keyring, kde-wallet, KeePassXC போன்றவை) நிறுவப்பட்டுள்ளதா என்பதை உறுதிப்படுத்தவும்';
 
   @override
   String get querying_info => 'தகவலைக் கேட்கிறது...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsTa extends AppLocalizations {
   String get owned_by_you => 'உங்களால் கொண்டது';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return 'நகலெடுக்கப்பட்டது $shareUrl கிளிப்போர்டுக்காக';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*இது Spotify இன் ஒவ்வொரு ஸ்ட்ரீமிற்கும்\n\$0.003 முதல் \$0.005 வரை அளவீடு அடிப்படையில் கணக்கிடப்படுகிறது. இது ஒரு கற்பனை\nகணக்கீடு ஆகும், பயனர் எந்த அளவிற்கு கலைஞர்களுக்கு\nஅதோர் பாடலை Spotify மென்பொருளில் கேட்டால் எவ்வளவு பணம் செலுத்தினார்கள் என்பதைக் கண்டுபிடிக்க.';
+  String get spotify_hypothetical_calculation => '*இது Spotify இன் ஒவ்வொரு ஸ்ட்ரீமிற்கும்\n\$0.003 முதல் \$0.005 வரை அளவீடு அடிப்படையில் கணக்கிடப்படுகிறது. இது ஒரு கற்பனை\nகணக்கீடு ஆகும், பயனர் எந்த அளவிற்கு கலைஞர்களுக்கு\nஅதோர் பாடலை Spotify மென்பொருளில் கேட்டால் எவ்வளவு பணம் செலுத்தினார்கள் என்பதைக் கண்டுபிடிக்க.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes நிமிடங்கள்';
   }
 

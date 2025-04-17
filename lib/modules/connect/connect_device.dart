@@ -9,7 +9,9 @@ import 'package:spotube/provider/connect/clients.dart';
 
 class ConnectDeviceButton extends HookConsumerWidget {
   final bool _sidebar;
+
   const ConnectDeviceButton({super.key}) : _sidebar = false;
+
   const ConnectDeviceButton.sidebar({super.key}) : _sidebar = true;
 
   @override
@@ -37,10 +39,14 @@ class ConnectDeviceButton extends HookConsumerWidget {
           onPressed: () {
             context.navigateTo(const ConnectRoute());
           },
-          trailing: const Icon(SpotubeIcons.speaker),
+          trailing: const Icon(
+            SpotubeIcons.speaker,
+            color: Colors.white,
+          ),
           child: Text(
             "${context.l10n.devices}"
             "${hasServices ? " (${connectClients.asData?.value.services.length})" : ""}",
+            style: const TextStyle(color: Colors.white),
           ),
         ),
       );

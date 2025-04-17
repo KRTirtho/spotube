@@ -9,6 +9,7 @@ class CheckboxFormBuilderField extends StatelessWidget {
   final Widget? leading;
   final Widget? trailing;
   final bool tristate;
+
   const CheckboxFormBuilderField({
     super.key,
     required this.name,

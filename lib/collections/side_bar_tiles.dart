@@ -38,17 +38,17 @@ List<SideBarTiles> getSidebarTileList(AppLocalizations l10n) => [
       SideBarTiles(
         id: "lyrics",
         pathPrefix: "/lyrics",
-        route: LyricsRoute(),
+        route: const LyricsRoute(),
         icon: SpotubeIcons.music,
         title: l10n.lyrics,
       ),
-      SideBarTiles(
-        id: "stats",
-        pathPrefix: "/stats",
-        route: const StatsRoute(),
-        icon: SpotubeIcons.chart,
-        title: l10n.stats,
-      ),
+      // SideBarTiles(
+      //   id: "stats",
+      //   pathPrefix: "/stats",
+      //   route: const StatsRoute(),
+      //   icon: SpotubeIcons.chart,
+      //   title: l10n.stats,
+      // ),
     ];
 
 List<SideBarTiles> getSidebarLibraryTileList(AppLocalizations l10n) => [
@@ -104,11 +104,11 @@ List<SideBarTiles> getNavbarTileList(AppLocalizations l10n) => [
         icon: SpotubeIcons.library,
         title: l10n.library,
       ),
-      SideBarTiles(
-        id: "stats",
-        pathPrefix: "/stats",
-        route: const StatsRoute(),
-        icon: SpotubeIcons.chart,
-        title: l10n.stats,
-      ),
+      // SideBarTiles(
+      //   id: "stats",
+      //   pathPrefix: "/stats",
+      //   route: const StatsRoute(),
+      //   icon: SpotubeIcons.chart,
+      //   title: l10n.stats,
+      // ),
     ];

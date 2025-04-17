@@ -1,11 +1,12 @@
 import 'dart:async';
-import 'package:spotube/services/logger/logger.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:flutter_broadcasts/flutter_broadcasts.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter_broadcasts/flutter_broadcasts.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 // ignore: implementation_imports
 import 'package:spotube/services/audio_player/playback_state.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/platform.dart';
 
 /// MediaKit [Player] by default doesn't have a state stream.
@@ -89,7 +90,9 @@ class CustomPlayer extends Player {
   bool get shuffled => _shuffled;
 
   Stream<AudioPlaybackState> get playerStateStream => _playerStateStream.stream;
+
   Stream<bool> get shuffleStream => _shuffleStream.stream;
+
   Stream<int> get indexChangeStream {
     int oldIndex = state.playlist.index;
     return stream.playlist.map((event) => event.index).where((newIndex) {

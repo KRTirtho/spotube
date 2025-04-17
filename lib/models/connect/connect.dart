@@ -10,6 +10,5 @@ import 'package:spotube/provider/audio_player/state.dart';
 
 part 'connect.freezed.dart';
 part 'connect.g.dart';
-
-part 'ws_event.dart';
 part 'load.dart';
+part 'ws_event.dart';

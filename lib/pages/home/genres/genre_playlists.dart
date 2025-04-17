@@ -1,22 +1,20 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart' show CollapseMode, FlexibleSpaceBar;
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-
 import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/button/back_button.dart';
-import 'package:spotube/components/playbutton_view/playbutton_view.dart';
-import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
-import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/hooks/utils/use_custom_status_bar_color.dart';
+import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class GenrePlaylistsPage extends HookConsumerWidget {
@@ -24,6 +22,7 @@ class GenrePlaylistsPage extends HookConsumerWidget {
 
   final Category category;
   final String id;
+
   const GenrePlaylistsPage({
     super.key,
     @PathParam("categoryId") required this.id,
@@ -114,7 +113,7 @@ class GenrePlaylistsPage extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                const SliverGap(20),
+                const SliverGap(32),
                 SliverSafeArea(
                   top: false,
                   sliver: SliverPadding(
@@ -134,7 +133,7 @@ class GenrePlaylistsPage extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                const SliverGap(20),
+                const SliverGap(32),
               ],
             ),
           ),

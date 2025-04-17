@@ -8,7 +8,10 @@ abstract interface class YouTubeEngine {
   }
 
   Future<Video> getVideo(String videoId);
+
   Future<StreamManifest> getStreamManifest(String videoId);
+
   Future<(Video, StreamManifest)> getVideoWithStreamInfo(String videoId);
+
   Future<List<Video>> searchVideos(String query);
 }

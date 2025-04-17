@@ -315,7 +315,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get shuffle_playlist => 'Afspeellijst schuifelen';
 
   @override
-  String get unshuffle_playlist => 'Afspeellijst onschuifelen';
+  String get not_shuffle_playlist => 'Afspeellijst onschuifelen';
 
   @override
   String get previous_track => 'Vorige nummer';
@@ -590,7 +590,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get step_2 => 'Stap 2';
 
   @override
-  String get step_2_steps => '1. Zodra je bent aangemeld, druk je op F12 of klik je met de rechtermuisknop > Inspect om de Browser devtools te openen.\n2. Ga vervolgens naar het tabblad \"Toepassing\" (Chrome, Edge, Brave enz..) of naar het tabblad \"Opslag\" (Firefox, Palemoon enz..).\n3. Ga naar de sectie \"Cookies\" en vervolgens naar de subsectie \"https://accounts.spotify.com\".';
+  String get step_2_steps => '1. Zodra je bent aangemeld, druk je op F12 of klik je met de rechtermuisknop > Inspect om de Browser devtools te openen.\n2. Ga vervolgens naar het tabblad \"Toepassing\" (Chrome, Edge, Brave enz..) of naar het tabblad \"Opslag\" (Firefox, Pale Moon enz..).\n3. Ga naar de sectie \"Cookies\" en vervolgens naar de subsectie \"https://accounts.spotify.com\".';
 
   @override
   String get step_3 => 'Stap 3';
@@ -672,16 +672,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get number_of_tracks_generate => 'Aantal nummers om te genereren';
 
   @override
-  String get acousticness => 'Akoestiek';
+  String get not_acoustic => 'Akoestiek';
 
   @override
-  String get danceability => 'Dansbaarheid';
+  String get dance_ability => 'Dansbaarheid';
 
   @override
   String get energy => 'Energie';
 
   @override
-  String get instrumentalness => 'Instrumentaliteit';
+  String get not_instrumental => 'Instrumentaliteit';
 
   @override
   String get liveness => 'Levendigheid';
@@ -690,7 +690,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get loudness => 'Luidheid';
 
   @override
-  String get speechiness => 'Spraak';
+  String get talkative => 'Spraak';
 
   @override
   String get valence => 'Valentie';
@@ -755,7 +755,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get download_warning => 'Als je alle nummers in bulk downloadt, ben je duidelijk bezig met muziekpiraterij en breng je schade toe aan de creatieve muziekmaatschappij. Ik hoop dat je je hiervan bewust bent. Probeer altijd het harde werk van artiesten te respecteren en te steunen.';
 
   @override
-  String get download_ip_ban_warning => 'BTW, je IP-adres kan worden geblokkeerd op YouTube als gevolg van buitensporige downloadverzoeken. IP-blokkering betekent dat je YouTube niet kunt gebruiken (zelfs als je ingelogd bent) voor tenminste 2-3 maanden vanaf dat IP-apparaat. Spotube is niet verantwoordelijk als dit ooit gebeurt.';
+  String get download_ip_ban_warning => 'BTW, je IP-adres kan worden geblokkeerd op YouTube als gevolg van buitensporige downloadverzoeken. IP-blokkering betekent dat je YouTube niet kunt gebruiken (zelfs als je ingelogd bent) voor tenminuteste 2-3 maanden vanaf dat IP-apparaat. Spotube is niet verantwoordelijk als dit ooit gebeurt.';
 
   @override
   String get by_clicking_accept_terms => 'Door op \'accepteren\' te klikken ga je akkoord met de volgende voorwaarden:';
@@ -809,7 +809,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get sleep_timer => 'Slaaptimer';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes minuten';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get failed_to_encrypt => 'Versleuteling mislukt';
 
   @override
-  String get encryption_failed_warning => 'Spotube gebruikt versleuteling om je gegevens veilig op te slaan. Maar dat is niet gelukt. Dus zal het terugvallen op onveilige opslag.\nAls je linux gebruikt, zorg er dan voor dat je een geheim-dienst (gnome-keyring, kde-wallet, keepassxc etc) hebt geïnstalleerd.';
+  String get encryption_failed_warning => 'Spotube gebruikt versleuteling om je gegevens veilig op te slaan. Maar dat is niet gelukt. Dus zal het terugvallen op onveilige opslag.\nAls je linux gebruikt, zorg er dan voor dat je een geheim-dienst (gnome-keyring, kde-wallet, KeePassXC etc) hebt geïnstalleerd.';
 
   @override
   String get querying_info => 'Info opvragen…';
@@ -1207,15 +1207,15 @@ class AppLocalizationsNl extends AppLocalizations {
   String get owned_by_you => 'Bezit door jou';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl gekopieerd naar klembord';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Dit is berekend op basis van Spotify\'s betaling per stream\nvan \$0.003 tot \$0.005. Dit is een hypothetische\nberekening om de gebruiker inzicht te geven in hoeveel ze\naan de artiesten zouden hebben betaald als ze hun liedjes op Spotify\nzouden luisteren.';
+  String get spotify_hypothetical_calculation => '*Dit is berekend op basis van Spotify\'s betaling per stream\nvan \$0.003 tot \$0.005. Dit is een hypothetische\nberekening om de gebruiker inzicht te geven in hoeveel ze\naan de artiesten zouden hebben betaald als ze hun liedjes op Spotify\nzouden luisteren.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes min';
   }
 

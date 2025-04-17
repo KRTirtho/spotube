@@ -3,22 +3,20 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/models/database/database.dart';
-import 'package:spotube/modules/player/player_actions.dart';
-import 'package:spotube/modules/player/player_overlay.dart';
-import 'package:spotube/modules/player/player_track_details.dart';
-import 'package:spotube/modules/player/player_controls.dart';
-import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/modules/player/player_actions.dart';
+import 'package:spotube/modules/player/player_controls.dart';
+import 'package:spotube/modules/player/player_overlay.dart';
+import 'package:spotube/modules/player/player_track_details.dart';
+import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';

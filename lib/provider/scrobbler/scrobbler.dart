@@ -13,6 +13,7 @@ import 'package:spotube/services/logger/logger.dart';
 class ScrobblerNotifier extends AsyncNotifier<Scrobblenaut?> {
   final StreamController<Track> _scrobbleController =
       StreamController<Track>.broadcast();
+
   @override
   build() async {
     final database = ref.watch(databaseProvider);

@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:uuid/uuid.dart';
 
 abstract class PrimitiveUtils {
@@ -11,6 +12,7 @@ abstract class PrimitiveUtils {
   }
 
   static final Random _random = Random();
+
   static T getRandomElement<T>(List<T> list) {
     return list[_random.nextInt(list.length)];
   }

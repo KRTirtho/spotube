@@ -1,6 +1,6 @@
 import 'package:audio_service/audio_service.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/extensions/artist_simple.dart';

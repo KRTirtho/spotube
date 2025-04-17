@@ -5,12 +5,12 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/extensions/context.dart';
-
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/utils/platform.dart';
 
 class AnonymousFallback extends ConsumerWidget {
   final Widget? child;
+
   const AnonymousFallback({
     super.key,
     this.child,

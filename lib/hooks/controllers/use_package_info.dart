@@ -1,6 +1,6 @@
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 PackageInfo usePackageInfo<PageKeyType, ItemType>({
   /// The app name. `CFBundleDisplayName` on iOS, `application/label` on Android.

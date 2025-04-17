@@ -17,6 +17,7 @@ import 'package:spotube/utils/primitive_utils.dart';
 
 class ArtistPageHeader extends HookConsumerWidget {
   final String artistId;
+
   const ArtistPageHeader({super.key, required this.artistId});
 
   @override
@@ -161,7 +162,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                         fit: BoxFit.cover,
                       ),
                     ),
-                    const Gap(20),
+                    const Gap(32),
                     Flexible(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -175,14 +176,14 @@ class ArtistPageHeader extends HookConsumerWidget {
                                     Text(context.l10n.artist).small().muted(),
                               ),
                               if (isBlackListed) ...[
-                                const Gap(5),
+                                const Gap(8),
                                 DestructiveBadge(
                                   child: Text(context.l10n.blacklisted).small(),
                                 ),
                               ]
                             ],
                           ),
-                          const Gap(10),
+                          const Gap(16),
                           Flexible(
                             child: AutoSizeText(
                               artist.name!,
@@ -194,7 +195,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                               minFontSize: 14,
                             ),
                           ),
-                          const Gap(5),
+                          const Gap(8),
                           Flexible(
                             child: AutoSizeText(
                               context.l10n.followers(
@@ -208,7 +209,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                             ).muted(),
                           ),
                           if (constrains.mdAndUp) ...[
-                            const Gap(20),
+                            const Gap(32),
                             actions,
                           ]
                         ],
@@ -217,7 +218,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                   ],
                 ),
                 if (constrains.smAndDown) ...[
-                  const Gap(20),
+                  const Gap(32),
                   actions,
                 ]
               ],

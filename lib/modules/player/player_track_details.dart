@@ -1,9 +1,7 @@
 import 'package:auto_route/auto_route.dart';
-
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
-
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';
@@ -17,6 +15,7 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 class PlayerTrackDetails extends HookConsumerWidget {
   final Color? color;
   final Track? track;
+
   const PlayerTrackDetails({super.key, this.color, this.track});
 
   @override

@@ -315,7 +315,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get shuffle_playlist => 'প্লেলিস্ট এলোমেলো করুন';
 
   @override
-  String get unshuffle_playlist => 'প্লেলিস্ট আগের মতো করুন';
+  String get not_shuffle_playlist => 'প্লেলিস্ট আগের মতো করুন';
 
   @override
   String get previous_track => 'আগের গানের ট্র্যাক';
@@ -590,7 +590,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get step_2 => 'ধাপ 2';
 
   @override
-  String get step_2_steps => '১. একবার আপনি লগ ইন করলে, ব্রাউজার ডেভটুল খুলতে F12 বা মাউসের রাইট ক্লিক > \"Inspect to open Browser DevTools\"  টিপুন।\n২. তারপর \"Application\" ট্যাবে যান (Chrome, Edge, Brave etc..) অথবা \"Storage\" Tab (Firefox, Palemoon etc..)\n৩. \"Cookies \" বিভাগে যান তারপর \"https://accounts.spotify.com\" উপবিভাগে যান';
+  String get step_2_steps => '১. একবার আপনি লগ ইন করলে, ব্রাউজার ডেভটুল খুলতে F12 বা মাউসের রাইট ক্লিক > \"Inspect to open Browser DevTools\"  টিপুন।\n২. তারপর \"Application\" ট্যাবে যান (Chrome, Edge, Brave etc..) অথবা \"Storage\" Tab (Firefox, Pale Moon etc..)\n৩. \"Cookies \" বিভাগে যান তারপর \"https://accounts.spotify.com\" উপবিভাগে যান';
 
   @override
   String get step_3 => 'ধাপ 3';
@@ -672,16 +672,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get number_of_tracks_generate => 'উত্পাদিত ট্র্যাকের সংখ্যা';
 
   @override
-  String get acousticness => 'অধ্যাত্মিকতা';
+  String get not_acoustic => 'অধ্যাত্মিকতা';
 
   @override
-  String get danceability => 'নৃত্যমূলকতা';
+  String get dance_ability => 'নৃত্যমূলকতা';
 
   @override
   String get energy => 'শক্তি';
 
   @override
-  String get instrumentalness => 'সাধারণতা';
+  String get not_instrumental => 'সাধারণতা';
 
   @override
   String get liveness => 'জীবনমুক্ততা';
@@ -690,7 +690,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get loudness => 'স্বরের উচ্চতা';
 
   @override
-  String get speechiness => 'বক্তব্যমূলকতা';
+  String get talkative => 'বক্তব্যমূলকতা';
 
   @override
   String get valence => 'সন্তোষমূলকতা';
@@ -809,7 +809,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get sleep_timer => 'স্লীপ টাইমার';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes মিনিট';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsBn extends AppLocalizations {
   String get failed_to_encrypt => 'এনক্রিপ্ট করা ব্যর্থ হয়েছে';
 
   @override
-  String get encryption_failed_warning => 'Spotube আপনার তথ্যগুলি নিরাপদভাবে স্টোর করতে এনক্রিপশন ব্যবহার করে। কিন্তু এটি ব্যর্থ হয়েছে। তাই এটি অনিরাপদ স্টোরে ফলফল হবে\nযদি আপনি Linux ব্যবহার করেন, তবে দয়া করে নিশ্চিত হউন যে আপনার কোনও সিক্রেট-সার্ভিস gnome-keyring, kde-wallet, keepassxc ইত্যাদি ইনস্টল করা আছে';
+  String get encryption_failed_warning => 'Spotube আপনার তথ্যগুলি নিরাপদভাবে স্টোর করতে এনক্রিপশন ব্যবহার করে। কিন্তু এটি ব্যর্থ হয়েছে। তাই এটি অনিরাপদ স্টোরে ফলফল হবে\nযদি আপনি Linux ব্যবহার করেন, তবে দয়া করে নিশ্চিত হউন যে আপনার কোনও সিক্রেট-সার্ভিস gnome-keyring, kde-wallet, KeePassXC ইত্যাদি ইনস্টল করা আছে';
 
   @override
   String get querying_info => 'তথ্য অনুসন্ধান করা হচ্ছে';
@@ -1207,15 +1207,15 @@ class AppLocalizationsBn extends AppLocalizations {
   String get owned_by_you => 'আপনার মালিকানাধীন';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl ক্লিপবোর্ডে কপি করা হয়েছে';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*এটি স্পোটিফাইয়ের প্রতি স্ট্রিম\n\$0.003 থেকে \$0.005 পেআউটের ভিত্তিতে গণনা করা হয়েছে। এটি একটি ধারণাগত\nগণনা ব্যবহারকারীদেরকে জানাতে দেয় যে কত টাকা\nতারা শিল্পীদের দিতো যদি তারা স্পোটিফাইতে\nতাদের গান শুনতেন।';
+  String get spotify_hypothetical_calculation => '*এটি স্পোটিফাইয়ের প্রতি স্ট্রিম\n\$0.003 থেকে \$0.005 পেআউটের ভিত্তিতে গণনা করা হয়েছে। এটি একটি ধারণাগত\nগণনা ব্যবহারকারীদেরকে জানাতে দেয় যে কত টাকা\nতারা শিল্পীদের দিতো যদি তারা স্পোটিফাইতে\nতাদের গান শুনতেন।';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes মিনিট';
   }
 

@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
-import 'package:uuid/uuid.dart';
 import 'package:spotube/utils/platform.dart';
+import 'package:uuid/uuid.dart';
 
 abstract class EncryptedKvStoreService {
   static const _storage = FlutterSecureStorage(

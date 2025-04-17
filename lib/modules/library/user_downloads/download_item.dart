@@ -16,6 +16,7 @@ import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class DownloadItem extends HookConsumerWidget {
   final Track track;
+
   const DownloadItem({
     super.key,
     required this.track,
@@ -135,7 +136,7 @@ class DownloadItem extends HookConsumerWidget {
                 ),
               DownloadStatus.completed =>
                 Icon(SpotubeIcons.done, color: Colors.green[400]),
-              DownloadStatus.queued => IconButton.ghost(
+              DownloadStatus.queued => IconButton.text(
                   icon: const Icon(SpotubeIcons.close),
                   onPressed: () {
                     downloadManager.removeFromQueue(track as SourcedTrack);

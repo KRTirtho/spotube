@@ -61,13 +61,12 @@ class ArtistLink extends StatelessWidget {
         if (hideOverflowArtist && artists.length > 3)
           AnchorButton(
             context.l10n.and_n_more(artists.length - 3),
-            onTap: () {
-              onOverflowArtistClick?.call();
-            },
+            // onTap: () {
+            //   onOverflowArtistClick;
+            // },
             overflow: TextOverflow.ellipsis,
             style: textStyle.copyWith(
-              color: colorScheme.secondary,
-              decoration: TextDecoration.underline,
+              color: Colors.white,
             ),
           ),
       ],

@@ -29,6 +29,7 @@ class WindowSize {
 
 class WindowManagerTools with WidgetsBindingObserver {
   static WindowManagerTools? _instance;
+
   static WindowManagerTools get instance => _instance!;
 
   WindowManagerTools._();
@@ -40,7 +41,7 @@ class WindowManagerTools with WidgetsBindingObserver {
 
     await windowManager.waitUntilReadyToShow(
       const WindowOptions(
-        title: "Spotube",
+        title: "SpoTube",
         backgroundColor: Colors.transparent,
         minimumSize: Size(300, 700),
         titleBarStyle: TitleBarStyle.hidden,

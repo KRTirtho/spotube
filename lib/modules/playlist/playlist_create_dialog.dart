@@ -4,14 +4,13 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
-
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/form/checkbox_form_field.dart';
 import 'package:spotube/components/form/text_form_field.dart';
@@ -24,6 +23,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
   /// Track ids to add to the playlist
   final List<String> trackIds;
   final String? playlistId;
+
   const PlaylistCreateDialog({
     super.key,
     this.trackIds = const [],
@@ -222,14 +222,14 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                   );
                 },
               ),
-              const Gap(20),
+              const Gap(32),
               TextFormBuilderField(
                 name: 'playlistName',
                 label: Text(context.l10n.playlist_name),
                 placeholder: Text(context.l10n.name_of_playlist),
                 validator: FormBuilderValidators.required(),
               ),
-              const Gap(20),
+              const Gap(32),
               TextFormBuilderField(
                 name: 'description',
                 label: Text(context.l10n.description),
@@ -238,12 +238,12 @@ class PlaylistCreateDialog extends HookConsumerWidget {
                 keyboardType: TextInputType.multiline,
                 maxLines: 5,
               ),
-              const Gap(20),
+              const Gap(32),
               CheckboxFormBuilderField(
                 name: 'public',
                 trailing: Text(context.l10n.public),
               ),
-              const Gap(10),
+              const Gap(16),
               CheckboxFormBuilderField(
                 name: 'collaborative',
                 trailing: Text(context.l10n.collaborative),

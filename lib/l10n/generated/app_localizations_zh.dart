@@ -315,7 +315,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get shuffle_playlist => '随机播放歌单';
 
   @override
-  String get unshuffle_playlist => '取消随机播放歌单';
+  String get not_shuffle_playlist => '取消随机播放歌单';
 
   @override
   String get previous_track => '上一首歌曲';
@@ -590,7 +590,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get step_2 => '步骤 2';
 
   @override
-  String get step_2_steps => '1. 一旦你已经完成登录, 按 F12 键或者鼠标右击网页空白区域 > 选择“检查”以打开浏览器开发者工具（DevTools）\n2. 然后选择 \"应用（Application）\" 标签页（Chrome, Edge, Brave 等基于 Chromium 的浏览器） 或 \"存储（Storage）\" 标签页 （Firefox, Palemoon 等基于 Firefox 的浏览器））\n3. 选择 \"Cookies\" 栏目然后选择 \"https://accounts.spotify.com\" 子栏目';
+  String get step_2_steps => '1. 一旦你已经完成登录, 按 F12 键或者鼠标右击网页空白区域 > 选择“检查”以打开浏览器开发者工具（DevTools）\n2. 然后选择 \"应用（Application）\" 标签页（Chrome, Edge, Brave 等基于 Chromium 的浏览器） 或 \"存储（Storage）\" 标签页 （Firefox, Pale Moon 等基于 Firefox 的浏览器））\n3. 选择 \"Cookies\" 栏目然后选择 \"https://accounts.spotify.com\" 子栏目';
 
   @override
   String get step_3 => '步骤 3';
@@ -672,16 +672,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get number_of_tracks_generate => '生成歌曲的数目';
 
   @override
-  String get acousticness => '原声程度';
+  String get not_acoustic => '原声程度';
 
   @override
-  String get danceability => '律动感';
+  String get dance_ability => '律动感';
 
   @override
   String get energy => '冲击感';
 
   @override
-  String get instrumentalness => '歌唱部分占比';
+  String get not_instrumental => '歌唱部分占比';
 
   @override
   String get liveness => '现场感';
@@ -690,7 +690,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get loudness => '响度';
 
   @override
-  String get speechiness => '朗诵比例';
+  String get talkative => '朗诵比例';
 
   @override
   String get valence => '心理感受';
@@ -809,7 +809,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get sleep_timer => '睡眠定时器';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes 分';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get failed_to_encrypt => '加密失败';
 
   @override
-  String get encryption_failed_warning => 'Spotube使用加密来安全地存储您的数据。但是失败了。因此，它将回退到不安全的存储\n如果您使用Linux，请确保已安装gnome-keyring、kde-wallet和keepassxc等秘密服务';
+  String get encryption_failed_warning => 'Spotube使用加密来安全地存储您的数据。但是失败了。因此，它将回退到不安全的存储\n如果您使用Linux，请确保已安装gnome-keyring、kde-wallet和KeePassXC等秘密服务';
 
   @override
   String get querying_info => '正在查询信息...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsZh extends AppLocalizations {
   String get owned_by_you => '由您拥有';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl 已复制到剪贴板';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*根据 Spotify 每次流媒体的支付金额\n\$0.003 到 \$0.005 进行计算。这是一个假设性的\n计算，用于给用户了解他们如果在 Spotify 上\n收听歌曲会支付给艺术家的金额。';
+  String get spotify_hypothetical_calculation => '*根据 Spotify 每次流媒体的支付金额\n\$0.003 到 \$0.005 进行计算。这是一个假设性的\n计算，用于给用户了解他们如果在 Spotify 上\n收听歌曲会支付给艺术家的金额。';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes 分钟';
   }
 

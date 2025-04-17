@@ -144,7 +144,7 @@ class TrackPresentationTopSection extends HookConsumerWidget {
                     return SurfaceCard(
                       child: Text(
                         context.l10n
-                            .copied_shareurl_to_clipboard(options.shareUrl!),
+                            .copied_share_url_to_clipboard(options.shareUrl!),
                       ).small(),
                     );
                   },

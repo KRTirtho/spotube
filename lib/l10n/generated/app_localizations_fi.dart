@@ -315,7 +315,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get shuffle_playlist => 'Sekoita soittolista';
 
   @override
-  String get unshuffle_playlist => 'Poista sekoitus soittolistasta';
+  String get not_shuffle_playlist => 'Poista sekoitus soittolistasta';
 
   @override
   String get previous_track => 'Äskeinen kappale';
@@ -590,7 +590,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get step_2 => 'Vaihe 2';
 
   @override
-  String get step_2_steps => '1. Kun olet kirjautunut, paina F12 tai oikeaa hiiren näppäintä > Tarkista ja avaa selaimen kehittäjä työkalut.\n2. Mene sitten \"Application\"-välilehteen (Chrome, Edge, Brave jne..) tai \"Storage\"-välilehteen (Firefox, Palemoon jne..)\n3. Mene \"Cookies\"-osastoon, sitten \"https://accounts.spotify.com\" alakohtaan.';
+  String get step_2_steps => '1. Kun olet kirjautunut, paina F12 tai oikeaa hiiren näppäintä > Tarkista ja avaa selaimen kehittäjä työkalut.\n2. Mene sitten \"Application\"-välilehteen (Chrome, Edge, Brave jne..) tai \"Storage\"-välilehteen (Firefox, Pale Moon jne..)\n3. Mene \"Cookies\"-osastoon, sitten \"https://accounts.spotify.com\" alakohtaan.';
 
   @override
   String get step_3 => 'Vaihe 3';
@@ -672,16 +672,16 @@ class AppLocalizationsFi extends AppLocalizations {
   String get number_of_tracks_generate => 'Numero tuotettavia kappaleita';
 
   @override
-  String get acousticness => 'Akustisuus';
+  String get not_acoustic => 'Akustisuus';
 
   @override
-  String get danceability => 'Tanssittavuus';
+  String get dance_ability => 'Tanssittavuus';
 
   @override
   String get energy => 'Energia';
 
   @override
-  String get instrumentalness => 'Instrumentaalisuus';
+  String get not_instrumental => 'Instrumentaalisuus';
 
   @override
   String get liveness => 'Elävyyttä';
@@ -690,7 +690,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get loudness => 'Äänekkyys';
 
   @override
-  String get speechiness => 'Puheisuus';
+  String get talkative => 'Puheisuus';
 
   @override
   String get valence => 'Valenssi';
@@ -809,7 +809,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get sleep_timer => 'Uniajastin';
 
   @override
-  String mins(Object minutes) {
+  String minutes(Object minutes) {
     return '$minutes Minuuttia';
   }
 
@@ -848,7 +848,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get failed_to_encrypt => 'Salaaminen epäonnistui';
 
   @override
-  String get encryption_failed_warning => 'Spotube käyttää salausta tallentaakseen tietosi, mutta epäonnistui, joten se palaa epäturvalliseen tallennukseen\nJos käytät Linuxia, varmista että sinulla on turvallisuuspalvelu (gnome-keyring, kde-wallet, keepassxc jne) asennettu';
+  String get encryption_failed_warning => 'Spotube käyttää salausta tallentaakseen tietosi, mutta epäonnistui, joten se palaa epäturvalliseen tallennukseen\nJos käytät Linuxia, varmista että sinulla on turvallisuuspalvelu (gnome-keyring, kde-wallet, KeePassXC jne) asennettu';
 
   @override
   String get querying_info => 'Hankitaan tietoa...';
@@ -1207,15 +1207,15 @@ class AppLocalizationsFi extends AppLocalizations {
   String get owned_by_you => 'Sinun omistama';
 
   @override
-  String copied_shareurl_to_clipboard(Object shareUrl) {
+  String copied_share_url_to_clipboard(Object shareUrl) {
     return '$shareUrl kopioitu leikepöydälle';
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Tämä on laskettu Spotifyn suoratoiston\nmaksun perusteella, joka on 0,003–0,005 dollaria.\nTämä on hypoteettinen laskelma, joka antaa käyttäjälle käsityksen\nsiitä, kuinka paljon he olisivat maksaneet artisteille,\njollei heidän kappaleensa olisi kuunneltu Spotifyssa.';
+  String get spotify_hypothetical_calculation => '*Tämä on laskettu Spotifyn suoratoiston\nmaksun perusteella, joka on 0,003–0,005 dollaria.\nTämä on hypoteettinen laskelma, joka antaa käyttäjälle käsityksen\nsiitä, kuinka paljon he olisivat maksaneet artisteille,\njollei heidän kappaleensa olisi kuunneltu Spotifyssa.';
 
   @override
-  String count_mins(Object minutes) {
+  String count_minutes(Object minutes) {
     return '$minutes min';
   }
 

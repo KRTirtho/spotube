@@ -22,6 +22,7 @@ const engineDownloadUrls = {
 
 class YouTubeEngineNotInstalledDialog extends HookConsumerWidget {
   final YoutubeClientEngine engine;
+
   const YouTubeEngineNotInstalledDialog({
     super.key,
     required this.engine,
@@ -88,7 +89,7 @@ class YouTubeEngineNotInstalledDialog extends HookConsumerWidget {
         ),
       ),
       actions: [
-        Button.text(
+        Button.ghost(
           onPressed: () {
             if (!context.mounted) return;
             Navigator.of(context).pop(false);

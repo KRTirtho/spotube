@@ -12,6 +12,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 
 class PlayerOverlayCollapsedSection extends HookConsumerWidget {
   final PanelController panelController;
+
   const PlayerOverlayCollapsedSection({
     super.key,
     required this.panelController,
@@ -101,7 +102,7 @@ class PlayerOverlayCollapsedSection extends HookConsumerWidget {
                                     ? null
                                     : audioPlayer.skipToNext,
                               ),
-                              const Gap(5),
+                              const Gap(8),
                             ],
                           ),
                         ],

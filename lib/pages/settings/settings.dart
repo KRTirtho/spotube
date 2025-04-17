@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Material, MaterialType;
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -15,7 +16,6 @@ import 'package:spotube/pages/settings/sections/language_region.dart';
 import 'package:spotube/pages/settings/sections/playback.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class SettingsPage extends HookConsumerWidget {
@@ -57,9 +57,17 @@ class SettingsPage extends HookConsumerWidget {
                       if (!kIsWeb) const SettingsDevelopersSection(),
                       const SettingsAboutSection(),
                       Center(
-                        child: Button.destructive(
-                          onPressed: preferencesNotifier.reset,
-                          child: Text(context.l10n.restore_defaults),
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(
+                            minWidth: 150,
+                            maxWidth: 250,
+                            minHeight: 40,
+                            maxHeight: 60,
+                          ),
+                          child: Button.destructive(
+                            onPressed: preferencesNotifier.reset,
+                            child: Text(context.l10n.restore_defaults),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 200),

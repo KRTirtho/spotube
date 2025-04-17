@@ -17,9 +17,13 @@ enum SourceType {
 )
 class SourceMatchTable extends Table {
   IntColumn get id => integer().autoIncrement()();
+
   TextColumn get trackId => text()();
+
   TextColumn get sourceId => text()();
+
   TextColumn get sourceType =>
       textEnum<SourceType>().withDefault(Constant(SourceType.youtube.name))();
+
   DateTimeColumn get createdAt => dateTime().withDefault(currentDateAndTime)();
 }

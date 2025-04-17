@@ -90,7 +90,7 @@ class DiscordNotifier extends AsyncNotifier<void> {
               track.album?.images?.first.url ?? "spotube-logo-foreground",
           largeText: track.album?.name ?? "Unknown album",
           smallImage: "spotube-logo-foreground",
-          smallText: "Spotube",
+          smallText: "SpoTube",
         ),
         buttons: [
           RPCButton(

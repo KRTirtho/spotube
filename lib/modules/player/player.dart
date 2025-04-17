@@ -4,36 +4,35 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/framework/app_pop_scope.dart';
-import 'package:spotube/modules/player/player_actions.dart';
-import 'package:spotube/modules/player/player_controls.dart';
-import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/components/dialogs/track_details_dialog.dart';
+import 'package:spotube/components/framework/app_pop_scope.dart';
+import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/modules/player/player_actions.dart';
+import 'package:spotube/modules/player/player_controls.dart';
+import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/server/active_sourced_track.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/platform.dart';
-
 import 'package:url_launcher/url_launcher_string.dart';
 
 class PlayerView extends HookConsumerWidget {
   final PanelController panelController;
   final ScrollController scrollController;
+
   const PlayerView({
     super.key,
     required this.panelController,

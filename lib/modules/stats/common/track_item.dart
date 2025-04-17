@@ -10,6 +10,7 @@ import 'package:spotube/extensions/image.dart';
 class StatsTrackItem extends StatelessWidget {
   final Track track;
   final Widget info;
+
   const StatsTrackItem({
     super.key,
     required this.track,

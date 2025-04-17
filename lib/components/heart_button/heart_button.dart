@@ -1,6 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/heart_button/use_track_toggle_like.dart';
 import 'package:spotube/extensions/context.dart';
@@ -15,6 +14,7 @@ class HeartButton extends HookConsumerWidget {
   final String? tooltip;
   final ButtonVariance variance;
   final ButtonSize size;
+
   const HeartButton({
     required this.isLiked,
     required this.onPressed,
@@ -64,6 +64,7 @@ class HeartButton extends HookConsumerWidget {
 
 class TrackHeartButton extends HookConsumerWidget {
   final Track track;
+
   const TrackHeartButton({
     super.key,
     required this.track,

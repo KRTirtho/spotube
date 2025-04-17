@@ -1,20 +1,20 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/formatters.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/modules/stats/common/album_item.dart';
 import 'package:spotube/extensions/context.dart';
-
+import 'package:spotube/modules/stats/common/album_item.dart';
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/albums.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
-import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
 class StatsAlbumsPage extends HookConsumerWidget {
   static const name = "stats_albums";
+
   const StatsAlbumsPage({super.key});
 
   @override

@@ -1,7 +1,5 @@
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
-
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class ShimmerLyrics extends HookWidget {
@@ -27,7 +25,7 @@ class ShimmerLyrics extends HookWidget {
             children: [
               for (final text in texts) ...[
                 Text(text),
-                if (text != texts.last) const Gap(10),
+                if (text != texts.last) const Gap(16),
               ],
             ],
           );

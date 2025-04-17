@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart' show ListTile;
+import 'package:flutter/material.dart' show DropdownMenuItem, ListTile;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/models/database/database.dart';
-import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 class SettingsDesktopSection extends HookConsumerWidget {
@@ -19,17 +19,17 @@ class SettingsDesktopSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.desktop,
       children: [
-        const Gap(10),
+        const Gap(16),
         AdaptiveSelectTile<CloseBehavior>(
           secondary: const Icon(SpotubeIcons.close),
           title: Text(context.l10n.close_behavior),
           value: preferences.closeBehavior,
           options: [
-            SelectItemButton(
+            DropdownMenuItem(
               value: CloseBehavior.close,
               child: Text(context.l10n.close),
             ),
-            SelectItemButton(
+            DropdownMenuItem(
               value: CloseBehavior.minimizeToTray,
               child: Text(context.l10n.minimize_to_tray),
             ),

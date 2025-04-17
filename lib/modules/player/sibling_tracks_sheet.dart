@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -60,6 +59,7 @@ final sourceInfoToIconMap = {
 
 class SiblingTracksSheet extends HookConsumerWidget {
   final bool floating;
+
   const SiblingTracksSheet({
     super.key,
     this.floating = true,

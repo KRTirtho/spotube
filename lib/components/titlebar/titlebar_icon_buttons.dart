@@ -48,7 +48,9 @@ class ShadcnWindowButton extends StatelessWidget {
 /// Close
 class CloseIcon extends StatelessWidget {
   final Color color;
+
   const CloseIcon({super.key, required this.color});
+
   @override
   Widget build(BuildContext context) => Align(
         alignment: Alignment.topLeft,
@@ -69,13 +71,16 @@ class CloseIcon extends StatelessWidget {
 /// Maximize
 class MaximizeIcon extends StatelessWidget {
   final Color color;
+
   const MaximizeIcon({super.key, required this.color});
+
   @override
   Widget build(BuildContext context) => _AlignedPaint(_MaximizePainter(color));
 }
 
 class _MaximizePainter extends _IconPainter {
   _MaximizePainter(super.color);
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint p = getPaint(color);
@@ -86,16 +91,19 @@ class _MaximizePainter extends _IconPainter {
 /// Restore
 class RestoreIcon extends StatelessWidget {
   final Color color;
+
   const RestoreIcon({
     super.key,
     required this.color,
   });
+
   @override
   Widget build(BuildContext context) => _AlignedPaint(_RestorePainter(color));
 }
 
 class _RestorePainter extends _IconPainter {
   _RestorePainter(super.color);
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint p = getPaint(color);
@@ -112,13 +120,16 @@ class _RestorePainter extends _IconPainter {
 /// Minimize
 class MinimizeIcon extends StatelessWidget {
   final Color color;
+
   const MinimizeIcon({super.key, required this.color});
+
   @override
   Widget build(BuildContext context) => _AlignedPaint(_MinimizePainter(color));
 }
 
 class _MinimizePainter extends _IconPainter {
   _MinimizePainter(super.color);
+
   @override
   void paint(Canvas canvas, Size size) {
     Paint p = getPaint(color);
@@ -130,6 +141,7 @@ class _MinimizePainter extends _IconPainter {
 /// Helpers
 abstract class _IconPainter extends CustomPainter {
   _IconPainter(this.color);
+
   final Color color;
 
   @override
@@ -138,6 +150,7 @@ abstract class _IconPainter extends CustomPainter {
 
 class _AlignedPaint extends StatelessWidget {
   const _AlignedPaint(this.painter);
+
   final CustomPainter painter;
 
   @override

@@ -2,6 +2,7 @@ part of '../database.dart';
 
 class DecryptedText {
   final String value;
+
   const DecryptedText(this.value);
 
   static Encrypter? _encrypter;

@@ -27,6 +27,7 @@ class FollowedArtistsState extends CursorPaginatedState<Artist> {
 class FollowedArtistsNotifier
     extends CursorPaginatedAsyncNotifier<Artist, FollowedArtistsState> {
   final Dio dio;
+
   FollowedArtistsNotifier()
       : dio = Dio(),
         super();

@@ -12,6 +12,7 @@ import 'package:spotube/utils/platform.dart';
 
 class PlayPauseIntent extends Intent {
   final WidgetRef ref;
+
   const PlayPauseIntent(this.ref);
 }
 
@@ -34,6 +35,7 @@ class PlayPauseAction extends Action<PlayPauseIntent> {
 class NavigationIntent extends Intent {
   final AppRouter router;
   final String path;
+
   const NavigationIntent(this.router, this.path);
 }
 
@@ -48,7 +50,6 @@ class NavigationAction extends Action<NavigationIntent> {
 enum HomeTabs {
   browse,
   search,
-
   lyrics,
   userPlaylists,
   userArtists,
@@ -60,6 +61,7 @@ enum HomeTabs {
 class HomeTabIntent extends Intent {
   final AppRouter router;
   final HomeTabs tab;
+
   const HomeTabIntent(this.router, {required this.tab});
 }
 
@@ -75,7 +77,7 @@ class HomeTabAction extends Action<HomeTabIntent> {
         router.navigate(const SearchRoute());
         break;
       case HomeTabs.lyrics:
-        router.navigate(LyricsRoute());
+        router.navigate(const LyricsRoute());
         break;
       case HomeTabs.userPlaylists:
         router.navigate(const UserPlaylistsRoute());
@@ -100,6 +102,7 @@ class HomeTabAction extends Action<HomeTabIntent> {
 class SeekIntent extends Intent {
   final WidgetRef ref;
   final bool forward;
+
   const SeekIntent(this.ref, this.forward);
 }
 

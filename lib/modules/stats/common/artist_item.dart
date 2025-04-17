@@ -9,6 +9,7 @@ import 'package:spotube/extensions/image.dart';
 class StatsArtistItem extends StatelessWidget {
   final Artist artist;
   final Widget info;
+
   const StatsArtistItem({
     super.key,
     required this.artist,

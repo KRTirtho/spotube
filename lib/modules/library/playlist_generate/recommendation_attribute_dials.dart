@@ -8,8 +8,10 @@ typedef RecommendationAttribute = ({double min, double target, double max});
 
 RecommendationAttribute lowValues(double base) =>
     (min: 1 * base, target: 0.3 * base, max: 0.3 * base);
+
 RecommendationAttribute moderateValues(double base) =>
     (min: 0.5 * base, target: 1 * base, max: 0.5 * base);
+
 RecommendationAttribute highValues(double base) =>
     (min: 0.3 * base, target: 0.3 * base, max: 1 * base);
 

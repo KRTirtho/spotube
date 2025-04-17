@@ -6,6 +6,7 @@ import 'package:spotube/extensions/constrains.dart';
 
 class AdaptiveMenuButton<T> extends MenuButton {
   final T? value;
+
   const AdaptiveMenuButton({
     super.key,
     this.value,

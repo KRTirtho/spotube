@@ -62,6 +62,7 @@ class SpotifyActivityContext {
       _$SpotifyActivityContextFromJson(json);
 
   String get id => uri.split(":").last;
+
   String get path => uri.split(":").skip(1).join("/");
 }
 

@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-
 import 'package:spotify/spotify.dart';
 import 'package:spotube/extensions/context.dart';
 
@@ -8,6 +7,7 @@ final replaceDownloadedFileState = StateProvider<bool?>((ref) => null);
 
 class ReplaceDownloadedDialog extends ConsumerWidget {
   final Track track;
+
   const ReplaceDownloadedDialog({required this.track, super.key});
 
   @override

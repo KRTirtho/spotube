@@ -1,12 +1,13 @@
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 
 class SortTracksDropdown extends StatelessWidget {
   final SortBy? value;
   final void Function(SortBy)? onChanged;
+
   const SortTracksDropdown({
     this.onChanged,
     this.value,

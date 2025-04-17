@@ -1,10 +1,11 @@
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistPageRelatedArtists extends ConsumerWidget {
   final String artistId;
+
   const ArtistPageRelatedArtists({
     super.key,
     required this.artistId,

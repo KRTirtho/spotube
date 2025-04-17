@@ -102,7 +102,7 @@ class PlaybuttonView extends StatelessWidget {
                 ],
               ),
             ),
-            const SliverGap(10),
+            const SliverGap(16),
             // Toggle between grid and list view
             switch ((isGrid.value, isLoading)) {
               (true, _) => !isLoading && itemCount == 0
