@@ -168,7 +168,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/window_manager/macos
 
 SPEC CHECKSUMS:
-  app_links: 9028728e32c83a0831d9db8cf91c526d16cc5468
+  app_links: afe860c55c7ef176cea7fb630a2b7d7736de591d
   audio_service: 0d9e4e25347bb3efb768f3b9f005911a81e587a7
   audio_session: 48ab6500f7a5e7c64363e206565a5dfe5a0c1441
   bonsoir_darwin: 29c7ccf356646118844721f36e1de4b61f6cbd0e
