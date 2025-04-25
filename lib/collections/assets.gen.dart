@@ -158,7 +158,10 @@ class Assets {
       AssetGenImage('assets/spotube-logo-light.png');
   static const AssetGenImage spotubeLogoMacos =
       AssetGenImage('assets/spotube-logo-macos.png');
-  static const AssetGenImage spotubeLogo =
+  static const AssetGenImage spotubeLogoBmp =
+      AssetGenImage('assets/spotube-logo.bmp');
+  static const String spotubeLogoIco = 'assets/spotube-logo.ico';
+  static const AssetGenImage spotubeLogoPng =
       AssetGenImage('assets/spotube-logo.png');
   static const AssetGenImage spotubeLogoAndroid12 =
       AssetGenImage('assets/spotube-logo_android12.png');
@@ -168,8 +171,20 @@ class Assets {
       AssetGenImage('assets/spotube-nightly-logo-foreground.png');
   static const String spotubeNightlyLogoForegroundSvg =
       'assets/spotube-nightly-logo-foreground.svg';
+  static const AssetGenImage spotubeNightlyLogo =
+      AssetGenImage('assets/spotube-nightly-logo.png');
+  static const AssetGenImage spotubeNightlyLogoAndroid12 =
+      AssetGenImage('assets/spotube-nightly-logo_android12.png');
   static const AssetGenImage spotubeScreenshot =
       AssetGenImage('assets/spotube-screenshot.png');
+  static const AssetGenImage spotubeTallCapsule =
+      AssetGenImage('assets/spotube-tall-capsule.png');
+  static const AssetGenImage spotubeWideCapsuleLarge =
+      AssetGenImage('assets/spotube-wide-capsule-large.png');
+  static const AssetGenImage spotubeWideCapsuleSmall =
+      AssetGenImage('assets/spotube-wide-capsule-small.png');
+  static const AssetGenImage spotubeBanner =
+      AssetGenImage('assets/spotube_banner.png');
   static const AssetGenImage success = AssetGenImage('assets/success.png');
   static const $AssetsTutorialGen tutorial = $AssetsTutorialGen();
   static const AssetGenImage userPlaceholder =
@@ -191,12 +206,20 @@ class Assets {
         spotubeLogoItem,
         spotubeLogoLight,
         spotubeLogoMacos,
-        spotubeLogo,
+        spotubeLogoBmp,
+        spotubeLogoIco,
+        spotubeLogoPng,
         spotubeLogoAndroid12,
         spotubeNightlyItem,
         spotubeNightlyLogoForegroundPng,
         spotubeNightlyLogoForegroundSvg,
+        spotubeNightlyLogo,
+        spotubeNightlyLogoAndroid12,
         spotubeScreenshot,
+        spotubeTallCapsule,
+        spotubeWideCapsuleLarge,
+        spotubeWideCapsuleSmall,
+        spotubeBanner,
         success,
         userPlaceholder
       ];

@@ -50,7 +50,7 @@ class HomePage extends HookConsumerWidget {
                   floating: true,
                   title: Image.asset(
                     theme.brightness == Brightness.dark
-                        ? Assets.spotubeLogo.path
+                        ? Assets.spotubeLogoPng.path
                         : Assets.spotubeLogoLight.path,
                     height: 45,
                     width: 45,

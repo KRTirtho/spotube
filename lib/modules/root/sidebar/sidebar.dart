@@ -26,7 +26,7 @@ class Sidebar extends HookConsumerWidget {
         color: Colors.black,
         borderRadius: BorderRadius.circular(50),
       ),
-      child: Assets.spotubeLogo.image(
+      child: Assets.spotubeLogoPng.image(
         height: 50,
         cacheHeight: (100 * MediaQuery.devicePixelRatioOf(context)).toInt(),
       ),
