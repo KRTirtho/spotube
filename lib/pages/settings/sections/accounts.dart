@@ -49,7 +49,7 @@ class SettingsAccountSection extends HookConsumerWidget {
               ),
             ),
             onTap: () {
-              context.navigateTo(ProfileRoute());
+              context.navigateTo(const ProfileRoute());
             },
           ),
         if (auth.asData?.value == null)

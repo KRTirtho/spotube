@@ -200,7 +200,7 @@ class SearchPage extends HookConsumerWidget {
                                       fontSize: 20,
                                       fontWeight: FontWeight.w900,
                                       color: theme.colorScheme.foreground
-                                          .withOpacity(0.7),
+                                          .withValues(alpha: 0.7),
                                     ),
                                   ),
                                   const SizedBox(height: 20),

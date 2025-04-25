@@ -21,7 +21,7 @@ class SpotubeColor extends Color {
 
   @override
   String toString() {
-    return "$name:$value";
+    return "$name:${toARGB32()}";
   }
 }
 

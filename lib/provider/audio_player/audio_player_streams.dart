@@ -63,7 +63,9 @@ class AudioPlayerStreamListeners {
         final currentSegments = await ref.read(segmentProvider.future);
 
         if (currentSegments?.segments.isNotEmpty != true ||
-            position < const Duration(seconds: 3)) return;
+            position < const Duration(seconds: 3)) {
+          return;
+        }
 
         for (final segment in currentSegments!.segments) {
           final seconds = position.inSeconds;

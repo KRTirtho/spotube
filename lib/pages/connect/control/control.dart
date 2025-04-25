@@ -188,7 +188,7 @@ class ConnectControlPage extends HookConsumerWidget {
                                     ? context.l10n.unshuffle_playlist
                                     : context.l10n.shuffle_playlist,
                               ),
-                            ),
+                            ).call,
                             child: IconButton(
                               icon: const Icon(SpotubeIcons.shuffle),
                               variance: shuffled
@@ -204,7 +204,7 @@ class ConnectControlPage extends HookConsumerWidget {
                           Tooltip(
                             tooltip: TooltipContainer(
                               child: Text(context.l10n.previous_track),
-                            ),
+                            ).call,
                             child: IconButton.ghost(
                               icon: const Icon(SpotubeIcons.skipBack),
                               onPressed: playlist.activeTrack == null
@@ -219,7 +219,7 @@ class ConnectControlPage extends HookConsumerWidget {
                                     ? context.l10n.pause_playback
                                     : context.l10n.resume_playback,
                               ),
-                            ),
+                            ).call,
                             child: IconButton.primary(
                               shape: ButtonShape.circle,
                               icon: playlist.activeTrack == null
@@ -247,7 +247,7 @@ class ConnectControlPage extends HookConsumerWidget {
                           ),
                           Tooltip(
                             tooltip: TooltipContainer(
-                                child: Text(context.l10n.next_track)),
+                                child: Text(context.l10n.next_track)).call,
                             child: IconButton.ghost(
                               icon: const Icon(SpotubeIcons.skipForward),
                               onPressed: playlist.activeTrack == null
@@ -264,7 +264,7 @@ class ConnectControlPage extends HookConsumerWidget {
                                         ? context.l10n.repeat_playlist
                                         : context.l10n.no_loop,
                               ),
-                            ),
+                            ).call,
                             child: IconButton(
                               icon: Icon(
                                 loopMode == PlaylistMode.single

@@ -84,7 +84,7 @@ class ArtistPageHeader extends HookConsumerWidget {
           Tooltip(
             tooltip: TooltipContainer(
               child: Text(context.l10n.add_artist_to_blacklist),
-            ),
+            ).call,
             child: IconButton(
               icon: Icon(
                 SpotubeIcons.userRemove,

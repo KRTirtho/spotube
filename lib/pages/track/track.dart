@@ -77,7 +77,7 @@ class TrackPage extends HookConsumerWidget {
                     ),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                      colorScheme.background.withOpacity(0.5),
+                      colorScheme.background.withValues(alpha: 0.5),
                       BlendMode.srcOver,
                     ),
                     alignment: Alignment.topCenter,
@@ -196,7 +196,7 @@ class TrackPage extends HookConsumerWidget {
                                         Tooltip(
                                           tooltip: TooltipContainer(
                                             child: Text(context.l10n.play_next),
-                                          ),
+                                          ).call,
                                           child: IconButton.outline(
                                             icon: const Icon(
                                                 SpotubeIcons.lightning),
@@ -214,7 +214,7 @@ class TrackPage extends HookConsumerWidget {
                                                 ? context.l10n.pause_playback
                                                 : context.l10n.play,
                                           ),
-                                        ),
+                                        ).call,
                                         child: IconButton.primary(
                                           shape: ButtonShape.circle,
                                           icon: Icon(

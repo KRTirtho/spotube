@@ -71,7 +71,7 @@ class Sidebar extends HookConsumerWidget {
         NavigationButton(
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           child: Tooltip(
-            tooltip: TooltipContainer(child: Text(tile.title)),
+            tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
           onPressed: () {
@@ -88,7 +88,7 @@ class Sidebar extends HookConsumerWidget {
             context.navigateTo(tile.route);
           },
           child: Tooltip(
-            tooltip: TooltipContainer(child: Text(tile.title)),
+            tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
         ),

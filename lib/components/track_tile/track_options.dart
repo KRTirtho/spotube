@@ -474,7 +474,7 @@ class TrackOptions extends HookConsumerWidget {
             leading: Assets.logos.songlinkTransparent.image(
               width: 22,
               height: 22,
-              color: colorScheme.foreground.withOpacity(0.5),
+              color: colorScheme.foreground.withValues(alpha: 0.5),
             ),
             child: Text(context.l10n.song_link),
           ),
