@@ -121,7 +121,16 @@ class SearchPage extends HookConsumerWidget {
                                       }
                                     },
                                     child: AutoComplete(
-                                      suggestions: suggestions,
+                                      suggestions: suggestions.length <= 2
+                                          ? [
+                                              ...suggestions,
+                                              "Twenty One Pilots",
+                                              "Linkin Park",
+                                              "d4vd"
+                                            ]
+                                          : suggestions,
+                                      completer: (suggestion) => suggestion,
+                                      mode: AutoCompleteMode.replaceAll,
                                       child: TextField(
                                         autofocus: true,
                                         controller: controller,
