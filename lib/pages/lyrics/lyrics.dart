@@ -101,7 +101,7 @@ class LyricsPage extends HookConsumerWidget {
             borderRadius: BorderRadius.zero,
             borderWidth: 0,
             child: ColoredBox(
-              color: palette.color.withOpacity(.7),
+              color: palette.color.withValues(alpha: .7),
               child: SafeArea(
                 child: IndexedStack(
                   index: selectedIndex.value,

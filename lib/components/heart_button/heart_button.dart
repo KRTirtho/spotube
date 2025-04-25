@@ -33,7 +33,7 @@ class HeartButton extends HookConsumerWidget {
     if (auth.asData?.value == null) return const SizedBox.shrink();
 
     return Tooltip(
-      tooltip: TooltipContainer(child: Text(tooltip ?? "")),
+      tooltip: TooltipContainer(child: Text(tooltip ?? "")).call,
       child: IconButton(
         variance: variance,
         size: size,

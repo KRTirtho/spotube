@@ -130,8 +130,10 @@ class TextFormBuilderField extends StatelessWidget {
             filled: filled,
             placeholder: placeholder,
             border: border,
-            leading: leading,
-            trailing: trailing,
+            features: [
+              if (leading != null) InputFeature.leading(leading!),
+              if (trailing != null) InputFeature.trailing(trailing!),
+            ],
             padding: padding,
             onSubmitted: (value) {
               field.validate();

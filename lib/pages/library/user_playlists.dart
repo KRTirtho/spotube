@@ -99,7 +99,9 @@ class UserPlaylistsPage extends HookConsumerWidget {
                   child: TextField(
                     onChanged: (value) => searchText.value = value,
                     placeholder: Text(context.l10n.filter_playlists),
-                    leading: const Icon(SpotubeIcons.filter),
+                    features: const [
+                      InputFeature.leading(Icon(SpotubeIcons.filter)),
+                    ],
                   ),
                 ),
               ),

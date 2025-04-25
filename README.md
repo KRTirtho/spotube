@@ -350,4 +350,4 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [flutter_new_pipe_extractor](https://github.com/KRTirtho/flutter_new_pipe_extractor) - NewPipeExtractor binding for Flutter (Android only)
 </details>
 
-<div align="center"><h4>© Copyright Spotube 2024</h4></div>
+<div align="center"><h4>© Copyright Spotube 2025</h4></div>

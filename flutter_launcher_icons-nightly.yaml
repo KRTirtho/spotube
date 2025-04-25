@@ -2,5 +2,5 @@ flutter_launcher_icons:
   android: true
   ios: true
   image_path: "assets/spotube-nightly-logo.png"
-  adaptive_icon_foreground: "assets/spotube-nightly-logo-foreground.jpg"
+  adaptive_icon_foreground: "assets/spotube-nightly-logo-foreground.png"
   adaptive_icon_background: "#242832"

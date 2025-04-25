@@ -119,15 +119,19 @@ class LastFMLoginPage extends HookConsumerWidget {
                                 ],
                                 obscureText: !passwordVisible.value,
                                 placeholder: Text(context.l10n.password),
-                                trailing: IconButton.ghost(
-                                  icon: Icon(
-                                    passwordVisible.value
-                                        ? SpotubeIcons.eye
-                                        : SpotubeIcons.noEye,
+                                features: [
+                                  InputFeature.trailing(
+                                    IconButton.ghost(
+                                      icon: Icon(
+                                        passwordVisible.value
+                                            ? SpotubeIcons.eye
+                                            : SpotubeIcons.noEye,
+                                      ),
+                                      onPressed: () => passwordVisible.value =
+                                          !passwordVisible.value,
+                                    ),
                                   ),
-                                  onPressed: () => passwordVisible.value =
-                                      !passwordVisible.value,
-                                ),
+                                ],
                               ),
                             ),
                           ],

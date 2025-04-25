@@ -146,7 +146,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       return Tooltip(
         tooltip: TooltipContainer(
           child: Text(tooltip),
-        ),
+        ).call,
         child: IconButton(
           variance: variance,
           icon: icon ?? const Icon(SpotubeIcons.moreVertical),
@@ -170,7 +170,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
     if (child != null) {
       return Tooltip(
-        tooltip: TooltipContainer(child: Text(tooltip)),
+        tooltip: TooltipContainer(child: Text(tooltip)).call,
         child: Button(
           onPressed: () => showDropdownMenu(context, Offset.zero),
           style: variance,
@@ -180,7 +180,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     }
 
     return Tooltip(
-      tooltip: TooltipContainer(child: Text(tooltip)),
+      tooltip: TooltipContainer(child: Text(tooltip)).call,
       child: IconButton(
         variance: variance,
         icon: icon ?? const Icon(SpotubeIcons.moreVertical),

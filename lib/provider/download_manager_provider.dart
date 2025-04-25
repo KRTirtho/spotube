@@ -46,7 +46,9 @@ class DownloadManagerProvider extends ChangeNotifier {
             //? WebA audiotagging is not supported yet
             //? Although in future by converting weba to opus & then tagging it
             //? is possible using vorbis comments
-            downloadCodec == SourceCodecs.weba) return;
+            downloadCodec == SourceCodecs.weba) {
+          return;
+        }
 
         final file = File(request.path);
 

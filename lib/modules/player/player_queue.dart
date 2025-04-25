@@ -161,7 +161,7 @@ class PlayerQueue extends HookConsumerWidget {
                           const SizedBox(width: 10),
                           Tooltip(
                             tooltip: TooltipContainer(
-                                child: Text(context.l10n.clear_all)),
+                                child: Text(context.l10n.clear_all)).call,
                             child: IconButton.outline(
                               icon: const Icon(SpotubeIcons.playlistRemove),
                               onPressed: () {

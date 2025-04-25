@@ -151,34 +151,25 @@ class Assets {
   static const AssetGenImage spotubeHeroBanner =
       AssetGenImage('assets/spotube-hero-banner.png');
   static const AssetGenImage spotubeLogoForeground =
-      AssetGenImage('assets/spotube-logo-foreground.jpg');
+      AssetGenImage('assets/spotube-logo-foreground.png');
+  static const AssetGenImage spotubeLogoItem =
+      AssetGenImage('assets/spotube-logo-item.png');
+  static const AssetGenImage spotubeLogoLight =
+      AssetGenImage('assets/spotube-logo-light.png');
   static const AssetGenImage spotubeLogoMacos =
       AssetGenImage('assets/spotube-logo-macos.png');
-  static const AssetGenImage spotubeLogoBmp =
-      AssetGenImage('assets/spotube-logo.bmp');
-  static const String spotubeLogoIco = 'assets/spotube-logo.ico';
-  static const AssetGenImage spotubeLogoPng =
+  static const AssetGenImage spotubeLogo =
       AssetGenImage('assets/spotube-logo.png');
-  static const String spotubeLogoSvg = 'assets/spotube-logo.svg';
   static const AssetGenImage spotubeLogoAndroid12 =
       AssetGenImage('assets/spotube-logo_android12.png');
-  static const AssetGenImage spotubeNightlyLogoForeground =
-      AssetGenImage('assets/spotube-nightly-logo-foreground.jpg');
-  static const AssetGenImage spotubeNightlyLogoPng =
-      AssetGenImage('assets/spotube-nightly-logo.png');
-  static const String spotubeNightlyLogoSvg = 'assets/spotube-nightly-logo.svg';
-  static const AssetGenImage spotubeNightlyLogoAndroid12 =
-      AssetGenImage('assets/spotube-nightly-logo_android12.png');
+  static const AssetGenImage spotubeNightlyItem =
+      AssetGenImage('assets/spotube-nightly-item.png');
+  static const AssetGenImage spotubeNightlyLogoForegroundPng =
+      AssetGenImage('assets/spotube-nightly-logo-foreground.png');
+  static const String spotubeNightlyLogoForegroundSvg =
+      'assets/spotube-nightly-logo-foreground.svg';
   static const AssetGenImage spotubeScreenshot =
       AssetGenImage('assets/spotube-screenshot.png');
-  static const AssetGenImage spotubeTallCapsule =
-      AssetGenImage('assets/spotube-tall-capsule.png');
-  static const AssetGenImage spotubeWideCapsuleLarge =
-      AssetGenImage('assets/spotube-wide-capsule-large.png');
-  static const AssetGenImage spotubeWideCapsuleSmall =
-      AssetGenImage('assets/spotube-wide-capsule-small.png');
-  static const AssetGenImage spotubeBanner =
-      AssetGenImage('assets/spotube_banner.png');
   static const AssetGenImage success = AssetGenImage('assets/success.png');
   static const $AssetsTutorialGen tutorial = $AssetsTutorialGen();
   static const AssetGenImage userPlaceholder =
@@ -197,21 +188,15 @@ class Assets {
         placeholder,
         spotubeHeroBanner,
         spotubeLogoForeground,
+        spotubeLogoItem,
+        spotubeLogoLight,
         spotubeLogoMacos,
-        spotubeLogoBmp,
-        spotubeLogoIco,
-        spotubeLogoPng,
-        spotubeLogoSvg,
+        spotubeLogo,
         spotubeLogoAndroid12,
-        spotubeNightlyLogoForeground,
-        spotubeNightlyLogoPng,
-        spotubeNightlyLogoSvg,
-        spotubeNightlyLogoAndroid12,
+        spotubeNightlyItem,
+        spotubeNightlyLogoForegroundPng,
+        spotubeNightlyLogoForegroundSvg,
         spotubeScreenshot,
-        spotubeTallCapsule,
-        spotubeWideCapsuleLarge,
-        spotubeWideCapsuleSmall,
-        spotubeBanner,
         success,
         userPlaceholder
       ];

@@ -60,7 +60,7 @@ dependencies:
   flutter_inappwebview: ^6.1.3
   flutter_localizations:
     sdk: flutter
-  flutter_native_splash: ^2.4.0
+  flutter_native_splash: ^2.4.6
   flutter_riverpod: ^2.5.1
   flutter_secure_storage: ^9.0.0
   flutter_sharing_intent: ^1.1.0

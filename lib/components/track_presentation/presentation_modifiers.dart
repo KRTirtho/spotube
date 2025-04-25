@@ -67,10 +67,6 @@ class TrackPresentationModifiersSection extends HookConsumerWidget {
                       child: TextField(
                         controller: controller,
                         focusNode: focusNode,
-                        leading: Icon(
-                          SpotubeIcons.search,
-                          color: context.theme.colorScheme.mutedForeground,
-                        ),
                         placeholder: Text(context.l10n.search_tracks),
                         onChanged: (value) {
                           if (value.isEmpty) {
@@ -79,30 +75,41 @@ class TrackPresentationModifiersSection extends HookConsumerWidget {
                             notifier.filterTracks(value);
                           }
                         },
-                        trailing: ListenableBuilder(
-                            listenable: controller,
-                            builder: (context, _) {
-                              return AnimatedCrossFade(
-                                duration: const Duration(milliseconds: 300),
-                                crossFadeState: controller.text.isEmpty
-                                    ? CrossFadeState.showFirst
-                                    : CrossFadeState.showSecond,
-                                firstChild:
-                                    const SizedBox.square(dimension: 20),
-                                secondChild: AnimatedScale(
-                                  duration: const Duration(milliseconds: 300),
-                                  scale: controller.text.isEmpty ? 0 : 1,
-                                  child: IconButton.ghost(
-                                    size: const ButtonSize(.6),
-                                    icon: const Icon(SpotubeIcons.close),
-                                    onPressed: () {
-                                      controller.clear();
-                                      notifier.clearFilter();
-                                    },
-                                  ),
-                                ),
-                              );
-                            }),
+                        features: [
+                          InputFeature.leading(
+                            Icon(
+                              SpotubeIcons.search,
+                              color: context.theme.colorScheme.mutedForeground,
+                            ),
+                          ),
+                          InputFeature.trailing(
+                            ListenableBuilder(
+                                listenable: controller,
+                                builder: (context, _) {
+                                  return AnimatedCrossFade(
+                                    duration: const Duration(milliseconds: 300),
+                                    crossFadeState: controller.text.isEmpty
+                                        ? CrossFadeState.showFirst
+                                        : CrossFadeState.showSecond,
+                                    firstChild:
+                                        const SizedBox.square(dimension: 20),
+                                    secondChild: AnimatedScale(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      scale: controller.text.isEmpty ? 0 : 1,
+                                      child: IconButton.ghost(
+                                        size: const ButtonSize(.6),
+                                        icon: const Icon(SpotubeIcons.close),
+                                        onPressed: () {
+                                          controller.clear();
+                                          notifier.clearFilter();
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          )
+                        ],
                       ),
                     ),
                   ),

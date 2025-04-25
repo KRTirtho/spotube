@@ -75,7 +75,7 @@ class HomeTabAction extends Action<HomeTabIntent> {
         router.navigate(const SearchRoute());
         break;
       case HomeTabs.lyrics:
-        router.navigate(LyricsRoute());
+        router.navigate(const LyricsRoute());
         break;
       case HomeTabs.userPlaylists:
         router.navigate(const UserPlaylistsRoute());
