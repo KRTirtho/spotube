@@ -20,13 +20,16 @@ class Sidebar extends HookConsumerWidget {
     super.key,
   });
 
-  static Widget brandLogo() {
+  static Widget brandLogo(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(50),
       ),
-      child: Assets.spotubeLogoPng.image(height: 50),
+      child: Assets.spotubeLogo.image(
+        height: 50,
+        cacheHeight: (100 * MediaQuery.devicePixelRatioOf(context)).toInt(),
+      ),
     );
   }
 
