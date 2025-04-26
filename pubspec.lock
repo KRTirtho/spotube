@@ -943,7 +943,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "157930289f49d9c2b5016a3df6f771ebfdf2b1e7"
+      resolved-ref: "385a3c8906351d811a9df5a94bf118e791a51d45"
       url: "https://github.com/KRTirtho/flutter_new_pipe_extractor.git"
     source: git
     version: "0.1.0"
