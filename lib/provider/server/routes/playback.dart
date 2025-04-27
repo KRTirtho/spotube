@@ -54,7 +54,9 @@ class ServerPlaybackRoutes {
     final trackCacheFile = File(
       join(
         await UserPreferencesNotifier.getMusicCacheDir(),
-        '${track.name} - ${track.artists?.asString()} (${track.sourceInfo.id}).${track.codec.name}',
+        ServiceUtils.sanitizeFilename(
+          '${track.name} - ${track.artists?.asString()} (${track.sourceInfo.id}).${track.codec.name}',
+        ),
       ),
     );
     final trackPartialCacheFile = File("${trackCacheFile.path}.part");

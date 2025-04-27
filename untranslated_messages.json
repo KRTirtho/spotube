@@ -1,1 +1,141 @@
-{}
+{
+  "ar": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "bn": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "ca": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "cs": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "de": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "es": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "eu": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "fa": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "fi": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "fr": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "hi": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "id": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "it": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "ja": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "ka": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "ko": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "ne": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "nl": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "pl": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "pt": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "ru": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "ta": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "th": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "tl": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "tr": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "uk": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "vi": [
+    "edit_port",
+    "port_helper_msg"
+  ],
+
+  "zh": [
+    "edit_port",
+    "port_helper_msg"
+  ]
+}

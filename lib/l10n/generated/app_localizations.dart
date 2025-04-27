@@ -2704,6 +2704,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Add custom URL'**
   String get add_custom_url;
+
+  /// No description provided for @edit_port.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit port'**
+  String get edit_port;
+
+  /// No description provided for @port_helper_msg.
+  ///
+  /// In en, this message translates to:
+  /// **'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.'**
+  String get port_helper_msg;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

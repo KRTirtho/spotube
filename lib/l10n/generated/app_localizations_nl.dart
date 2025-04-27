@@ -1371,4 +1371,10 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Voeg aangepaste URL toe';
+
+  @override
+  String get edit_port => 'Edit port';
+
+  @override
+  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
 }

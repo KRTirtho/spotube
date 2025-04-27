@@ -62,7 +62,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -112,6 +112,13 @@ class AppDatabase extends _$AppDatabase {
           await customStatement(
             "UPDATE $tableName "
             "SET $columnName = 'Orange:0xFFf97315' WHERE $columnName = 'Blue:0xFF2196F3'",
+          );
+        },
+        from5To6: (m, schema) async {
+          // Add new column to preferences table
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.connectPort,
           );
         },
       ),

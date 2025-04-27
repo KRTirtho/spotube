@@ -240,6 +240,14 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     setData(PreferencesTableCompanion(enableConnect: Value(enable)));
   }
 
+  void setConnectPort(int port) {
+    assert(
+      port >= -1 && port <= 65535,
+      "Port must be between -1 and 65535, got $port",
+    );
+    setData(PreferencesTableCompanion(connectPort: Value(port)));
+  }
+
   void setCacheMusic(bool cache) {
     setData(PreferencesTableCompanion(cacheMusic: Value(cache)));
   }
