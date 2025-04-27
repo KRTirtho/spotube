@@ -200,6 +200,11 @@ flutter:
     - family: BootstrapIcons
       fonts:
         - asset: packages/shadcn_flutter/icons/BootstrapIcons.otf
+    - family: Cookie
+      fonts:
+        - asset: assets/fonts/Cookie-Regular.ttf
+          style: normal
+          weight: 500
 
 flutter_gen:
   output: lib/collections

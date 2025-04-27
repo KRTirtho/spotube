@@ -65,7 +65,16 @@ class Sidebar extends HookConsumerWidget {
 
     final navigationButtons = [
       NavigationLabel(
-        child: mediaQuery.lgAndUp ? const Text("Spotube") : const Text(""),
+        child: mediaQuery.lgAndUp
+            ? const DefaultTextStyle(
+                style: TextStyle(
+                  fontFamily: "Cookie",
+                  fontSize: 30,
+                  letterSpacing: 1.8,
+                ),
+                child: Text("Spotube"),
+              )
+            : const Text(""),
       ),
       for (final tile in sidebarTileList)
         NavigationButton(
