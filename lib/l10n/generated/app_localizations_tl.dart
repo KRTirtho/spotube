@@ -1373,16 +1373,16 @@ class AppLocalizationsTl extends AppLocalizations {
   String get add_custom_url => 'Magdagdag ng custom URL';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'I-edit ang port';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'Ang default ay -1 na nagpapahiwatig ng random na numero. Kung na-configure mo ang firewall, inirerekomenda na itakda ito.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return 'Payagan ang $client na kumonekta?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'Tanggihan ang koneksyon. Tinanggihan ng gumagamit ang pag-access.';
 }

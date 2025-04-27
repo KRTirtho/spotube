@@ -1373,16 +1373,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get add_custom_url => 'Voeg aangepaste URL toe';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'Poort bewerken';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'Standaard is -1, wat een willekeurig nummer aangeeft. Als je een firewall hebt geconfigureerd, wordt aanbevolen dit in te stellen.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return 'Toestaan dat $client verbinding maakt?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'Verbinding geweigerd. Gebruiker heeft toegang geweigerd.';
 }

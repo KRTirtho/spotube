@@ -1373,16 +1373,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get add_custom_url => 'Thêm URL tùy chỉnh';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'Chỉnh sửa cổng';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'Mặc định là -1, có nghĩa là số ngẫu nhiên. Nếu bạn đã cấu hình tường lửa, nên đặt điều này.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return 'Cho phép $client kết nối?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'Kết nối bị từ chối. Người dùng đã từ chối quyền truy cập.';
 }

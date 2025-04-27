@@ -1373,16 +1373,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get add_custom_url => 'Додати користувацький URL';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'Редагувати порт';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'За замовчуванням -1, що означає випадкове число. Якщо у вас налаштований брандмауер, рекомендується це налаштувати.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return 'Дозволити $client підключення?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'Підключення відхилено. Користувач відмовив у доступі.';
 }

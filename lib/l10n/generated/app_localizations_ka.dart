@@ -1373,16 +1373,16 @@ class AppLocalizationsKa extends AppLocalizations {
   String get add_custom_url => 'დამატება პერსონალური URL';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'პორტის რედაქტირება';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'ნაგულისხმევი არის -1, რაც შემთხვევითი ნომრის მითითებას ნიშნავს. თუ لديك firewall настроен, рекомендуется установить это.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return '$client-ის დაკავშირების ნებართვა?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'კავშირი უარყოფილია. მომხმარებელმა უარყო წვდომა.';
 }

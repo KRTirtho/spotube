@@ -1373,16 +1373,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get add_custom_url => 'Özel URL ekle';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'Portu düzenle';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'Varsayılan -1\'dir, bu da rastgele bir sayıyı gösterir. Bir güvenlik duvarınız varsa, bunu ayarlamanız önerilir.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return '$client bağlantısına izin verilsin mi?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'Bağlantı reddedildi. Kullanıcı erişimi reddetti.';
 }

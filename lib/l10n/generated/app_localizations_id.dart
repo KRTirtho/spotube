@@ -1376,13 +1376,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get edit_port => 'Edit port';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'Default adalah -1 yang menunjukkan angka acak. Jika Anda telah mengonfigurasi firewall, disarankan untuk mengatur ini.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return 'Izinkan $client untuk terhubung?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'Koneksi ditolak. Pengguna menolak akses.';
 }

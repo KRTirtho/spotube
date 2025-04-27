@@ -1373,16 +1373,16 @@ class AppLocalizationsEu extends AppLocalizations {
   String get add_custom_url => 'Gehitu URL pertsonalizatua';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'Editatu portua';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'Lehenetsitako balioa -1 da, zenbaki aleatorioa adierazten duena. Su firewall konfiguratu baduzu, gomendatzen da hau ezartzea.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return '$client konektatzea baimendu?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'Konektatzea ukatu da. Erabiltzaileak sarbidea ukatu du.';
 }

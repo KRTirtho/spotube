@@ -426,5 +426,9 @@
   "download": "Baixar",
   "file_not_found": "Arquivo não encontrado",
   "custom": "Personalizado",
-  "add_custom_url": "Adicionar URL personalizada"
+  "add_custom_url": "Adicionar URL personalizada",
+  "edit_port": "Editar porta",
+  "port_helper_msg": "O padrão é -1, que indica um número aleatório. Se você tiver um firewall configurado, é recomendável definir isso.",
+  "connect_request": "Permitir que {client} se conecte?",
+  "connection_request_denied": "Conexão negada. O usuário negou o acesso ."
 }

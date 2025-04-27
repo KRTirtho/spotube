@@ -426,5 +426,9 @@
   "download": "Descargar",
   "file_not_found": "Archivo no encontrado",
   "custom": "Personalizado",
-  "add_custom_url": "Agregar URL personalizada"
+  "add_custom_url": "Agregar URL personalizada",
+  "edit_port": "Editar puerto",
+  "port_helper_msg": "El valor predeterminado es -1, lo que indica un número aleatorio. Si tienes un firewall configurado, se recomienda establecer esto.",
+  "connect_request": "¿Permitir que {client} se conecte?",
+  "connection_request_denied": "Conexión denegada. El usuario denegó el acceso."
 }

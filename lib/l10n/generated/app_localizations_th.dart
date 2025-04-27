@@ -1373,16 +1373,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get add_custom_url => 'เพิ่ม URL แบบกำหนดเอง';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'แก้ไขพอร์ต';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'ค่าเริ่มต้นคือ -1 ซึ่งหมายถึงหมายเลขสุ่ม หากคุณได้กำหนดค่าไฟร์วอลล์แล้ว แนะนำให้ตั้งค่านี้';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return 'อนุญาตให้ $client เชื่อมต่อหรือไม่?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'การเชื่อมต่อล้มเหลว ผู้ใช้ปฏิเสธการเข้าถึง';
 }

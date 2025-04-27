@@ -426,5 +426,9 @@
   "download": "Descarregar",
   "file_not_found": "Fitxer no trobat",
   "custom": "Personalitzat",
-  "add_custom_url": "Afegir URL personalitzada"
+  "add_custom_url": "Afegir URL personalitzada",
+  "edit_port": "Editar port",
+  "port_helper_msg": "El valor per defecte és -1, que indica un número aleatori. Si teniu un tallafoc configurat, es recomana establir-ho.",
+  "connect_request": "Permetre que {client} es connecti?",
+  "connection_request_denied": "Connexió denegada. L'usuari ha denegat l'accés."
 }

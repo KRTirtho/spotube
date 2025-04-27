@@ -1373,16 +1373,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get add_custom_url => 'কাস্টম URL যোগ করুন';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'পোর্ট সম্পাদনা করুন';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'ডিফল্ট হল -1 যা এলোমেলো সংখ্যা নির্দেশ করে। যদি আপনার ফায়ারওয়াল কনফিগার করা থাকে, তবে এটি সেট করা সুপারিশ করা হয়।';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return '$client কে সংযোগ করতে অনুমতি দেবেন?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => 'সংযোগ অস্বীকৃত। ব্যবহারকারী প্রবেশাধিকার অস্বীকার করেছে।';
 }

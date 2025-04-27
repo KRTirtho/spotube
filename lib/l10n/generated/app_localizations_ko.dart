@@ -1373,16 +1373,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get add_custom_url => '사용자 정의 URL 추가';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => '포트 편집';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => '기본값은 -1로 무작위 숫자를 나타냅니다. 방화벽이 구성된 경우 이를 설정하는 것이 좋습니다.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return '$client의 연결을 허용하시겠습니까?';
   }
 
   @override
-  String get connection_request_denied => 'Connection denied. User denied access.';
+  String get connection_request_denied => '연결이 거부되었습니다. 사용자가 액세스를 거부했습니다.';
 }

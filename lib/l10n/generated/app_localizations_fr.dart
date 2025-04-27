@@ -1373,14 +1373,14 @@ class AppLocalizationsFr extends AppLocalizations {
   String get add_custom_url => 'Ajouter une URL personnalisée';
 
   @override
-  String get edit_port => 'Edit port';
+  String get edit_port => 'Modifier le port';
 
   @override
-  String get port_helper_msg => 'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.';
+  String get port_helper_msg => 'La valeur par défaut est -1, ce qui indique un nombre aléatoire. Si vous avez configuré un pare-feu, il est recommandé de le définir.';
 
   @override
   String connect_request(Object client) {
-    return 'Allow $client to connect?';
+    return 'Autoriser $client à se connecter ?';
   }
 
   @override
