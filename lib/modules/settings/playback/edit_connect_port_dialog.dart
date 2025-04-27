@@ -38,7 +38,23 @@ class SettingsPlaybackEditConnectPortDialog extends HookConsumerWidget {
                 validator: FormBuilderValidators.integer(radix: 10),
                 keyboardType: TextInputType.number,
                 inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
+                  // Allow only signed integers
+                  TextInputFormatter.withFunction(
+                    (oldValue, newValue) {
+                      if (newValue.text.isEmpty) {
+                        return const TextEditingValue();
+                      }
+                      if (newValue.text.length == 1 && newValue.text == "-") {
+                        return newValue;
+                      }
+
+                      final intValue = int.tryParse(newValue.text);
+                      if (intValue == null) {
+                        return oldValue;
+                      }
+                      return newValue;
+                    },
+                  ),
                 ],
               ),
               const Gap(5),

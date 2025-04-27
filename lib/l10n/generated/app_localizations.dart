@@ -2716,6 +2716,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Default is -1 which indicates random number. If you\'ve firewall configured, setting this is recommended.'**
   String get port_helper_msg;
+
+  /// No description provided for @connect_request.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow {client} to connect?'**
+  String connect_request(Object client);
+
+  /// No description provided for @connection_request_denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection denied. User denied access.'**
+  String get connection_request_denied;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

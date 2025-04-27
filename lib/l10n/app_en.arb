@@ -426,5 +426,7 @@
 	"custom": "Custom",
 	"add_custom_url": "Add custom URL",
 	"edit_port": "Edit port",
-	"port_helper_msg": "Default is -1 which indicates random number. If you've firewall configured, setting this is recommended."
+	"port_helper_msg": "Default is -1 which indicates random number. If you've firewall configured, setting this is recommended.",
+	"connect_request": "Allow {client} to connect?",
+	"connection_request_denied": "Connection denied. User denied access."
 }
