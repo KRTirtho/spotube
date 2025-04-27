@@ -1371,4 +1371,18 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Lisää mukautettu URL';
+
+  @override
+  String get edit_port => 'Muokkaa porttia';
+
+  @override
+  String get port_helper_msg => 'Oletusarvo on -1, mikä tarkoittaa satunnaista numeroa. Jos sinulla on palomuuri määritetty, tämän asettamista suositellaan.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Salli $client yhdistää?';
+  }
+
+  @override
+  String get connection_request_denied => 'Yhteys evätty. Käyttäjä eväsi pääsyn.';
 }

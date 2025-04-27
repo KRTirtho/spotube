@@ -1371,4 +1371,18 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Magdagdag ng custom URL';
+
+  @override
+  String get edit_port => 'I-edit ang port';
+
+  @override
+  String get port_helper_msg => 'Ang default ay -1 na nagpapahiwatig ng random na numero. Kung na-configure mo ang firewall, inirerekomenda na itakda ito.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Payagan ang $client na kumonekta?';
+  }
+
+  @override
+  String get connection_request_denied => 'Tanggihan ang koneksyon. Tinanggihan ng gumagamit ang pag-access.';
 }

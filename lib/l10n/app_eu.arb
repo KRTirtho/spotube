@@ -426,5 +426,9 @@
   "download": "Deskargatu",
   "file_not_found": "Fitxategia ez da aurkitu",
   "custom": "Pertsonalizatua",
-  "add_custom_url": "Gehitu URL pertsonalizatua"
+  "add_custom_url": "Gehitu URL pertsonalizatua",
+  "edit_port": "Editatu portua",
+  "port_helper_msg": "Lehenetsitako balioa -1 da, zenbaki aleatorioa adierazten duena. Su firewall konfiguratu baduzu, gomendatzen da hau ezartzea.",
+  "connect_request": "{client} konektatzea baimendu?",
+  "connection_request_denied": "Konektatzea ukatu da. Erabiltzaileak sarbidea ukatu du."
 }

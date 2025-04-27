@@ -1371,4 +1371,18 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get add_custom_url => 'தனிப்பயன் URL ஐச் சேர்க்கவும்';
+
+  @override
+  String get edit_port => 'போர்டு திருத்தவும்';
+
+  @override
+  String get port_helper_msg => 'இயல்புநிலை -1 ஆகும், இது சீரற்ற எண்ணை குறிக்கிறது. நீங்கள் தீயணைப்பு அமைக்கப்பட்டிருந்தால், இதை அமைப்பது பரிந்துரைக்கப்படுகிறது.';
+
+  @override
+  String connect_request(Object client) {
+    return '$client க்கு இணைக்க அனுமதிக்கவா?';
+  }
+
+  @override
+  String get connection_request_denied => 'இணைப்பு மறுக்கப்பட்டது. பயனர் அணுகலை மறுத்தார்.';
 }

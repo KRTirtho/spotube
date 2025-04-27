@@ -1371,4 +1371,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Dodaj niestandardowy URL';
+
+  @override
+  String get edit_port => 'Edytuj port';
+
+  @override
+  String get port_helper_msg => 'Domyślna wartość to -1, co oznacza losową liczbę. Jeśli masz skonfigurowany zaporę, zaleca się jej ustawienie.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Zezwolić $client na połączenie?';
+  }
+
+  @override
+  String get connection_request_denied => 'Połączenie odrzucone. Użytkownik odmówił dostępu.';
 }

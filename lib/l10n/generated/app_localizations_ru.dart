@@ -1371,4 +1371,18 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Добавить пользовательский URL';
+
+  @override
+  String get edit_port => 'Редактировать порт';
+
+  @override
+  String get port_helper_msg => 'По умолчанию -1, что означает случайное число. Если у вас настроен брандмауэр, рекомендуется установить это.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Разрешить $client подключение?';
+  }
+
+  @override
+  String get connection_request_denied => 'Подключение отклонено. Пользователь отказал в доступе.';
 }

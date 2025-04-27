@@ -1371,4 +1371,18 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Adicionar URL personalizada';
+
+  @override
+  String get edit_port => 'Editar porta';
+
+  @override
+  String get port_helper_msg => 'O padrão é -1, que indica um número aleatório. Se você tiver um firewall configurado, é recomendável definir isso.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Permitir que $client se conecte?';
+  }
+
+  @override
+  String get connection_request_denied => 'Conexão negada. O usuário negou o acesso .';
 }

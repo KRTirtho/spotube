@@ -426,5 +426,9 @@
   "download": "Tải xuống",
   "file_not_found": "Không tìm thấy tệp",
   "custom": "Tùy chỉnh",
-  "add_custom_url": "Thêm URL tùy chỉnh"
+  "add_custom_url": "Thêm URL tùy chỉnh",
+  "edit_port": "Chỉnh sửa cổng",
+  "port_helper_msg": "Mặc định là -1, có nghĩa là số ngẫu nhiên. Nếu bạn đã cấu hình tường lửa, nên đặt điều này.",
+  "connect_request": "Cho phép {client} kết nối?",
+  "connection_request_denied": "Kết nối bị từ chối. Người dùng đã từ chối quyền truy cập."
 }

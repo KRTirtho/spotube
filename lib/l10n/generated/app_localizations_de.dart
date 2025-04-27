@@ -1371,4 +1371,18 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Benutzerdefinierte URL hinzufügen';
+
+  @override
+  String get edit_port => 'Port bearbeiten';
+
+  @override
+  String get port_helper_msg => 'Der Standardwert ist -1, was eine zufällige Zahl bedeutet. Wenn Sie eine Firewall konfiguriert haben, wird empfohlen, dies einzustellen.';
+
+  @override
+  String connect_request(Object client) {
+    return '$client die Verbindung erlauben?';
+  }
+
+  @override
+  String get connection_request_denied => 'Verbindung abgelehnt. Benutzer hat den Zugriff verweigert.';
 }

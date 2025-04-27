@@ -1371,4 +1371,18 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get add_custom_url => 'დამატება პერსონალური URL';
+
+  @override
+  String get edit_port => 'პორტის რედაქტირება';
+
+  @override
+  String get port_helper_msg => 'ნაგულისხმევი არის -1, რაც შემთხვევითი ნომრის მითითებას ნიშნავს. თუ لديك firewall настроен, рекомендуется установить это.';
+
+  @override
+  String connect_request(Object client) {
+    return '$client-ის დაკავშირების ნებართვა?';
+  }
+
+  @override
+  String get connection_request_denied => 'კავშირი უარყოფილია. მომხმარებელმა უარყო წვდომა.';
 }

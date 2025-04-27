@@ -426,5 +426,9 @@
   "download": "ダウンロード",
   "file_not_found": "ファイルが見つかりません",
   "custom": "カスタム",
-  "add_custom_url": "カスタムURLを追加"
+  "add_custom_url": "カスタムURLを追加",
+  "edit_port": "ポートを編集",
+  "port_helper_msg": "デフォルトは-1で、ランダムな番号を示します。ファイアウォールを設定している場合は、これを設定することをお勧めします。",
+  "connect_request": "{client}の接続を許可しますか？",
+  "connection_request_denied": "接続が拒否されました。ユーザーがアクセスを拒否しました。"
 }

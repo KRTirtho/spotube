@@ -1371,4 +1371,18 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Voeg aangepaste URL toe';
+
+  @override
+  String get edit_port => 'Poort bewerken';
+
+  @override
+  String get port_helper_msg => 'Standaard is -1, wat een willekeurig nummer aangeeft. Als je een firewall hebt geconfigureerd, wordt aanbevolen dit in te stellen.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Toestaan dat $client verbinding maakt?';
+  }
+
+  @override
+  String get connection_request_denied => 'Verbinding geweigerd. Gebruiker heeft toegang geweigerd.';
 }

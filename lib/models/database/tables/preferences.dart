@@ -115,6 +115,7 @@ class PreferencesTable extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get enableConnect =>
       boolean().withDefault(const Constant(false))();
+  IntColumn get connectPort => integer().withDefault(const Constant(-1))();
   BoolColumn get cacheMusic => boolean().withDefault(const Constant(true))();
 
   // Default values as PreferencesTableData
@@ -148,6 +149,7 @@ class PreferencesTable extends Table {
       endlessPlayback: true,
       enableConnect: false,
       cacheMusic: true,
+      connectPort: -1,
     );
   }
 }

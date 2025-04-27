@@ -426,5 +426,9 @@
   "download": "Télécharger",
   "file_not_found": "Fichier non trouvé",
   "custom": "Personnalisé",
-  "add_custom_url": "Ajouter une URL personnalisée"
+  "add_custom_url": "Ajouter une URL personnalisée",
+  "edit_port": "Modifier le port",
+  "port_helper_msg": "La valeur par défaut est -1, ce qui indique un nombre aléatoire. Si vous avez configuré un pare-feu, il est recommandé de le définir.",
+  "connect_request": "Autoriser {client} à se connecter ?",
+  "connection_request_denied ": "Connexion refusée. L'utilisateur a refusé l'accès."
 }

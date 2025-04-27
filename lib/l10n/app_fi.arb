@@ -426,5 +426,9 @@
   "download": "Lataa",
   "file_not_found": "Tiedostoa ei löydy",
   "custom": "Mukautettu",
-  "add_custom_url": "Lisää mukautettu URL"
+  "add_custom_url": "Lisää mukautettu URL",
+  "edit_port": "Muokkaa porttia",
+  "port_helper_msg": "Oletusarvo on -1, mikä tarkoittaa satunnaista numeroa. Jos sinulla on palomuuri määritetty, tämän asettamista suositellaan.",
+  "connect_request": "Salli {client} yhdistää?",
+  "connection_request_denied": "Yhteys evätty. Käyttäjä eväsi pääsyn."
 }

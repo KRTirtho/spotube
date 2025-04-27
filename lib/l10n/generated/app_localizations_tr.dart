@@ -1371,4 +1371,18 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Özel URL ekle';
+
+  @override
+  String get edit_port => 'Portu düzenle';
+
+  @override
+  String get port_helper_msg => 'Varsayılan -1\'dir, bu da rastgele bir sayıyı gösterir. Bir güvenlik duvarınız varsa, bunu ayarlamanız önerilir.';
+
+  @override
+  String connect_request(Object client) {
+    return '$client bağlantısına izin verilsin mi?';
+  }
+
+  @override
+  String get connection_request_denied => 'Bağlantı reddedildi. Kullanıcı erişimi reddetti.';
 }

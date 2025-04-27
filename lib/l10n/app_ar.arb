@@ -426,5 +426,9 @@
   "download": "تنزيل",
   "file_not_found": "الملف غير موجود",
   "custom": "مخصص",
-  "add_custom_url": "إضافة URL مخصص"
+  "add_custom_url": "إضافة URL مخصص",
+  "edit_port": "تعديل المنفذ",
+  "port_helper_msg": "القيمة الافتراضية هي -1 والتي تشير إلى رقم عشوائي. إذا كان لديك جدار ناري مُعد، يُوصى بتعيين هذا.",
+  "connect_request": "السماح لـ {client} بالاتصال؟",
+  "connection_request_denied": "تم رفض الاتصال. المستخدم رفض الوصول."
 }

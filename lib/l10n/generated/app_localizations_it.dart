@@ -1371,4 +1371,18 @@ class AppLocalizationsIt extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Aggiungi URL personalizzato';
+
+  @override
+  String get edit_port => 'Modifica porta';
+
+  @override
+  String get port_helper_msg => 'Il valore predefinito è -1, che indica un numero casuale. Se hai configurato un firewall, si consiglia di impostarlo.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Consentire a $client di connettersi?';
+  }
+
+  @override
+  String get connection_request_denied => 'Connessione negata. L\'utente ha negato l\'accesso.';
 }

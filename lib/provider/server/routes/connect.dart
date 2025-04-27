@@ -3,9 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_web_socket/shelf_web_socket.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
 
 import 'package:spotube/provider/history/history.dart';
@@ -43,6 +46,8 @@ class ServerConnectRoutes {
   Stream<String> get connectClientStream =>
       _connectClientStreamController.stream;
 
+  final List<String> _allowedConnections = [];
+
   FutureOr<Response> websocket(Request req) {
     return webSocketHandler(
       (
@@ -53,6 +58,47 @@ class ServerConnectRoutes {
             (req.context["shelf.io.connection_info"] as HttpConnectionInfo?);
         final origin = "${context?.remoteAddress.host}:${context?.remotePort}";
         _connectClientStreamController.add(origin);
+
+        // Confirm whether user allows to connect
+        if (rootNavigatorKey.currentContext?.mounted == true &&
+            _allowedConnections.contains(origin) == false) {
+          final confirmed = await showDialog<bool>(
+                context: rootNavigatorKey.currentContext!,
+                builder: (context) {
+                  return AlertDialog(
+                    title: Text(context.l10n.connect),
+                    content: Text(
+                      context.l10n.connect_request(origin),
+                    ),
+                    actions: [
+                      Button.secondary(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: Text(context.l10n.decline),
+                      ),
+                      Button.primary(
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                        child: Text(context.l10n.accept),
+                      ),
+                    ],
+                  );
+                },
+              ) ??
+              false;
+
+          if (confirmed) {
+            _allowedConnections.add(origin);
+          } else {
+            channel.sink.addEvent(
+              WebSocketErrorEvent("Connection denied"),
+            );
+            await channel.sink.close();
+            return;
+          }
+        }
 
         ref.listen(
           audioPlayerProvider,
@@ -106,7 +152,7 @@ class ServerConnectRoutes {
             },
           ),
           channel.stream.listen(
-            (message) {
+            (message) async {
               try {
                 final event = WebSocketEvent.fromJson(
                   jsonDecode(message),
