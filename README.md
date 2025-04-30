@@ -1,9 +1,8 @@
 <div align="center">
   <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
 
-An open source, cross-platform Spotify client compatible across multiple platforms<br />
-utilizing Spotify's data API and YouTube, Piped.video or JioSaavn as an audio source,<br />
-eliminating the need for Spotify Premium
+An open source, cross-platform music client<br />
+utilizing selected music provider API and YouTube, Piped.video or JioSaavn as an audio source
 
 Btw it's not just another Electron app 😉
 
@@ -27,7 +26,7 @@ Btw it's not just another Electron app 😉
 
 ## 🌃 Features
 
-- 🚫 No ads, thanks to the use of public & free Spotify and YT Music APIs¹
+- 🚫 No ads, thanks to the use of public & free music metadata providers and YT Music APIs¹
 - ⬇️ Freely downloadable tracks
 - 🖥️ 📱 Cross-platform support
 - 🪶 Small size & less data usage
@@ -38,12 +37,12 @@ Btw it's not just another Electron app 😉
 - 📖 Open source/libre software
 - 🔉 Playback control is done locally, not on the server
 
-**¹** It is still **recommended** to support creators by engaging with their YouTube channels/Spotify tracks (or preferably by buying their merch/concert tickets/physical media).
+**¹** It is still **recommended** to support creators by engaging with their YouTube channels/tracks in music platforms (or preferably by buying their merch/concert tickets/physical media).
 
 ### ❌ Unsupported features
 
-- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts will <ins>**never be supported**</ins> because the audio tracks are <ins>_only_</ins> available on Spotify and accessing them would require Spotify Premium.
-- 🎧 **Spotify Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
+- 🗣️ **Shows & Podcasts:** Shows and Podcasts will <ins>**never be supported**</ins> because the audio tracks are <ins>_only_</ins> available on music providers and accessing them would require premium.
+- 🎧 **Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
 
 ## 📜 ⬇️ Installation guide
 
@@ -210,7 +209,6 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 
 1. [Flutter](https://flutter.dev) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
 1. [MPV](https://mpv.io) - mpv is a free (as in freedom) media player for the command line. It supports a wide variety of media file formats, audio and video codecs, and subtitle types.
-1. [Spotify API](https://developer.spotify.com/documentation/web-api) - The Spotify Web API is a RESTful API that provides access to Spotify data
 1. [Piped](https://piped-docs.kavin.rocks/) - Piped is a privacy friendly alternative YouTube frontend, which is efficient and scalable by design.
 1. [Invidious](https://invidious.io/) - Invidious is an open source alternative front-end to YouTube.
 1. [YouTube](https://youtube.com/) - YouTube is an American online video-sharing platform headquartered in San Bruno, California. Three former PayPal employees—Chad Hurley, Steve Chen, and Jawed Karim—created the service in February 2005
@@ -304,7 +302,6 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [sliding_up_panel](https://github.com/akshathjain/sliding_up_panel) - A draggable Flutter widget that makes implementing a SlidingUpPanel much easier!
 1. [sliver_tools](https://github.com/Kavantix) - A set of useful sliver tools that are missing from the flutter framework
 1. [smtc_windows](https://pub.dev/packages/smtc_windows) - Windows `SystemMediaTransportControls` implementation for Flutter giving access to Windows OS Media Control applet.
-1. [spotify](https://github.com/rinukkusu/spotify-dart) - An incomplete dart library for interfacing with the Spotify Web API.
 1. [sqlite3](https://github.com/simolus3/sqlite3.dart/tree/main/sqlite3) - Provides lightweight yet convenient bindings to SQLite by using dart:ffi
 1. [sqlite3_flutter_libs](https://github.com/simolus3/sqlite3.dart/tree/main/sqlite3_flutter_libs) - Flutter plugin to include native sqlite3 libraries with your app
 1. [stroke_text](https://github.com/MohamedAbd0/stroke_text) - A Simple Flutter plugin for applying stroke (border) style to a text widget

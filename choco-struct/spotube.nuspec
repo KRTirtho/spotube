@@ -23,12 +23,13 @@ enclosed in quotation marks, you should use an editor that supports UTF-8, not t
     <projectSourceUrl>https://github.com/KRTirtho/spotube</projectSourceUrl>
     <docsUrl>https://spotube.krtirtho.dev</docsUrl>
     <bugTrackerUrl>https://github.com/KRTirtho/spotube/issues/new</bugTrackerUrl>
-    <tags>spotube music audio spotify youtube flutter</tags>
-    <summary>🎧 Open source Spotify client that doesn't require Premium nor uses Electron! Available
+    <tags>spotube music audio youtube flutter</tags>
+    <summary>🎧 Open source music client that doesn't require Premium nor uses Electron! Available
       for both desktop &amp; mobile! </summary>
     <description>
-      Spotube is a Flutter based lightweight spotify client. It utilizes the power
-      of Spotify &amp; Youtube's public API &amp; creates a hazardless, performant &amp; resource
+      Spotube is a Flutter based lightweight music client. It utilizes the power
+      of music metadata providers &amp; Youtube's public API &amp; creates a hazardless, performant
+      &amp; resource
       friendly User Experience
 
       # Features
@@ -40,10 +41,9 @@ enclosed in quotation marks, you should use an editor that supports UTF-8, not t
       - Native performance (Thanks to Flutter+Skia)
       - Playback control is done locally instead of on the server
       - Small size &amp; less data usage
-      - No Spotify or YouTube ads since it uses all public &amp; free APIs (It is still recommended
+      - No ads since it uses all public &amp; free APIs (It is still recommended
       to support the creators by watching/liking/subscribing to the artists' YouTube channels or
-      liking their tracks on Spotify. Purchasing Spotify Premium is usually the best way to support
-      their valuable creations.)
+      liking their tracks on different music platforms.)
       - Time synced lyrics
       - Downloadable tracks
     </description>
