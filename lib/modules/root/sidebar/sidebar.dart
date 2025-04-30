@@ -20,13 +20,16 @@ class Sidebar extends HookConsumerWidget {
     super.key,
   });
 
-  static Widget brandLogo() {
+  static Widget brandLogo(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(50),
       ),
-      child: Assets.spotubeLogoPng.image(height: 50),
+      child: Assets.spotubeLogoPng.image(
+        height: 50,
+        cacheHeight: (100 * MediaQuery.devicePixelRatioOf(context)).toInt(),
+      ),
     );
   }
 
@@ -62,13 +65,22 @@ class Sidebar extends HookConsumerWidget {
 
     final navigationButtons = [
       NavigationLabel(
-        child: mediaQuery.lgAndUp ? const Text("Spotube") : const Text(""),
+        child: mediaQuery.lgAndUp
+            ? const DefaultTextStyle(
+                style: TextStyle(
+                  fontFamily: "Cookie",
+                  fontSize: 30,
+                  letterSpacing: 1.8,
+                ),
+                child: Text("Spotube"),
+              )
+            : const Text(""),
       ),
       for (final tile in sidebarTileList)
         NavigationButton(
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           child: Tooltip(
-            tooltip: TooltipContainer(child: Text(tile.title)),
+            tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
           onPressed: () {
@@ -85,7 +97,7 @@ class Sidebar extends HookConsumerWidget {
             context.navigateTo(tile.route);
           },
           child: Tooltip(
-            tooltip: TooltipContainer(child: Text(tile.title)),
+            tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
         ),

@@ -427,5 +427,9 @@
   "download": "Downloaden",
   "file_not_found": "Bestand niet gevonden",
   "custom": "Aangepast",
-  "add_custom_url": "Voeg aangepaste URL toe"
+  "add_custom_url": "Voeg aangepaste URL toe",
+  "edit_port": "Poort bewerken",
+  "port_helper_msg": "Standaard is -1, wat een willekeurig nummer aangeeft. Als je een firewall hebt geconfigureerd, wordt aanbevolen dit in te stellen.",
+  "connect_request": "Toestaan dat {client} verbinding maakt?",
+  "connection_request_denied": "Verbinding geweigerd. Gebruiker heeft toegang geweigerd."
 }

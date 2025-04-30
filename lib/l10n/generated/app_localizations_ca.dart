@@ -1371,4 +1371,18 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Afegir URL personalitzada';
+
+  @override
+  String get edit_port => 'Editar port';
+
+  @override
+  String get port_helper_msg => 'El valor per defecte és -1, que indica un número aleatori. Si teniu un tallafoc configurat, es recomana establir-ho.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Permetre que $client es connecti?';
+  }
+
+  @override
+  String get connection_request_denied => 'Connexió denegada. L\'usuari ha denegat l\'accés.';
 }

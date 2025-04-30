@@ -80,7 +80,9 @@ class UserArtistsPage extends HookConsumerWidget {
                       height: 48,
                       child: TextField(
                         onChanged: (value) => searchText.value = value,
-                        leading: const Icon(SpotubeIcons.filter),
+                        features: const [
+                          InputFeature.leading(Icon(SpotubeIcons.filter)),
+                        ],
                         placeholder: Text(context.l10n.filter_artist),
                       ),
                     ),

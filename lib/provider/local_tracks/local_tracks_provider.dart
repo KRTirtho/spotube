@@ -15,6 +15,7 @@ import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_rust_bridge/flutter_rust_bridge.dart' show FrbException;
+import 'package:spotube/utils/service_utils.dart';
 
 const supportedAudioTypes = [
   "audio/webm",
@@ -90,12 +91,15 @@ final localTracksProvider =
           try {
             final metadata = await MetadataGod.readMetadata(file: file.path);
 
-            final imageFile = File(join(
-              (await getTemporaryDirectory()).path,
-              "spotube",
-              basenameWithoutExtension(file.path) +
-                  imgMimeToExt[metadata.picture?.mimeType ?? "image/jpeg"]!,
-            ));
+            final imageFile = File(
+              join(
+                (await getTemporaryDirectory()).path,
+                "spotube",
+                ServiceUtils.sanitizeFilename(
+                        basenameWithoutExtension(file.path)) +
+                    imgMimeToExt[metadata.picture?.mimeType ?? "image/jpeg"]!,
+              ),
+            );
             if (!await imageFile.exists() && metadata.picture != null) {
               await imageFile.create(recursive: true);
               await imageFile.writeAsBytes(

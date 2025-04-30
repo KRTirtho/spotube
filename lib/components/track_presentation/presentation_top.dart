@@ -57,7 +57,7 @@ class TrackPresentationTopSection extends HookConsumerWidget {
         Tooltip(
           tooltip: TooltipContainer(
             child: Text(context.l10n.shuffle_playlist),
-          ),
+          ).call,
           child: IconButton.secondary(
             icon: isLoading
                 ? const Center(
@@ -73,7 +73,7 @@ class TrackPresentationTopSection extends HookConsumerWidget {
           Tooltip(
             tooltip: TooltipContainer(
               child: Text(context.l10n.add_to_queue),
-            ),
+            ).call,
             child: IconButton.secondary(
               icon: const Icon(SpotubeIcons.queueAdd),
               enabled: !isLoading && !isActive,
@@ -126,7 +126,7 @@ class TrackPresentationTopSection extends HookConsumerWidget {
           Tooltip(
             tooltip: TooltipContainer(
               child: Text(context.l10n.share),
-            ),
+            ).call,
             child: IconButton.outline(
               icon: const Icon(SpotubeIcons.share),
               size: ButtonSize.small,

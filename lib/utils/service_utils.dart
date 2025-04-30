@@ -434,4 +434,37 @@ abstract class ServiceUtils {
       return "Mozilla/5.0 (Linux; Android ${randomNumber(8, 13)}) AppleWebKit/${randomNumber(530, 537)}.${randomNumber(30, 36)} (KHTML, like Gecko) Chrome/${randomNumber(101, 116)}.0.${randomNumber(3000, 6000)}.${randomNumber(60, 125)} Mobile Safari/${randomNumber(530, 537)}.${randomNumber(30, 36)}";
     }
   }
+
+  static String sanitizeFilename(String input, {String replacement = ''}) {
+    final result = input
+        // illegalRe
+        .replaceAll(
+          RegExp(r'[\/\?<>\\:\*\|"]'),
+          replacement,
+        )
+        // controlRe
+        .replaceAll(
+          RegExp(
+            r'[\x00-\x1f\x80-\x9f]',
+          ),
+          replacement,
+        )
+        // reservedRe
+        .replaceFirst(
+          RegExp(r'^\.+$'),
+          replacement,
+        )
+        // windowsReservedRe
+        .replaceFirst(
+          RegExp(
+            r'^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$',
+            caseSensitive: false,
+          ),
+          replacement,
+        )
+        // windowsTrailingRe
+        .replaceFirst(RegExp(r'[\. ]+$'), replacement);
+
+    return result.length > 255 ? result.substring(0, 255) : result;
+  }
 }

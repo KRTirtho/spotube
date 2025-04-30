@@ -62,7 +62,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration {
@@ -85,6 +85,40 @@ class AppDatabase extends _$AppDatabase {
           await m.addColumn(
             schema.preferencesTable,
             schema.preferencesTable.youtubeClientEngine,
+          );
+        },
+        from4To5: (m, schema) async {
+          final columnName = schema.preferencesTable.accentColorScheme
+              .escapedNameFor(SqlDialect.sqlite);
+          final columnNameOld =
+              '"${schema.preferencesTable.accentColorScheme.name}_old"';
+          final tableName = schema.preferencesTable.actualTableName;
+          await customStatement(
+            "ALTER TABLE $tableName "
+            "RENAME COLUMN $columnName to $columnNameOld",
+          );
+          await customStatement(
+            "ALTER TABLE $tableName "
+            "ADD COLUMN $columnName TEXT NOT NULL DEFAULT 'Orange:0xFFf97315'",
+          );
+          await customStatement(
+            "UPDATE $tableName "
+            "SET $columnName = $columnNameOld",
+          );
+          await customStatement(
+            "ALTER TABLE $tableName "
+            "DROP COLUMN $columnNameOld",
+          );
+          await customStatement(
+            "UPDATE $tableName "
+            "SET $columnName = 'Orange:0xFFf97315' WHERE $columnName = 'Blue:0xFF2196F3'",
+          );
+        },
+        from5To6: (m, schema) async {
+          // Add new column to preferences table
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.connectPort,
           );
         },
       ),

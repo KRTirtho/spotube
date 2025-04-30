@@ -119,8 +119,10 @@ class SeedsMultiAutocomplete<T extends Object> extends HookWidget {
                   focusNode: focusNode,
                   onSubmitted: (_) => onFieldSubmitted(),
                   enabled: enabled,
-                  leading: leading,
-                  trailing: trailing,
+                  features: [
+                    if (leading != null) InputFeature.leading(leading!),
+                    if (trailing != null) InputFeature.trailing(trailing!),
+                  ],
                   placeholder: placeholder,
                 );
               },

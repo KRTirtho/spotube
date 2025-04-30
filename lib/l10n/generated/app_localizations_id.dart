@@ -1371,4 +1371,18 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Add custom URL';
+
+  @override
+  String get edit_port => 'Edit port';
+
+  @override
+  String get port_helper_msg => 'Default adalah -1 yang menunjukkan angka acak. Jika Anda telah mengonfigurasi firewall, disarankan untuk mengatur ini.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Izinkan $client untuk terhubung?';
+  }
+
+  @override
+  String get connection_request_denied => 'Koneksi ditolak. Pengguna menolak akses.';
 }

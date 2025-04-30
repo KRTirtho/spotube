@@ -427,5 +427,9 @@
   "download": "다운로드",
   "file_not_found": "파일을 찾을 수 없습니다",
   "custom": "사용자 정의",
-  "add_custom_url": "사용자 정의 URL 추가"
+  "add_custom_url": "사용자 정의 URL 추가",
+  "edit_port": "포트 편집",
+  "port_helper_msg": "기본값은 -1로 무작위 숫자를 나타냅니다. 방화벽이 구성된 경우 이를 설정하는 것이 좋습니다.",
+  "connect_request": "{client}의 연결을 허용하시겠습니까?",
+  "connection_request_denied": "연결이 거부되었습니다. 사용자가 액세스를 거부했습니다."
 }

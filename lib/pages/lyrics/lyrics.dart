@@ -1,6 +1,6 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/components/titlebar/titlebar.dart';
@@ -101,7 +101,7 @@ class LyricsPage extends HookConsumerWidget {
             borderRadius: BorderRadius.zero,
             borderWidth: 0,
             child: ColoredBox(
-              color: palette.color.withOpacity(.7),
+              color: palette.color.withValues(alpha: .7),
               child: SafeArea(
                 child: IndexedStack(
                   index: selectedIndex.value,

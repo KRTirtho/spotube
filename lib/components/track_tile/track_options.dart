@@ -91,24 +91,14 @@ class TrackOptions extends HookConsumerWidget {
   ) {
     /// showDialog doesn't work for some reason. So we have to
     /// manually push a Dialog Route in the Navigator to get it working
-    Navigator.push(
-      context,
-      DialogRoute(
-        alignment: Alignment.bottomCenter,
-        transitionBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-        context: context,
-        barrierColor: Colors.black.withValues(alpha: 0.5),
-        builder: (context) {
-          return Center(
-            child: PlaylistAddTrackDialog(
-              tracks: [track],
-              openFromPlaylist: playlistId,
-            ),
-          );
-        },
-      ),
+    showDialog(
+      context: context,
+      builder: (context) {
+        return PlaylistAddTrackDialog(
+          tracks: [track],
+          openFromPlaylist: playlistId,
+        );
+      },
     );
   }
 
@@ -338,6 +328,7 @@ class TrackOptions extends HookConsumerWidget {
         }
       },
       icon: icon ?? const Icon(SpotubeIcons.moreHorizontal),
+      variance: ButtonVariance.outline,
       headings: [
         Basic(
           leading: AspectRatio(
@@ -483,7 +474,7 @@ class TrackOptions extends HookConsumerWidget {
             leading: Assets.logos.songlinkTransparent.image(
               width: 22,
               height: 22,
-              color: colorScheme.foreground.withOpacity(0.5),
+              color: colorScheme.foreground.withValues(alpha: 0.5),
             ),
             child: Text(context.l10n.song_link),
           ),

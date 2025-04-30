@@ -1371,4 +1371,18 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Thêm URL tùy chỉnh';
+
+  @override
+  String get edit_port => 'Chỉnh sửa cổng';
+
+  @override
+  String get port_helper_msg => 'Mặc định là -1, có nghĩa là số ngẫu nhiên. Nếu bạn đã cấu hình tường lửa, nên đặt điều này.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Cho phép $client kết nối?';
+  }
+
+  @override
+  String get connection_request_denied => 'Kết nối bị từ chối. Người dùng đã từ chối quyền truy cập.';
 }

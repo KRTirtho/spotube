@@ -1,6 +1,5 @@
 <script lang="ts">
 	import {
-		faSpotify,
 		faAndroid,
 		faWindows,
 		faApple,
@@ -25,8 +24,8 @@
 
 <svelte:head>
 	<title>Spotube</title>
-	<meta name="description" content="An Open Source Spotify Client for every platform" />
-	<meta name="keywords" content="spotify, client, open source, music, streaming" />
+	<meta name="description" content="An Open Source Music Client for every platform" />
+	<meta name="keywords" content="music, client, open source, music, streaming" />
 	<meta name="author" content="KRTirtho" />
 	<meta name="robots" content="index, follow" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -39,7 +38,7 @@
 			<h1 class="h1">Spotube</h1>
 			<br />
 			<h3 class="h3">
-				An Open Source <Fa class="inline text-[#1DB954]" icon={faSpotify} /> Spotify Client for every
+				An Open Source Music Client for every
 				platform
 				<div class="inline-flex gap-3 items-center">
 					<Fa class="inline text-[#3DDC84]" icon={faAndroid} />

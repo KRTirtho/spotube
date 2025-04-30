@@ -1371,4 +1371,18 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Додати користувацький URL';
+
+  @override
+  String get edit_port => 'Редагувати порт';
+
+  @override
+  String get port_helper_msg => 'За замовчуванням -1, що означає випадкове число. Якщо у вас налаштований брандмауер, рекомендується це налаштувати.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Дозволити $client підключення?';
+  }
+
+  @override
+  String get connection_request_denied => 'Підключення відхилено. Користувач відмовив у доступі.';
 }

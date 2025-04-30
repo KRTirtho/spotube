@@ -15,8 +15,7 @@ class TextFormBuilderField extends StatelessWidget {
   // final AlignmentGeometry? leadingAlignment;
   // final AlignmentGeometry? trailingAlignment;
   final bool border;
-  final Widget? leading;
-  final Widget? trailing;
+  final List<InputFeature> features;
   final EdgeInsetsGeometry? padding;
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onEditingComplete;
@@ -63,8 +62,6 @@ class TextFormBuilderField extends StatelessWidget {
     this.filled = false,
     this.placeholder,
     this.border = true,
-    this.leading,
-    this.trailing,
     this.padding,
     this.onSubmitted,
     this.onEditingComplete,
@@ -96,6 +93,7 @@ class TextFormBuilderField extends StatelessWidget {
     // this.leadingAlignment,
     // this.trailingAlignment,
     this.statesController,
+    this.features = const [],
   });
 
   @override
@@ -130,8 +128,7 @@ class TextFormBuilderField extends StatelessWidget {
             filled: filled,
             placeholder: placeholder,
             border: border,
-            leading: leading,
-            trailing: trailing,
+            features: features,
             padding: padding,
             onSubmitted: (value) {
               field.validate();

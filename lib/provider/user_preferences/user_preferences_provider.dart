@@ -90,9 +90,9 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   Future<void> reset() async {
     final db = ref.read(databaseProvider);
 
-    final query = db.update(db.preferencesTable)..where((t) => t.id.equals(0));
+    final query = db.update(db.preferencesTable);
 
-    await query.replace(PreferencesTableCompanion.insert());
+    await query.replace(PreferencesTableCompanion.insert(id: const Value(0)));
   }
 
   static Future<String> getMusicCacheDir() async {
@@ -238,6 +238,14 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setEnableConnect(bool enable) {
     setData(PreferencesTableCompanion(enableConnect: Value(enable)));
+  }
+
+  void setConnectPort(int port) {
+    assert(
+      port >= -1 && port <= 65535,
+      "Port must be between -1 and 65535, got $port",
+    );
+    setData(PreferencesTableCompanion(connectPort: Value(port)));
   }
 
   void setCacheMusic(bool cache) {

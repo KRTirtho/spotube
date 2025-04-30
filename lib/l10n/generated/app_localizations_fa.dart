@@ -1371,4 +1371,18 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get add_custom_url => 'اضافه کردن URL سفارشی';
+
+  @override
+  String get edit_port => 'ویرایش پورت';
+
+  @override
+  String get port_helper_msg => 'پیش‌فرض -1 است که نشان‌دهنده یک عدد تصادفی است. اگر فایروال شما پیکربندی شده است، توصیه می‌شود این را تنظیم کنید.';
+
+  @override
+  String connect_request(Object client) {
+    return 'آیا اجازه می‌دهید $client متصل شود؟';
+  }
+
+  @override
+  String get connection_request_denied => 'اتصال رد شد. کاربر دسترسی را رد کرد.';
 }

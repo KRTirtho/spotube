@@ -1371,4 +1371,18 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get add_custom_url => '添加自定义 URL';
+
+  @override
+  String get edit_port => '编辑端口';
+
+  @override
+  String get port_helper_msg => '默认值为-1，表示随机数。如果您已配置防火墙，建议设置此项。';
+
+  @override
+  String connect_request(Object client) {
+    return '允许 $client 连接吗？';
+  }
+
+  @override
+  String get connection_request_denied => '连接被拒绝。用户拒绝访问。';
 }

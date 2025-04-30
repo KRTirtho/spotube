@@ -236,32 +236,75 @@ class YoutubeSourcedTrack extends SourcedTrack {
         .toList();
   }
 
+  static Future<List<YoutubeVideoInfo>> fetchFromIsrc({
+    required Track track,
+    required Ref ref,
+  }) async {
+    final isrcResults = <YoutubeVideoInfo>[];
+    final isrc = track.externalIds?.isrc;
+    if (isrc != null && isrc.isNotEmpty) {
+      final searchedVideos =
+          await ref.read(youtubeEngineProvider).searchVideos(isrc.toString());
+      if (searchedVideos.isNotEmpty) {
+        isrcResults.addAll(searchedVideos
+            .map<YoutubeVideoInfo>(YoutubeVideoInfo.fromVideo)
+            .map((YoutubeVideoInfo videoInfo) {
+              final ytWords = videoInfo.title
+                  .toLowerCase()
+                  .replaceAll(RegExp(r'[^\p{L}\p{N}\p{Z}]+', unicode: true), '')
+                  .split(RegExp(r'\p{Z}+', unicode: true))
+                  .where((item) => item.isNotEmpty);
+              final spWords = track.name!
+                  .toLowerCase()
+                  .replaceAll(RegExp(r'[^\p{L}\p{N}\p{Z}]+', unicode: true), '')
+                  .split(RegExp(r'\p{Z}+', unicode: true))
+                  .where((item) => item.isNotEmpty);
+              // Single word and duration match with 3 second tolerance
+              if (ytWords.any((word) => spWords.contains(word)) &&
+                  (videoInfo.duration - track.duration!)
+                      .abs().inMilliseconds <= 3000) {
+                return videoInfo;
+              }
+              return null;
+            })
+            .whereType<YoutubeVideoInfo>()
+            .toList());
+      }
+    }
+    return isrcResults;
+  }
+
   static Future<List<SiblingType>> fetchSiblings({
     required Track track,
     required Ref ref,
   }) async {
-    final links = await SongLinkService.links(track.id!);
-    final ytLink = links.firstWhereOrNull((link) => link.platform == "youtube");
+    final videoResults = <YoutubeVideoInfo>[];
 
-    if (ytLink?.url != null
-        // allows to fetch siblings more results for already sourced track
-        &&
-        track is! SourcedTrack) {
-      try {
-        return [
-          await toSiblingType(
-            0,
-            YoutubeVideoInfo.fromVideo(
-              await ref.read(youtubeEngineProvider).getVideo(
-                    Uri.parse(ytLink!.url!).queryParameters["v"]!,
-                  ),
-            ),
-            ref,
-          )
-        ];
-      } on VideoUnplayableException catch (e, stack) {
-        // Ignore this error and continue with the search
-        AppLogger.reportError(e, stack);
+    if (track is! SourcedTrack) {
+      final isrcResults = await fetchFromIsrc(
+        track: track,
+        ref: ref,
+      );
+
+      videoResults.addAll(isrcResults);
+
+      if (isrcResults.isEmpty) {
+        final links = await SongLinkService.links(track.id!);
+        final ytLink = links.firstWhereOrNull(
+          (link) => link.platform == "youtube",
+        );
+        if (ytLink?.url != null) {
+          try {
+            videoResults.add(
+              YoutubeVideoInfo.fromVideo(await ref
+                  .read(youtubeEngineProvider)
+                  .getVideo(Uri.parse(ytLink!.url!).queryParameters["v"]!)),
+            );
+          } on VideoUnplayableException catch (e, stack) {
+            // Ignore this error and continue with the search
+            AppLogger.reportError(e, stack);
+          }
+        }
       }
     }
 
@@ -271,20 +314,27 @@ class YoutubeSourcedTrack extends SourcedTrack {
         await ref.read(youtubeEngineProvider).searchVideos(query);
 
     if (ServiceUtils.onlyContainsEnglish(query)) {
-      return await Future.wait(searchResults
-          .map(YoutubeVideoInfo.fromVideo)
-          .mapIndexed((index, info) => toSiblingType(index, info, ref)));
+      videoResults
+          .addAll(searchResults.map(YoutubeVideoInfo.fromVideo).toList());
+    } else {
+      videoResults.addAll(rankResults(
+        searchResults.map(YoutubeVideoInfo.fromVideo).toList(),
+        track,
+      ));
     }
 
-    final rankedSiblings = rankResults(
-      searchResults.map(YoutubeVideoInfo.fromVideo).toList(),
-      track,
-    );
-
+    final seenIds = <String>{};
+    int index = 0;
     return await Future.wait(
-      rankedSiblings
-          .mapIndexed((index, info) => toSiblingType(index, info, ref)),
-    );
+      videoResults.map((videoResult) async {
+        // Deduplicate results
+        if (!seenIds.contains(videoResult.id)) {
+          seenIds.add(videoResult.id);
+          return await toSiblingType(index++, videoResult, ref);
+        }
+        return null;
+      }),
+    ).then((s) => s.whereType<SiblingType>().toList());
   }
 
   @override

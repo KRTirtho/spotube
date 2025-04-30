@@ -426,5 +426,9 @@
   "download": "İndir",
   "file_not_found": "Dosya bulunamadı",
   "custom": "Özel",
-  "add_custom_url": "Özel URL ekle"
+  "add_custom_url": "Özel URL ekle",
+  "edit_port": "Portu düzenle",
+  "port_helper_msg": "Varsayılan -1'dir, bu da rastgele bir sayıyı gösterir. Bir güvenlik duvarınız varsa, bunu ayarlamanız önerilir.",
+  "connect_request": "{client} bağlantısına izin verilsin mi?",
+  "connection_request_denied": "Bağlantı reddedildi. Kullanıcı erişimi reddetti."
 }

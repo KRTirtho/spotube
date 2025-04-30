@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -28,6 +30,7 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final theme = Theme.of(context);
     final controller = useScrollController();
     final mediaQuery = MediaQuery.of(context);
     final layoutMode =
@@ -45,7 +48,17 @@ class HomePage extends HookConsumerWidget {
               if (mediaQuery.smAndDown || layoutMode == LayoutMode.compact)
                 SliverAppBar(
                   floating: true,
-                  title: Assets.spotubeLogoPng.image(height: 45),
+                  title: Image.asset(
+                    theme.brightness == Brightness.dark
+                        ? Assets.spotubeLogoPng.path
+                        : Assets.spotubeLogoLight.path,
+                    height: 45,
+                    width: 45,
+                    color: theme.colorScheme.background,
+                    colorBlendMode: BlendMode.saturation,
+                    cacheHeight:
+                        (100 * MediaQuery.devicePixelRatioOf(context)).toInt(),
+                  ),
                   backgroundColor: context.theme.colorScheme.background,
                   foregroundColor: context.theme.colorScheme.foreground,
                   actions: [

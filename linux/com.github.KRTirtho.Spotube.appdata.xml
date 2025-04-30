@@ -17,11 +17,12 @@
   <url type="homepage">https://spotube.krtirtho.dev</url>
   <url type="donation">https://opencollective.com/spotube</url>
   <description>
-    <p>Open source Spotify client that doesn't require Premium nor uses Electron! Available for
+    <p>Open source music client that doesn't require Premium nor uses Electron! Available for
       both desktop &amp; mobile!</p>
     <p>Following are the features that currently spotube offers:</p>
     <ul>
-      <li>🚫 No ads, thanks to the use of public &amp; free Spotify and YT Music APIs¹</li>
+      <li>🚫 No ads, thanks to the use of public &amp; free music metadata providers and YT Music
+        APIs¹</li>
       <li>⬇️ Downloadable tracks</li>
       <li>🖥️ 📱 Cross-platform support</li>
       <li>🪶 Small size &amp; less data usage</li>

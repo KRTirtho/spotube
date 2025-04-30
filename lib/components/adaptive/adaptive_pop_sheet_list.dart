@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart' show showModalBottomSheet;
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -26,7 +25,7 @@ class AdaptiveMenuButton<T> extends MenuButton {
 
 /// An adaptive widget that shows a [PopupMenuButton] when screen size is above
 /// or equal to 640px
-/// In smaller screen, a [IconButton] with a [showModalBottomSheet] is shown
+/// In smaller screen, a [IconButton] with a [openDrawer] is shown
 class AdaptivePopSheetList<T> extends StatelessWidget {
   final List<AdaptiveMenuButton<T>> Function(BuildContext context) items;
   final Widget? icon;
@@ -39,7 +38,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
   final Offset offset;
 
-  final ButtonVariance variance;
+  final AbstractButtonStyle variance;
 
   const AdaptivePopSheetList({
     super.key,
@@ -92,23 +91,23 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
         // ),
         position: position,
         builder: (context) {
-          return DropdownMenu(
-            children: childrenModified(context),
+          return WidgetStatesProvider.boundary(
+            child: DropdownMenu(
+              children: childrenModified(context),
+            ),
           );
         },
       ).future;
       return;
     }
 
-    showModalBottomSheet(
+    await openDrawer(
       context: context,
-      enableDrag: true,
+      draggable: true,
       showDragHandle: true,
-      useRootNavigator: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: context.theme.borderRadiusMd,
-      ),
-      backgroundColor: context.theme.colorScheme.card,
+      position: OverlayPosition.bottom,
+      borderRadius: context.theme.borderRadiusMd,
+      transformBackdrop: false,
       builder: (context) {
         final children = childrenModified(context);
         return ListView.builder(
@@ -125,7 +124,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
               onPressed: () {
                 data.onPressed?.call(context);
                 if (data.autoClose) {
-                  Navigator.of(context).pop();
+                  closeDrawer(context);
                 }
               },
               leading: data.leading,
@@ -147,7 +146,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
       return Tooltip(
         tooltip: TooltipContainer(
           child: Text(tooltip),
-        ),
+        ).call,
         child: IconButton(
           variance: variance,
           icon: icon ?? const Icon(SpotubeIcons.moreVertical),
@@ -171,7 +170,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
 
     if (child != null) {
       return Tooltip(
-        tooltip: TooltipContainer(child: Text(tooltip)),
+        tooltip: TooltipContainer(child: Text(tooltip)).call,
         child: Button(
           onPressed: () => showDropdownMenu(context, Offset.zero),
           style: variance,
@@ -181,7 +180,7 @@ class AdaptivePopSheetList<T> extends StatelessWidget {
     }
 
     return Tooltip(
-      tooltip: TooltipContainer(child: Text(tooltip)),
+      tooltip: TooltipContainer(child: Text(tooltip)).call,
       child: IconButton(
         variance: variance,
         icon: icon ?? const Icon(SpotubeIcons.moreVertical),

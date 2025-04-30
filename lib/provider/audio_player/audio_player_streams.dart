@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
@@ -10,6 +11,7 @@ import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/skip_segments/skip_segments.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/server/sourced_track.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
@@ -63,7 +65,9 @@ class AudioPlayerStreamListeners {
         final currentSegments = await ref.read(segmentProvider.future);
 
         if (currentSegments?.segments.isNotEmpty != true ||
-            position < const Duration(seconds: 3)) return;
+            position < const Duration(seconds: 3)) {
+          return;
+        }
 
         for (final segment in currentSegments!.segments) {
           final seconds = position.inSeconds;
@@ -80,7 +84,7 @@ class AudioPlayerStreamListeners {
 
   StreamSubscription subscribeToScrobbleChanged() {
     String? lastScrobbled;
-    return audioPlayer.positionStream.listen((position) {
+    return audioPlayer.positionStream.listen((position) async {
       try {
         final uid = audioPlayerState.activeTrack is LocalTrack
             ? (audioPlayerState.activeTrack as LocalTrack).path
@@ -93,8 +97,23 @@ class AudioPlayerStreamListeners {
         }
 
         scrobbler.scrobble(audioPlayerState.activeTrack!);
-        history.addTrack(audioPlayerState.activeTrack!);
         lastScrobbled = uid;
+
+        /// The [Track] from Playlist.getTracks doesn't contain artist images
+        /// so we need to fetch them from the API
+        final activeTrack =
+            Track.fromJson(audioPlayerState.activeTrack!.toJson());
+        if (audioPlayerState.activeTrack!.artists
+                ?.any((a) => a.images == null) ??
+            false) {
+          activeTrack.artists =
+              await ref.read(spotifyProvider).api.artists.list([
+            for (final artist in audioPlayerState.activeTrack!.artists!)
+              artist.id!,
+          ]).then((value) => value.toList());
+        }
+
+        await history.addTrack(activeTrack);
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
       }

@@ -426,5 +426,9 @@
   "download": "Herunterladen",
   "file_not_found": "Datei nicht gefunden",
   "custom": "Benutzerdefiniert",
-  "add_custom_url": "Benutzerdefinierte URL hinzufügen"
+  "add_custom_url": "Benutzerdefinierte URL hinzufügen",
+  "edit_port": "Port bearbeiten",
+  "port_helper_msg": "Der Standardwert ist -1, was eine zufällige Zahl bedeutet. Wenn Sie eine Firewall konfiguriert haben, wird empfohlen, dies einzustellen.",
+  "connect_request": "{client} die Verbindung erlauben?",
+  "connection_request_denied": "Verbindung abgelehnt. Benutzer hat den Zugriff verweigert."
 }

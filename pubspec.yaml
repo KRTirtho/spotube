@@ -60,7 +60,7 @@ dependencies:
   flutter_inappwebview: ^6.1.3
   flutter_localizations:
     sdk: flutter
-  flutter_native_splash: ^2.4.0
+  flutter_native_splash: ^2.4.6
   flutter_riverpod: ^2.5.1
   flutter_secure_storage: ^9.0.0
   flutter_sharing_intent: ^1.1.0
@@ -102,7 +102,7 @@ dependencies:
       ref: dart-3-support
       url: https://github.com/KRTirtho/scrobblenaut.git
   scroll_to_index: ^3.0.1
-  shadcn_flutter: ^0.0.26
+  shadcn_flutter: ^0.0.34
   shared_preferences: ^2.2.3
   shelf: ^1.4.1
   shelf_router: ^1.1.4
@@ -120,7 +120,7 @@ dependencies:
   test: ^1.25.7
   timezone: ^0.10.0
   titlebar_buttons: ^1.0.0
-  tray_manager: ^0.3.0
+  tray_manager: ^0.4.0
   url_launcher: ^6.2.6
   uuid: ^4.4.0
   version: ^3.0.2
@@ -200,6 +200,11 @@ flutter:
     - family: BootstrapIcons
       fonts:
         - asset: packages/shadcn_flutter/icons/BootstrapIcons.otf
+    - family: Cookie
+      fonts:
+        - asset: assets/fonts/Cookie-Regular.ttf
+          style: normal
+          weight: 500
 
 flutter_gen:
   output: lib/collections

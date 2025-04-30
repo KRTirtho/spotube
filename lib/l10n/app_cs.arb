@@ -426,5 +426,9 @@
   "download": "Stáhnout",
   "file_not_found": "Soubor nenalezen",
   "custom": "Vlastní",
-  "add_custom_url": "Přidat vlastní URL"
+  "add_custom_url": "Přidat vlastní URL",
+  "edit_port": "Upravit port",
+  "port_helper_msg": "Výchozí hodnota je -1, což znamená náhodné číslo. Pokud máte nakonfigurován firewall, doporučuje se to nastavit.",
+  "connect_request": "Povolit {client} připojení?",
+  "connection_request_denied": "Připojení bylo zamítnuto. Uživatel odmítl přístup."
 }

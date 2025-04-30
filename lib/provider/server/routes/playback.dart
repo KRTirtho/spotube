@@ -54,7 +54,9 @@ class ServerPlaybackRoutes {
     final trackCacheFile = File(
       join(
         await UserPreferencesNotifier.getMusicCacheDir(),
-        '${track.name} - ${track.artists?.asString()} (${track.sourceInfo.id}).${track.codec.name}',
+        ServiceUtils.sanitizeFilename(
+          '${track.name} - ${track.artists?.asString()} (${track.sourceInfo.id}).${track.codec.name}',
+        ),
       ),
     );
     final trackPartialCacheFile = File("${trackCacheFile.path}.part");
@@ -128,7 +130,10 @@ class ServerPlaybackRoutes {
           .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
           .refreshStreamingUrl();
 
-      ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      if (playlist.activeTrack?.id == sourcedTrack?.id &&
+          sourcedTrack != null) {
+        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      }
 
       return await dio.get<Uint8List>(
         sourcedTrack!.url,
@@ -199,7 +204,10 @@ class ServerPlaybackRoutes {
           ? activeSourcedTrack
           : await ref.read(sourcedTrackProvider(SpotubeMedia(track)).future);
 
-      ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      if (playlist.activeTrack?.id == sourcedTrack?.id &&
+          sourcedTrack != null) {
+        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
+      }
 
       final (bytes: audioBytes, response: res) =
           await streamTrack(sourcedTrack!, request.headers);

@@ -12,7 +12,7 @@ class HomePageFeedSection extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final homeFeed = ref.watch(homeViewProvider);
-    final nonShortSections = homeFeed.asData?.value?.sections
+    final nonShortSections = homeFeed.asData?.value.sections
             .where((s) => s.typename == "HomeGenericSectionData")
             .toList() ??
         [];

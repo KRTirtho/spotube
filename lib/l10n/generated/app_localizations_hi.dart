@@ -1371,4 +1371,18 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get add_custom_url => 'कस्टम URL जोड़ें';
+
+  @override
+  String get edit_port => 'पोर्ट संपादित करें';
+
+  @override
+  String get port_helper_msg => 'डिफ़ॉल्ट -1 है जो यादृच्छिक संख्या को दर्शाता है। यदि आपने फ़ायरवॉल कॉन्फ़िगर किया है, तो इसे सेट करना अनुशंसित है।';
+
+  @override
+  String connect_request(Object client) {
+    return '$client को कनेक्ट करने की अनुमति दें?';
+  }
+
+  @override
+  String get connection_request_denied => 'कनेक्शन अस्वीकृत। उपयोगकर्ता ने पहुंच अस्वीकृत कर दी।';
 }

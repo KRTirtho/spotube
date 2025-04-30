@@ -1,5 +1,5 @@
 icon: assets/spotube-logo.png
-summary: Lightweight cross-platform Spotify desktop client
+summary: Lightweight cross-platform music client
 group: Applications/Multimedia
 vendor: Kingkor Roy Tirtho
 packager: Kingkor Roy Tirtho
@@ -23,7 +23,6 @@ display_name: Spotube
 
 keywords:
   - Music
-  - Spotify
   - Media
   - Streaming
   - YouTube

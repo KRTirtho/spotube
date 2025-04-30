@@ -426,5 +426,9 @@
   "download": "Pobierz",
   "file_not_found": "Plik nie znaleziony",
   "custom": "Niestandardowy",
-  "add_custom_url": "Dodaj niestandardowy URL"
+  "add_custom_url": "Dodaj niestandardowy URL",
+  "edit_port": "Edytuj port",
+  "port_helper_msg": "Domyślna wartość to -1, co oznacza losową liczbę. Jeśli masz skonfigurowany zaporę, zaleca się jej ustawienie.",
+  "connect_request": "Zezwolić {client} na połączenie?",
+  "connection_request_denied": "Połączenie odrzucone. Użytkownik odmówił dostępu."
 }

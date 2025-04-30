@@ -1371,4 +1371,18 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get add_custom_url => 'Ajouter une URL personnalisée';
+
+  @override
+  String get edit_port => 'Modifier le port';
+
+  @override
+  String get port_helper_msg => 'La valeur par défaut est -1, ce qui indique un nombre aléatoire. Si vous avez configuré un pare-feu, il est recommandé de le définir.';
+
+  @override
+  String connect_request(Object client) {
+    return 'Autoriser $client à se connecter ?';
+  }
+
+  @override
+  String get connection_request_denied => 'Connection denied. User denied access.';
 }

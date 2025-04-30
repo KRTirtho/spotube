@@ -25,7 +25,13 @@ class TopArtists extends HookConsumerWidget {
         ref.watch(historyTopTracksProvider(historyDuration).notifier);
 
     final artistsData = useMemoized(
-        () => topTracks.asData?.value.artists ?? [], [topTracks.asData?.value]);
+      () => topTracks.asData?.value.artists ?? [],
+      [topTracks.asData?.value],
+    );
+
+    for (final artist in artistsData) {
+      print("${artist.artist.name} has ${artist.artist.images?.length} images");
+    }
 
     return Skeletonizer.sliver(
       enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,

@@ -121,32 +121,47 @@ class SearchPage extends HookConsumerWidget {
                                       }
                                     },
                                     child: AutoComplete(
-                                      suggestions: suggestions,
+                                      suggestions: suggestions.length <= 2
+                                          ? [
+                                              ...suggestions,
+                                              "Twenty One Pilots",
+                                              "Linkin Park",
+                                              "d4vd"
+                                            ]
+                                          : suggestions,
+                                      completer: (suggestion) => suggestion,
+                                      mode: AutoCompleteMode.replaceAll,
                                       child: TextField(
                                         autofocus: true,
                                         controller: controller,
-                                        leading:
-                                            const Icon(SpotubeIcons.search),
-                                        textInputAction: TextInputAction.search,
-                                        placeholder: Text(context.l10n.search),
-                                        trailing: AnimatedCrossFade(
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          crossFadeState:
-                                              controller.text.isNotEmpty
+                                        features: [
+                                          const InputFeature.leading(
+                                            Icon(SpotubeIcons.search),
+                                          ),
+                                          InputFeature.trailing(
+                                            AnimatedCrossFade(
+                                              duration: const Duration(
+                                                  milliseconds: 300),
+                                              crossFadeState: controller
+                                                      .text.isNotEmpty
                                                   ? CrossFadeState.showFirst
                                                   : CrossFadeState.showSecond,
-                                          firstChild: IconButton.ghost(
-                                            size: ButtonSize.small,
-                                            icon:
-                                                const Icon(SpotubeIcons.close),
-                                            onPressed: () {
-                                              controller.clear();
-                                            },
-                                          ),
-                                          secondChild: const SizedBox.square(
-                                              dimension: 28),
-                                        ),
+                                              firstChild: IconButton.ghost(
+                                                size: ButtonSize.small,
+                                                icon: const Icon(
+                                                    SpotubeIcons.close),
+                                                onPressed: () {
+                                                  controller.clear();
+                                                },
+                                              ),
+                                              secondChild:
+                                                  const SizedBox.square(
+                                                      dimension: 28),
+                                            ),
+                                          )
+                                        ],
+                                        textInputAction: TextInputAction.search,
+                                        placeholder: Text(context.l10n.search),
                                         onSubmitted: onSubmitted,
                                       ),
                                     ),
@@ -194,7 +209,7 @@ class SearchPage extends HookConsumerWidget {
                                       fontSize: 20,
                                       fontWeight: FontWeight.w900,
                                       color: theme.colorScheme.foreground
-                                          .withOpacity(0.7),
+                                          .withValues(alpha: 0.7),
                                     ),
                                   ),
                                   const SizedBox(height: 20),

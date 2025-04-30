@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/components/image/universal_image.dart';
@@ -57,6 +61,7 @@ class ConnectControlPage extends HookConsumerWidget {
 
     final resolvedService =
         ref.watch(connectClientsProvider).asData?.value.resolvedService;
+    final connect = ref.watch(connectProvider);
     final connectNotifier = ref.read(connectProvider.notifier);
     final playlist = ref.watch(queueProvider);
     final playing = ref.watch(playingProvider);
@@ -69,12 +74,32 @@ class ConnectControlPage extends HookConsumerWidget {
       }
     });
 
+    useEffect(() {
+      if (connect.asData?.value == null) return null;
+
+      final subscription = connect.asData?.value?.stream.listen((message) {
+        final event = WebSocketEvent.fromJson(
+          jsonDecode(message),
+          (data) => data,
+        );
+        event.onError((event) {
+          if (event.data != "Connection denied") return;
+          if (!context.mounted) return;
+          context.back();
+        });
+      });
+
+      return () {
+        subscription?.cancel();
+      };
+    }, [connect.asData?.value]);
+
     return SafeArea(
       bottom: false,
       child: Scaffold(
         headers: [
           TitleBar(
-            title: Text(resolvedService!.name),
+            title: Text(resolvedService?.name ?? ""),
           )
         ],
         child: LayoutBuilder(builder: (context, constrains) {
@@ -188,7 +213,7 @@ class ConnectControlPage extends HookConsumerWidget {
                                     ? context.l10n.unshuffle_playlist
                                     : context.l10n.shuffle_playlist,
                               ),
-                            ),
+                            ).call,
                             child: IconButton(
                               icon: const Icon(SpotubeIcons.shuffle),
                               variance: shuffled
@@ -204,7 +229,7 @@ class ConnectControlPage extends HookConsumerWidget {
                           Tooltip(
                             tooltip: TooltipContainer(
                               child: Text(context.l10n.previous_track),
-                            ),
+                            ).call,
                             child: IconButton.ghost(
                               icon: const Icon(SpotubeIcons.skipBack),
                               onPressed: playlist.activeTrack == null
@@ -219,7 +244,7 @@ class ConnectControlPage extends HookConsumerWidget {
                                     ? context.l10n.pause_playback
                                     : context.l10n.resume_playback,
                               ),
-                            ),
+                            ).call,
                             child: IconButton.primary(
                               shape: ButtonShape.circle,
                               icon: playlist.activeTrack == null
@@ -247,7 +272,8 @@ class ConnectControlPage extends HookConsumerWidget {
                           ),
                           Tooltip(
                             tooltip: TooltipContainer(
-                                child: Text(context.l10n.next_track)),
+                                    child: Text(context.l10n.next_track))
+                                .call,
                             child: IconButton.ghost(
                               icon: const Icon(SpotubeIcons.skipForward),
                               onPressed: playlist.activeTrack == null
@@ -264,7 +290,7 @@ class ConnectControlPage extends HookConsumerWidget {
                                         ? context.l10n.repeat_playlist
                                         : context.l10n.no_loop,
                               ),
-                            ),
+                            ).call,
                             child: IconButton(
                               icon: Icon(
                                 loopMode == PlaylistMode.single

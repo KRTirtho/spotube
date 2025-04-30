@@ -426,5 +426,9 @@
   "download": "下载",
   "file_not_found": "文件未找到",
   "custom": "自定义",
-  "add_custom_url": "添加自定义 URL"
+  "add_custom_url": "添加自定义 URL",
+  "edit_port": "编辑端口",
+  "port_helper_msg": "默认值为-1，表示随机数。如果您已配置防火墙，建议设置此项。",
+  "connect_request": "允许 {client} 连接吗？",
+  "connection_request_denied": "连接被拒绝。用户拒绝访问。"
 }

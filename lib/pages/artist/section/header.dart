@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -84,7 +84,7 @@ class ArtistPageHeader extends HookConsumerWidget {
           Tooltip(
             tooltip: TooltipContainer(
               child: Text(context.l10n.add_artist_to_blacklist),
-            ),
+            ).call,
             child: IconButton(
               icon: Icon(
                 SpotubeIcons.userRemove,

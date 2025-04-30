@@ -61,7 +61,7 @@ class AuthenticationNotifier extends AsyncNotifier<AuthenticationTableData?> {
 
     Timer? refreshTimer;
 
-    ref.listenSelf((prevData, newData) async {
+    listenSelf((prevData, newData) async {
       if (newData.asData?.value == null) return;
 
       if (newData.asData!.value!.isExpired) {
