@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:flutter_js/extensions/fetch.dart';
+import 'package:flutter_js/extensions/xhr.dart';
 import 'package:flutter_js/flutter_js.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/logger/logger.dart';
@@ -11,11 +13,14 @@ const int defaultMetadataOffset = 0;
 /// Signature for metadata and related methods that will return Spotube native
 /// objects e.g. SpotubeTrack, SpotubePlaylist, etc.
 class MetadataApiSignature {
-  late final JavascriptRuntime runtime;
+  final JavascriptRuntime runtime;
 
-  MetadataApiSignature(String libraryCode) {
-    runtime = getJavascriptRuntime(xhr: true);
+  MetadataApiSignature._(this.runtime);
+
+  static Future<MetadataApiSignature> init(String libraryCode) async {
+    final runtime = getJavascriptRuntime(xhr: true).enableXhr();
     runtime.enableHandlePromises();
+    await runtime.enableFetch();
 
     Timer.periodic(
       const Duration(milliseconds: 100),
@@ -24,12 +29,20 @@ class MetadataApiSignature {
       },
     );
 
-    runtime.evaluate(
+    final res = runtime.evaluate(
       """
       ;$libraryCode;
       const metadataApi = new MetadataApi();
       """,
     );
+
+    if (res.isError) {
+      AppLogger.reportError(
+        "Error evaluating code: $libraryCode\n${res.rawResult}",
+      );
+    }
+
+    return MetadataApiSignature._(runtime);
   }
 
   void dispose() {
@@ -40,8 +53,8 @@ class MetadataApiSignature {
     final completer = Completer();
     runtime.onMessage(method, (result) {
       try {
-        if (result == null) {
-          completer.completeError("Result is null");
+        if (result is Map && result.containsKey("error")) {
+          completer.completeError(result["error"]);
         } else {
           completer.complete(result is String ? jsonDecode(result) : result);
         }
@@ -52,13 +65,19 @@ class MetadataApiSignature {
     final code = """
       $method(...${args != null ? jsonEncode(args) : "[]"})
       .then((res) => {
-        sendMessage("$method", JSON.stringify(res));
-      }).catch((err) => {
-        sendMessage("$method", null);
-      async}){
-      } final res"metadataApi.=>", [limit, offset] ;= await invoke()
-
-      return res.map(es.fromJson).toList();
+        try {
+          sendMessage("$method", JSON.stringify(res));
+        } catch (e) {
+          console.error("Failed to send message in $method.then: ", `\${e.toString()}\n\${e.stack.toString()}`);
+        }
+      }).catch((e) => {
+        try {
+          console.error("Error in $method: ", `\${e.toString()}\n\${e.stack.toString()}`);
+          sendMessage("$method", JSON.stringify({error: `\${e.toString()}\n\${e.stack.toString()}`}));
+        } catch (e) {
+          console.error("Failed to send message in $method.catch: ", `\${e.toString()}\n\${e.stack.toString()}`);
+        }
+      });
       """;
 
     final res = await runtime.evaluateAsync(code);
