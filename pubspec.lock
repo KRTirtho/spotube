@@ -909,6 +909,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
+  flutter_js:
+    dependency: "direct main"
+    description:
+      name: flutter_js
+      sha256: "6b777cd4e468546f046a2f114d078a4596143269f6fa6bad5c29611d5b896369"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.2"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
