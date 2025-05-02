@@ -2430,3 +2430,241 @@ abstract class _SpotubeUserObject implements SpotubeUserObject {
   _$$SpotubeUserObjectImplCopyWith<_$SpotubeUserObjectImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+PluginConfiguration _$PluginConfigurationFromJson(Map<String, dynamic> json) {
+  return _PluginConfiguration.fromJson(json);
+}
+
+/// @nodoc
+mixin _$PluginConfiguration {
+  PluginType get type => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
+  String get version => throw _privateConstructorUsedError;
+  String get author => throw _privateConstructorUsedError;
+
+  /// Serializes this PluginConfiguration to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of PluginConfiguration
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $PluginConfigurationCopyWith<PluginConfiguration> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PluginConfigurationCopyWith<$Res> {
+  factory $PluginConfigurationCopyWith(
+          PluginConfiguration value, $Res Function(PluginConfiguration) then) =
+      _$PluginConfigurationCopyWithImpl<$Res, PluginConfiguration>;
+  @useResult
+  $Res call(
+      {PluginType type,
+      String name,
+      String description,
+      String version,
+      String author});
+}
+
+/// @nodoc
+class _$PluginConfigurationCopyWithImpl<$Res, $Val extends PluginConfiguration>
+    implements $PluginConfigurationCopyWith<$Res> {
+  _$PluginConfigurationCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of PluginConfiguration
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? type = null,
+    Object? name = null,
+    Object? description = null,
+    Object? version = null,
+    Object? author = null,
+  }) {
+    return _then(_value.copyWith(
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as PluginType,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      version: null == version
+          ? _value.version
+          : version // ignore: cast_nullable_to_non_nullable
+              as String,
+      author: null == author
+          ? _value.author
+          : author // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$PluginConfigurationImplCopyWith<$Res>
+    implements $PluginConfigurationCopyWith<$Res> {
+  factory _$$PluginConfigurationImplCopyWith(_$PluginConfigurationImpl value,
+          $Res Function(_$PluginConfigurationImpl) then) =
+      __$$PluginConfigurationImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {PluginType type,
+      String name,
+      String description,
+      String version,
+      String author});
+}
+
+/// @nodoc
+class __$$PluginConfigurationImplCopyWithImpl<$Res>
+    extends _$PluginConfigurationCopyWithImpl<$Res, _$PluginConfigurationImpl>
+    implements _$$PluginConfigurationImplCopyWith<$Res> {
+  __$$PluginConfigurationImplCopyWithImpl(_$PluginConfigurationImpl _value,
+      $Res Function(_$PluginConfigurationImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of PluginConfiguration
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? type = null,
+    Object? name = null,
+    Object? description = null,
+    Object? version = null,
+    Object? author = null,
+  }) {
+    return _then(_$PluginConfigurationImpl(
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as PluginType,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      version: null == version
+          ? _value.version
+          : version // ignore: cast_nullable_to_non_nullable
+              as String,
+      author: null == author
+          ? _value.author
+          : author // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$PluginConfigurationImpl extends _PluginConfiguration {
+  _$PluginConfigurationImpl(
+      {required this.type,
+      required this.name,
+      required this.description,
+      required this.version,
+      required this.author})
+      : super._();
+
+  factory _$PluginConfigurationImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PluginConfigurationImplFromJson(json);
+
+  @override
+  final PluginType type;
+  @override
+  final String name;
+  @override
+  final String description;
+  @override
+  final String version;
+  @override
+  final String author;
+
+  @override
+  String toString() {
+    return 'PluginConfiguration(type: $type, name: $name, description: $description, version: $version, author: $author)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PluginConfigurationImpl &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.version, version) || other.version == version) &&
+            (identical(other.author, author) || other.author == author));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, type, name, description, version, author);
+
+  /// Create a copy of PluginConfiguration
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PluginConfigurationImplCopyWith<_$PluginConfigurationImpl> get copyWith =>
+      __$$PluginConfigurationImplCopyWithImpl<_$PluginConfigurationImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$PluginConfigurationImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _PluginConfiguration extends PluginConfiguration {
+  factory _PluginConfiguration(
+      {required final PluginType type,
+      required final String name,
+      required final String description,
+      required final String version,
+      required final String author}) = _$PluginConfigurationImpl;
+  _PluginConfiguration._() : super._();
+
+  factory _PluginConfiguration.fromJson(Map<String, dynamic> json) =
+      _$PluginConfigurationImpl.fromJson;
+
+  @override
+  PluginType get type;
+  @override
+  String get name;
+  @override
+  String get description;
+  @override
+  String get version;
+  @override
+  String get author;
+
+  /// Create a copy of PluginConfiguration
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$PluginConfigurationImplCopyWith<_$PluginConfigurationImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}

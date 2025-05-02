@@ -223,3 +223,26 @@ Map<String, dynamic> _$$SpotubeUserObjectImplToJson(
       'externalUrl': instance.externalUrl,
       'displayName': instance.displayName,
     };
+
+_$PluginConfigurationImpl _$$PluginConfigurationImplFromJson(Map json) =>
+    _$PluginConfigurationImpl(
+      type: $enumDecode(_$PluginTypeEnumMap, json['type']),
+      name: json['name'] as String,
+      description: json['description'] as String,
+      version: json['version'] as String,
+      author: json['author'] as String,
+    );
+
+Map<String, dynamic> _$$PluginConfigurationImplToJson(
+        _$PluginConfigurationImpl instance) =>
+    <String, dynamic>{
+      'type': _$PluginTypeEnumMap[instance.type]!,
+      'name': instance.name,
+      'description': instance.description,
+      'version': instance.version,
+      'author': instance.author,
+    };
+
+const _$PluginTypeEnumMap = {
+  PluginType.metadata: 'metadata',
+};

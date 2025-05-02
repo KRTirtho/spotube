@@ -14,3 +14,5 @@ part 'playlist.dart';
 part 'search.dart';
 part 'track.dart';
 part 'user.dart';
+
+part 'plugin.dart';

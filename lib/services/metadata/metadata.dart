@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'package:flutter_js/extensions/fetch.dart';
 import 'package:flutter_js/extensions/xhr.dart';
 import 'package:flutter_js/flutter_js.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/logger/logger.dart';
+import 'package:spotube/services/metadata/apis/localstorage.dart';
 
 const defaultMetadataLimit = "20";
 
@@ -13,10 +15,12 @@ const defaultMetadataLimit = "20";
 /// objects e.g. SpotubeTrack, SpotubePlaylist, etc.
 class MetadataApiSignature {
   final JavascriptRuntime runtime;
+  final PluginLocalStorageApi localStorageApi;
 
-  MetadataApiSignature._(this.runtime);
+  MetadataApiSignature._(this.runtime, this.localStorageApi);
 
-  static Future<MetadataApiSignature> init(String libraryCode) async {
+  static Future<MetadataApiSignature> init(
+      String libraryCode, PluginConfiguration config) async {
     final runtime = getJavascriptRuntime(xhr: true).enableXhr();
     runtime.enableHandlePromises();
     await runtime.enableFetch();
@@ -41,7 +45,17 @@ class MetadataApiSignature {
       );
     }
 
-    return MetadataApiSignature._(runtime);
+    // Create all the PluginAPIs after library code is evaluated
+    final localStorageApi = PluginLocalStorageApi(
+      runtime: runtime,
+      sharedPreferences: await SharedPreferences.getInstance(),
+      pluginName: config.slug,
+    );
+
+    return MetadataApiSignature._(
+      runtime,
+      localStorageApi,
+    );
   }
 
   void dispose() {
