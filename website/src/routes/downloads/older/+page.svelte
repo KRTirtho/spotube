@@ -84,6 +84,17 @@
 		<History />
 	</div>
 	<br /><br />
+	<h3 class="h3 text-red-500">
+		Versions of Spotube (&lt;=v4.0.2) are ceased to work with Spotify™ API. 
+		<br />
+		So users can no longer use/download those versions. 
+		<br />
+		Please wait for the next version that will remedy this issue by not using such APIs.
+	</h3>
+
+	<p class="text-surface-500 mt-20">
+		Spotube has no affiliation with Spotify™ or any of its subsidiaries.
+	</p>
 	<Accordion>
 		<div class="flex flex-col gap-5">
 			{#each data.releases as release}

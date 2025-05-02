@@ -1,7 +1,7 @@
 <script>
 	import { AlertTriangle, Bug, Sparkles } from 'lucide-svelte';
-	import DownloadItems from '$lib/components/downloads/download-items.svelte';
-	import { extendedNightlyDownloadLinks } from '$lib';
+	// import DownloadItems from '$lib/components/downloads/download-items.svelte';
+	// import { extendedNightlyDownloadLinks } from '$lib';
 </script>
 
 <section class="p-4 md:p-16">
@@ -29,5 +29,17 @@
 	</aside>
 	<br />
 
-	<DownloadItems links={extendedNightlyDownloadLinks} />
+	<h3 class="h3 text-red-500">
+		Versions of Spotube (&lt;=v4.0.2) are ceased to work with Spotify™ API. 
+		<br />
+		So users can no longer use/download those versions. 
+		<br />
+		Please wait for the next version that will remedy this issue by not using such APIs.
+	</h3>
+
+	<p class="text-surface-500 mt-20">
+		Spotube has no affiliation with Spotify™ or any of its subsidiaries.
+	</p>
+
+	<!-- <DownloadItems links={extendedNightlyDownloadLinks} /> -->
 </section>
