@@ -43,12 +43,13 @@
 	<article class="grid sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
 		{#each adAddedPosts as post}
 			{#if post.slug === 'ad'}
-				<Ads
+				<p></p>
+				<!-- <Ads
 					adSlot={ADS_SLOTS.blogPageInFeed}
 					adFormat="fluid"
 					adLayoutKey="-6l+eh+17-40+59"
 					fullWidthResponsive={false}
-				/>
+				/> -->
 			{:else}
 				<a
 					href={`/blog/${post.slug}`}

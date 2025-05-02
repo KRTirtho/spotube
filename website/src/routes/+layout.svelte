@@ -5,7 +5,7 @@
 	// Highlight JS
 	import hljs from 'highlight.js/lib/core';
 	import 'highlight.js/styles/github-dark.css';
-	import { Drawer, getDrawerStore, storeHighlightJs } from '@skeletonlabs/skeleton';
+	import { Drawer, getDrawerStore, getModalStore, Modal, storeHighlightJs, type ModalComponent } from '@skeletonlabs/skeleton';
 	import xml from 'highlight.js/lib/languages/xml'; // for HTML
 	import css from 'highlight.js/lib/languages/css';
 	import javascript from 'highlight.js/lib/languages/javascript';
@@ -26,12 +26,28 @@
 	import NavDrawer from '../lib/components/navdrawer/navdrawer.svelte';
 	import Fa from 'svelte-fa';
 	import { faGithub } from '@fortawesome/free-brands-svg-icons';
+	import Legal from '$lib/components/misc/legal.svelte';
+	import { onMount } from 'svelte';
 	initializeStores();
 
 	const drawerStore = getDrawerStore();
+	const modalStore = getModalStore();
+
+	const modalRegistry: Record<string, ModalComponent> = {
+		legal: { ref: Legal }
+	}
+
+	onMount(() => {
+		// Set the default modal to be open
+		modalStore.trigger({
+			type: "component",
+			component: "legal",			
+		})
+	});
 </script>
 
 <main class="p-2 md:p-4 min-h-[90vh]">
+	<Modal components={modalRegistry} />
 	<Drawer>
 		{#if $drawerStore.id === 'navdrawer'}
 			<NavDrawer />
