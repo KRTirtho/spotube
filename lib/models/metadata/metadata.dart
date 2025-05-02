@@ -7,7 +7,9 @@ part 'metadata.freezed.dart';
 
 part 'album.dart';
 part 'artist.dart';
+part 'feed.dart';
 part 'image.dart';
+part 'pagination.dart';
 part 'playlist.dart';
 part 'search.dart';
 part 'track.dart';

@@ -7,8 +7,7 @@ import 'package:flutter_js/flutter_js.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/logger/logger.dart';
 
-const int defaultMetadataLimit = 20;
-const int defaultMetadataOffset = 0;
+const defaultMetadataLimit = "20";
 
 /// Signature for metadata and related methods that will return Spotube native
 /// objects e.g. SpotubeTrack, SpotubePlaylist, etc.
@@ -97,73 +96,91 @@ class MetadataApiSignature {
     return SpotubeTrackObject.fromJson(result);
   }
 
-  Future<List<SpotubeTrackObject>> listTracks({
+  Future<SpotubePaginationResponseObject<SpotubeTrackObject>> listTracks({
     List<String>? ids,
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final result = await invoke(
       "metadataApi.listTracks",
       [
         ids,
         limit,
-        offset,
+        cursor,
       ],
     );
 
-    return result.map(SpotubeTrackObject.fromJson).toList();
+    return SpotubePaginationResponseObject<SpotubeTrackObject>.fromJson(
+      result,
+      SpotubeTrackObject.fromJson,
+    );
   }
 
-  Future<List<SpotubeTrackObject>> listTracksByAlbum(
+  Future<SpotubePaginationResponseObject<SpotubeTrackObject>> listTracksByAlbum(
     String albumId, {
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listTracksByAlbum",
-      [albumId, limit, offset],
+      [albumId, limit, cursor],
     );
 
-    return res.map(SpotubeTrackObject.fromJson).toList();
+    return SpotubePaginationResponseObject<SpotubeTrackObject>.fromJson(
+      res,
+      SpotubeTrackObject.fromJson,
+    );
   }
 
-  Future<List<SpotubeTrackObject>> listTopTracksByArtist(
+  Future<SpotubePaginationResponseObject<SpotubeTrackObject>>
+      listTopTracksByArtist(
     String artistId, {
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listTopTracksByArtist",
-      [artistId, limit, offset],
+      [artistId, limit, cursor],
     );
 
-    return res.map(SpotubeTrackObject.fromJson).toList();
+    return SpotubePaginationResponseObject<SpotubeTrackObject>.fromJson(
+      res,
+      SpotubeTrackObject.fromJson,
+    );
   }
 
-  Future<List<SpotubeTrackObject>> listTracksByPlaylist(
+  Future<SpotubePaginationResponseObject<SpotubeTrackObject>>
+      listTracksByPlaylist(
     String playlistId, {
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listTracksByPlaylist",
-      [playlistId, limit, offset],
+      [playlistId, limit, cursor],
     );
 
-    return res.map(SpotubeTrackObject.fromJson).toList();
+    return SpotubePaginationResponseObject<SpotubeTrackObject>.fromJson(
+      res,
+      SpotubeTrackObject.fromJson,
+    );
   }
 
-  Future<List<SpotubeTrackObject>> listUserSavedTracks(
+  Future<SpotubePaginationResponseObject<SpotubeTrackObject>>
+      listUserSavedTracks(
     String userId, {
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listUserSavedTracks",
-      [userId, limit, offset],
+      [userId, limit, cursor],
     );
 
-    return res.map(SpotubeTrackObject.fromJson).toList();
+    return SpotubePaginationResponseObject<SpotubeTrackObject>.fromJson(
+      res,
+      SpotubeTrackObject.fromJson,
+    );
   }
 
   // ----- Album ------
@@ -173,43 +190,54 @@ class MetadataApiSignature {
     return SpotubeAlbumObject.fromJson(res);
   }
 
-  Future<List<SpotubeAlbumObject>> listAlbums({
+  Future<SpotubePaginationResponseObject<SpotubeAlbumObject>> listAlbums({
     List<String>? ids,
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listAlbums",
-      [ids, limit, offset],
+      [ids, limit, cursor],
     );
 
-    return res.map(SpotubeAlbumObject.fromJson).toList();
+    return SpotubePaginationResponseObject<SpotubeAlbumObject>.fromJson(
+      res,
+      SpotubeAlbumObject.fromJson,
+    );
   }
 
-  Future<List<SpotubeAlbumObject>> listAlbumsByArtist(
+  Future<SpotubePaginationResponseObject<SpotubeAlbumObject>>
+      listAlbumsByArtist(
     String artistId, {
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listAlbumsByArtist",
-      [artistId, limit, offset],
+      [artistId, limit, cursor],
     );
 
-    return res.map(SpotubeAlbumObject.fromJson).toList();
+    return SpotubePaginationResponseObject.fromJson(
+      res,
+      SpotubeAlbumObject.fromJson,
+    );
   }
 
-  Future<List<SpotubeAlbumObject>> listUserSavedAlbums(
+  Future<SpotubePaginationResponseObject<SpotubeAlbumObject>>
+      listUserSavedAlbums(
     String userId, {
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listUserSavedAlbums",
-      [userId, limit, offset],
+      [userId, limit, cursor],
     );
 
-    return res.map(SpotubeAlbumObject.fromJson).toList();
+    return SpotubePaginationResponseObject.fromJson(
+      res,
+      SpotubeAlbumObject.fromJson,
+    );
   }
 
   // ----- Playlist ------
@@ -219,30 +247,114 @@ class MetadataApiSignature {
     return SpotubePlaylistObject.fromJson(res);
   }
 
-  Future<List<SpotubePlaylistObject>> listPlaylists({
-    List<String>? ids,
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+  Future<SpotubePaginationResponseObject<SpotubePlaylistObject>>
+      listFeedPlaylists(
+    String feedId, {
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
-      "metadataApi.listPlaylists",
-      [ids, limit, offset],
+      "metadataApi.listFeedPlaylists",
+      [feedId, limit, cursor],
     );
 
-    return res.map(SpotubePlaylistObject.fromJson).toList();
+    return SpotubePaginationResponseObject.fromJson(
+      res,
+      SpotubePlaylistObject.fromJson,
+    );
   }
 
-  Future<List<SpotubePlaylistObject>> listUserSavedPlaylists(
+  Future<SpotubePaginationResponseObject<SpotubePlaylistObject>>
+      listUserSavedPlaylists(
     String userId, {
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listUserSavedPlaylists",
-      [userId, limit, offset],
+      [userId, limit, cursor],
     );
 
-    return res.map(SpotubePlaylistObject.fromJson).toList();
+    return SpotubePaginationResponseObject.fromJson(
+      res,
+      SpotubePlaylistObject.fromJson,
+    );
+  }
+
+  Future<SpotubePlaylistObject> createPlaylist(
+    String userId,
+    String name, {
+    String? description,
+    bool? public,
+    bool? collaborative,
+    String? imageBase64,
+  }) async {
+    final res = await invoke(
+      "metadataApi.createPlaylist",
+      [
+        userId,
+        name,
+        description,
+        public,
+        collaborative,
+        imageBase64,
+      ],
+    );
+
+    return SpotubePlaylistObject.fromJson(res);
+  }
+
+  Future<void> updatePlaylist(
+    String playlistId, {
+    String? name,
+    String? description,
+    bool? public,
+    bool? collaborative,
+    String? imageBase64,
+  }) async {
+    await invoke(
+      "metadataApi.updatePlaylist",
+      [
+        playlistId,
+        name,
+        description,
+        public,
+        collaborative,
+        imageBase64,
+      ],
+    );
+  }
+
+  Future<void> deletePlaylist(String userId, String playlistId) async {
+    await unsavePlaylist(userId, playlistId);
+  }
+
+  Future<void> addTracksToPlaylist(
+    String playlistId,
+    List<String> trackIds, {
+    int? position,
+  }) async {
+    await invoke(
+      "metadataApi.addTracksToPlaylist",
+      [
+        playlistId,
+        trackIds,
+        position,
+      ],
+    );
+  }
+
+  Future<void> removeTracksFromPlaylist(
+    String playlistId,
+    List<String> trackIds,
+  ) async {
+    await invoke(
+      "metadataApi.removeTracksFromPlaylist",
+      [
+        playlistId,
+        trackIds,
+      ],
+    );
   }
 
   // ----- Artist ------
@@ -252,44 +364,70 @@ class MetadataApiSignature {
     return SpotubeArtistObject.fromJson(res);
   }
 
-  Future<List<SpotubeArtistObject>> listArtists({
+  Future<SpotubePaginationResponseObject<SpotubeArtistObject>> listArtists({
     List<String>? ids,
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listArtists",
-      [ids, limit, offset],
+      [ids, limit, cursor],
     );
 
-    return res.map(SpotubeArtistObject.fromJson).toList();
+    return SpotubePaginationResponseObject.fromJson(
+      res,
+      SpotubeArtistObject.fromJson,
+    );
   }
 
-  Future<List<SpotubeArtistObject>> listUserSavedArtists(
+  Future<SpotubePaginationResponseObject<SpotubeArtistObject>>
+      listUserSavedArtists(
     String userId, {
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.listUserSavedArtists",
-      [userId, limit, offset],
+      [userId, limit, cursor],
     );
 
-    return res.map(SpotubeArtistObject.fromJson).toList();
+    return SpotubePaginationResponseObject.fromJson(
+      res,
+      SpotubeArtistObject.fromJson,
+    );
   }
 
   // ----- Search ------
   Future<SpotubeSearchResponseObject> search(
     String query, {
-    int limit = defaultMetadataLimit,
-    int offset = defaultMetadataOffset,
+    String limit = defaultMetadataLimit,
+    String? cursor,
   }) async {
     final res = await invoke(
       "metadataApi.search",
-      [query, limit, offset],
+      [query, limit, cursor],
     );
 
-    return res.map(SpotubeSearchResponseObject.fromJson).toList();
+    return SpotubeSearchResponseObject.fromJson(res);
+  }
+
+  // ----- Feed ------
+  Future<SpotubeFeedObject> getFeed(String id) async {
+    final res = await invoke("metadataApi.getFeed", [id]);
+
+    return SpotubeFeedObject.fromJson(res);
+  }
+
+  Future<SpotubePaginationResponseObject<SpotubeFeedObject>> listFeeds({
+    String limit = defaultMetadataLimit,
+    String? cursor,
+  }) async {
+    final res = await invoke("metadataApi.listFeeds", [limit, cursor]);
+
+    return SpotubePaginationResponseObject.fromJson(
+      res,
+      SpotubeFeedObject.fromJson,
+    );
   }
 
   // ----- User ------

@@ -545,6 +545,229 @@ abstract class _SpotubeArtistObject implements SpotubeArtistObject {
       throw _privateConstructorUsedError;
 }
 
+SpotubeFeedObject _$SpotubeFeedObjectFromJson(Map<String, dynamic> json) {
+  return _SpotubeFeedObject.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SpotubeFeedObject {
+  String get uid => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  String get externalUrl => throw _privateConstructorUsedError;
+  List<SpotubeImageObject> get images => throw _privateConstructorUsedError;
+
+  /// Serializes this SpotubeFeedObject to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SpotubeFeedObject
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SpotubeFeedObjectCopyWith<SpotubeFeedObject> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SpotubeFeedObjectCopyWith<$Res> {
+  factory $SpotubeFeedObjectCopyWith(
+          SpotubeFeedObject value, $Res Function(SpotubeFeedObject) then) =
+      _$SpotubeFeedObjectCopyWithImpl<$Res, SpotubeFeedObject>;
+  @useResult
+  $Res call(
+      {String uid,
+      String name,
+      String externalUrl,
+      List<SpotubeImageObject> images});
+}
+
+/// @nodoc
+class _$SpotubeFeedObjectCopyWithImpl<$Res, $Val extends SpotubeFeedObject>
+    implements $SpotubeFeedObjectCopyWith<$Res> {
+  _$SpotubeFeedObjectCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SpotubeFeedObject
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? uid = null,
+    Object? name = null,
+    Object? externalUrl = null,
+    Object? images = null,
+  }) {
+    return _then(_value.copyWith(
+      uid: null == uid
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      externalUrl: null == externalUrl
+          ? _value.externalUrl
+          : externalUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      images: null == images
+          ? _value.images
+          : images // ignore: cast_nullable_to_non_nullable
+              as List<SpotubeImageObject>,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SpotubeFeedObjectImplCopyWith<$Res>
+    implements $SpotubeFeedObjectCopyWith<$Res> {
+  factory _$$SpotubeFeedObjectImplCopyWith(_$SpotubeFeedObjectImpl value,
+          $Res Function(_$SpotubeFeedObjectImpl) then) =
+      __$$SpotubeFeedObjectImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String uid,
+      String name,
+      String externalUrl,
+      List<SpotubeImageObject> images});
+}
+
+/// @nodoc
+class __$$SpotubeFeedObjectImplCopyWithImpl<$Res>
+    extends _$SpotubeFeedObjectCopyWithImpl<$Res, _$SpotubeFeedObjectImpl>
+    implements _$$SpotubeFeedObjectImplCopyWith<$Res> {
+  __$$SpotubeFeedObjectImplCopyWithImpl(_$SpotubeFeedObjectImpl _value,
+      $Res Function(_$SpotubeFeedObjectImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SpotubeFeedObject
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? uid = null,
+    Object? name = null,
+    Object? externalUrl = null,
+    Object? images = null,
+  }) {
+    return _then(_$SpotubeFeedObjectImpl(
+      uid: null == uid
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      externalUrl: null == externalUrl
+          ? _value.externalUrl
+          : externalUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      images: null == images
+          ? _value._images
+          : images // ignore: cast_nullable_to_non_nullable
+              as List<SpotubeImageObject>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SpotubeFeedObjectImpl implements _SpotubeFeedObject {
+  _$SpotubeFeedObjectImpl(
+      {required this.uid,
+      required this.name,
+      required this.externalUrl,
+      final List<SpotubeImageObject> images = const []})
+      : _images = images;
+
+  factory _$SpotubeFeedObjectImpl.fromJson(Map<String, dynamic> json) =>
+      _$$SpotubeFeedObjectImplFromJson(json);
+
+  @override
+  final String uid;
+  @override
+  final String name;
+  @override
+  final String externalUrl;
+  final List<SpotubeImageObject> _images;
+  @override
+  @JsonKey()
+  List<SpotubeImageObject> get images {
+    if (_images is EqualUnmodifiableListView) return _images;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_images);
+  }
+
+  @override
+  String toString() {
+    return 'SpotubeFeedObject(uid: $uid, name: $name, externalUrl: $externalUrl, images: $images)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SpotubeFeedObjectImpl &&
+            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.externalUrl, externalUrl) ||
+                other.externalUrl == externalUrl) &&
+            const DeepCollectionEquality().equals(other._images, _images));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, uid, name, externalUrl,
+      const DeepCollectionEquality().hash(_images));
+
+  /// Create a copy of SpotubeFeedObject
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SpotubeFeedObjectImplCopyWith<_$SpotubeFeedObjectImpl> get copyWith =>
+      __$$SpotubeFeedObjectImplCopyWithImpl<_$SpotubeFeedObjectImpl>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SpotubeFeedObjectImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SpotubeFeedObject implements SpotubeFeedObject {
+  factory _SpotubeFeedObject(
+      {required final String uid,
+      required final String name,
+      required final String externalUrl,
+      final List<SpotubeImageObject> images}) = _$SpotubeFeedObjectImpl;
+
+  factory _SpotubeFeedObject.fromJson(Map<String, dynamic> json) =
+      _$SpotubeFeedObjectImpl.fromJson;
+
+  @override
+  String get uid;
+  @override
+  String get name;
+  @override
+  String get externalUrl;
+  @override
+  List<SpotubeImageObject> get images;
+
+  /// Create a copy of SpotubeFeedObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SpotubeFeedObjectImplCopyWith<_$SpotubeFeedObjectImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 SpotubeImageObject _$SpotubeImageObjectFromJson(Map<String, dynamic> json) {
   return _SpotubeImageObject.fromJson(json);
 }
@@ -729,6 +952,261 @@ abstract class _SpotubeImageObject implements SpotubeImageObject {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotubeImageObjectImplCopyWith<_$SpotubeImageObjectImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+SpotubePaginationResponseObject<T> _$SpotubePaginationResponseObjectFromJson<T>(
+    Map<String, dynamic> json, T Function(Object?) fromJsonT) {
+  return _SpotubePaginationResponseObject<T>.fromJson(json, fromJsonT);
+}
+
+/// @nodoc
+mixin _$SpotubePaginationResponseObject<T> {
+  int get total => throw _privateConstructorUsedError;
+  String? get nextCursor => throw _privateConstructorUsedError;
+  String get limit => throw _privateConstructorUsedError;
+  bool get hasMore => throw _privateConstructorUsedError;
+  List<T> get items => throw _privateConstructorUsedError;
+
+  /// Serializes this SpotubePaginationResponseObject to a JSON map.
+  Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
+      throw _privateConstructorUsedError;
+
+  /// Create a copy of SpotubePaginationResponseObject
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SpotubePaginationResponseObjectCopyWith<T,
+          SpotubePaginationResponseObject<T>>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SpotubePaginationResponseObjectCopyWith<T, $Res> {
+  factory $SpotubePaginationResponseObjectCopyWith(
+          SpotubePaginationResponseObject<T> value,
+          $Res Function(SpotubePaginationResponseObject<T>) then) =
+      _$SpotubePaginationResponseObjectCopyWithImpl<T, $Res,
+          SpotubePaginationResponseObject<T>>;
+  @useResult
+  $Res call(
+      {int total,
+      String? nextCursor,
+      String limit,
+      bool hasMore,
+      List<T> items});
+}
+
+/// @nodoc
+class _$SpotubePaginationResponseObjectCopyWithImpl<T, $Res,
+        $Val extends SpotubePaginationResponseObject<T>>
+    implements $SpotubePaginationResponseObjectCopyWith<T, $Res> {
+  _$SpotubePaginationResponseObjectCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SpotubePaginationResponseObject
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? total = null,
+    Object? nextCursor = freezed,
+    Object? limit = null,
+    Object? hasMore = null,
+    Object? items = null,
+  }) {
+    return _then(_value.copyWith(
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as int,
+      nextCursor: freezed == nextCursor
+          ? _value.nextCursor
+          : nextCursor // ignore: cast_nullable_to_non_nullable
+              as String?,
+      limit: null == limit
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as String,
+      hasMore: null == hasMore
+          ? _value.hasMore
+          : hasMore // ignore: cast_nullable_to_non_nullable
+              as bool,
+      items: null == items
+          ? _value.items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<T>,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SpotubePaginationResponseObjectImplCopyWith<T, $Res>
+    implements $SpotubePaginationResponseObjectCopyWith<T, $Res> {
+  factory _$$SpotubePaginationResponseObjectImplCopyWith(
+          _$SpotubePaginationResponseObjectImpl<T> value,
+          $Res Function(_$SpotubePaginationResponseObjectImpl<T>) then) =
+      __$$SpotubePaginationResponseObjectImplCopyWithImpl<T, $Res>;
+  @override
+  @useResult
+  $Res call(
+      {int total,
+      String? nextCursor,
+      String limit,
+      bool hasMore,
+      List<T> items});
+}
+
+/// @nodoc
+class __$$SpotubePaginationResponseObjectImplCopyWithImpl<T, $Res>
+    extends _$SpotubePaginationResponseObjectCopyWithImpl<T, $Res,
+        _$SpotubePaginationResponseObjectImpl<T>>
+    implements _$$SpotubePaginationResponseObjectImplCopyWith<T, $Res> {
+  __$$SpotubePaginationResponseObjectImplCopyWithImpl(
+      _$SpotubePaginationResponseObjectImpl<T> _value,
+      $Res Function(_$SpotubePaginationResponseObjectImpl<T>) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SpotubePaginationResponseObject
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? total = null,
+    Object? nextCursor = freezed,
+    Object? limit = null,
+    Object? hasMore = null,
+    Object? items = null,
+  }) {
+    return _then(_$SpotubePaginationResponseObjectImpl<T>(
+      total: null == total
+          ? _value.total
+          : total // ignore: cast_nullable_to_non_nullable
+              as int,
+      nextCursor: freezed == nextCursor
+          ? _value.nextCursor
+          : nextCursor // ignore: cast_nullable_to_non_nullable
+              as String?,
+      limit: null == limit
+          ? _value.limit
+          : limit // ignore: cast_nullable_to_non_nullable
+              as String,
+      hasMore: null == hasMore
+          ? _value.hasMore
+          : hasMore // ignore: cast_nullable_to_non_nullable
+              as bool,
+      items: null == items
+          ? _value._items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<T>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable(genericArgumentFactories: true)
+class _$SpotubePaginationResponseObjectImpl<T>
+    implements _SpotubePaginationResponseObject<T> {
+  _$SpotubePaginationResponseObjectImpl(
+      {required this.total,
+      required this.nextCursor,
+      required this.limit,
+      required this.hasMore,
+      required final List<T> items})
+      : _items = items;
+
+  factory _$SpotubePaginationResponseObjectImpl.fromJson(
+          Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
+      _$$SpotubePaginationResponseObjectImplFromJson(json, fromJsonT);
+
+  @override
+  final int total;
+  @override
+  final String? nextCursor;
+  @override
+  final String limit;
+  @override
+  final bool hasMore;
+  final List<T> _items;
+  @override
+  List<T> get items {
+    if (_items is EqualUnmodifiableListView) return _items;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_items);
+  }
+
+  @override
+  String toString() {
+    return 'SpotubePaginationResponseObject<$T>(total: $total, nextCursor: $nextCursor, limit: $limit, hasMore: $hasMore, items: $items)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SpotubePaginationResponseObjectImpl<T> &&
+            (identical(other.total, total) || other.total == total) &&
+            (identical(other.nextCursor, nextCursor) ||
+                other.nextCursor == nextCursor) &&
+            (identical(other.limit, limit) || other.limit == limit) &&
+            (identical(other.hasMore, hasMore) || other.hasMore == hasMore) &&
+            const DeepCollectionEquality().equals(other._items, _items));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, total, nextCursor, limit,
+      hasMore, const DeepCollectionEquality().hash(_items));
+
+  /// Create a copy of SpotubePaginationResponseObject
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SpotubePaginationResponseObjectImplCopyWith<T,
+          _$SpotubePaginationResponseObjectImpl<T>>
+      get copyWith => __$$SpotubePaginationResponseObjectImplCopyWithImpl<T,
+          _$SpotubePaginationResponseObjectImpl<T>>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson(Object? Function(T) toJsonT) {
+    return _$$SpotubePaginationResponseObjectImplToJson<T>(this, toJsonT);
+  }
+}
+
+abstract class _SpotubePaginationResponseObject<T>
+    implements SpotubePaginationResponseObject<T> {
+  factory _SpotubePaginationResponseObject(
+      {required final int total,
+      required final String? nextCursor,
+      required final String limit,
+      required final bool hasMore,
+      required final List<T> items}) = _$SpotubePaginationResponseObjectImpl<T>;
+
+  factory _SpotubePaginationResponseObject.fromJson(
+          Map<String, dynamic> json, T Function(Object?) fromJsonT) =
+      _$SpotubePaginationResponseObjectImpl<T>.fromJson;
+
+  @override
+  int get total;
+  @override
+  String? get nextCursor;
+  @override
+  String get limit;
+  @override
+  bool get hasMore;
+  @override
+  List<T> get items;
+
+  /// Create a copy of SpotubePaginationResponseObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SpotubePaginationResponseObjectImplCopyWith<T,
+          _$SpotubePaginationResponseObjectImpl<T>>
+      get copyWith => throw _privateConstructorUsedError;
 }
 
 SpotubePlaylistObject _$SpotubePlaylistObjectFromJson(
@@ -1059,10 +1537,17 @@ SpotubeSearchResponseObject _$SpotubeSearchResponseObjectFromJson(
 
 /// @nodoc
 mixin _$SpotubeSearchResponseObject {
-  List<SpotubeTrackObject> get tracks => throw _privateConstructorUsedError;
-  List<SpotubeAlbumObject> get albums => throw _privateConstructorUsedError;
-  List<SpotubeArtistObject> get artists => throw _privateConstructorUsedError;
-  List<SpotubePlaylistObject> get playlists =>
+  @JsonKey(fromJson: _paginationTracksFromJson, toJson: _paginationToJson)
+  SpotubePaginationResponseObject<SpotubeTrackObject>? get tracks =>
+      throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _paginationAlbumsFromJson, toJson: _paginationToJson)
+  SpotubePaginationResponseObject<SpotubeAlbumObject>? get albums =>
+      throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _paginationArtistsFromJson, toJson: _paginationToJson)
+  SpotubePaginationResponseObject<SpotubeArtistObject>? get artists =>
+      throw _privateConstructorUsedError;
+  @JsonKey(fromJson: _paginationPlaylistsFromJson, toJson: _paginationToJson)
+  SpotubePaginationResponseObject<SpotubePlaylistObject>? get playlists =>
       throw _privateConstructorUsedError;
 
   /// Serializes this SpotubeSearchResponseObject to a JSON map.
@@ -1084,10 +1569,24 @@ abstract class $SpotubeSearchResponseObjectCopyWith<$Res> {
           SpotubeSearchResponseObject>;
   @useResult
   $Res call(
-      {List<SpotubeTrackObject> tracks,
-      List<SpotubeAlbumObject> albums,
-      List<SpotubeArtistObject> artists,
-      List<SpotubePlaylistObject> playlists});
+      {@JsonKey(fromJson: _paginationTracksFromJson, toJson: _paginationToJson)
+      SpotubePaginationResponseObject<SpotubeTrackObject>? tracks,
+      @JsonKey(fromJson: _paginationAlbumsFromJson, toJson: _paginationToJson)
+      SpotubePaginationResponseObject<SpotubeAlbumObject>? albums,
+      @JsonKey(fromJson: _paginationArtistsFromJson, toJson: _paginationToJson)
+      SpotubePaginationResponseObject<SpotubeArtistObject>? artists,
+      @JsonKey(
+          fromJson: _paginationPlaylistsFromJson, toJson: _paginationToJson)
+      SpotubePaginationResponseObject<SpotubePlaylistObject>? playlists});
+
+  $SpotubePaginationResponseObjectCopyWith<SpotubeTrackObject, $Res>?
+      get tracks;
+  $SpotubePaginationResponseObjectCopyWith<SpotubeAlbumObject, $Res>?
+      get albums;
+  $SpotubePaginationResponseObjectCopyWith<SpotubeArtistObject, $Res>?
+      get artists;
+  $SpotubePaginationResponseObjectCopyWith<SpotubePlaylistObject, $Res>?
+      get playlists;
 }
 
 /// @nodoc
@@ -1106,29 +1605,93 @@ class _$SpotubeSearchResponseObjectCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tracks = null,
-    Object? albums = null,
-    Object? artists = null,
-    Object? playlists = null,
+    Object? tracks = freezed,
+    Object? albums = freezed,
+    Object? artists = freezed,
+    Object? playlists = freezed,
   }) {
     return _then(_value.copyWith(
-      tracks: null == tracks
+      tracks: freezed == tracks
           ? _value.tracks
           : tracks // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeTrackObject>,
-      albums: null == albums
+              as SpotubePaginationResponseObject<SpotubeTrackObject>?,
+      albums: freezed == albums
           ? _value.albums
           : albums // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeAlbumObject>,
-      artists: null == artists
+              as SpotubePaginationResponseObject<SpotubeAlbumObject>?,
+      artists: freezed == artists
           ? _value.artists
           : artists // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeArtistObject>,
-      playlists: null == playlists
+              as SpotubePaginationResponseObject<SpotubeArtistObject>?,
+      playlists: freezed == playlists
           ? _value.playlists
           : playlists // ignore: cast_nullable_to_non_nullable
-              as List<SpotubePlaylistObject>,
+              as SpotubePaginationResponseObject<SpotubePlaylistObject>?,
     ) as $Val);
+  }
+
+  /// Create a copy of SpotubeSearchResponseObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SpotubePaginationResponseObjectCopyWith<SpotubeTrackObject, $Res>?
+      get tracks {
+    if (_value.tracks == null) {
+      return null;
+    }
+
+    return $SpotubePaginationResponseObjectCopyWith<SpotubeTrackObject, $Res>(
+        _value.tracks!, (value) {
+      return _then(_value.copyWith(tracks: value) as $Val);
+    });
+  }
+
+  /// Create a copy of SpotubeSearchResponseObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SpotubePaginationResponseObjectCopyWith<SpotubeAlbumObject, $Res>?
+      get albums {
+    if (_value.albums == null) {
+      return null;
+    }
+
+    return $SpotubePaginationResponseObjectCopyWith<SpotubeAlbumObject, $Res>(
+        _value.albums!, (value) {
+      return _then(_value.copyWith(albums: value) as $Val);
+    });
+  }
+
+  /// Create a copy of SpotubeSearchResponseObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SpotubePaginationResponseObjectCopyWith<SpotubeArtistObject, $Res>?
+      get artists {
+    if (_value.artists == null) {
+      return null;
+    }
+
+    return $SpotubePaginationResponseObjectCopyWith<SpotubeArtistObject, $Res>(
+        _value.artists!, (value) {
+      return _then(_value.copyWith(artists: value) as $Val);
+    });
+  }
+
+  /// Create a copy of SpotubeSearchResponseObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $SpotubePaginationResponseObjectCopyWith<SpotubePlaylistObject, $Res>?
+      get playlists {
+    if (_value.playlists == null) {
+      return null;
+    }
+
+    return $SpotubePaginationResponseObjectCopyWith<SpotubePlaylistObject,
+        $Res>(_value.playlists!, (value) {
+      return _then(_value.copyWith(playlists: value) as $Val);
+    });
   }
 }
 
@@ -1142,10 +1705,28 @@ abstract class _$$SpotubeSearchResponseObjectImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<SpotubeTrackObject> tracks,
-      List<SpotubeAlbumObject> albums,
-      List<SpotubeArtistObject> artists,
-      List<SpotubePlaylistObject> playlists});
+      {@JsonKey(fromJson: _paginationTracksFromJson, toJson: _paginationToJson)
+      SpotubePaginationResponseObject<SpotubeTrackObject>? tracks,
+      @JsonKey(fromJson: _paginationAlbumsFromJson, toJson: _paginationToJson)
+      SpotubePaginationResponseObject<SpotubeAlbumObject>? albums,
+      @JsonKey(fromJson: _paginationArtistsFromJson, toJson: _paginationToJson)
+      SpotubePaginationResponseObject<SpotubeArtistObject>? artists,
+      @JsonKey(
+          fromJson: _paginationPlaylistsFromJson, toJson: _paginationToJson)
+      SpotubePaginationResponseObject<SpotubePlaylistObject>? playlists});
+
+  @override
+  $SpotubePaginationResponseObjectCopyWith<SpotubeTrackObject, $Res>?
+      get tracks;
+  @override
+  $SpotubePaginationResponseObjectCopyWith<SpotubeAlbumObject, $Res>?
+      get albums;
+  @override
+  $SpotubePaginationResponseObjectCopyWith<SpotubeArtistObject, $Res>?
+      get artists;
+  @override
+  $SpotubePaginationResponseObjectCopyWith<SpotubePlaylistObject, $Res>?
+      get playlists;
 }
 
 /// @nodoc
@@ -1163,28 +1744,28 @@ class __$$SpotubeSearchResponseObjectImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? tracks = null,
-    Object? albums = null,
-    Object? artists = null,
-    Object? playlists = null,
+    Object? tracks = freezed,
+    Object? albums = freezed,
+    Object? artists = freezed,
+    Object? playlists = freezed,
   }) {
     return _then(_$SpotubeSearchResponseObjectImpl(
-      tracks: null == tracks
-          ? _value._tracks
+      tracks: freezed == tracks
+          ? _value.tracks
           : tracks // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeTrackObject>,
-      albums: null == albums
-          ? _value._albums
+              as SpotubePaginationResponseObject<SpotubeTrackObject>?,
+      albums: freezed == albums
+          ? _value.albums
           : albums // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeAlbumObject>,
-      artists: null == artists
-          ? _value._artists
+              as SpotubePaginationResponseObject<SpotubeAlbumObject>?,
+      artists: freezed == artists
+          ? _value.artists
           : artists // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeArtistObject>,
-      playlists: null == playlists
-          ? _value._playlists
+              as SpotubePaginationResponseObject<SpotubeArtistObject>?,
+      playlists: freezed == playlists
+          ? _value.playlists
           : playlists // ignore: cast_nullable_to_non_nullable
-              as List<SpotubePlaylistObject>,
+              as SpotubePaginationResponseObject<SpotubePlaylistObject>?,
     ));
   }
 }
@@ -1194,54 +1775,32 @@ class __$$SpotubeSearchResponseObjectImplCopyWithImpl<$Res>
 class _$SpotubeSearchResponseObjectImpl
     implements _SpotubeSearchResponseObject {
   _$SpotubeSearchResponseObjectImpl(
-      {final List<SpotubeTrackObject> tracks = const [],
-      final List<SpotubeAlbumObject> albums = const [],
-      final List<SpotubeArtistObject> artists = const [],
-      final List<SpotubePlaylistObject> playlists = const []})
-      : _tracks = tracks,
-        _albums = albums,
-        _artists = artists,
-        _playlists = playlists;
+      {@JsonKey(fromJson: _paginationTracksFromJson, toJson: _paginationToJson)
+      this.tracks,
+      @JsonKey(fromJson: _paginationAlbumsFromJson, toJson: _paginationToJson)
+      this.albums,
+      @JsonKey(fromJson: _paginationArtistsFromJson, toJson: _paginationToJson)
+      this.artists,
+      @JsonKey(
+          fromJson: _paginationPlaylistsFromJson, toJson: _paginationToJson)
+      this.playlists});
 
   factory _$SpotubeSearchResponseObjectImpl.fromJson(
           Map<String, dynamic> json) =>
       _$$SpotubeSearchResponseObjectImplFromJson(json);
 
-  final List<SpotubeTrackObject> _tracks;
   @override
-  @JsonKey()
-  List<SpotubeTrackObject> get tracks {
-    if (_tracks is EqualUnmodifiableListView) return _tracks;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_tracks);
-  }
-
-  final List<SpotubeAlbumObject> _albums;
+  @JsonKey(fromJson: _paginationTracksFromJson, toJson: _paginationToJson)
+  final SpotubePaginationResponseObject<SpotubeTrackObject>? tracks;
   @override
-  @JsonKey()
-  List<SpotubeAlbumObject> get albums {
-    if (_albums is EqualUnmodifiableListView) return _albums;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_albums);
-  }
-
-  final List<SpotubeArtistObject> _artists;
+  @JsonKey(fromJson: _paginationAlbumsFromJson, toJson: _paginationToJson)
+  final SpotubePaginationResponseObject<SpotubeAlbumObject>? albums;
   @override
-  @JsonKey()
-  List<SpotubeArtistObject> get artists {
-    if (_artists is EqualUnmodifiableListView) return _artists;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_artists);
-  }
-
-  final List<SpotubePlaylistObject> _playlists;
+  @JsonKey(fromJson: _paginationArtistsFromJson, toJson: _paginationToJson)
+  final SpotubePaginationResponseObject<SpotubeArtistObject>? artists;
   @override
-  @JsonKey()
-  List<SpotubePlaylistObject> get playlists {
-    if (_playlists is EqualUnmodifiableListView) return _playlists;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_playlists);
-  }
+  @JsonKey(fromJson: _paginationPlaylistsFromJson, toJson: _paginationToJson)
+  final SpotubePaginationResponseObject<SpotubePlaylistObject>? playlists;
 
   @override
   String toString() {
@@ -1253,21 +1812,17 @@ class _$SpotubeSearchResponseObjectImpl
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SpotubeSearchResponseObjectImpl &&
-            const DeepCollectionEquality().equals(other._tracks, _tracks) &&
-            const DeepCollectionEquality().equals(other._albums, _albums) &&
-            const DeepCollectionEquality().equals(other._artists, _artists) &&
-            const DeepCollectionEquality()
-                .equals(other._playlists, _playlists));
+            (identical(other.tracks, tracks) || other.tracks == tracks) &&
+            (identical(other.albums, albums) || other.albums == albums) &&
+            (identical(other.artists, artists) || other.artists == artists) &&
+            (identical(other.playlists, playlists) ||
+                other.playlists == playlists));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_tracks),
-      const DeepCollectionEquality().hash(_albums),
-      const DeepCollectionEquality().hash(_artists),
-      const DeepCollectionEquality().hash(_playlists));
+  int get hashCode =>
+      Object.hash(runtimeType, tracks, albums, artists, playlists);
 
   /// Create a copy of SpotubeSearchResponseObject
   /// with the given fields replaced by the non-null parameter values.
@@ -1289,23 +1844,32 @@ class _$SpotubeSearchResponseObjectImpl
 abstract class _SpotubeSearchResponseObject
     implements SpotubeSearchResponseObject {
   factory _SpotubeSearchResponseObject(
-          {final List<SpotubeTrackObject> tracks,
-          final List<SpotubeAlbumObject> albums,
-          final List<SpotubeArtistObject> artists,
-          final List<SpotubePlaylistObject> playlists}) =
-      _$SpotubeSearchResponseObjectImpl;
+      {@JsonKey(fromJson: _paginationTracksFromJson, toJson: _paginationToJson)
+      final SpotubePaginationResponseObject<SpotubeTrackObject>? tracks,
+      @JsonKey(fromJson: _paginationAlbumsFromJson, toJson: _paginationToJson)
+      final SpotubePaginationResponseObject<SpotubeAlbumObject>? albums,
+      @JsonKey(fromJson: _paginationArtistsFromJson, toJson: _paginationToJson)
+      final SpotubePaginationResponseObject<SpotubeArtistObject>? artists,
+      @JsonKey(
+          fromJson: _paginationPlaylistsFromJson, toJson: _paginationToJson)
+      final SpotubePaginationResponseObject<SpotubePlaylistObject>?
+          playlists}) = _$SpotubeSearchResponseObjectImpl;
 
   factory _SpotubeSearchResponseObject.fromJson(Map<String, dynamic> json) =
       _$SpotubeSearchResponseObjectImpl.fromJson;
 
   @override
-  List<SpotubeTrackObject> get tracks;
+  @JsonKey(fromJson: _paginationTracksFromJson, toJson: _paginationToJson)
+  SpotubePaginationResponseObject<SpotubeTrackObject>? get tracks;
   @override
-  List<SpotubeAlbumObject> get albums;
+  @JsonKey(fromJson: _paginationAlbumsFromJson, toJson: _paginationToJson)
+  SpotubePaginationResponseObject<SpotubeAlbumObject>? get albums;
   @override
-  List<SpotubeArtistObject> get artists;
+  @JsonKey(fromJson: _paginationArtistsFromJson, toJson: _paginationToJson)
+  SpotubePaginationResponseObject<SpotubeArtistObject>? get artists;
   @override
-  List<SpotubePlaylistObject> get playlists;
+  @JsonKey(fromJson: _paginationPlaylistsFromJson, toJson: _paginationToJson)
+  SpotubePaginationResponseObject<SpotubePlaylistObject>? get playlists;
 
   /// Create a copy of SpotubeSearchResponseObject
   /// with the given fields replaced by the non-null parameter values.
