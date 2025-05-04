@@ -8,6 +8,7 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/string.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 class GenreSectionCardPlaylistCard extends HookConsumerWidget {
@@ -21,8 +22,10 @@ class GenreSectionCardPlaylistCard extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
 
+    final w = kIsDesktop ? 20 : 0;
+
     return Container(
-      width: 115 * theme.scaling,
+      width: (115 + w) * theme.scaling,
       decoration: BoxDecoration(
         color: theme.colorScheme.background.withAlpha(75),
         borderRadius: theme.borderRadiusMd,
@@ -65,7 +68,7 @@ class GenreSectionCardPlaylistCard extends HookConsumerWidget {
                               ref.watch(playlistImageProvider(playlist.id!));
                           return SizedBox(
                             height: 100 * theme.scaling,
-                            width: 100 * theme.scaling,
+                            width: (100 + w) * theme.scaling,
                             child: Stack(
                               children: [
                                 Positioned.fill(
@@ -107,14 +110,14 @@ class GenreSectionCardPlaylistCard extends HookConsumerWidget {
                         ),
                         fit: BoxFit.cover,
                         height: 100 * theme.scaling,
-                        width: 100 * theme.scaling,
+                        width: (100 + w) * theme.scaling,
                       ),
               ),
               Text(
                 playlist.name!,
-                maxLines: 2,
+                maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-              ).semiBold().small(),
+              ).xSmall().bold(),
               if (playlist.description != null)
                 Text(
                   playlist.description?.unescapeHtml().cleanHtml() ?? "",

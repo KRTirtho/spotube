@@ -99,91 +99,99 @@ class LocalFolderItem extends HookConsumerWidget {
                 itemCount: tracks.length,
                 itemBuilder: (context, index) {
                   final track = tracks[index];
-                  return UniversalImage(
-                    path: (track.album?.images).asUrlString(
-                      placeholder: ImagePlaceholder.albumArt,
+                  return Expanded(
+                    child: UniversalImage(
+                      path: (track.album?.images).asUrlString(
+                        placeholder: ImagePlaceholder.albumArt,
+                      ),
+                      fit: BoxFit.cover,
                     ),
-                    fit: BoxFit.cover,
                   );
                 },
               ),
             ),
           const Gap(8),
-          Stack(
-            children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: Text(
-                      isDownloadFolder
-                          ? context.l10n.downloads
-                          : isCacheFolder
-                              ? context.l10n.cache_folder.capitalize()
-                              : basename(folder),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
+          Expanded(
+            child: Stack(
+              children: [
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Center(
+                      child: Flexible(
+                        child: Text(
+                          isDownloadFolder
+                              ? context.l10n.downloads
+                              : isCacheFolder
+                                  ? context.l10n.cache_folder.capitalize()
+                                  : basename(folder),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      child: Wrap(
+                        spacing: 2,
+                        runSpacing: 2,
+                        children: [
+                          for (final MapEntry(key: index, value: segment)
+                              in segments.asMap().entries)
+                            Text.rich(
+                              TextSpan(
+                                children: [
+                                  if (index != 0) const TextSpan(text: "/ "),
+                                  TextSpan(text: segment)
+                                ],
+                              ),
+                              maxLines: 2,
+                            ).xSmall().muted(),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (!isDownloadFolder && !isCacheFolder)
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton.ghost(
+                      icon: const Icon(Icons.more_vert),
+                      size: ButtonSize.small,
+                      onPressed: () {
+                        showDropdown(
+                          context: context,
+                          builder: (context) {
+                            return DropdownMenu(
+                              children: [
+                                MenuButton(
+                                  leading: Icon(SpotubeIcons.folderRemove,
+                                      color: colorScheme.destructive),
+                                  child: Text(
+                                      context.l10n.remove_library_location),
+                                  onPressed: (context) {
+                                    final libraryLocations = ref
+                                        .read(userPreferencesProvider)
+                                        .localLibraryLocation;
+                                    ref
+                                        .read(userPreferencesProvider.notifier)
+                                        .setLocalLibraryLocation(
+                                          libraryLocations
+                                              .where((e) => e != folder)
+                                              .toList(),
+                                        );
+                                  },
+                                )
+                              ],
+                            );
+                          },
+                        );
+                      },
                     ),
                   ),
-                  Wrap(
-                    spacing: 2,
-                    runSpacing: 2,
-                    children: [
-                      for (final MapEntry(key: index, value: segment)
-                          in segments.asMap().entries)
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              if (index != 0) const TextSpan(text: "/ "),
-                              TextSpan(text: segment),
-                            ],
-                          ),
-                          maxLines: 2,
-                        ).xSmall().muted(),
-                    ],
-                  ),
-                ],
-              ),
-              if (!isDownloadFolder && !isCacheFolder)
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton.ghost(
-                    icon: const Icon(Icons.more_vert),
-                    size: ButtonSize.small,
-                    onPressed: () {
-                      showDropdown(
-                        context: context,
-                        builder: (context) {
-                          return DropdownMenu(
-                            children: [
-                              MenuButton(
-                                leading: Icon(SpotubeIcons.folderRemove,
-                                    color: colorScheme.destructive),
-                                child:
-                                    Text(context.l10n.remove_library_location),
-                                onPressed: (context) {
-                                  final libraryLocations = ref
-                                      .read(userPreferencesProvider)
-                                      .localLibraryLocation;
-                                  ref
-                                      .read(userPreferencesProvider.notifier)
-                                      .setLocalLibraryLocation(
-                                        libraryLocations
-                                            .where((e) => e != folder)
-                                            .toList(),
-                                      );
-                                },
-                              )
-                            ],
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-            ],
+              ],
+            ),
           ),
           const Spacer(),
         ],
