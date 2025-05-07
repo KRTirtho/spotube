@@ -8,16 +8,45 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/metadata/apis/localstorage.dart';
+import 'package:spotube/services/metadata/apis/set_interval.dart';
+import 'package:spotube/services/metadata/apis/totp.dart';
+import 'package:spotube/services/metadata/apis/webview.dart';
 
 const defaultMetadataLimit = "20";
+
+class MetadataSignatureFlags {
+  final bool requiresAuth;
+
+  const MetadataSignatureFlags({
+    this.requiresAuth = false,
+  });
+
+  factory MetadataSignatureFlags.fromJson(Map<String, dynamic> json) {
+    return MetadataSignatureFlags(
+      requiresAuth: json["requiresAuth"] ?? false,
+    );
+  }
+}
 
 /// Signature for metadata and related methods that will return Spotube native
 /// objects e.g. SpotubeTrack, SpotubePlaylist, etc.
 class MetadataApiSignature {
   final JavascriptRuntime runtime;
   final PluginLocalStorageApi localStorageApi;
+  final PluginWebViewApi webViewApi;
+  final PluginTotpGenerator totpGenerator;
+  final PluginSetIntervalApi setIntervalApi;
+  late MetadataSignatureFlags _signatureFlags;
 
-  MetadataApiSignature._(this.runtime, this.localStorageApi);
+  MetadataSignatureFlags get signatureFlags => _signatureFlags;
+
+  MetadataApiSignature._(
+    this.runtime,
+    this.localStorageApi,
+    this.webViewApi,
+    this.totpGenerator,
+    this.setIntervalApi,
+  );
 
   static Future<MetadataApiSignature> init(
       String libraryCode, PluginConfiguration config) async {
@@ -52,10 +81,21 @@ class MetadataApiSignature {
       pluginName: config.slug,
     );
 
-    return MetadataApiSignature._(
+    final webViewApi = PluginWebViewApi(runtime: runtime);
+    final totpGenerator = PluginTotpGenerator(runtime);
+    final setIntervalApi = PluginSetIntervalApi(runtime);
+
+    final metadataApi = MetadataApiSignature._(
       runtime,
       localStorageApi,
+      webViewApi,
+      totpGenerator,
+      setIntervalApi,
     );
+
+    metadataApi._signatureFlags = await metadataApi._getSignatureFlags();
+
+    return metadataApi;
   }
 
   void dispose() {
@@ -102,6 +142,18 @@ class MetadataApiSignature {
     }
 
     return completer.future;
+  }
+
+  Future<MetadataSignatureFlags> _getSignatureFlags() async {
+    final res = await invoke("metadataApi.getSignatureFlags");
+
+    return MetadataSignatureFlags.fromJson(res);
+  }
+
+  // ----- Authentication ------
+
+  Future<void> authenticate() async {
+    await invoke("metadataApi.authenticate");
   }
 
   // ----- Track ------

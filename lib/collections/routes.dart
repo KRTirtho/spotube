@@ -231,5 +231,9 @@ class AppRouter extends RootStackRouter {
           page: LastFMLoginRoute.page,
           // parentNavigatorKey: rootNavigatorKey,
         ),
+        AutoRoute(
+          path: "/webview",
+          page: WebviewRoute.page,
+        ),
       ];
 }
