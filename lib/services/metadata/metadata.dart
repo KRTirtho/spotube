@@ -157,6 +157,10 @@ class MetadataApiSignature {
     await invoke("metadataApi.authenticate");
   }
 
+  Future<void> logout() async {
+    await invoke("metadataApi.logout");
+  }
+
   // ----- Track ------
   Future<SpotubeTrackObject> getTrack(String id) async {
     final result = await invoke("metadataApi.getTrack", [id]);
