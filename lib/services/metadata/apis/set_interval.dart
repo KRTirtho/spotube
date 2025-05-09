@@ -70,4 +70,11 @@ class PluginSetIntervalApi {
       }
     });
   }
+
+  void dispose() {
+    for (var timer in _timers.values) {
+      timer.cancel();
+    }
+    _timers.clear();
+  }
 }

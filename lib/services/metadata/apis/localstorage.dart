@@ -13,7 +13,7 @@ class PluginLocalStorageApi {
     required this.pluginName,
   }) {
     runtime.onMessage("LocalStorage.getItem", (args) {
-      final key = args[0];
+      final key = args[0]["key"];
       final value = getItem(key);
       runtime.evaluate(
         """

@@ -61,19 +61,6 @@ class MetadataApiSignature {
       },
     );
 
-    final res = runtime.evaluate(
-      """
-      ;$libraryCode;
-      const metadataApi = new MetadataApi();
-      """,
-    );
-
-    if (res.isError) {
-      AppLogger.reportError(
-        "Error evaluating code: $libraryCode\n${res.rawResult}",
-      );
-    }
-
     // Create all the PluginAPIs after library code is evaluated
     final localStorageApi = PluginLocalStorageApi(
       runtime: runtime,
@@ -93,12 +80,26 @@ class MetadataApiSignature {
       setIntervalApi,
     );
 
+    final res = runtime.evaluate(
+      """
+      ;$libraryCode;
+      const metadataApi = new MetadataApi();
+      """,
+    );
     metadataApi._signatureFlags = await metadataApi._getSignatureFlags();
+
+    if (res.isError) {
+      AppLogger.reportError(
+        "Error evaluating code: $libraryCode\n${res.rawResult}",
+      );
+    }
 
     return metadataApi;
   }
 
   void dispose() {
+    setIntervalApi.dispose();
+    webViewApi.dispose();
     runtime.dispose();
   }
 
@@ -119,7 +120,7 @@ class MetadataApiSignature {
       $method(...${args != null ? jsonEncode(args) : "[]"})
       .then((res) => {
         try {
-          sendMessage("$method", JSON.stringify(res));
+          sendMessage("$method", res ? JSON.stringify(res) : "[]");
         } catch (e) {
           console.error("Failed to send message in $method.then: ", `\${e.toString()}\n\${e.stack.toString()}`);
         }
@@ -497,6 +498,12 @@ class MetadataApiSignature {
   }
 
   // ----- User ------
+  Future<SpotubeUserObject> getMe() async {
+    final res = await invoke("metadataApi.getMe");
+
+    return SpotubeUserObject.fromJson(res);
+  }
+
   Future<void> followArtist(String userId, String artistId) async {
     await invoke("metadataApi.followArtist", [userId, artistId]);
   }

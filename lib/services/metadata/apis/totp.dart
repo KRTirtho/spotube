@@ -32,7 +32,7 @@ class PluginTotpGenerator {
 
       runtime.evaluate(
         """
-        eventEmitter.emit('Totp.generate', '$otp');
+        eventEmitter.emit('TotpGenerator.generate', '$otp');
         """,
       );
     });

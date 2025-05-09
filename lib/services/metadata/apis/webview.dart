@@ -49,12 +49,16 @@ class PluginWebViewApi {
       }
       showWebView(
         url: args[0]["url"] as String,
-        initialSettings: WebviewInitialSettings.fromJson(
-          args[0]["initialSettings"],
-        ),
+        initialSettings: args[0]["initialSettings"] != null
+            ? WebviewInitialSettings.fromJson(
+                args[0]["initialSettings"],
+              )
+            : null,
       );
     });
   }
+
+  Webview? webviewWindow;
 
   Future showWebView({
     required String url,
@@ -117,6 +121,8 @@ class PluginWebViewApi {
         ),
       );
 
+      webviewWindow = webview;
+
       runtime.onMessage("WebView.close", (args) {
         webview.close();
       });
@@ -134,7 +140,7 @@ class PluginWebViewApi {
                 "domain": e.domain,
                 "path": e.path,
               };
-            });
+            }).toList();
 
             runtime.evaluate(
               """
@@ -156,5 +162,10 @@ class PluginWebViewApi {
         });
       }
     }
+  }
+
+  void dispose() {
+    webviewWindow?.close();
+    webviewWindow = null;
   }
 }
