@@ -38,6 +38,10 @@ class MetadataApiSignature {
   final PluginSetIntervalApi setIntervalApi;
   late MetadataSignatureFlags _signatureFlags;
 
+  final StreamController<bool> _authenticatedStreamController;
+
+  Stream<bool> get authenticatedStream => _authenticatedStreamController.stream;
+
   MetadataSignatureFlags get signatureFlags => _signatureFlags;
 
   MetadataApiSignature._(
@@ -46,10 +50,19 @@ class MetadataApiSignature {
     this.webViewApi,
     this.totpGenerator,
     this.setIntervalApi,
-  );
+  ) : _authenticatedStreamController = StreamController<bool>.broadcast() {
+    runtime.onMessage("authenticatedStatus", (args) {
+      if (args[0] is Map && (args[0] as Map).containsKey("authenticated")) {
+        final authenticated = args[0]["authenticated"] as bool;
+        _authenticatedStreamController.add(authenticated);
+      }
+    });
+  }
 
   static Future<MetadataApiSignature> init(
-      String libraryCode, PluginConfiguration config) async {
+    String libraryCode,
+    PluginConfiguration config,
+  ) async {
     final runtime = getJavascriptRuntime(xhr: true).enableXhr();
     runtime.enableHandlePromises();
     await runtime.enableFetch();
@@ -106,6 +119,7 @@ class MetadataApiSignature {
   Future invoke(String method, [List? args]) async {
     final completer = Completer();
     runtime.onMessage(method, (result) {
+      if (completer.isCompleted) return;
       try {
         if (result is Map && result.containsKey("error")) {
           completer.completeError(result["error"]);
@@ -113,7 +127,10 @@ class MetadataApiSignature {
           completer.complete(result is String ? jsonDecode(result) : result);
         }
       } catch (e, stack) {
-        AppLogger.reportError(e, stack);
+        AppLogger.reportError(
+          "[MetadataApiSignature][invoke] Error in $method: $e",
+          stack,
+        );
       }
     });
     final code = """
@@ -155,6 +172,11 @@ class MetadataApiSignature {
 
   Future<void> authenticate() async {
     await invoke("metadataApi.authenticate");
+  }
+
+  Future<bool> isAuthenticated() async {
+    final res = await invoke("metadataApi.isAuthenticated");
+    return res as bool;
   }
 
   Future<void> logout() async {

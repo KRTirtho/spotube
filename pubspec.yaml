@@ -143,6 +143,7 @@ dependencies:
   otp_util: ^1.0.2
   dio_http2_adapter: ^2.6.0
   flutter_js: ^0.8.2
+  archive: ^4.0.7
 
 dev_dependencies:
   build_runner: ^2.4.13

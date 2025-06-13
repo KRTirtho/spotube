@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+import 'package:drift/remote.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
@@ -35,6 +36,7 @@ part 'tables/source_match.dart';
 part 'tables/audio_player_state.dart';
 part 'tables/history.dart';
 part 'tables/lyrics.dart';
+part 'tables/metadata_plugins.dart';
 
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
@@ -56,13 +58,14 @@ part 'typeconverters/subtitle.dart';
     PlaylistMediaTable,
     HistoryTable,
     LyricsTable,
+    MetadataPluginsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration {
@@ -115,11 +118,21 @@ class AppDatabase extends _$AppDatabase {
           );
         },
         from5To6: (m, schema) async {
-          // Add new column to preferences table
-          await m.addColumn(
-            schema.preferencesTable,
-            schema.preferencesTable.connectPort,
-          );
+          try {
+            await m.addColumn(
+              schema.preferencesTable,
+              schema.preferencesTable.connectPort,
+            );
+          } on DriftRemoteException catch (e) {
+            // If the column already exists, ignore the error
+            if (e.remoteCause !=
+                'duplicate column name: ${schema.preferencesTable.connectPort.name}') {
+              rethrow;
+            }
+          }
+        },
+        from6To7: (m, schema) async {
+          await m.createTable(schema.metadataPluginsTable);
         },
       ),
     );

@@ -30,6 +30,7 @@ import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/glance/glance.dart';
+import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/provider/server/bonsoir.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/provider/tray_manager/tray_manager.dart';
@@ -145,6 +146,8 @@ class Spotube extends HookConsumerWidget {
     ref.listen(audioPlayerStreamListenersProvider, (_, __) {});
     ref.listen(bonsoirProvider, (_, __) {});
     ref.listen(connectClientsProvider, (_, __) {});
+    ref.listen(metadataPluginsProvider, (_, __) {});
+    ref.listen(metadataPluginApiProvider, (_, __) {});
     ref.listen(serverProvider, (_, __) {});
     ref.listen(trayManagerProvider, (_, __) {});
 

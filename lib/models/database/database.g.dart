@@ -4275,6 +4275,353 @@ class LyricsTableCompanion extends UpdateCompanion<LyricsTableData> {
   }
 }
 
+class $MetadataPluginsTableTable extends MetadataPluginsTable
+    with TableInfo<$MetadataPluginsTableTable, MetadataPluginsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $MetadataPluginsTableTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  static const VerificationMeta _descriptionMeta =
+      const VerificationMeta('description');
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _versionMeta =
+      const VerificationMeta('version');
+  @override
+  late final GeneratedColumn<String> version = GeneratedColumn<String>(
+      'version', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _authorMeta = const VerificationMeta('author');
+  @override
+  late final GeneratedColumn<String> author = GeneratedColumn<String>(
+      'author', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _selectedMeta =
+      const VerificationMeta('selected');
+  @override
+  late final GeneratedColumn<bool> selected = GeneratedColumn<bool>(
+      'selected', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("selected" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  @override
+  List<GeneratedColumn> get $columns =>
+      [id, name, description, version, author, selected];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'metadata_plugins_table';
+  @override
+  VerificationContext validateIntegrity(
+      Insertable<MetadataPluginsTableData> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+          _nameMeta, name.isAcceptableOrUnknown(data['name']!, _nameMeta));
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+          _descriptionMeta,
+          description.isAcceptableOrUnknown(
+              data['description']!, _descriptionMeta));
+    } else if (isInserting) {
+      context.missing(_descriptionMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(_versionMeta,
+          version.isAcceptableOrUnknown(data['version']!, _versionMeta));
+    } else if (isInserting) {
+      context.missing(_versionMeta);
+    }
+    if (data.containsKey('author')) {
+      context.handle(_authorMeta,
+          author.isAcceptableOrUnknown(data['author']!, _authorMeta));
+    } else if (isInserting) {
+      context.missing(_authorMeta);
+    }
+    if (data.containsKey('selected')) {
+      context.handle(_selectedMeta,
+          selected.isAcceptableOrUnknown(data['selected']!, _selectedMeta));
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MetadataPluginsTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MetadataPluginsTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}version'])!,
+      author: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}author'])!,
+      selected: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}selected'])!,
+    );
+  }
+
+  @override
+  $MetadataPluginsTableTable createAlias(String alias) {
+    return $MetadataPluginsTableTable(attachedDatabase, alias);
+  }
+}
+
+class MetadataPluginsTableData extends DataClass
+    implements Insertable<MetadataPluginsTableData> {
+  final int id;
+  final String name;
+  final String description;
+  final String version;
+  final String author;
+  final bool selected;
+  const MetadataPluginsTableData(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.version,
+      required this.author,
+      required this.selected});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['version'] = Variable<String>(version);
+    map['author'] = Variable<String>(author);
+    map['selected'] = Variable<bool>(selected);
+    return map;
+  }
+
+  MetadataPluginsTableCompanion toCompanion(bool nullToAbsent) {
+    return MetadataPluginsTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      version: Value(version),
+      author: Value(author),
+      selected: Value(selected),
+    );
+  }
+
+  factory MetadataPluginsTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MetadataPluginsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      version: serializer.fromJson<String>(json['version']),
+      author: serializer.fromJson<String>(json['author']),
+      selected: serializer.fromJson<bool>(json['selected']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'version': serializer.toJson<String>(version),
+      'author': serializer.toJson<String>(author),
+      'selected': serializer.toJson<bool>(selected),
+    };
+  }
+
+  MetadataPluginsTableData copyWith(
+          {int? id,
+          String? name,
+          String? description,
+          String? version,
+          String? author,
+          bool? selected}) =>
+      MetadataPluginsTableData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        version: version ?? this.version,
+        author: author ?? this.author,
+        selected: selected ?? this.selected,
+      );
+  MetadataPluginsTableData copyWithCompanion(
+      MetadataPluginsTableCompanion data) {
+    return MetadataPluginsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      version: data.version.present ? data.version.value : this.version,
+      author: data.author.present ? data.author.value : this.author,
+      selected: data.selected.present ? data.selected.value : this.selected,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MetadataPluginsTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('version: $version, ')
+          ..write('author: $author, ')
+          ..write('selected: $selected')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(id, name, description, version, author, selected);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MetadataPluginsTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.version == this.version &&
+          other.author == this.author &&
+          other.selected == this.selected);
+}
+
+class MetadataPluginsTableCompanion
+    extends UpdateCompanion<MetadataPluginsTableData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String> version;
+  final Value<String> author;
+  final Value<bool> selected;
+  const MetadataPluginsTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.version = const Value.absent(),
+    this.author = const Value.absent(),
+    this.selected = const Value.absent(),
+  });
+  MetadataPluginsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String description,
+    required String version,
+    required String author,
+    this.selected = const Value.absent(),
+  })  : name = Value(name),
+        description = Value(description),
+        version = Value(version),
+        author = Value(author);
+  static Insertable<MetadataPluginsTableData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? version,
+    Expression<String>? author,
+    Expression<bool>? selected,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (version != null) 'version': version,
+      if (author != null) 'author': author,
+      if (selected != null) 'selected': selected,
+    });
+  }
+
+  MetadataPluginsTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<String>? version,
+      Value<String>? author,
+      Value<bool>? selected}) {
+    return MetadataPluginsTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      version: version ?? this.version,
+      author: author ?? this.author,
+      selected: selected ?? this.selected,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<String>(version.value);
+    }
+    if (author.present) {
+      map['author'] = Variable<String>(author.value);
+    }
+    if (selected.present) {
+      map['selected'] = Variable<bool>(selected.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MetadataPluginsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('version: $version, ')
+          ..write('author: $author, ')
+          ..write('selected: $selected')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -4295,6 +4642,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $PlaylistMediaTableTable(this);
   late final $HistoryTableTable historyTable = $HistoryTableTable(this);
   late final $LyricsTableTable lyricsTable = $LyricsTableTable(this);
+  late final $MetadataPluginsTableTable metadataPluginsTable =
+      $MetadataPluginsTableTable(this);
   late final Index uniqueBlacklist = Index('unique_blacklist',
       'CREATE UNIQUE INDEX unique_blacklist ON blacklist_table (element_type, element_id)');
   late final Index uniqTrackMatch = Index('uniq_track_match',
@@ -4315,6 +4664,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         playlistMediaTable,
         historyTable,
         lyricsTable,
+        metadataPluginsTable,
         uniqueBlacklist,
         uniqTrackMatch
       ];
@@ -6909,6 +7259,194 @@ typedef $$LyricsTableTableProcessedTableManager = ProcessedTableManager<
     ),
     LyricsTableData,
     PrefetchHooks Function()>;
+typedef $$MetadataPluginsTableTableCreateCompanionBuilder
+    = MetadataPluginsTableCompanion Function({
+  Value<int> id,
+  required String name,
+  required String description,
+  required String version,
+  required String author,
+  Value<bool> selected,
+});
+typedef $$MetadataPluginsTableTableUpdateCompanionBuilder
+    = MetadataPluginsTableCompanion Function({
+  Value<int> id,
+  Value<String> name,
+  Value<String> description,
+  Value<String> version,
+  Value<String> author,
+  Value<bool> selected,
+});
+
+class $$MetadataPluginsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $MetadataPluginsTableTable> {
+  $$MetadataPluginsTableTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get author => $composableBuilder(
+      column: $table.author, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get selected => $composableBuilder(
+      column: $table.selected, builder: (column) => ColumnFilters(column));
+}
+
+class $$MetadataPluginsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $MetadataPluginsTableTable> {
+  $$MetadataPluginsTableTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<int> get id => $composableBuilder(
+      column: $table.id, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get name => $composableBuilder(
+      column: $table.name, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get version => $composableBuilder(
+      column: $table.version, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get author => $composableBuilder(
+      column: $table.author, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get selected => $composableBuilder(
+      column: $table.selected, builder: (column) => ColumnOrderings(column));
+}
+
+class $$MetadataPluginsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $MetadataPluginsTableTable> {
+  $$MetadataPluginsTableTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<int> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+      column: $table.description, builder: (column) => column);
+
+  GeneratedColumn<String> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<String> get author =>
+      $composableBuilder(column: $table.author, builder: (column) => column);
+
+  GeneratedColumn<bool> get selected =>
+      $composableBuilder(column: $table.selected, builder: (column) => column);
+}
+
+class $$MetadataPluginsTableTableTableManager extends RootTableManager<
+    _$AppDatabase,
+    $MetadataPluginsTableTable,
+    MetadataPluginsTableData,
+    $$MetadataPluginsTableTableFilterComposer,
+    $$MetadataPluginsTableTableOrderingComposer,
+    $$MetadataPluginsTableTableAnnotationComposer,
+    $$MetadataPluginsTableTableCreateCompanionBuilder,
+    $$MetadataPluginsTableTableUpdateCompanionBuilder,
+    (
+      MetadataPluginsTableData,
+      BaseReferences<_$AppDatabase, $MetadataPluginsTableTable,
+          MetadataPluginsTableData>
+    ),
+    MetadataPluginsTableData,
+    PrefetchHooks Function()> {
+  $$MetadataPluginsTableTableTableManager(
+      _$AppDatabase db, $MetadataPluginsTableTable table)
+      : super(TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$MetadataPluginsTableTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$MetadataPluginsTableTableOrderingComposer(
+                  $db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$MetadataPluginsTableTableAnnotationComposer(
+                  $db: db, $table: table),
+          updateCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            Value<String> name = const Value.absent(),
+            Value<String> description = const Value.absent(),
+            Value<String> version = const Value.absent(),
+            Value<String> author = const Value.absent(),
+            Value<bool> selected = const Value.absent(),
+          }) =>
+              MetadataPluginsTableCompanion(
+            id: id,
+            name: name,
+            description: description,
+            version: version,
+            author: author,
+            selected: selected,
+          ),
+          createCompanionCallback: ({
+            Value<int> id = const Value.absent(),
+            required String name,
+            required String description,
+            required String version,
+            required String author,
+            Value<bool> selected = const Value.absent(),
+          }) =>
+              MetadataPluginsTableCompanion.insert(
+            id: id,
+            name: name,
+            description: description,
+            version: version,
+            author: author,
+            selected: selected,
+          ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ));
+}
+
+typedef $$MetadataPluginsTableTableProcessedTableManager
+    = ProcessedTableManager<
+        _$AppDatabase,
+        $MetadataPluginsTableTable,
+        MetadataPluginsTableData,
+        $$MetadataPluginsTableTableFilterComposer,
+        $$MetadataPluginsTableTableOrderingComposer,
+        $$MetadataPluginsTableTableAnnotationComposer,
+        $$MetadataPluginsTableTableCreateCompanionBuilder,
+        $$MetadataPluginsTableTableUpdateCompanionBuilder,
+        (
+          MetadataPluginsTableData,
+          BaseReferences<_$AppDatabase, $MetadataPluginsTableTable,
+              MetadataPluginsTableData>
+        ),
+        MetadataPluginsTableData,
+        PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6935,4 +7473,6 @@ class $AppDatabaseManager {
       $$HistoryTableTableTableManager(_db, _db.historyTable);
   $$LyricsTableTableTableManager get lyricsTable =>
       $$LyricsTableTableTableManager(_db, _db.lyricsTable);
+  $$MetadataPluginsTableTableTableManager get metadataPluginsTable =>
+      $$MetadataPluginsTableTableTableManager(_db, _db.metadataPluginsTable);
 }

@@ -66,7 +66,7 @@ class PluginSetIntervalApi {
       } on Exception catch (e) {
         print('Exception no clearInterval: $e');
       } on Error catch (e) {
-        print('Erro no clearInterval: $e');
+        print('Error no clearInterval: $e');
       }
     });
   }
