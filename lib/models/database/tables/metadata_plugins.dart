@@ -6,5 +6,8 @@ class MetadataPluginsTable extends Table {
   TextColumn get description => text()();
   TextColumn get version => text()();
   TextColumn get author => text()();
+  TextColumn get entryPoint => text()();
+  TextColumn get apis => text().map(const StringListConverter())();
+  TextColumn get abilities => text().map(const StringListConverter())();
   BoolColumn get selected => boolean().withDefault(const Constant(false))();
 }

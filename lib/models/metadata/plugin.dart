@@ -2,6 +2,10 @@ part of 'metadata.dart';
 
 enum PluginType { metadata }
 
+enum PluginApis { webview, localstorage, timezone }
+
+enum PluginAbilities { authentication }
+
 @freezed
 class PluginConfiguration with _$PluginConfiguration {
   const PluginConfiguration._();
@@ -12,6 +16,9 @@ class PluginConfiguration with _$PluginConfiguration {
     required String description,
     required String version,
     required String author,
+    required String entryPoint,
+    @Default([]) List<PluginApis> apis,
+    @Default([]) List<PluginAbilities> abilities,
   }) = _PluginConfiguration;
 
   factory PluginConfiguration.fromJson(Map<String, dynamic> json) =>

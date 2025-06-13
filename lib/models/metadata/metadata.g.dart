@@ -231,6 +231,15 @@ _$PluginConfigurationImpl _$$PluginConfigurationImplFromJson(Map json) =>
       description: json['description'] as String,
       version: json['version'] as String,
       author: json['author'] as String,
+      entryPoint: json['entryPoint'] as String,
+      apis: (json['apis'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$PluginApisEnumMap, e))
+              .toList() ??
+          const [],
+      abilities: (json['abilities'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$PluginAbilitiesEnumMap, e))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$$PluginConfigurationImplToJson(
@@ -241,8 +250,22 @@ Map<String, dynamic> _$$PluginConfigurationImplToJson(
       'description': instance.description,
       'version': instance.version,
       'author': instance.author,
+      'entryPoint': instance.entryPoint,
+      'apis': instance.apis.map((e) => _$PluginApisEnumMap[e]!).toList(),
+      'abilities':
+          instance.abilities.map((e) => _$PluginAbilitiesEnumMap[e]!).toList(),
     };
 
 const _$PluginTypeEnumMap = {
   PluginType.metadata: 'metadata',
+};
+
+const _$PluginApisEnumMap = {
+  PluginApis.webview: 'webview',
+  PluginApis.localstorage: 'localstorage',
+  PluginApis.timezone: 'timezone',
+};
+
+const _$PluginAbilitiesEnumMap = {
+  PluginAbilities.authentication: 'authentication',
 };

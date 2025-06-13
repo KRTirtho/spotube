@@ -101,6 +101,23 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
           author: plugin.author,
           description: plugin.description,
           version: plugin.version,
+          entryPoint: plugin.entryPoint,
+          apis: plugin.apis
+              .map(
+                (e) => PluginApis.values.firstWhereOrNull(
+                  (api) => api.name == e,
+                ),
+              )
+              .nonNulls
+              .toList(),
+          abilities: plugin.abilities
+              .map(
+                (e) => PluginAbilities.values.firstWhereOrNull(
+                  (ability) => ability.name == e,
+                ),
+              )
+              .nonNulls
+              .toList(),
         );
       },
     ).toList();
@@ -269,6 +286,9 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         author: plugin.author,
         description: plugin.description,
         version: plugin.version,
+        entryPoint: plugin.entryPoint,
+        apis: plugin.apis.map((e) => e.name).toList(),
+        abilities: plugin.abilities.map((e) => e.name).toList(),
       ),
     );
   }

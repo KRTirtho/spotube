@@ -1918,6 +1918,9 @@ final class Schema7 extends i0.VersionedSchema {
           _column_59,
           _column_60,
           _column_61,
+          _column_62,
+          _column_63,
+          _column_64,
         ],
         attachedDatabase: database,
       ),
@@ -1940,6 +1943,12 @@ class Shape14 extends i0.VersionedTable {
       columnsByName['version']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<String> get author =>
       columnsByName['author']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get entryPoint =>
+      columnsByName['entry_point']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get apis =>
+      columnsByName['apis']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get abilities =>
+      columnsByName['abilities']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<bool> get selected =>
       columnsByName['selected']! as i1.GeneratedColumn<bool>;
 }
@@ -1958,7 +1967,16 @@ i1.GeneratedColumn<String> _column_59(String aliasedName) =>
 i1.GeneratedColumn<String> _column_60(String aliasedName) =>
     i1.GeneratedColumn<String>('author', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<bool> _column_61(String aliasedName) =>
+i1.GeneratedColumn<String> _column_61(String aliasedName) =>
+    i1.GeneratedColumn<String>('entry_point', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_62(String aliasedName) =>
+    i1.GeneratedColumn<String>('apis', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_63(String aliasedName) =>
+    i1.GeneratedColumn<String>('abilities', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<bool> _column_64(String aliasedName) =>
     i1.GeneratedColumn<bool>('selected', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(

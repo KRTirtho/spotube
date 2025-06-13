@@ -4315,6 +4315,27 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
   late final GeneratedColumn<String> author = GeneratedColumn<String>(
       'author', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _entryPointMeta =
+      const VerificationMeta('entryPoint');
+  @override
+  late final GeneratedColumn<String> entryPoint = GeneratedColumn<String>(
+      'entry_point', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  static const VerificationMeta _apisMeta = const VerificationMeta('apis');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String> apis =
+      GeneratedColumn<String>('apis', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<List<String>>(
+              $MetadataPluginsTableTable.$converterapis);
+  static const VerificationMeta _abilitiesMeta =
+      const VerificationMeta('abilities');
+  @override
+  late final GeneratedColumnWithTypeConverter<List<String>, String> abilities =
+      GeneratedColumn<String>('abilities', aliasedName, false,
+              type: DriftSqlType.string, requiredDuringInsert: true)
+          .withConverter<List<String>>(
+              $MetadataPluginsTableTable.$converterabilities);
   static const VerificationMeta _selectedMeta =
       const VerificationMeta('selected');
   @override
@@ -4326,8 +4347,17 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
           GeneratedColumn.constraintIsAlways('CHECK ("selected" IN (0, 1))'),
       defaultValue: const Constant(false));
   @override
-  List<GeneratedColumn> get $columns =>
-      [id, name, description, version, author, selected];
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        version,
+        author,
+        entryPoint,
+        apis,
+        abilities,
+        selected
+      ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -4368,6 +4398,16 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
     } else if (isInserting) {
       context.missing(_authorMeta);
     }
+    if (data.containsKey('entry_point')) {
+      context.handle(
+          _entryPointMeta,
+          entryPoint.isAcceptableOrUnknown(
+              data['entry_point']!, _entryPointMeta));
+    } else if (isInserting) {
+      context.missing(_entryPointMeta);
+    }
+    context.handle(_apisMeta, const VerificationResult.success());
+    context.handle(_abilitiesMeta, const VerificationResult.success());
     if (data.containsKey('selected')) {
       context.handle(_selectedMeta,
           selected.isAcceptableOrUnknown(data['selected']!, _selectedMeta));
@@ -4392,6 +4432,14 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
           .read(DriftSqlType.string, data['${effectivePrefix}version'])!,
       author: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}author'])!,
+      entryPoint: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}entry_point'])!,
+      apis: $MetadataPluginsTableTable.$converterapis.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}apis'])!),
+      abilities: $MetadataPluginsTableTable.$converterabilities.fromSql(
+          attachedDatabase.typeMapping
+              .read(DriftSqlType.string, data['${effectivePrefix}abilities'])!),
       selected: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}selected'])!,
     );
@@ -4401,6 +4449,11 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
   $MetadataPluginsTableTable createAlias(String alias) {
     return $MetadataPluginsTableTable(attachedDatabase, alias);
   }
+
+  static TypeConverter<List<String>, String> $converterapis =
+      const StringListConverter();
+  static TypeConverter<List<String>, String> $converterabilities =
+      const StringListConverter();
 }
 
 class MetadataPluginsTableData extends DataClass
@@ -4410,6 +4463,9 @@ class MetadataPluginsTableData extends DataClass
   final String description;
   final String version;
   final String author;
+  final String entryPoint;
+  final List<String> apis;
+  final List<String> abilities;
   final bool selected;
   const MetadataPluginsTableData(
       {required this.id,
@@ -4417,6 +4473,9 @@ class MetadataPluginsTableData extends DataClass
       required this.description,
       required this.version,
       required this.author,
+      required this.entryPoint,
+      required this.apis,
+      required this.abilities,
       required this.selected});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -4426,6 +4485,15 @@ class MetadataPluginsTableData extends DataClass
     map['description'] = Variable<String>(description);
     map['version'] = Variable<String>(version);
     map['author'] = Variable<String>(author);
+    map['entry_point'] = Variable<String>(entryPoint);
+    {
+      map['apis'] = Variable<String>(
+          $MetadataPluginsTableTable.$converterapis.toSql(apis));
+    }
+    {
+      map['abilities'] = Variable<String>(
+          $MetadataPluginsTableTable.$converterabilities.toSql(abilities));
+    }
     map['selected'] = Variable<bool>(selected);
     return map;
   }
@@ -4437,6 +4505,9 @@ class MetadataPluginsTableData extends DataClass
       description: Value(description),
       version: Value(version),
       author: Value(author),
+      entryPoint: Value(entryPoint),
+      apis: Value(apis),
+      abilities: Value(abilities),
       selected: Value(selected),
     );
   }
@@ -4450,6 +4521,9 @@ class MetadataPluginsTableData extends DataClass
       description: serializer.fromJson<String>(json['description']),
       version: serializer.fromJson<String>(json['version']),
       author: serializer.fromJson<String>(json['author']),
+      entryPoint: serializer.fromJson<String>(json['entryPoint']),
+      apis: serializer.fromJson<List<String>>(json['apis']),
+      abilities: serializer.fromJson<List<String>>(json['abilities']),
       selected: serializer.fromJson<bool>(json['selected']),
     );
   }
@@ -4462,6 +4536,9 @@ class MetadataPluginsTableData extends DataClass
       'description': serializer.toJson<String>(description),
       'version': serializer.toJson<String>(version),
       'author': serializer.toJson<String>(author),
+      'entryPoint': serializer.toJson<String>(entryPoint),
+      'apis': serializer.toJson<List<String>>(apis),
+      'abilities': serializer.toJson<List<String>>(abilities),
       'selected': serializer.toJson<bool>(selected),
     };
   }
@@ -4472,6 +4549,9 @@ class MetadataPluginsTableData extends DataClass
           String? description,
           String? version,
           String? author,
+          String? entryPoint,
+          List<String>? apis,
+          List<String>? abilities,
           bool? selected}) =>
       MetadataPluginsTableData(
         id: id ?? this.id,
@@ -4479,6 +4559,9 @@ class MetadataPluginsTableData extends DataClass
         description: description ?? this.description,
         version: version ?? this.version,
         author: author ?? this.author,
+        entryPoint: entryPoint ?? this.entryPoint,
+        apis: apis ?? this.apis,
+        abilities: abilities ?? this.abilities,
         selected: selected ?? this.selected,
       );
   MetadataPluginsTableData copyWithCompanion(
@@ -4490,6 +4573,10 @@ class MetadataPluginsTableData extends DataClass
           data.description.present ? data.description.value : this.description,
       version: data.version.present ? data.version.value : this.version,
       author: data.author.present ? data.author.value : this.author,
+      entryPoint:
+          data.entryPoint.present ? data.entryPoint.value : this.entryPoint,
+      apis: data.apis.present ? data.apis.value : this.apis,
+      abilities: data.abilities.present ? data.abilities.value : this.abilities,
       selected: data.selected.present ? data.selected.value : this.selected,
     );
   }
@@ -4502,14 +4589,17 @@ class MetadataPluginsTableData extends DataClass
           ..write('description: $description, ')
           ..write('version: $version, ')
           ..write('author: $author, ')
+          ..write('entryPoint: $entryPoint, ')
+          ..write('apis: $apis, ')
+          ..write('abilities: $abilities, ')
           ..write('selected: $selected')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode =>
-      Object.hash(id, name, description, version, author, selected);
+  int get hashCode => Object.hash(id, name, description, version, author,
+      entryPoint, apis, abilities, selected);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4519,6 +4609,9 @@ class MetadataPluginsTableData extends DataClass
           other.description == this.description &&
           other.version == this.version &&
           other.author == this.author &&
+          other.entryPoint == this.entryPoint &&
+          other.apis == this.apis &&
+          other.abilities == this.abilities &&
           other.selected == this.selected);
 }
 
@@ -4529,6 +4622,9 @@ class MetadataPluginsTableCompanion
   final Value<String> description;
   final Value<String> version;
   final Value<String> author;
+  final Value<String> entryPoint;
+  final Value<List<String>> apis;
+  final Value<List<String>> abilities;
   final Value<bool> selected;
   const MetadataPluginsTableCompanion({
     this.id = const Value.absent(),
@@ -4536,6 +4632,9 @@ class MetadataPluginsTableCompanion
     this.description = const Value.absent(),
     this.version = const Value.absent(),
     this.author = const Value.absent(),
+    this.entryPoint = const Value.absent(),
+    this.apis = const Value.absent(),
+    this.abilities = const Value.absent(),
     this.selected = const Value.absent(),
   });
   MetadataPluginsTableCompanion.insert({
@@ -4544,17 +4643,26 @@ class MetadataPluginsTableCompanion
     required String description,
     required String version,
     required String author,
+    required String entryPoint,
+    required List<String> apis,
+    required List<String> abilities,
     this.selected = const Value.absent(),
   })  : name = Value(name),
         description = Value(description),
         version = Value(version),
-        author = Value(author);
+        author = Value(author),
+        entryPoint = Value(entryPoint),
+        apis = Value(apis),
+        abilities = Value(abilities);
   static Insertable<MetadataPluginsTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? description,
     Expression<String>? version,
     Expression<String>? author,
+    Expression<String>? entryPoint,
+    Expression<String>? apis,
+    Expression<String>? abilities,
     Expression<bool>? selected,
   }) {
     return RawValuesInsertable({
@@ -4563,6 +4671,9 @@ class MetadataPluginsTableCompanion
       if (description != null) 'description': description,
       if (version != null) 'version': version,
       if (author != null) 'author': author,
+      if (entryPoint != null) 'entry_point': entryPoint,
+      if (apis != null) 'apis': apis,
+      if (abilities != null) 'abilities': abilities,
       if (selected != null) 'selected': selected,
     });
   }
@@ -4573,6 +4684,9 @@ class MetadataPluginsTableCompanion
       Value<String>? description,
       Value<String>? version,
       Value<String>? author,
+      Value<String>? entryPoint,
+      Value<List<String>>? apis,
+      Value<List<String>>? abilities,
       Value<bool>? selected}) {
     return MetadataPluginsTableCompanion(
       id: id ?? this.id,
@@ -4580,6 +4694,9 @@ class MetadataPluginsTableCompanion
       description: description ?? this.description,
       version: version ?? this.version,
       author: author ?? this.author,
+      entryPoint: entryPoint ?? this.entryPoint,
+      apis: apis ?? this.apis,
+      abilities: abilities ?? this.abilities,
       selected: selected ?? this.selected,
     );
   }
@@ -4602,6 +4719,18 @@ class MetadataPluginsTableCompanion
     if (author.present) {
       map['author'] = Variable<String>(author.value);
     }
+    if (entryPoint.present) {
+      map['entry_point'] = Variable<String>(entryPoint.value);
+    }
+    if (apis.present) {
+      map['apis'] = Variable<String>(
+          $MetadataPluginsTableTable.$converterapis.toSql(apis.value));
+    }
+    if (abilities.present) {
+      map['abilities'] = Variable<String>($MetadataPluginsTableTable
+          .$converterabilities
+          .toSql(abilities.value));
+    }
     if (selected.present) {
       map['selected'] = Variable<bool>(selected.value);
     }
@@ -4616,6 +4745,9 @@ class MetadataPluginsTableCompanion
           ..write('description: $description, ')
           ..write('version: $version, ')
           ..write('author: $author, ')
+          ..write('entryPoint: $entryPoint, ')
+          ..write('apis: $apis, ')
+          ..write('abilities: $abilities, ')
           ..write('selected: $selected')
           ..write(')'))
         .toString();
@@ -7266,6 +7398,9 @@ typedef $$MetadataPluginsTableTableCreateCompanionBuilder
   required String description,
   required String version,
   required String author,
+  required String entryPoint,
+  required List<String> apis,
+  required List<String> abilities,
   Value<bool> selected,
 });
 typedef $$MetadataPluginsTableTableUpdateCompanionBuilder
@@ -7275,6 +7410,9 @@ typedef $$MetadataPluginsTableTableUpdateCompanionBuilder
   Value<String> description,
   Value<String> version,
   Value<String> author,
+  Value<String> entryPoint,
+  Value<List<String>> apis,
+  Value<List<String>> abilities,
   Value<bool> selected,
 });
 
@@ -7301,6 +7439,19 @@ class $$MetadataPluginsTableTableFilterComposer
 
   ColumnFilters<String> get author => $composableBuilder(
       column: $table.author, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get entryPoint => $composableBuilder(
+      column: $table.entryPoint, builder: (column) => ColumnFilters(column));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String> get apis =>
+      $composableBuilder(
+          column: $table.apis,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
+
+  ColumnWithTypeConverterFilters<List<String>, List<String>, String>
+      get abilities => $composableBuilder(
+          column: $table.abilities,
+          builder: (column) => ColumnWithTypeConverterFilters(column));
 
   ColumnFilters<bool> get selected => $composableBuilder(
       column: $table.selected, builder: (column) => ColumnFilters(column));
@@ -7330,6 +7481,15 @@ class $$MetadataPluginsTableTableOrderingComposer
   ColumnOrderings<String> get author => $composableBuilder(
       column: $table.author, builder: (column) => ColumnOrderings(column));
 
+  ColumnOrderings<String> get entryPoint => $composableBuilder(
+      column: $table.entryPoint, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get apis => $composableBuilder(
+      column: $table.apis, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get abilities => $composableBuilder(
+      column: $table.abilities, builder: (column) => ColumnOrderings(column));
+
   ColumnOrderings<bool> get selected => $composableBuilder(
       column: $table.selected, builder: (column) => ColumnOrderings(column));
 }
@@ -7357,6 +7517,15 @@ class $$MetadataPluginsTableTableAnnotationComposer
 
   GeneratedColumn<String> get author =>
       $composableBuilder(column: $table.author, builder: (column) => column);
+
+  GeneratedColumn<String> get entryPoint => $composableBuilder(
+      column: $table.entryPoint, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get apis =>
+      $composableBuilder(column: $table.apis, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<List<String>, String> get abilities =>
+      $composableBuilder(column: $table.abilities, builder: (column) => column);
 
   GeneratedColumn<bool> get selected =>
       $composableBuilder(column: $table.selected, builder: (column) => column);
@@ -7397,6 +7566,9 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             Value<String> description = const Value.absent(),
             Value<String> version = const Value.absent(),
             Value<String> author = const Value.absent(),
+            Value<String> entryPoint = const Value.absent(),
+            Value<List<String>> apis = const Value.absent(),
+            Value<List<String>> abilities = const Value.absent(),
             Value<bool> selected = const Value.absent(),
           }) =>
               MetadataPluginsTableCompanion(
@@ -7405,6 +7577,9 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             description: description,
             version: version,
             author: author,
+            entryPoint: entryPoint,
+            apis: apis,
+            abilities: abilities,
             selected: selected,
           ),
           createCompanionCallback: ({
@@ -7413,6 +7588,9 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             required String description,
             required String version,
             required String author,
+            required String entryPoint,
+            required List<String> apis,
+            required List<String> abilities,
             Value<bool> selected = const Value.absent(),
           }) =>
               MetadataPluginsTableCompanion.insert(
@@ -7421,6 +7599,9 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             description: description,
             version: version,
             author: author,
+            entryPoint: entryPoint,
+            apis: apis,
+            abilities: abilities,
             selected: selected,
           ),
           withReferenceMapper: (p0) => p0

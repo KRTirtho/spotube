@@ -2442,6 +2442,9 @@ mixin _$PluginConfiguration {
   String get description => throw _privateConstructorUsedError;
   String get version => throw _privateConstructorUsedError;
   String get author => throw _privateConstructorUsedError;
+  String get entryPoint => throw _privateConstructorUsedError;
+  List<PluginApis> get apis => throw _privateConstructorUsedError;
+  List<PluginAbilities> get abilities => throw _privateConstructorUsedError;
 
   /// Serializes this PluginConfiguration to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -2464,7 +2467,10 @@ abstract class $PluginConfigurationCopyWith<$Res> {
       String name,
       String description,
       String version,
-      String author});
+      String author,
+      String entryPoint,
+      List<PluginApis> apis,
+      List<PluginAbilities> abilities});
 }
 
 /// @nodoc
@@ -2487,6 +2493,9 @@ class _$PluginConfigurationCopyWithImpl<$Res, $Val extends PluginConfiguration>
     Object? description = null,
     Object? version = null,
     Object? author = null,
+    Object? entryPoint = null,
+    Object? apis = null,
+    Object? abilities = null,
   }) {
     return _then(_value.copyWith(
       type: null == type
@@ -2509,6 +2518,18 @@ class _$PluginConfigurationCopyWithImpl<$Res, $Val extends PluginConfiguration>
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as String,
+      entryPoint: null == entryPoint
+          ? _value.entryPoint
+          : entryPoint // ignore: cast_nullable_to_non_nullable
+              as String,
+      apis: null == apis
+          ? _value.apis
+          : apis // ignore: cast_nullable_to_non_nullable
+              as List<PluginApis>,
+      abilities: null == abilities
+          ? _value.abilities
+          : abilities // ignore: cast_nullable_to_non_nullable
+              as List<PluginAbilities>,
     ) as $Val);
   }
 }
@@ -2526,7 +2547,10 @@ abstract class _$$PluginConfigurationImplCopyWith<$Res>
       String name,
       String description,
       String version,
-      String author});
+      String author,
+      String entryPoint,
+      List<PluginApis> apis,
+      List<PluginAbilities> abilities});
 }
 
 /// @nodoc
@@ -2547,6 +2571,9 @@ class __$$PluginConfigurationImplCopyWithImpl<$Res>
     Object? description = null,
     Object? version = null,
     Object? author = null,
+    Object? entryPoint = null,
+    Object? apis = null,
+    Object? abilities = null,
   }) {
     return _then(_$PluginConfigurationImpl(
       type: null == type
@@ -2569,6 +2596,18 @@ class __$$PluginConfigurationImplCopyWithImpl<$Res>
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as String,
+      entryPoint: null == entryPoint
+          ? _value.entryPoint
+          : entryPoint // ignore: cast_nullable_to_non_nullable
+              as String,
+      apis: null == apis
+          ? _value._apis
+          : apis // ignore: cast_nullable_to_non_nullable
+              as List<PluginApis>,
+      abilities: null == abilities
+          ? _value._abilities
+          : abilities // ignore: cast_nullable_to_non_nullable
+              as List<PluginAbilities>,
     ));
   }
 }
@@ -2581,8 +2620,13 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
       required this.name,
       required this.description,
       required this.version,
-      required this.author})
-      : super._();
+      required this.author,
+      required this.entryPoint,
+      final List<PluginApis> apis = const [],
+      final List<PluginAbilities> abilities = const []})
+      : _apis = apis,
+        _abilities = abilities,
+        super._();
 
   factory _$PluginConfigurationImpl.fromJson(Map<String, dynamic> json) =>
       _$$PluginConfigurationImplFromJson(json);
@@ -2597,10 +2641,29 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
   final String version;
   @override
   final String author;
+  @override
+  final String entryPoint;
+  final List<PluginApis> _apis;
+  @override
+  @JsonKey()
+  List<PluginApis> get apis {
+    if (_apis is EqualUnmodifiableListView) return _apis;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_apis);
+  }
+
+  final List<PluginAbilities> _abilities;
+  @override
+  @JsonKey()
+  List<PluginAbilities> get abilities {
+    if (_abilities is EqualUnmodifiableListView) return _abilities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_abilities);
+  }
 
   @override
   String toString() {
-    return 'PluginConfiguration(type: $type, name: $name, description: $description, version: $version, author: $author)';
+    return 'PluginConfiguration(type: $type, name: $name, description: $description, version: $version, author: $author, entryPoint: $entryPoint, apis: $apis, abilities: $abilities)';
   }
 
   @override
@@ -2613,13 +2676,26 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
             (identical(other.description, description) ||
                 other.description == description) &&
             (identical(other.version, version) || other.version == version) &&
-            (identical(other.author, author) || other.author == author));
+            (identical(other.author, author) || other.author == author) &&
+            (identical(other.entryPoint, entryPoint) ||
+                other.entryPoint == entryPoint) &&
+            const DeepCollectionEquality().equals(other._apis, _apis) &&
+            const DeepCollectionEquality()
+                .equals(other._abilities, _abilities));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, type, name, description, version, author);
+  int get hashCode => Object.hash(
+      runtimeType,
+      type,
+      name,
+      description,
+      version,
+      author,
+      entryPoint,
+      const DeepCollectionEquality().hash(_apis),
+      const DeepCollectionEquality().hash(_abilities));
 
   /// Create a copy of PluginConfiguration
   /// with the given fields replaced by the non-null parameter values.
@@ -2644,7 +2720,10 @@ abstract class _PluginConfiguration extends PluginConfiguration {
       required final String name,
       required final String description,
       required final String version,
-      required final String author}) = _$PluginConfigurationImpl;
+      required final String author,
+      required final String entryPoint,
+      final List<PluginApis> apis,
+      final List<PluginAbilities> abilities}) = _$PluginConfigurationImpl;
   _PluginConfiguration._() : super._();
 
   factory _PluginConfiguration.fromJson(Map<String, dynamic> json) =
@@ -2660,6 +2739,12 @@ abstract class _PluginConfiguration extends PluginConfiguration {
   String get version;
   @override
   String get author;
+  @override
+  String get entryPoint;
+  @override
+  List<PluginApis> get apis;
+  @override
+  List<PluginAbilities> get abilities;
 
   /// Create a copy of PluginConfiguration
   /// with the given fields replaced by the non-null parameter values.
