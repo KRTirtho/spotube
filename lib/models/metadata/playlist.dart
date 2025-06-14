@@ -1,17 +1,34 @@
 part of 'metadata.dart';
 
 @freezed
-class SpotubePlaylistObject with _$SpotubePlaylistObject {
-  factory SpotubePlaylistObject({
-    required final String uid,
-    required final String name,
-    @Default([]) final List<SpotubeImageObject> images,
-    required final String description,
-    required final String externalUrl,
-    required final SpotubeUserObject owner,
-    @Default([]) final List<SpotubeUserObject> collaborators,
-  }) = _SpotubePlaylistObject;
+class SpotubeFullPlaylistObject with _$SpotubeFullPlaylistObject {
+  factory SpotubeFullPlaylistObject({
+    required String id,
+    required String name,
+    required String description,
+    required String externalUri,
+    required SpotubeUserObject owner,
+    @Default([]) List<SpotubeImageObject> images,
+    @Default([]) List<SpotubeUserObject> collaborators,
+    @Default(false) bool collaborative,
+    @Default(false) bool public,
+  }) = _SpotubeFullPlaylistObject;
 
-  factory SpotubePlaylistObject.fromJson(Map<String, dynamic> json) =>
-      _$SpotubePlaylistObjectFromJson(json);
+  factory SpotubeFullPlaylistObject.fromJson(Map<String, dynamic> json) =>
+      _$SpotubeFullPlaylistObjectFromJson(json);
+}
+
+@freezed
+class SpotubeSimplePlaylistObject with _$SpotubeSimplePlaylistObject {
+  factory SpotubeSimplePlaylistObject({
+    required String id,
+    required String name,
+    required String description,
+    required String externalUri,
+    required SpotubeUserObject owner,
+    @Default([]) List<SpotubeImageObject> images,
+  }) = _SpotubeSimplePlaylistObject;
+
+  factory SpotubeSimplePlaylistObject.fromJson(Map<String, dynamic> json) =>
+      _$SpotubeSimplePlaylistObjectFromJson(json);
 }

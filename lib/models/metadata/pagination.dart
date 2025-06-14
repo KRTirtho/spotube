@@ -4,9 +4,9 @@ part of 'metadata.dart';
 class SpotubePaginationResponseObject<T>
     with _$SpotubePaginationResponseObject {
   factory SpotubePaginationResponseObject({
+    required int limit,
+    required int? nextOffset,
     required int total,
-    required String? nextCursor,
-    required String limit,
     required bool hasMore,
     required List<T> items,
   }) = _SpotubePaginationResponseObject;

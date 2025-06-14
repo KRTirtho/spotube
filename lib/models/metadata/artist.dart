@@ -1,14 +1,28 @@
 part of 'metadata.dart';
 
 @freezed
-class SpotubeArtistObject with _$SpotubeArtistObject {
-  factory SpotubeArtistObject({
-    required final String uid,
-    required final String name,
-    @Default([]) final List<SpotubeImageObject> images,
-    required final String externalUrl,
-  }) = _SpotubeArtistObject;
+class SpotubeFullArtistObject with _$SpotubeFullArtistObject {
+  factory SpotubeFullArtistObject({
+    required String id,
+    required String name,
+    required String externalUri,
+    @Default([]) List<SpotubeImageObject> images,
+    List<String>? genres,
+    int? followers,
+  }) = _SpotubeFullArtistObject;
 
-  factory SpotubeArtistObject.fromJson(Map<String, dynamic> json) =>
-      _$SpotubeArtistObjectFromJson(json);
+  factory SpotubeFullArtistObject.fromJson(Map<String, dynamic> json) =>
+      _$SpotubeFullArtistObjectFromJson(json);
+}
+
+@freezed
+class SpotubeSimpleArtistObject with _$SpotubeSimpleArtistObject {
+  factory SpotubeSimpleArtistObject({
+    required String id,
+    required String name,
+    required String externalUri,
+  }) = _SpotubeSimpleArtistObject;
+
+  factory SpotubeSimpleArtistObject.fromJson(Map<String, dynamic> json) =>
+      _$SpotubeSimpleArtistObjectFromJson(json);
 }

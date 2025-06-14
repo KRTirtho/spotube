@@ -1,17 +1,34 @@
 part of 'metadata.dart';
 
 @freezed
-class SpotubeTrackObject with _$SpotubeTrackObject {
-  factory SpotubeTrackObject({
-    required final String uid,
-    required final String title,
-    @Default([]) final List<SpotubeArtistObject> artists,
-    required final SpotubeAlbumObject album,
-    required final int durationMs,
-    required final String isrc,
-    required final String externalUrl,
-  }) = _SpotubeTrackObject;
+class SpotubeFullTrackObject with _$SpotubeFullTrackObject {
+  factory SpotubeFullTrackObject({
+    required String id,
+    required String name,
+    required String externalUri,
+    @Default([]) List<SpotubeSimpleArtistObject> artists,
+    required SpotubeSimpleAlbumObject album,
+    required int durationMs,
+    required String isrc,
+    required bool explicit,
+  }) = _SpotubeFullTrackObject;
 
-  factory SpotubeTrackObject.fromJson(Map<String, dynamic> json) =>
-      _$SpotubeTrackObjectFromJson(json);
+  factory SpotubeFullTrackObject.fromJson(Map<String, dynamic> json) =>
+      _$SpotubeFullTrackObjectFromJson(json);
+}
+
+@freezed
+class SpotubeSimpleTrackObject with _$SpotubeSimpleTrackObject {
+  factory SpotubeSimpleTrackObject({
+    required String id,
+    required String name,
+    required String externalUri,
+    required int durationMs,
+    required bool explicit,
+    @Default([]) List<SpotubeSimpleArtistObject> artists,
+    SpotubeSimpleAlbumObject? album,
+  }) = _SpotubeSimpleTrackObject;
+
+  factory SpotubeSimpleTrackObject.fromJson(Map<String, dynamic> json) =>
+      _$SpotubeSimpleTrackObjectFromJson(json);
 }
