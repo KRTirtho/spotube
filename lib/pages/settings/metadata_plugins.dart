@@ -11,6 +11,7 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:spotube/provider/metadata_plugin/user.dart';
 
 @RoutePage()
 class SettingsMetadataProviderPage extends HookConsumerWidget {
@@ -24,6 +25,8 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
     final pluginsNotifier = ref.watch(metadataPluginsProvider.notifier);
     final metadataPlugin = ref.watch(metadataPluginProvider);
     final isAuthenticated = ref.watch(metadataPluginAuthenticatedProvider);
+
+    final user = ref.watch(metadataPluginUserProvider);
 
     return Scaffold(
       headers: const [
