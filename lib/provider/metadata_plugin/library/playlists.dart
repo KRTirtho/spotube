@@ -6,17 +6,17 @@ import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
 import 'package:spotube/provider/metadata_plugin/utils/paginated.dart';
 import 'package:spotube/services/metadata/endpoints/error.dart';
 
-class FavoritePlaylistsNotifier
+class MetadataPluginSavedPlaylistsNotifier
     extends PaginatedAsyncNotifier<SpotubeSimplePlaylistObject> {
-  FavoritePlaylistsNotifier() : super();
+  MetadataPluginSavedPlaylistsNotifier() : super();
 
   @override
   fetch(int offset, int limit) async {
     final playlists = await (await metadataPlugin)
-        ?.user
+        .user
         .savedPlaylists(limit: limit, offset: offset);
 
-    return playlists!;
+    return playlists;
   }
 
   @override
@@ -43,7 +43,7 @@ class FavoritePlaylistsNotifier
 
   Future<void> addFavorite(SpotubeSimplePlaylistObject playlist) async {
     await update((state) async {
-      (await metadataPlugin)!.playlist.save(playlist.id);
+      (await metadataPlugin).playlist.save(playlist.id);
       return state.copyWith(
         items: [...state.items, playlist],
       ) as SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>;
@@ -54,7 +54,7 @@ class FavoritePlaylistsNotifier
 
   Future<void> removeFavorite(SpotubeSimplePlaylistObject playlist) async {
     await update((state) async {
-      (await metadataPlugin)!.playlist.unsave(playlist.id);
+      (await metadataPlugin).playlist.unsave(playlist.id);
       return state.copyWith(
         items: state.items
             .where((e) => (e as SpotubeSimplePlaylistObject).id != playlist.id)
@@ -67,7 +67,7 @@ class FavoritePlaylistsNotifier
 
   Future<void> delete(SpotubeSimplePlaylistObject playlist) async {
     await update((state) async {
-      (await metadataPlugin)!.playlist.deletePlaylist(playlist.id);
+      (await metadataPlugin).playlist.deletePlaylist(playlist.id);
       return state.copyWith(
         items: state.items
             .where((e) => (e as SpotubeSimplePlaylistObject).id != playlist.id)
@@ -82,7 +82,7 @@ class FavoritePlaylistsNotifier
   Future<void> addTracks(String playlistId, List<String> trackIds) async {
     if (state.value == null) return;
 
-    await (await metadataPlugin)!
+    await (await metadataPlugin)
         .playlist
         .addTracks(playlistId, trackIds: trackIds);
 
@@ -92,7 +92,7 @@ class FavoritePlaylistsNotifier
   Future<void> removeTracks(String playlistId, List<String> trackIds) async {
     if (state.value == null) return;
 
-    await (await metadataPlugin)!
+    await (await metadataPlugin)
         .playlist
         .removeTracks(playlistId, trackIds: trackIds);
 
@@ -101,9 +101,9 @@ class FavoritePlaylistsNotifier
 }
 
 final metadataPluginSavedPlaylistsProvider = AsyncNotifierProvider<
-    FavoritePlaylistsNotifier,
+    MetadataPluginSavedPlaylistsNotifier,
     SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>>(
-  () => FavoritePlaylistsNotifier(),
+  () => MetadataPluginSavedPlaylistsNotifier(),
 );
 
 final metadataPluginIsSavedPlaylistProvider =

@@ -10,7 +10,7 @@ class PlaylistTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
 
   @override
   fetch(offset, limit) async {
-    final tracks = await (await metadataPlugin)!.playlist.tracks(
+    final tracks = await (await metadataPlugin).playlist.tracks(
           arg,
           offset: offset,
           limit: limit,
@@ -28,9 +28,8 @@ class PlaylistTracksNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
   }
 }
 
-final metadataPluginPlaylistTracksProvider = AutoDisposeAsyncNotifierProviderFamily<
-    PlaylistTracksNotifier,
-    SpotubePaginationResponseObject<SpotubeFullTrackObject>,
-    String>(
+final metadataPluginPlaylistTracksProvider =
+    AutoDisposeAsyncNotifierProviderFamily<PlaylistTracksNotifier,
+        SpotubePaginationResponseObject<SpotubeFullTrackObject>, String>(
   () => PlaylistTracksNotifier(),
 );
