@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
 import 'package:spotube/provider/metadata_plugin/utils/paginated.dart';
 import 'package:spotube/services/metadata/endpoints/error.dart';
 
@@ -40,61 +41,63 @@ class FavoritePlaylistsNotifier
     );
   }
 
-  // Future<void> addFavorite(PlaylistSimple playlist) async {
-  //   await update((state) async {
-  //     await spotify.invoke(
-  //       (api) => api.playlists.followPlaylist(playlist.id!),
-  //     );
-  //     return state.copyWith(
-  //       items: [...state.items, playlist],
-  //     );
-  //   });
+  Future<void> addFavorite(SpotubeSimplePlaylistObject playlist) async {
+    await update((state) async {
+      (await metadataPlugin)!.playlist.save(playlist.id);
+      return state.copyWith(
+        items: [...state.items, playlist],
+      ) as SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>;
+    });
 
-  //   ref.invalidate(isFavoritePlaylistProvider(playlist.id!));
-  // }
+    ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
+  }
 
-  // Future<void> removeFavorite(PlaylistSimple playlist) async {
-  //   await update((state) async {
-  //     await spotify.invoke(
-  //       (api) => api.playlists.unfollowPlaylist(playlist.id!),
-  //     );
-  //     return state.copyWith(
-  //       items: state.items.where((e) => e.id != playlist.id).toList(),
-  //     );
-  //   });
+  Future<void> removeFavorite(SpotubeSimplePlaylistObject playlist) async {
+    await update((state) async {
+      (await metadataPlugin)!.playlist.unsave(playlist.id);
+      return state.copyWith(
+        items: state.items
+            .where((e) => (e as SpotubeSimplePlaylistObject).id != playlist.id)
+            .toList() as List<SpotubeSimplePlaylistObject>,
+      ) as SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>;
+    });
 
-  //   ref.invalidate(isFavoritePlaylistProvider(playlist.id!));
-  // }
+    ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
+  }
 
-  // Future<void> addTracks(String playlistId, List<String> trackIds) async {
-  //   if (state.value == null) return;
+  Future<void> delete(SpotubeSimplePlaylistObject playlist) async {
+    await update((state) async {
+      (await metadataPlugin)!.playlist.deletePlaylist(playlist.id);
+      return state.copyWith(
+        items: state.items
+            .where((e) => (e as SpotubeSimplePlaylistObject).id != playlist.id)
+            .toList() as List<SpotubeSimplePlaylistObject>,
+      ) as SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>;
+    });
 
-  //   final spotify = ref.read(spotifyProvider);
+    ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
+    ref.invalidate(metadataPluginPlaylistTracksProvider(playlist.id));
+  }
 
-  //   await spotify.invoke(
-  //     (api) => api.playlists.addTracks(
-  //       trackIds.map((id) => 'spotify:track:$id').toList(),
-  //       playlistId,
-  //     ),
-  //   );
+  Future<void> addTracks(String playlistId, List<String> trackIds) async {
+    if (state.value == null) return;
 
-  //   ref.invalidate(playlistTracksProvider(playlistId));
-  // }
+    await (await metadataPlugin)!
+        .playlist
+        .addTracks(playlistId, trackIds: trackIds);
 
-  // Future<void> removeTracks(String playlistId, List<String> trackIds) async {
-  //   if (state.value == null) return;
+    ref.invalidate(metadataPluginPlaylistTracksProvider(playlistId));
+  }
 
-  //   final spotify = ref.read(spotifyProvider);
+  Future<void> removeTracks(String playlistId, List<String> trackIds) async {
+    if (state.value == null) return;
 
-  //   await spotify.invoke(
-  //     (api) => api.playlists.removeTracks(
-  //       trackIds.map((id) => 'spotify:track:$id').toList(),
-  //       playlistId,
-  //     ),
-  //   );
+    await (await metadataPlugin)!
+        .playlist
+        .removeTracks(playlistId, trackIds: trackIds);
 
-  //   ref.invalidate(playlistTracksProvider(playlistId));
-  // }
+    ref.invalidate(metadataPluginPlaylistTracksProvider(playlistId));
+  }
 }
 
 final metadataPluginSavedPlaylistsProvider = AsyncNotifierProvider<

@@ -12,6 +12,7 @@ import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/metadata/apis/localstorage.dart';
 import 'package:spotube/services/metadata/endpoints/auth.dart';
+import 'package:spotube/services/metadata/endpoints/playlist.dart';
 import 'package:spotube/services/metadata/endpoints/user.dart';
 
 const defaultMetadataLimit = "20";
@@ -73,9 +74,11 @@ class MetadataPlugin {
 
   late final MetadataAuthEndpoint auth;
   late final MetadataPluginUserEndpoint user;
+  late final MetadataPluginPlaylistEndpoint playlist;
 
   MetadataPlugin._(this.hetu) {
     auth = MetadataAuthEndpoint(hetu);
+    playlist = MetadataPluginPlaylistEndpoint(hetu);
     user = MetadataPluginUserEndpoint(hetu);
   }
 }

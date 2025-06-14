@@ -4,42 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/async_notifier.dart';
-import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:spotube/services/metadata/metadata.dart';
-
-mixin MetadataPluginMixin<K>
-// ignore: invalid_use_of_internal_member
-    on AsyncNotifierBase<SpotubePaginationResponseObject<K>> {
-  Future<MetadataPlugin?> get metadataPlugin async =>
-      await ref.read(metadataPluginProvider.future);
-}
-
-// ignore: deprecated_member_use
-extension on AutoDisposeAsyncNotifierProviderRef {
-  // When invoked keeps your provider alive for [duration]
-  // ignore: unused_element
-  void cacheFor([Duration duration = const Duration(minutes: 5)]) {
-    final link = keepAlive();
-    final timer = Timer(duration, () => link.close());
-    onDispose(() => timer.cancel());
-  }
-}
-
-// ignore: deprecated_member_use
-extension on AutoDisposeRef {
-  // When invoked keeps your provider alive for [duration]
-  // ignore: unused_element
-  void cacheFor([Duration duration = const Duration(minutes: 5)]) {
-    final link = keepAlive();
-    final timer = Timer(duration, () => link.close());
-    onDispose(() => timer.cancel());
-  }
-}
-
-// ignore: subtype_of_sealed_class
-class AsyncLoadingNext<T> extends AsyncData<T> {
-  const AsyncLoadingNext(super.value);
-}
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
 mixin PaginatedAsyncNotifierMixin<K>
     // ignore: invalid_use_of_internal_member
