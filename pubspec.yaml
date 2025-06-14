@@ -142,8 +142,21 @@ dependencies:
   collection: any
   otp_util: ^1.0.2
   dio_http2_adapter: ^2.6.0
-  flutter_js: ^0.8.2
   archive: ^4.0.7
+  hetu_script: ^0.4.2+1
+  hetu_std:
+    git:
+      url: https://github.com/hetu-community/hetu_std.git
+      ref: main
+  hetu_otp_util:
+    git:
+      url: https://github.com/hetu-community/hetu_otp_util.git
+      ref: main
+  hetu_spotube_plugin:
+    git:
+      url: https://github.com/KRTirtho/hetu_spotube_plugin.git
+      ref: main
+  get_it: ^8.0.3
 
 dev_dependencies:
   build_runner: ^2.4.13
@@ -170,9 +183,10 @@ dependency_overrides:
     git:
       url: https://github.com/KRTirtho/Bonsoir.git
       path: packages/bonsoir_android
-  web: ^1.1.0
   meta: 1.16.0
+  web: ^1.1.0
   flutter_svg: ^2.0.17
+  intl: any
   collection: any
 
 flutter:
@@ -195,6 +209,10 @@ flutter:
     - packages/flutter_undraw/assets/undraw/taken.svg
     - packages/flutter_undraw/assets/undraw/empty.svg
     - packages/flutter_undraw/assets/undraw/no_data.svg
+    # hetu script bytecode
+    - packages/hetu_std/assets/bytecode/std.out
+    - packages/hetu_otp_util/assets/bytecode/otp_util.out
+    - packages/hetu_spotube_plugin/assets/bytecode/spotube_plugin.out
   fonts:
     - family: RadixIcons
       fonts:

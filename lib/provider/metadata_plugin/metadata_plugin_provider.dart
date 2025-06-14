@@ -10,7 +10,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/database/database.dart';
-import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -315,20 +314,20 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     );
   }
 
-  Future<String> getPluginLibraryCode(PluginConfiguration plugin) async {
+  Future<Uint8List> getPluginByteCode(PluginConfiguration plugin) async {
     final pluginDir = await _getPluginDir();
     final pluginExtractionDirPath = join(
       pluginDir.path,
       ServiceUtils.sanitizeFilename(plugin.name),
     );
 
-    final libraryFile = File(join(pluginExtractionDirPath, "dist", "index.js"));
+    final libraryFile = File(join(pluginExtractionDirPath, "plugin.out"));
 
     if (!libraryFile.existsSync()) {
-      throw Exception("No dist/index.js found");
+      throw Exception("No plugin.out (Bytecode) file found");
     }
 
-    return await libraryFile.readAsString();
+    return await libraryFile.readAsBytes();
   }
 }
 
@@ -337,7 +336,7 @@ final metadataPluginsProvider =
   MetadataPluginNotifier.new,
 );
 
-final metadataPluginApiProvider = FutureProvider<MetadataApiSignature?>(
+final metadataPluginProvider = FutureProvider<MetadataPlugin?>(
   (ref) async {
     final defaultPlugin = await ref.watch(
       metadataPluginsProvider.selectAsync((data) => data.defaultPluginConfig),
@@ -348,38 +347,9 @@ final metadataPluginApiProvider = FutureProvider<MetadataApiSignature?>(
     }
 
     final pluginsNotifier = ref.read(metadataPluginsProvider.notifier);
-    final libraryCode =
-        await pluginsNotifier.getPluginLibraryCode(defaultPlugin);
+    final pluginByteCode =
+        await pluginsNotifier.getPluginByteCode(defaultPlugin);
 
-    return MetadataApiSignature.init(libraryCode, defaultPlugin);
+    return await MetadataPlugin.create(defaultPlugin, pluginByteCode);
   },
 );
-
-final metadataProviderUserProvider = FutureProvider(
-  (ref) async {
-    final metadataApi = await ref.watch(metadataPluginApiProvider.future);
-    ref.watch(metadataAuthenticatedProvider);
-
-    if (metadataApi == null) {
-      return null;
-    }
-    return metadataApi.getMe();
-  },
-);
-
-final metadataUserArtistsProvider =
-    FutureProvider<List<SpotubeArtistObject>>((ref) async {
-  final metadataApi = await ref.watch(metadataPluginApiProvider.future);
-  ref.watch(metadataAuthenticatedProvider);
-
-  final userId = await ref.watch(
-    metadataProviderUserProvider.selectAsync((data) => data?.uid),
-  );
-  if (metadataApi == null || userId == null) {
-    return [];
-  }
-
-  final res = await metadataApi.listUserSavedArtists(userId);
-
-  return res.items as List<SpotubeArtistObject>;
-});

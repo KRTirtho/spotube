@@ -540,10 +540,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "5598aa796bbf4699afd5c67c0f5f6e2ed542afc956884b9cd58c306966efc260"
+      sha256: "253a18bbd4851fecba42f7343a1df3a9a4c1d31a2c1b37e221086b4fa8c8dbc9"
       url: "https://pub.dev"
     source: hosted
-    version: "5.7.0"
+    version: "5.8.0+1"
   dio_http2_adapter:
     dependency: "direct main"
     description:
@@ -658,6 +658,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
+  fast_noise:
+    dependency: transitive
+    description:
+      name: fast_noise
+      sha256: "271031cebf1602fc064472970e658fa7ff2f3b55a979bb430337b715bd55690b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   ffi:
     dependency: transitive
     description:
@@ -909,14 +917,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
-  flutter_js:
-    dependency: "direct main"
-    description:
-      name: flutter_js
-      sha256: "6b777cd4e468546f046a2f114d078a4596143269f6fa6bad5c29611d5b896369"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.2"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -1048,6 +1048,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_timezone:
+    dependency: transitive
+    description:
+      name: flutter_timezone
+      sha256: "13b2109ad75651faced4831bf262e32559e44aa549426eab8a597610d385d934"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.1"
   flutter_undraw:
     dependency: "direct main"
     description:
@@ -1122,6 +1130,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  get_it:
+    dependency: "direct main"
+    description:
+      name: get_it
+      sha256: f126a3e286b7f5b578bf436d5592968706c4c1de28a228b870ce375d9f743103
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.0.3"
   glob:
     dependency: transitive
     description:
@@ -1170,6 +1186,41 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.0"
+  hetu_otp_util:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "7790606751828758769596e809ba6cbb756f9b9a"
+      url: "https://github.com/hetu-community/hetu_otp_util.git"
+    source: git
+    version: "1.0.0"
+  hetu_script:
+    dependency: "direct main"
+    description:
+      name: hetu_script
+      sha256: a9a3f4f510ae10188d352b79e8fc45e27134cfa81ee1691004067395f45f17cb
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.2+1"
+  hetu_spotube_plugin:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "1aa924281d2dbe09aab27d8c2de1cffc853b0d16"
+      url: "https://github.com/KRTirtho/hetu_spotube_plugin.git"
+    source: git
+    version: "0.0.1"
+  hetu_std:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: d3720be2a92022f7b95a3082d40322d8458c70da
+      url: "https://github.com/hetu-community/hetu_std.git"
+    source: git
+    version: "1.0.0"
   home_widget:
     dependency: "direct main"
     description:
@@ -2783,5 +2834,5 @@ packages:
     source: git
     version: "1.0.0"
 sdks:
-  dart: ">=3.7.0-0 <4.0.0"
+  dart: ">=3.7.2 <4.0.0"
   flutter: ">=3.29.0"

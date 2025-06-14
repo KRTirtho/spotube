@@ -84,8 +84,8 @@ Map<String, dynamic> _$$SpotubeFeedObjectImplToJson(
 _$SpotubeImageObjectImpl _$$SpotubeImageObjectImplFromJson(Map json) =>
     _$SpotubeImageObjectImpl(
       url: json['url'] as String,
-      width: (json['width'] as num).toInt(),
-      height: (json['height'] as num).toInt(),
+      width: (json['width'] as num?)?.toInt(),
+      height: (json['height'] as num?)?.toInt(),
     );
 
 Map<String, dynamic> _$$SpotubeImageObjectImplToJson(
@@ -203,25 +203,23 @@ Map<String, dynamic> _$$SpotubeTrackObjectImplToJson(
 
 _$SpotubeUserObjectImpl _$$SpotubeUserObjectImplFromJson(Map json) =>
     _$SpotubeUserObjectImpl(
-      uid: json['uid'] as String,
+      id: json['id'] as String,
       name: json['name'] as String,
-      avatars: (json['avatars'] as List<dynamic>?)
+      images: (json['images'] as List<dynamic>?)
               ?.map((e) => SpotubeImageObject.fromJson(
                   Map<String, dynamic>.from(e as Map)))
               .toList() ??
           const [],
-      externalUrl: json['externalUrl'] as String,
-      displayName: json['displayName'] as String,
+      externalUri: json['externalUri'] as String,
     );
 
 Map<String, dynamic> _$$SpotubeUserObjectImplToJson(
         _$SpotubeUserObjectImpl instance) =>
     <String, dynamic>{
-      'uid': instance.uid,
+      'id': instance.id,
       'name': instance.name,
-      'avatars': instance.avatars.map((e) => e.toJson()).toList(),
-      'externalUrl': instance.externalUrl,
-      'displayName': instance.displayName,
+      'images': instance.images.map((e) => e.toJson()).toList(),
+      'externalUri': instance.externalUri,
     };
 
 _$PluginConfigurationImpl _$$PluginConfigurationImplFromJson(Map json) =>

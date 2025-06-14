@@ -1,60 +1,78 @@
-import 'package:flutter_js/flutter_js.dart';
+import 'package:hetu_spotube_plugin/hetu_spotube_plugin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PluginLocalStorageApi {
-  final JavascriptRuntime runtime;
-  final SharedPreferences sharedPreferences;
+class SharedPreferencesLocalStorage implements Localstorage {
+  final SharedPreferences _prefs;
+  final String pluginSlug;
 
-  final String pluginName;
+  SharedPreferencesLocalStorage(this._prefs, this.pluginSlug);
 
-  PluginLocalStorageApi({
-    required this.runtime,
-    required this.sharedPreferences,
-    required this.pluginName,
-  }) {
-    runtime.onMessage("LocalStorage.getItem", (args) {
-      final key = args[0]["key"];
-      final value = getItem(key);
-      runtime.evaluate(
-        """
-        eventEmitter.emit('LocalStorage.getItem', ${value != null ? "'$value'" : "null"});
-        """,
-      );
-    });
-
-    runtime.onMessage("LocalStorage.setItem", (args) {
-      final map = args[0] as Map<String, dynamic>;
-      setItem(map["key"], map["value"]);
-    });
-
-    runtime.onMessage("LocalStorage.removeItem", (args) {
-      final map = args[0];
-      removeItem(map["key"]);
-    });
-
-    runtime.onMessage("LocalStorage.clear", (args) {
-      clear();
-    });
+  String prefix(String key) {
+    return 'spotube_plugin.$pluginSlug.$key';
   }
 
-  void setItem(String key, String value) async {
-    await sharedPreferences.setString("plugin.$pluginName.$key", value);
+  @override
+  Future<void> clear() {
+    return _prefs.clear();
   }
 
-  String? getItem(String key) {
-    return sharedPreferences.getString("plugin.$pluginName.$key");
+  @override
+  Future<bool> containsKey(String key) async {
+    return _prefs.containsKey(prefix(key));
   }
 
-  void removeItem(String key) async {
-    await sharedPreferences.remove("plugin.$pluginName.$key");
+  @override
+  Future<bool?> getBool(String key) async {
+    return _prefs.getBool(prefix(key));
   }
 
-  void clear() async {
-    final keys = sharedPreferences.getKeys();
-    for (String key in keys) {
-      if (key.startsWith("plugin.$pluginName.")) {
-        await sharedPreferences.remove(key);
-      }
-    }
+  @override
+  Future<double?> getDouble(String key) async {
+    return _prefs.getDouble(prefix(key));
+  }
+
+  @override
+  Future<int?> getInt(String key) async {
+    return _prefs.getInt(prefix(key));
+  }
+
+  @override
+  Future<String?> getString(String key) async {
+    return _prefs.getString(prefix(key));
+  }
+
+  @override
+  Future<List<String>?> getStringList(String key) async {
+    return _prefs.getStringList(prefix(key));
+  }
+
+  @override
+  Future<void> remove(String key) async {
+    await _prefs.remove(prefix(key));
+  }
+
+  @override
+  Future<void> setBool(String key, bool value) async {
+    await _prefs.setBool(prefix(key), value);
+  }
+
+  @override
+  Future<void> setDouble(String key, double value) async {
+    await _prefs.setDouble(prefix(key), value);
+  }
+
+  @override
+  Future<void> setInt(String key, int value) async {
+    await _prefs.setInt(prefix(key), value);
+  }
+
+  @override
+  Future<void> setString(String key, String value) async {
+    await _prefs.setString(prefix(key), value);
+  }
+
+  @override
+  Future<void> setStringList(String key, List<String> value) async {
+    await _prefs.setStringList(prefix(key), value);
   }
 }

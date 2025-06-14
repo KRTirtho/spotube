@@ -147,7 +147,7 @@ class Spotube extends HookConsumerWidget {
     ref.listen(bonsoirProvider, (_, __) {});
     ref.listen(connectClientsProvider, (_, __) {});
     ref.listen(metadataPluginsProvider, (_, __) {});
-    ref.listen(metadataPluginApiProvider, (_, __) {});
+    ref.listen(metadataPluginProvider, (_, __) {});
     ref.listen(serverProvider, (_, __) {});
     ref.listen(trayManagerProvider, (_, __) {});
 

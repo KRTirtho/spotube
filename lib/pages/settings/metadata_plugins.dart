@@ -7,6 +7,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/form/text_form_field.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:file_picker/file_picker.dart';
@@ -21,10 +22,8 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
 
     final plugins = ref.watch(metadataPluginsProvider);
     final pluginsNotifier = ref.watch(metadataPluginsProvider.notifier);
-    final metadataApi = ref.watch(metadataPluginApiProvider);
-    final isAuthenticated = ref.watch(metadataAuthenticatedProvider);
-
-    final artists = ref.watch(metadataUserArtistsProvider);
+    final metadataPlugin = ref.watch(metadataPluginProvider);
+    final isAuthenticated = ref.watch(metadataPluginAuthenticatedProvider);
 
     return Scaffold(
       headers: const [
@@ -111,9 +110,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                 final plugin = plugins.asData!.value.plugins[index];
                 final isDefault = plugins.asData!.value.defaultPlugin == index;
                 final requiresAuth = isDefault &&
-                    metadataApi.hasValue &&
-                    metadataApi.asData?.value?.signatureFlags.requiresAuth ==
-                        true;
+                    plugin.abilities.contains(PluginAbilities.authentication);
                 return Card(
                   child: Column(
                     spacing: 8,
@@ -153,8 +150,8 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                             if (isAuthenticated.asData?.value != true)
                               Button.primary(
                                 onPressed: () async {
-                                  await metadataApi.asData?.value
-                                      ?.authenticate();
+                                  await metadataPlugin.asData?.value?.auth
+                                      .authenticate();
                                 },
                                 leading: const Icon(SpotubeIcons.login),
                                 child: const Text("Login"),
@@ -162,7 +159,8 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                             else
                               Button.destructive(
                                 onPressed: () async {
-                                  await metadataApi.asData?.value?.logout();
+                                  await metadataPlugin.asData?.value?.auth
+                                      .logout();
                                 },
                                 leading: const Icon(SpotubeIcons.logout),
                                 child: const Text("Logout"),

@@ -1,49 +1,37 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'dart:async';
+
+import 'package:riverpod/riverpod.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 
-class MetadataAuthenticationNotifier extends AsyncNotifier<bool> {
-  MetadataAuthenticationNotifier();
+class MetadataPluginAuthenticatedNotifier extends AsyncNotifier<bool> {
   @override
-  build() async {
-    final metadataApi = await ref.watch(metadataPluginApiProvider.future);
-
-    if (metadataApi?.signatureFlags.requiresAuth != true) {
+  FutureOr<bool> build() async {
+    final defaultPluginConfig = ref.watch(metadataPluginsProvider);
+    if (defaultPluginConfig.asData?.value.defaultPluginConfig?.abilities
+            .contains(PluginAbilities.authentication) !=
+        true) {
       return false;
     }
 
-    final subscription = metadataApi?.authenticatedStream.listen((event) {
-      state = AsyncValue.data(event);
+    final defaultPlugin = await ref.watch(metadataPluginProvider.future);
+    if (defaultPlugin == null) {
+      return false;
+    }
+
+    final sub = defaultPlugin.auth.authStateStream.listen((event) {
+      state = AsyncData(defaultPlugin.auth.isAuthenticated());
     });
 
     ref.onDispose(() {
-      subscription?.cancel();
+      sub.cancel();
     });
 
-    return await metadataApi?.isAuthenticated() ?? false;
-  }
-
-  Future<void> login() async {
-    final metadataApi = await ref.read(metadataPluginApiProvider.future);
-
-    if (metadataApi == null || !metadataApi.signatureFlags.requiresAuth) {
-      return;
-    }
-
-    await metadataApi.authenticate();
-  }
-
-  Future<void> logout() async {
-    final metadataApi = await ref.read(metadataPluginApiProvider.future);
-
-    if (metadataApi == null || !metadataApi.signatureFlags.requiresAuth) {
-      return;
-    }
-
-    await metadataApi.logout();
+    return defaultPlugin.auth.isAuthenticated();
   }
 }
 
-final metadataAuthenticatedProvider =
-    AsyncNotifierProvider<MetadataAuthenticationNotifier, bool>(
-  () => MetadataAuthenticationNotifier(),
+final metadataPluginAuthenticatedProvider =
+    AsyncNotifierProvider<MetadataPluginAuthenticatedNotifier, bool>(
+  MetadataPluginAuthenticatedNotifier.new,
 );

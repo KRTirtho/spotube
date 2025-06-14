@@ -3,11 +3,10 @@ part of 'metadata.dart';
 @freezed
 class SpotubeUserObject with _$SpotubeUserObject {
   factory SpotubeUserObject({
-    required final String uid,
+    required final String id,
     required final String name,
-    @Default([]) final List<SpotubeImageObject> avatars,
-    required final String externalUrl,
-    required final String displayName,
+    @Default([]) final List<SpotubeImageObject> images,
+    required final String externalUri,
   }) = _SpotubeUserObject;
 
   factory SpotubeUserObject.fromJson(Map<String, dynamic> json) =>
