@@ -9,6 +9,10 @@ import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/metadata/endpoints/error.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 
+extension PaginationExtension<T> on AsyncValue<T> {
+  bool get isLoadingNextPage => this is AsyncData && this is AsyncLoadingNext;
+}
+
 mixin MetadataPluginMixin<K>
 // ignore: invalid_use_of_internal_member
     on AsyncNotifierBase<SpotubePaginationResponseObject<K>> {

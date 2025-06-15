@@ -14,6 +14,7 @@ import 'package:spotube/services/metadata/apis/localstorage.dart';
 import 'package:spotube/services/metadata/endpoints/album.dart';
 import 'package:spotube/services/metadata/endpoints/artist.dart';
 import 'package:spotube/services/metadata/endpoints/auth.dart';
+import 'package:spotube/services/metadata/endpoints/browse.dart';
 import 'package:spotube/services/metadata/endpoints/playlist.dart';
 import 'package:spotube/services/metadata/endpoints/user.dart';
 
@@ -78,6 +79,7 @@ class MetadataPlugin {
 
   late final MetadataPluginAlbumEndpoint album;
   late final MetadataPluginArtistEndpoint artist;
+  late final MetadataPluginBrowseEndpoint browse;
   late final MetadataPluginPlaylistEndpoint playlist;
   late final MetadataPluginUserEndpoint user;
 
@@ -86,6 +88,7 @@ class MetadataPlugin {
 
     artist = MetadataPluginArtistEndpoint(hetu);
     album = MetadataPluginAlbumEndpoint(hetu);
+    browse = MetadataPluginBrowseEndpoint(hetu);
     playlist = MetadataPluginPlaylistEndpoint(hetu);
     user = MetadataPluginUserEndpoint(hetu);
   }

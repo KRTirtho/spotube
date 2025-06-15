@@ -63,7 +63,7 @@ class AlbumCard extends HookConsumerWidget {
     );
     var isLoading =
         (isPlaylistPlaying && isFetchingActiveTrack) || updating.value;
-    var description = "${album.albumType} • ${album.artists.asString()}";
+    var description = "${album.albumType.name} • ${album.artists.asString()}";
 
     void onTap() {
       context.navigateTo(AlbumRoute(id: album.id, album: album));

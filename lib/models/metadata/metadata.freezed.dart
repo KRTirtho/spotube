@@ -406,8 +406,8 @@ mixin _$SpotubeSimpleAlbumObject {
   List<SpotubeSimpleArtistObject> get artists =>
       throw _privateConstructorUsedError;
   List<SpotubeImageObject> get images => throw _privateConstructorUsedError;
-  String get releaseDate => throw _privateConstructorUsedError;
   SpotubeAlbumType get albumType => throw _privateConstructorUsedError;
+  String? get releaseDate => throw _privateConstructorUsedError;
 
   /// Serializes this SpotubeSimpleAlbumObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -431,8 +431,8 @@ abstract class $SpotubeSimpleAlbumObjectCopyWith<$Res> {
       String externalUri,
       List<SpotubeSimpleArtistObject> artists,
       List<SpotubeImageObject> images,
-      String releaseDate,
-      SpotubeAlbumType albumType});
+      SpotubeAlbumType albumType,
+      String? releaseDate});
 }
 
 /// @nodoc
@@ -456,8 +456,8 @@ class _$SpotubeSimpleAlbumObjectCopyWithImpl<$Res,
     Object? externalUri = null,
     Object? artists = null,
     Object? images = null,
-    Object? releaseDate = null,
     Object? albumType = null,
+    Object? releaseDate = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -480,14 +480,14 @@ class _$SpotubeSimpleAlbumObjectCopyWithImpl<$Res,
           ? _value.images
           : images // ignore: cast_nullable_to_non_nullable
               as List<SpotubeImageObject>,
-      releaseDate: null == releaseDate
-          ? _value.releaseDate
-          : releaseDate // ignore: cast_nullable_to_non_nullable
-              as String,
       albumType: null == albumType
           ? _value.albumType
           : albumType // ignore: cast_nullable_to_non_nullable
               as SpotubeAlbumType,
+      releaseDate: freezed == releaseDate
+          ? _value.releaseDate
+          : releaseDate // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -507,8 +507,8 @@ abstract class _$$SpotubeSimpleAlbumObjectImplCopyWith<$Res>
       String externalUri,
       List<SpotubeSimpleArtistObject> artists,
       List<SpotubeImageObject> images,
-      String releaseDate,
-      SpotubeAlbumType albumType});
+      SpotubeAlbumType albumType,
+      String? releaseDate});
 }
 
 /// @nodoc
@@ -531,8 +531,8 @@ class __$$SpotubeSimpleAlbumObjectImplCopyWithImpl<$Res>
     Object? externalUri = null,
     Object? artists = null,
     Object? images = null,
-    Object? releaseDate = null,
     Object? albumType = null,
+    Object? releaseDate = freezed,
   }) {
     return _then(_$SpotubeSimpleAlbumObjectImpl(
       id: null == id
@@ -555,14 +555,14 @@ class __$$SpotubeSimpleAlbumObjectImplCopyWithImpl<$Res>
           ? _value._images
           : images // ignore: cast_nullable_to_non_nullable
               as List<SpotubeImageObject>,
-      releaseDate: null == releaseDate
-          ? _value.releaseDate
-          : releaseDate // ignore: cast_nullable_to_non_nullable
-              as String,
       albumType: null == albumType
           ? _value.albumType
           : albumType // ignore: cast_nullable_to_non_nullable
               as SpotubeAlbumType,
+      releaseDate: freezed == releaseDate
+          ? _value.releaseDate
+          : releaseDate // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -576,8 +576,8 @@ class _$SpotubeSimpleAlbumObjectImpl implements _SpotubeSimpleAlbumObject {
       required this.externalUri,
       required final List<SpotubeSimpleArtistObject> artists,
       final List<SpotubeImageObject> images = const [],
-      required this.releaseDate,
-      required this.albumType})
+      required this.albumType,
+      this.releaseDate})
       : _artists = artists,
         _images = images;
 
@@ -608,13 +608,13 @@ class _$SpotubeSimpleAlbumObjectImpl implements _SpotubeSimpleAlbumObject {
   }
 
   @override
-  final String releaseDate;
-  @override
   final SpotubeAlbumType albumType;
+  @override
+  final String? releaseDate;
 
   @override
   String toString() {
-    return 'SpotubeSimpleAlbumObject(id: $id, name: $name, externalUri: $externalUri, artists: $artists, images: $images, releaseDate: $releaseDate, albumType: $albumType)';
+    return 'SpotubeSimpleAlbumObject(id: $id, name: $name, externalUri: $externalUri, artists: $artists, images: $images, albumType: $albumType, releaseDate: $releaseDate)';
   }
 
   @override
@@ -628,10 +628,10 @@ class _$SpotubeSimpleAlbumObjectImpl implements _SpotubeSimpleAlbumObject {
                 other.externalUri == externalUri) &&
             const DeepCollectionEquality().equals(other._artists, _artists) &&
             const DeepCollectionEquality().equals(other._images, _images) &&
-            (identical(other.releaseDate, releaseDate) ||
-                other.releaseDate == releaseDate) &&
             (identical(other.albumType, albumType) ||
-                other.albumType == albumType));
+                other.albumType == albumType) &&
+            (identical(other.releaseDate, releaseDate) ||
+                other.releaseDate == releaseDate));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -643,8 +643,8 @@ class _$SpotubeSimpleAlbumObjectImpl implements _SpotubeSimpleAlbumObject {
       externalUri,
       const DeepCollectionEquality().hash(_artists),
       const DeepCollectionEquality().hash(_images),
-      releaseDate,
-      albumType);
+      albumType,
+      releaseDate);
 
   /// Create a copy of SpotubeSimpleAlbumObject
   /// with the given fields replaced by the non-null parameter values.
@@ -665,14 +665,13 @@ class _$SpotubeSimpleAlbumObjectImpl implements _SpotubeSimpleAlbumObject {
 
 abstract class _SpotubeSimpleAlbumObject implements SpotubeSimpleAlbumObject {
   factory _SpotubeSimpleAlbumObject(
-          {required final String id,
-          required final String name,
-          required final String externalUri,
-          required final List<SpotubeSimpleArtistObject> artists,
-          final List<SpotubeImageObject> images,
-          required final String releaseDate,
-          required final SpotubeAlbumType albumType}) =
-      _$SpotubeSimpleAlbumObjectImpl;
+      {required final String id,
+      required final String name,
+      required final String externalUri,
+      required final List<SpotubeSimpleArtistObject> artists,
+      final List<SpotubeImageObject> images,
+      required final SpotubeAlbumType albumType,
+      final String? releaseDate}) = _$SpotubeSimpleAlbumObjectImpl;
 
   factory _SpotubeSimpleAlbumObject.fromJson(Map<String, dynamic> json) =
       _$SpotubeSimpleAlbumObjectImpl.fromJson;
@@ -688,9 +687,9 @@ abstract class _SpotubeSimpleAlbumObject implements SpotubeSimpleAlbumObject {
   @override
   List<SpotubeImageObject> get images;
   @override
-  String get releaseDate;
-  @override
   SpotubeAlbumType get albumType;
+  @override
+  String? get releaseDate;
 
   /// Create a copy of SpotubeSimpleAlbumObject
   /// with the given fields replaced by the non-null parameter values.
@@ -1177,121 +1176,50 @@ abstract class _SpotubeSimpleArtistObject implements SpotubeSimpleArtistObject {
       get copyWith => throw _privateConstructorUsedError;
 }
 
-SpotubeBrowseSectionObject _$SpotubeBrowseSectionObjectFromJson(
-    Map<String, dynamic> json) {
-  switch (json['itemType']) {
-    case 'Album':
-      return SpotubeBrowseAlbumSectionObject.fromJson(json);
-    case 'Artist':
-      return SpotubeBrowseArtistSectionObject.fromJson(json);
-    case 'Playlist':
-      return SpotubeBrowsePlaylistSectionObject.fromJson(json);
-
-    default:
-      throw CheckedFromJsonException(
-          json,
-          'itemType',
-          'SpotubeBrowseSectionObject',
-          'Invalid union type "${json['itemType']}"!');
-  }
+SpotubeBrowseSectionObject<T> _$SpotubeBrowseSectionObjectFromJson<T>(
+    Map<String, dynamic> json, T Function(Object?) fromJsonT) {
+  return _SpotubeBrowseSectionObject<T>.fromJson(json, fromJsonT);
 }
 
 /// @nodoc
-mixin _$SpotubeBrowseSectionObject {
+mixin _$SpotubeBrowseSectionObject<T> {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   String get externalUri => throw _privateConstructorUsedError;
-  SectionItemType get itemType => throw _privateConstructorUsedError;
-  List<Object> get items => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)
-        album,
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)
-        artist,
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)
-        playlist,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)?
-        album,
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)?
-        artist,
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)?
-        playlist,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)?
-        album,
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)?
-        artist,
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)?
-        playlist,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(SpotubeBrowseAlbumSectionObject value) album,
-    required TResult Function(SpotubeBrowseArtistSectionObject value) artist,
-    required TResult Function(SpotubeBrowsePlaylistSectionObject value)
-        playlist,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SpotubeBrowseAlbumSectionObject value)? album,
-    TResult? Function(SpotubeBrowseArtistSectionObject value)? artist,
-    TResult? Function(SpotubeBrowsePlaylistSectionObject value)? playlist,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(SpotubeBrowseAlbumSectionObject value)? album,
-    TResult Function(SpotubeBrowseArtistSectionObject value)? artist,
-    TResult Function(SpotubeBrowsePlaylistSectionObject value)? playlist,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  bool get browseMore => throw _privateConstructorUsedError;
+  List<T> get items => throw _privateConstructorUsedError;
 
   /// Serializes this SpotubeBrowseSectionObject to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
+      throw _privateConstructorUsedError;
 
   /// Create a copy of SpotubeBrowseSectionObject
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $SpotubeBrowseSectionObjectCopyWith<SpotubeBrowseSectionObject>
+  $SpotubeBrowseSectionObjectCopyWith<T, SpotubeBrowseSectionObject<T>>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $SpotubeBrowseSectionObjectCopyWith<$Res> {
-  factory $SpotubeBrowseSectionObjectCopyWith(SpotubeBrowseSectionObject value,
-          $Res Function(SpotubeBrowseSectionObject) then) =
-      _$SpotubeBrowseSectionObjectCopyWithImpl<$Res,
-          SpotubeBrowseSectionObject>;
+abstract class $SpotubeBrowseSectionObjectCopyWith<T, $Res> {
+  factory $SpotubeBrowseSectionObjectCopyWith(
+          SpotubeBrowseSectionObject<T> value,
+          $Res Function(SpotubeBrowseSectionObject<T>) then) =
+      _$SpotubeBrowseSectionObjectCopyWithImpl<T, $Res,
+          SpotubeBrowseSectionObject<T>>;
   @useResult
   $Res call(
-      {String id, String title, String externalUri, SectionItemType itemType});
+      {String id,
+      String title,
+      String externalUri,
+      bool browseMore,
+      List<T> items});
 }
 
 /// @nodoc
-class _$SpotubeBrowseSectionObjectCopyWithImpl<$Res,
-        $Val extends SpotubeBrowseSectionObject>
-    implements $SpotubeBrowseSectionObjectCopyWith<$Res> {
+class _$SpotubeBrowseSectionObjectCopyWithImpl<T, $Res,
+        $Val extends SpotubeBrowseSectionObject<T>>
+    implements $SpotubeBrowseSectionObjectCopyWith<T, $Res> {
   _$SpotubeBrowseSectionObjectCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -1307,7 +1235,8 @@ class _$SpotubeBrowseSectionObjectCopyWithImpl<$Res,
     Object? id = null,
     Object? title = null,
     Object? externalUri = null,
-    Object? itemType = null,
+    Object? browseMore = null,
+    Object? items = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -1322,39 +1251,43 @@ class _$SpotubeBrowseSectionObjectCopyWithImpl<$Res,
           ? _value.externalUri
           : externalUri // ignore: cast_nullable_to_non_nullable
               as String,
-      itemType: null == itemType
-          ? _value.itemType
-          : itemType // ignore: cast_nullable_to_non_nullable
-              as SectionItemType,
+      browseMore: null == browseMore
+          ? _value.browseMore
+          : browseMore // ignore: cast_nullable_to_non_nullable
+              as bool,
+      items: null == items
+          ? _value.items
+          : items // ignore: cast_nullable_to_non_nullable
+              as List<T>,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$SpotubeBrowseAlbumSectionObjectImplCopyWith<$Res>
-    implements $SpotubeBrowseSectionObjectCopyWith<$Res> {
-  factory _$$SpotubeBrowseAlbumSectionObjectImplCopyWith(
-          _$SpotubeBrowseAlbumSectionObjectImpl value,
-          $Res Function(_$SpotubeBrowseAlbumSectionObjectImpl) then) =
-      __$$SpotubeBrowseAlbumSectionObjectImplCopyWithImpl<$Res>;
+abstract class _$$SpotubeBrowseSectionObjectImplCopyWith<T, $Res>
+    implements $SpotubeBrowseSectionObjectCopyWith<T, $Res> {
+  factory _$$SpotubeBrowseSectionObjectImplCopyWith(
+          _$SpotubeBrowseSectionObjectImpl<T> value,
+          $Res Function(_$SpotubeBrowseSectionObjectImpl<T>) then) =
+      __$$SpotubeBrowseSectionObjectImplCopyWithImpl<T, $Res>;
   @override
   @useResult
   $Res call(
       {String id,
       String title,
       String externalUri,
-      SectionItemType itemType,
-      List<SpotubeSimpleAlbumObject> items});
+      bool browseMore,
+      List<T> items});
 }
 
 /// @nodoc
-class __$$SpotubeBrowseAlbumSectionObjectImplCopyWithImpl<$Res>
-    extends _$SpotubeBrowseSectionObjectCopyWithImpl<$Res,
-        _$SpotubeBrowseAlbumSectionObjectImpl>
-    implements _$$SpotubeBrowseAlbumSectionObjectImplCopyWith<$Res> {
-  __$$SpotubeBrowseAlbumSectionObjectImplCopyWithImpl(
-      _$SpotubeBrowseAlbumSectionObjectImpl _value,
-      $Res Function(_$SpotubeBrowseAlbumSectionObjectImpl) _then)
+class __$$SpotubeBrowseSectionObjectImplCopyWithImpl<T, $Res>
+    extends _$SpotubeBrowseSectionObjectCopyWithImpl<T, $Res,
+        _$SpotubeBrowseSectionObjectImpl<T>>
+    implements _$$SpotubeBrowseSectionObjectImplCopyWith<T, $Res> {
+  __$$SpotubeBrowseSectionObjectImplCopyWithImpl(
+      _$SpotubeBrowseSectionObjectImpl<T> _value,
+      $Res Function(_$SpotubeBrowseSectionObjectImpl<T>) _then)
       : super(_value, _then);
 
   /// Create a copy of SpotubeBrowseSectionObject
@@ -1365,10 +1298,10 @@ class __$$SpotubeBrowseAlbumSectionObjectImplCopyWithImpl<$Res>
     Object? id = null,
     Object? title = null,
     Object? externalUri = null,
-    Object? itemType = null,
+    Object? browseMore = null,
     Object? items = null,
   }) {
-    return _then(_$SpotubeBrowseAlbumSectionObjectImpl(
+    return _then(_$SpotubeBrowseSectionObjectImpl<T>(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -1381,33 +1314,33 @@ class __$$SpotubeBrowseAlbumSectionObjectImplCopyWithImpl<$Res>
           ? _value.externalUri
           : externalUri // ignore: cast_nullable_to_non_nullable
               as String,
-      itemType: null == itemType
-          ? _value.itemType
-          : itemType // ignore: cast_nullable_to_non_nullable
-              as SectionItemType,
+      browseMore: null == browseMore
+          ? _value.browseMore
+          : browseMore // ignore: cast_nullable_to_non_nullable
+              as bool,
       items: null == items
           ? _value._items
           : items // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeSimpleAlbumObject>,
+              as List<T>,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$SpotubeBrowseAlbumSectionObjectImpl
-    implements SpotubeBrowseAlbumSectionObject {
-  _$SpotubeBrowseAlbumSectionObjectImpl(
+@JsonSerializable(genericArgumentFactories: true)
+class _$SpotubeBrowseSectionObjectImpl<T>
+    implements _SpotubeBrowseSectionObject<T> {
+  _$SpotubeBrowseSectionObjectImpl(
       {required this.id,
       required this.title,
       required this.externalUri,
-      required this.itemType,
-      required final List<SpotubeSimpleAlbumObject> items})
+      required this.browseMore,
+      required final List<T> items})
       : _items = items;
 
-  factory _$SpotubeBrowseAlbumSectionObjectImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$SpotubeBrowseAlbumSectionObjectImplFromJson(json);
+  factory _$SpotubeBrowseSectionObjectImpl.fromJson(
+          Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
+      _$$SpotubeBrowseSectionObjectImplFromJson(json, fromJsonT);
 
   @override
   final String id;
@@ -1416,10 +1349,10 @@ class _$SpotubeBrowseAlbumSectionObjectImpl
   @override
   final String externalUri;
   @override
-  final SectionItemType itemType;
-  final List<SpotubeSimpleAlbumObject> _items;
+  final bool browseMore;
+  final List<T> _items;
   @override
-  List<SpotubeSimpleAlbumObject> get items {
+  List<T> get items {
     if (_items is EqualUnmodifiableListView) return _items;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_items);
@@ -1427,145 +1360,56 @@ class _$SpotubeBrowseAlbumSectionObjectImpl
 
   @override
   String toString() {
-    return 'SpotubeBrowseSectionObject.album(id: $id, title: $title, externalUri: $externalUri, itemType: $itemType, items: $items)';
+    return 'SpotubeBrowseSectionObject<$T>(id: $id, title: $title, externalUri: $externalUri, browseMore: $browseMore, items: $items)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SpotubeBrowseAlbumSectionObjectImpl &&
+            other is _$SpotubeBrowseSectionObjectImpl<T> &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.externalUri, externalUri) ||
                 other.externalUri == externalUri) &&
-            (identical(other.itemType, itemType) ||
-                other.itemType == itemType) &&
+            (identical(other.browseMore, browseMore) ||
+                other.browseMore == browseMore) &&
             const DeepCollectionEquality().equals(other._items, _items));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, externalUri, itemType,
-      const DeepCollectionEquality().hash(_items));
+  int get hashCode => Object.hash(runtimeType, id, title, externalUri,
+      browseMore, const DeepCollectionEquality().hash(_items));
 
   /// Create a copy of SpotubeBrowseSectionObject
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$SpotubeBrowseAlbumSectionObjectImplCopyWith<
-          _$SpotubeBrowseAlbumSectionObjectImpl>
-      get copyWith => __$$SpotubeBrowseAlbumSectionObjectImplCopyWithImpl<
-          _$SpotubeBrowseAlbumSectionObjectImpl>(this, _$identity);
+  _$$SpotubeBrowseSectionObjectImplCopyWith<T,
+          _$SpotubeBrowseSectionObjectImpl<T>>
+      get copyWith => __$$SpotubeBrowseSectionObjectImplCopyWithImpl<T,
+          _$SpotubeBrowseSectionObjectImpl<T>>(this, _$identity);
 
   @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)
-        album,
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)
-        artist,
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)
-        playlist,
-  }) {
-    return album(id, title, externalUri, itemType, items);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)?
-        album,
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)?
-        artist,
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)?
-        playlist,
-  }) {
-    return album?.call(id, title, externalUri, itemType, items);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)?
-        album,
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)?
-        artist,
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)?
-        playlist,
-    required TResult orElse(),
-  }) {
-    if (album != null) {
-      return album(id, title, externalUri, itemType, items);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(SpotubeBrowseAlbumSectionObject value) album,
-    required TResult Function(SpotubeBrowseArtistSectionObject value) artist,
-    required TResult Function(SpotubeBrowsePlaylistSectionObject value)
-        playlist,
-  }) {
-    return album(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SpotubeBrowseAlbumSectionObject value)? album,
-    TResult? Function(SpotubeBrowseArtistSectionObject value)? artist,
-    TResult? Function(SpotubeBrowsePlaylistSectionObject value)? playlist,
-  }) {
-    return album?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(SpotubeBrowseAlbumSectionObject value)? album,
-    TResult Function(SpotubeBrowseArtistSectionObject value)? artist,
-    TResult Function(SpotubeBrowsePlaylistSectionObject value)? playlist,
-    required TResult orElse(),
-  }) {
-    if (album != null) {
-      return album(this);
-    }
-    return orElse();
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SpotubeBrowseAlbumSectionObjectImplToJson(
-      this,
-    );
+  Map<String, dynamic> toJson(Object? Function(T) toJsonT) {
+    return _$$SpotubeBrowseSectionObjectImplToJson<T>(this, toJsonT);
   }
 }
 
-abstract class SpotubeBrowseAlbumSectionObject
-    implements SpotubeBrowseSectionObject {
-  factory SpotubeBrowseAlbumSectionObject(
-          {required final String id,
-          required final String title,
-          required final String externalUri,
-          required final SectionItemType itemType,
-          required final List<SpotubeSimpleAlbumObject> items}) =
-      _$SpotubeBrowseAlbumSectionObjectImpl;
+abstract class _SpotubeBrowseSectionObject<T>
+    implements SpotubeBrowseSectionObject<T> {
+  factory _SpotubeBrowseSectionObject(
+      {required final String id,
+      required final String title,
+      required final String externalUri,
+      required final bool browseMore,
+      required final List<T> items}) = _$SpotubeBrowseSectionObjectImpl<T>;
 
-  factory SpotubeBrowseAlbumSectionObject.fromJson(Map<String, dynamic> json) =
-      _$SpotubeBrowseAlbumSectionObjectImpl.fromJson;
+  factory _SpotubeBrowseSectionObject.fromJson(
+          Map<String, dynamic> json, T Function(Object?) fromJsonT) =
+      _$SpotubeBrowseSectionObjectImpl<T>.fromJson;
 
   @override
   String get id;
@@ -1574,531 +1418,16 @@ abstract class SpotubeBrowseAlbumSectionObject
   @override
   String get externalUri;
   @override
-  SectionItemType get itemType;
+  bool get browseMore;
   @override
-  List<SpotubeSimpleAlbumObject> get items;
+  List<T> get items;
 
   /// Create a copy of SpotubeBrowseSectionObject
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SpotubeBrowseAlbumSectionObjectImplCopyWith<
-          _$SpotubeBrowseAlbumSectionObjectImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$SpotubeBrowseArtistSectionObjectImplCopyWith<$Res>
-    implements $SpotubeBrowseSectionObjectCopyWith<$Res> {
-  factory _$$SpotubeBrowseArtistSectionObjectImplCopyWith(
-          _$SpotubeBrowseArtistSectionObjectImpl value,
-          $Res Function(_$SpotubeBrowseArtistSectionObjectImpl) then) =
-      __$$SpotubeBrowseArtistSectionObjectImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String id,
-      String title,
-      String externalUri,
-      SectionItemType itemType,
-      List<SpotubeSimpleArtistObject> items});
-}
-
-/// @nodoc
-class __$$SpotubeBrowseArtistSectionObjectImplCopyWithImpl<$Res>
-    extends _$SpotubeBrowseSectionObjectCopyWithImpl<$Res,
-        _$SpotubeBrowseArtistSectionObjectImpl>
-    implements _$$SpotubeBrowseArtistSectionObjectImplCopyWith<$Res> {
-  __$$SpotubeBrowseArtistSectionObjectImplCopyWithImpl(
-      _$SpotubeBrowseArtistSectionObjectImpl _value,
-      $Res Function(_$SpotubeBrowseArtistSectionObjectImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? title = null,
-    Object? externalUri = null,
-    Object? itemType = null,
-    Object? items = null,
-  }) {
-    return _then(_$SpotubeBrowseArtistSectionObjectImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      externalUri: null == externalUri
-          ? _value.externalUri
-          : externalUri // ignore: cast_nullable_to_non_nullable
-              as String,
-      itemType: null == itemType
-          ? _value.itemType
-          : itemType // ignore: cast_nullable_to_non_nullable
-              as SectionItemType,
-      items: null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeSimpleArtistObject>,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$SpotubeBrowseArtistSectionObjectImpl
-    implements SpotubeBrowseArtistSectionObject {
-  _$SpotubeBrowseArtistSectionObjectImpl(
-      {required this.id,
-      required this.title,
-      required this.externalUri,
-      required this.itemType,
-      required final List<SpotubeSimpleArtistObject> items})
-      : _items = items;
-
-  factory _$SpotubeBrowseArtistSectionObjectImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$SpotubeBrowseArtistSectionObjectImplFromJson(json);
-
-  @override
-  final String id;
-  @override
-  final String title;
-  @override
-  final String externalUri;
-  @override
-  final SectionItemType itemType;
-  final List<SpotubeSimpleArtistObject> _items;
-  @override
-  List<SpotubeSimpleArtistObject> get items {
-    if (_items is EqualUnmodifiableListView) return _items;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
-  }
-
-  @override
-  String toString() {
-    return 'SpotubeBrowseSectionObject.artist(id: $id, title: $title, externalUri: $externalUri, itemType: $itemType, items: $items)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SpotubeBrowseArtistSectionObjectImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.externalUri, externalUri) ||
-                other.externalUri == externalUri) &&
-            (identical(other.itemType, itemType) ||
-                other.itemType == itemType) &&
-            const DeepCollectionEquality().equals(other._items, _items));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, title, externalUri, itemType,
-      const DeepCollectionEquality().hash(_items));
-
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SpotubeBrowseArtistSectionObjectImplCopyWith<
-          _$SpotubeBrowseArtistSectionObjectImpl>
-      get copyWith => __$$SpotubeBrowseArtistSectionObjectImplCopyWithImpl<
-          _$SpotubeBrowseArtistSectionObjectImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)
-        album,
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)
-        artist,
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)
-        playlist,
-  }) {
-    return artist(id, title, externalUri, itemType, items);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)?
-        album,
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)?
-        artist,
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)?
-        playlist,
-  }) {
-    return artist?.call(id, title, externalUri, itemType, items);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)?
-        album,
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)?
-        artist,
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)?
-        playlist,
-    required TResult orElse(),
-  }) {
-    if (artist != null) {
-      return artist(id, title, externalUri, itemType, items);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(SpotubeBrowseAlbumSectionObject value) album,
-    required TResult Function(SpotubeBrowseArtistSectionObject value) artist,
-    required TResult Function(SpotubeBrowsePlaylistSectionObject value)
-        playlist,
-  }) {
-    return artist(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SpotubeBrowseAlbumSectionObject value)? album,
-    TResult? Function(SpotubeBrowseArtistSectionObject value)? artist,
-    TResult? Function(SpotubeBrowsePlaylistSectionObject value)? playlist,
-  }) {
-    return artist?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(SpotubeBrowseAlbumSectionObject value)? album,
-    TResult Function(SpotubeBrowseArtistSectionObject value)? artist,
-    TResult Function(SpotubeBrowsePlaylistSectionObject value)? playlist,
-    required TResult orElse(),
-  }) {
-    if (artist != null) {
-      return artist(this);
-    }
-    return orElse();
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SpotubeBrowseArtistSectionObjectImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class SpotubeBrowseArtistSectionObject
-    implements SpotubeBrowseSectionObject {
-  factory SpotubeBrowseArtistSectionObject(
-          {required final String id,
-          required final String title,
-          required final String externalUri,
-          required final SectionItemType itemType,
-          required final List<SpotubeSimpleArtistObject> items}) =
-      _$SpotubeBrowseArtistSectionObjectImpl;
-
-  factory SpotubeBrowseArtistSectionObject.fromJson(Map<String, dynamic> json) =
-      _$SpotubeBrowseArtistSectionObjectImpl.fromJson;
-
-  @override
-  String get id;
-  @override
-  String get title;
-  @override
-  String get externalUri;
-  @override
-  SectionItemType get itemType;
-  @override
-  List<SpotubeSimpleArtistObject> get items;
-
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SpotubeBrowseArtistSectionObjectImplCopyWith<
-          _$SpotubeBrowseArtistSectionObjectImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$SpotubeBrowsePlaylistSectionObjectImplCopyWith<$Res>
-    implements $SpotubeBrowseSectionObjectCopyWith<$Res> {
-  factory _$$SpotubeBrowsePlaylistSectionObjectImplCopyWith(
-          _$SpotubeBrowsePlaylistSectionObjectImpl value,
-          $Res Function(_$SpotubeBrowsePlaylistSectionObjectImpl) then) =
-      __$$SpotubeBrowsePlaylistSectionObjectImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String id,
-      String title,
-      String externalUri,
-      SectionItemType itemType,
-      List<SpotubeSimplePlaylistObject> items});
-}
-
-/// @nodoc
-class __$$SpotubeBrowsePlaylistSectionObjectImplCopyWithImpl<$Res>
-    extends _$SpotubeBrowseSectionObjectCopyWithImpl<$Res,
-        _$SpotubeBrowsePlaylistSectionObjectImpl>
-    implements _$$SpotubeBrowsePlaylistSectionObjectImplCopyWith<$Res> {
-  __$$SpotubeBrowsePlaylistSectionObjectImplCopyWithImpl(
-      _$SpotubeBrowsePlaylistSectionObjectImpl _value,
-      $Res Function(_$SpotubeBrowsePlaylistSectionObjectImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? title = null,
-    Object? externalUri = null,
-    Object? itemType = null,
-    Object? items = null,
-  }) {
-    return _then(_$SpotubeBrowsePlaylistSectionObjectImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      externalUri: null == externalUri
-          ? _value.externalUri
-          : externalUri // ignore: cast_nullable_to_non_nullable
-              as String,
-      itemType: null == itemType
-          ? _value.itemType
-          : itemType // ignore: cast_nullable_to_non_nullable
-              as SectionItemType,
-      items: null == items
-          ? _value._items
-          : items // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeSimplePlaylistObject>,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$SpotubeBrowsePlaylistSectionObjectImpl
-    implements SpotubeBrowsePlaylistSectionObject {
-  _$SpotubeBrowsePlaylistSectionObjectImpl(
-      {required this.id,
-      required this.title,
-      required this.externalUri,
-      required this.itemType,
-      required final List<SpotubeSimplePlaylistObject> items})
-      : _items = items;
-
-  factory _$SpotubeBrowsePlaylistSectionObjectImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$SpotubeBrowsePlaylistSectionObjectImplFromJson(json);
-
-  @override
-  final String id;
-  @override
-  final String title;
-  @override
-  final String externalUri;
-  @override
-  final SectionItemType itemType;
-  final List<SpotubeSimplePlaylistObject> _items;
-  @override
-  List<SpotubeSimplePlaylistObject> get items {
-    if (_items is EqualUnmodifiableListView) return _items;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_items);
-  }
-
-  @override
-  String toString() {
-    return 'SpotubeBrowseSectionObject.playlist(id: $id, title: $title, externalUri: $externalUri, itemType: $itemType, items: $items)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SpotubeBrowsePlaylistSectionObjectImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.title, title) || other.title == title) &&
-            (identical(other.externalUri, externalUri) ||
-                other.externalUri == externalUri) &&
-            (identical(other.itemType, itemType) ||
-                other.itemType == itemType) &&
-            const DeepCollectionEquality().equals(other._items, _items));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, id, title, externalUri, itemType,
-      const DeepCollectionEquality().hash(_items));
-
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SpotubeBrowsePlaylistSectionObjectImplCopyWith<
-          _$SpotubeBrowsePlaylistSectionObjectImpl>
-      get copyWith => __$$SpotubeBrowsePlaylistSectionObjectImplCopyWithImpl<
-          _$SpotubeBrowsePlaylistSectionObjectImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)
-        album,
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)
-        artist,
-    required TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)
-        playlist,
-  }) {
-    return playlist(id, title, externalUri, itemType, items);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)?
-        album,
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)?
-        artist,
-    TResult? Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)?
-        playlist,
-  }) {
-    return playlist?.call(id, title, externalUri, itemType, items);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleAlbumObject> items)?
-        album,
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimpleArtistObject> items)?
-        artist,
-    TResult Function(String id, String title, String externalUri,
-            SectionItemType itemType, List<SpotubeSimplePlaylistObject> items)?
-        playlist,
-    required TResult orElse(),
-  }) {
-    if (playlist != null) {
-      return playlist(id, title, externalUri, itemType, items);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(SpotubeBrowseAlbumSectionObject value) album,
-    required TResult Function(SpotubeBrowseArtistSectionObject value) artist,
-    required TResult Function(SpotubeBrowsePlaylistSectionObject value)
-        playlist,
-  }) {
-    return playlist(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SpotubeBrowseAlbumSectionObject value)? album,
-    TResult? Function(SpotubeBrowseArtistSectionObject value)? artist,
-    TResult? Function(SpotubeBrowsePlaylistSectionObject value)? playlist,
-  }) {
-    return playlist?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(SpotubeBrowseAlbumSectionObject value)? album,
-    TResult Function(SpotubeBrowseArtistSectionObject value)? artist,
-    TResult Function(SpotubeBrowsePlaylistSectionObject value)? playlist,
-    required TResult orElse(),
-  }) {
-    if (playlist != null) {
-      return playlist(this);
-    }
-    return orElse();
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SpotubeBrowsePlaylistSectionObjectImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class SpotubeBrowsePlaylistSectionObject
-    implements SpotubeBrowseSectionObject {
-  factory SpotubeBrowsePlaylistSectionObject(
-          {required final String id,
-          required final String title,
-          required final String externalUri,
-          required final SectionItemType itemType,
-          required final List<SpotubeSimplePlaylistObject> items}) =
-      _$SpotubeBrowsePlaylistSectionObjectImpl;
-
-  factory SpotubeBrowsePlaylistSectionObject.fromJson(
-          Map<String, dynamic> json) =
-      _$SpotubeBrowsePlaylistSectionObjectImpl.fromJson;
-
-  @override
-  String get id;
-  @override
-  String get title;
-  @override
-  String get externalUri;
-  @override
-  SectionItemType get itemType;
-  @override
-  List<SpotubeSimplePlaylistObject> get items;
-
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SpotubeBrowsePlaylistSectionObjectImplCopyWith<
-          _$SpotubeBrowsePlaylistSectionObjectImpl>
+  _$$SpotubeBrowseSectionObjectImplCopyWith<T,
+          _$SpotubeBrowseSectionObjectImpl<T>>
       get copyWith => throw _privateConstructorUsedError;
 }
 

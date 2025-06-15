@@ -19,10 +19,10 @@ import 'package:spotube/pages/artist/artist.dart' as _i3;
 import 'package:spotube/pages/connect/connect.dart' as _i6;
 import 'package:spotube/pages/connect/control/control.dart' as _i5;
 import 'package:spotube/pages/getting_started/getting_started.dart' as _i9;
-import 'package:spotube/pages/home/feed/feed_section.dart' as _i10;
 import 'package:spotube/pages/home/genres/genre_playlists.dart' as _i8;
 import 'package:spotube/pages/home/genres/genres.dart' as _i7;
 import 'package:spotube/pages/home/home.dart' as _i11;
+import 'package:spotube/pages/home/sections/section_items.dart' as _i10;
 import 'package:spotube/pages/lastfm_login/lastfm_login.dart' as _i12;
 import 'package:spotube/pages/library/library.dart' as _i13;
 import 'package:spotube/pages/library/playlist_generate/playlist_generate.dart'
@@ -332,53 +332,56 @@ class GettingStartedRoute extends _i44.PageRouteInfo<void> {
 }
 
 /// generated route for
-/// [_i10.HomeFeedSectionPage]
-class HomeFeedSectionRoute
-    extends _i44.PageRouteInfo<HomeFeedSectionRouteArgs> {
-  HomeFeedSectionRoute({
+/// [_i10.HomeBrowseSectionItemsPage]
+class HomeBrowseSectionItemsRoute
+    extends _i44.PageRouteInfo<HomeBrowseSectionItemsRouteArgs> {
+  HomeBrowseSectionItemsRoute({
     _i48.Key? key,
-    required String sectionUri,
+    required String sectionId,
+    required _i46.SpotubeBrowseSectionObject<Object> section,
     List<_i44.PageRouteInfo>? children,
   }) : super(
-          HomeFeedSectionRoute.name,
-          args: HomeFeedSectionRouteArgs(
+          HomeBrowseSectionItemsRoute.name,
+          args: HomeBrowseSectionItemsRouteArgs(
             key: key,
-            sectionUri: sectionUri,
+            sectionId: sectionId,
+            section: section,
           ),
-          rawPathParams: {'feedId': sectionUri},
+          rawPathParams: {'sectionId': sectionId},
           initialChildren: children,
         );
 
-  static const String name = 'HomeFeedSectionRoute';
+  static const String name = 'HomeBrowseSectionItemsRoute';
 
   static _i44.PageInfo page = _i44.PageInfo(
     name,
     builder: (data) {
-      final pathParams = data.inheritedPathParams;
-      final args = data.argsAs<HomeFeedSectionRouteArgs>(
-          orElse: () => HomeFeedSectionRouteArgs(
-              sectionUri: pathParams.getString('feedId')));
-      return _i10.HomeFeedSectionPage(
+      final args = data.argsAs<HomeBrowseSectionItemsRouteArgs>();
+      return _i10.HomeBrowseSectionItemsPage(
         key: args.key,
-        sectionUri: args.sectionUri,
+        sectionId: args.sectionId,
+        section: args.section,
       );
     },
   );
 }
 
-class HomeFeedSectionRouteArgs {
-  const HomeFeedSectionRouteArgs({
+class HomeBrowseSectionItemsRouteArgs {
+  const HomeBrowseSectionItemsRouteArgs({
     this.key,
-    required this.sectionUri,
+    required this.sectionId,
+    required this.section,
   });
 
   final _i48.Key? key;
 
-  final String sectionUri;
+  final String sectionId;
+
+  final _i46.SpotubeBrowseSectionObject<Object> section;
 
   @override
   String toString() {
-    return 'HomeFeedSectionRouteArgs{key: $key, sectionUri: $sectionUri}';
+    return 'HomeBrowseSectionItemsRouteArgs{key: $key, sectionId: $sectionId, section: $section}';
   }
 }
 

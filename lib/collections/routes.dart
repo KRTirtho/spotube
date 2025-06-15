@@ -48,8 +48,8 @@ class AppRouter extends RootStackRouter {
               page: GenrePlaylistsRoute.page,
             ),
             AutoRoute(
-              path: "home/feeds/:feedId",
-              page: HomeFeedSectionRoute.page,
+              path: "home/sections/:sectionId",
+              page: HomeBrowseSectionItemsRoute.page,
             ),
             AutoRoute(
               path: "search",

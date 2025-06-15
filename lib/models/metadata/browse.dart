@@ -1,43 +1,21 @@
 part of 'metadata.dart';
 
-enum SectionItemType {
-  @JsonValue("Playlist")
-  playlist,
-  @JsonValue("Album")
-  album,
-  @JsonValue("Artist")
-  artist
-}
-
-@Freezed(unionKey: "itemType")
-class SpotubeBrowseSectionObject with _$SpotubeBrowseSectionObject {
-  @FreezedUnionValue("Album")
-  factory SpotubeBrowseSectionObject.album({
+@Freezed(genericArgumentFactories: true)
+class SpotubeBrowseSectionObject<T> with _$SpotubeBrowseSectionObject<T> {
+  factory SpotubeBrowseSectionObject({
     required String id,
     required String title,
     required String externalUri,
-    required SectionItemType itemType,
-    required List<SpotubeSimpleAlbumObject> items,
-  }) = SpotubeBrowseAlbumSectionObject;
+    required bool browseMore,
+    required List<T> items,
+  }) = _SpotubeBrowseSectionObject<T>;
 
-  @FreezedUnionValue("Artist")
-  factory SpotubeBrowseSectionObject.artist({
-    required String id,
-    required String title,
-    required String externalUri,
-    required SectionItemType itemType,
-    required List<SpotubeSimpleArtistObject> items,
-  }) = SpotubeBrowseArtistSectionObject;
-
-  @FreezedUnionValue("Playlist")
-  factory SpotubeBrowseSectionObject.playlist({
-    required String id,
-    required String title,
-    required String externalUri,
-    required SectionItemType itemType,
-    required List<SpotubeSimplePlaylistObject> items,
-  }) = SpotubeBrowsePlaylistSectionObject;
-
-  factory SpotubeBrowseSectionObject.fromJson(Map<String, Object?> json) =>
-      _$SpotubeBrowseSectionObjectFromJson(json);
+  factory SpotubeBrowseSectionObject.fromJson(
+    Map<String, Object?> json,
+    T Function(Map<String, dynamic> json) fromJsonT,
+  ) =>
+      _$SpotubeBrowseSectionObjectFromJson<T>(
+        json,
+        (json) => fromJsonT(json as Map<String, dynamic>),
+      );
 }

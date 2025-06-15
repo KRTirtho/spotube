@@ -33,8 +33,8 @@ class SpotubeSimpleAlbumObject with _$SpotubeSimpleAlbumObject {
     required String externalUri,
     required List<SpotubeSimpleArtistObject> artists,
     @Default([]) List<SpotubeImageObject> images,
-    required String releaseDate,
     required SpotubeAlbumType albumType,
+    String? releaseDate,
   }) = _SpotubeSimpleAlbumObject;
 
   factory SpotubeSimpleAlbumObject.fromJson(Map<String, dynamic> json) =>
