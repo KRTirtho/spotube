@@ -8,10 +8,11 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:spotube/provider/metadata_plugin/artist/artist.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
@@ -21,7 +22,7 @@ class ArtistPageHeader extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final artistQuery = ref.watch(artistProvider(artistId));
+    final artistQuery = ref.watch(metadataPluginArtistProvider(artistId));
     final artist = artistQuery.asData?.value ?? FakeData.artist;
 
     final theme = Theme.of(context);
@@ -30,7 +31,7 @@ class ArtistPageHeader extends HookConsumerWidget {
     final auth = ref.watch(authenticationProvider);
     ref.watch(blacklistProvider);
     final blacklistNotifier = ref.watch(blacklistProvider.notifier);
-    final isBlackListed = blacklistNotifier.containsArtist(artist);
+    final isBlackListed = /* blacklistNotifier.containsArtist(artist) */ false;
 
     final image = artist.images.asUrlString(
       placeholder: ImagePlaceholder.artist,
@@ -111,13 +112,11 @@ class ArtistPageHeader extends HookConsumerWidget {
           IconButton.ghost(
             icon: const Icon(SpotubeIcons.share),
             onPressed: () async {
-              if (artist.externalUrls?.spotify != null) {
-                await Clipboard.setData(
-                  ClipboardData(
-                    text: artist.externalUrls!.spotify!,
-                  ),
-                );
-              }
+              await Clipboard.setData(
+                ClipboardData(
+                  text: artist.externalUri,
+                ),
+              );
 
               if (!context.mounted) return;
 
@@ -199,7 +198,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                             child: AutoSizeText(
                               context.l10n.followers(
                                 PrimitiveUtils.toReadableNumber(
-                                  artist.followers!.total!.toDouble(),
+                                  artist.followers!.toDouble(),
                                 ),
                               ),
                               maxLines: 1,

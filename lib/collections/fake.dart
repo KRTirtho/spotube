@@ -15,17 +15,20 @@ abstract class FakeData {
     ..href = "text"
     ..total = 1;
 
-  static final Artist artist = Artist()
-    ..id = "1"
-    ..name = "Wow artist Good!"
-    ..images = [image]
-    ..popularity = 1
-    ..type = "type"
-    ..uri = "uri"
-    ..externalUrls = externalUrls
-    ..genres = ["genre"]
-    ..href = "text"
-    ..followers = followers;
+  static final SpotubeFullArtistObject artist = SpotubeFullArtistObject(
+    id: "1",
+    name: "What an artist",
+    externalUri: "https://example.com",
+    followers: 10000,
+    genres: ["genre"],
+    images: [
+      SpotubeImageObject(
+        height: 100,
+        width: 100,
+        url: "https://dummyimage.com/100x100/cfcfcf/cfcfcf.jpg",
+      ),
+    ],
+  );
 
   static final externalIds = ExternalIds()
     ..isrc = "text"
@@ -40,7 +43,7 @@ abstract class FakeData {
     ..label = "label"
     ..popularity = 1
     ..albumType = AlbumType.album
-    ..artists = [artist]
+    // ..artists = [artist]
     ..availableMarkets = [Market.BD]
     ..externalUrls = externalUrls
     ..href = "text"
@@ -83,7 +86,7 @@ abstract class FakeData {
 
   static final Track track = Track()
     ..id = "1"
-    ..artists = [artist, artist, artist]
+    // ..artists = [artist, artist, artist]
     // ..album = albumSimple
     ..availableMarkets = [Market.BD]
     ..discNumber = 1

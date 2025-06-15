@@ -11,8 +11,9 @@ import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/pages/artist/section/footer.dart';
 import 'package:spotube/pages/artist/section/header.dart';
-import 'package:spotube/pages/artist/section/related_artists.dart';
+// import 'package:spotube/pages/artist/section/related_artists.dart';
 import 'package:spotube/pages/artist/section/top_tracks.dart';
+import 'package:spotube/provider/metadata_plugin/artist/artist.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -31,7 +32,7 @@ class ArtistPage extends HookConsumerWidget {
     final scrollController = useScrollController();
     final theme = Theme.of(context);
 
-    final artistQuery = ref.watch(artistProvider(artistId));
+    final artistQuery = ref.watch(metadataPluginArtistProvider(artistId));
 
     return SafeArea(
       bottom: false,
@@ -74,16 +75,16 @@ class ArtistPage extends HookConsumerWidget {
                   ArtistPageTopTracks(artistId: artistId),
                   const SliverGap(20),
                   SliverToBoxAdapter(child: ArtistAlbumList(artistId)),
-                  SliverPadding(
-                    padding: const EdgeInsets.all(8.0),
-                    sliver: SliverToBoxAdapter(
-                      child: Text(
-                        context.l10n.fans_also_like,
-                        style: theme.typography.h4,
-                      ),
-                    ),
-                  ),
-                  ArtistPageRelatedArtists(artistId: artistId),
+                  // SliverPadding(
+                  //   padding: const EdgeInsets.all(8.0),
+                  //   sliver: SliverToBoxAdapter(
+                  //     child: Text(
+                  //       context.l10n.fans_also_like,
+                  //       style: theme.typography.h4,
+                  //     ),
+                  //   ),
+                  // ),
+                  // ArtistPageRelatedArtists(artistId: artistId),
                   const SliverGap(20),
                   if (artistQuery.asData?.value != null)
                     SliverToBoxAdapter(

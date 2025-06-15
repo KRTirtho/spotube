@@ -7,6 +7,7 @@ import 'package:drift/drift.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/logger/logger.dart';

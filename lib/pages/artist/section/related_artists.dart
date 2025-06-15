@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
+@Deprecated("Related artists are no longer supported by Spotube")
 class ArtistPageRelatedArtists extends ConsumerWidget {
   final String artistId;
   const ArtistPageRelatedArtists({
@@ -28,7 +29,11 @@ class ArtistPageRelatedArtists extends ConsumerWidget {
             ),
             itemBuilder: (context, index) {
               final artist = artists.elementAt(index);
-              return ArtistCard(artist);
+              return SizedBox(
+                width: 180,
+                // child: ArtistCard(artist),
+              );
+              // return ArtistCard(artist);
             },
           ),
         ),

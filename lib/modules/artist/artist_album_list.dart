@@ -1,8 +1,9 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/provider/metadata_plugin/artist/albums.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class ArtistAlbumList extends HookConsumerWidget {
@@ -15,15 +16,15 @@ class ArtistAlbumList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final albumsQuery = ref.watch(artistAlbumsProvider(artistId));
+    final albumsQuery = ref.watch(metadataPluginArtistAlbumsProvider(artistId));
     final albumsQueryNotifier =
-        ref.watch(artistAlbumsProvider(artistId).notifier);
+        ref.watch(metadataPluginArtistAlbumsProvider(artistId).notifier);
 
     final albums = albumsQuery.asData?.value.items ?? [];
 
     final theme = Theme.of(context);
 
-    return HorizontalPlaybuttonCardView<Album>(
+    return HorizontalPlaybuttonCardView<SpotubeSimpleAlbumObject>(
       isLoadingNextPage: albumsQuery.isLoadingNextPage,
       hasNextPage: albumsQuery.asData?.value.hasMore ?? false,
       items: albums,

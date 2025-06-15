@@ -10,10 +10,12 @@ class MetadataPluginSavedArtistNotifier
     int offset,
     int limit,
   ) async {
-    return await (await metadataPlugin).user.savedArtists(
+    final artists = await (await metadataPlugin).user.savedArtists(
           limit: limit,
           offset: offset,
         );
+
+    return artists;
   }
 
   @override
