@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-// ignore: implementation_imports
-import 'package:riverpod/src/async_notifier.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
 abstract class FamilyPaginatedAsyncNotifier<K, A>
@@ -22,17 +20,20 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
           state.value!.nextOffset!,
           state.value!.limit,
         );
-        return newState.copyWith(items: [
-          ...state.value!.items as List<K>,
-          ...newState.items as List<K>,
-        ]) as SpotubePaginationResponseObject<K>;
+
+        final oldItems =
+            state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+        final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+
+        return newState.copyWith(items: <K>[...oldItems, ...items])
+            as SpotubePaginationResponseObject<K>;
       },
     );
   }
 
   Future<List<K>> fetchAll() async {
     if (state.value == null) return [];
-    if (!state.value!.hasMore) return state.value!.items as List<K>;
+    if (!state.value!.hasMore) return state.value!.items.cast<K>();
 
     bool hasMore = true;
     while (hasMore) {
@@ -43,14 +44,14 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
         );
 
         hasMore = newState.hasMore;
-        return newState.copyWith(items: [
-          ...state.items as List<K>,
-          ...newState.items as List<K>,
-        ]) as SpotubePaginationResponseObject<K>;
+        final oldItems = state.items.isEmpty ? <K>[] : state.items.cast<K>();
+        final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+        return newState.copyWith(items: <K>[...oldItems, ...items])
+            as SpotubePaginationResponseObject<K>;
       });
     }
 
-    return state.value!.items as List<K>;
+    return state.value!.items.cast<K>();
   }
 }
 
@@ -71,8 +72,8 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
           state.value!.limit,
         );
         return newState.copyWith(items: [
-          ...state.value!.items as List<K>,
-          ...newState.items as List<K>,
+          ...state.value!.items.cast<K>(),
+          ...newState.items.cast<K>(),
         ]) as SpotubePaginationResponseObject<K>;
       },
     );
@@ -80,7 +81,7 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
 
   Future<List<K>> fetchAll() async {
     if (state.value == null) return [];
-    if (!state.value!.hasMore) return state.value!.items as List<K>;
+    if (!state.value!.hasMore) return state.value!.items.cast<K>();
 
     bool hasMore = true;
     while (hasMore) {
@@ -92,12 +93,12 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
 
         hasMore = newState.hasMore;
         return newState.copyWith(items: [
-          ...state.items as List<K>,
-          ...newState.items as List<K>,
+          ...state.items.cast<K>(),
+          ...newState.items.cast<K>(),
         ]) as SpotubePaginationResponseObject<K>;
       });
     }
 
-    return state.value!.items as List<K>;
+    return state.value!.items.cast<K>();
   }
 }

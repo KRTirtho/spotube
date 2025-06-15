@@ -10,9 +10,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i44;
 import 'package:flutter/material.dart' as _i45;
-import 'package:shadcn_flutter/shadcn_flutter.dart' as _i47;
-import 'package:spotify/spotify.dart' as _i46;
-import 'package:spotube/models/spotify/recommendation_seeds.dart' as _i48;
+import 'package:shadcn_flutter/shadcn_flutter.dart' as _i48;
+import 'package:spotify/spotify.dart' as _i47;
+import 'package:spotube/models/metadata/metadata.dart' as _i46;
+import 'package:spotube/models/spotify/recommendation_seeds.dart' as _i49;
 import 'package:spotube/pages/album/album.dart' as _i2;
 import 'package:spotube/pages/artist/artist.dart' as _i3;
 import 'package:spotube/pages/connect/connect.dart' as _i6;
@@ -86,7 +87,7 @@ class AlbumRoute extends _i44.PageRouteInfo<AlbumRouteArgs> {
   AlbumRoute({
     _i45.Key? key,
     required String id,
-    required _i46.AlbumSimple album,
+    required _i46.SpotubeSimpleAlbumObject album,
     List<_i44.PageRouteInfo>? children,
   }) : super(
           AlbumRoute.name,
@@ -125,7 +126,7 @@ class AlbumRouteArgs {
 
   final String id;
 
-  final _i46.AlbumSimple album;
+  final _i46.SpotubeSimpleAlbumObject album;
 
   @override
   String toString() {
@@ -264,7 +265,7 @@ class GenrePlaylistsRoute extends _i44.PageRouteInfo<GenrePlaylistsRouteArgs> {
   GenrePlaylistsRoute({
     _i45.Key? key,
     required String id,
-    required _i46.Category category,
+    required _i47.Category category,
     List<_i44.PageRouteInfo>? children,
   }) : super(
           GenrePlaylistsRoute.name,
@@ -303,7 +304,7 @@ class GenrePlaylistsRouteArgs {
 
   final String id;
 
-  final _i46.Category category;
+  final _i47.Category category;
 
   @override
   String toString() {
@@ -335,7 +336,7 @@ class GettingStartedRoute extends _i44.PageRouteInfo<void> {
 class HomeFeedSectionRoute
     extends _i44.PageRouteInfo<HomeFeedSectionRouteArgs> {
   HomeFeedSectionRoute({
-    _i47.Key? key,
+    _i48.Key? key,
     required String sectionUri,
     List<_i44.PageRouteInfo>? children,
   }) : super(
@@ -371,7 +372,7 @@ class HomeFeedSectionRouteArgs {
     required this.sectionUri,
   });
 
-  final _i47.Key? key;
+  final _i48.Key? key;
 
   final String sectionUri;
 
@@ -443,7 +444,7 @@ class LibraryRoute extends _i44.PageRouteInfo<void> {
 class LikedPlaylistRoute extends _i44.PageRouteInfo<LikedPlaylistRouteArgs> {
   LikedPlaylistRoute({
     _i45.Key? key,
-    required _i46.PlaylistSimple playlist,
+    required _i46.SpotubeSimplePlaylistObject playlist,
     List<_i44.PageRouteInfo>? children,
   }) : super(
           LikedPlaylistRoute.name,
@@ -476,7 +477,7 @@ class LikedPlaylistRouteArgs {
 
   final _i45.Key? key;
 
-  final _i46.PlaylistSimple playlist;
+  final _i46.SpotubeSimplePlaylistObject playlist;
 
   @override
   String toString() {
@@ -584,8 +585,8 @@ class LyricsRoute extends _i44.PageRouteInfo<void> {
 /// [_i18.MiniLyricsPage]
 class MiniLyricsRoute extends _i44.PageRouteInfo<MiniLyricsRouteArgs> {
   MiniLyricsRoute({
-    _i47.Key? key,
-    required _i47.Size prevSize,
+    _i48.Key? key,
+    required _i48.Size prevSize,
     List<_i44.PageRouteInfo>? children,
   }) : super(
           MiniLyricsRoute.name,
@@ -616,9 +617,9 @@ class MiniLyricsRouteArgs {
     required this.prevSize,
   });
 
-  final _i47.Key? key;
+  final _i48.Key? key;
 
-  final _i47.Size prevSize;
+  final _i48.Size prevSize;
 
   @override
   String toString() {
@@ -688,8 +689,8 @@ class PlayerTrackSourcesRoute extends _i44.PageRouteInfo<void> {
 class PlaylistGenerateResultRoute
     extends _i44.PageRouteInfo<PlaylistGenerateResultRouteArgs> {
   PlaylistGenerateResultRoute({
-    _i47.Key? key,
-    required _i48.GeneratePlaylistProviderInput state,
+    _i48.Key? key,
+    required _i49.GeneratePlaylistProviderInput state,
     List<_i44.PageRouteInfo>? children,
   }) : super(
           PlaylistGenerateResultRoute.name,
@@ -720,9 +721,9 @@ class PlaylistGenerateResultRouteArgs {
     required this.state,
   });
 
-  final _i47.Key? key;
+  final _i48.Key? key;
 
-  final _i48.GeneratePlaylistProviderInput state;
+  final _i49.GeneratePlaylistProviderInput state;
 
   @override
   String toString() {
@@ -755,7 +756,7 @@ class PlaylistRoute extends _i44.PageRouteInfo<PlaylistRouteArgs> {
   PlaylistRoute({
     _i45.Key? key,
     required String id,
-    required _i46.PlaylistSimple playlist,
+    required _i46.SpotubeSimplePlaylistObject playlist,
     List<_i44.PageRouteInfo>? children,
   }) : super(
           PlaylistRoute.name,
@@ -794,7 +795,7 @@ class PlaylistRouteArgs {
 
   final String id;
 
-  final _i46.PlaylistSimple playlist;
+  final _i46.SpotubeSimplePlaylistObject playlist;
 
   @override
   String toString() {
@@ -1034,7 +1035,7 @@ class StatsStreamsRoute extends _i44.PageRouteInfo<void> {
 /// [_i37.TrackPage]
 class TrackRoute extends _i44.PageRouteInfo<TrackRouteArgs> {
   TrackRoute({
-    _i47.Key? key,
+    _i48.Key? key,
     required String trackId,
     List<_i44.PageRouteInfo>? children,
   }) : super(
@@ -1069,7 +1070,7 @@ class TrackRouteArgs {
     required this.trackId,
   });
 
-  final _i47.Key? key;
+  final _i48.Key? key;
 
   final String trackId;
 

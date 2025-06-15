@@ -137,14 +137,14 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                                     ),
                                   );
 
-                                  if (playlist != null && context.mounted) {
-                                    context.navigateTo(
-                                      PlaylistRoute(
-                                        id: playlist.id!,
-                                        playlist: playlist,
-                                      ),
-                                    );
-                                  }
+                                  // if (playlist != null && context.mounted) {
+                                  //   context.navigateTo(
+                                  //     PlaylistRoute(
+                                  //       id: playlist.id!,
+                                  //       playlist: playlist,
+                                  //     ),
+                                  //   );
+                                  // }
                                 },
                           child: Text(context.l10n.create_a_playlist),
                         ),

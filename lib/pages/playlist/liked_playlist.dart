@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/track_presentation.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:auto_route/auto_route.dart';
@@ -12,7 +13,7 @@ import 'package:auto_route/auto_route.dart';
 class LikedPlaylistPage extends HookConsumerWidget {
   static const name = PlaylistPage.name;
 
-  final PlaylistSimple playlist;
+  final SpotubeSimplePlaylistObject playlist;
   const LikedPlaylistPage({
     super.key,
     required this.playlist,
@@ -42,14 +43,14 @@ class LikedPlaylistPage extends HookConsumerWidget {
               ref.invalidate(likedTracksProvider);
             },
           ),
-          title: playlist.name!,
+          title: playlist.name,
           description: playlist.description,
           tracks: tracks,
           routePath: '/playlist/${playlist.id}',
           isLiked: false,
           shareUrl: null,
           onHeart: null,
-          owner: playlist.owner?.displayName,
+          owner: playlist.owner.name,
         ),
       ),
     );

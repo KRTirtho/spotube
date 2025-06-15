@@ -6,6 +6,7 @@ import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
@@ -99,8 +100,9 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
 
                           return switch (item) {
                             PlaylistSimple() =>
-                              PlaylistCard(item as PlaylistSimple),
-                            AlbumSimple() => AlbumCard(item as AlbumSimple),
+                              PlaylistCard(item as SpotubeSimplePlaylistObject),
+                            AlbumSimple() =>
+                              AlbumCard(item as SpotubeSimpleAlbumObject),
                             Artist() => ArtistCard(item as Artist),
                             _ => const SizedBox.shrink(),
                           };

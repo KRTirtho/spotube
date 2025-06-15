@@ -258,13 +258,15 @@ class TrackTile extends HookConsumerWidget {
                         ),
                       _ => Align(
                           alignment: Alignment.centerLeft,
-                          child: LinkText(
+                          /* child: LinkText(
                             track.album!.name!,
                             AlbumRoute(
-                                album: track.album!, id: track.album!.id!),
+                              album: track.album!,
+                              id: track.album!.id!,
+                            ),
                             push: true,
                             overflow: TextOverflow.ellipsis,
-                          ),
+                          ), */
                         )
                     },
                   ),

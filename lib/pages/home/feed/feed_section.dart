@@ -43,49 +43,49 @@ class HomeFeedSectionPage extends HookConsumerWidget {
             child: CustomScrollView(
               controller: controller,
               slivers: [
-                if (isArtist)
-                  SliverGrid.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      mainAxisExtent: 250,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
-                    ),
-                    itemCount: section.items.length,
-                    itemBuilder: (context, index) {
-                      final item = section.items[index];
-                      return ArtistCard(item.artist!.asArtist);
-                    },
-                  )
-                else
-                  PlaybuttonView(
-                    controller: controller,
-                    itemCount: section.items.length,
-                    hasMore: false,
-                    isLoading: false,
-                    onRequestMore: () => {},
-                    listItemBuilder: (context, index) {
-                      final item = section.items[index];
-                      if (item.album != null) {
-                        return AlbumCard.tile(item.album!.asAlbum);
-                      }
-                      if (item.playlist != null) {
-                        return PlaylistCard.tile(item.playlist!.asPlaylist);
-                      }
-                      return const SizedBox.shrink();
-                    },
-                    gridItemBuilder: (context, index) {
-                      final item = section.items[index];
-                      if (item.album != null) {
-                        return AlbumCard(item.album!.asAlbum);
-                      }
-                      if (item.playlist != null) {
-                        return PlaylistCard(item.playlist!.asPlaylist);
-                      }
-                      return const SizedBox.shrink();
-                    },
-                  ),
+                // if (isArtist)
+                //   SliverGrid.builder(
+                //     gridDelegate:
+                //         const SliverGridDelegateWithMaxCrossAxisExtent(
+                //       maxCrossAxisExtent: 200,
+                //       mainAxisExtent: 250,
+                //       crossAxisSpacing: 8,
+                //       mainAxisSpacing: 8,
+                //     ),
+                //     itemCount: section.items.length,
+                //     itemBuilder: (context, index) {
+                //       final item = section.items[index];
+                //       return ArtistCard(item.artist!.asArtist);
+                //     },
+                //   )
+                // else
+                //   PlaybuttonView(
+                //     controller: controller,
+                //     itemCount: section.items.length,
+                //     hasMore: false,
+                //     isLoading: false,
+                //     onRequestMore: () => {},
+                //     listItemBuilder: (context, index) {
+                //       final item = section.items[index];
+                //       if (item.album != null) {
+                //         return AlbumCard.tile(item.album!.asAlbum);
+                //       }
+                //       if (item.playlist != null) {
+                //         return PlaylistCard.tile(item.playlist!.asPlaylist);
+                //       }
+                //       return const SizedBox.shrink();
+                //     },
+                //     gridItemBuilder: (context, index) {
+                //       final item = section.items[index];
+                //       if (item.album != null) {
+                //         return AlbumCard(item.album!.asAlbum);
+                //       }
+                //       if (item.playlist != null) {
+                //         return PlaylistCard(item.playlist!.asPlaylist);
+                //       }
+                //       return const SizedBox.shrink();
+                //     },
+                //   ),
                 const SliverToBoxAdapter(
                   child: SafeArea(
                     child: SizedBox(),

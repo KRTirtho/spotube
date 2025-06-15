@@ -1,5 +1,6 @@
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/models/spotify/home_feed.dart';
 import 'package:spotube/models/spotify_friends.dart';
 import 'package:spotube/provider/history/summary.dart';
@@ -64,24 +65,26 @@ abstract class FakeData {
     ..uri = "uri"
     ..externalUrls = externalUrls;
 
-  static final AlbumSimple albumSimple = AlbumSimple()
-    ..id = "1"
-    ..albumType = AlbumType.album
-    ..artists = [artistSimple]
-    ..availableMarkets = [Market.BD]
-    ..externalUrls = externalUrls
-    ..href = "text"
-    ..images = [image]
-    ..name = "A good album"
-    ..releaseDate = "2021-01-01"
-    ..releaseDatePrecision = DatePrecision.day
-    ..type = "type"
-    ..uri = "uri";
+  static final SpotubeSimpleAlbumObject albumSimple = SpotubeSimpleAlbumObject(
+    albumType: SpotubeAlbumType.album,
+    artists: [],
+    externalUri: "https://example.com",
+    id: "1",
+    name: "A good album",
+    releaseDate: "2021-01-01",
+    images: [
+      SpotubeImageObject(
+        height: 1,
+        width: 1,
+        url: "https://dummyimage.com/100x100/cfcfcf/cfcfcf.jpg",
+      )
+    ],
+  );
 
   static final Track track = Track()
     ..id = "1"
     ..artists = [artist, artist, artist]
-    ..album = albumSimple
+    // ..album = albumSimple
     ..availableMarkets = [Market.BD]
     ..discNumber = 1
     ..durationMs = 50000

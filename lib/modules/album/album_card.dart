@@ -9,13 +9,14 @@ import 'package:spotube/components/playbutton_view/playbutton_card.dart';
 import 'package:spotube/components/playbutton_view/playbutton_tile.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/metadata_plugin/tracks/album.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
@@ -24,7 +25,7 @@ extension FormattedAlbumType on AlbumType {
 }
 
 class AlbumCard extends HookConsumerWidget {
-  final AlbumSimple album;
+  final SpotubeSimpleAlbumObject album;
   final bool _isTile;
   const AlbumCard(
     this.album, {
@@ -46,18 +47,15 @@ class AlbumCard extends HookConsumerWidget {
     final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
 
     bool isPlaylistPlaying = useMemoized(
-      () => playlist.containsCollection(album.id!),
+      () => playlist.containsCollection(album.id),
       [playlist, album.id],
     );
 
     final updating = useState(false);
 
     Future<List<Track>> fetchAllTrack() async {
-      if (album.tracks != null && album.tracks!.isNotEmpty) {
-        return album.tracks!.asTracks(album, ref);
-      }
-      await ref.read(albumTracksProvider(album).future);
-      return ref.read(albumTracksProvider(album).notifier).fetchAll();
+      // return ref.read(metadataPluginAlbumTracksProvider(album).notifier).fetchAll();
+      return [];
     }
 
     var imageUrl = album.images.asUrlString(
@@ -65,11 +63,10 @@ class AlbumCard extends HookConsumerWidget {
     );
     var isLoading =
         (isPlaylistPlaying && isFetchingActiveTrack) || updating.value;
-    var description =
-        "${album.albumType?.formatted} • ${album.artists?.asString() ?? ""}";
+    var description = "${album.albumType} • ${album.artists.asString()}";
 
     void onTap() {
-      context.navigateTo(AlbumRoute(id: album.id!, album: album));
+      context.navigateTo(AlbumRoute(id: album.id, album: album));
     }
 
     void onPlaybuttonPressed() async {
@@ -90,13 +87,13 @@ class AlbumCard extends HookConsumerWidget {
           await remotePlayback.load(
             WebSocketLoadEventData.album(
               tracks: fetchedTracks,
-              collection: album,
+              // collection: album,
             ),
           );
         } else {
           await playlistNotifier.load(fetchedTracks, autoPlay: true);
-          playlistNotifier.addCollection(album.id!);
-          historyNotifier.addAlbums([album]);
+          playlistNotifier.addCollection(album.id);
+          // historyNotifier.addAlbums([album]);
         }
       } finally {
         updating.value = false;
@@ -114,8 +111,8 @@ class AlbumCard extends HookConsumerWidget {
 
         if (fetchedTracks.isEmpty) return;
         playlistNotifier.addTracks(fetchedTracks);
-        playlistNotifier.addCollection(album.id!);
-        historyNotifier.addAlbums([album]);
+        playlistNotifier.addCollection(album.id);
+        // historyNotifier.addAlbums([album]);
         if (context.mounted) {
           showToast(
             context: context,
@@ -147,7 +144,7 @@ class AlbumCard extends HookConsumerWidget {
         imageUrl: imageUrl,
         isPlaying: isPlaylistPlaying,
         isLoading: isLoading,
-        title: album.name!,
+        title: album.name,
         description: description,
         onTap: onTap,
         onPlaybuttonPressed: onPlaybuttonPressed,
@@ -159,7 +156,7 @@ class AlbumCard extends HookConsumerWidget {
       imageUrl: imageUrl,
       isPlaying: isPlaylistPlaying,
       isLoading: isLoading,
-      title: album.name!,
+      title: album.name,
       description: description,
       onTap: onTap,
       onPlaybuttonPressed: onPlaybuttonPressed,

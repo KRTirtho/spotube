@@ -2,18 +2,19 @@ import 'package:flutter/material.dart' as material;
 import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/track_presentation.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/provider/metadata_plugin/library/albums.dart';
+import 'package:spotube/provider/metadata_plugin/tracks/album.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 @RoutePage()
 class AlbumPage extends HookConsumerWidget {
   static const name = "album";
 
-  final AlbumSimple album;
+  final SpotubeSimpleAlbumObject album;
   final String id;
   const AlbumPage({
     super.key,
@@ -23,16 +24,19 @@ class AlbumPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final tracks = ref.watch(albumTracksProvider(album));
-    final tracksNotifier = ref.watch(albumTracksProvider(album).notifier);
-    final favoriteAlbumsNotifier = ref.watch(favoriteAlbumsProvider.notifier);
-    final isSavedAlbum = ref.watch(albumsIsSavedProvider(album.id!));
+    final tracks = ref.watch(metadataPluginAlbumTracksProvider(album.id));
+    final tracksNotifier =
+        ref.watch(metadataPluginAlbumTracksProvider(album.id).notifier);
+    final favoriteAlbumsNotifier =
+        ref.watch(metadataPluginSavedAlbumsProvider.notifier);
+    final isSavedAlbum =
+        ref.watch(metadataPluginIsSavedAlbumProvider(album.id));
 
     return material.RefreshIndicator.adaptive(
       onRefresh: () async {
-        ref.invalidate(albumTracksProvider(album));
-        ref.invalidate(favoriteAlbumsProvider);
-        ref.invalidate(albumsIsSavedProvider(album.id!));
+        ref.invalidate(metadataPluginAlbumTracksProvider(album.id));
+        ref.invalidate(metadataPluginIsSavedAlbumProvider(album.id));
+        ref.invalidate(metadataPluginSavedAlbumsProvider);
       },
       child: TrackPresentation(
         options: TrackPresentationOptions(
@@ -40,10 +44,10 @@ class AlbumPage extends HookConsumerWidget {
           image: album.images.asUrlString(
             placeholder: ImagePlaceholder.albumArt,
           ),
-          title: album.name!,
+          title: album.name,
           description:
-              "${context.l10n.released} • ${album.releaseDate} • ${album.artists!.first.name}",
-          tracks: tracks.asData?.value.items ?? [],
+              "${context.l10n.released} • ${album.releaseDate} • ${album.artists.first.name}",
+          tracks: [],
           pagination: PaginationProps(
             hasNextPage: tracks.asData?.value.hasMore ?? false,
             isLoading: tracks.isLoading || tracks.isLoadingNextPage,
@@ -51,24 +55,24 @@ class AlbumPage extends HookConsumerWidget {
               await tracksNotifier.fetchMore();
             },
             onFetchAll: () async {
-              return tracksNotifier.fetchAll();
+              // return tracksNotifier.fetchAll();
+              return [];
             },
             onRefresh: () async {
-              ref.invalidate(albumTracksProvider(album));
+              // ref.invalidate(albumTracksProvider(album));
             },
           ),
           routePath: "/album/${album.id}",
-          shareUrl: album.externalUrls?.spotify ??
-              "https://open.spotify.com/album/${album.id}",
+          shareUrl: album.externalUri,
           isLiked: isSavedAlbum.asData?.value ?? false,
-          owner: album.artists!.first.name,
+          owner: album.artists.first.name,
           onHeart: isSavedAlbum.asData?.value == null
               ? null
               : () async {
                   if (isSavedAlbum.asData!.value) {
-                    await favoriteAlbumsNotifier.removeFavorites([album.id!]);
+                    await favoriteAlbumsNotifier.removeFavorite([album]);
                   } else {
-                    await favoriteAlbumsNotifier.addFavorites([album.id!]);
+                    await favoriteAlbumsNotifier.addFavorite([album]);
                   }
                   return null;
                 },

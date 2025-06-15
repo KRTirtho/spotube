@@ -33,7 +33,7 @@ class MetadataPluginArtistEndpoint {
       }..removeWhere((key, value) => value == null),
     ) as Map;
 
-    return SpotubePaginationResponseObject.fromJson(
+    return SpotubePaginationResponseObject<SpotubeFullTrackObject>.fromJson(
       raw.cast<String, dynamic>(),
       (Map json) => SpotubeFullTrackObject.fromJson(
         json.cast<String, dynamic>(),
@@ -55,7 +55,7 @@ class MetadataPluginArtistEndpoint {
       }..removeWhere((key, value) => value == null),
     ) as Map;
 
-    return SpotubePaginationResponseObject.fromJson(
+    return SpotubePaginationResponseObject<SpotubeSimpleAlbumObject>.fromJson(
       raw.cast<String, dynamic>(),
       (Map json) => SpotubeSimpleAlbumObject.fromJson(
         json.cast<String, dynamic>(),

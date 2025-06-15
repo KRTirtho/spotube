@@ -36,8 +36,8 @@ class MetadataPluginSavedPlaylistsNotifier
       state.value!.copyWith(
         items: state.value!.items
             .map((element) => element.id == playlist.id ? playlist : element)
-            .toList() as List<SpotubeSimplePlaylistObject>,
-      ) as SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>,
+            .toList(),
+      ),
     );
   }
 
@@ -46,7 +46,7 @@ class MetadataPluginSavedPlaylistsNotifier
       (await metadataPlugin).playlist.save(playlist.id);
       return state.copyWith(
         items: [...state.items, playlist],
-      ) as SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>;
+      );
     });
 
     ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
@@ -56,10 +56,8 @@ class MetadataPluginSavedPlaylistsNotifier
     await update((state) async {
       (await metadataPlugin).playlist.unsave(playlist.id);
       return state.copyWith(
-        items: state.items
-            .where((e) => (e as SpotubeSimplePlaylistObject).id != playlist.id)
-            .toList() as List<SpotubeSimplePlaylistObject>,
-      ) as SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>;
+        items: state.items.where((e) => (e).id != playlist.id).toList(),
+      );
     });
 
     ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
@@ -69,10 +67,8 @@ class MetadataPluginSavedPlaylistsNotifier
     await update((state) async {
       (await metadataPlugin).playlist.deletePlaylist(playlist.id);
       return state.copyWith(
-        items: state.items
-            .where((e) => (e as SpotubeSimplePlaylistObject).id != playlist.id)
-            .toList() as List<SpotubeSimplePlaylistObject>,
-      ) as SpotubePaginationResponseObject<SpotubeSimplePlaylistObject>;
+        items: state.items.where((e) => (e).id != playlist.id).toList(),
+      );
     });
 
     ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));

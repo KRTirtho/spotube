@@ -26,3 +26,15 @@ class SpotubeSimpleArtistObject with _$SpotubeSimpleArtistObject {
   factory SpotubeSimpleArtistObject.fromJson(Map<String, dynamic> json) =>
       _$SpotubeSimpleArtistObjectFromJson(json);
 }
+
+extension SpotubeFullArtistObjectAsString on List<SpotubeFullArtistObject> {
+  String asString() {
+    return map((e) => e.name).join(", ");
+  }
+}
+
+extension SpotubeSimpleArtistObjectAsString on List<SpotubeSimpleArtistObject> {
+  String asString() {
+    return map((e) => e.name).join(", ");
+  }
+}

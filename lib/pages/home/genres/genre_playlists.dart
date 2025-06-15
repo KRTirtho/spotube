@@ -115,25 +115,25 @@ class GenrePlaylistsPage extends HookConsumerWidget {
                   ),
                 ),
                 const SliverGap(20),
-                SliverSafeArea(
-                  top: false,
-                  sliver: SliverPadding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: mediaQuery.mdAndDown ? 12 : 24,
-                    ),
-                    sliver: PlaybuttonView(
-                      controller: scrollController,
-                      itemCount: playlists.asData?.value.items.length ?? 0,
-                      isLoading: playlists.isLoading,
-                      hasMore: playlists.asData?.value.hasMore == true,
-                      onRequestMore: playlistsNotifier.fetchMore,
-                      listItemBuilder: (context, index) => PlaylistCard.tile(
-                          playlists.asData!.value.items[index]),
-                      gridItemBuilder: (context, index) =>
-                          PlaylistCard(playlists.asData!.value.items[index]),
-                    ),
-                  ),
-                ),
+                // SliverSafeArea(
+                //   top: false,
+                //   sliver: SliverPadding(
+                //     padding: EdgeInsets.symmetric(
+                //       horizontal: mediaQuery.mdAndDown ? 12 : 24,
+                //     ),
+                //     sliver: PlaybuttonView(
+                //       controller: scrollController,
+                //       itemCount: playlists.asData?.value.items.length ?? 0,
+                //       isLoading: playlists.isLoading,
+                //       hasMore: playlists.asData?.value.hasMore == true,
+                //       onRequestMore: playlistsNotifier.fetchMore,
+                //       listItemBuilder: (context, index) => PlaylistCard.tile(
+                //           playlists.asData!.value.items[index]),
+                //       gridItemBuilder: (context, index) =>
+                //           PlaylistCard(playlists.asData!.value.items[index]),
+                //     ),
+                //   ),
+                // ),
                 const SliverGap(20),
               ],
             ),

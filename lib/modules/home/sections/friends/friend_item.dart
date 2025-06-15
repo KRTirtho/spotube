@@ -99,9 +99,9 @@ class FriendItem extends HookConsumerWidget {
                             (api) => api.albums.get(friend.track.album.id),
                           );
                           if (context.mounted) {
-                            context.navigateTo(
-                              AlbumRoute(id: album.id!, album: album),
-                            );
+                            // context.navigateTo(
+                            //   AlbumRoute(id: album.id!, album: album),
+                            // );
                           }
                         },
                     ),

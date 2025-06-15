@@ -26,8 +26,8 @@ class MetadataPluginSavedAlbumNotifier
     await update((state) async {
       (await metadataPlugin).album.save(albums.map((e) => e.id).toList());
       return state.copyWith(
-        items: [...state.items, albums],
-      ) as SpotubePaginationResponseObject<SpotubeSimpleAlbumObject>;
+        items: [...state.items, ...albums],
+      );
     });
 
     for (final album in albums) {
@@ -42,12 +42,10 @@ class MetadataPluginSavedAlbumNotifier
       return state.copyWith(
         items: state.items
             .where(
-              (e) =>
-                  albumIds.contains((e as SpotubeSimpleAlbumObject).id) ==
-                  false,
+              (e) => albumIds.contains((e).id) == false,
             )
-            .toList() as List<SpotubeSimpleAlbumObject>,
-      ) as SpotubePaginationResponseObject<SpotubeSimpleAlbumObject>;
+            .toList(),
+      );
     });
 
     for (final album in albums) {

@@ -30,9 +30,9 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
             final album = await spotify.invoke((api) {
               return api.albums.get(url.pathSegments.last);
             });
-            router.navigate(
-              AlbumRoute(id: album.id!, album: album),
-            );
+            // router.navigate(
+            //   AlbumRoute(id: album.id!, album: album),
+            // );
             break;
           case "artist":
             router.navigate(ArtistRoute(artistId: url.pathSegments.last));
@@ -41,8 +41,8 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
             final playlist = await spotify.invoke((api) {
               return api.playlists.get(url.pathSegments.last);
             });
-            router
-                .navigate(PlaylistRoute(id: playlist.id!, playlist: playlist));
+            // router
+            //     .navigate(PlaylistRoute(id: playlist.id!, playlist: playlist));
             break;
           case "track":
             router.navigate(TrackRoute(trackId: url.pathSegments.last));
@@ -72,9 +72,9 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
             final album = await spotify.invoke((api) {
               return api.albums.get(endSegment);
             });
-            await router.navigate(
-              AlbumRoute(id: album.id!, album: album),
-            );
+            // await router.navigate(
+            //   AlbumRoute(id: album.id!, album: album),
+            // );
             break;
           case "spotify:artist":
             await router.navigate(ArtistRoute(artistId: endSegment));
@@ -86,9 +86,9 @@ void useDeepLinking(WidgetRef ref, AppRouter router) {
             final playlist = await spotify.invoke((api) {
               return api.playlists.get(endSegment);
             });
-            await router.navigate(
-              PlaylistRoute(id: playlist.id!, playlist: playlist),
-            );
+            // await router.navigate(
+            //   PlaylistRoute(id: playlist.id!, playlist: playlist),
+            // );
             break;
           default:
             break;

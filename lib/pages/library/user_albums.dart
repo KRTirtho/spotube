@@ -15,6 +15,8 @@ import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
+import 'package:spotube/provider/metadata_plugin/library/albums.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -25,9 +27,10 @@ class UserAlbumsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authenticationProvider);
-    final albumsQuery = ref.watch(favoriteAlbumsProvider);
-    final albumsQueryNotifier = ref.watch(favoriteAlbumsProvider.notifier);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
+    final albumsQuery = ref.watch(metadataPluginSavedAlbumsProvider);
+    final albumsQueryNotifier =
+        ref.watch(metadataPluginSavedAlbumsProvider.notifier);
 
     final controller = useScrollController();
 
@@ -39,7 +42,7 @@ class UserAlbumsPage extends HookConsumerWidget {
       }
       return albumsQuery.asData?.value.items
               .map((e) => (
-                    weightedRatio(e.name!, searchText.value),
+                    weightedRatio(e.name, searchText.value),
                     e,
                   ))
               .sorted((a, b) => b.$1.compareTo(a.$1))
@@ -49,7 +52,7 @@ class UserAlbumsPage extends HookConsumerWidget {
           [];
     }, [albumsQuery.asData?.value, searchText.value]);
 
-    if (auth.asData?.value == null) {
+    if (authenticated.asData?.value != true) {
       return const AnonymousFallback();
     }
 

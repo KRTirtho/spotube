@@ -5,18 +5,20 @@ import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Image;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotube/collections/assets.gen.dart';
 
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
+import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
+import 'package:spotube/provider/metadata_plugin/user.dart';
 import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
@@ -28,42 +30,47 @@ class UserPlaylistsPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final searchText = useState('');
 
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
 
-    final playlistsQuery = ref.watch(favoritePlaylistsProvider);
+    final me = ref.watch(metadataPluginUserProvider);
+    final playlistsQuery = ref.watch(metadataPluginSavedPlaylistsProvider);
     final playlistsQueryNotifier =
-        ref.watch(favoritePlaylistsProvider.notifier);
+        ref.watch(metadataPluginSavedPlaylistsProvider.notifier);
 
     final likedTracksPlaylist = useMemoized(
-      () => PlaylistSimple()
-        ..name = context.l10n.liked_tracks
-        ..description = context.l10n.liked_tracks_description
-        ..type = "playlist"
-        ..collaborative = false
-        ..public = false
-        ..id = "user-liked-tracks"
-        ..images = [
-          Image()
-            ..height = 300
-            ..width = 300
-            ..url = "assets/liked-tracks.jpg"
-        ],
-      [context.l10n],
+      () => me.asData?.value == null
+          ? null
+          : SpotubeSimplePlaylistObject(
+              id: "liked-tracks",
+              name: context.l10n.liked_tracks,
+              description: context.l10n.liked_tracks_description,
+              externalUri: "",
+              owner: me.asData!.value!,
+              images: [
+                  SpotubeImageObject(
+                    url: Assets.likedTracks.path,
+                    width: 300,
+                    height: 300,
+                  )
+                ]),
+      [context.l10n, me.asData?.value],
     );
 
     final playlists = useMemoized(
       () {
         if (searchText.value.isEmpty) {
           return [
-            likedTracksPlaylist,
-            ...?playlistsQuery.asData?.value.items,
+            if (likedTracksPlaylist != null) likedTracksPlaylist,
+            ...?playlistsQuery.asData?.value.items
+                as List<SpotubeSimplePlaylistObject>?,
           ];
         }
         return [
-          likedTracksPlaylist,
-          ...?playlistsQuery.asData?.value.items,
+          if (likedTracksPlaylist != null) likedTracksPlaylist,
+          ...?playlistsQuery.asData?.value.items
+              as List<SpotubeSimplePlaylistObject>?,
         ]
-            .map((e) => (weightedRatio(e.name!, searchText.value), e))
+            .map((e) => (weightedRatio(e.name, searchText.value), e))
             .sorted((a, b) => b.$1.compareTo(a.$1))
             .where((e) => e.$1 > 50)
             .map((e) => e.$2)
@@ -74,13 +81,13 @@ class UserPlaylistsPage extends HookConsumerWidget {
 
     final controller = useScrollController();
 
-    if (auth.asData?.value == null) {
+    if (authenticated.asData?.value != true) {
       return const AnonymousFallback();
     }
 
     return material.RefreshIndicator.adaptive(
       onRefresh: () async {
-        ref.invalidate(favoritePlaylistsProvider);
+        ref.invalidate(metadataPluginSavedPlaylistsProvider);
       },
       child: SafeArea(
         bottom: false,

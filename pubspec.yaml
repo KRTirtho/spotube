@@ -112,7 +112,6 @@ dependencies:
   sliding_up_panel: ^2.0.0+1
   sliver_tools: ^0.2.12
   smtc_windows: ^1.0.0
-  spotify: ^0.13.7
   sqlite3: ^2.4.3
   sqlite3_flutter_libs: ^0.5.23
   stroke_text: ^0.0.2
@@ -157,6 +156,7 @@ dependencies:
       url: https://github.com/KRTirtho/hetu_spotube_plugin.git
       ref: main
   get_it: ^8.0.3
+  spotify: ^0.13.7
 
 dev_dependencies:
   build_runner: ^2.4.13

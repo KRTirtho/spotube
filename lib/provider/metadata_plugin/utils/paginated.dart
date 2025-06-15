@@ -22,17 +22,20 @@ mixin PaginatedAsyncNotifierMixin<K>
           state.value!.nextOffset!,
           state.value!.limit,
         );
-        return newState.copyWith(items: [
-          ...state.value!.items as List<K>,
-          ...newState.items as List<K>,
-        ]) as SpotubePaginationResponseObject<K>;
+
+        final oldItems =
+            state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+        final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+
+        return newState.copyWith(items: <K>[...oldItems, ...items])
+            as SpotubePaginationResponseObject<K>;
       },
     );
   }
 
   Future<List<K>> fetchAll() async {
     if (state.value == null) return [];
-    if (!state.value!.hasMore) return state.value!.items as List<K>;
+    if (!state.value!.hasMore) return state.value!.items.cast<K>();
 
     bool hasMore = true;
     while (hasMore) {
@@ -43,14 +46,14 @@ mixin PaginatedAsyncNotifierMixin<K>
         );
 
         hasMore = newState.hasMore;
-        return newState.copyWith(items: [
-          ...state.items as List<K>,
-          ...newState.items as List<K>,
-        ]) as SpotubePaginationResponseObject<K>;
+        final oldItems = state.items.isEmpty ? <K>[] : state.items.cast<K>();
+        final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+        return newState.copyWith(items: <K>[...oldItems, ...items])
+            as SpotubePaginationResponseObject<K>;
       });
     }
 
-    return state.value!.items as List<K>;
+    return state.value!.items.cast<K>();
   }
 }
 

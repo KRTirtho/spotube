@@ -9,8 +9,8 @@ import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/playbutton_view/playbutton_card.dart';
 import 'package:spotube/components/playbutton_view/playbutton_tile.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
@@ -20,7 +20,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:stroke_text/stroke_text.dart';
 
 class PlaylistCard extends HookConsumerWidget {
-  final PlaylistSimple playlist;
+  final SpotubeSimplePlaylistObject playlist;
   final bool _isTile;
 
   const PlaylistCard(
@@ -43,7 +43,7 @@ class PlaylistCard extends HookConsumerWidget {
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     bool isPlaylistPlaying = useMemoized(
-      () => playlistQueue.containsCollection(playlist.id!),
+      () => playlistQueue.containsCollection(playlist.id),
       [playlistQueue, playlist.id],
     );
 
@@ -55,8 +55,7 @@ class PlaylistCard extends HookConsumerWidget {
         return await ref.read(likedTracksProvider.future);
       }
 
-      final result =
-          await ref.read(playlistTracksProvider(playlist.id!).future);
+      final result = await ref.read(playlistTracksProvider(playlist.id).future);
 
       return result.items;
     }
@@ -68,11 +67,11 @@ class PlaylistCard extends HookConsumerWidget {
         return initialTracks;
       }
 
-      return ref.read(playlistTracksProvider(playlist.id!).notifier).fetchAll();
+      return ref.read(playlistTracksProvider(playlist.id).notifier).fetchAll();
     }
 
     void onTap() {
-      context.navigateTo(PlaylistRoute(id: playlist.id!, playlist: playlist));
+      context.navigateTo(PlaylistRoute(id: playlist.id, playlist: playlist));
     }
 
     void onPlaybuttonPressed() async {
@@ -96,13 +95,13 @@ class PlaylistCard extends HookConsumerWidget {
           await remotePlayback.load(
             WebSocketLoadEventData.playlist(
               tracks: allTracks,
-              collection: playlist,
+              // collection: playlist,
             ),
           );
         } else {
           await playlistNotifier.load(fetchedInitialTracks, autoPlay: true);
-          playlistNotifier.addCollection(playlist.id!);
-          historyNotifier.addPlaylists([playlist]);
+          playlistNotifier.addCollection(playlist.id);
+          // historyNotifier.addPlaylists([playlist]);
 
           final allTracks = await fetchAllTracks();
 
@@ -126,8 +125,8 @@ class PlaylistCard extends HookConsumerWidget {
         if (fetchedInitialTracks.isEmpty) return;
 
         playlistNotifier.addTracks(fetchedInitialTracks);
-        playlistNotifier.addCollection(playlist.id!);
-        historyNotifier.addPlaylists([playlist]);
+        playlistNotifier.addCollection(playlist.id);
+        // historyNotifier.addPlaylists([playlist]);
         if (context.mounted) {
           showToast(
             context: context,
@@ -160,50 +159,49 @@ class PlaylistCard extends HookConsumerWidget {
     );
     final isLoading =
         (isPlaylistPlaying && isFetchingActiveTrack) || updating.value;
-    final isOwner = playlist.owner?.id == me.asData?.value.id &&
-        me.asData?.value.id != null;
+    final isOwner =
+        playlist.owner.id == me.asData?.value.id && me.asData?.value.id != null;
 
-    final image =
-        playlist.owner?.displayName == "Spotify" && Env.disableSpotifyImages
-            ? Consumer(
-                builder: (context, ref, child) {
-                  final (:color, :colorBlendMode, :src, :placement) =
-                      ref.watch(playlistImageProvider(playlist.id!));
+    final image = playlist.owner.name == "Spotify" && Env.disableSpotifyImages
+        ? Consumer(
+            builder: (context, ref, child) {
+              final (:color, :colorBlendMode, :src, :placement) =
+                  ref.watch(playlistImageProvider(playlist.id));
 
-                  return Stack(
-                    children: [
-                      Positioned.fill(
-                        child: Image.asset(
-                          src,
-                          color: color,
-                          colorBlendMode: colorBlendMode,
-                          fit: BoxFit.cover,
-                        ),
+              return Stack(
+                children: [
+                  Positioned.fill(
+                    child: Image.asset(
+                      src,
+                      color: color,
+                      colorBlendMode: colorBlendMode,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  Positioned.fill(
+                    top: placement == Alignment.topLeft ? 10 : null,
+                    left: 10,
+                    bottom: placement == Alignment.bottomLeft ? 10 : null,
+                    child: StrokeText(
+                      text: playlist.name,
+                      strokeColor: Colors.white,
+                      strokeWidth: 3,
+                      textColor: Colors.black,
+                      textStyle: const TextStyle(
+                        fontSize: 16,
+                        fontStyle: FontStyle.italic,
                       ),
-                      Positioned.fill(
-                        top: placement == Alignment.topLeft ? 10 : null,
-                        left: 10,
-                        bottom: placement == Alignment.bottomLeft ? 10 : null,
-                        child: StrokeText(
-                          text: playlist.name!,
-                          strokeColor: Colors.white,
-                          strokeWidth: 3,
-                          textColor: Colors.black,
-                          textStyle: const TextStyle(
-                            fontSize: 16,
-                            fontStyle: FontStyle.italic,
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-              )
-            : null;
+                    ),
+                  ),
+                ],
+              );
+            },
+          )
+        : null;
 
     if (_isTile) {
       return PlaybuttonTile(
-        title: playlist.name!,
+        title: playlist.name,
         description: playlist.description,
         image: image,
         imageUrl: image == null ? imageUrl : null,
@@ -217,7 +215,7 @@ class PlaylistCard extends HookConsumerWidget {
     }
 
     return PlaybuttonCard(
-      title: playlist.name!,
+      title: playlist.name,
       description: playlist.description,
       image: image,
       imageUrl: image == null ? imageUrl : null,

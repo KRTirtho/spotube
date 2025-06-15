@@ -47,9 +47,9 @@ class GenreSectionCardPlaylistCard extends HookConsumerWidget {
             },
           ),
           onPressed: () {
-            context.navigateTo(
-              PlaylistRoute(id: playlist.id!, playlist: playlist),
-            );
+            // context.navigateTo(
+            //   PlaylistRoute(id: playlist.id!, playlist: playlist),
+            // );
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

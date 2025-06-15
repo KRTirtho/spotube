@@ -31,12 +31,12 @@ class TrackDetailsDialog extends HookWidget {
         textStyle: const TextStyle(color: Colors.blue),
         hideOverflowArtist: false,
       ),
-      context.l10n.album: LinkText(
-        track.album!.name!,
-        AlbumRoute(album: track.album!, id: track.album!.id!),
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(color: Colors.blue),
-      ),
+      // context.l10n.album: LinkText(
+      //   track.album!.name!,
+      //   AlbumRoute(album: track.album!, id: track.album!.id!),
+      //   overflow: TextOverflow.ellipsis,
+      //   style: const TextStyle(color: Colors.blue),
+      // ),
       context.l10n.duration: (track is SourcedTrack
               ? (track as SourcedTrack).sourceInfo.duration
               : track.duration!)

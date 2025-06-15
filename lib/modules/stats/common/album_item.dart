@@ -32,19 +32,19 @@ class StatsAlbumItem extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text("${album.albumType?.formatted} • "),
-          Flexible(
-            child: ArtistLink(
-              artists: album.artists ?? [],
-              mainAxisAlignment: WrapAlignment.start,
-              onOverflowArtistClick: () =>
-                  context.navigateTo(AlbumRoute(id: album.id!, album: album)),
-            ),
-          ),
+          // Flexible(
+          //   child: ArtistLink(
+          //     artists: album.artists ?? [],
+          //     mainAxisAlignment: WrapAlignment.start,
+          //     onOverflowArtistClick: () =>
+          //         context.navigateTo(AlbumRoute(id: album.id!, album: album)),
+          //   ),
+          // ),
         ],
       ),
       trailing: info,
       onPressed: () {
-        context.navigateTo(AlbumRoute(id: album.id!, album: album));
+        // context.navigateTo(AlbumRoute(id: album.id!, album: album));
       },
     );
   }

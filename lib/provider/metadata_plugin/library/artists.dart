@@ -26,8 +26,8 @@ class MetadataPluginSavedArtistNotifier
     await update((state) async {
       (await metadataPlugin).artist.save(artists.map((e) => e.id).toList());
       return state.copyWith(
-        items: [...state.items, artists],
-      ) as SpotubePaginationResponseObject<SpotubeFullArtistObject>;
+        items: [...state.items, ...artists],
+      );
     });
 
     for (final artist in artists) {
@@ -42,12 +42,10 @@ class MetadataPluginSavedArtistNotifier
       return state.copyWith(
         items: state.items
             .where(
-              (e) =>
-                  artistIds.contains((e as SpotubeFullArtistObject).id) ==
-                  false,
+              (e) => artistIds.contains((e).id) == false,
             )
-            .toList() as List<SpotubeFullArtistObject>,
-      ) as SpotubePaginationResponseObject<SpotubeFullArtistObject>;
+            .toList(),
+      );
     });
 
     for (final artist in artists) {

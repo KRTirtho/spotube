@@ -215,9 +215,9 @@ class TrackOptions extends HookConsumerWidget {
       onSelected: (value) async {
         switch (value) {
           case TrackOptionValue.album:
-            await context.navigateTo(
-              AlbumRoute(id: track.album!.id!, album: track.album!),
-            );
+            // await context.navigateTo(
+            //   AlbumRoute(id: track.album!.id!, album: track.album!),
+            // );
             break;
           case TrackOptionValue.delete:
             await File((track as LocalTrack).path).delete();

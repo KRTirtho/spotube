@@ -142,16 +142,16 @@ class TrackPage extends HookConsumerWidget {
                                   children: [
                                     const Icon(SpotubeIcons.album),
                                     const Gap(5),
-                                    Flexible(
-                                      child: LinkText(
-                                        track.album!.name!,
-                                        AlbumRoute(
-                                          id: track.album!.id!,
-                                          album: track.album!,
-                                        ),
-                                        push: true,
-                                      ),
-                                    ),
+                                    // Flexible(
+                                    //   child: LinkText(
+                                    //     track.album!.name!,
+                                    //     AlbumRoute(
+                                    //       id: track.album!.id!,
+                                    //       album: track.album!,
+                                    //     ),
+                                    //     push: true,
+                                    //   ),
+                                    // ),
                                   ],
                                 ),
                                 const Gap(10),
