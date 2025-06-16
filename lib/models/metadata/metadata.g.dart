@@ -302,6 +302,7 @@ _$SpotubeFullTrackObjectImpl _$$SpotubeFullTrackObjectImplFromJson(Map json) =>
       durationMs: (json['durationMs'] as num).toInt(),
       isrc: json['isrc'] as String,
       explicit: json['explicit'] as bool,
+      $type: json['runtimeType'] as String?,
     );
 
 Map<String, dynamic> _$$SpotubeFullTrackObjectImplToJson(
@@ -315,6 +316,7 @@ Map<String, dynamic> _$$SpotubeFullTrackObjectImplToJson(
       'durationMs': instance.durationMs,
       'isrc': instance.isrc,
       'explicit': instance.explicit,
+      'runtimeType': instance.$type,
     };
 
 _$SpotubeSimpleTrackObjectImpl _$$SpotubeSimpleTrackObjectImplFromJson(
@@ -334,6 +336,7 @@ _$SpotubeSimpleTrackObjectImpl _$$SpotubeSimpleTrackObjectImplFromJson(
           ? null
           : SpotubeSimpleAlbumObject.fromJson(
               Map<String, dynamic>.from(json['album'] as Map)),
+      $type: json['runtimeType'] as String?,
     );
 
 Map<String, dynamic> _$$SpotubeSimpleTrackObjectImplToJson(
@@ -346,6 +349,7 @@ Map<String, dynamic> _$$SpotubeSimpleTrackObjectImplToJson(
       'explicit': instance.explicit,
       'artists': instance.artists.map((e) => e.toJson()).toList(),
       'album': instance.album?.toJson(),
+      'runtimeType': instance.$type,
     };
 
 _$SpotubeUserObjectImpl _$$SpotubeUserObjectImplFromJson(Map json) =>

@@ -105,6 +105,16 @@ abstract class FakeData {
     ..explicit = false
     ..linkedFrom = trackLink;
 
+  static final simpleTrack = SpotubeSimpleTrackObject(
+    id: "1",
+    name: "A Track Name",
+    artists: [],
+    album: albumSimple,
+    externalUri: "https://example.com",
+    durationMs: 50000,
+    explicit: false,
+  );
+
   static final TrackLink trackLink = TrackLink()
     ..id = "1"
     ..type = "type"
