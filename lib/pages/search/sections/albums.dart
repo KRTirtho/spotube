@@ -1,11 +1,9 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import 'package:spotify/spotify.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
-import 'package:spotube/extensions/album_simple.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/provider/metadata_plugin/search/all.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class SearchAlbumsSection extends HookConsumerWidget {
@@ -15,23 +13,15 @@ class SearchAlbumsSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final query = ref.watch(searchProvider(SearchType.album));
-    final notifier = ref.watch(searchProvider(SearchType.album).notifier);
-    final albums = useMemoized(
-      () =>
-          query.asData?.value.items
-              .cast<AlbumSimple>()
-              .map((e) => e.toAlbum())
-              .toList() ??
-          [],
-      [query.asData?.value],
-    );
+    final searchTerm = ref.watch(searchTermStateProvider);
+    final search = ref.watch(metadataPluginSearchAllProvider(searchTerm));
+    final albums = search.asData?.value.albums ?? [];
 
     return HorizontalPlaybuttonCardView(
-      isLoadingNextPage: query.isLoadingNextPage,
-      hasNextPage: query.asData?.value.hasMore == true,
+      isLoadingNextPage: false,
+      hasNextPage: false,
       items: albums,
-      onFetchMore: notifier.fetchMore,
+      onFetchMore: () {},
       title: Text(context.l10n.albums),
     );
   }

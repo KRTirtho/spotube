@@ -16,6 +16,7 @@ import 'package:spotube/services/metadata/endpoints/artist.dart';
 import 'package:spotube/services/metadata/endpoints/auth.dart';
 import 'package:spotube/services/metadata/endpoints/browse.dart';
 import 'package:spotube/services/metadata/endpoints/playlist.dart';
+import 'package:spotube/services/metadata/endpoints/search.dart';
 import 'package:spotube/services/metadata/endpoints/user.dart';
 
 const defaultMetadataLimit = "20";
@@ -80,6 +81,7 @@ class MetadataPlugin {
   late final MetadataPluginAlbumEndpoint album;
   late final MetadataPluginArtistEndpoint artist;
   late final MetadataPluginBrowseEndpoint browse;
+  late final MetadataPluginSearchEndpoint search;
   late final MetadataPluginPlaylistEndpoint playlist;
   late final MetadataPluginUserEndpoint user;
 
@@ -89,6 +91,7 @@ class MetadataPlugin {
     artist = MetadataPluginArtistEndpoint(hetu);
     album = MetadataPluginAlbumEndpoint(hetu);
     browse = MetadataPluginBrowseEndpoint(hetu);
+    search = MetadataPluginSearchEndpoint(hetu);
     playlist = MetadataPluginPlaylistEndpoint(hetu);
     user = MetadataPluginUserEndpoint(hetu);
   }

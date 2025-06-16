@@ -21,6 +21,7 @@ class SpotubeSimpleArtistObject with _$SpotubeSimpleArtistObject {
     required String id,
     required String name,
     required String externalUri,
+    List<SpotubeImageObject>? images,
   }) = _SpotubeSimpleArtistObject;
 
   factory SpotubeSimpleArtistObject.fromJson(Map<String, dynamic> json) =>

@@ -113,6 +113,10 @@ _$SpotubeSimpleArtistObjectImpl _$$SpotubeSimpleArtistObjectImplFromJson(
       id: json['id'] as String,
       name: json['name'] as String,
       externalUri: json['externalUri'] as String,
+      images: (json['images'] as List<dynamic>?)
+          ?.map((e) =>
+              SpotubeImageObject.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
     );
 
 Map<String, dynamic> _$$SpotubeSimpleArtistObjectImplToJson(
@@ -121,6 +125,7 @@ Map<String, dynamic> _$$SpotubeSimpleArtistObjectImplToJson(
       'id': instance.id,
       'name': instance.name,
       'externalUri': instance.externalUri,
+      'images': instance.images?.map((e) => e.toJson()).toList(),
     };
 
 _$SpotubeBrowseSectionObjectImpl<T>
@@ -260,7 +265,7 @@ _$SpotubeSearchResponseObjectImpl _$$SpotubeSearchResponseObjectImplFromJson(
               Map<String, dynamic>.from(e as Map)))
           .toList(),
       artists: (json['artists'] as List<dynamic>)
-          .map((e) => SpotubeSimpleArtistObject.fromJson(
+          .map((e) => SpotubeFullArtistObject.fromJson(
               Map<String, dynamic>.from(e as Map)))
           .toList(),
       playlists: (json['playlists'] as List<dynamic>)

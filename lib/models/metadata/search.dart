@@ -4,7 +4,7 @@ part of 'metadata.dart';
 class SpotubeSearchResponseObject with _$SpotubeSearchResponseObject {
   factory SpotubeSearchResponseObject({
     required List<SpotubeSimpleAlbumObject> albums,
-    required List<SpotubeSimpleArtistObject> artists,
+    required List<SpotubeFullArtistObject> artists,
     required List<SpotubeSimplePlaylistObject> playlists,
     required List<SpotubeSimpleTrackObject> tracks,
   }) = _SpotubeSearchResponseObject;

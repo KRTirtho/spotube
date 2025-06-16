@@ -1,8 +1,8 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/provider/metadata_plugin/search/all.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 
 class SearchPlaylistsSection extends HookConsumerWidget {
@@ -12,17 +12,16 @@ class SearchPlaylistsSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final playlistsQuery = ref.watch(searchProvider(SearchType.playlist));
-    final playlistsQueryNotifier =
-        ref.watch(searchProvider(SearchType.playlist).notifier);
-    final playlists =
-        playlistsQuery.asData?.value.items.cast<PlaylistSimple>() ?? [];
+    final searchTerm = ref.watch(searchTermStateProvider);
+    final playlistsQuery =
+        ref.watch(metadataPluginSearchAllProvider(searchTerm));
+    final playlists = playlistsQuery.asData?.value.playlists ?? [];
 
     return HorizontalPlaybuttonCardView(
-      isLoadingNextPage: playlistsQuery.isLoadingNextPage,
-      hasNextPage: playlistsQuery.asData?.value.hasMore == true,
+      isLoadingNextPage: false,
+      hasNextPage: false,
       items: playlists,
-      onFetchMore: playlistsQueryNotifier.fetchMore,
+      onFetchMore: () {},
       title: Text(context.l10n.playlists),
     );
   }

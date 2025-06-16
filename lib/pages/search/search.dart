@@ -2,7 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import 'package:spotify/spotify.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,8 +17,8 @@ import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dar
 import 'package:spotube/pages/search/sections/albums.dart';
 import 'package:spotube/pages/search/sections/artists.dart';
 import 'package:spotube/pages/search/sections/playlists.dart';
-import 'package:spotube/pages/search/sections/tracks.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
+import 'package:spotube/provider/metadata_plugin/search/all.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:auto_route/auto_route.dart';
@@ -39,17 +38,11 @@ class SearchPage extends HookConsumerWidget {
     final controller = useShadcnTextEditingController();
     final focusNode = useFocusNode();
 
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
 
     final searchTerm = ref.watch(searchTermStateProvider);
-    final searchTrack = ref.watch(searchProvider(SearchType.track));
-    final searchAlbum = ref.watch(searchProvider(SearchType.album));
-    final searchPlaylist = ref.watch(searchProvider(SearchType.playlist));
-    final searchArtist = ref.watch(searchProvider(SearchType.artist));
-
-    final queries = [searchTrack, searchAlbum, searchPlaylist, searchArtist];
-
-    final isFetching = queries.every((s) => s.isLoading);
+    final searchSnapshot =
+        ref.watch(metadataPluginSearchAllProvider(searchTerm));
 
     useEffect(() {
       controller.text = searchTerm;
@@ -82,7 +75,7 @@ class SearchPage extends HookConsumerWidget {
             if (kTitlebarVisible)
               const TitleBar(automaticallyImplyLeading: false, height: 30)
           ],
-          child: auth.asData?.value == null
+          child: authenticated.asData?.value != true
               ? const AnonymousFallback()
               : Column(
                   children: [
@@ -174,7 +167,10 @@ class SearchPage extends HookConsumerWidget {
                     Expanded(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
-                        child: switch ((searchTerm.isEmpty, isFetching)) {
+                        child: switch ((
+                          searchTerm.isEmpty,
+                          searchSnapshot.isLoading
+                        )) {
                           (true, false) => Column(
                               children: [
                                 SizedBox(
@@ -228,7 +224,7 @@ class SearchPage extends HookConsumerWidget {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        SearchTracksSection(),
+                                        // SearchTracksSection(),
                                         SearchPlaylistsSection(),
                                         Gap(20),
                                         SearchArtistsSection(),

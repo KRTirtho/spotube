@@ -994,6 +994,7 @@ mixin _$SpotubeSimpleArtistObject {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get externalUri => throw _privateConstructorUsedError;
+  List<SpotubeImageObject>? get images => throw _privateConstructorUsedError;
 
   /// Serializes this SpotubeSimpleArtistObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -1011,7 +1012,11 @@ abstract class $SpotubeSimpleArtistObjectCopyWith<$Res> {
           $Res Function(SpotubeSimpleArtistObject) then) =
       _$SpotubeSimpleArtistObjectCopyWithImpl<$Res, SpotubeSimpleArtistObject>;
   @useResult
-  $Res call({String id, String name, String externalUri});
+  $Res call(
+      {String id,
+      String name,
+      String externalUri,
+      List<SpotubeImageObject>? images});
 }
 
 /// @nodoc
@@ -1033,6 +1038,7 @@ class _$SpotubeSimpleArtistObjectCopyWithImpl<$Res,
     Object? id = null,
     Object? name = null,
     Object? externalUri = null,
+    Object? images = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -1047,6 +1053,10 @@ class _$SpotubeSimpleArtistObjectCopyWithImpl<$Res,
           ? _value.externalUri
           : externalUri // ignore: cast_nullable_to_non_nullable
               as String,
+      images: freezed == images
+          ? _value.images
+          : images // ignore: cast_nullable_to_non_nullable
+              as List<SpotubeImageObject>?,
     ) as $Val);
   }
 }
@@ -1060,7 +1070,11 @@ abstract class _$$SpotubeSimpleArtistObjectImplCopyWith<$Res>
       __$$SpotubeSimpleArtistObjectImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, String externalUri});
+  $Res call(
+      {String id,
+      String name,
+      String externalUri,
+      List<SpotubeImageObject>? images});
 }
 
 /// @nodoc
@@ -1081,6 +1095,7 @@ class __$$SpotubeSimpleArtistObjectImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? externalUri = null,
+    Object? images = freezed,
   }) {
     return _then(_$SpotubeSimpleArtistObjectImpl(
       id: null == id
@@ -1095,6 +1110,10 @@ class __$$SpotubeSimpleArtistObjectImplCopyWithImpl<$Res>
           ? _value.externalUri
           : externalUri // ignore: cast_nullable_to_non_nullable
               as String,
+      images: freezed == images
+          ? _value._images
+          : images // ignore: cast_nullable_to_non_nullable
+              as List<SpotubeImageObject>?,
     ));
   }
 }
@@ -1103,7 +1122,11 @@ class __$$SpotubeSimpleArtistObjectImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SpotubeSimpleArtistObjectImpl implements _SpotubeSimpleArtistObject {
   _$SpotubeSimpleArtistObjectImpl(
-      {required this.id, required this.name, required this.externalUri});
+      {required this.id,
+      required this.name,
+      required this.externalUri,
+      final List<SpotubeImageObject>? images})
+      : _images = images;
 
   factory _$SpotubeSimpleArtistObjectImpl.fromJson(Map<String, dynamic> json) =>
       _$$SpotubeSimpleArtistObjectImplFromJson(json);
@@ -1114,10 +1137,19 @@ class _$SpotubeSimpleArtistObjectImpl implements _SpotubeSimpleArtistObject {
   final String name;
   @override
   final String externalUri;
+  final List<SpotubeImageObject>? _images;
+  @override
+  List<SpotubeImageObject>? get images {
+    final value = _images;
+    if (value == null) return null;
+    if (_images is EqualUnmodifiableListView) return _images;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'SpotubeSimpleArtistObject(id: $id, name: $name, externalUri: $externalUri)';
+    return 'SpotubeSimpleArtistObject(id: $id, name: $name, externalUri: $externalUri, images: $images)';
   }
 
   @override
@@ -1128,12 +1160,14 @@ class _$SpotubeSimpleArtistObjectImpl implements _SpotubeSimpleArtistObject {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.externalUri, externalUri) ||
-                other.externalUri == externalUri));
+                other.externalUri == externalUri) &&
+            const DeepCollectionEquality().equals(other._images, _images));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, externalUri);
+  int get hashCode => Object.hash(runtimeType, id, name, externalUri,
+      const DeepCollectionEquality().hash(_images));
 
   /// Create a copy of SpotubeSimpleArtistObject
   /// with the given fields replaced by the non-null parameter values.
@@ -1154,9 +1188,11 @@ class _$SpotubeSimpleArtistObjectImpl implements _SpotubeSimpleArtistObject {
 
 abstract class _SpotubeSimpleArtistObject implements SpotubeSimpleArtistObject {
   factory _SpotubeSimpleArtistObject(
-      {required final String id,
-      required final String name,
-      required final String externalUri}) = _$SpotubeSimpleArtistObjectImpl;
+          {required final String id,
+          required final String name,
+          required final String externalUri,
+          final List<SpotubeImageObject>? images}) =
+      _$SpotubeSimpleArtistObjectImpl;
 
   factory _SpotubeSimpleArtistObject.fromJson(Map<String, dynamic> json) =
       _$SpotubeSimpleArtistObjectImpl.fromJson;
@@ -1167,6 +1203,8 @@ abstract class _SpotubeSimpleArtistObject implements SpotubeSimpleArtistObject {
   String get name;
   @override
   String get externalUri;
+  @override
+  List<SpotubeImageObject>? get images;
 
   /// Create a copy of SpotubeSimpleArtistObject
   /// with the given fields replaced by the non-null parameter values.
@@ -2529,7 +2567,7 @@ SpotubeSearchResponseObject _$SpotubeSearchResponseObjectFromJson(
 mixin _$SpotubeSearchResponseObject {
   List<SpotubeSimpleAlbumObject> get albums =>
       throw _privateConstructorUsedError;
-  List<SpotubeSimpleArtistObject> get artists =>
+  List<SpotubeFullArtistObject> get artists =>
       throw _privateConstructorUsedError;
   List<SpotubeSimplePlaylistObject> get playlists =>
       throw _privateConstructorUsedError;
@@ -2556,7 +2594,7 @@ abstract class $SpotubeSearchResponseObjectCopyWith<$Res> {
   @useResult
   $Res call(
       {List<SpotubeSimpleAlbumObject> albums,
-      List<SpotubeSimpleArtistObject> artists,
+      List<SpotubeFullArtistObject> artists,
       List<SpotubeSimplePlaylistObject> playlists,
       List<SpotubeSimpleTrackObject> tracks});
 }
@@ -2590,7 +2628,7 @@ class _$SpotubeSearchResponseObjectCopyWithImpl<$Res,
       artists: null == artists
           ? _value.artists
           : artists // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeSimpleArtistObject>,
+              as List<SpotubeFullArtistObject>,
       playlists: null == playlists
           ? _value.playlists
           : playlists // ignore: cast_nullable_to_non_nullable
@@ -2614,7 +2652,7 @@ abstract class _$$SpotubeSearchResponseObjectImplCopyWith<$Res>
   @useResult
   $Res call(
       {List<SpotubeSimpleAlbumObject> albums,
-      List<SpotubeSimpleArtistObject> artists,
+      List<SpotubeFullArtistObject> artists,
       List<SpotubeSimplePlaylistObject> playlists,
       List<SpotubeSimpleTrackObject> tracks});
 }
@@ -2647,7 +2685,7 @@ class __$$SpotubeSearchResponseObjectImplCopyWithImpl<$Res>
       artists: null == artists
           ? _value._artists
           : artists // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeSimpleArtistObject>,
+              as List<SpotubeFullArtistObject>,
       playlists: null == playlists
           ? _value._playlists
           : playlists // ignore: cast_nullable_to_non_nullable
@@ -2666,7 +2704,7 @@ class _$SpotubeSearchResponseObjectImpl
     implements _SpotubeSearchResponseObject {
   _$SpotubeSearchResponseObjectImpl(
       {required final List<SpotubeSimpleAlbumObject> albums,
-      required final List<SpotubeSimpleArtistObject> artists,
+      required final List<SpotubeFullArtistObject> artists,
       required final List<SpotubeSimplePlaylistObject> playlists,
       required final List<SpotubeSimpleTrackObject> tracks})
       : _albums = albums,
@@ -2686,9 +2724,9 @@ class _$SpotubeSearchResponseObjectImpl
     return EqualUnmodifiableListView(_albums);
   }
 
-  final List<SpotubeSimpleArtistObject> _artists;
+  final List<SpotubeFullArtistObject> _artists;
   @override
-  List<SpotubeSimpleArtistObject> get artists {
+  List<SpotubeFullArtistObject> get artists {
     if (_artists is EqualUnmodifiableListView) return _artists;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_artists);
@@ -2757,7 +2795,7 @@ abstract class _SpotubeSearchResponseObject
     implements SpotubeSearchResponseObject {
   factory _SpotubeSearchResponseObject(
           {required final List<SpotubeSimpleAlbumObject> albums,
-          required final List<SpotubeSimpleArtistObject> artists,
+          required final List<SpotubeFullArtistObject> artists,
           required final List<SpotubeSimplePlaylistObject> playlists,
           required final List<SpotubeSimpleTrackObject> tracks}) =
       _$SpotubeSearchResponseObjectImpl;
@@ -2768,7 +2806,7 @@ abstract class _SpotubeSearchResponseObject
   @override
   List<SpotubeSimpleAlbumObject> get albums;
   @override
-  List<SpotubeSimpleArtistObject> get artists;
+  List<SpotubeFullArtistObject> get artists;
   @override
   List<SpotubeSimplePlaylistObject> get playlists;
   @override
