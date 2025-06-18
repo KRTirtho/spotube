@@ -19,7 +19,7 @@ import 'package:spotube/hooks/utils/use_debounce.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
-import 'package:spotube/provider/server/active_sourced_track.dart';
+import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_engine/youtube_engine.dart';
 import 'package:spotube/services/sourced_track/models/source_info.dart';
@@ -75,9 +75,9 @@ class SiblingTracksSheet extends HookConsumerWidget {
 
     final isSearching = useState(false);
     final searchMode = useState(preferences.searchMode);
-    final activeTrackNotifier = ref.watch(activeSourcedTrackProvider.notifier);
+    final activeTrackNotifier = ref.watch(activeTrackSourcesProvider.notifier);
     final activeTrack =
-        ref.watch(activeSourcedTrackProvider) ?? playlist.activeTrack;
+        ref.watch(activeTrackSourcesProvider) ?? playlist.activeTrack;
 
     final title = ServiceUtils.getTitle(
       activeTrack?.name ?? "",

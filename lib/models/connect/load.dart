@@ -1,22 +1,18 @@
 part of 'connect.dart';
 
-List<Map<String, dynamic>> _tracksJson(List<Track> tracks) {
-  return tracks.map((e) => e.toJson()).toList();
-}
-
 @freezed
 class WebSocketLoadEventData with _$WebSocketLoadEventData {
   const WebSocketLoadEventData._();
 
   factory WebSocketLoadEventData.playlist({
-    @JsonKey(name: 'tracks', toJson: _tracksJson) required List<Track> tracks,
-    PlaylistSimple? collection,
+    required List<SpotubeFullTrackObject> tracks,
+    SpotubeSimplePlaylistObject? collection,
     int? initialIndex,
   }) = WebSocketLoadEventDataPlaylist;
 
   factory WebSocketLoadEventData.album({
-    @JsonKey(name: 'tracks', toJson: _tracksJson) required List<Track> tracks,
-    AlbumSimple? collection,
+    required List<SpotubeFullTrackObject> tracks,
+    SpotubeSimpleAlbumObject? collection,
     int? initialIndex,
   }) = WebSocketLoadEventDataAlbum;
 

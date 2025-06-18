@@ -73,8 +73,8 @@ extension IterableTrackSimpleExtensions on Iterable<TrackSimple> {
   Future<List<Track>> asTracks(AlbumSimple album, ref) async {
     try {
       final spotify = ref.read(spotifyProvider);
-      final tracks = await spotify.invoke(
-        (api) => api.tracks.list(map((trackSimple) => trackSimple.id!).toList()));
+      final tracks = await spotify.invoke((api) =>
+          api.tracks.list(map((trackSimple) => trackSimple.id!).toList()));
       return tracks.toList();
     } catch (e, stack) {
       // Ignore errors and create the track locally
@@ -103,11 +103,5 @@ extension IterableTrackSimpleExtensions on Iterable<TrackSimple> {
       }
       return tracks;
     }
-  }
-}
-
-extension TracksToMediaExtension on Iterable<Track> {
-  List<SpotubeMedia> asMediaList() {
-    return map((track) => SpotubeMedia(track)).toList();
   }
 }

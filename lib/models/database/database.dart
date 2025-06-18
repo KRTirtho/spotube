@@ -13,6 +13,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart' show ThemeMode, Colors;
 import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/models/database/database.steps.dart';
 import 'package:spotube/models/lyrics.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -43,6 +44,7 @@ part 'typeconverters/locale.dart';
 part 'typeconverters/string_list.dart';
 part 'typeconverters/encrypted_text.dart';
 part 'typeconverters/map.dart';
+part 'typeconverters/map_list.dart';
 part 'typeconverters/subtitle.dart';
 
 @DriftDatabase(
@@ -54,8 +56,6 @@ part 'typeconverters/subtitle.dart';
     SkipSegmentTable,
     SourceMatchTable,
     AudioPlayerStateTable,
-    PlaylistTable,
-    PlaylistMediaTable,
     HistoryTable,
     LyricsTable,
     MetadataPluginsTable,

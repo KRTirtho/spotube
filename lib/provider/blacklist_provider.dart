@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/database/database.dart';
 
 class BlackListNotifier extends AsyncNotifier<List<BlacklistTableData>> {
@@ -34,17 +34,15 @@ class BlackListNotifier extends AsyncNotifier<List<BlacklistTableData>> {
         .go();
   }
 
-  bool contains(TrackSimple track) {
+  bool contains(SpotubeTrackObject track) {
     final containsTrack =
         state.asData?.value.any((element) => element.elementId == track.id) ??
             false;
 
-    final containsTrackArtists = track.artists?.any(
-          (artist) =>
-              state.asData?.value.any((el) => el.elementId == artist.id) ??
-              false,
-        ) ??
-        false;
+    final containsTrackArtists = track.artists.any(
+      (artist) =>
+          state.asData?.value.any((el) => el.elementId == artist.id) ?? false,
+    );
 
     return containsTrack || containsTrackArtists;
   }
@@ -56,17 +54,8 @@ class BlackListNotifier extends AsyncNotifier<List<BlacklistTableData>> {
   }
 
   /// Filters the non blacklisted tracks from the given [tracks]
-  Iterable<TrackSimple> filter(Iterable<TrackSimple> tracks) {
+  Iterable<SpotubeTrackObject> filter(Iterable<SpotubeTrackObject> tracks) {
     return tracks.whereNot(contains).toList();
-  }
-
-  CurrentPlaylist filterPlaylist(CurrentPlaylist playlist) {
-    return CurrentPlaylist(
-      id: playlist.id,
-      name: playlist.name,
-      thumbnail: playlist.thumbnail,
-      tracks: playlist.tracks.where((track) => !contains(track)).toList(),
-    );
   }
 }
 

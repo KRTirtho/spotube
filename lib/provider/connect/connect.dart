@@ -5,11 +5,11 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/models/connect/connect.dart';
 
 import 'package:spotube/provider/connect/clients.dart';
@@ -41,7 +41,8 @@ final queueProvider = StateProvider<AudioPlayerState>(
     playing: audioPlayer.isPlaying,
     loopMode: audioPlayer.loopMode,
     shuffled: audioPlayer.isShuffled,
-    playlist: audioPlayer.playlist,
+    tracks: [],
+    currentIndex: 0,
     collections: [],
   ),
 );
@@ -207,7 +208,7 @@ class ConnectNotifier extends AsyncNotifier<ConnectState?> {
     emit(WebSocketLoopEvent(value));
   }
 
-  Future<void> addTrack(Track data) async {
+  Future<void> addTrack(SpotubeFullTrackObject data) async {
     emit(WebSocketAddTrackEvent(data));
   }
 

@@ -195,10 +195,9 @@ abstract class ServiceUtils {
 
   @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
   static Future<SubtitleSimple?> getTimedLyrics(SourcedTrack track) async {
-    final artistNames =
-        track.artists?.map((artist) => artist.name!).toList() ?? [];
+    final artistNames = track.query.artists;
     final query = getTitle(
-      track.name!,
+      track.query.title,
       artists: artistNames,
     );
 
@@ -217,13 +216,11 @@ abstract class ServiceUtils {
     final rateSortedResults = results.map((result) {
       final title = result.text.trim().toLowerCase();
       int points = 0;
-      final hasAllArtists = track.artists
-              ?.map((artist) => artist.name!)
-              .every((artist) => title.contains(artist.toLowerCase())) ??
-          false;
-      final hasTrackName = title.contains(track.name!.toLowerCase());
+      final hasAllArtists = track.query.artists
+          .every((artist) => title.contains(artist.toLowerCase()));
+      final hasTrackName = title.contains(track.query.title.toLowerCase());
       final isNotLive = !PrimitiveUtils.containsTextInBracket(title, "live");
-      final exactYtMatch = title == track.sourceInfo.title.toLowerCase();
+      final exactYtMatch = title == track.info.title.toLowerCase();
       if (exactYtMatch) points = 7;
       for (final criteria in [hasTrackName, hasAllArtists, isNotLive]) {
         if (criteria) points++;

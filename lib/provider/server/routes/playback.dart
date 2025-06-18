@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart' hide Response;
 import 'package:dio/dio.dart' as dio_lib;
 import 'package:flutter/foundation.dart';
@@ -8,15 +9,14 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
 import 'package:shelf/shelf.dart';
-import 'package:spotube/extensions/artist_simple.dart';
-import 'package:spotube/extensions/image.dart';
-import 'package:spotube/extensions/track.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/models/parser/range_headers.dart';
+import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 
-import 'package:spotube/provider/server/active_sourced_track.dart';
-import 'package:spotube/provider/server/sourced_track.dart';
+import 'package:spotube/provider/server/active_track_sources.dart';
+import 'package:spotube/provider/server/track_sources.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
@@ -55,7 +55,7 @@ class ServerPlaybackRoutes {
       join(
         await UserPreferencesNotifier.getMusicCacheDir(),
         ServiceUtils.sanitizeFilename(
-          '${track.name} - ${track.artists?.asString()} (${track.sourceInfo.id}).${track.codec.name}',
+          '${track.query.title} - ${track.query.artists.join(",")} (${track.info.id}).${track.codec.name}',
         ),
       ),
     );
@@ -127,16 +127,16 @@ class ServerPlaybackRoutes {
         .catchError((e, stack) async {
       AppLogger.reportError(e, stack);
       final sourcedTrack = await ref
-          .read(sourcedTrackProvider(SpotubeMedia(track)).notifier)
+          .read(trackSourcesProvider(track.query).notifier)
           .refreshStreamingUrl();
 
-      if (playlist.activeTrack?.id == sourcedTrack?.id &&
-          sourcedTrack != null) {
-        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
-      }
+      // It gets updated by itself.
+      // if (playlist.activeTrack?.id == sourcedTrack.query.id) {
+      //   ref.read(activeTrackSourcesProvider.notifier).update(sourcedTrack);
+      // }
 
       return await dio.get<Uint8List>(
-        sourcedTrack!.url,
+        sourcedTrack.url,
         options: options.copyWith(headers: {
           ...?options.headers,
           "user-agent": _randomUserAgent,
@@ -174,8 +174,18 @@ class ServerPlaybackRoutes {
     }
 
     if (contentRange.total == fileLength && track.codec != SourceCodecs.weba) {
+      final playlistTrack = playlist.tracks.firstWhereOrNull(
+        (element) => element.id == track.query.id,
+      );
+      if (playlistTrack == null) {
+        AppLogger.log.e(
+          "Track ${track.query.id} not found in playlist, cannot write metadata.",
+        );
+        return (response: res, bytes: bytes);
+      }
+
       final imageBytes = await ServiceUtils.downloadImage(
-        (track.album?.images).asUrlString(
+        (playlistTrack.album?.images).asUrlString(
           placeholder: ImagePlaceholder.albumArt,
           index: 1,
         ),
@@ -183,9 +193,9 @@ class ServerPlaybackRoutes {
 
       await MetadataGod.writeMetadata(
         file: trackCacheFile.path,
-        metadata: track.toMetadata(
-          fileLength: fileLength,
+        metadata: (playlistTrack as SpotubeFullTrackObject).toMetadata(
           imageBytes: imageBytes,
+          fileLength: fileLength,
         ),
       );
     }
@@ -199,15 +209,21 @@ class ServerPlaybackRoutes {
       final track =
           playlist.tracks.firstWhere((element) => element.id == trackId);
 
-      final activeSourcedTrack = ref.read(activeSourcedTrackProvider);
-      final sourcedTrack = activeSourcedTrack?.id == track.id
-          ? activeSourcedTrack
-          : await ref.read(sourcedTrackProvider(SpotubeMedia(track)).future);
+      final activeSourcedTrack =
+          await ref.read(activeTrackSourcesProvider.future);
+      final sourcedTrack = activeSourcedTrack?.track.id == track.id
+          ? activeSourcedTrack?.source
+          : await ref.read(
+              trackSourcesProvider(
+                TrackSourceQuery.parseUri(request.url.toString()),
+              ).future,
+            );
 
-      if (playlist.activeTrack?.id == sourcedTrack?.id &&
-          sourcedTrack != null) {
-        ref.read(activeSourcedTrackProvider.notifier).update(sourcedTrack);
-      }
+      // This will be automatically updated by the notifier.
+      // if (playlist.activeTrack?.id == sourcedTrack?.query.id &&
+      //     sourcedTrack != null) {
+      //   ref.read(activeTrackSourcesProvider.notifier).update(sourcedTrack);
+      // }
 
       final (bytes: audioBytes, response: res) =
           await streamTrack(sourcedTrack!, request.headers);

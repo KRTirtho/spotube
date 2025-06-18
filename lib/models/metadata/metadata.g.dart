@@ -287,6 +287,37 @@ Map<String, dynamic> _$$SpotubeSearchResponseObjectImplToJson(
       'tracks': instance.tracks.map((e) => e.toJson()).toList(),
     };
 
+_$SpotubeLocalTrackObjectImpl _$$SpotubeLocalTrackObjectImplFromJson(
+        Map json) =>
+    _$SpotubeLocalTrackObjectImpl(
+      id: json['id'] as String,
+      name: json['name'] as String,
+      externalUri: json['externalUri'] as String,
+      artists: (json['artists'] as List<dynamic>?)
+              ?.map((e) => SpotubeSimpleArtistObject.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList() ??
+          const [],
+      album: SpotubeSimpleAlbumObject.fromJson(
+          Map<String, dynamic>.from(json['album'] as Map)),
+      durationMs: (json['durationMs'] as num).toInt(),
+      path: json['path'] as String,
+      $type: json['runtimeType'] as String?,
+    );
+
+Map<String, dynamic> _$$SpotubeLocalTrackObjectImplToJson(
+        _$SpotubeLocalTrackObjectImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'externalUri': instance.externalUri,
+      'artists': instance.artists.map((e) => e.toJson()).toList(),
+      'album': instance.album.toJson(),
+      'durationMs': instance.durationMs,
+      'path': instance.path,
+      'runtimeType': instance.$type,
+    };
+
 _$SpotubeFullTrackObjectImpl _$$SpotubeFullTrackObjectImplFromJson(Map json) =>
     _$SpotubeFullTrackObjectImpl(
       id: json['id'] as String,

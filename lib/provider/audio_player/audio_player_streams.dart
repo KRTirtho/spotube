@@ -2,16 +2,17 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/provider/history/history.dart';
+import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/server/track_sources.dart';
 import 'package:spotube/provider/skip_segments/skip_segments.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
-import 'package:spotube/provider/server/sourced_track.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
@@ -101,16 +102,18 @@ class AudioPlayerStreamListeners {
 
         /// The [Track] from Playlist.getTracks doesn't contain artist images
         /// so we need to fetch them from the API
-        final activeTrack =
-            Track.fromJson(audioPlayerState.activeTrack!.toJson());
-        if (audioPlayerState.activeTrack!.artists
-                ?.any((a) => a.images == null) ??
-            false) {
-          activeTrack.artists =
-              await ref.read(spotifyProvider).api.artists.list([
-            for (final artist in audioPlayerState.activeTrack!.artists!)
-              artist.id!,
-          ]).then((value) => value.toList());
+        var activeTrack = audioPlayerState.activeTrack!;
+        if (activeTrack.artists.any((a) => a.images == null)) {
+          final metadataPlugin = await ref.read(metadataPluginProvider.future);
+          final artists = await Future.wait(
+            activeTrack.artists
+                .map((artist) => metadataPlugin!.artist.getArtist(artist.id)),
+          );
+          activeTrack = activeTrack.copyWith(
+            artists: artists
+                .map((e) => SpotubeSimpleArtistObject.fromJson(e.toJson()))
+                .toList(),
+          );
         }
 
         await history.addTrack(activeTrack);
@@ -127,24 +130,26 @@ class AudioPlayerStreamListeners {
           (event.inSeconds / max(audioPlayer.duration.inSeconds, 1)) * 100;
       try {
         if (percentProgress < 80 ||
-            audioPlayerState.playlist.index == -1 ||
-            audioPlayerState.playlist.index ==
+            audioPlayerState.currentIndex == -1 ||
+            audioPlayerState.currentIndex ==
                 audioPlayerState.tracks.length - 1) {
           return;
         }
-        final nextTrack = SpotubeMedia.fromMedia(
-          audioPlayerState.playlist.medias
-              .elementAt(audioPlayerState.playlist.index + 1),
-        );
+        final nextTrack = audioPlayerState.tracks
+            .elementAt(audioPlayerState.currentIndex + 1);
 
-        if (lastTrack == nextTrack.track.id || nextTrack.track is LocalTrack) {
+        if (lastTrack == nextTrack.id || nextTrack is SpotubeLocalTrackObject) {
           return;
         }
 
         try {
-          await ref.read(sourcedTrackProvider(nextTrack).future);
+          await ref.read(
+            trackSourcesProvider(
+              TrackSourceQuery.fromTrack(nextTrack as SpotubeFullTrackObject),
+            ).future,
+          );
         } finally {
-          lastTrack = nextTrack.track.id!;
+          lastTrack = nextTrack.id;
         }
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
