@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' show ListTile, ListTileControlAffinity;
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
 
@@ -7,11 +8,12 @@ class AdaptiveSelectTile<T> extends HookWidget {
   final Widget title;
   final Widget? subtitle;
   final Widget? secondary;
+  final List<Widget>? trailing;
   final ListTileControlAffinity? controlAffinity;
   final T value;
   final ValueChanged<T?>? onChanged;
 
-  final List<DropdownMenuItem<T>> options;
+  final List<SelectItemButton<T>> options;
 
   /// Show the smaller value when the breakpoint is reached
   ///
@@ -22,6 +24,9 @@ class AdaptiveSelectTile<T> extends HookWidget {
 
   final bool? breakLayout;
 
+  final BoxConstraints? popupConstraints;
+  final PopoverConstraint? popupWidthConstraint;
+
   const AdaptiveSelectTile({
     required this.title,
     required this.value,
@@ -30,64 +35,50 @@ class AdaptiveSelectTile<T> extends HookWidget {
     this.controlAffinity = ListTileControlAffinity.trailing,
     this.subtitle,
     this.secondary,
+    this.trailing,
     this.breakLayout,
     this.showValueWhenUnfolded = true,
     super.key,
+    this.popupConstraints,
+    this.popupWidthConstraint,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
-    final rawControl = DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.secondaryContainer,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: DropdownButton<T>(
-        items: options,
-        value: value,
-        onChanged: onChanged,
-        menuMaxHeight: mediaQuery.size.height * 0.6,
-        underline: const SizedBox.shrink(),
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        borderRadius: BorderRadius.circular(10),
-        icon: const Icon(SpotubeIcons.angleDown),
-        dropdownColor: theme.colorScheme.secondaryContainer,
-      ),
-    );
-    final controlPlaceholder = useMemoized(
-        () => options
-            .firstWhere(
-              (element) => element.value == value,
-              orElse: () => DropdownMenuItem<T>(
-                value: null,
-                child: Container(),
-              ),
-            )
-            .child,
-        [value, options]);
+    final mediaQuery = MediaQuery.sizeOf(context);
 
-    final control = breakLayout ?? mediaQuery.mdAndUp
-        ? rawControl
-        : showValueWhenUnfolded
-            ? Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: theme.colorScheme.primary,
-                    width: 2,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: DefaultTextStyle(
-                  style: TextStyle(
-                    color: theme.colorScheme.primary,
-                  ),
-                  child: controlPlaceholder,
-                ),
-              )
-            : const SizedBox.shrink();
+    Widget? control = Select<T>(
+      itemBuilder: (context, item) {
+        return options.firstWhere((element) => element.value == item).child;
+      },
+      value: value,
+      onChanged: onChanged,
+      popupConstraints: popupConstraints ?? const BoxConstraints(maxWidth: 200),
+      popupWidthConstraint: popupWidthConstraint ?? PopoverConstraint.flexible,
+      autoClosePopover: true,
+      popup: (context) {
+        return SelectPopup(
+          autoClose: true,
+          items: SelectItemBuilder(
+            childCount: options.length,
+            builder: (context, index) {
+              return options[index];
+            },
+          ),
+        );
+      },
+    );
+
+    if (mediaQuery.smAndDown) {
+      if (showValueWhenUnfolded) {
+        control = OutlineBadge(
+          child: options.firstWhere((element) => element.value == value).child,
+        );
+      } else {
+        control = null;
+      }
+    }
 
     return ListTile(
       title: title,
@@ -95,29 +86,48 @@ class AdaptiveSelectTile<T> extends HookWidget {
       leading: controlAffinity != ListTileControlAffinity.leading
           ? secondary
           : control,
-      trailing: controlAffinity == ListTileControlAffinity.leading
-          ? secondary
-          : control,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        spacing: 5,
+        children: [
+          ...?trailing,
+          if (controlAffinity == ListTileControlAffinity.leading &&
+              secondary != null)
+            secondary!
+          else if (controlAffinity == ListTileControlAffinity.trailing &&
+              control != null)
+            control,
+        ],
+      ),
       onTap: breakLayout ?? mediaQuery.mdAndUp
           ? null
           : () {
               showDialog(
                 context: context,
                 builder: (context) {
-                  return SimpleDialog(
-                    title: title,
-                    children: [
-                      for (final option in options)
-                        RadioListTile<T>(
-                          title: option.child,
-                          value: option.value as T,
-                          groupValue: value,
-                          onChanged: (v) {
-                            Navigator.pop(context);
-                            onChanged?.call(v);
-                          },
-                        ),
-                    ],
+                  return AlertDialog(
+                    content: Flexible(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: options.length,
+                        itemBuilder: (context, index) {
+                          final item = options[index];
+
+                          return ListTile(
+                            iconColor: theme.colorScheme.primary,
+                            leading: item.value == value
+                                ? const Icon(SpotubeIcons.radioChecked)
+                                : const Icon(SpotubeIcons.radioUnchecked),
+                            title: item.child,
+                            onTap: () {
+                              onChanged?.call(item.value);
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
+                      ),
+                    ),
                   );
                 },
               );

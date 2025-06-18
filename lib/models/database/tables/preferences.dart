@@ -14,9 +14,29 @@ enum CloseBehavior {
 enum AudioSource {
   youtube,
   piped,
-  jiosaavn;
+  jiosaavn,
+  invidious;
 
   String get label => name[0].toUpperCase() + name.substring(1);
+}
+
+enum YoutubeClientEngine {
+  ytDlp("yt-dlp"),
+  youtubeExplode("YouTubeExplode"),
+  newPipe("NewPipe");
+
+  final String label;
+
+  const YoutubeClientEngine(this.label);
+
+  bool isAvailableForPlatform() {
+    return switch (this) {
+      YoutubeClientEngine.youtubeExplode =>
+        YouTubeExplodeEngine.isAvailableForPlatform,
+      YoutubeClientEngine.ytDlp => YtDlpEngine.isAvailableForPlatform,
+      YoutubeClientEngine.newPipe => NewPipeEngine.isAvailableForPlatform,
+    };
+  }
 }
 
 enum MusicCodec {
@@ -59,7 +79,7 @@ class PreferencesTable extends Table {
   TextColumn get closeBehavior => textEnum<CloseBehavior>()
       .withDefault(Constant(CloseBehavior.close.name))();
   TextColumn get accentColorScheme => text()
-      .withDefault(const Constant("Blue:0xFF2196F3"))
+      .withDefault(const Constant("Orange:0xFFf97315"))
       .map(const SpotubeColorConverter())();
   TextColumn get layoutMode =>
       textEnum<LayoutMode>().withDefault(Constant(LayoutMode.adaptive.name))();
@@ -77,10 +97,14 @@ class PreferencesTable extends Table {
       text().withDefault(const Constant("")).map(const StringListConverter())();
   TextColumn get pipedInstance =>
       text().withDefault(const Constant("https://pipedapi.kavin.rocks"))();
+  TextColumn get invidiousInstance =>
+      text().withDefault(const Constant("https://inv.nadeko.net"))();
   TextColumn get themeMode =>
       textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
   TextColumn get audioSource =>
       textEnum<AudioSource>().withDefault(Constant(AudioSource.youtube.name))();
+  TextColumn get youtubeClientEngine => textEnum<YoutubeClientEngine>()
+      .withDefault(Constant(YoutubeClientEngine.youtubeExplode.name))();
   TextColumn get streamMusicCodec =>
       textEnum<SourceCodecs>().withDefault(Constant(SourceCodecs.weba.name))();
   TextColumn get downloadMusicCodec =>
@@ -91,6 +115,8 @@ class PreferencesTable extends Table {
       boolean().withDefault(const Constant(true))();
   BoolColumn get enableConnect =>
       boolean().withDefault(const Constant(false))();
+  IntColumn get connectPort => integer().withDefault(const Constant(-1))();
+  BoolColumn get cacheMusic => boolean().withDefault(const Constant(true))();
 
   // Default values as PreferencesTableData
   static PreferencesTableData defaults() {
@@ -105,7 +131,7 @@ class PreferencesTable extends Table {
       systemTitleBar: false,
       skipNonMusic: false,
       closeBehavior: CloseBehavior.close,
-      accentColorScheme: SpotubeColor(Colors.blue.value, name: "Blue"),
+      accentColorScheme: SpotubeColor(Colors.orange.value, name: "Orange"),
       layoutMode: LayoutMode.adaptive,
       locale: const Locale("system", "system"),
       market: Market.US,
@@ -113,13 +139,17 @@ class PreferencesTable extends Table {
       downloadLocation: "",
       localLibraryLocation: [],
       pipedInstance: "https://pipedapi.kavin.rocks",
+      invidiousInstance: "https://inv.nadeko.net",
       themeMode: ThemeMode.system,
       audioSource: AudioSource.youtube,
-      streamMusicCodec: SourceCodecs.weba,
+      youtubeClientEngine: YoutubeClientEngine.youtubeExplode,
+      streamMusicCodec: SourceCodecs.m4a,
       downloadMusicCodec: SourceCodecs.m4a,
       discordPresence: true,
       endlessPlayback: true,
       enableConnect: false,
+      cacheMusic: true,
+      connectPort: -1,
     );
   }
 }

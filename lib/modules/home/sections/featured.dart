@@ -1,5 +1,7 @@
-import 'package:flutter/material.dart' hide Page;
+import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotify/spotify.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
@@ -14,6 +16,21 @@ class HomeFeaturedSection extends HookConsumerWidget {
     final featuredPlaylists = ref.watch(featuredPlaylistsProvider);
     final featuredPlaylistsNotifier =
         ref.watch(featuredPlaylistsProvider.notifier);
+
+    if (featuredPlaylists.hasError) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Undraw(
+            illustration: UndrawIllustration.fixingBugs,
+            height: 200 * context.theme.scaling,
+            color: context.theme.colorScheme.primary,
+          ),
+          Text(context.l10n.something_went_wrong).small().muted(),
+          const Gap(8),
+        ],
+      );
+    }
 
     return Skeletonizer(
       enabled: featuredPlaylists.isLoading,

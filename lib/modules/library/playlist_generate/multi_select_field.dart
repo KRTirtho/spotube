@@ -68,7 +68,7 @@ class MultiSelectField<T> extends HookWidget {
             side: BorderSide(
               color: enabled
                   ? theme.colorScheme.onSurface
-                  : theme.colorScheme.onSurface.withOpacity(0.1),
+                  : theme.colorScheme.onSurface.withValues(alpha: 0.1),
             ),
           ),
           mouseCursor: WidgetStateMouseCursor.textable,

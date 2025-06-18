@@ -32,9 +32,9 @@ class AlbumReleasesNotifier
   fetch(int offset, int limit) async {
     final market = ref.read(userPreferencesProvider).market;
 
-    final albums = await spotify.browse
-        .newReleases(country: market)
-        .getPage(limit, offset);
+    final albums = await spotify.invoke(
+      (api) => api.browse.newReleases(country: market).getPage(limit, offset),
+    );
 
     return albums.items?.map((album) => album.toAlbum()).toList() ?? [];
   }

@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shimmers/shimmer_lyrics.dart';
@@ -35,9 +34,11 @@ class SyncedLyrics extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final mediaQuery = MediaQuery.sizeOf(context);
+    final theme = Theme.of(context);
+
     final playlist = ref.watch(audioPlayerProvider);
 
-    final mediaQuery = MediaQuery.of(context);
     final controller = useAutoScrollController();
 
     final delay = ref.watch(syncedLyricsDelayProvider);
@@ -54,7 +55,7 @@ class SyncedLyrics extends HookConsumerWidget {
         useSyncedLyrics(ref, lyricsState.asData?.value.lyricsMap ?? {}, delay);
     final textZoomLevel = useState<int>(defaultTextZoom);
 
-    final textTheme = Theme.of(context).textTheme;
+    final typography = Theme.of(context).typography;
 
     ref.listen(
       audioPlayerProvider.select((s) => s.activeTrack),
@@ -69,11 +70,13 @@ class SyncedLyrics extends HookConsumerWidget {
     );
 
     final headlineTextStyle = (mediaQuery.mdAndUp
-            ? textTheme.displaySmall
-            : textTheme.headlineMedium?.copyWith(fontSize: 25))
-        ?.copyWith(color: palette.titleTextColor);
+            ? typography.h3
+            : typography.h4.copyWith(fontSize: 25))
+        .copyWith(
+      color: palette.titleTextColor,
+    );
 
-    final bodyTextTheme = textTheme.bodyLarge?.copyWith(
+    final bodyTextTheme = typography.large.copyWith(
       color: palette.bodyTextColor,
     );
 
@@ -115,9 +118,8 @@ class SyncedLyrics extends HookConsumerWidget {
                   preferredSize: const Size.fromHeight(40),
                   child: Text(
                     playlist.activeTrack?.artists?.asString() ?? "",
-                    style: mediaQuery.mdAndUp
-                        ? textTheme.headlineSmall
-                        : textTheme.titleLarge,
+                    style:
+                        mediaQuery.mdAndUp ? typography.h4 : typography.x2Large,
                   ),
                 ),
               ),
@@ -144,7 +146,7 @@ class SyncedLyrics extends HookConsumerWidget {
                         ? Container(
                             padding: index == lyricValue.lyrics.length - 1
                                 ? EdgeInsets.only(
-                                    bottom: mediaQuery.size.height / 2,
+                                    bottom: mediaQuery.height / 2,
                                   )
                                 : null,
                           )
@@ -165,31 +167,40 @@ class SyncedLyrics extends HookConsumerWidget {
                                       (textZoomLevel.value / 100),
                                 ),
                                 textAlign: TextAlign.center,
-                                child: InkWell(
-                                  onTap: () async {
-                                    final time = Duration(
-                                      seconds:
-                                          lyricSlice.time.inSeconds - delay,
-                                    );
-                                    if (time > audioPlayer.duration ||
-                                        time.isNegative) {
-                                      return;
-                                    }
-                                    audioPlayer.seek(time);
-                                  },
-                                  child: Builder(builder: (context) {
-                                    return StrokeText(
-                                      text: lyricSlice.text,
-                                      textStyle:
-                                          DefaultTextStyle.of(context).style,
-                                      textColor: isActive
-                                          ? Colors.white
-                                          : palette.bodyTextColor,
-                                      strokeColor: isActive
-                                          ? Colors.black
-                                          : Colors.transparent,
-                                    );
-                                  }),
+                                child: MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      final time = Duration(
+                                        seconds:
+                                            lyricSlice.time.inSeconds - delay,
+                                      );
+                                      if (time > audioPlayer.duration ||
+                                          time.isNegative) {
+                                        return;
+                                      }
+                                      audioPlayer.seek(time);
+                                    },
+                                    child: Builder(builder: (context) {
+                                      return StrokeText(
+                                        text: lyricSlice.text,
+                                        textStyle:
+                                            DefaultTextStyle.of(context).style,
+                                        textColor: switch ((
+                                          isActive,
+                                          isModal == true
+                                        )) {
+                                          (true, _) => Colors.white,
+                                          (_, true) =>
+                                            theme.colorScheme.mutedForeground,
+                                          (_, _) => palette.bodyTextColor,
+                                        },
+                                        strokeColor: isActive
+                                            ? Colors.black
+                                            : Colors.transparent,
+                                      );
+                                    }),
+                                  ),
                                 ),
                               ),
                             ),
@@ -231,7 +242,7 @@ class SyncedLyrics extends HookConsumerWidget {
                         ),
                         TextSpan(
                           text: " Plain Lyrics ",
-                          style: textTheme.bodyLarge?.copyWith(
+                          style: typography.large.copyWith(
                             color: palette.bodyTextColor,
                             fontWeight: FontWeight.bold,
                           ),

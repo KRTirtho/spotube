@@ -1,235 +1,190 @@
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
 
-_emptyCB() {}
-
-class PopSheetEntry<T> extends ListTile {
+class AdaptiveMenuButton<T> extends MenuButton {
   final T? value;
-  const PopSheetEntry({
-    this.value,
+  const AdaptiveMenuButton({
     super.key,
-    super.leading,
-    super.title,
-    super.subtitle,
+    this.value,
+    required super.child,
+    super.subMenu,
+    super.onPressed,
     super.trailing,
-    super.isThreeLine = false,
-    super.dense,
-    super.visualDensity,
-    super.shape,
-    super.style,
-    super.selectedColor,
-    super.iconColor,
-    super.textColor,
-    super.titleTextStyle,
-    super.subtitleTextStyle,
-    super.leadingAndTrailingTextStyle,
-    super.contentPadding,
+    super.leading,
     super.enabled = true,
-    super.onTap = _emptyCB,
-    super.onLongPress,
-    super.onFocusChange,
-    super.mouseCursor,
-    super.selected = false,
-    super.focusColor,
-    super.hoverColor,
-    super.splashColor,
     super.focusNode,
-    super.autofocus = false,
-    super.tileColor,
-    super.selectedTileColor,
-    super.enableFeedback,
-    super.horizontalTitleGap,
-    super.minVerticalPadding,
-    super.minLeadingWidth,
-    super.titleAlignment,
-  });
+    super.autoClose = true,
+    super.popoverController,
+  }) : assert(
+          value != null || onPressed != null,
+          'Either value or onPressed must be provided',
+        );
 }
 
 /// An adaptive widget that shows a [PopupMenuButton] when screen size is above
 /// or equal to 640px
-/// In smaller screen, a [IconButton] with a [showModalBottomSheet] is shown
+/// In smaller screen, a [IconButton] with a [openDrawer] is shown
 class AdaptivePopSheetList<T> extends StatelessWidget {
-  final List<PopSheetEntry<T>> children;
+  final List<AdaptiveMenuButton<T>> Function(BuildContext context) items;
   final Widget? icon;
   final Widget? child;
   final bool useRootNavigator;
 
   final List<Widget>? headings;
-  final String? tooltip;
+  final String tooltip;
   final ValueChanged<T>? onSelected;
 
-  final BorderRadius borderRadius;
   final Offset offset;
+
+  final AbstractButtonStyle variance;
 
   const AdaptivePopSheetList({
     super.key,
-    required this.children,
+    required this.items,
     this.icon,
     this.child,
     this.useRootNavigator = true,
     this.headings,
     this.onSelected,
-    this.borderRadius = const BorderRadius.all(Radius.circular(999)),
-    this.tooltip,
+    required this.tooltip,
     this.offset = Offset.zero,
+    this.variance = ButtonVariance.ghost,
   }) : assert(
           !(icon != null && child != null),
           'Either icon or child must be provided',
         );
 
-  Future<T?> showPopupMenu(BuildContext context, RelativeRect position) {
+  Future<void> showDropdownMenu(BuildContext context, Offset position) async {
     final mediaQuery = MediaQuery.of(context);
+    List<MenuButton> childrenModified(BuildContext context) =>
+        items(context).map((s) {
+          if (s.onPressed == null) {
+            return MenuButton(
+              key: s.key,
+              autoClose: s.autoClose,
+              enabled: s.enabled,
+              leading: s.leading,
+              focusNode: s.focusNode,
+              onPressed: (context) {
+                if (s.value != null) {
+                  onSelected?.call(s.value as T);
+                }
+              },
+              popoverController: s.popoverController,
+              subMenu: s.subMenu,
+              trailing: s.trailing,
+              child: s.child,
+            );
+          }
+          return s;
+        }).toList();
 
-    return showMenu<T>(
-      context: context,
-      useRootNavigator: useRootNavigator,
-      constraints: BoxConstraints(
-        maxHeight: mediaQuery.size.height * 0.6,
-      ),
-      position: position,
-      items: children
-          .map(
-            (item) => PopupMenuItem<T>(
-              padding: EdgeInsets.zero,
-              enabled: false,
-              child: _AdaptivePopSheetListItem<T>(
-                item: item,
-                onSelected: onSelected,
-              ),
+    if (mediaQuery.mdAndUp) {
+      await showDropdown<T?>(
+        context: context,
+        rootOverlay: useRootNavigator,
+        // heightConstraint: PopoverConstraint.anchorFixedSize,
+        // constraints: BoxConstraints(
+        //   maxHeight: mediaQuery.size.height * 0.6,
+        // ),
+        position: position,
+        builder: (context) {
+          return WidgetStatesProvider.boundary(
+            child: DropdownMenu(
+              children: childrenModified(context),
             ),
-          )
-          .toList(),
+          );
+        },
+      ).future;
+      return;
+    }
+
+    await openDrawer(
+      context: context,
+      draggable: true,
+      showDragHandle: true,
+      position: OverlayPosition.bottom,
+      borderRadius: context.theme.borderRadiusMd,
+      transformBackdrop: false,
+      builder: (context) {
+        final children = childrenModified(context);
+        return ListView.builder(
+          itemCount: children.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            final data = children[index];
+
+            return Button(
+              enabled: data.enabled,
+              style: ButtonVariance.ghost.copyWith(
+                padding: (context, state, value) => const EdgeInsets.all(16),
+              ),
+              onPressed: () {
+                data.onPressed?.call(context);
+                if (data.autoClose) {
+                  closeDrawer(context);
+                }
+              },
+              leading: data.leading,
+              trailing: data.trailing,
+              alignment: Alignment.centerLeft,
+              child: data.child,
+            );
+          },
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final theme = Theme.of(context);
 
     if (mediaQuery.mdAndUp) {
-      return PopupMenuButton(
-        icon: icon,
-        tooltip: tooltip,
-        offset: offset,
-        child: child == null ? null : IgnorePointer(child: child),
-        itemBuilder: (context) => children
-            .map(
-              (item) => PopupMenuItem(
-                padding: EdgeInsets.zero,
-                enabled: false,
-                child: _AdaptivePopSheetListItem(
-                  item: item,
-                  onSelected: onSelected,
-                ),
+      return Tooltip(
+        tooltip: TooltipContainer(
+          child: Text(tooltip),
+        ).call,
+        child: IconButton(
+          variance: variance,
+          icon: icon ?? const Icon(SpotubeIcons.moreVertical),
+          onPressed: () {
+            final renderBox = context.findRenderObject() as RenderBox;
+            final position = RelativeRect.fromRect(
+              Rect.fromPoints(
+                renderBox.localToGlobal(Offset.zero,
+                    ancestor: context.findRenderObject()),
+                renderBox.localToGlobal(renderBox.size.bottomRight(Offset.zero),
+                    ancestor: context.findRenderObject()),
               ),
-            )
-            .toList(),
-      );
-    }
-
-    void showSheet() {
-      showModalBottomSheet(
-        context: context,
-        useRootNavigator: useRootNavigator,
-        isScrollControlled: true,
-        showDragHandle: true,
-        constraints: BoxConstraints(
-          maxHeight: mediaQuery.size.height * 0.6,
+              Offset.zero & mediaQuery.size,
+            );
+            final offset = Offset(position.left, position.top);
+            showDropdownMenu(context, offset);
+          },
         ),
-        builder: (context) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0).copyWith(top: 0),
-            child: DefaultTextStyle(
-              style: theme.textTheme.titleMedium!,
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (headings != null) ...[
-                      ...headings!,
-                      const SizedBox(height: 8),
-                      Divider(
-                        color: theme.colorScheme.primary,
-                        thickness: 0.3,
-                        endIndent: 16,
-                        indent: 16,
-                      ),
-                    ],
-                    ...children.map(
-                      (item) => _AdaptivePopSheetListItem(
-                        item: item,
-                        onSelected: onSelected,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
       );
     }
 
     if (child != null) {
       return Tooltip(
-        message: tooltip ?? '',
-        child: InkWell(
-          onTap: showSheet,
-          borderRadius: borderRadius,
+        tooltip: TooltipContainer(child: Text(tooltip)).call,
+        child: Button(
+          onPressed: () => showDropdownMenu(context, Offset.zero),
+          style: variance,
           child: IgnorePointer(child: child),
         ),
       );
     }
 
-    return IconButton(
-      icon: icon ?? const Icon(SpotubeIcons.moreVertical),
-      tooltip: tooltip,
-      style: theme.iconButtonTheme.style?.copyWith(
-        shape: WidgetStatePropertyAll(
-          RoundedRectangleBorder(
-            borderRadius: borderRadius,
-          ),
-        ),
-      ),
-      onPressed: showSheet,
-    );
-  }
-}
-
-class _AdaptivePopSheetListItem<T> extends StatelessWidget {
-  final PopSheetEntry<T> item;
-  final ValueChanged<T>? onSelected;
-  const _AdaptivePopSheetListItem({
-    super.key,
-    required this.item,
-    this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return InkWell(
-      borderRadius: (theme.listTileTheme.shape as RoundedRectangleBorder?)
-              ?.borderRadius as BorderRadius? ??
-          const BorderRadius.all(Radius.circular(10)),
-      onTap: !item.enabled
-          ? null
-          : () {
-              item.onTap?.call();
-              if (item.value != null) {
-                Navigator.pop(context);
-                onSelected?.call(item.value as T);
-              }
-            },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: IconTheme.merge(
-          data: const IconThemeData(opacity: 1),
-          child: IgnorePointer(child: item),
-        ),
+    return Tooltip(
+      tooltip: TooltipContainer(child: Text(tooltip)).call,
+      child: IconButton(
+        variance: variance,
+        icon: icon ?? const Icon(SpotubeIcons.moreVertical),
+        onPressed: () => showDropdownMenu(context, Offset.zero),
       ),
     );
   }

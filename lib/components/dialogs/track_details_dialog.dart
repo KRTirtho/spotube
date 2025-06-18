@@ -1,6 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/hyper_link.dart';
@@ -32,8 +33,7 @@ class TrackDetailsDialog extends HookWidget {
       ),
       context.l10n.album: LinkText(
         track.album!.name!,
-        "/album/${track.album?.id}",
-        extra: track.album,
+        AlbumRoute(album: track.album!, id: track.album!.id!),
         overflow: TextOverflow.ellipsis,
         style: const TextStyle(color: Colors.blue),
       ),
@@ -73,17 +73,15 @@ class TrackDetailsDialog extends HookWidget {
           };
 
     return AlertDialog(
-      contentPadding: const EdgeInsets.all(16),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 100),
-      scrollable: true,
+      surfaceBlur: 0,
+      surfaceOpacity: 1,
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 8,
         children: [
           const Icon(SpotubeIcons.info),
-          const SizedBox(width: 8),
           Text(
             context.l10n.details,
-            style: theme.textTheme.titleMedium,
+            style: theme.typography.h4,
           ),
         ],
       ),
@@ -91,65 +89,64 @@ class TrackDetailsDialog extends HookWidget {
         width: mediaQuery.mdAndUp ? double.infinity : 700,
         child: Table(
           columnWidths: const {
-            0: FixedColumnWidth(95),
-            1: FixedColumnWidth(10),
-            2: FlexColumnWidth(1),
+            0: FixedTableSize(95),
+            1: FixedTableSize(10),
+            2: FlexTableSize(),
           },
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          children: [
+          theme: const TableTheme(
+            backgroundColor: Colors.transparent,
+            cellTheme: TableCellTheme(
+              backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+            ),
+          ),
+          rowHeights: const {0: FixedTableSize(40)},
+          rows: [
             for (final entry in detailsMap.entries)
               TableRow(
-                children: [
+                cells: [
                   TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.top,
                     child: Text(
                       entry.key,
-                      style: theme.textTheme.titleMedium,
+                      style: theme.typography.bold,
                     ),
                   ),
                   const TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.top,
                     child: Text(":"),
                   ),
-                  if (entry.value is Widget)
-                    entry.value as Widget
-                  else if (entry.value is String)
-                    Text(
-                      entry.value as String,
-                      style: theme.textTheme.bodyMedium,
-                    ),
+                  TableCell(
+                    child: entry.value is Widget
+                        ? entry.value as Widget
+                        : (entry.value is String)
+                            ? Text(
+                                entry.value as String,
+                                style: theme.typography.normal,
+                              )
+                            : const Text(""),
+                  ),
                 ],
               ),
-            const TableRow(
-              children: [
-                SizedBox(height: 16),
-                SizedBox(height: 16),
-                SizedBox(height: 16),
-              ],
-            ),
             for (final entry in ytTracksDetailsMap.entries)
               TableRow(
-                children: [
+                cells: [
                   TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.top,
                     child: Text(
                       entry.key,
-                      style: theme.textTheme.titleMedium,
+                      style: theme.typography.bold,
                     ),
                   ),
                   const TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.top,
                     child: Text(":"),
                   ),
-                  if (entry.value is Widget)
-                    entry.value as Widget
-                  else
-                    Text(
-                      entry.value,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyMedium,
-                    ),
+                  TableCell(
+                    child: entry.value is Widget
+                        ? entry.value as Widget
+                        : Text(
+                            entry.value,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.typography.normal,
+                          ),
+                  ),
                 ],
               ),
           ],

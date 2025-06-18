@@ -39,6 +39,11 @@ class PlaybackHistoryActions {
   }
 
   Future<void> addTracks(List<Track> tracks) async {
+    assert(
+      tracks.every((t) => t.artists?.every((a) => a.images != null) ?? false),
+      'Track artists must have images',
+    );
+
     await _batchInsertHistoryEntries([
       for (final track in tracks)
         HistoryTableCompanion.insert(
@@ -50,6 +55,11 @@ class PlaybackHistoryActions {
   }
 
   Future<void> addTrack(Track track) async {
+    assert(
+      track.artists?.every((a) => a.images != null) ?? false,
+      'Track artists must have images',
+    );
+
     await _db.into(_db.historyTable).insert(
           HistoryTableCompanion.insert(
             type: HistoryEntryType.track,

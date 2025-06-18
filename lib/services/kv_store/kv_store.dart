@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:encrypt/encrypt.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/services/wm_tools/wm_tools.dart';
 import 'package:uuid/uuid.dart';
 
@@ -87,4 +88,31 @@ abstract class KVStoreService {
       sharedPreferences.getBool('hasMigratedToDrift') ?? false;
   static Future<void> setHasMigratedToDrift(bool value) async =>
       await sharedPreferences.setBool('hasMigratedToDrift', value);
+
+  static Map<String, dynamic>? get _youtubeEnginePaths {
+    final jsonRaw = sharedPreferences.getString('ytDlpPath');
+
+    if (jsonRaw == null) {
+      return null;
+    }
+
+    return jsonDecode(jsonRaw);
+  }
+
+  static String? getYoutubeEnginePath(YoutubeClientEngine engine) {
+    return _youtubeEnginePaths?[engine.name];
+  }
+
+  static Future<void> setYoutubeEnginePath(
+    YoutubeClientEngine engine,
+    String path,
+  ) async {
+    await sharedPreferences.setString(
+      'ytDlpPath',
+      jsonEncode({
+        ...?_youtubeEnginePaths,
+        engine.name: path,
+      }),
+    );
+  }
 }

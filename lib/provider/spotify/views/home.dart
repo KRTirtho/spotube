@@ -11,8 +11,6 @@ final homeViewProvider = FutureProvider((ref) async {
     authenticationProvider.select((s) => s.asData?.value?.getCookie("sp_t")),
   );
 
-  if (spTCookie == null) return null;
-
   final spotify = ref.watch(customSpotifyEndpointProvider);
 
   return spotify.getHomeFeed(

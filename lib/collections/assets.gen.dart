@@ -9,6 +9,17 @@
 
 import 'package:flutter/widgets.dart';
 
+class $AssetsBackgroundsGen {
+  const $AssetsBackgroundsGen();
+
+  /// File path: assets/backgrounds/xmas-effect.png
+  AssetGenImage get xmasEffect =>
+      const AssetGenImage('assets/backgrounds/xmas-effect.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [xmasEffect];
+}
+
 class $AssetsLogosGen {
   const $AssetsLogosGen();
 
@@ -22,6 +33,84 @@ class $AssetsLogosGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [songlinkTransparent, songlink];
+}
+
+class $AssetsPatternsGen {
+  const $AssetsPatternsGen();
+
+  /// File path: assets/patterns/black_white_visualized.jpg
+  AssetGenImage get blackWhiteVisualized =>
+      const AssetGenImage('assets/patterns/black_white_visualized.jpg');
+
+  /// File path: assets/patterns/brazil_carnival.jpg
+  AssetGenImage get brazilCarnival =>
+      const AssetGenImage('assets/patterns/brazil_carnival.jpg');
+
+  /// File path: assets/patterns/cotton_balls.jpg
+  AssetGenImage get cottonBalls =>
+      const AssetGenImage('assets/patterns/cotton_balls.jpg');
+
+  /// File path: assets/patterns/cute_worms.jpg
+  AssetGenImage get cuteWorms =>
+      const AssetGenImage('assets/patterns/cute_worms.jpg');
+
+  /// File path: assets/patterns/flash_cross_axis.jpg
+  AssetGenImage get flashCrossAxis =>
+      const AssetGenImage('assets/patterns/flash_cross_axis.jpg');
+
+  /// File path: assets/patterns/memphis_shapes.jpg
+  AssetGenImage get memphisShapes =>
+      const AssetGenImage('assets/patterns/memphis_shapes.jpg');
+
+  /// File path: assets/patterns/oval_gloomy.jpg
+  AssetGenImage get ovalGloomy =>
+      const AssetGenImage('assets/patterns/oval_gloomy.jpg');
+
+  /// File path: assets/patterns/oval_sunny.jpg
+  AssetGenImage get ovalSunny =>
+      const AssetGenImage('assets/patterns/oval_sunny.jpg');
+
+  /// File path: assets/patterns/red_nimbuses.jpg
+  AssetGenImage get redNimbuses =>
+      const AssetGenImage('assets/patterns/red_nimbuses.jpg');
+
+  /// File path: assets/patterns/tree_bark.jpg
+  AssetGenImage get treeBark =>
+      const AssetGenImage('assets/patterns/tree_bark.jpg');
+
+  /// File path: assets/patterns/vibrant_pentagons.jpg
+  AssetGenImage get vibrantPentagons =>
+      const AssetGenImage('assets/patterns/vibrant_pentagons.jpg');
+
+  /// File path: assets/patterns/wiring_pattern.jpg
+  AssetGenImage get wiringPattern =>
+      const AssetGenImage('assets/patterns/wiring_pattern.jpg');
+
+  /// File path: assets/patterns/zigzags_gloomy.jpg
+  AssetGenImage get zigzagsGloomy =>
+      const AssetGenImage('assets/patterns/zigzags_gloomy.jpg');
+
+  /// File path: assets/patterns/zigzags_sunny.jpg
+  AssetGenImage get zigzagsSunny =>
+      const AssetGenImage('assets/patterns/zigzags_sunny.jpg');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [
+        blackWhiteVisualized,
+        brazilCarnival,
+        cottonBalls,
+        cuteWorms,
+        flashCrossAxis,
+        memphisShapes,
+        ovalGloomy,
+        ovalSunny,
+        redNimbuses,
+        treeBark,
+        vibrantPentagons,
+        wiringPattern,
+        zigzagsGloomy,
+        zigzagsSunny
+      ];
 }
 
 class $AssetsTutorialGen {
@@ -43,35 +132,47 @@ class $AssetsTutorialGen {
 class Assets {
   Assets._();
 
+  static const String license = 'LICENSE';
   static const AssetGenImage albumPlaceholder =
       AssetGenImage('assets/album-placeholder.png');
+  static const $AssetsBackgroundsGen backgrounds = $AssetsBackgroundsGen();
   static const AssetGenImage bengaliPatternsBg =
       AssetGenImage('assets/bengali-patterns-bg.jpg');
   static const AssetGenImage branding = AssetGenImage('assets/branding.png');
   static const AssetGenImage emptyBox = AssetGenImage('assets/empty_box.png');
+  static const AssetGenImage invidious = AssetGenImage('assets/invidious.jpg');
   static const AssetGenImage jiosaavn = AssetGenImage('assets/jiosaavn.png');
   static const AssetGenImage likedTracks =
       AssetGenImage('assets/liked-tracks.jpg');
   static const $AssetsLogosGen logos = $AssetsLogosGen();
+  static const $AssetsPatternsGen patterns = $AssetsPatternsGen();
   static const AssetGenImage placeholder =
       AssetGenImage('assets/placeholder.png');
   static const AssetGenImage spotubeHeroBanner =
       AssetGenImage('assets/spotube-hero-banner.png');
   static const AssetGenImage spotubeLogoForeground =
-      AssetGenImage('assets/spotube-logo-foreground.jpg');
+      AssetGenImage('assets/spotube-logo-foreground.png');
+  static const AssetGenImage spotubeLogoItem =
+      AssetGenImage('assets/spotube-logo-item.png');
+  static const AssetGenImage spotubeLogoLight =
+      AssetGenImage('assets/spotube-logo-light.png');
+  static const AssetGenImage spotubeLogoMacos =
+      AssetGenImage('assets/spotube-logo-macos.png');
   static const AssetGenImage spotubeLogoBmp =
       AssetGenImage('assets/spotube-logo.bmp');
   static const String spotubeLogoIco = 'assets/spotube-logo.ico';
   static const AssetGenImage spotubeLogoPng =
       AssetGenImage('assets/spotube-logo.png');
-  static const String spotubeLogoSvg = 'assets/spotube-logo.svg';
   static const AssetGenImage spotubeLogoAndroid12 =
       AssetGenImage('assets/spotube-logo_android12.png');
-  static const AssetGenImage spotubeNightlyLogoForeground =
-      AssetGenImage('assets/spotube-nightly-logo-foreground.jpg');
-  static const AssetGenImage spotubeNightlyLogoPng =
+  static const AssetGenImage spotubeNightlyItem =
+      AssetGenImage('assets/spotube-nightly-item.png');
+  static const AssetGenImage spotubeNightlyLogoForegroundPng =
+      AssetGenImage('assets/spotube-nightly-logo-foreground.png');
+  static const String spotubeNightlyLogoForegroundSvg =
+      'assets/spotube-nightly-logo-foreground.svg';
+  static const AssetGenImage spotubeNightlyLogo =
       AssetGenImage('assets/spotube-nightly-logo.png');
-  static const String spotubeNightlyLogoSvg = 'assets/spotube-nightly-logo.svg';
   static const AssetGenImage spotubeNightlyLogoAndroid12 =
       AssetGenImage('assets/spotube-nightly-logo_android12.png');
   static const AssetGenImage spotubeScreenshot =
@@ -91,23 +192,28 @@ class Assets {
 
   /// List of all assets
   static List<dynamic> get values => [
+        license,
         albumPlaceholder,
         bengaliPatternsBg,
         branding,
         emptyBox,
+        invidious,
         jiosaavn,
         likedTracks,
         placeholder,
         spotubeHeroBanner,
         spotubeLogoForeground,
+        spotubeLogoItem,
+        spotubeLogoLight,
+        spotubeLogoMacos,
         spotubeLogoBmp,
         spotubeLogoIco,
         spotubeLogoPng,
-        spotubeLogoSvg,
         spotubeLogoAndroid12,
-        spotubeNightlyLogoForeground,
-        spotubeNightlyLogoPng,
-        spotubeNightlyLogoSvg,
+        spotubeNightlyItem,
+        spotubeNightlyLogoForegroundPng,
+        spotubeNightlyLogoForegroundSvg,
+        spotubeNightlyLogo,
         spotubeNightlyLogoAndroid12,
         spotubeScreenshot,
         spotubeTallCapsule,
@@ -120,9 +226,16 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName);
+  const AssetGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  });
 
   final String _assetName;
+
+  final Size? size;
+  final Set<String> flavors;
 
   Image image({
     Key? key,
@@ -142,7 +255,7 @@ class AssetGenImage {
     ImageRepeat repeat = ImageRepeat.noRepeat,
     Rect? centerSlice,
     bool matchTextDirection = false,
-    bool gaplessPlayback = false,
+    bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
     FilterQuality filterQuality = FilterQuality.low,

@@ -30,8 +30,12 @@ mixin _$SongLink {
   String? get nativeAppUriMobile => throw _privateConstructorUsedError;
   String? get nativeAppUriDesktop => throw _privateConstructorUsedError;
 
+  /// Serializes this SongLink to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SongLink
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SongLinkCopyWith<SongLink> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -63,6 +67,8 @@ class _$SongLinkCopyWithImpl<$Res, $Val extends SongLink>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SongLink
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -145,6 +151,8 @@ class __$$SongLinkImplCopyWithImpl<$Res>
       _$SongLinkImpl _value, $Res Function(_$SongLinkImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SongLink
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -261,12 +269,14 @@ class _$SongLinkImpl implements _SongLink {
                 other.nativeAppUriDesktop == nativeAppUriDesktop));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, displayName, linkId, platform,
       show, uniqueId, country, url, nativeAppUriMobile, nativeAppUriDesktop);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SongLink
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SongLinkImplCopyWith<_$SongLinkImpl> get copyWith =>
@@ -313,8 +323,11 @@ abstract class _SongLink implements SongLink {
   String? get nativeAppUriMobile;
   @override
   String? get nativeAppUriDesktop;
+
+  /// Create a copy of SongLink
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SongLinkImplCopyWith<_$SongLinkImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

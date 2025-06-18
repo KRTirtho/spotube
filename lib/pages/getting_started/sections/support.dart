@@ -1,12 +1,11 @@
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/home/home.dart';
 import 'package:spotube/pages/mobile_login/hooks/login_callback.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -16,7 +15,6 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final ThemeData(:textTheme, :colorScheme) = Theme.of(context);
     final onLogin = useLoginCallback(ref);
 
     return Center(
@@ -34,9 +32,8 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                     const SizedBox(width: 8),
                     Text(
                       context.l10n.help_project_grow,
-                      style:
-                          textTheme.titleMedium?.copyWith(color: Colors.pink),
-                    ),
+                      style: const TextStyle(color: Colors.pink),
+                    ).semiBold(),
                   ],
                 ),
                 const Gap(16),
@@ -46,38 +43,57 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    FilledButton.icon(
-                      icon: const Icon(SpotubeIcons.github),
-                      label: Text(context.l10n.contribute_on_github),
-                      style: FilledButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
+                    Button(
+                      leading: const Icon(SpotubeIcons.github),
+                      style: ButtonVariance.primary.copyWith(
+                          decoration: (context, states, value) {
+                        if (states.isNotEmpty) {
+                          return ButtonVariance.primary
+                              .decoration(context, states);
+                        }
+
+                        return BoxDecoration(
+                          color: Colors.black,
                           borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                        );
+                      }),
                       onPressed: () async {
                         await launchUrlString(
                           "https://github.com/KRTirtho/spotube",
                           mode: LaunchMode.externalApplication,
                         );
                       },
+                      child: Text(
+                        context.l10n.contribute_on_github,
+                        style: const TextStyle(color: Colors.white),
+                      ),
                     ),
                     if (!Env.hideDonations) ...[
                       const Gap(16),
-                      FilledButton.icon(
-                        icon: const Icon(SpotubeIcons.openCollective),
-                        label: Text(context.l10n.donate_on_open_collective),
-                        style: FilledButton.styleFrom(
-                          backgroundColor: const Color(0xff4cb7f6),
-                          foregroundColor: Colors.white,
-                        ),
+                      Button(
+                        leading: const Icon(SpotubeIcons.openCollective),
+                        style: ButtonVariance.primary.copyWith(
+                            decoration: (context, states, value) {
+                          if (states.isNotEmpty) {
+                            return ButtonVariance.primary
+                                .decoration(context, states);
+                          }
+
+                          return BoxDecoration(
+                            color: const Color(0xff4cb7f6),
+                            borderRadius: BorderRadius.circular(8),
+                          );
+                        }),
                         onPressed: () async {
                           await launchUrlString(
                             "https://opencollective.com/spotube",
                             mode: LaunchMode.externalApplication,
                           );
                         },
+                        child: Text(
+                          context.l10n.donate_on_open_collective,
+                          style: const TextStyle(color: Colors.white),
+                        ),
                       ),
                     ]
                   ],
@@ -91,42 +107,40 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    gradient: LinearGradient(
-                      colors: [
-                        colorScheme.primary,
-                        colorScheme.secondary,
-                      ],
-                    ),
-                  ),
-                  child: TextButton.icon(
-                    icon: const Icon(SpotubeIcons.anonymous),
-                    label: Text(context.l10n.browse_anonymously),
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.white,
-                    ),
-                    onPressed: () async {
-                      await KVStoreService.setDoneGettingStarted(true);
-                      if (context.mounted) {
-                        context.goNamed(HomePage.name);
-                      }
-                    },
-                  ),
+                Button.secondary(
+                  leading: const Icon(SpotubeIcons.anonymous),
+                  onPressed: () async {
+                    await KVStoreService.setDoneGettingStarted(true);
+                    if (context.mounted) {
+                      context.navigateTo(const HomeRoute());
+                    }
+                  },
+                  child: Text(context.l10n.browse_anonymously),
                 ),
                 const Gap(16),
-                FilledButton.icon(
-                  icon: const Icon(SpotubeIcons.spotify),
-                  label: Text(context.l10n.connect_with_spotify),
-                  style: FilledButton.styleFrom(
-                    backgroundColor: const Color(0xff1db954),
-                    foregroundColor: Colors.white,
+                Button.primary(
+                  leading: const Icon(SpotubeIcons.spotify),
+                  style: ButtonVariance.primary.copyWith(
+                    decoration: (context, states, value) {
+                      if (states.isNotEmpty) {
+                        return ButtonVariance.primary
+                            .decoration(context, states);
+                      }
+
+                      return BoxDecoration(
+                        color: const Color(0xff1db954),
+                        borderRadius: BorderRadius.circular(8),
+                      );
+                    },
                   ),
                   onPressed: () async {
                     await KVStoreService.setDoneGettingStarted(true);
                     await onLogin();
                   },
+                  child: Text(
+                    context.l10n.connect_with_spotify,
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ),
               ],
             ),

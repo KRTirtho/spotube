@@ -28,12 +28,17 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
-android {
-    compileSdkVersion 34
+def composeVersion = "1.4.8"
 
-    ndkVersion "25.1.8937393"
+android {
+    namespace "oss.krtirtho.spotube"
+    
+    compileSdkVersion 35
+
+    ndkVersion = "27.0.12077973"
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
@@ -46,10 +51,18 @@ android {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "$composeVersion" // Correlates with org.jetbrains.kotlin.android plugin in settings.gradle
+    }
+
     defaultConfig {
         applicationId "oss.krtirtho.spotube"
         minSdkVersion 24
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
@@ -63,6 +76,7 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
@@ -96,15 +110,30 @@ android {
         }
     }
 
+    packagingOptions {
+        resources.excludes += "DebugProbesKt.bin"
+    }
 }
 
 flutter {
     source '../..'
 }
 
+def glanceVersion = "1.1.1"
 dependencies {
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
 
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     // other deps so just ignore
     implementation 'com.android.support:multidex:2.0.1'
+
+    implementation "androidx.glance:glance-appwidget:$glanceVersion"
+    implementation "androidx.glance:glance-appwidget-preview:$glanceVersion"
+    implementation "androidx.glance:glance-preview:$glanceVersion"
+    implementation "androidx.glance:glance-material3:$glanceVersion"
+    implementation "androidx.glance:glance-material:$glanceVersion"
+    implementation "androidx.work:work-runtime-ktx:2.8.1"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3"
+    implementation 'com.google.code.gson:gson:2.11.0'
 }

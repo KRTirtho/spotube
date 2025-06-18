@@ -8,14 +8,19 @@ import 'package:encrypt/encrypt.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' show ThemeMode, Colors;
 import 'package:spotify/spotify.dart' hide Playlist;
+import 'package:spotube/models/database/database.steps.dart';
 import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
-import 'package:flutter/material.dart' hide Table, Key, View;
+import 'package:flutter/widgets.dart' hide Table, Key, View;
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:drift/native.dart';
+import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
+import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
+import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
@@ -57,7 +62,68 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 6;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onUpgrade: stepByStep(
+        from1To2: (m, schema) async {
+          // Add invidiousInstance column to preferences table
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.invidiousInstance,
+          );
+        },
+        from2To3: (m, schema) async {
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.cacheMusic,
+          );
+        },
+        from3To4: (m, schema) async {
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.youtubeClientEngine,
+          );
+        },
+        from4To5: (m, schema) async {
+          final columnName = schema.preferencesTable.accentColorScheme
+              .escapedNameFor(SqlDialect.sqlite);
+          final columnNameOld =
+              '"${schema.preferencesTable.accentColorScheme.name}_old"';
+          final tableName = schema.preferencesTable.actualTableName;
+          await customStatement(
+            "ALTER TABLE $tableName "
+            "RENAME COLUMN $columnName to $columnNameOld",
+          );
+          await customStatement(
+            "ALTER TABLE $tableName "
+            "ADD COLUMN $columnName TEXT NOT NULL DEFAULT 'Orange:0xFFf97315'",
+          );
+          await customStatement(
+            "UPDATE $tableName "
+            "SET $columnName = $columnNameOld",
+          );
+          await customStatement(
+            "ALTER TABLE $tableName "
+            "DROP COLUMN $columnNameOld",
+          );
+          await customStatement(
+            "UPDATE $tableName "
+            "SET $columnName = 'Orange:0xFFf97315' WHERE $columnName = 'Blue:0xFF2196F3'",
+          );
+        },
+        from5To6: (m, schema) async {
+          // Add new column to preferences table
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.connectPort,
+          );
+        },
+      ),
+    );
+  }
 }
 
 LazyDatabase _openConnection() {

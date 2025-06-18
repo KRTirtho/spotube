@@ -8,32 +8,36 @@ final generatePlaylistProvider = FutureProvider.autoDispose
       userPreferencesProvider.select((s) => s.market),
     );
 
-    final recommendation = await spotify.recommendations
-        .get(
-      limit: input.limit,
-      seedArtists: input.seedArtists?.toList(),
-      seedGenres: input.seedGenres?.toList(),
-      seedTracks: input.seedTracks?.toList(),
-      market: market,
-      max: (input.max?.toJson()?..removeWhere((key, value) => value == null))
-          ?.cast<String, num>(),
-      min: (input.min?.toJson()?..removeWhere((key, value) => value == null))
-          ?.cast<String, num>(),
-      target: (input.target?.toJson()
-            ?..removeWhere((key, value) => value == null))
-          ?.cast<String, num>(),
-    )
-        .catchError((e, stackTrace) {
-      AppLogger.reportError(e, stackTrace);
-      return Recommendations();
-    });
+    final recommendation = await spotify.invoke(
+      (api) => api.recommendations
+          .get(
+        limit: input.limit,
+        seedArtists: input.seedArtists?.toList(),
+        seedGenres: input.seedGenres?.toList(),
+        seedTracks: input.seedTracks?.toList(),
+        market: market,
+        max: (input.max?.toJson()?..removeWhere((key, value) => value == null))
+            ?.cast<String, num>(),
+        min: (input.min?.toJson()?..removeWhere((key, value) => value == null))
+            ?.cast<String, num>(),
+        target: (input.target?.toJson()
+              ?..removeWhere((key, value) => value == null))
+            ?.cast<String, num>(),
+      )
+          .catchError((e, stackTrace) {
+        AppLogger.reportError(e, stackTrace);
+        return Recommendations();
+      }),
+    );
 
     if (recommendation.tracks?.isEmpty ?? true) {
       return [];
     }
 
-    final tracks = await spotify.tracks
-        .list(recommendation.tracks!.map((e) => e.id!).toList());
+    final tracks = await spotify.invoke(
+      (api) =>
+          api.tracks.list(recommendation.tracks!.map((e) => e.id!).toList()),
+    );
 
     return tracks.toList();
   },

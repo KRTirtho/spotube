@@ -28,7 +28,15 @@ class HistoryTopTracksState extends PaginatedState<PlaybackHistoryTrack> {
     return groupBy(artists, (artist) => artist.id!)
         .entries
         .map((entry) {
-          return (count: entry.value.length, artist: entry.value.first);
+          return (
+            count: entry.value.length,
+
+            /// Previously, due to a bug, artist images were not being saved.
+            /// Now it's fixed, but we need to handle the case where images are null.
+            /// So we take the first artist with images if available, otherwise the first one.
+            artist: entry.value.firstWhereOrNull((a) => a.images != null) ??
+                entry.value.first,
+          );
         })
         .sorted((a, b) => b.count.compareTo(a.count))
         .toList();
@@ -85,11 +93,58 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
       );
   }
 
+  Future<void> fixImageNotLoadingForArtistIssue(
+    List<HistoryTableData> entries,
+  ) async {
+    final nonImageArtistTracks =
+        entries.where((e) => e.track!.artists!.any((a) => a.images == null));
+
+    if (nonImageArtistTracks.isEmpty) return;
+
+    final artistIds = nonImageArtistTracks
+        .map((e) => e.track!.artists!.map((a) => a.id!))
+        .expand((e) => e)
+        .toSet()
+        .toList();
+
+    if (artistIds.isEmpty) return;
+
+    final artists = await ref.read(spotifyProvider).api.artists.list(artistIds);
+
+    final imagedArtistTracks = nonImageArtistTracks.map((e) {
+      final track = e.track!;
+      final includedArtists = track.artists!
+          .map((a) => artists.firstWhereOrNull((artist) => artist.id == a.id))
+          .nonNulls
+          .toList();
+
+      track.artists = includedArtists;
+
+      return e.copyWith(data: track.toJson());
+    });
+
+    assert(
+      imagedArtistTracks
+          .every((e) => e.track!.artists!.every((a) => a.images != null)),
+      'Tracks artists should have images',
+    );
+
+    final database = ref.read(databaseProvider);
+    await database.batch((batch) {
+      batch.insertAllOnConflictUpdate(
+        database.historyTable,
+        imagedArtistTracks,
+      );
+    });
+  }
+
   @override
   fetch(arg, offset, limit) async {
     final tracksQuery = createTracksQuery()..limit(limit, offset: offset);
 
-    final items = getTracksWithCount(await tracksQuery.get());
+    final entries = await tracksQuery.get();
+
+    final items = getTracksWithCount(entries);
 
     return (
       items: items,
@@ -123,13 +178,26 @@ class HistoryTopTracksNotifier extends FamilyPaginatedAsyncNotifier<
   }
 
   List<PlaybackHistoryTrack> getTracksWithCount(List<HistoryTableData> tracks) {
+    fixImageNotLoadingForArtistIssue(tracks);
+
     return groupBy(
       tracks,
       (track) => track.track!.id!,
     )
         .entries
         .map((entry) {
-          return (count: entry.value.length, track: entry.value.first.track!);
+          return (
+            count: entry.value.length,
+
+            /// Previously, due to a bug, artist images were not being saved.
+            /// Now it's fixed, but we need to handle the case where images are null.
+            /// So we take the first artist with images if available, otherwise the first one.
+            track: entry.value
+                    .firstWhereOrNull(
+                        (t) => t.track!.artists!.every((a) => a.images != null))
+                    ?.track! ??
+                entry.value.first.track!,
+          );
         })
         .sorted((a, b) => b.count.compareTo(a.count))
         .toList();

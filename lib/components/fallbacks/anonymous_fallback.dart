@@ -1,10 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/settings/settings.dart';
 
 import 'package:spotube/provider/authentication/authentication.dart';
-import 'package:spotube/utils/service_utils.dart';
+import 'package:spotube/utils/platform.dart';
 
 class AnonymousFallback extends ConsumerWidget {
   final Widget? child;
@@ -25,12 +28,19 @@ class AnonymousFallback extends ConsumerWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 10,
         children: [
+          Undraw(
+            illustration: kIsMobile
+                ? UndrawIllustration.accessDenied
+                : UndrawIllustration.secureLogin,
+            height: 200 * context.theme.scaling,
+            color: context.theme.colorScheme.primary,
+          ),
           Text(context.l10n.not_logged_in),
-          const SizedBox(height: 10),
-          FilledButton(
+          Button.primary(
             child: Text(context.l10n.login_with_spotify),
-            onPressed: () => ServiceUtils.pushNamed(context, SettingsPage.name),
+            onPressed: () => context.navigateTo(const SettingsRoute()),
           )
         ],
       ),

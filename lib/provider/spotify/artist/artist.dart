@@ -6,5 +6,5 @@ final artistProvider =
 
   final spotify = ref.watch(spotifyProvider);
 
-  return spotify.artists.get(artistId);
+  return spotify.invoke((api) => api.artists.get(artistId));
 });

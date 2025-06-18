@@ -1,15 +1,14 @@
-import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/components/links/anchor_button.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class LinkText<T> extends StatelessWidget {
   final String text;
   final TextStyle style;
   final TextAlign? textAlign;
   final TextOverflow? overflow;
-  final String route;
+  final PageRouteInfo route;
   final int? maxLines;
-  final T? extra;
 
   final bool push;
   const LinkText(
@@ -17,7 +16,6 @@ class LinkText<T> extends StatelessWidget {
     this.route, {
     super.key,
     this.textAlign,
-    this.extra,
     this.overflow,
     this.style = const TextStyle(),
     this.maxLines,
@@ -30,9 +28,9 @@ class LinkText<T> extends StatelessWidget {
       text,
       onTap: () {
         if (push) {
-          ServiceUtils.push(context, route, extra: extra);
+          context.navigateTo(route);
         } else {
-          ServiceUtils.navigate(context, route, extra: extra);
+          context.navigateTo(route);
         }
       },
       key: key,

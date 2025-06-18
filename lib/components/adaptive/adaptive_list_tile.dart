@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
 
 class AdaptiveListTile extends HookWidget {
@@ -24,41 +25,39 @@ class AdaptiveListTile extends HookWidget {
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
 
-    return ListTile(
+    return ButtonTile(
       title: title,
       subtitle: subtitle,
       trailing: breakOn ?? mediaQuery.smAndDown
           ? null
           : trailing?.call(context, null),
       leading: leading,
-      onTap: breakOn ?? mediaQuery.smAndDown
-          ? () {
-              onTap?.call();
-              showDialog(
-                context: context,
-                barrierDismissible: true,
-                builder: (context) {
-                  return StatefulBuilder(builder: (context, update) {
-                    return AlertDialog(
-                      title: title != null
-                          ? Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                if (leading != null) ...[
-                                  leading!,
-                                  const SizedBox(width: 5)
-                                ],
-                                Flexible(child: title!),
-                              ],
-                            )
-                          : Container(),
-                      content: trailing?.call(context, update),
-                    );
-                  });
-                },
+      enabled: breakOn ?? mediaQuery.smAndDown,
+      onPressed: () {
+        onTap?.call();
+        showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (context) {
+            return StatefulBuilder(builder: (context, update) {
+              return AlertDialog(
+                title: title != null
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        spacing: 5,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if (leading != null) leading!,
+                          Flexible(child: title!),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+                content: Center(child: trailing?.call(context, update)),
               );
-            }
-          : null,
+            });
+          },
+        );
+      },
     );
   }
 }

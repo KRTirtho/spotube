@@ -1,19 +1,19 @@
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:path_provider/path_provider.dart' as paths;
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
 import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
-import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
-import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:open_file/open_file.dart';
 
 typedef UserPreferences = PreferencesTableData;
 
@@ -71,10 +71,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     if (kIsAndroid) return "/storage/emulated/0/Download/Spotube";
 
     if (kIsMacOS) {
-      return join((await getLibraryDirectory()).path, "Caches");
+      return join((await paths.getLibraryDirectory()).path, "Caches");
     }
 
-    return getDownloadsDirectory().then((dir) {
+    return paths.getDownloadsDirectory().then((dir) {
       return join(dir!.path, "Spotube");
     });
   }
@@ -90,9 +90,33 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   Future<void> reset() async {
     final db = ref.read(databaseProvider);
 
-    final query = db.update(db.preferencesTable)..where((t) => t.id.equals(0));
+    final query = db.update(db.preferencesTable);
 
-    await query.replace(PreferencesTableCompanion.insert());
+    await query.replace(PreferencesTableCompanion.insert(id: const Value(0)));
+  }
+
+  static Future<String> getMusicCacheDir() async {
+    if (kIsAndroid) {
+      final dir =
+          await paths.getExternalCacheDirectories().then((dirs) => dirs!.first);
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+      return join(dir.path, 'Cached Tracks');
+    }
+
+    final dir = await paths.getApplicationCacheDirectory();
+    return join(dir.path, 'cached_tracks');
+  }
+
+  Future<void> openCacheFolder() async {
+    try {
+      final filePath = await getMusicCacheDir();
+
+      await OpenFile.open(filePath);
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack);
+    }
   }
 
   void setStreamMusicCodec(SourceCodecs codec) {
@@ -118,11 +142,11 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   void setAlbumColorSync(bool sync) {
     setData(PreferencesTableCompanion(albumColorSync: Value(sync)));
 
-    if (!sync) {
-      ref.read(paletteProvider.notifier).state = null;
-    } else {
-      ref.read(audioPlayerStreamListenersProvider).updatePalette();
-    }
+    // if (!sync) {
+    //   ref.read(paletteProvider.notifier).state = null;
+    // } else {
+    //   ref.read(audioPlayerStreamListenersProvider).updatePalette();
+    // }
   }
 
   void setCheckUpdate(bool check) {
@@ -167,6 +191,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     setData(PreferencesTableCompanion(pipedInstance: Value(instance)));
   }
 
+  void setInvidiousInstance(String instance) {
+    setData(PreferencesTableCompanion(invidiousInstance: Value(instance)));
+  }
+
   void setSearchMode(SearchMode mode) {
     setData(PreferencesTableCompanion(searchMode: Value(mode)));
   }
@@ -177,6 +205,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setAudioSource(AudioSource type) {
     setData(PreferencesTableCompanion(audioSource: Value(type)));
+  }
+
+  void setYoutubeClientEngine(YoutubeClientEngine engine) {
+    setData(PreferencesTableCompanion(youtubeClientEngine: Value(engine)));
   }
 
   void setSystemTitleBar(bool isSystemTitleBar) {
@@ -206,6 +238,18 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setEnableConnect(bool enable) {
     setData(PreferencesTableCompanion(enableConnect: Value(enable)));
+  }
+
+  void setConnectPort(int port) {
+    assert(
+      port >= -1 && port <= 65535,
+      "Port must be between -1 and 65535, got $port",
+    );
+    setData(PreferencesTableCompanion(connectPort: Value(port)));
+  }
+
+  void setCacheMusic(bool cache) {
+    setData(PreferencesTableCompanion(cacheMusic: Value(cache)));
   }
 }
 

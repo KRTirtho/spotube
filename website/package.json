@@ -1,6 +1,6 @@
 {
   "name": "website",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -14,42 +14,43 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
-    "@playwright/test": "^1.28.1",
+    "@playwright/test": "^1.41.2",
     "@skeletonlabs/skeleton": "2.8.0",
     "@skeletonlabs/tw-plugin": "0.3.1",
     "@sveltejs/adapter-cloudflare": "^4.1.0",
-    "@sveltejs/kit": "^2.0.0",
-    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@sveltejs/kit": "^2.5.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "@tailwindcss/typography": "0.5.10",
     "@types/eslint": "8.56.0",
     "@types/node": "^20.11.16",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "autoprefixer": "10.4.17",
     "eslint": "^8.56.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-svelte": "^2.35.1",
     "mdsvex": "^0.11.0",
     "postcss": "8.4.35",
-    "prettier": "^3.1.1",
+    "prettier": "^3.2.5",
     "prettier-plugin-svelte": "^3.1.2",
-    "svelte": "^4.2.7",
-    "svelte-check": "^3.6.0",
+    "svelte": "^4.2.10",
+    "svelte-check": "^3.6.3",
     "tailwindcss": "3.4.1",
-    "tslib": "^2.4.1",
-    "typescript": "^5.0.0",
-    "vite": "^5.0.3",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3",
+    "vite": "^5.1.0",
     "vite-plugin-tailwind-purgecss": "0.2.0"
   },
   "dependencies": {
     "@floating-ui/dom": "1.6.1",
     "@fortawesome/free-brands-svg-icons": "^6.5.1",
-    "@octokit/openapi-types": "^19.1.0",
-    "@octokit/rest": "^20.0.2",
+    "@octokit/openapi-types": "^22.2.0",
+    "@octokit/rest": "^21.0.2",
     "date-fns": "^3.3.1",
     "highlight.js": "11.9.0",
     "lucide-svelte": "^0.323.0",
     "mdsvex-relative-images": "^1.0.3",
+    "rehype-auto-ads": "^1.2.0",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
     "remark-container": "^0.1.2",
@@ -59,5 +60,15 @@
     "remark-reading-time": "^1.0.1",
     "svelte-fa": "^4.0.2",
     "svelte-markdown": "^0.4.1"
+  },
+  "packageManager": "pnpm@10.4.0+sha512.6b849d0787d97f8f4e1f03a9b8ff8f038e79e153d6f11ae539ae7c435ff9e796df6a862c991502695c7f9e8fac8aeafc1ac5a8dab47e36148d183832d886dd52",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@fortawesome/fontawesome-common-types",
+      "@fortawesome/free-brands-svg-icons",
+      "@sveltejs/kit",
+      "esbuild",
+      "svelte-preprocess"
+    ]
   }
 }

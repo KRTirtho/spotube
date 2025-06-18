@@ -45,7 +45,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
     var playlist =
         await database.select(database.playlistTable).getSingleOrNull();
-    var medias = await database.select(database.playlistMediaTable).get();
+    final medias = await database.select(database.playlistMediaTable).get();
 
     if (playlist == null) {
       await database.into(database.playlistTable).insert(
@@ -247,7 +247,10 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
   // Tracks related methods
 
-  Future<void> addTracksAtFirst(Iterable<Track> tracks) async {
+  Future<void> addTracksAtFirst(
+    Iterable<Track> tracks, {
+    bool allowDuplicates = false,
+  }) async {
     if (state.tracks.length == 1) {
       return addTracks(tracks);
     }
@@ -257,7 +260,8 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     for (int i = 0; i < tracks.length; i++) {
       final track = tracks.elementAt(i);
 
-      if (state.tracks.any((element) => _compareTracks(element, track))) {
+      if (!allowDuplicates &&
+          state.tracks.any((element) => _compareTracks(element, track))) {
         continue;
       }
 
@@ -297,7 +301,9 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
   bool _compareTracks(Track a, Track b) {
     if ((a is LocalTrack && b is! LocalTrack) ||
-        (a is! LocalTrack && b is LocalTrack)) return false;
+        (a is! LocalTrack && b is LocalTrack)) {
+      return false;
+    }
 
     return a is LocalTrack && b is LocalTrack
         ? (a).path == (b).path
@@ -343,7 +349,9 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         newIndex < 0 ||
         oldIndex < 0 ||
         newIndex > state.tracks.length - 1 ||
-        oldIndex > state.tracks.length - 1) return;
+        oldIndex > state.tracks.length - 1) {
+      return;
+    }
 
     await audioPlayer.moveTrack(oldIndex, newIndex);
   }

@@ -12,7 +12,7 @@ SourceInfo _$SourceInfoFromJson(Map json) => SourceInfo(
       artist: json['artist'] as String,
       thumbnail: json['thumbnail'] as String,
       pageUrl: json['pageUrl'] as String,
-      duration: Duration(microseconds: json['duration'] as int),
+      duration: Duration(microseconds: (json['duration'] as num).toInt()),
       artistUrl: json['artistUrl'] as String,
       album: json['album'] as String?,
     );

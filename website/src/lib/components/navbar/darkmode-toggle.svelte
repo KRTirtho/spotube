@@ -17,10 +17,8 @@
 </script>
 
 <div class="inline-flex gap-2">
-	{#if label}
-		<label class="ps-4">{label}</label>
-	{/if}
 	<SlideToggle
+    label={label}
 		active="bg-primary-backdrop-token"
 		size="sm"
 		name="dark-mode"

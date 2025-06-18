@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
+import 'package:flutter/foundation.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/formatters.dart';
 
 class SummaryCard extends StatelessWidget {
@@ -9,7 +10,7 @@ class SummaryCard extends StatelessWidget {
   final String description;
   final VoidCallback? onTap;
 
-  final MaterialColor color;
+  final ColorShades color;
 
   SummaryCard({
     super.key,
@@ -31,15 +32,18 @@ class SummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData(:textTheme, :brightness) = Theme.of(context);
+    final ThemeData(:typography, :brightness) = Theme.of(context);
 
     final descriptionNewLines = description.split("").where((s) => s == "\n");
 
     return Card(
-      color: brightness == Brightness.dark ? color.shade100 : color.shade50,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
+      fillColor: brightness == Brightness.dark ? color.shade100 : color.shade50,
+      filled: true,
+      borderColor: color,
+      padding: EdgeInsets.zero,
+      borderRadius: context.theme.borderRadiusLg,
+      child: Button.ghost(
+        onPressed: onTap,
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15),
           child: Column(
@@ -52,13 +56,13 @@ class SummaryCard extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: title,
-                      style: textTheme.headlineLarge?.copyWith(
+                      style: typography.h2.copyWith(
                         color: color.shade900,
                       ),
                     ),
                     TextSpan(
                       text: " $unit",
-                      style: textTheme.titleMedium?.copyWith(
+                      style: typography.semiBold.copyWith(
                         color: color.shade900,
                       ),
                     ),
@@ -73,7 +77,7 @@ class SummaryCard extends StatelessWidget {
                     ? descriptionNewLines.length + 1
                     : 1,
                 minFontSize: 9,
-                style: textTheme.labelMedium!.copyWith(
+                style: typography.small.copyWith(
                   color: color.shade900,
                 ),
               ),

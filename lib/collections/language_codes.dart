@@ -625,10 +625,10 @@ abstract class LanguageLocals {
     //   name: "Swedish",
     //   nativeName: "svenska",
     // ),
-    // "ta": const ISOLanguageName(
-    //   name: "Tamil",
-    //   nativeName: "தமிழ்",
-    // ),
+    "ta": const ISOLanguageName(
+      name: "Tamil",
+      nativeName: "தமிழ்",
+    ),
     // "te": const ISOLanguageName(
     //   name: "Telugu",
     //   nativeName: "తెలుగు",
@@ -653,10 +653,10 @@ abstract class LanguageLocals {
     //   name: "Turkmen",
     //   nativeName: "Türkmen, Түркмен",
     // ),
-    // "tl": const ISOLanguageName(
-    //   name: "Tagalog",
-    //   nativeName: "Wikang Tagalog, ᜏᜒᜃᜅ᜔ ᜆᜄᜎᜓᜄ᜔",
-    // ),
+    "tl": const ISOLanguageName(
+      name: "Tagalog",
+      nativeName: "Wikang Tagalog",
+    ),
     // "tn": const ISOLanguageName(
     //   name: "Tswana",
     //   nativeName: "Setswana",

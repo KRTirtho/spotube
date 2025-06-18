@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/components/themed_button_tab_bar.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/modules/stats/top/albums.dart';
 import 'package:spotube/modules/stats/top/artists.dart';
 import 'package:spotube/modules/stats/top/tracks.dart';
@@ -14,94 +15,97 @@ class StatsPageTopSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final tabController = useTabController(initialLength: 3);
+    final selectedIndex = useState(0);
     final historyDuration = ref.watch(playbackHistoryTopDurationProvider);
     final historyDurationNotifier =
         ref.watch(playbackHistoryTopDurationProvider.notifier);
 
-    return SliverMainAxisGroup(
-      slivers: [
-        SliverAppBar(
-          floating: true,
-          flexibleSpace: ThemedButtonsTabBar(
-            controller: tabController,
-            tabs: [
-              Tab(
-                child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: Text(context.l10n.top_tracks),
-                ),
-              ),
-              Tab(
-                child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: Text(context.l10n.top_artists),
-                ),
-              ),
-              Tab(
-                child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: Text(context.l10n.top_albums),
-                ),
-              ),
-            ],
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: DropdownButton(
-              style: Theme.of(context).textTheme.bodySmall!,
-              isDense: true,
-              padding: const EdgeInsets.all(4),
-              borderRadius: BorderRadius.circular(4),
-              underline: const SizedBox(),
-              value: historyDuration,
-              onChanged: (value) {
-                if (value == null) return;
-                historyDurationNotifier.update((_) => value);
+    final translations = <HistoryDuration, String>{
+      HistoryDuration.days7: context.l10n.this_week,
+      HistoryDuration.days30: context.l10n.this_month,
+      HistoryDuration.months6: context.l10n.last_6_months,
+      HistoryDuration.year: context.l10n.this_year,
+      HistoryDuration.years2: context.l10n.last_2_years,
+      HistoryDuration.allTime: context.l10n.all_time,
+    };
+
+    final dropdown = Select<HistoryDuration>(
+        popupConstraints: const BoxConstraints(maxWidth: 150),
+        popupWidthConstraint: PopoverConstraint.flexible,
+        padding: const EdgeInsets.all(4),
+        borderRadius: BorderRadius.circular(4),
+        value: historyDuration,
+        onChanged: (value) {
+          if (value == null) return;
+          historyDurationNotifier.update((_) => value);
+        },
+        itemBuilder: (context, item) => Text(translations[item]!),
+        popup: (context) {
+          return SelectPopup(
+            items: SelectItemBuilder(
+              childCount: HistoryDuration.values.length,
+              builder: (context, index) {
+                final item = HistoryDuration.values[index];
+                return SelectItemButton(
+                  value: item,
+                  child: Text(translations[item]!),
+                );
               },
-              icon: const Icon(Icons.arrow_drop_down),
-              items: [
-                DropdownMenuItem(
-                  value: HistoryDuration.days7,
-                  child: Text(context.l10n.this_week),
-                ),
-                DropdownMenuItem(
-                  value: HistoryDuration.days30,
-                  child: Text(context.l10n.this_month),
-                ),
-                DropdownMenuItem(
-                  value: HistoryDuration.months6,
-                  child: Text(context.l10n.last_6_months),
-                ),
-                DropdownMenuItem(
-                  value: HistoryDuration.year,
-                  child: Text(context.l10n.this_year),
-                ),
-                DropdownMenuItem(
-                  value: HistoryDuration.years2,
-                  child: Text(context.l10n.last_2_years),
-                ),
-                DropdownMenuItem(
-                  value: HistoryDuration.allTime,
-                  child: Text(context.l10n.all_time),
-                ),
-              ],
+            ),
+          );
+        });
+
+    return SliverLayoutBuilder(builder: (context, constraints) {
+      return SliverMainAxisGroup(
+        slivers: [
+          SliverAppBar(
+            floating: true,
+            elevation: 0,
+            backgroundColor: context.theme.colorScheme.background,
+            automaticallyImplyLeading: false,
+            flexibleSpace: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  TabList(
+                    index: selectedIndex.value,
+                    onChanged: (value) {
+                      selectedIndex.value = value;
+                    },
+                    children: [
+                      TabItem(
+                        child: Text(context.l10n.top_tracks),
+                      ),
+                      TabItem(
+                        child: Text(context.l10n.top_artists),
+                      ),
+                      TabItem(
+                        child: Text(context.l10n.top_albums),
+                      ),
+                    ],
+                  ),
+                  if (constraints.mdAndUp) ...[
+                    const Spacer(),
+                    dropdown,
+                  ]
+                ],
+              ),
             ),
           ),
-        ),
-        ListenableBuilder(
-          listenable: tabController,
-          builder: (context, _) {
-            return switch (tabController.index) {
-              1 => const TopArtists(),
-              2 => const TopAlbums(),
-              _ => const TopTracks(),
-            };
+          if (constraints.smAndDown)
+            SliverToBoxAdapter(
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: dropdown,
+              ),
+            ),
+          switch (selectedIndex.value) {
+            1 => const TopArtists(),
+            2 => const TopAlbums(),
+            _ => const TopTracks(),
           },
-        ),
-      ],
-    );
+        ],
+      );
+    });
   }
 }

@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:spotube/collections/fake.dart';
@@ -13,7 +12,9 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:auto_route/auto_route.dart';
 
+@RoutePage()
 class ProfilePage extends HookConsumerWidget {
   static const name = "profile";
 
@@ -21,8 +22,6 @@ class ProfilePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final ThemeData(:textTheme) = Theme.of(context);
-
     final me = ref.watch(meProvider);
     final meData = me.asData?.value ?? FakeData.user;
 
@@ -42,13 +41,12 @@ class ProfilePage extends HookConsumerWidget {
 
     return SafeArea(
       child: Scaffold(
-        appBar: PageWindowTitleBar(
-          title: Text(context.l10n.profile),
-          titleSpacing: 0,
-          automaticallyImplyLeading: true,
-          centerTitle: false,
-        ),
-        body: Skeletonizer(
+        headers: [
+          TitleBar(
+            title: Text(context.l10n.profile),
+          )
+        ],
+        child: Skeletonizer(
           enabled: me.isLoading,
           child: CustomScrollView(
             slivers: [
@@ -75,9 +73,8 @@ class ProfilePage extends HookConsumerWidget {
               SliverToBoxAdapter(
                 child: Text(
                   meData.displayName ?? context.l10n.no_name,
-                  style: textTheme.titleLarge,
                   textAlign: TextAlign.center,
-                ),
+                ).h4(),
               ),
               const SliverGap(20),
               SliverCrossAxisConstrained(
@@ -86,15 +83,15 @@ class ProfilePage extends HookConsumerWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      TextButton.icon(
-                        label: Text(context.l10n.edit),
-                        icon: const Icon(SpotubeIcons.edit),
+                      Button.text(
+                        leading: const Icon(SpotubeIcons.edit),
                         onPressed: () {
                           launchUrlString(
                             "https://www.spotify.com/account/profile/",
                             mode: LaunchMode.externalApplication,
                           );
                         },
+                        child: Text(context.l10n.edit),
                       ),
                     ],
                   ),
@@ -104,25 +101,22 @@ class ProfilePage extends HookConsumerWidget {
                 maxCrossAxisExtent: 500,
                 child: SliverToBoxAdapter(
                   child: Card(
-                    margin: const EdgeInsets.all(10),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Table(
                         columnWidths: const {
-                          0: FixedColumnWidth(110),
+                          0: FixedTableSize(120),
                         },
-                        children: [
+                        defaultRowHeight: const FixedTableSize(40),
+                        rows: [
                           for (final MapEntry(:key, :value)
                               in userProperties.entries)
                             TableRow(
-                              children: [
+                              cells: [
                                 TableCell(
                                   child: Padding(
                                     padding: const EdgeInsets.all(6),
-                                    child: Text(
-                                      key,
-                                      style: textTheme.titleSmall,
-                                    ),
+                                    child: Text(key).large(),
                                   ),
                                 ),
                                 TableCell(
@@ -139,6 +133,7 @@ class ProfilePage extends HookConsumerWidget {
                   ),
                 ),
               ),
+              const SliverGap(200),
             ],
           ),
         ),

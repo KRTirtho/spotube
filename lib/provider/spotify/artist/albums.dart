@@ -31,9 +31,9 @@ class ArtistAlbumsNotifier extends AutoDisposeFamilyPaginatedAsyncNotifier<
   @override
   fetch(arg, offset, limit) async {
     final market = ref.read(userPreferencesProvider).market;
-    final albums = await spotify.artists
-        .albums(arg, country: market)
-        .getPage(limit, offset);
+    final albums = await spotify.invoke(
+      (api) => api.artists.albums(arg, country: market).getPage(limit, offset),
+    );
 
     final items = albums.items?.toList() ?? [];
 

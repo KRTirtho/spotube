@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/connect/clients.dart';
 
@@ -16,31 +16,31 @@ class SelectDeviceDialog extends HookConsumerWidget {
 
     return AlertDialog(
       title: Text(context.l10n.choose_the_device),
-      insetPadding: const EdgeInsets.all(16),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(context.l10n.multiple_device_connected),
-          RadioListTile.adaptive(
-            title: Text(remoteService.name),
-            value: true,
-            groupValue: isRemoteService.value,
-            onChanged: (value) {
-              isRemoteService.value = value!;
-            },
-          ),
-          RadioListTile.adaptive(
-            title: Text(context.l10n.this_device),
-            value: false,
-            groupValue: isRemoteService.value,
-            onChanged: (value) {
-              isRemoteService.value = !value!;
-            },
-          ),
-        ],
+      content: RadioGroup(
+        value: isRemoteService.value,
+        onChanged: (value) {
+          isRemoteService.value = value;
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(context.l10n.multiple_device_connected),
+            const Gap(16),
+            RadioItem(
+              trailing: Text(remoteService.name),
+              value: true,
+            ),
+            const Gap(8),
+            RadioItem(
+              trailing: Text(context.l10n.this_device),
+              value: false,
+            ),
+          ],
+        ),
       ),
       actions: [
-        TextButton(
+        Button.primary(
           onPressed: () {
             Navigator.of(context).pop(isRemoteService.value);
           },
@@ -51,7 +51,8 @@ class SelectDeviceDialog extends HookConsumerWidget {
   }
 }
 
-Future<bool> showSelectDeviceDialog(BuildContext context, WidgetRef ref) async {
+Future<bool?> showSelectDeviceDialog(
+    BuildContext context, WidgetRef ref) async {
   final connectClients = ref.read(connectClientsProvider);
 
   if (connectClients.asData?.value.resolvedService == null) {
@@ -63,5 +64,5 @@ Future<bool> showSelectDeviceDialog(BuildContext context, WidgetRef ref) async {
     builder: (context) => const SelectDeviceDialog(),
   );
 
-  return isRemote ?? false;
+  return isRemote;
 }
