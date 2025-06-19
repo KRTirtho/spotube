@@ -55,11 +55,10 @@ class AlbumPage extends HookConsumerWidget {
               await tracksNotifier.fetchMore();
             },
             onFetchAll: () async {
-              // return tracksNotifier.fetchAll();
-              return [];
+              return tracksNotifier.fetchAll();
             },
             onRefresh: () async {
-              // ref.invalidate(albumTracksProvider(album));
+              ref.invalidate(metadataPluginAlbumTracksProvider(album.id));
             },
           ),
           routePath: "/album/${album.id}",

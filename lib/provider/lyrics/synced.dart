@@ -16,53 +16,6 @@ class SyncedLyricsNotifier
     extends FamilyAsyncNotifier<SubtitleSimple, SpotubeTrackObject?> {
   SpotubeTrackObject get _track => arg!;
 
-  // Future<SubtitleSimple> getSpotifyLyrics(String? token) async {
-  //   final res = await globalDio.getUri(
-  //     Uri.parse(
-  //       "https://spclient.wg.spotify.com/color-lyrics/v2/track/${_track.id}?format=json&market=from_token",
-  //     ),
-  //     options: Options(
-  //       headers: {
-  //         "User-Agent":
-  //             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
-  //         "App-platform": "WebPlayer",
-  //         "authorization": "Bearer $token"
-  //       },
-  //       responseType: ResponseType.json,
-  //       validateStatus: (status) => true,
-  //     ),
-  //   );
-
-  //   if (res.statusCode != 200) {
-  //     return SubtitleSimple(
-  //       lyrics: [],
-  //       name: _track.name!,
-  //       uri: res.realUri,
-  //       rating: 0,
-  //       provider: "Spotify",
-  //     );
-  //   }
-  //   final linesRaw =
-  //       Map.castFrom<dynamic, dynamic, String, dynamic>(res.data)["lyrics"]
-  //           ?["lines"] as List?;
-
-  //   final lines = linesRaw?.map((line) {
-  //         return LyricSlice(
-  //           time: Duration(milliseconds: int.parse(line["startTimeMs"])),
-  //           text: line["words"] as String,
-  //         );
-  //       }).toList() ??
-  //       [];
-
-  //   return SubtitleSimple(
-  //     lyrics: lines,
-  //     name: _track.name!,
-  //     uri: res.realUri,
-  //     rating: 100,
-  //     provider: "Spotify",
-  //   );
-  // }
-
   /// Lyrics credits: [lrclib.net](https://lrclib.net) and their contributors
   /// Thanks for their generous public API
   Future<SubtitleSimple> getLRCLibLyrics() async {

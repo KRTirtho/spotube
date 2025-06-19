@@ -4,10 +4,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
+import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/track_tile/track_options.dart';
 import 'package:spotube/extensions/context.dart';
@@ -140,16 +142,16 @@ class TrackPage extends HookConsumerWidget {
                                   children: [
                                     const Icon(SpotubeIcons.album),
                                     const Gap(5),
-                                    // Flexible(
-                                    //   child: LinkText(
-                                    //     track.album!.name!,
-                                    //     AlbumRoute(
-                                    //       id: track.album!.id!,
-                                    //       album: track.album!,
-                                    //     ),
-                                    //     push: true,
-                                    //   ),
-                                    // ),
+                                    Flexible(
+                                      child: LinkText(
+                                        track.album.name,
+                                        AlbumRoute(
+                                          id: track.album.id,
+                                          album: track.album,
+                                        ),
+                                        push: true,
+                                      ),
+                                    ),
                                   ],
                                 ),
                                 const Gap(10),

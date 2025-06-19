@@ -40,14 +40,6 @@ class AppRouter extends RootStackRouter {
               ],
             ),
             AutoRoute(
-              path: "home/genres",
-              page: GenreRoute.page,
-            ),
-            AutoRoute(
-              path: "home/genre/:categoryId",
-              page: GenrePlaylistsRoute.page,
-            ),
-            AutoRoute(
               path: "home/sections/:sectionId",
               page: HomeBrowseSectionItemsRoute.page,
             ),
@@ -85,14 +77,6 @@ class AppRouter extends RootStackRouter {
               path: "local/folder",
               page: LocalLibraryRoute.page,
               // parentNavigatorKey: shellRouteNavigatorKey,
-            ),
-            AutoRoute(
-              path: "library/generate",
-              page: PlaylistGeneratorRoute.page,
-            ),
-            AutoRoute(
-              path: "library/generate/result",
-              page: PlaylistGenerateResultRoute.page,
             ),
             AutoRoute(
               path: "lyrics",
