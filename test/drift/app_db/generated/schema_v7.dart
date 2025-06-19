@@ -2299,9 +2299,15 @@ class AudioPlayerStateTable extends Table
   late final GeneratedColumn<String> collections = GeneratedColumn<String>(
       'collections', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> tracks = GeneratedColumn<String>(
+      'tracks', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<int> currentIndex = GeneratedColumn<int>(
+      'current_index', aliasedName, false,
+      type: DriftSqlType.int, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns =>
-      [id, playing, loopMode, shuffled, collections];
+      [id, playing, loopMode, shuffled, collections, tracks, currentIndex];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2324,6 +2330,10 @@ class AudioPlayerStateTable extends Table
           .read(DriftSqlType.bool, data['${effectivePrefix}shuffled'])!,
       collections: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}collections'])!,
+      tracks: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}tracks'])!,
+      currentIndex: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}current_index'])!,
     );
   }
 
@@ -2340,12 +2350,16 @@ class AudioPlayerStateTableData extends DataClass
   final String loopMode;
   final bool shuffled;
   final String collections;
+  final String tracks;
+  final int currentIndex;
   const AudioPlayerStateTableData(
       {required this.id,
       required this.playing,
       required this.loopMode,
       required this.shuffled,
-      required this.collections});
+      required this.collections,
+      required this.tracks,
+      required this.currentIndex});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2354,6 +2368,8 @@ class AudioPlayerStateTableData extends DataClass
     map['loop_mode'] = Variable<String>(loopMode);
     map['shuffled'] = Variable<bool>(shuffled);
     map['collections'] = Variable<String>(collections);
+    map['tracks'] = Variable<String>(tracks);
+    map['current_index'] = Variable<int>(currentIndex);
     return map;
   }
 
@@ -2364,6 +2380,8 @@ class AudioPlayerStateTableData extends DataClass
       loopMode: Value(loopMode),
       shuffled: Value(shuffled),
       collections: Value(collections),
+      tracks: Value(tracks),
+      currentIndex: Value(currentIndex),
     );
   }
 
@@ -2376,6 +2394,8 @@ class AudioPlayerStateTableData extends DataClass
       loopMode: serializer.fromJson<String>(json['loopMode']),
       shuffled: serializer.fromJson<bool>(json['shuffled']),
       collections: serializer.fromJson<String>(json['collections']),
+      tracks: serializer.fromJson<String>(json['tracks']),
+      currentIndex: serializer.fromJson<int>(json['currentIndex']),
     );
   }
   @override
@@ -2387,6 +2407,8 @@ class AudioPlayerStateTableData extends DataClass
       'loopMode': serializer.toJson<String>(loopMode),
       'shuffled': serializer.toJson<bool>(shuffled),
       'collections': serializer.toJson<String>(collections),
+      'tracks': serializer.toJson<String>(tracks),
+      'currentIndex': serializer.toJson<int>(currentIndex),
     };
   }
 
@@ -2395,13 +2417,17 @@ class AudioPlayerStateTableData extends DataClass
           bool? playing,
           String? loopMode,
           bool? shuffled,
-          String? collections}) =>
+          String? collections,
+          String? tracks,
+          int? currentIndex}) =>
       AudioPlayerStateTableData(
         id: id ?? this.id,
         playing: playing ?? this.playing,
         loopMode: loopMode ?? this.loopMode,
         shuffled: shuffled ?? this.shuffled,
         collections: collections ?? this.collections,
+        tracks: tracks ?? this.tracks,
+        currentIndex: currentIndex ?? this.currentIndex,
       );
   AudioPlayerStateTableData copyWithCompanion(
       AudioPlayerStateTableCompanion data) {
@@ -2412,6 +2438,10 @@ class AudioPlayerStateTableData extends DataClass
       shuffled: data.shuffled.present ? data.shuffled.value : this.shuffled,
       collections:
           data.collections.present ? data.collections.value : this.collections,
+      tracks: data.tracks.present ? data.tracks.value : this.tracks,
+      currentIndex: data.currentIndex.present
+          ? data.currentIndex.value
+          : this.currentIndex,
     );
   }
 
@@ -2422,13 +2452,16 @@ class AudioPlayerStateTableData extends DataClass
           ..write('playing: $playing, ')
           ..write('loopMode: $loopMode, ')
           ..write('shuffled: $shuffled, ')
-          ..write('collections: $collections')
+          ..write('collections: $collections, ')
+          ..write('tracks: $tracks, ')
+          ..write('currentIndex: $currentIndex')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, playing, loopMode, shuffled, collections);
+  int get hashCode => Object.hash(
+      id, playing, loopMode, shuffled, collections, tracks, currentIndex);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2437,7 +2470,9 @@ class AudioPlayerStateTableData extends DataClass
           other.playing == this.playing &&
           other.loopMode == this.loopMode &&
           other.shuffled == this.shuffled &&
-          other.collections == this.collections);
+          other.collections == this.collections &&
+          other.tracks == this.tracks &&
+          other.currentIndex == this.currentIndex);
 }
 
 class AudioPlayerStateTableCompanion
@@ -2447,12 +2482,16 @@ class AudioPlayerStateTableCompanion
   final Value<String> loopMode;
   final Value<bool> shuffled;
   final Value<String> collections;
+  final Value<String> tracks;
+  final Value<int> currentIndex;
   const AudioPlayerStateTableCompanion({
     this.id = const Value.absent(),
     this.playing = const Value.absent(),
     this.loopMode = const Value.absent(),
     this.shuffled = const Value.absent(),
     this.collections = const Value.absent(),
+    this.tracks = const Value.absent(),
+    this.currentIndex = const Value.absent(),
   });
   AudioPlayerStateTableCompanion.insert({
     this.id = const Value.absent(),
@@ -2460,16 +2499,22 @@ class AudioPlayerStateTableCompanion
     required String loopMode,
     required bool shuffled,
     required String collections,
+    required String tracks,
+    required int currentIndex,
   })  : playing = Value(playing),
         loopMode = Value(loopMode),
         shuffled = Value(shuffled),
-        collections = Value(collections);
+        collections = Value(collections),
+        tracks = Value(tracks),
+        currentIndex = Value(currentIndex);
   static Insertable<AudioPlayerStateTableData> custom({
     Expression<int>? id,
     Expression<bool>? playing,
     Expression<String>? loopMode,
     Expression<bool>? shuffled,
     Expression<String>? collections,
+    Expression<String>? tracks,
+    Expression<int>? currentIndex,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2477,6 +2522,8 @@ class AudioPlayerStateTableCompanion
       if (loopMode != null) 'loop_mode': loopMode,
       if (shuffled != null) 'shuffled': shuffled,
       if (collections != null) 'collections': collections,
+      if (tracks != null) 'tracks': tracks,
+      if (currentIndex != null) 'current_index': currentIndex,
     });
   }
 
@@ -2485,13 +2532,17 @@ class AudioPlayerStateTableCompanion
       Value<bool>? playing,
       Value<String>? loopMode,
       Value<bool>? shuffled,
-      Value<String>? collections}) {
+      Value<String>? collections,
+      Value<String>? tracks,
+      Value<int>? currentIndex}) {
     return AudioPlayerStateTableCompanion(
       id: id ?? this.id,
       playing: playing ?? this.playing,
       loopMode: loopMode ?? this.loopMode,
       shuffled: shuffled ?? this.shuffled,
       collections: collections ?? this.collections,
+      tracks: tracks ?? this.tracks,
+      currentIndex: currentIndex ?? this.currentIndex,
     );
   }
 
@@ -2513,6 +2564,12 @@ class AudioPlayerStateTableCompanion
     if (collections.present) {
       map['collections'] = Variable<String>(collections.value);
     }
+    if (tracks.present) {
+      map['tracks'] = Variable<String>(tracks.value);
+    }
+    if (currentIndex.present) {
+      map['current_index'] = Variable<int>(currentIndex.value);
+    }
     return map;
   }
 
@@ -2523,464 +2580,9 @@ class AudioPlayerStateTableCompanion
           ..write('playing: $playing, ')
           ..write('loopMode: $loopMode, ')
           ..write('shuffled: $shuffled, ')
-          ..write('collections: $collections')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class PlaylistTable extends Table
-    with TableInfo<PlaylistTable, PlaylistTableData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  PlaylistTable(this.attachedDatabase, [this._alias]);
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  late final GeneratedColumn<int> audioPlayerStateId = GeneratedColumn<int>(
-      'audio_player_state_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES audio_player_state_table (id)'));
-  late final GeneratedColumn<int> index = GeneratedColumn<int>(
-      'index', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, audioPlayerStateId, index];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'playlist_table';
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  PlaylistTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PlaylistTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      audioPlayerStateId: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}audio_player_state_id'])!,
-      index: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}index'])!,
-    );
-  }
-
-  @override
-  PlaylistTable createAlias(String alias) {
-    return PlaylistTable(attachedDatabase, alias);
-  }
-}
-
-class PlaylistTableData extends DataClass
-    implements Insertable<PlaylistTableData> {
-  final int id;
-  final int audioPlayerStateId;
-  final int index;
-  const PlaylistTableData(
-      {required this.id,
-      required this.audioPlayerStateId,
-      required this.index});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['audio_player_state_id'] = Variable<int>(audioPlayerStateId);
-    map['index'] = Variable<int>(index);
-    return map;
-  }
-
-  PlaylistTableCompanion toCompanion(bool nullToAbsent) {
-    return PlaylistTableCompanion(
-      id: Value(id),
-      audioPlayerStateId: Value(audioPlayerStateId),
-      index: Value(index),
-    );
-  }
-
-  factory PlaylistTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PlaylistTableData(
-      id: serializer.fromJson<int>(json['id']),
-      audioPlayerStateId: serializer.fromJson<int>(json['audioPlayerStateId']),
-      index: serializer.fromJson<int>(json['index']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'audioPlayerStateId': serializer.toJson<int>(audioPlayerStateId),
-      'index': serializer.toJson<int>(index),
-    };
-  }
-
-  PlaylistTableData copyWith({int? id, int? audioPlayerStateId, int? index}) =>
-      PlaylistTableData(
-        id: id ?? this.id,
-        audioPlayerStateId: audioPlayerStateId ?? this.audioPlayerStateId,
-        index: index ?? this.index,
-      );
-  PlaylistTableData copyWithCompanion(PlaylistTableCompanion data) {
-    return PlaylistTableData(
-      id: data.id.present ? data.id.value : this.id,
-      audioPlayerStateId: data.audioPlayerStateId.present
-          ? data.audioPlayerStateId.value
-          : this.audioPlayerStateId,
-      index: data.index.present ? data.index.value : this.index,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlaylistTableData(')
-          ..write('id: $id, ')
-          ..write('audioPlayerStateId: $audioPlayerStateId, ')
-          ..write('index: $index')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, audioPlayerStateId, index);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PlaylistTableData &&
-          other.id == this.id &&
-          other.audioPlayerStateId == this.audioPlayerStateId &&
-          other.index == this.index);
-}
-
-class PlaylistTableCompanion extends UpdateCompanion<PlaylistTableData> {
-  final Value<int> id;
-  final Value<int> audioPlayerStateId;
-  final Value<int> index;
-  const PlaylistTableCompanion({
-    this.id = const Value.absent(),
-    this.audioPlayerStateId = const Value.absent(),
-    this.index = const Value.absent(),
-  });
-  PlaylistTableCompanion.insert({
-    this.id = const Value.absent(),
-    required int audioPlayerStateId,
-    required int index,
-  })  : audioPlayerStateId = Value(audioPlayerStateId),
-        index = Value(index);
-  static Insertable<PlaylistTableData> custom({
-    Expression<int>? id,
-    Expression<int>? audioPlayerStateId,
-    Expression<int>? index,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (audioPlayerStateId != null)
-        'audio_player_state_id': audioPlayerStateId,
-      if (index != null) 'index': index,
-    });
-  }
-
-  PlaylistTableCompanion copyWith(
-      {Value<int>? id, Value<int>? audioPlayerStateId, Value<int>? index}) {
-    return PlaylistTableCompanion(
-      id: id ?? this.id,
-      audioPlayerStateId: audioPlayerStateId ?? this.audioPlayerStateId,
-      index: index ?? this.index,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (audioPlayerStateId.present) {
-      map['audio_player_state_id'] = Variable<int>(audioPlayerStateId.value);
-    }
-    if (index.present) {
-      map['index'] = Variable<int>(index.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlaylistTableCompanion(')
-          ..write('id: $id, ')
-          ..write('audioPlayerStateId: $audioPlayerStateId, ')
-          ..write('index: $index')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class PlaylistMediaTable extends Table
-    with TableInfo<PlaylistMediaTable, PlaylistMediaTableData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  PlaylistMediaTable(this.attachedDatabase, [this._alias]);
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  late final GeneratedColumn<int> playlistId = GeneratedColumn<int>(
-      'playlist_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES playlist_table (id)'));
-  late final GeneratedColumn<String> uri = GeneratedColumn<String>(
-      'uri', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  late final GeneratedColumn<String> extras = GeneratedColumn<String>(
-      'extras', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  late final GeneratedColumn<String> httpHeaders = GeneratedColumn<String>(
-      'http_headers', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, playlistId, uri, extras, httpHeaders];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'playlist_media_table';
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  PlaylistMediaTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PlaylistMediaTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      playlistId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}playlist_id'])!,
-      uri: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}uri'])!,
-      extras: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}extras']),
-      httpHeaders: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}http_headers']),
-    );
-  }
-
-  @override
-  PlaylistMediaTable createAlias(String alias) {
-    return PlaylistMediaTable(attachedDatabase, alias);
-  }
-}
-
-class PlaylistMediaTableData extends DataClass
-    implements Insertable<PlaylistMediaTableData> {
-  final int id;
-  final int playlistId;
-  final String uri;
-  final String? extras;
-  final String? httpHeaders;
-  const PlaylistMediaTableData(
-      {required this.id,
-      required this.playlistId,
-      required this.uri,
-      this.extras,
-      this.httpHeaders});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['playlist_id'] = Variable<int>(playlistId);
-    map['uri'] = Variable<String>(uri);
-    if (!nullToAbsent || extras != null) {
-      map['extras'] = Variable<String>(extras);
-    }
-    if (!nullToAbsent || httpHeaders != null) {
-      map['http_headers'] = Variable<String>(httpHeaders);
-    }
-    return map;
-  }
-
-  PlaylistMediaTableCompanion toCompanion(bool nullToAbsent) {
-    return PlaylistMediaTableCompanion(
-      id: Value(id),
-      playlistId: Value(playlistId),
-      uri: Value(uri),
-      extras:
-          extras == null && nullToAbsent ? const Value.absent() : Value(extras),
-      httpHeaders: httpHeaders == null && nullToAbsent
-          ? const Value.absent()
-          : Value(httpHeaders),
-    );
-  }
-
-  factory PlaylistMediaTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PlaylistMediaTableData(
-      id: serializer.fromJson<int>(json['id']),
-      playlistId: serializer.fromJson<int>(json['playlistId']),
-      uri: serializer.fromJson<String>(json['uri']),
-      extras: serializer.fromJson<String?>(json['extras']),
-      httpHeaders: serializer.fromJson<String?>(json['httpHeaders']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'playlistId': serializer.toJson<int>(playlistId),
-      'uri': serializer.toJson<String>(uri),
-      'extras': serializer.toJson<String?>(extras),
-      'httpHeaders': serializer.toJson<String?>(httpHeaders),
-    };
-  }
-
-  PlaylistMediaTableData copyWith(
-          {int? id,
-          int? playlistId,
-          String? uri,
-          Value<String?> extras = const Value.absent(),
-          Value<String?> httpHeaders = const Value.absent()}) =>
-      PlaylistMediaTableData(
-        id: id ?? this.id,
-        playlistId: playlistId ?? this.playlistId,
-        uri: uri ?? this.uri,
-        extras: extras.present ? extras.value : this.extras,
-        httpHeaders: httpHeaders.present ? httpHeaders.value : this.httpHeaders,
-      );
-  PlaylistMediaTableData copyWithCompanion(PlaylistMediaTableCompanion data) {
-    return PlaylistMediaTableData(
-      id: data.id.present ? data.id.value : this.id,
-      playlistId:
-          data.playlistId.present ? data.playlistId.value : this.playlistId,
-      uri: data.uri.present ? data.uri.value : this.uri,
-      extras: data.extras.present ? data.extras.value : this.extras,
-      httpHeaders:
-          data.httpHeaders.present ? data.httpHeaders.value : this.httpHeaders,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlaylistMediaTableData(')
-          ..write('id: $id, ')
-          ..write('playlistId: $playlistId, ')
-          ..write('uri: $uri, ')
-          ..write('extras: $extras, ')
-          ..write('httpHeaders: $httpHeaders')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, playlistId, uri, extras, httpHeaders);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PlaylistMediaTableData &&
-          other.id == this.id &&
-          other.playlistId == this.playlistId &&
-          other.uri == this.uri &&
-          other.extras == this.extras &&
-          other.httpHeaders == this.httpHeaders);
-}
-
-class PlaylistMediaTableCompanion
-    extends UpdateCompanion<PlaylistMediaTableData> {
-  final Value<int> id;
-  final Value<int> playlistId;
-  final Value<String> uri;
-  final Value<String?> extras;
-  final Value<String?> httpHeaders;
-  const PlaylistMediaTableCompanion({
-    this.id = const Value.absent(),
-    this.playlistId = const Value.absent(),
-    this.uri = const Value.absent(),
-    this.extras = const Value.absent(),
-    this.httpHeaders = const Value.absent(),
-  });
-  PlaylistMediaTableCompanion.insert({
-    this.id = const Value.absent(),
-    required int playlistId,
-    required String uri,
-    this.extras = const Value.absent(),
-    this.httpHeaders = const Value.absent(),
-  })  : playlistId = Value(playlistId),
-        uri = Value(uri);
-  static Insertable<PlaylistMediaTableData> custom({
-    Expression<int>? id,
-    Expression<int>? playlistId,
-    Expression<String>? uri,
-    Expression<String>? extras,
-    Expression<String>? httpHeaders,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (playlistId != null) 'playlist_id': playlistId,
-      if (uri != null) 'uri': uri,
-      if (extras != null) 'extras': extras,
-      if (httpHeaders != null) 'http_headers': httpHeaders,
-    });
-  }
-
-  PlaylistMediaTableCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? playlistId,
-      Value<String>? uri,
-      Value<String?>? extras,
-      Value<String?>? httpHeaders}) {
-    return PlaylistMediaTableCompanion(
-      id: id ?? this.id,
-      playlistId: playlistId ?? this.playlistId,
-      uri: uri ?? this.uri,
-      extras: extras ?? this.extras,
-      httpHeaders: httpHeaders ?? this.httpHeaders,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (playlistId.present) {
-      map['playlist_id'] = Variable<int>(playlistId.value);
-    }
-    if (uri.present) {
-      map['uri'] = Variable<String>(uri.value);
-    }
-    if (extras.present) {
-      map['extras'] = Variable<String>(extras.value);
-    }
-    if (httpHeaders.present) {
-      map['http_headers'] = Variable<String>(httpHeaders.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlaylistMediaTableCompanion(')
-          ..write('id: $id, ')
-          ..write('playlistId: $playlistId, ')
-          ..write('uri: $uri, ')
-          ..write('extras: $extras, ')
-          ..write('httpHeaders: $httpHeaders')
+          ..write('collections: $collections, ')
+          ..write('tracks: $tracks, ')
+          ..write('currentIndex: $currentIndex')
           ..write(')'))
         .toString();
   }
@@ -3817,8 +3419,6 @@ class DatabaseAtV7 extends GeneratedDatabase {
   late final SourceMatchTable sourceMatchTable = SourceMatchTable(this);
   late final AudioPlayerStateTable audioPlayerStateTable =
       AudioPlayerStateTable(this);
-  late final PlaylistTable playlistTable = PlaylistTable(this);
-  late final PlaylistMediaTable playlistMediaTable = PlaylistMediaTable(this);
   late final HistoryTable historyTable = HistoryTable(this);
   late final LyricsTable lyricsTable = LyricsTable(this);
   late final MetadataPluginsTable metadataPluginsTable =
@@ -3839,8 +3439,6 @@ class DatabaseAtV7 extends GeneratedDatabase {
         skipSegmentTable,
         sourceMatchTable,
         audioPlayerStateTable,
-        playlistTable,
-        playlistMediaTable,
         historyTable,
         lyricsTable,
         metadataPluginsTable,

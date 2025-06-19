@@ -133,6 +133,14 @@ class AppDatabase extends _$AppDatabase {
         },
         from6To7: (m, schema) async {
           await m.createTable(schema.metadataPluginsTable);
+          await m.addColumn(
+            schema.audioPlayerStateTable,
+            schema.audioPlayerStateTable.currentIndex,
+          );
+          await m.addColumn(
+            schema.audioPlayerStateTable,
+            schema.audioPlayerStateTable.tracks,
+          );
         },
       ),
     );

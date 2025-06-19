@@ -1704,8 +1704,6 @@ final class Schema7 extends i0.VersionedSchema {
     skipSegmentTable,
     sourceMatchTable,
     audioPlayerStateTable,
-    playlistTable,
-    playlistMediaTable,
     historyTable,
     lyricsTable,
     metadataPluginsTable,
@@ -1829,7 +1827,7 @@ final class Schema7 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape6 audioPlayerStateTable = Shape6(
+  late final Shape14 audioPlayerStateTable = Shape14(
       source: i0.VersionedTable(
         entityName: 'audio_player_state_table',
         withoutRowId: false,
@@ -1841,36 +1839,8 @@ final class Schema7 extends i0.VersionedSchema {
           _column_41,
           _column_42,
           _column_43,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
-  late final Shape7 playlistTable = Shape7(
-      source: i0.VersionedTable(
-        entityName: 'playlist_table',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_44,
-          _column_45,
-        ],
-        attachedDatabase: database,
-      ),
-      alias: null);
-  late final Shape8 playlistMediaTable = Shape8(
-      source: i0.VersionedTable(
-        entityName: 'playlist_media_table',
-        withoutRowId: false,
-        isStrict: false,
-        tableConstraints: [],
-        columns: [
-          _column_0,
-          _column_46,
-          _column_47,
-          _column_48,
-          _column_49,
+          _column_57,
+          _column_58,
         ],
         attachedDatabase: database,
       ),
@@ -1905,7 +1875,7 @@ final class Schema7 extends i0.VersionedSchema {
         attachedDatabase: database,
       ),
       alias: null);
-  late final Shape14 metadataPluginsTable = Shape14(
+  late final Shape15 metadataPluginsTable = Shape15(
       source: i0.VersionedTable(
         entityName: 'metadata_plugins_table',
         withoutRowId: false,
@@ -1913,14 +1883,14 @@ final class Schema7 extends i0.VersionedSchema {
         tableConstraints: [],
         columns: [
           _column_0,
-          _column_57,
-          _column_58,
           _column_59,
           _column_60,
           _column_61,
           _column_62,
           _column_63,
           _column_64,
+          _column_65,
+          _column_66,
         ],
         attachedDatabase: database,
       ),
@@ -1933,6 +1903,31 @@ final class Schema7 extends i0.VersionedSchema {
 
 class Shape14 extends i0.VersionedTable {
   Shape14({required super.source, required super.alias}) : super.aliased();
+  i1.GeneratedColumn<int> get id =>
+      columnsByName['id']! as i1.GeneratedColumn<int>;
+  i1.GeneratedColumn<bool> get playing =>
+      columnsByName['playing']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<String> get loopMode =>
+      columnsByName['loop_mode']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<bool> get shuffled =>
+      columnsByName['shuffled']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<String> get collections =>
+      columnsByName['collections']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get tracks =>
+      columnsByName['tracks']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<int> get currentIndex =>
+      columnsByName['current_index']! as i1.GeneratedColumn<int>;
+}
+
+i1.GeneratedColumn<String> _column_57(String aliasedName) =>
+    i1.GeneratedColumn<String>('tracks', aliasedName, false,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<int> _column_58(String aliasedName) =>
+    i1.GeneratedColumn<int>('current_index', aliasedName, false,
+        type: i1.DriftSqlType.int);
+
+class Shape15 extends i0.VersionedTable {
+  Shape15({required super.source, required super.alias}) : super.aliased();
   i1.GeneratedColumn<int> get id =>
       columnsByName['id']! as i1.GeneratedColumn<int>;
   i1.GeneratedColumn<String> get name =>
@@ -1953,30 +1948,30 @@ class Shape14 extends i0.VersionedTable {
       columnsByName['selected']! as i1.GeneratedColumn<bool>;
 }
 
-i1.GeneratedColumn<String> _column_57(String aliasedName) =>
+i1.GeneratedColumn<String> _column_59(String aliasedName) =>
     i1.GeneratedColumn<String>('name', aliasedName, false,
         additionalChecks: i1.GeneratedColumn.checkTextLength(
             minTextLength: 1, maxTextLength: 50),
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_58(String aliasedName) =>
+i1.GeneratedColumn<String> _column_60(String aliasedName) =>
     i1.GeneratedColumn<String>('description', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_59(String aliasedName) =>
+i1.GeneratedColumn<String> _column_61(String aliasedName) =>
     i1.GeneratedColumn<String>('version', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_60(String aliasedName) =>
+i1.GeneratedColumn<String> _column_62(String aliasedName) =>
     i1.GeneratedColumn<String>('author', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_61(String aliasedName) =>
+i1.GeneratedColumn<String> _column_63(String aliasedName) =>
     i1.GeneratedColumn<String>('entry_point', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_62(String aliasedName) =>
+i1.GeneratedColumn<String> _column_64(String aliasedName) =>
     i1.GeneratedColumn<String>('apis', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<String> _column_63(String aliasedName) =>
+i1.GeneratedColumn<String> _column_65(String aliasedName) =>
     i1.GeneratedColumn<String>('abilities', aliasedName, false,
         type: i1.DriftSqlType.string);
-i1.GeneratedColumn<bool> _column_64(String aliasedName) =>
+i1.GeneratedColumn<bool> _column_66(String aliasedName) =>
     i1.GeneratedColumn<bool>('selected', aliasedName, false,
         type: i1.DriftSqlType.bool,
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
