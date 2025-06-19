@@ -47,7 +47,7 @@ class AlbumPage extends HookConsumerWidget {
           title: album.name,
           description:
               "${context.l10n.released} • ${album.releaseDate} • ${album.artists.first.name}",
-          tracks: [],
+          tracks: tracks.asData?.value.items ?? [],
           pagination: PaginationProps(
             hasNextPage: tracks.asData?.value.hasMore ?? false,
             isLoading: tracks.isLoading || tracks.isLoadingNextPage,

@@ -1,7 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:spotube/provider/metadata_plugin/user.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:spotube/provider/metadata_plugin/utils/paginated.dart';
 
@@ -11,17 +10,7 @@ class MetadataPluginSavedTracksNotifier
 
   @override
   fetch(offset, limit) async {
-    final user = await ref.read(metadataPluginUserProvider.future);
-
-    if (user == null) {
-      throw Exception(
-        'User not found \n'
-        'You need to be logged in to access saved tracks.',
-      );
-    }
-
-    final tracks = await (await metadataPlugin).album.tracks(
-          user.id,
+    final tracks = await (await metadataPlugin).user.savedTracks(
           offset: offset,
           limit: limit,
         );

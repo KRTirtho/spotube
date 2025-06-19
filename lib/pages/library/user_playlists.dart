@@ -40,7 +40,7 @@ class UserPlaylistsPage extends HookConsumerWidget {
       () => me.asData?.value == null
           ? null
           : SpotubeSimplePlaylistObject(
-              id: "liked-tracks",
+              id: "user-liked-tracks",
               name: context.l10n.liked_tracks,
               description: context.l10n.liked_tracks_description,
               externalUri: "",

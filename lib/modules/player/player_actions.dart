@@ -16,8 +16,9 @@ import 'package:spotube/components/heart_button/heart_button.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/sleep_timer_provider.dart';
 
 class PlayerActions extends HookConsumerWidget {
@@ -49,19 +50,19 @@ class PlayerActions extends HookConsumerWidget {
       downloader,
     ]);
 
-    final localTracks = [] /* ref.watch(localTracksProvider).value */;
-    final auth = ref.watch(authenticationProvider);
+    final localTracks = ref.watch(localTracksProvider).value;
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
     final sleepTimer = ref.watch(sleepTimerProvider);
     final sleepTimerNotifier = ref.watch(sleepTimerProvider.notifier);
 
     final isDownloaded = useMemoized(() {
-      return localTracks.any(
-            (element) =>
-                element.name == playlist.activeTrack?.name &&
-                element.album?.name == playlist.activeTrack?.album.name &&
-                element.artists?.asString() ==
-                    playlist.activeTrack?.artists.asString(),
-          ) ==
+      return localTracks?.values.expand((e) => e).any(
+                (element) =>
+                    element.name == playlist.activeTrack?.name &&
+                    element.album.name == playlist.activeTrack?.album.name &&
+                    element.artists.asString() ==
+                        playlist.activeTrack?.artists.asString(),
+              ) ==
           true;
     }, [localTracks, playlist.activeTrack]);
 
@@ -175,7 +176,7 @@ class PlayerActions extends HookConsumerWidget {
             ),
         if (playlist.activeTrack != null &&
             !isLocalTrack &&
-            auth.asData?.value != null)
+            authenticated.asData?.value == true)
           TrackHeartButton(track: playlist.activeTrack!),
         AdaptivePopSheetList<Duration>(
           tooltip: context.l10n.sleep_timer,

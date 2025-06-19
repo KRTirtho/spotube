@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/routes.gr.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -28,9 +28,10 @@ class AppRouter extends RootStackRouter {
               guards: [
                 AutoRouteGuardCallback(
                   (resolver, router) async {
-                    final auth = await ref.read(authenticationProvider.future);
+                    final authenticated = await ref
+                        .read(metadataPluginAuthenticatedProvider.future);
 
-                    if (auth == null && !KVStoreService.doneGettingStarted) {
+                    if (!authenticated && !KVStoreService.doneGettingStarted) {
                       resolver.redirect(const GettingStartedRoute());
                     } else {
                       resolver.next(true);
@@ -207,11 +208,6 @@ class AppRouter extends RootStackRouter {
         AutoRoute(
           path: "/getting-started",
           page: GettingStartedRoute.page,
-          // parentNavigatorKey: rootNavigatorKey,
-        ),
-        AutoRoute(
-          path: "/login",
-          page: WebViewLoginRoute.page,
           // parentNavigatorKey: rootNavigatorKey,
         ),
         AutoRoute(

@@ -22,11 +22,11 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
@@ -181,7 +181,7 @@ class TrackOptions extends HookConsumerWidget {
 
     final playlist = ref.watch(audioPlayerProvider);
     final playback = ref.watch(audioPlayerProvider.notifier);
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
     ref.watch(downloadManagerProvider);
     final downloadManager = ref.watch(downloadManagerProvider.notifier);
     final blacklist = ref.watch(blacklistProvider);
@@ -430,7 +430,7 @@ class TrackOptions extends HookConsumerWidget {
                   : context.l10n.save_as_favorite,
             ),
           ),
-        if (auth.asData?.value != null && !isLocalTrack) ...[
+        if (authenticated.asData?.value == true && !isLocalTrack) ...[
           AdaptiveMenuButton(
             value: TrackOptionValue.startRadio,
             leading: const Icon(SpotubeIcons.radio),
@@ -442,7 +442,9 @@ class TrackOptions extends HookConsumerWidget {
             child: Text(context.l10n.add_to_playlist),
           ),
         ],
-        if (userPlaylist && auth.asData?.value != null && !isLocalTrack)
+        if (userPlaylist &&
+            authenticated.asData?.value == true &&
+            !isLocalTrack)
           AdaptiveMenuButton(
             value: TrackOptionValue.removeFromPlaylist,
             leading: const Icon(SpotubeIcons.removeFilled),

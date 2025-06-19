@@ -10,8 +10,8 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/connect/connect_device.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/metadata_plugin/user.dart';
 
 class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
@@ -33,7 +33,7 @@ class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
       placeholder: ImagePlaceholder.artist,
     );
 
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
 
     if (mediaQuery.mdAndDown) {
       return Column(
@@ -91,7 +91,7 @@ class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              if (auth.asData?.value != null && data == null)
+              if (authenticated.asData?.value == true && data == null)
                 const CircularProgressIndicator()
               else if (data != null)
                 Flexible(

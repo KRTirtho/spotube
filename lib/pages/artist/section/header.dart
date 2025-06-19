@@ -10,9 +10,9 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/metadata_plugin/artist/artist.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/artists.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
@@ -28,7 +28,7 @@ class ArtistPageHeader extends HookConsumerWidget {
     final theme = Theme.of(context);
     final ThemeData(:typography) = theme;
 
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
     ref.watch(blacklistProvider);
     final blacklistNotifier = ref.watch(blacklistProvider.notifier);
     final isBlackListed = blacklistNotifier.containsArtist(artist.id);
@@ -41,7 +41,7 @@ class ArtistPageHeader extends HookConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (auth.asData?.value != null)
+          if (authenticated.asData?.value == true)
             Consumer(
               builder: (context, ref, _) {
                 final isFollowingQuery = ref.watch(

@@ -5,8 +5,8 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
 
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/utils/platform.dart';
 
 class AnonymousFallback extends ConsumerWidget {
@@ -18,13 +18,13 @@ class AnonymousFallback extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final isLoggedIn = ref.watch(authenticationProvider);
+    final isLoggedIn = ref.watch(metadataPluginAuthenticatedProvider);
 
     if (isLoggedIn.isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (isLoggedIn.asData?.value != null && child != null) return child!;
+    if (isLoggedIn.asData?.value == true && child != null) return child!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

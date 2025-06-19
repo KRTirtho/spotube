@@ -14,7 +14,6 @@ import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/albums.dart';
 import 'package:auto_route/auto_route.dart';

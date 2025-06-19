@@ -4,7 +4,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/components/heart_button/use_track_toggle_like.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
 import 'package:spotube/provider/metadata_plugin/user.dart';
 
@@ -29,9 +29,9 @@ class HeartButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
 
-    if (auth.asData?.value == null) return const SizedBox.shrink();
+    if (authenticated.asData?.value != true) return const SizedBox.shrink();
 
     return Tooltip(
       tooltip: TooltipContainer(child: Text(tooltip ?? "")).call,

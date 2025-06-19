@@ -20,8 +20,8 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
@@ -41,7 +41,7 @@ class PlayerView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
     final sourcedCurrentTrack = ref.watch(activeTrackSourcesProvider);
     final currentActiveTrack =
         ref.watch(audioPlayerProvider.select((s) => s.activeTrack));
@@ -242,8 +242,9 @@ class PlayerView extends HookConsumerWidget {
                           },
                         ),
                       ),
-                      if (auth.asData?.value != null) const SizedBox(width: 10),
-                      if (auth.asData?.value != null)
+                      if (authenticated.asData?.value == true)
+                        const SizedBox(width: 10),
+                      if (authenticated.asData?.value == true)
                         Expanded(
                           child: OutlineButton(
                             leading: const Icon(SpotubeIcons.music),

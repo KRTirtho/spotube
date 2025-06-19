@@ -226,6 +226,7 @@ class TrackPresentationTopSection extends HookConsumerWidget {
                                                     .imageProvider(
                                                   options.ownerImage!,
                                                 ),
+                                                size: 20 * scale,
                                               )
                                             : null,
                                         child: Text(
