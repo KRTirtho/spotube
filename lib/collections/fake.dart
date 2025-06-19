@@ -1,19 +1,13 @@
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/models/spotify/home_feed.dart';
-import 'package:spotube/models/spotify_friends.dart';
 import 'package:spotube/provider/history/summary.dart';
 
 abstract class FakeData {
-  static final Image image = Image()
-    ..height = 1
-    ..width = 1
-    ..url = "https://dummyimage.com/100x100/cfcfcf/cfcfcf.jpg";
-
-  static final Followers followers = Followers()
-    ..href = "text"
-    ..total = 1;
+  static final SpotubeImageObject image = SpotubeImageObject(
+    height: 100,
+    width: 100,
+    url: "https://dummyimage.com/100x100/cfcfcf/cfcfcf.jpg",
+  );
 
   static final SpotubeFullArtistObject artist = SpotubeFullArtistObject(
     id: "1",
@@ -30,43 +24,26 @@ abstract class FakeData {
     ],
   );
 
-  static final externalIds = ExternalIds()
-    ..isrc = "text"
-    ..ean = "text"
-    ..upc = "text";
+  static final SpotubeFullAlbumObject album = SpotubeFullAlbumObject(
+    id: "1",
+    name: "A good album",
+    externalUri: "https://example.com",
+    artists: [artistSimple],
+    releaseDate: "2021-01-01",
+    albumType: SpotubeAlbumType.album,
+    images: [image],
+    totalTracks: 10,
+    genres: ["genre"],
+    recordLabel: "Record Label",
+  );
 
-  static final externalUrls = ExternalUrls()..spotify = "text";
-
-  static final Album album = Album()
-    ..id = "1"
-    ..genres = ["genre"]
-    ..label = "label"
-    ..popularity = 1
-    ..albumType = AlbumType.album
-    // ..artists = [artist]
-    ..availableMarkets = [Market.BD]
-    ..externalUrls = externalUrls
-    ..href = "text"
-    ..images = [image]
-    ..name = "Another good album"
-    ..releaseDate = "2021-01-01"
-    ..releaseDatePrecision = DatePrecision.day
-    ..tracks = [track]
-    ..type = "type"
-    ..uri = "uri"
-    ..externalIds = externalIds
-    ..copyrights = [
-      Copyright()
-        ..type = CopyrightType.C
-        ..text = "text",
-    ];
-
-  static final ArtistSimple artistSimple = ArtistSimple()
-    ..id = "1"
-    ..name = "What an artist"
-    ..type = "type"
-    ..uri = "uri"
-    ..externalUrls = externalUrls;
+  static final SpotubeSimpleArtistObject artistSimple =
+      SpotubeSimpleArtistObject(
+    id: "1",
+    name: "What an artist",
+    externalUri: "https://example.com",
+    images: null,
+  );
 
   static final SpotubeSimpleAlbumObject albumSimple = SpotubeSimpleAlbumObject(
     albumType: SpotubeAlbumType.album,
@@ -84,163 +61,51 @@ abstract class FakeData {
     ],
   );
 
-  static final Track track = Track()
-    ..id = "1"
-    // ..artists = [artist, artist, artist]
-    // ..album = albumSimple
-    ..availableMarkets = [Market.BD]
-    ..discNumber = 1
-    ..durationMs = 50000
-    ..explicit = false
-    ..externalUrls = externalUrls
-    ..href = "text"
-    ..name = "A Track Name"
-    ..popularity = 1
-    ..previewUrl = "url"
-    ..trackNumber = 1
-    ..type = "type"
-    ..uri = "uri"
-    ..externalIds = externalIds
-    ..isPlayable = true
-    ..explicit = false
-    ..linkedFrom = trackLink;
-
-  static final simpleTrack = SpotubeSimpleTrackObject(
+  static final SpotubeFullTrackObject track = SpotubeTrackObject.full(
     id: "1",
-    name: "A Track Name",
-    artists: [],
-    album: albumSimple,
+    name: "A good track",
     externalUri: "https://example.com",
-    durationMs: 50000,
+    album: albumSimple,
+    durationMs: 3 * 60 * 1000, // 3 minutes
+    isrc: "USUM72112345",
     explicit: false,
+  ) as SpotubeFullTrackObject;
+
+  static final SpotubeUserObject user = SpotubeUserObject(
+    id: "1",
+    name: "User Name",
+    externalUri: "https://example.com",
+    images: [image],
   );
 
-  static final TrackLink trackLink = TrackLink()
-    ..id = "1"
-    ..type = "type"
-    ..uri = "uri"
-    ..externalUrls = {"spotify": "text"}
-    ..href = "text";
+  static final SpotubeFullPlaylistObject playlist = SpotubeFullPlaylistObject(
+      id: "1",
+      name: "A good playlist",
+      description: "A very good playlist description",
+      externalUri: "https://example.com",
+      collaborative: false,
+      public: true,
+      owner: user,
+      images: [image],
+      collaborators: [user]);
 
-  static final Paging<Track> paging = Paging()
-    ..href = "text"
-    ..itemsNative = [track.toJson()]
-    ..limit = 1
-    ..next = "text"
-    ..offset = 1
-    ..previous = "text"
-    ..total = 1;
-
-  static final User user = User()
-    ..id = "1"
-    ..displayName = "Your Name"
-    ..birthdate = "2021-01-01"
-    ..country = Market.BD
-    ..email = "test@email.com"
-    ..followers = followers
-    ..href = "text"
-    ..images = [image]
-    ..type = "type"
-    ..uri = "uri";
-
-  static final TracksLink tracksLink = TracksLink()
-    ..href = "text"
-    ..total = 1;
-
-  static final Playlist playlist = Playlist()
-    ..id = "1"
-    ..collaborative = false
-    ..description = "A very good playlist description"
-    ..externalUrls = externalUrls
-    ..followers = followers
-    ..href = "text"
-    ..images = [image]
-    ..name = "A good playlist"
-    ..owner = user
-    ..public = true
-    ..snapshotId = "text"
-    ..tracks = paging
-    ..tracksLink = tracksLink
-    ..type = "type"
-    ..uri = "uri";
-
-  static final PlaylistSimple playlistSimple = PlaylistSimple()
-    ..id = "1"
-    ..collaborative = false
-    ..externalUrls = externalUrls
-    ..href = "text"
-    ..images = [image]
-    ..name = "A good playlist"
-    ..owner = user
-    ..public = true
-    ..snapshotId = "text"
-    ..tracksLink = tracksLink
-    ..type = "type"
-    ..description = "A very good playlist description"
-    ..uri = "uri";
-
-  static final Category category = Category()
-    ..href = "text"
-    ..icons = [image]
-    ..id = "1"
-    ..name = "category";
-
-  static final friends = SpotifyFriends(
-    friends: [
-      for (var i = 0; i < 3; i++)
-        SpotifyFriendActivity(
-          user: const SpotifyFriend(
-            name: "name",
-            imageUrl: "imageUrl",
-            uri: "uri",
-          ),
-          track: SpotifyActivityTrack(
-            name: "name",
-            artist: const SpotifyActivityArtist(
-              name: "name",
-              uri: "uri",
-            ),
-            album: const SpotifyActivityAlbum(
-              name: "name",
-              uri: "uri",
-            ),
-            context: SpotifyActivityContext(
-              name: "name",
-              index: i,
-              uri: "uri",
-            ),
-            imageUrl: "imageUrl",
-            uri: "uri",
-          ),
-        ),
-    ],
+  static final SpotubeSimplePlaylistObject playlistSimple =
+      SpotubeSimplePlaylistObject(
+    id: "1",
+    name: "A good playlist",
+    description: "A very good playlist description",
+    externalUri: "https://example.com",
+    owner: user,
+    images: [image],
   );
 
-  static final feedSection = SpotifyHomeFeedSection(
-    typename: "HomeGenericSectionData",
-    uri: "spotify:section:lol",
-    title: "Dummy",
-    items: [
-      for (int i = 0; i < 10; i++)
-        SpotifyHomeFeedSectionItem(
-          typename: "PlaylistResponseWrapper",
-          playlist: SpotifySectionPlaylist(
-            name: "Playlist $i",
-            description: "Really super important description $i",
-            format: "daily-mix",
-            images: [
-              const SpotifySectionItemImage(
-                height: 1,
-                width: 1,
-                url: "https://dummyimage.com/100x100/cfcfcf/cfcfcf.jpg",
-              ),
-            ],
-            owner: "Spotify",
-            uri: "spotify:playlist:id",
-          ),
-        )
-    ],
-  );
+  static final SpotubeBrowseSectionObject browseSection =
+      SpotubeBrowseSectionObject(
+          id: "section-id",
+          title: "Browse Section",
+          browseMore: true,
+          externalUri: "https://example.com/browse/section",
+          items: [playlistSimple, playlistSimple, playlistSimple]);
 
   static const historySummary = PlaybackHistorySummary(
     albums: 1,

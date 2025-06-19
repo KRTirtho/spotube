@@ -10,30 +10,27 @@ import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/ui/button_tile.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/hooks/utils/use_debounce.dart';
 import 'package:spotube/models/database/database.dart';
-import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_engine/youtube_engine.dart';
-import 'package:spotube/services/sourced_track/models/source_info.dart';
 import 'package:spotube/services/sourced_track/models/video_info.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
-import 'package:spotube/services/sourced_track/sources/invidious.dart';
 import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
-import 'package:spotube/services/sourced_track/sources/piped.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 final sourceInfoToIconMap = {
-  YoutubeSourceInfo: const Icon(SpotubeIcons.youtube, color: Color(0xFFFF0000)),
-  JioSaavnSourceInfo: Container(
+  AudioSource.youtube:
+      const Icon(SpotubeIcons.youtube, color: Color(0xFFFF0000)),
+  AudioSource.jiosaavn: Container(
     height: 30,
     width: 30,
     decoration: BoxDecoration(
@@ -44,8 +41,8 @@ final sourceInfoToIconMap = {
       ),
     ),
   ),
-  PipedSourceInfo: const Icon(SpotubeIcons.piped),
-  InvidiousSourceInfo: Container(
+  AudioSource.piped: const Icon(SpotubeIcons.piped),
+  AudioSource.invidious: Container(
     height: 18,
     width: 18,
     decoration: BoxDecoration(
@@ -68,25 +65,25 @@ class SiblingTracksSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final playlist = ref.watch(audioPlayerProvider);
     final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
     final preferences = ref.watch(userPreferencesProvider);
     final youtubeEngine = ref.watch(youtubeEngineProvider);
 
     final isSearching = useState(false);
     final searchMode = useState(preferences.searchMode);
-    final activeTrackNotifier = ref.watch(activeTrackSourcesProvider.notifier);
-    final activeTrack =
-        ref.watch(activeTrackSourcesProvider) ?? playlist.activeTrack;
+    final activeTrackSources = ref.watch(activeTrackSourcesProvider);
+    final activeTrackNotifier = activeTrackSources.asData?.value?.notifier;
+    final activeTrack = activeTrackSources.asData?.value?.track;
+    final activeTrackSource = activeTrackSources.asData?.value?.source;
 
     final title = ServiceUtils.getTitle(
       activeTrack?.name ?? "",
-      artists: activeTrack?.artists?.map((e) => e.name!).toList() ?? [],
+      artists: activeTrack?.artists.map((e) => e.name).toList() ?? [],
       onlyCleanArtist: true,
     ).trim();
 
     final defaultSearchTerm =
-        "$title - ${activeTrack?.artists?.asString() ?? ""}";
+        "$title - ${activeTrack?.artists.asString() ?? ""}";
     final searchController = useShadcnTextEditingController(
       text: defaultSearchTerm,
     );
@@ -99,7 +96,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
 
     final searchRequest = useMemoized(() async {
       if (searchTerm.trim().isEmpty) {
-        return <SourceInfo>[];
+        return <TrackSourceInfo>[];
       }
       if (preferences.audioSource == AudioSource.jiosaavn) {
         final resultsJioSaavn =
@@ -110,7 +107,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
           return siblingType.info;
         }));
 
-        final activeSourceInfo = (activeTrack! as SourcedTrack).sourceInfo;
+        final activeSourceInfo = activeTrackSource as TrackSourceInfo;
 
         return results
           ..removeWhere((element) => element.id == activeSourceInfo.id)
@@ -130,7 +127,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
             return siblingType.info;
           }),
         );
-        final activeSourceInfo = (activeTrack! as SourcedTrack).sourceInfo;
+        final activeSourceInfo = activeTrackSource as TrackSourceInfo;
         return searchResults
           ..removeWhere((element) => element.id == activeSourceInfo.id)
           ..insert(
@@ -142,6 +139,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
       searchTerm,
       searchMode.value,
       activeTrack,
+      activeTrackSource,
       preferences.audioSource,
       youtubeEngine,
     ]);
@@ -149,25 +147,25 @@ class SiblingTracksSheet extends HookConsumerWidget {
     final siblings = useMemoized(
       () => !isFetchingActiveTrack
           ? [
-              (activeTrack as SourcedTrack).sourceInfo,
-              ...activeTrack.siblings,
+              if (activeTrackSource != null) activeTrackSource.info,
+              ...?activeTrackSource?.siblings,
             ]
-          : <SourceInfo>[],
-      [activeTrack, isFetchingActiveTrack],
+          : <TrackSourceInfo>[],
+      [activeTrackSource, isFetchingActiveTrack],
     );
 
     final previousActiveTrack = usePrevious(activeTrack);
     useEffect(() {
       /// Populate sibling when active track changes
       if (previousActiveTrack?.id == activeTrack?.id) return;
-      if (activeTrack is SourcedTrack && activeTrack.siblings.isEmpty) {
-        activeTrackNotifier.populateSibling();
+      if (activeTrackSource != null && activeTrackSource.siblings.isEmpty) {
+        activeTrackNotifier?.copyWithSibling();
       }
       return null;
     }, [activeTrack, previousActiveTrack]);
 
     final itemBuilder = useCallback(
-      (SourceInfo sourceInfo) {
+      (TrackSourceInfo sourceInfo) {
         final icon = sourceInfoToIconMap[sourceInfo.runtimeType];
         return ButtonTile(
           style: ButtonVariance.ghost,
@@ -182,13 +180,14 @@ class SiblingTracksSheet extends HookConsumerWidget {
             height: 60,
             width: 60,
           ),
-          trailing: Text(sourceInfo.duration.toHumanReadableString()),
+          trailing: Text(Duration(milliseconds: sourceInfo.durationMs)
+              .toHumanReadableString()),
           subtitle: Row(
             children: [
               if (icon != null) icon,
               Flexible(
                 child: Text(
-                  " • ${sourceInfo.artist}",
+                  " • ${sourceInfo.artists}",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -197,11 +196,11 @@ class SiblingTracksSheet extends HookConsumerWidget {
           ),
           enabled: !isFetchingActiveTrack,
           selected: !isFetchingActiveTrack &&
-              sourceInfo.id == (activeTrack as SourcedTrack).sourceInfo.id,
+              sourceInfo.id == activeTrackSource?.info.id,
           onPressed: () {
             if (!isFetchingActiveTrack &&
-                sourceInfo.id != (activeTrack as SourcedTrack).sourceInfo.id) {
-              activeTrackNotifier.swapSibling(sourceInfo);
+                sourceInfo.id != activeTrackSource?.info.id) {
+              activeTrackNotifier?.swapWithSibling(sourceInfo);
               if (MediaQuery.sizeOf(context).mdAndUp) {
                 closeOverlay(context);
               } else {
@@ -211,7 +210,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
           },
         );
       },
-      [activeTrack, siblings],
+      [activeTrackSource, activeTrackNotifier, siblings],
     );
 
     final scale = context.theme.scaling;

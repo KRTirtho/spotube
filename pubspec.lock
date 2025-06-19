@@ -2288,14 +2288,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.1"
-  spotify:
-    dependency: "direct main"
-    description:
-      name: spotify
-      sha256: "705f09a457a893973451c15f4072670ac4783d67e42c35c080c55a48dee3a01f"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.13.7"
   sprintf:
     dependency: transitive
     description:

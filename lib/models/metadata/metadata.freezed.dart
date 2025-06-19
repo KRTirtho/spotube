@@ -2571,8 +2571,7 @@ mixin _$SpotubeSearchResponseObject {
       throw _privateConstructorUsedError;
   List<SpotubeSimplePlaylistObject> get playlists =>
       throw _privateConstructorUsedError;
-  List<SpotubeSimpleTrackObject> get tracks =>
-      throw _privateConstructorUsedError;
+  List<SpotubeFullTrackObject> get tracks => throw _privateConstructorUsedError;
 
   /// Serializes this SpotubeSearchResponseObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -2596,7 +2595,7 @@ abstract class $SpotubeSearchResponseObjectCopyWith<$Res> {
       {List<SpotubeSimpleAlbumObject> albums,
       List<SpotubeFullArtistObject> artists,
       List<SpotubeSimplePlaylistObject> playlists,
-      List<SpotubeSimpleTrackObject> tracks});
+      List<SpotubeFullTrackObject> tracks});
 }
 
 /// @nodoc
@@ -2636,7 +2635,7 @@ class _$SpotubeSearchResponseObjectCopyWithImpl<$Res,
       tracks: null == tracks
           ? _value.tracks
           : tracks // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeSimpleTrackObject>,
+              as List<SpotubeFullTrackObject>,
     ) as $Val);
   }
 }
@@ -2654,7 +2653,7 @@ abstract class _$$SpotubeSearchResponseObjectImplCopyWith<$Res>
       {List<SpotubeSimpleAlbumObject> albums,
       List<SpotubeFullArtistObject> artists,
       List<SpotubeSimplePlaylistObject> playlists,
-      List<SpotubeSimpleTrackObject> tracks});
+      List<SpotubeFullTrackObject> tracks});
 }
 
 /// @nodoc
@@ -2693,7 +2692,7 @@ class __$$SpotubeSearchResponseObjectImplCopyWithImpl<$Res>
       tracks: null == tracks
           ? _value._tracks
           : tracks // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeSimpleTrackObject>,
+              as List<SpotubeFullTrackObject>,
     ));
   }
 }
@@ -2706,7 +2705,7 @@ class _$SpotubeSearchResponseObjectImpl
       {required final List<SpotubeSimpleAlbumObject> albums,
       required final List<SpotubeFullArtistObject> artists,
       required final List<SpotubeSimplePlaylistObject> playlists,
-      required final List<SpotubeSimpleTrackObject> tracks})
+      required final List<SpotubeFullTrackObject> tracks})
       : _albums = albums,
         _artists = artists,
         _playlists = playlists,
@@ -2740,9 +2739,9 @@ class _$SpotubeSearchResponseObjectImpl
     return EqualUnmodifiableListView(_playlists);
   }
 
-  final List<SpotubeSimpleTrackObject> _tracks;
+  final List<SpotubeFullTrackObject> _tracks;
   @override
-  List<SpotubeSimpleTrackObject> get tracks {
+  List<SpotubeFullTrackObject> get tracks {
     if (_tracks is EqualUnmodifiableListView) return _tracks;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_tracks);
@@ -2797,7 +2796,7 @@ abstract class _SpotubeSearchResponseObject
           {required final List<SpotubeSimpleAlbumObject> albums,
           required final List<SpotubeFullArtistObject> artists,
           required final List<SpotubeSimplePlaylistObject> playlists,
-          required final List<SpotubeSimpleTrackObject> tracks}) =
+          required final List<SpotubeFullTrackObject> tracks}) =
       _$SpotubeSearchResponseObjectImpl;
 
   factory _SpotubeSearchResponseObject.fromJson(Map<String, dynamic> json) =
@@ -2810,7 +2809,7 @@ abstract class _SpotubeSearchResponseObject
   @override
   List<SpotubeSimplePlaylistObject> get playlists;
   @override
-  List<SpotubeSimpleTrackObject> get tracks;
+  List<SpotubeFullTrackObject> get tracks;
 
   /// Create a copy of SpotubeSearchResponseObject
   /// with the given fields replaced by the non-null parameter values.
@@ -2826,8 +2825,6 @@ SpotubeTrackObject _$SpotubeTrackObjectFromJson(Map<String, dynamic> json) {
       return SpotubeLocalTrackObject.fromJson(json);
     case 'full':
       return SpotubeFullTrackObject.fromJson(json);
-    case 'simple':
-      return SpotubeSimpleTrackObject.fromJson(json);
 
     default:
       throw CheckedFromJsonException(json, 'runtimeType', 'SpotubeTrackObject',
@@ -2842,7 +2839,7 @@ mixin _$SpotubeTrackObject {
   String get externalUri => throw _privateConstructorUsedError;
   List<SpotubeSimpleArtistObject> get artists =>
       throw _privateConstructorUsedError;
-  SpotubeSimpleAlbumObject? get album => throw _privateConstructorUsedError;
+  SpotubeSimpleAlbumObject get album => throw _privateConstructorUsedError;
   int get durationMs => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
@@ -2865,15 +2862,6 @@ mixin _$SpotubeTrackObject {
             String isrc,
             bool explicit)
         full,
-    required TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)
-        simple,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -2897,15 +2885,6 @@ mixin _$SpotubeTrackObject {
             String isrc,
             bool explicit)?
         full,
-    TResult? Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)?
-        simple,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -2929,15 +2908,6 @@ mixin _$SpotubeTrackObject {
             String isrc,
             bool explicit)?
         full,
-    TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)?
-        simple,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -2945,21 +2915,18 @@ mixin _$SpotubeTrackObject {
   TResult map<TResult extends Object?>({
     required TResult Function(SpotubeLocalTrackObject value) local,
     required TResult Function(SpotubeFullTrackObject value) full,
-    required TResult Function(SpotubeSimpleTrackObject value) simple,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(SpotubeLocalTrackObject value)? local,
     TResult? Function(SpotubeFullTrackObject value)? full,
-    TResult? Function(SpotubeSimpleTrackObject value)? simple,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(SpotubeLocalTrackObject value)? local,
     TResult Function(SpotubeFullTrackObject value)? full,
-    TResult Function(SpotubeSimpleTrackObject value)? simple,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -2988,7 +2955,7 @@ abstract class $SpotubeTrackObjectCopyWith<$Res> {
       SpotubeSimpleAlbumObject album,
       int durationMs});
 
-  $SpotubeSimpleAlbumObjectCopyWith<$Res>? get album;
+  $SpotubeSimpleAlbumObjectCopyWith<$Res> get album;
 }
 
 /// @nodoc
@@ -3031,7 +2998,7 @@ class _$SpotubeTrackObjectCopyWithImpl<$Res, $Val extends SpotubeTrackObject>
           : artists // ignore: cast_nullable_to_non_nullable
               as List<SpotubeSimpleArtistObject>,
       album: null == album
-          ? _value.album!
+          ? _value.album
           : album // ignore: cast_nullable_to_non_nullable
               as SpotubeSimpleAlbumObject,
       durationMs: null == durationMs
@@ -3045,12 +3012,8 @@ class _$SpotubeTrackObjectCopyWithImpl<$Res, $Val extends SpotubeTrackObject>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $SpotubeSimpleAlbumObjectCopyWith<$Res>? get album {
-    if (_value.album == null) {
-      return null;
-    }
-
-    return $SpotubeSimpleAlbumObjectCopyWith<$Res>(_value.album!, (value) {
+  $SpotubeSimpleAlbumObjectCopyWith<$Res> get album {
+    return $SpotubeSimpleAlbumObjectCopyWith<$Res>(_value.album, (value) {
       return _then(_value.copyWith(album: value) as $Val);
     });
   }
@@ -3131,16 +3094,6 @@ class __$$SpotubeLocalTrackObjectImplCopyWithImpl<$Res>
           : path // ignore: cast_nullable_to_non_nullable
               as String,
     ));
-  }
-
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $SpotubeSimpleAlbumObjectCopyWith<$Res> get album {
-    return $SpotubeSimpleAlbumObjectCopyWith<$Res>(_value.album, (value) {
-      return _then(_value.copyWith(album: value));
-    });
   }
 }
 
@@ -3244,15 +3197,6 @@ class _$SpotubeLocalTrackObjectImpl implements SpotubeLocalTrackObject {
             String isrc,
             bool explicit)
         full,
-    required TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)
-        simple,
   }) {
     return local(id, name, externalUri, artists, album, durationMs, path);
   }
@@ -3279,15 +3223,6 @@ class _$SpotubeLocalTrackObjectImpl implements SpotubeLocalTrackObject {
             String isrc,
             bool explicit)?
         full,
-    TResult? Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)?
-        simple,
   }) {
     return local?.call(id, name, externalUri, artists, album, durationMs, path);
   }
@@ -3314,15 +3249,6 @@ class _$SpotubeLocalTrackObjectImpl implements SpotubeLocalTrackObject {
             String isrc,
             bool explicit)?
         full,
-    TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)?
-        simple,
     required TResult orElse(),
   }) {
     if (local != null) {
@@ -3336,7 +3262,6 @@ class _$SpotubeLocalTrackObjectImpl implements SpotubeLocalTrackObject {
   TResult map<TResult extends Object?>({
     required TResult Function(SpotubeLocalTrackObject value) local,
     required TResult Function(SpotubeFullTrackObject value) full,
-    required TResult Function(SpotubeSimpleTrackObject value) simple,
   }) {
     return local(this);
   }
@@ -3346,7 +3271,6 @@ class _$SpotubeLocalTrackObjectImpl implements SpotubeLocalTrackObject {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(SpotubeLocalTrackObject value)? local,
     TResult? Function(SpotubeFullTrackObject value)? full,
-    TResult? Function(SpotubeSimpleTrackObject value)? simple,
   }) {
     return local?.call(this);
   }
@@ -3356,7 +3280,6 @@ class _$SpotubeLocalTrackObjectImpl implements SpotubeLocalTrackObject {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(SpotubeLocalTrackObject value)? local,
     TResult Function(SpotubeFullTrackObject value)? full,
-    TResult Function(SpotubeSimpleTrackObject value)? simple,
     required TResult orElse(),
   }) {
     if (local != null) {
@@ -3489,16 +3412,6 @@ class __$$SpotubeFullTrackObjectImplCopyWithImpl<$Res>
               as bool,
     ));
   }
-
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $SpotubeSimpleAlbumObjectCopyWith<$Res> get album {
-    return $SpotubeSimpleAlbumObjectCopyWith<$Res>(_value.album, (value) {
-      return _then(_value.copyWith(album: value));
-    });
-  }
 }
 
 /// @nodoc
@@ -3614,15 +3527,6 @@ class _$SpotubeFullTrackObjectImpl implements SpotubeFullTrackObject {
             String isrc,
             bool explicit)
         full,
-    required TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)
-        simple,
   }) {
     return full(
         id, name, externalUri, artists, album, durationMs, isrc, explicit);
@@ -3650,15 +3554,6 @@ class _$SpotubeFullTrackObjectImpl implements SpotubeFullTrackObject {
             String isrc,
             bool explicit)?
         full,
-    TResult? Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)?
-        simple,
   }) {
     return full?.call(
         id, name, externalUri, artists, album, durationMs, isrc, explicit);
@@ -3686,15 +3581,6 @@ class _$SpotubeFullTrackObjectImpl implements SpotubeFullTrackObject {
             String isrc,
             bool explicit)?
         full,
-    TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)?
-        simple,
     required TResult orElse(),
   }) {
     if (full != null) {
@@ -3709,7 +3595,6 @@ class _$SpotubeFullTrackObjectImpl implements SpotubeFullTrackObject {
   TResult map<TResult extends Object?>({
     required TResult Function(SpotubeLocalTrackObject value) local,
     required TResult Function(SpotubeFullTrackObject value) full,
-    required TResult Function(SpotubeSimpleTrackObject value) simple,
   }) {
     return full(this);
   }
@@ -3719,7 +3604,6 @@ class _$SpotubeFullTrackObjectImpl implements SpotubeFullTrackObject {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(SpotubeLocalTrackObject value)? local,
     TResult? Function(SpotubeFullTrackObject value)? full,
-    TResult? Function(SpotubeSimpleTrackObject value)? simple,
   }) {
     return full?.call(this);
   }
@@ -3729,7 +3613,6 @@ class _$SpotubeFullTrackObjectImpl implements SpotubeFullTrackObject {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(SpotubeLocalTrackObject value)? local,
     TResult Function(SpotubeFullTrackObject value)? full,
-    TResult Function(SpotubeSimpleTrackObject value)? simple,
     required TResult orElse(),
   }) {
     if (full != null) {
@@ -3780,358 +3663,6 @@ abstract class SpotubeFullTrackObject implements SpotubeTrackObject {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SpotubeFullTrackObjectImplCopyWith<_$SpotubeFullTrackObjectImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$SpotubeSimpleTrackObjectImplCopyWith<$Res>
-    implements $SpotubeTrackObjectCopyWith<$Res> {
-  factory _$$SpotubeSimpleTrackObjectImplCopyWith(
-          _$SpotubeSimpleTrackObjectImpl value,
-          $Res Function(_$SpotubeSimpleTrackObjectImpl) then) =
-      __$$SpotubeSimpleTrackObjectImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {String id,
-      String name,
-      String externalUri,
-      int durationMs,
-      bool explicit,
-      List<SpotubeSimpleArtistObject> artists,
-      SpotubeSimpleAlbumObject? album});
-
-  @override
-  $SpotubeSimpleAlbumObjectCopyWith<$Res>? get album;
-}
-
-/// @nodoc
-class __$$SpotubeSimpleTrackObjectImplCopyWithImpl<$Res>
-    extends _$SpotubeTrackObjectCopyWithImpl<$Res,
-        _$SpotubeSimpleTrackObjectImpl>
-    implements _$$SpotubeSimpleTrackObjectImplCopyWith<$Res> {
-  __$$SpotubeSimpleTrackObjectImplCopyWithImpl(
-      _$SpotubeSimpleTrackObjectImpl _value,
-      $Res Function(_$SpotubeSimpleTrackObjectImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? id = null,
-    Object? name = null,
-    Object? externalUri = null,
-    Object? durationMs = null,
-    Object? explicit = null,
-    Object? artists = null,
-    Object? album = freezed,
-  }) {
-    return _then(_$SpotubeSimpleTrackObjectImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      externalUri: null == externalUri
-          ? _value.externalUri
-          : externalUri // ignore: cast_nullable_to_non_nullable
-              as String,
-      durationMs: null == durationMs
-          ? _value.durationMs
-          : durationMs // ignore: cast_nullable_to_non_nullable
-              as int,
-      explicit: null == explicit
-          ? _value.explicit
-          : explicit // ignore: cast_nullable_to_non_nullable
-              as bool,
-      artists: null == artists
-          ? _value._artists
-          : artists // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeSimpleArtistObject>,
-      album: freezed == album
-          ? _value.album
-          : album // ignore: cast_nullable_to_non_nullable
-              as SpotubeSimpleAlbumObject?,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$SpotubeSimpleTrackObjectImpl implements SpotubeSimpleTrackObject {
-  _$SpotubeSimpleTrackObjectImpl(
-      {required this.id,
-      required this.name,
-      required this.externalUri,
-      required this.durationMs,
-      required this.explicit,
-      final List<SpotubeSimpleArtistObject> artists = const [],
-      this.album,
-      final String? $type})
-      : _artists = artists,
-        $type = $type ?? 'simple';
-
-  factory _$SpotubeSimpleTrackObjectImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SpotubeSimpleTrackObjectImplFromJson(json);
-
-  @override
-  final String id;
-  @override
-  final String name;
-  @override
-  final String externalUri;
-  @override
-  final int durationMs;
-  @override
-  final bool explicit;
-  final List<SpotubeSimpleArtistObject> _artists;
-  @override
-  @JsonKey()
-  List<SpotubeSimpleArtistObject> get artists {
-    if (_artists is EqualUnmodifiableListView) return _artists;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_artists);
-  }
-
-  @override
-  final SpotubeSimpleAlbumObject? album;
-
-  @JsonKey(name: 'runtimeType')
-  final String $type;
-
-  @override
-  String toString() {
-    return 'SpotubeTrackObject.simple(id: $id, name: $name, externalUri: $externalUri, durationMs: $durationMs, explicit: $explicit, artists: $artists, album: $album)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SpotubeSimpleTrackObjectImpl &&
-            (identical(other.id, id) || other.id == id) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.externalUri, externalUri) ||
-                other.externalUri == externalUri) &&
-            (identical(other.durationMs, durationMs) ||
-                other.durationMs == durationMs) &&
-            (identical(other.explicit, explicit) ||
-                other.explicit == explicit) &&
-            const DeepCollectionEquality().equals(other._artists, _artists) &&
-            (identical(other.album, album) || other.album == album));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      name,
-      externalUri,
-      durationMs,
-      explicit,
-      const DeepCollectionEquality().hash(_artists),
-      album);
-
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SpotubeSimpleTrackObjectImplCopyWith<_$SpotubeSimpleTrackObjectImpl>
-      get copyWith => __$$SpotubeSimpleTrackObjectImplCopyWithImpl<
-          _$SpotubeSimpleTrackObjectImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject album,
-            int durationMs,
-            String path)
-        local,
-    required TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject album,
-            int durationMs,
-            String isrc,
-            bool explicit)
-        full,
-    required TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)
-        simple,
-  }) {
-    return simple(id, name, externalUri, durationMs, explicit, artists, album);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String id,
-            String name,
-            String externalUri,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject album,
-            int durationMs,
-            String path)?
-        local,
-    TResult? Function(
-            String id,
-            String name,
-            String externalUri,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject album,
-            int durationMs,
-            String isrc,
-            bool explicit)?
-        full,
-    TResult? Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)?
-        simple,
-  }) {
-    return simple?.call(
-        id, name, externalUri, durationMs, explicit, artists, album);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject album,
-            int durationMs,
-            String path)?
-        local,
-    TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject album,
-            int durationMs,
-            String isrc,
-            bool explicit)?
-        full,
-    TResult Function(
-            String id,
-            String name,
-            String externalUri,
-            int durationMs,
-            bool explicit,
-            List<SpotubeSimpleArtistObject> artists,
-            SpotubeSimpleAlbumObject? album)?
-        simple,
-    required TResult orElse(),
-  }) {
-    if (simple != null) {
-      return simple(
-          id, name, externalUri, durationMs, explicit, artists, album);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(SpotubeLocalTrackObject value) local,
-    required TResult Function(SpotubeFullTrackObject value) full,
-    required TResult Function(SpotubeSimpleTrackObject value) simple,
-  }) {
-    return simple(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(SpotubeLocalTrackObject value)? local,
-    TResult? Function(SpotubeFullTrackObject value)? full,
-    TResult? Function(SpotubeSimpleTrackObject value)? simple,
-  }) {
-    return simple?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(SpotubeLocalTrackObject value)? local,
-    TResult Function(SpotubeFullTrackObject value)? full,
-    TResult Function(SpotubeSimpleTrackObject value)? simple,
-    required TResult orElse(),
-  }) {
-    if (simple != null) {
-      return simple(this);
-    }
-    return orElse();
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SpotubeSimpleTrackObjectImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class SpotubeSimpleTrackObject implements SpotubeTrackObject {
-  factory SpotubeSimpleTrackObject(
-      {required final String id,
-      required final String name,
-      required final String externalUri,
-      required final int durationMs,
-      required final bool explicit,
-      final List<SpotubeSimpleArtistObject> artists,
-      final SpotubeSimpleAlbumObject? album}) = _$SpotubeSimpleTrackObjectImpl;
-
-  factory SpotubeSimpleTrackObject.fromJson(Map<String, dynamic> json) =
-      _$SpotubeSimpleTrackObjectImpl.fromJson;
-
-  @override
-  String get id;
-  @override
-  String get name;
-  @override
-  String get externalUri;
-  @override
-  int get durationMs;
-  bool get explicit;
-  @override
-  List<SpotubeSimpleArtistObject> get artists;
-  @override
-  SpotubeSimpleAlbumObject? get album;
-
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SpotubeSimpleTrackObjectImplCopyWith<_$SpotubeSimpleTrackObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 

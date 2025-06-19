@@ -6,13 +6,13 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/connect/connect_device.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/user.dart';
 
 class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
   const SidebarFooter({
@@ -25,11 +25,11 @@ class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
     final router = AutoRouter.of(context, watch: true);
     final mediaQuery = MediaQuery.of(context);
     final downloadCount = ref.watch(downloadManagerProvider).$downloadCount;
-    final userSnapshot = ref.watch(meProvider);
+    final userSnapshot = ref.watch(metadataPluginUserProvider);
     final data = userSnapshot.asData?.value;
 
     final avatarImg = (data?.images).asUrlString(
-      index: (data?.images?.length ?? 1) - 1,
+      index: (data?.images.length ?? 1) - 1,
       placeholder: ImagePlaceholder.artist,
     );
 
@@ -102,14 +102,13 @@ class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
                     child: Row(
                       children: [
                         Avatar(
-                          initials:
-                              Avatar.getInitials(data.displayName ?? "User"),
+                          initials: Avatar.getInitials(data.name),
                           provider: UniversalImage.imageProvider(avatarImg),
                         ),
                         const SizedBox(width: 10),
                         Flexible(
                           child: Text(
-                            data.displayName ?? context.l10n.guest,
+                            data.name,
                             maxLines: 1,
                             softWrap: false,
                             overflow: TextOverflow.fade,

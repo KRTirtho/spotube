@@ -8,14 +8,13 @@ import 'package:spotube/collections/routes.gr.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/player/player_queue.dart';
 import 'package:spotube/modules/player/sibling_tracks_sheet.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
-import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
@@ -38,12 +37,13 @@ class PlayerActions extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final playlist = ref.watch(audioPlayerProvider);
-    final isLocalTrack = playlist.activeTrack is LocalTrack;
+    final isLocalTrack = playlist.activeTrack is SpotubeLocalTrackObject;
     ref.watch(downloadManagerProvider);
     final downloader = ref.watch(downloadManagerProvider.notifier);
     final isInQueue = useMemoized(() {
-      if (playlist.activeTrack == null) return false;
-      return downloader.isActive(playlist.activeTrack!);
+      if (playlist.activeTrack is! SpotubeFullTrackObject) return false;
+      return downloader
+          .isActive(playlist.activeTrack! as SpotubeFullTrackObject);
     }, [
       playlist.activeTrack,
       downloader,
@@ -58,9 +58,9 @@ class PlayerActions extends HookConsumerWidget {
       return localTracks.any(
             (element) =>
                 element.name == playlist.activeTrack?.name &&
-                element.album?.name == playlist.activeTrack?.album?.name &&
+                element.album?.name == playlist.activeTrack?.album.name &&
                 element.artists?.asString() ==
-                    playlist.activeTrack?.artists?.asString(),
+                    playlist.activeTrack?.artists.asString(),
           ) ==
           true;
     }, [localTracks, playlist.activeTrack]);
@@ -168,7 +168,8 @@ class PlayerActions extends HookConsumerWidget {
                   isDownloaded ? SpotubeIcons.done : SpotubeIcons.download,
                 ),
                 onPressed: playlist.activeTrack != null
-                    ? () => downloader.addToQueue(playlist.activeTrack!)
+                    ? () => downloader.addToQueue(
+                        playlist.activeTrack! as SpotubeFullTrackObject)
                     : null,
               ),
             ),

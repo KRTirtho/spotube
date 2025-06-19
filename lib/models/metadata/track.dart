@@ -23,23 +23,54 @@ class SpotubeTrackObject with _$SpotubeTrackObject {
     required bool explicit,
   }) = SpotubeFullTrackObject;
 
-  factory SpotubeTrackObject.simple({
-    required String id,
-    required String name,
-    required String externalUri,
-    required int durationMs,
-    required bool explicit,
-    @Default([]) List<SpotubeSimpleArtistObject> artists,
-    SpotubeSimpleAlbumObject? album,
-  }) = SpotubeSimpleTrackObject;
+  factory SpotubeTrackObject.localTrackFromFile(
+    File file, {
+    Metadata? metadata,
+    String? art,
+  }) {
+    return SpotubeLocalTrackObject(
+      id: file.absolute.path,
+      name: metadata?.title ?? basenameWithoutExtension(file.path),
+      externalUri: "file://${file.absolute.path}",
+      artists: metadata?.artist?.split(",").map((a) {
+            return SpotubeSimpleArtistObject(
+              id: a.trim(),
+              name: a.trim(),
+              externalUri: "file://${file.absolute.path}",
+            );
+          }).toList() ??
+          [
+            SpotubeSimpleArtistObject(
+              id: "unknown",
+              name: "Unknown Artist",
+              externalUri: "file://${file.absolute.path}",
+            ),
+          ],
+      album: SpotubeSimpleAlbumObject(
+        albumType: SpotubeAlbumType.album,
+        id: metadata?.album ?? "unknown",
+        name: metadata?.album ?? "Unknown Album",
+        externalUri: "file://${file.absolute.path}",
+        artists: [
+          SpotubeSimpleArtistObject(
+            id: metadata?.albumArtist ?? "unknown",
+            name: metadata?.albumArtist ?? "Unknown Artist",
+            externalUri: "file://${file.absolute.path}",
+          ),
+        ],
+        releaseDate:
+            metadata?.year != null ? "${metadata!.year}-01-01" : "1970-01-01",
+      ),
+      durationMs: metadata?.durationMs?.toInt() ?? 0,
+      path: file.path,
+    );
+  }
 
   factory SpotubeTrackObject.fromJson(Map<String, dynamic> json) =>
       _$SpotubeTrackObjectFromJson(
-        json.containsKey("isrc")
-            ? {...json, "runtimeType": "full"}
-            : json.containsKey("path")
-                ? {...json, "runtimeType": "local"}
-                : {...json, "runtimeType": "simple"},
+        json.containsKey("path")
+            ? {...json, "runtimeType": "local"}
+            : {...json, "runtimeType": "full"},
       );
 }
 

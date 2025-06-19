@@ -8,6 +8,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/player/player_actions.dart';
 import 'package:spotube/modules/player/player_overlay.dart';
 import 'package:spotube/modules/player/player_track_details.dart';
@@ -15,7 +16,6 @@ import 'package:spotube/modules/player/player_controls.dart';
 import 'package:spotube/modules/player/volume_slider.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
@@ -35,13 +35,13 @@ class BottomPlayer extends HookConsumerWidget {
     final mediaQuery = MediaQuery.of(context);
 
     String albumArt = useMemoized(
-      () => playlist.activeTrack?.album?.images?.isNotEmpty == true
-          ? (playlist.activeTrack?.album?.images).asUrlString(
-              index: (playlist.activeTrack?.album?.images?.length ?? 1) - 1,
+      () => playlist.activeTrack?.album.images.isNotEmpty == true
+          ? (playlist.activeTrack?.album.images).asUrlString(
+              index: (playlist.activeTrack?.album.images.length ?? 1) - 1,
               placeholder: ImagePlaceholder.albumArt,
             )
           : Assets.albumPlaceholder.path,
-      [playlist.activeTrack?.album?.images],
+      [playlist.activeTrack?.album.images],
     );
 
     // returning an empty non spacious Container as the overlay will take
@@ -76,7 +76,8 @@ class BottomPlayer extends HookConsumerWidget {
                 extraActions: [
                   Tooltip(
                     tooltip:
-                        TooltipContainer(child: Text(context.l10n.mini_player)).call,
+                        TooltipContainer(child: Text(context.l10n.mini_player))
+                            .call,
                     child: IconButton(
                       variance: ButtonVariance.ghost,
                       icon: const Icon(SpotubeIcons.miniPlayer),

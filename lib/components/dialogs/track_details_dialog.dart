@@ -1,32 +1,34 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
-import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/hyper_link.dart';
-import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/models/playback/track_sources.dart';
+import 'package:spotube/provider/server/track_sources.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
-class TrackDetailsDialog extends HookWidget {
-  final Track track;
+class TrackDetailsDialog extends HookConsumerWidget {
+  final SpotubeFullTrackObject track;
   const TrackDetailsDialog({
     super.key,
     required this.track,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
+    final sourcedTrack =
+        ref.read(trackSourcesProvider(TrackSourceQuery.fromTrack(track)));
 
     final detailsMap = {
-      context.l10n.title: track.name!,
+      context.l10n.title: track.name,
       context.l10n.artist: ArtistLink(
-        artists: track.artists ?? <Artist>[],
+        artists: track.artists,
         mainAxisAlignment: WrapAlignment.start,
         textStyle: const TextStyle(color: Colors.blue),
         hideOverflowArtist: false,
@@ -37,17 +39,15 @@ class TrackDetailsDialog extends HookWidget {
       //   overflow: TextOverflow.ellipsis,
       //   style: const TextStyle(color: Colors.blue),
       // ),
-      context.l10n.duration: (track is SourcedTrack
-              ? (track as SourcedTrack).sourceInfo.duration
-              : track.duration!)
-          .toHumanReadableString(),
-      if (track.album!.releaseDate != null)
-        context.l10n.released: track.album!.releaseDate,
-      context.l10n.popularity: track.popularity?.toString() ?? "0",
+      context.l10n.duration: sourcedTrack.asData != null
+          ? Duration(milliseconds: sourcedTrack.asData!.value.info.durationMs)
+              .toHumanReadableString()
+          : Duration(milliseconds: track.durationMs).toHumanReadableString(),
+      if (track.album.releaseDate != null)
+        context.l10n.released: track.album.releaseDate,
     };
 
-    final sourceInfo =
-        track is SourcedTrack ? (track as SourcedTrack).sourceInfo : null;
+    final sourceInfo = sourcedTrack.asData?.value.info;
 
     final ytTracksDetailsMap = sourceInfo == null
         ? {}
@@ -58,12 +58,7 @@ class TrackDetailsDialog extends HookWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            context.l10n.channel: Hyperlink(
-              sourceInfo.artist,
-              sourceInfo.artistUrl,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+            context.l10n.channel: Text(sourceInfo.artists),
             context.l10n.streamUrl: Hyperlink(
               (track as SourcedTrack).url,
               (track as SourcedTrack).url,

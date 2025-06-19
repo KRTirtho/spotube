@@ -19,9 +19,12 @@ import 'package:spotube/pages/search/sections/artists.dart';
 import 'package:spotube/pages/search/sections/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/metadata_plugin/search/all.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:auto_route/auto_route.dart';
+
+final searchTermStateProvider = StateProvider<String>((ref) {
+  return "";
+});
 
 @RoutePage()
 class SearchPage extends HookConsumerWidget {

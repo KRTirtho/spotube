@@ -8,7 +8,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-import 'package:spotify/spotify.dart' hide Offset;
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -21,15 +20,18 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/database/database.dart';
-import 'package:spotube/models/local_track.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
+import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
+import 'package:spotube/provider/metadata_plugin/user.dart';
+import 'package:spotube/services/metadata/endpoints/error.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -50,8 +52,9 @@ enum TrackOptionValue {
   startRadio,
 }
 
+/// [track] must be a [SpotubeFullTrackObject] or [SpotubeLocalTrackObject]
 class TrackOptions extends HookConsumerWidget {
-  final Track track;
+  final SpotubeTrackObject track;
   final bool userPlaylist;
   final String? playlistId;
   final ObjectRef<ValueChanged<RelativeRect>?>? showMenuCbRef;
@@ -63,9 +66,12 @@ class TrackOptions extends HookConsumerWidget {
     this.userPlaylist = false,
     this.playlistId,
     this.icon,
-  });
+  }) : assert(
+          track is SpotubeFullTrackObject || track is SpotubeLocalTrackObject,
+          "Track must be a SpotubeFullTrackObject, SpotubeLocalTrackObject",
+        );
 
-  void actionShare(BuildContext context, Track track) {
+  void actionShare(BuildContext context, SpotubeTrackObject track) {
     final data = "https://open.spotify.com/track/${track.id}";
     Clipboard.setData(ClipboardData(text: data)).then((_) {
       if (context.mounted) {
@@ -87,7 +93,7 @@ class TrackOptions extends HookConsumerWidget {
 
   void actionAddToPlaylist(
     BuildContext context,
-    Track track,
+    SpotubeTrackObject track,
   ) {
     /// showDialog doesn't work for some reason. So we have to
     /// manually push a Dialog Route in the Navigator to get it working
@@ -105,32 +111,32 @@ class TrackOptions extends HookConsumerWidget {
   void actionStartRadio(
     BuildContext context,
     WidgetRef ref,
-    Track track,
+    SpotubeTrackObject track,
   ) async {
     final playback = ref.read(audioPlayerProvider.notifier);
     final playlist = ref.read(audioPlayerProvider);
-    final spotify = ref.read(spotifyProvider);
     final query = "${track.name} Radio";
-    final pages = await spotify.invoke(
-      (api) => api.search.get(query, types: [SearchType.playlist]).first(),
-    );
+    final metadataPlugin = await ref.read(metadataPluginProvider.future);
 
-    final radios = pages
-        .expand((e) => e.items?.cast<PlaylistSimple>().toList() ?? [])
-        .toList();
+    if (metadataPlugin == null) {
+      throw MetadataPluginException.noDefaultPlugin(
+        "No default metadata plugin set",
+      );
+    }
 
-    final artists = track.artists!.map((e) => e.name);
+    final pages = await metadataPlugin.search.playlists(query);
 
-    final radio = radios.firstWhere(
+    final artists = track.artists.map((e) => e.name);
+
+    final radio = pages.items.firstWhere(
       (e) {
-        final validPlaylists =
-            artists.where((a) => e.description!.contains(a!));
+        final validPlaylists = artists.where((a) => e.description.contains(a));
         return e.name == "${track.name} Radio" &&
             (validPlaylists.length >= 2 ||
                 validPlaylists.length == artists.length) &&
-            e.owner?.displayName == "Spotify";
+            e.owner.name == "Spotify";
       },
-      orElse: () => radios.first,
+      orElse: () => pages.items.first,
     );
 
     bool replaceQueue = false;
@@ -154,10 +160,10 @@ class TrackOptions extends HookConsumerWidget {
     } else {
       await playback.addTrack(track);
     }
-
-    final tracks = await spotify.invoke(
-      (api) => api.playlists.getTracksByPlaylistId(radio.id!).all(),
-    );
+    await ref.read(metadataPluginPlaylistTracksProvider(radio.id).future);
+    final tracks = await ref
+        .read(metadataPluginPlaylistTracksProvider(radio.id).notifier)
+        .fetchAll();
 
     await playback.addTracks(
       tracks.toList()
@@ -179,7 +185,7 @@ class TrackOptions extends HookConsumerWidget {
     ref.watch(downloadManagerProvider);
     final downloadManager = ref.watch(downloadManagerProvider.notifier);
     final blacklist = ref.watch(blacklistProvider);
-    final me = ref.watch(meProvider);
+    final me = ref.watch(metadataPluginUserProvider);
 
     final favorites = useTrackToggleLike(track, ref);
 
@@ -192,23 +198,32 @@ class TrackOptions extends HookConsumerWidget {
 
     final removingTrack = useState<String?>(null);
     final favoritePlaylistsNotifier =
-        ref.watch(favoritePlaylistsProvider.notifier);
+        ref.watch(metadataPluginSavedPlaylistsProvider.notifier);
 
-    final isInQueue = useMemoized(() {
-      if (playlist.activeTrack == null) return false;
-      return downloadManager.isActive(playlist.activeTrack!);
+    final isInDownloadQueue = useMemoized(() {
+      if (playlist.activeTrack == null ||
+          playlist.activeTrack! is SpotubeLocalTrackObject) {
+        return false;
+      }
+      return downloadManager.isActive(
+        playlist.activeTrack! as SpotubeFullTrackObject,
+      );
     }, [
       playlist.activeTrack,
       downloadManager,
     ]);
 
     final progressNotifier = useMemoized(() {
-      final spotubeTrack = downloadManager.mapToSourcedTrack(track);
-      if (spotubeTrack == null) return null;
-      return downloadManager.getProgressNotifier(spotubeTrack);
+      if (track is! SpotubeFullTrackObject) {
+        return throw Exception(
+          "Invalid usage of `progressNotifierFuture`. Track must be a SpotubeFullTrackObject to get download progress",
+        );
+      }
+      return downloadManager
+          .getProgressNotifier(track as SpotubeFullTrackObject);
     });
 
-    final isLocalTrack = track is LocalTrack;
+    final isLocalTrack = track is SpotubeLocalTrackObject;
 
     final adaptivePopSheetList = AdaptivePopSheetList<TrackOptionValue>(
       tooltip: context.l10n.more_actions,
@@ -220,7 +235,7 @@ class TrackOptions extends HookConsumerWidget {
             // );
             break;
           case TrackOptionValue.delete:
-            await File((track as LocalTrack).path).delete();
+            await File((track as SpotubeLocalTrackObject).path).delete();
             ref.invalidate(localTracksProvider);
             break;
           case TrackOptionValue.addToQueue:
@@ -232,7 +247,7 @@ class TrackOptions extends HookConsumerWidget {
                 builder: (context, overlay) {
                   return SurfaceCard(
                     child: Text(
-                      context.l10n.added_track_to_queue(track.name!),
+                      context.l10n.added_track_to_queue(track.name),
                       textAlign: TextAlign.center,
                     ),
                   );
@@ -250,7 +265,7 @@ class TrackOptions extends HookConsumerWidget {
                 builder: (context, overlay) {
                   return SurfaceCard(
                     child: Text(
-                      context.l10n.track_will_play_next(track.name!),
+                      context.l10n.track_will_play_next(track.name),
                       textAlign: TextAlign.center,
                     ),
                   );
@@ -259,7 +274,7 @@ class TrackOptions extends HookConsumerWidget {
             }
             break;
           case TrackOptionValue.removeFromQueue:
-            playback.removeTrack(track.id!);
+            playback.removeTrack(track.id);
 
             if (context.mounted) {
               showToast(
@@ -269,7 +284,7 @@ class TrackOptions extends HookConsumerWidget {
                   return SurfaceCard(
                     child: Text(
                       context.l10n.removed_track_from_queue(
-                        track.name!,
+                        track.name,
                       ),
                       textAlign: TextAlign.center,
                     ),
@@ -285,19 +300,19 @@ class TrackOptions extends HookConsumerWidget {
             actionAddToPlaylist(context, track);
             break;
           case TrackOptionValue.removeFromPlaylist:
-            removingTrack.value = track.uri;
+            removingTrack.value = track.externalUri;
             favoritePlaylistsNotifier
-                .removeTracks(playlistId ?? "", [track.id!]);
+                .removeTracks(playlistId ?? "", [track.id]);
             break;
           case TrackOptionValue.blacklist:
             if (isBlackListed == null) break;
             if (isBlackListed == true) {
-              await ref.read(blacklistProvider.notifier).remove(track.id!);
+              await ref.read(blacklistProvider.notifier).remove(track.id);
             } else {
               await ref.read(blacklistProvider.notifier).add(
                     BlacklistTableCompanion.insert(
-                      name: track.name!,
-                      elementId: track.id!,
+                      name: track.name,
+                      elementId: track.id,
                       elementType: BlacklistedType.track,
                     ),
                   );
@@ -311,16 +326,19 @@ class TrackOptions extends HookConsumerWidget {
             await launchUrlString(url);
             break;
           case TrackOptionValue.details:
+            if (track is! SpotubeFullTrackObject) break;
             showDialog(
               context: context,
               builder: (context) => ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 400),
-                child: TrackDetailsDialog(track: track),
+                child:
+                    TrackDetailsDialog(track: track as SpotubeFullTrackObject),
               ),
             );
             break;
           case TrackOptionValue.download:
-            await downloadManager.addToQueue(track);
+            if (track is! SpotubeFullTrackObject) break;
+            await downloadManager.addToQueue(track as SpotubeFullTrackObject);
             break;
           case TrackOptionValue.startRadio:
             actionStartRadio(context, ref, track);
@@ -336,23 +354,23 @@ class TrackOptions extends HookConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: UniversalImage(
-                path: track.album!.images
+                path: track.album.images
                     .asUrlString(placeholder: ImagePlaceholder.albumArt),
                 fit: BoxFit.cover,
               ),
             ),
           ),
           title: Text(
-            track.name!,
+            track.name,
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ).semiBold(),
           subtitle: Align(
             alignment: Alignment.centerLeft,
             child: ArtistLink(
-              artists: track.artists!,
+              artists: track.artists,
               onOverflowArtistClick: () => context.navigateTo(
-                TrackRoute(trackId: track.id!),
+                TrackRoute(trackId: track.id),
               ),
             ),
           ),
@@ -375,7 +393,7 @@ class TrackOptions extends HookConsumerWidget {
               children: [
                 Text(context.l10n.go_to_album),
                 Text(
-                  track.album!.name!,
+                  track.album.name,
                   style: context.theme.typography.xSmall,
                 ),
               ],
@@ -435,12 +453,12 @@ class TrackOptions extends HookConsumerWidget {
         if (!isLocalTrack)
           AdaptiveMenuButton(
             value: TrackOptionValue.download,
-            enabled: !isInQueue,
-            leading: isInQueue
+            enabled: !isInDownloadQueue,
+            leading: isInDownloadQueue
                 ? HookBuilder(builder: (context) {
-                    final progress = useListenable(progressNotifier!);
+                    final progress = useListenable(progressNotifier);
                     return CircularProgressIndicator(
-                      value: progress.value,
+                      value: progress?.value,
                     );
                   })
                 : const Icon(SpotubeIcons.download),

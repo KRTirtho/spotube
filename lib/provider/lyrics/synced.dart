@@ -1,54 +1,67 @@
-part of '../spotify.dart';
+import 'dart:async';
 
-class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
-  Track get _track => arg!;
+import 'package:dio/dio.dart';
+import 'package:drift/drift.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lrc/lrc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/lyrics.dart';
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/provider/database/database.dart';
+import 'package:spotube/services/dio/dio.dart';
+import 'package:spotube/services/logger/logger.dart';
 
-  Future<SubtitleSimple> getSpotifyLyrics(String? token) async {
-    final res = await globalDio.getUri(
-      Uri.parse(
-        "https://spclient.wg.spotify.com/color-lyrics/v2/track/${_track.id}?format=json&market=from_token",
-      ),
-      options: Options(
-        headers: {
-          "User-Agent":
-              "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
-          "App-platform": "WebPlayer",
-          "authorization": "Bearer $token"
-        },
-        responseType: ResponseType.json,
-        validateStatus: (status) => true,
-      ),
-    );
+class SyncedLyricsNotifier
+    extends FamilyAsyncNotifier<SubtitleSimple, SpotubeTrackObject?> {
+  SpotubeTrackObject get _track => arg!;
 
-    if (res.statusCode != 200) {
-      return SubtitleSimple(
-        lyrics: [],
-        name: _track.name!,
-        uri: res.realUri,
-        rating: 0,
-        provider: "Spotify",
-      );
-    }
-    final linesRaw =
-        Map.castFrom<dynamic, dynamic, String, dynamic>(res.data)["lyrics"]
-            ?["lines"] as List?;
+  // Future<SubtitleSimple> getSpotifyLyrics(String? token) async {
+  //   final res = await globalDio.getUri(
+  //     Uri.parse(
+  //       "https://spclient.wg.spotify.com/color-lyrics/v2/track/${_track.id}?format=json&market=from_token",
+  //     ),
+  //     options: Options(
+  //       headers: {
+  //         "User-Agent":
+  //             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/101.0.0.0 Safari/537.36",
+  //         "App-platform": "WebPlayer",
+  //         "authorization": "Bearer $token"
+  //       },
+  //       responseType: ResponseType.json,
+  //       validateStatus: (status) => true,
+  //     ),
+  //   );
 
-    final lines = linesRaw?.map((line) {
-          return LyricSlice(
-            time: Duration(milliseconds: int.parse(line["startTimeMs"])),
-            text: line["words"] as String,
-          );
-        }).toList() ??
-        [];
+  //   if (res.statusCode != 200) {
+  //     return SubtitleSimple(
+  //       lyrics: [],
+  //       name: _track.name!,
+  //       uri: res.realUri,
+  //       rating: 0,
+  //       provider: "Spotify",
+  //     );
+  //   }
+  //   final linesRaw =
+  //       Map.castFrom<dynamic, dynamic, String, dynamic>(res.data)["lyrics"]
+  //           ?["lines"] as List?;
 
-    return SubtitleSimple(
-      lyrics: lines,
-      name: _track.name!,
-      uri: res.realUri,
-      rating: 100,
-      provider: "Spotify",
-    );
-  }
+  //   final lines = linesRaw?.map((line) {
+  //         return LyricSlice(
+  //           time: Duration(milliseconds: int.parse(line["startTimeMs"])),
+  //           text: line["words"] as String,
+  //         );
+  //       }).toList() ??
+  //       [];
+
+  //   return SubtitleSimple(
+  //     lyrics: lines,
+  //     name: _track.name!,
+  //     uri: res.realUri,
+  //     rating: 100,
+  //     provider: "Spotify",
+  //   );
+  // }
 
   /// Lyrics credits: [lrclib.net](https://lrclib.net) and their contributors
   /// Thanks for their generous public API
@@ -61,10 +74,10 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
         host: "lrclib.net",
         path: "/api/get",
         queryParameters: {
-          "artist_name": _track.artists?.first.name,
+          "artist_name": _track.artists.first.name,
           "track_name": _track.name,
-          "album_name": _track.album?.name,
-          "duration": _track.duration?.inSeconds.toString(),
+          "album_name": _track.album.name,
+          "duration": (_track.durationMs / 1000).toInt().toString(),
         },
       ),
       options: Options(
@@ -79,7 +92,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
     if (res.statusCode != 200) {
       return SubtitleSimple(
         lyrics: [],
-        name: _track.name!,
+        name: _track.name,
         uri: res.realUri,
         rating: 0,
         provider: "LRCLib",
@@ -99,7 +112,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
     if (syncedLyrics?.isNotEmpty == true) {
       return SubtitleSimple(
         lyrics: syncedLyrics!,
-        name: _track.name!,
+        name: _track.name,
         uri: res.realUri,
         rating: 100,
         provider: "LRCLib",
@@ -113,7 +126,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
 
     return SubtitleSimple(
       lyrics: plainLyrics,
-      name: _track.name!,
+      name: _track.name,
       uri: res.realUri,
       rating: 0,
       provider: "LRCLib",
@@ -124,25 +137,17 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
   FutureOr<SubtitleSimple> build(track) async {
     try {
       final database = ref.watch(databaseProvider);
-      final spotify = ref.watch(spotifyProvider);
-      final auth = await ref.watch(authenticationProvider.future);
 
       if (track == null) {
         throw "No track currently";
       }
 
       final cachedLyrics = await (database.select(database.lyricsTable)
-            ..where((tbl) => tbl.trackId.equals(track.id!)))
+            ..where((tbl) => tbl.trackId.equals(track.id)))
           .map((row) => row.data)
           .getSingleOrNull();
 
       SubtitleSimple? lyrics = cachedLyrics;
-
-      final token = await spotify.invoke((api) => api.getCredentials());
-
-      if ((lyrics == null || lyrics.lyrics.isEmpty) && auth != null) {
-        lyrics = await getSpotifyLyrics(token.accessToken);
-      }
 
       if (lyrics == null ||
           lyrics.lyrics.isEmpty ||
@@ -157,7 +162,7 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
       if (cachedLyrics == null || cachedLyrics.lyrics.isEmpty) {
         await database.into(database.lyricsTable).insert(
               LyricsTableCompanion.insert(
-                trackId: track.id!,
+                trackId: track.id,
                 data: lyrics,
               ),
               mode: InsertMode.replace,
@@ -174,13 +179,13 @@ class SyncedLyricsNotifier extends FamilyAsyncNotifier<SubtitleSimple, Track?> {
 
 final syncedLyricsDelayProvider = StateProvider<int>((ref) => 0);
 
-final syncedLyricsProvider =
-    AsyncNotifierProviderFamily<SyncedLyricsNotifier, SubtitleSimple, Track?>(
+final syncedLyricsProvider = AsyncNotifierProviderFamily<SyncedLyricsNotifier,
+    SubtitleSimple, SpotubeTrackObject?>(
   () => SyncedLyricsNotifier(),
 );
 
 final syncedLyricsMapProvider =
-    FutureProvider.family((ref, Track? track) async {
+    FutureProvider.family((ref, SpotubeTrackObject? track) async {
   final syncedLyrics = await ref.watch(syncedLyricsProvider(track).future);
 
   final isStaticLyrics =

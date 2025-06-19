@@ -9,8 +9,9 @@ import 'package:spotube/components/track_presentation/use_is_user_playlist.dart'
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
 @RoutePage()
 class PlaylistPage extends HookConsumerWidget {
@@ -30,8 +31,8 @@ class PlaylistPage extends HookConsumerWidget {
             .watch(
               metadataPluginSavedPlaylistsProvider.select(
                 (value) => value.whenData(
-                  (value) => (value.items as List<SpotubeSimplePlaylistObject>)
-                      .firstWhereOrNull((s) => s.id == _playlist.id),
+                  (value) =>
+                      value.items.firstWhereOrNull((s) => s.id == _playlist.id),
                 ),
               ),
             )
@@ -39,11 +40,11 @@ class PlaylistPage extends HookConsumerWidget {
             ?.value ??
         _playlist;
 
-    final tracks = ref.watch(playlistTracksProvider(playlist.id));
+    final tracks = ref.watch(metadataPluginPlaylistTracksProvider(playlist.id));
     final tracksNotifier =
-        ref.watch(playlistTracksProvider(playlist.id).notifier);
+        ref.watch(metadataPluginPlaylistTracksProvider(playlist.id).notifier);
     final isFavoritePlaylist =
-        ref.watch(isFavoritePlaylistProvider(playlist.id));
+        ref.watch(metadataPluginIsSavedPlaylistProvider(playlist.id));
 
     final favoritePlaylistsNotifier =
         ref.watch(metadataPluginSavedPlaylistsProvider.notifier);
@@ -52,9 +53,9 @@ class PlaylistPage extends HookConsumerWidget {
 
     return material.RefreshIndicator.adaptive(
       onRefresh: () async {
-        ref.invalidate(playlistTracksProvider(playlist.id));
-        ref.invalidate(isFavoritePlaylistProvider(playlist.id));
-        ref.invalidate(favoritePlaylistsProvider);
+        ref.invalidate(metadataPluginPlaylistTracksProvider(playlist.id));
+        ref.invalidate(metadataPluginSavedPlaylistsProvider);
+        ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
       },
       child: TrackPresentation(
         options: TrackPresentationOptions(
@@ -67,7 +68,7 @@ class PlaylistPage extends HookConsumerWidget {
             isLoading: tracks.isLoading || tracks.isLoadingNextPage,
             onFetchMore: tracksNotifier.fetchMore,
             onRefresh: () async {
-              ref.invalidate(playlistTracksProvider(playlist.id));
+              ref.invalidate(metadataPluginPlaylistTracksProvider(playlist.id));
             },
             onFetchAll: () async {
               return await tracksNotifier.fetchAll();

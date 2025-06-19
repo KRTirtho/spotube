@@ -6,7 +6,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:html/dom.dart' hide Text;
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Element;
-import 'package:spotify/spotify.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/modules/root/update_dialog.dart';
 
@@ -279,46 +279,39 @@ abstract class ServiceUtils {
     return subtitle;
   }
 
-  static DateTime parseSpotifyAlbumDate(AlbumSimple? album) {
-    if (album == null || album.releaseDate == null) {
+  static DateTime parseSpotifyAlbumDate(SpotubeFullAlbumObject? album) {
+    if (album == null) {
       return DateTime.parse("1975-01-01");
     }
 
-    switch (album.releaseDatePrecision ?? DatePrecision.year) {
-      case DatePrecision.day:
-        return DateTime.parse(album.releaseDate!);
-      case DatePrecision.month:
-        return DateTime.parse("${album.releaseDate}-01");
-      case DatePrecision.year:
-        return DateTime.parse("${album.releaseDate}-01-01");
-    }
+    return DateTime.parse(album.releaseDate);
   }
 
-  static List<T> sortTracks<T extends Track>(List<T> tracks, SortBy sortBy) {
+  static List<T> sortTracks<T extends SpotubeTrackObject>(
+      List<T> tracks, SortBy sortBy) {
     if (sortBy == SortBy.none) return tracks;
     return List<T>.from(tracks)
       ..sort((a, b) {
         switch (sortBy) {
           case SortBy.ascending:
-            return a.name?.compareTo(b.name ?? "") ?? 0;
+            return a.name.compareTo(b.name);
           case SortBy.descending:
-            return b.name?.compareTo(a.name ?? "") ?? 0;
-          case SortBy.newest:
-            final aDate = parseSpotifyAlbumDate(a.album);
-            final bDate = parseSpotifyAlbumDate(b.album);
-            return bDate.compareTo(aDate);
-          case SortBy.oldest:
-            final aDate = parseSpotifyAlbumDate(a.album);
-            final bDate = parseSpotifyAlbumDate(b.album);
-            return aDate.compareTo(bDate);
+            return b.name.compareTo(a.name);
+          // TODO: We'll figure this one out later :')
+          // case SortBy.newest:
+          //   final aDate = parseSpotifyAlbumDate(a.album);
+          //   final bDate = parseSpotifyAlbumDate(b.album);
+          //   return bDate.compareTo(aDate);
+          // case SortBy.oldest:
+          //   final aDate = parseSpotifyAlbumDate(a.album);
+          //   final bDate = parseSpotifyAlbumDate(b.album);
+          // return aDate.compareTo(bDate);
           case SortBy.duration:
-            return a.durationMs?.compareTo(b.durationMs ?? 0) ?? 0;
+            return a.durationMs.compareTo(b.durationMs);
           case SortBy.artist:
-            return a.artists?.first.name
-                    ?.compareTo(b.artists?.first.name ?? "") ??
-                0;
+            return a.artists.first.name.compareTo(b.artists.first.name);
           case SortBy.album:
-            return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
+            return a.album.name.compareTo(b.album.name);
           default:
             return 0;
         }

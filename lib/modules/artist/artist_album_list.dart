@@ -4,7 +4,7 @@ import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_pl
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/artist/albums.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
 class ArtistAlbumList extends HookConsumerWidget {
   final String artistId;

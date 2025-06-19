@@ -124,13 +124,13 @@ class MetadataPluginSearchEndpoint {
     );
   }
 
-  Future<SpotubePaginationResponseObject<SpotubeSimpleTrackObject>> tracks(
+  Future<SpotubePaginationResponseObject<SpotubeFullTrackObject>> tracks(
     String query, {
     int? limit,
     int? offset,
   }) async {
     if (query.isEmpty) {
-      return SpotubePaginationResponseObject<SpotubeSimpleTrackObject>(
+      return SpotubePaginationResponseObject<SpotubeFullTrackObject>(
         items: [],
         total: 0,
         limit: limit ?? 20,
@@ -148,9 +148,9 @@ class MetadataPluginSearchEndpoint {
       }..removeWhere((key, value) => value == null),
     ) as Map;
 
-    return SpotubePaginationResponseObject<SpotubeSimpleTrackObject>.fromJson(
+    return SpotubePaginationResponseObject<SpotubeFullTrackObject>.fromJson(
       raw.cast<String, dynamic>(),
-      (json) => SpotubeSimpleTrackObject.fromJson(json.cast<String, dynamic>()),
+      (json) => SpotubeFullTrackObject.fromJson(json.cast<String, dynamic>()),
     );
   }
 }

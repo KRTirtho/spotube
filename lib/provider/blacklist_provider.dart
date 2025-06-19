@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/database/database.dart';
@@ -47,9 +46,9 @@ class BlackListNotifier extends AsyncNotifier<List<BlacklistTableData>> {
     return containsTrack || containsTrackArtists;
   }
 
-  bool containsArtist(ArtistSimple artist) {
+  bool containsArtist(String artistId) {
     return state.asData?.value
-            .any((element) => element.elementId == artist.id) ??
+            .any((element) => element.elementId == artistId) ??
         false;
   }
 

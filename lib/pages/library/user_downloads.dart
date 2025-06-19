@@ -16,10 +16,7 @@ class UserDownloadsPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final downloadManager = ref.watch(downloadManagerProvider);
 
-    final history = [
-      ...downloadManager.$history,
-      ...downloadManager.$backHistory,
-    ];
+    final history = downloadManager.$backHistory;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +48,7 @@ class UserDownloadsPage extends HookConsumerWidget {
             child: ListView.builder(
               itemCount: history.length,
               itemBuilder: (context, index) {
-                return DownloadItem(track: history[index]);
+                return DownloadItem(track: history.elementAt(index));
               },
             ),
           ),

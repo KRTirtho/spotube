@@ -19,7 +19,6 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/metadata_plugin/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/artists.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
@@ -65,7 +64,7 @@ class UserArtistsPage extends HookConsumerWidget {
       child: Scaffold(
         child: material.RefreshIndicator.adaptive(
           onRefresh: () async {
-            ref.invalidate(followedArtistsProvider);
+            ref.invalidate(metadataPluginSavedArtistsProvider);
           },
           child: InterScrollbar(
             controller: controller,

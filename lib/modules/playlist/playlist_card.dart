@@ -2,8 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
-import 'package:spotify/spotify.dart' hide Offset, Image;
-import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/playbutton_view/playbutton_card.dart';
@@ -15,9 +13,10 @@ import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
+import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
+import 'package:spotube/provider/metadata_plugin/user.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:stroke_text/stroke_text.dart';
 
 class PlaylistCard extends HookConsumerWidget {
   final SpotubeSimplePlaylistObject playlist;
@@ -48,26 +47,30 @@ class PlaylistCard extends HookConsumerWidget {
     );
 
     final updating = useState(false);
-    final me = ref.watch(meProvider);
+    final me = ref.watch(metadataPluginUserProvider);
 
-    Future<List<Track>> fetchInitialTracks() async {
+    Future<List<SpotubeTrackObject>> fetchInitialTracks() async {
       if (playlist.id == 'user-liked-tracks') {
-        return await ref.read(likedTracksProvider.future);
+        final tracks = await ref.read(metadataPluginSavedTracksProvider.future);
+        return tracks.items;
       }
 
-      final result = await ref.read(playlistTracksProvider(playlist.id).future);
+      final result = await ref
+          .read(metadataPluginPlaylistTracksProvider(playlist.id).future);
 
       return result.items;
     }
 
-    Future<List<Track>> fetchAllTracks() async {
+    Future<List<SpotubeTrackObject>> fetchAllTracks() async {
       final initialTracks = await fetchInitialTracks();
 
       if (playlist.id == 'user-liked-tracks') {
         return initialTracks;
       }
 
-      return ref.read(playlistTracksProvider(playlist.id).notifier).fetchAll();
+      return ref
+          .read(metadataPluginPlaylistTracksProvider(playlist.id).notifier)
+          .fetchAll();
     }
 
     void onTap() {
@@ -94,14 +97,14 @@ class PlaylistCard extends HookConsumerWidget {
           final allTracks = await fetchAllTracks();
           await remotePlayback.load(
             WebSocketLoadEventData.playlist(
-              tracks: allTracks,
-              // collection: playlist,
+              tracks: allTracks as List<SpotubeFullTrackObject>,
+              collection: playlist,
             ),
           );
         } else {
           await playlistNotifier.load(fetchedInitialTracks, autoPlay: true);
           playlistNotifier.addCollection(playlist.id);
-          // historyNotifier.addPlaylists([playlist]);
+          historyNotifier.addPlaylists([playlist]);
 
           final allTracks = await fetchAllTracks();
 
@@ -126,7 +129,7 @@ class PlaylistCard extends HookConsumerWidget {
 
         playlistNotifier.addTracks(fetchedInitialTracks);
         playlistNotifier.addCollection(playlist.id);
-        // historyNotifier.addPlaylists([playlist]);
+        historyNotifier.addPlaylists([playlist]);
         if (context.mounted) {
           showToast(
             context: context,
@@ -141,7 +144,7 @@ class PlaylistCard extends HookConsumerWidget {
                     child: Text(context.l10n.undo),
                     onPressed: () {
                       playlistNotifier
-                          .removeTracks(fetchedInitialTracks.map((e) => e.id!));
+                          .removeTracks(fetchedInitialTracks.map((e) => e.id));
                     },
                   ),
                 ),
@@ -159,52 +162,15 @@ class PlaylistCard extends HookConsumerWidget {
     );
     final isLoading =
         (isPlaylistPlaying && isFetchingActiveTrack) || updating.value;
-    final isOwner =
-        playlist.owner.id == me.asData?.value.id && me.asData?.value.id != null;
-
-    final image = playlist.owner.name == "Spotify" && Env.disableSpotifyImages
-        ? Consumer(
-            builder: (context, ref, child) {
-              final (:color, :colorBlendMode, :src, :placement) =
-                  ref.watch(playlistImageProvider(playlist.id));
-
-              return Stack(
-                children: [
-                  Positioned.fill(
-                    child: Image.asset(
-                      src,
-                      color: color,
-                      colorBlendMode: colorBlendMode,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  Positioned.fill(
-                    top: placement == Alignment.topLeft ? 10 : null,
-                    left: 10,
-                    bottom: placement == Alignment.bottomLeft ? 10 : null,
-                    child: StrokeText(
-                      text: playlist.name,
-                      strokeColor: Colors.white,
-                      strokeWidth: 3,
-                      textColor: Colors.black,
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          )
-        : null;
+    final isOwner = playlist.owner.id == me.asData?.value?.id &&
+        me.asData?.value?.id != null;
 
     if (_isTile) {
       return PlaybuttonTile(
         title: playlist.name,
         description: playlist.description,
-        image: image,
-        imageUrl: image == null ? imageUrl : null,
+        image: null,
+        imageUrl: imageUrl,
         isPlaying: isPlaylistPlaying,
         isLoading: isLoading,
         isOwner: isOwner,
@@ -217,8 +183,8 @@ class PlaylistCard extends HookConsumerWidget {
     return PlaybuttonCard(
       title: playlist.name,
       description: playlist.description,
-      image: image,
-      imageUrl: image == null ? imageUrl : null,
+      image: null,
+      imageUrl: imageUrl,
       isPlaying: isPlaylistPlaying,
       isLoading: isLoading,
       isOwner: isOwner,

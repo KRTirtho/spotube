@@ -13,7 +13,7 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/metadata_plugin/artist/artist.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/library/artists.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class ArtistPageHeader extends HookConsumerWidget {
@@ -31,7 +31,7 @@ class ArtistPageHeader extends HookConsumerWidget {
     final auth = ref.watch(authenticationProvider);
     ref.watch(blacklistProvider);
     final blacklistNotifier = ref.watch(blacklistProvider.notifier);
-    final isBlackListed = /* blacklistNotifier.containsArtist(artist) */ false;
+    final isBlackListed = blacklistNotifier.containsArtist(artist.id);
 
     final image = artist.images.asUrlString(
       placeholder: ImagePlaceholder.artist,
@@ -45,11 +45,10 @@ class ArtistPageHeader extends HookConsumerWidget {
             Consumer(
               builder: (context, ref, _) {
                 final isFollowingQuery = ref.watch(
-                  artistIsFollowingProvider(artist.id!),
+                  metadataPluginIsSavedArtistProvider(artist.id),
                 );
-                final followingArtistNotifier = ref.watch(
-                  followedArtistsProvider.notifier,
-                );
+                final followingArtistNotifier =
+                    ref.watch(metadataPluginSavedArtistsProvider.notifier);
 
                 return switch (isFollowingQuery) {
                   AsyncData(value: final following) => Builder(
@@ -58,7 +57,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                           return Button.outline(
                             onPressed: () async {
                               await followingArtistNotifier
-                                  .removeArtists([artist.id!]);
+                                  .removeFavorite([artist]);
                             },
                             child: Text(context.l10n.following),
                           );
@@ -66,8 +65,7 @@ class ArtistPageHeader extends HookConsumerWidget {
 
                         return Button.primary(
                           onPressed: () async {
-                            await followingArtistNotifier
-                                .saveArtists([artist.id!]);
+                            await followingArtistNotifier.addFavorite([artist]);
                           },
                           child: Text(context.l10n.follow),
                         );
@@ -96,12 +94,12 @@ class ArtistPageHeader extends HookConsumerWidget {
                   : ButtonVariance.ghost,
               onPressed: () async {
                 if (isBlackListed) {
-                  await ref.read(blacklistProvider.notifier).remove(artist.id!);
+                  await ref.read(blacklistProvider.notifier).remove(artist.id);
                 } else {
                   await ref.read(blacklistProvider.notifier).add(
                         BlacklistTableCompanion.insert(
-                          name: artist.name!,
-                          elementId: artist.id!,
+                          name: artist.name,
+                          elementId: artist.id,
                           elementType: BlacklistedType.artist,
                         ),
                       );
@@ -184,7 +182,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                           const Gap(10),
                           Flexible(
                             child: AutoSizeText(
-                              artist.name!,
+                              artist.name,
                               style: constrains.smAndDown
                                   ? typography.h4
                                   : typography.h3,

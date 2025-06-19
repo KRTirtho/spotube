@@ -2,15 +2,15 @@ import 'package:collection/collection.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/search/all.dart';
 
 class SearchTracksSection extends HookConsumerWidget {
   const SearchTracksSection({
@@ -19,12 +19,9 @@ class SearchTracksSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final searchTrack = ref.watch(searchProvider(SearchType.track));
-
-    final searchTrackNotifier =
-        ref.watch(searchProvider(SearchType.track).notifier);
-
-    final tracks = searchTrack.asData?.value.items.cast<Track>() ?? [];
+    final searchTerm = ref.watch(searchTermStateProvider);
+    final search = ref.watch(metadataPluginSearchAllProvider(searchTerm));
+    final tracks = search.asData?.value.tracks ?? [];
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
     final playlist = ref.watch(audioPlayerProvider);
     final theme = Theme.of(context);
@@ -41,10 +38,8 @@ class SearchTracksSection extends HookConsumerWidget {
               style: theme.typography.h4,
             ),
           ),
-        if (searchTrack.isLoading)
+        if (search.isLoading)
           const CircularProgressIndicator()
-        else if (searchTrack.hasError)
-          Text(searchTrack.error.toString())
         else
           ...tracks.mapIndexed((i, track) {
             return TrackTile(
@@ -69,7 +64,7 @@ class SearchTracksSection extends HookConsumerWidget {
                         ? await showPromptDialog(
                             context: context,
                             title: context.l10n.playing_track(
-                              track.name!,
+                              track.name,
                             ),
                             message: context.l10n.queue_clear_alert(
                               playlist.tracks.length,
@@ -92,7 +87,7 @@ class SearchTracksSection extends HookConsumerWidget {
                         ? await showPromptDialog(
                             context: context,
                             title: context.l10n.playing_track(
-                              track.name!,
+                              track.name,
                             ),
                             message: context.l10n.queue_clear_alert(
                               playlist.tracks.length,
@@ -111,17 +106,6 @@ class SearchTracksSection extends HookConsumerWidget {
               },
             );
           }),
-        if (searchTrack.asData?.value.hasMore == true && tracks.isNotEmpty)
-          Center(
-            child: TextButton(
-              onPressed: searchTrack.isLoadingNextPage
-                  ? null
-                  : searchTrackNotifier.fetchMore,
-              child: searchTrack.isLoadingNextPage
-                  ? const CircularProgressIndicator()
-                  : Text(context.l10n.load_more),
-            ),
-          )
       ],
     );
   }

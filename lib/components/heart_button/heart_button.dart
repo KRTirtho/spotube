@@ -1,11 +1,12 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import 'package:spotify/spotify.dart';
 import 'package:spotube/components/heart_button/use_track_toggle_like.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/authentication/authentication.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
+import 'package:spotube/provider/metadata_plugin/user.dart';
 
 class HeartButton extends HookConsumerWidget {
   final bool isLiked;
@@ -63,7 +64,7 @@ class HeartButton extends HookConsumerWidget {
 }
 
 class TrackHeartButton extends HookConsumerWidget {
-  final Track track;
+  final SpotubeTrackObject track;
   const TrackHeartButton({
     super.key,
     required this.track,
@@ -71,8 +72,8 @@ class TrackHeartButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final savedTracks = ref.watch(likedTracksProvider);
-    final me = ref.watch(meProvider);
+    final savedTracks = ref.watch(metadataPluginSavedTracksProvider);
+    final me = ref.watch(metadataPluginUserProvider);
     final (:isLiked, :toggleTrackLike) = useTrackToggleLike(track, ref);
 
     if (me.isLoading) {

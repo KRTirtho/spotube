@@ -5,7 +5,6 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
-import 'package:spotube/models/local_track.dart';
 import 'package:spotube/services/audio_player/custom_player.dart';
 import 'dart:async';
 
@@ -54,7 +53,7 @@ class SpotubeMedia extends mk.Media {
     return switch (track) {
       /// [super.uri] must be used instead of [track.path] to prevent wrong
       /// path format exceptions in Windows causing [extras] to be null
-      LocalTrack() => super.uri,
+      SpotubeLocalTrackObject() => super.uri,
       _ => "http://$_host:"
           "$serverPort/stream/${track.id}",
     };

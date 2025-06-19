@@ -1,16 +1,16 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/artist/top_tracks.dart';
 
 class ArtistPageTopTracks extends HookConsumerWidget {
   final String artistId;
@@ -22,10 +22,11 @@ class ArtistPageTopTracks extends HookConsumerWidget {
 
     final playlist = ref.watch(audioPlayerProvider);
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
-    final topTracksQuery = ref.watch(artistTopTracksProvider(artistId));
+    final topTracksQuery =
+        ref.watch(metadataPluginArtistTopTracksProvider(artistId));
 
     final isPlaylistPlaying = playlist.containsTracks(
-      topTracksQuery.asData?.value ?? <Track>[],
+      topTracksQuery.asData?.value.items ?? <SpotubeTrackObject>[],
     );
 
     if (topTracksQuery.hasError) {
@@ -36,10 +37,11 @@ class ArtistPageTopTracks extends HookConsumerWidget {
       );
     }
 
-    final topTracks = topTracksQuery.asData?.value ??
+    final topTracks = topTracksQuery.asData?.value.items ??
         List.generate(10, (index) => FakeData.track);
 
-    void playPlaylist(List<Track> tracks, {Track? currentTrack}) async {
+    void playPlaylist(List<SpotubeFullTrackObject> tracks,
+        {SpotubeTrackObject? currentTrack}) async {
       currentTrack ??= tracks.first;
 
       final isRemoteDevice = await showSelectDeviceDialog(context, ref);
@@ -61,7 +63,6 @@ class ArtistPageTopTracks extends HookConsumerWidget {
             ),
           );
         } else if (isPlaylistPlaying &&
-            currentTrack.id != null &&
             currentTrack.id != remotePlaylist.activeTrack?.id) {
           final index = playlist.tracks
               .toList()
@@ -76,7 +77,6 @@ class ArtistPageTopTracks extends HookConsumerWidget {
             autoPlay: true,
           );
         } else if (isPlaylistPlaying &&
-            currentTrack.id != null &&
             currentTrack.id != playlist.activeTrack?.id) {
           await playlistNotifier.jumpToTrack(currentTrack);
         }

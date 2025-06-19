@@ -5,14 +5,14 @@ import 'package:palette_generator/palette_generator.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shimmers/shimmer_lyrics.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/lyrics/synced.dart';
 
 class PlainLyrics extends HookConsumerWidget {
   final PaletteColor palette;
@@ -52,7 +52,7 @@ class PlainLyrics extends HookConsumerWidget {
               ),
               Center(
                 child: Text(
-                  playlist.activeTrack?.artists?.asString() ?? "",
+                  playlist.activeTrack?.artists.asString() ?? "",
                   style: (mediaQuery.mdAndUp ? typography.h4 : typography.large)
                       .copyWith(
                     color: palette.bodyTextColor,

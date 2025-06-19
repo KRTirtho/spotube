@@ -11,8 +11,8 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/string.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
@@ -100,7 +100,7 @@ class LocalFolderItem extends HookConsumerWidget {
                 itemBuilder: (context, index) {
                   final track = tracks[index];
                   return UniversalImage(
-                    path: (track.album?.images).asUrlString(
+                    path: track.album.images.asUrlString(
                       placeholder: ImagePlaceholder.albumArt,
                     ),
                     fit: BoxFit.cover,

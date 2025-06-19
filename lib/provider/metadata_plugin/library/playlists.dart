@@ -63,16 +63,16 @@ class MetadataPluginSavedPlaylistsNotifier
     ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
   }
 
-  Future<void> delete(SpotubeSimplePlaylistObject playlist) async {
+  Future<void> delete(String playlistId) async {
     await update((state) async {
-      (await metadataPlugin).playlist.deletePlaylist(playlist.id);
+      (await metadataPlugin).playlist.deletePlaylist(playlistId);
       return state.copyWith(
-        items: state.items.where((e) => (e).id != playlist.id).toList(),
+        items: state.items.where((e) => (e).id != playlistId).toList(),
       );
     });
 
-    ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
-    ref.invalidate(metadataPluginPlaylistTracksProvider(playlist.id));
+    ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlistId));
+    ref.invalidate(metadataPluginPlaylistTracksProvider(playlistId));
   }
 
   Future<void> addTracks(String playlistId, List<String> trackIds) async {

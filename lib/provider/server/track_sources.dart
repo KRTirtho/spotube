@@ -23,10 +23,7 @@ class TrackSourcesNotifier
     });
   }
 
-  Future<SourcedTrack> copyWithSibling(
-    TrackSourceInfo info,
-    TrackSourceQuery query,
-  ) async {
+  Future<SourcedTrack> copyWithSibling() async {
     return await update((prev) async {
       return prev.copyWithSibling();
     });

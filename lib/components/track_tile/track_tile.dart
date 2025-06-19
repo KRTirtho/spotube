@@ -7,7 +7,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/hover_builder.dart';
@@ -16,11 +15,9 @@ import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/components/track_tile/track_options.dart';
 import 'package:spotube/components/ui/button_tile.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/duration.dart';
-import 'package:spotube/extensions/image.dart';
-import 'package:spotube/models/local_track.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
@@ -29,7 +26,7 @@ import 'package:spotube/utils/platform.dart';
 class TrackTile extends HookConsumerWidget {
   /// [index] will not be shown if null
   final int? index;
-  final Track track;
+  final SpotubeTrackObject track;
   final bool selected;
   final ValueChanged<bool?>? onChanged;
   final Future<void> Function()? onTap;
@@ -151,7 +148,7 @@ class TrackTile extends HookConsumerWidget {
                         image: DecorationImage(
                           fit: BoxFit.cover,
                           image: UniversalImage.imageProvider(
-                            (track.album?.images).asUrlString(
+                            (track.album.images).asUrlString(
                               placeholder: ImagePlaceholder.albumArt,
                             ),
                           ),
@@ -217,8 +214,8 @@ class TrackTile extends HookConsumerWidget {
                 Expanded(
                   flex: 6,
                   child: switch (track) {
-                    LocalTrack() => Text(
-                        track.name!,
+                    SpotubeLocalTrackObject() => Text(
+                        track.name,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -233,10 +230,10 @@ class TrackTile extends HookConsumerWidget {
                               ),
                               onPressed: () {
                                 context
-                                    .navigateTo(TrackRoute(trackId: track.id!));
+                                    .navigateTo(TrackRoute(trackId: track.id));
                               },
                               child: Text(
-                                track.name!,
+                                track.name,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
@@ -251,22 +248,22 @@ class TrackTile extends HookConsumerWidget {
                   Expanded(
                     flex: 4,
                     child: switch (track) {
-                      LocalTrack() => Text(
-                          track.album!.name!,
+                      SpotubeLocalTrackObject() => Text(
+                          track.album.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       _ => Align(
                           alignment: Alignment.centerLeft,
-                          /* child: LinkText(
-                            track.album!.name!,
+                          child: LinkText(
+                            track.album.name,
                             AlbumRoute(
-                              album: track.album!,
-                              id: track.album!.id!,
+                              album: track.album,
+                              id: track.album.id,
                             ),
                             push: true,
                             overflow: TextOverflow.ellipsis,
-                          ), */
+                          ),
                         )
                     },
                   ),
@@ -275,18 +272,18 @@ class TrackTile extends HookConsumerWidget {
             ),
             subtitle: Align(
               alignment: Alignment.centerLeft,
-              child: track is LocalTrack
+              child: track is SpotubeLocalTrackObject
                   ? Text(
-                      track.artists?.asString() ?? '',
+                      track.artists.asString(),
                     )
                   : ClipRect(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 40),
                         child: ArtistLink(
-                          artists: track.artists ?? [],
+                          artists: track.artists,
                           onOverflowArtistClick: () {
                             context.navigateTo(
-                              TrackRoute(trackId: track.id!),
+                              TrackRoute(trackId: track.id),
                             );
                           },
                         ),
@@ -298,7 +295,7 @@ class TrackTile extends HookConsumerWidget {
               children: [
                 const SizedBox(width: 8),
                 Text(
-                  Duration(milliseconds: track.durationMs ?? 0)
+                  Duration(milliseconds: track.durationMs)
                       .toHumanReadableString(padZero: false),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

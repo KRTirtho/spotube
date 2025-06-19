@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/models/local_track.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
@@ -87,8 +86,8 @@ class AudioPlayerStreamListeners {
     String? lastScrobbled;
     return audioPlayer.positionStream.listen((position) async {
       try {
-        final uid = audioPlayerState.activeTrack is LocalTrack
-            ? (audioPlayerState.activeTrack as LocalTrack).path
+        final uid = audioPlayerState.activeTrack is SpotubeLocalTrackObject
+            ? (audioPlayerState.activeTrack as SpotubeLocalTrackObject).path
             : audioPlayerState.activeTrack?.id;
 
         if (audioPlayerState.activeTrack == null ||

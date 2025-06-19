@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
 class PaginationProps {
   final bool hasNextPage;
   final bool isLoading;
   final VoidCallback onFetchMore;
   final Future<void> Function() onRefresh;
-  final Future<List<Track>> Function() onFetchAll;
+  final Future<List<SpotubeFullTrackObject>> Function() onFetchAll;
 
   const PaginationProps({
     required this.hasNextPage,
@@ -46,7 +46,7 @@ class TrackPresentationOptions {
   final String? ownerImage;
   final String image;
   final String routePath;
-  final List<Track> tracks;
+  final List<SpotubeFullTrackObject> tracks;
   final PaginationProps pagination;
   final bool isLiked;
   final String? shareUrl;
@@ -67,11 +67,12 @@ class TrackPresentationOptions {
     this.shareUrl,
     this.isLiked = false,
     this.onHeart,
-  }) : assert(collection is AlbumSimple || collection is PlaylistSimple);
+  }) : assert(collection is SpotubeSimpleAlbumObject ||
+            collection is SpotubeSimplePlaylistObject);
 
-  String get collectionId => collection is AlbumSimple
-      ? (collection as AlbumSimple).id!
-      : (collection as PlaylistSimple).id!;
+  String get collectionId => collection is SpotubeSimpleAlbumObject
+      ? (collection as SpotubeSimpleAlbumObject).id
+      : (collection as SpotubeSimplePlaylistObject).id;
 
   static TrackPresentationOptions of(BuildContext context) {
     return Data.of<TrackPresentationOptions>(context);

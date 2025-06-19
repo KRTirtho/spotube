@@ -1,7 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
 import 'package:spotube/components/dialogs/confirm_download_dialog.dart';
@@ -10,6 +9,7 @@ import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/presentation_state.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
@@ -76,9 +76,11 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
 
     Future<void> actionDownloadTracks({
       required BuildContext context,
-      required List<Track> tracks,
+      required List<SpotubeTrackObject> tracks,
       required String action,
     }) async {
+      final fullTrackObjects =
+          tracks.whereType<SpotubeFullTrackObject>().toList();
       final confirmed = audioSource == AudioSource.piped ||
           (await showDialog<bool>(
                 context: context,
@@ -88,10 +90,10 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
               ) ??
               false);
       if (confirmed != true) return;
-      downloader.batchAddToQueue(tracks);
+      downloader.batchAddToQueue(fullTrackObjects);
       notifier.deselectAllTracks();
       if (!context.mounted) return;
-      showToastForAction(context, action, tracks.length);
+      showToastForAction(context, action, fullTrackObjects.length);
     }
 
     return AdaptivePopSheetList(
@@ -143,11 +145,12 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
             {
               playlistNotifier.addTracksAtFirst(tracks);
               playlistNotifier.addCollection(options.collectionId);
-              if (options.collection is AlbumSimple) {
-                historyNotifier.addAlbums([options.collection as AlbumSimple]);
+              if (options.collection is SpotubeSimpleAlbumObject) {
+                historyNotifier.addAlbums(
+                    [options.collection as SpotubeSimpleAlbumObject]);
               } else {
-                historyNotifier
-                    .addPlaylists([options.collection as PlaylistSimple]);
+                historyNotifier.addPlaylists(
+                    [options.collection as SpotubeSimplePlaylistObject]);
               }
               notifier.deselectAllTracks();
               if (!context.mounted) return;
@@ -158,11 +161,12 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
             {
               playlistNotifier.addTracks(tracks);
               playlistNotifier.addCollection(options.collectionId);
-              if (options.collection is AlbumSimple) {
-                historyNotifier.addAlbums([options.collection as AlbumSimple]);
+              if (options.collection is SpotubeSimpleAlbumObject) {
+                historyNotifier.addAlbums(
+                    [options.collection as SpotubeSimpleAlbumObject]);
               } else {
-                historyNotifier
-                    .addPlaylists([options.collection as PlaylistSimple]);
+                historyNotifier.addPlaylists(
+                    [options.collection as SpotubeSimplePlaylistObject]);
               }
               notifier.deselectAllTracks();
               if (!context.mounted) return;

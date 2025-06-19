@@ -8,7 +8,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/library/albums.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/album.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
 @RoutePage()
 class AlbumPage extends HookConsumerWidget {

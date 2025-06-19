@@ -112,10 +112,14 @@ class DownloadManagerProvider extends ChangeNotifier {
     return join(downloadDirectory, PrimitiveUtils.toSafeFileName(name));
   }
 
-  Future<bool> isActive(SpotubeFullTrackObject track) async {
+  bool isActive(SpotubeFullTrackObject track) {
     if ($backHistory.contains(track)) return true;
 
-    final sourcedTrack = await mapToSourcedTrack(track);
+    final sourcedTrack = $history.firstWhereOrNull(
+      (element) => element.query.id == track.id,
+    );
+
+    if (sourcedTrack == null) return false;
 
     return dl
         .getAllDownloads()
@@ -196,9 +200,10 @@ class DownloadManagerProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> removeFromQueue(SourcedTrack track) async {
-    await dl.removeDownload(track.getUrlOfCodec(downloadCodec));
-    $history.remove(track);
+  Future<void> removeFromQueue(SpotubeFullTrackObject track) async {
+    final sourcedTrack = await mapToSourcedTrack(track);
+    await dl.removeDownload(sourcedTrack.getUrlOfCodec(downloadCodec));
+    $history.remove(sourcedTrack);
   }
 
   Future<void> pause(SpotubeFullTrackObject track) async {
@@ -242,12 +247,26 @@ class DownloadManagerProvider extends ChangeNotifier {
     return sourcedTrack;
   }
 
-  ValueNotifier<DownloadStatus>? getStatusNotifier(SourcedTrack track) {
-    return dl.getDownload(track.getUrlOfCodec(downloadCodec))?.status;
+  ValueNotifier<DownloadStatus>? getStatusNotifier(
+    SpotubeFullTrackObject track,
+  ) {
+    final sourcedTrack = $history.firstWhereOrNull(
+      (element) => element.query.id == track.id,
+    );
+    if (sourcedTrack == null) {
+      return null;
+    }
+    return dl.getDownload(sourcedTrack.getUrlOfCodec(downloadCodec))?.status;
   }
 
-  ValueNotifier<double>? getProgressNotifier(SourcedTrack track) {
-    return dl.getDownload(track.getUrlOfCodec(downloadCodec))?.progress;
+  ValueNotifier<double>? getProgressNotifier(SpotubeFullTrackObject track) {
+    final sourcedTrack = $history.firstWhereOrNull(
+      (element) => element.query.id == track.id,
+    );
+    if (sourcedTrack == null) {
+      return null;
+    }
+    return dl.getDownload(sourcedTrack.getUrlOfCodec(downloadCodec))?.progress;
   }
 }
 

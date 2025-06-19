@@ -25,8 +25,7 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
             state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
         final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
-        return newState.copyWith(items: <K>[...oldItems, ...items])
-            as SpotubePaginationResponseObject<K>;
+        return newState.copyWith(items: <K>[...oldItems, ...items]);
       },
     );
   }
@@ -46,8 +45,7 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
         hasMore = newState.hasMore;
         final oldItems = state.items.isEmpty ? <K>[] : state.items.cast<K>();
         final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
-        return newState.copyWith(items: <K>[...oldItems, ...items])
-            as SpotubePaginationResponseObject<K>;
+        return newState.copyWith(items: <K>[...oldItems, ...items]);
       });
     }
 
@@ -74,7 +72,7 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
         return newState.copyWith(items: [
           ...state.value!.items.cast<K>(),
           ...newState.items.cast<K>(),
-        ]) as SpotubePaginationResponseObject<K>;
+        ]);
       },
     );
   }
@@ -95,7 +93,7 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
         return newState.copyWith(items: [
           ...state.items.cast<K>(),
           ...newState.items.cast<K>(),
-        ]) as SpotubePaginationResponseObject<K>;
+        ]);
       });
     }
 

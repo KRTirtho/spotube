@@ -273,7 +273,7 @@ _$SpotubeSearchResponseObjectImpl _$$SpotubeSearchResponseObjectImplFromJson(
               Map<String, dynamic>.from(e as Map)))
           .toList(),
       tracks: (json['tracks'] as List<dynamic>)
-          .map((e) => SpotubeSimpleTrackObject.fromJson(
+          .map((e) => SpotubeFullTrackObject.fromJson(
               Map<String, dynamic>.from(e as Map)))
           .toList(),
     );
@@ -347,39 +347,6 @@ Map<String, dynamic> _$$SpotubeFullTrackObjectImplToJson(
       'durationMs': instance.durationMs,
       'isrc': instance.isrc,
       'explicit': instance.explicit,
-      'runtimeType': instance.$type,
-    };
-
-_$SpotubeSimpleTrackObjectImpl _$$SpotubeSimpleTrackObjectImplFromJson(
-        Map json) =>
-    _$SpotubeSimpleTrackObjectImpl(
-      id: json['id'] as String,
-      name: json['name'] as String,
-      externalUri: json['externalUri'] as String,
-      durationMs: (json['durationMs'] as num).toInt(),
-      explicit: json['explicit'] as bool,
-      artists: (json['artists'] as List<dynamic>?)
-              ?.map((e) => SpotubeSimpleArtistObject.fromJson(
-                  Map<String, dynamic>.from(e as Map)))
-              .toList() ??
-          const [],
-      album: json['album'] == null
-          ? null
-          : SpotubeSimpleAlbumObject.fromJson(
-              Map<String, dynamic>.from(json['album'] as Map)),
-      $type: json['runtimeType'] as String?,
-    );
-
-Map<String, dynamic> _$$SpotubeSimpleTrackObjectImplToJson(
-        _$SpotubeSimpleTrackObjectImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'externalUri': instance.externalUri,
-      'durationMs': instance.durationMs,
-      'explicit': instance.explicit,
-      'artists': instance.artists.map((e) => e.toJson()).toList(),
-      'album': instance.album?.toJson(),
       'runtimeType': instance.$type,
     };
 

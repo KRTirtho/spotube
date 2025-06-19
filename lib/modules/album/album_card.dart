@@ -2,14 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/playbutton_view/playbutton_card.dart';
 import 'package:spotube/components/playbutton_view/playbutton_tile.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
@@ -17,10 +14,9 @@ import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/album.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
-extension FormattedAlbumType on AlbumType {
+extension FormattedAlbumType on SpotubeAlbumType {
   String get formatted => name.replaceFirst(name[0], name[0].toUpperCase());
 }
 
@@ -53,9 +49,11 @@ class AlbumCard extends HookConsumerWidget {
 
     final updating = useState(false);
 
-    Future<List<Track>> fetchAllTrack() async {
-      // return ref.read(metadataPluginAlbumTracksProvider(album).notifier).fetchAll();
-      return [];
+    Future<List<SpotubeFullTrackObject>> fetchAllTrack() async {
+      await ref.read(metadataPluginAlbumTracksProvider(album.id).future);
+      return ref
+          .read(metadataPluginAlbumTracksProvider(album.id).notifier)
+          .fetchAll();
     }
 
     var imageUrl = album.images.asUrlString(
@@ -87,13 +85,13 @@ class AlbumCard extends HookConsumerWidget {
           await remotePlayback.load(
             WebSocketLoadEventData.album(
               tracks: fetchedTracks,
-              // collection: album,
+              collection: album,
             ),
           );
         } else {
           await playlistNotifier.load(fetchedTracks, autoPlay: true);
           playlistNotifier.addCollection(album.id);
-          // historyNotifier.addAlbums([album]);
+          historyNotifier.addAlbums([album]);
         }
       } finally {
         updating.value = false;
@@ -112,7 +110,7 @@ class AlbumCard extends HookConsumerWidget {
         if (fetchedTracks.isEmpty) return;
         playlistNotifier.addTracks(fetchedTracks);
         playlistNotifier.addCollection(album.id);
-        // historyNotifier.addAlbums([album]);
+        historyNotifier.addAlbums([album]);
         if (context.mounted) {
           showToast(
             context: context,
@@ -126,7 +124,7 @@ class AlbumCard extends HookConsumerWidget {
                     child: Text(context.l10n.undo),
                     onPressed: () {
                       playlistNotifier
-                          .removeTracks(fetchedTracks.map((e) => e.id!));
+                          .removeTracks(fetchedTracks.map((e) => e.id));
                     },
                   ),
                 ),
