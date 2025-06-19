@@ -2930,7 +2930,9 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
   @override
   late final GeneratedColumnWithTypeConverter<List<SpotubeTrackObject>, String>
       tracks = GeneratedColumn<String>('tracks', aliasedName, false,
-              type: DriftSqlType.string, requiredDuringInsert: true)
+              type: DriftSqlType.string,
+              requiredDuringInsert: false,
+              defaultValue: const Constant("[]"))
           .withConverter<List<SpotubeTrackObject>>(
               $AudioPlayerStateTableTable.$convertertracks);
   static const VerificationMeta _currentIndexMeta =
@@ -2938,7 +2940,9 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
   @override
   late final GeneratedColumn<int> currentIndex = GeneratedColumn<int>(
       'current_index', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns =>
       [id, playing, loopMode, shuffled, collections, tracks, currentIndex];
@@ -2976,8 +2980,6 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
           _currentIndexMeta,
           currentIndex.isAcceptableOrUnknown(
               data['current_index']!, _currentIndexMeta));
-    } else if (isInserting) {
-      context.missing(_currentIndexMeta);
     }
     return context;
   }
@@ -3189,14 +3191,12 @@ class AudioPlayerStateTableCompanion
     required PlaylistMode loopMode,
     required bool shuffled,
     required List<String> collections,
-    required List<SpotubeTrackObject> tracks,
-    required int currentIndex,
+    this.tracks = const Value.absent(),
+    this.currentIndex = const Value.absent(),
   })  : playing = Value(playing),
         loopMode = Value(loopMode),
         shuffled = Value(shuffled),
-        collections = Value(collections),
-        tracks = Value(tracks),
-        currentIndex = Value(currentIndex);
+        collections = Value(collections);
   static Insertable<AudioPlayerStateTableData> custom({
     Expression<int>? id,
     Expression<bool>? playing,
@@ -5751,8 +5751,8 @@ typedef $$AudioPlayerStateTableTableCreateCompanionBuilder
   required PlaylistMode loopMode,
   required bool shuffled,
   required List<String> collections,
-  required List<SpotubeTrackObject> tracks,
-  required int currentIndex,
+  Value<List<SpotubeTrackObject>> tracks,
+  Value<int> currentIndex,
 });
 typedef $$AudioPlayerStateTableTableUpdateCompanionBuilder
     = AudioPlayerStateTableCompanion Function({
@@ -5922,8 +5922,8 @@ class $$AudioPlayerStateTableTableTableManager extends RootTableManager<
             required PlaylistMode loopMode,
             required bool shuffled,
             required List<String> collections,
-            required List<SpotubeTrackObject> tracks,
-            required int currentIndex,
+            Value<List<SpotubeTrackObject>> tracks = const Value.absent(),
+            Value<int> currentIndex = const Value.absent(),
           }) =>
               AudioPlayerStateTableCompanion.insert(
             id: id,

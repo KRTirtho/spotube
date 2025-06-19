@@ -6,9 +6,10 @@ class AudioPlayerStateTable extends Table {
   TextColumn get loopMode => textEnum<PlaylistMode>()();
   BoolColumn get shuffled => boolean()();
   TextColumn get collections => text().map(const StringListConverter())();
-  TextColumn get tracks =>
-      text().map(const SpotubeTrackObjectListConverter())();
-  IntColumn get currentIndex => integer()();
+  TextColumn get tracks => text()
+      .map(const SpotubeTrackObjectListConverter())
+      .withDefault(const Constant("[]"))();
+  IntColumn get currentIndex => integer().withDefault(const Constant(0))();
 }
 
 class SpotubeTrackObjectListConverter

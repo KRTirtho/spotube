@@ -214,14 +214,12 @@ class TrackOptions extends HookConsumerWidget {
     ]);
 
     final progressNotifier = useMemoized(() {
-      if (track is! SpotubeFullTrackObject) {
-        return throw Exception(
-          "Invalid usage of `progressNotifierFuture`. Track must be a SpotubeFullTrackObject to get download progress",
-        );
+      if (track is SpotubeLocalTrackObject) {
+        return null;
       }
       return downloadManager
           .getProgressNotifier(track as SpotubeFullTrackObject);
-    });
+    }, [downloadManager, track]);
 
     final isLocalTrack = track is SpotubeLocalTrackObject;
 
@@ -346,7 +344,7 @@ class TrackOptions extends HookConsumerWidget {
         }
       },
       icon: icon ?? const Icon(SpotubeIcons.moreHorizontal),
-      variance: ButtonVariance.outline,
+      variance: ButtonVariance.ghost,
       headings: [
         Basic(
           leading: AspectRatio(

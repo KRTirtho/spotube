@@ -19,8 +19,6 @@ part 'audio_player_impl.dart';
 class SpotubeMedia extends mk.Media {
   static int serverPort = 0;
 
-  final SpotubeTrackObject track;
-
   static String get _host =>
       kIsWindows ? "localhost" : InternetAddress.anyIPv4.address;
 
@@ -29,10 +27,11 @@ class SpotubeMedia extends mk.Media {
 
     return params.entries
         .map((e) =>
-            "${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value)}")
+            "${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value is List<String> ? e.value.join(",") : e.value.toString())}")
         .join("&");
   }
 
+  final SpotubeTrackObject track;
   SpotubeMedia(
     this.track, {
     Map<String, dynamic>? extras,
@@ -47,32 +46,6 @@ class SpotubeMedia extends mk.Media {
               ? track.path
               : "http://$_host:$serverPort/stream/${track.id}?${_queries(track as SpotubeFullTrackObject)}",
         );
-
-  @override
-  String get uri {
-    return switch (track) {
-      /// [super.uri] must be used instead of [track.path] to prevent wrong
-      /// path format exceptions in Windows causing [extras] to be null
-      SpotubeLocalTrackObject() => super.uri,
-      _ => "http://$_host:"
-          "$serverPort/stream/${track.id}",
-    };
-  }
-
-  // @override
-  // operator ==(Object other) {
-  //   if (other is! SpotubeMedia) return false;
-
-  //   final isLocal = track is LocalTrack && other.track is LocalTrack;
-  //   return isLocal
-  //       ? (other.track as LocalTrack).path == (track as LocalTrack).path
-  //       : other.track.id == track.id;
-  // }
-
-  // @override
-  // int get hashCode => track is LocalTrack
-  //     ? (track as LocalTrack).path.hashCode
-  //     : track.id.hashCode;
 }
 
 abstract class AudioPlayerInterface {

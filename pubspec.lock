@@ -2813,10 +2813,10 @@ packages:
     dependency: "direct main"
     description:
       name: youtube_explode_dart
-      sha256: "3e1f1b5aa575670afc9dbc96cece23af78f9ec2044ce0d9f70d136fff6c53b53"
+      sha256: "8db47e0f947598f6aa29d2862efb98b92af0c78990d4b23c224f3475c556b47b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.0-dev.1"
+    version: "2.4.2"
   yt_dlp_dart:
     dependency: "direct main"
     description:

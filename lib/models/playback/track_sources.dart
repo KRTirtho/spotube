@@ -9,6 +9,8 @@ part 'track_sources.g.dart';
 
 @freezed
 class TrackSourceQuery with _$TrackSourceQuery {
+  TrackSourceQuery._();
+
   factory TrackSourceQuery({
     required String id,
     required String title,
@@ -37,10 +39,23 @@ class TrackSourceQuery with _$TrackSourceQuery {
   /// Parses [SpotubeMedia]'s [uri] property to create a [TrackSourceQuery].
   factory TrackSourceQuery.parseUri(String url) {
     final uri = Uri.parse(url);
-    return TrackSourceQuery.fromJson({
-      "id": uri.pathSegments.last,
-      ...uri.queryParameters,
-    });
+    return TrackSourceQuery(
+      id: uri.pathSegments.last,
+      title: uri.queryParameters['title'] ?? '',
+      artists: uri.queryParameters['artists']?.split(',') ?? [],
+      album: uri.queryParameters['album'] ?? '',
+      durationMs: int.tryParse(uri.queryParameters['durationMs'] ?? '0') ?? 0,
+      isrc: uri.queryParameters['isrc'] ?? '',
+      explicit: uri.queryParameters['explicit']?.toLowerCase() == 'true',
+    );
+  }
+
+  String queryString() {
+    return toJson()
+        .entries
+        .map((e) =>
+            "${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value is List<String> ? e.value.join(",") : e.value.toString())}")
+        .join("&");
   }
 }
 

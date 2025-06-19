@@ -62,10 +62,10 @@ class PlaylistCard extends HookConsumerWidget {
     }
 
     Future<List<SpotubeTrackObject>> fetchAllTracks() async {
-      final initialTracks = await fetchInitialTracks();
+      await fetchInitialTracks();
 
       if (playlist.id == 'user-liked-tracks') {
-        return initialTracks;
+        return ref.read(metadataPluginSavedTracksProvider.notifier).fetchAll();
       }
 
       return ref

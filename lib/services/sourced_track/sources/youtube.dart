@@ -109,14 +109,15 @@ class YoutubeSourcedTrack extends SourcedTrack {
     return manifest.audioOnly.map((streamInfo) {
       return TrackSource(
         url: streamInfo.url.toString(),
-        quality: streamInfo.qualityLabel == "AUDIO_QUALITY_HIGH"
-            ? SourceQualities.high
-            : streamInfo.qualityLabel == "AUDIO_QUALITY_MEDIUM"
-                ? SourceQualities.medium
-                : SourceQualities.low,
-        codec: streamInfo.codec.mimeType == "audio/mp4"
-            ? SourceCodecs.m4a
-            : SourceCodecs.weba,
+        quality: switch (streamInfo.qualityLabel) {
+          "medium" => SourceQualities.medium,
+          "high" => SourceQualities.high,
+          "low" => SourceQualities.low,
+          _ => SourceQualities.high,
+        },
+        codec: streamInfo.codec.mimeType == "audio/webm"
+            ? SourceCodecs.weba
+            : SourceCodecs.m4a,
         bitrate: streamInfo.bitrate.bitsPerSecond.toString(),
       );
     }).toList();

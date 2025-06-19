@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:spotube/extensions/list.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -48,8 +47,8 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
               loopMode: audioPlayer.loopMode,
               shuffled: audioPlayer.isShuffled,
               collections: <String>[],
-              tracks: <SpotubeTrackObject>[],
-              currentIndex: 0,
+              tracks: const Value(<SpotubeTrackObject>[]),
+              currentIndex: const Value(0),
               id: const Value(0),
             ),
           );
@@ -143,10 +142,12 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
           final queries = playlist.medias
               .map((media) => TrackSourceQuery.parseUri(media.uri))
               .toList();
+
           final tracks = queries
-              .map((query) => state.tracks.firstWhere(
-                    (element) => element.id == query.id,
-                  ))
+              .map(
+                (query) => state.tracks
+                    .firstWhere((element) => element.id == query.id),
+              )
               .toList();
           state = state.copyWith(
             tracks: tracks,
@@ -249,6 +250,10 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
     if (_blacklist.contains(track)) return;
     if (state.tracks.any((element) => _compareTracks(element, track))) return;
+
+    state = state.copyWith(
+      tracks: [...state.tracks, track],
+    );
     await audioPlayer.addTrack(SpotubeMedia(track));
   }
 
@@ -256,6 +261,9 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     _assertAllowedTracks(tracks);
 
     tracks = _blacklist.filter(tracks).toList();
+    state = state.copyWith(
+      tracks: [...state.tracks, ...tracks],
+    );
     for (final track in tracks) {
       await audioPlayer.addTrack(SpotubeMedia(track));
     }
@@ -313,10 +321,15 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
     if (medias.isEmpty) return;
 
-    await removeCollections(state.collections);
+    state = state.copyWith(
+      // These are filtered tracks as well
+      tracks: medias.map((media) => media.track).toList(),
+      currentIndex: initialIndex,
+      collections: [],
+    );
 
     await audioPlayer.openPlaylist(
-      medias.map((s) => s as Media).toList(),
+      medias,
       initialIndex: initialIndex,
       autoPlay: autoPlay,
     );

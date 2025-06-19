@@ -106,23 +106,27 @@ class MetadataPluginUserEndpoint {
   }
 
   Future<List<bool>> isSavedTracks(List<String> ids) async {
-    return await hetuMetadataUser.invoke(
+    final values = await hetuMetadataUser.invoke(
       "isSavedTracks",
       positionalArgs: [ids],
-    ) as List<bool>;
+    );
+    return (values as List).cast<bool>();
   }
 
   Future<List<bool>> isSavedAlbums(List<String> ids) async {
-    return await hetuMetadataUser.invoke(
+    final values = await hetuMetadataUser.invoke(
       "isSavedAlbums",
       positionalArgs: [ids],
-    ) as List<bool>;
+    ) as List;
+    return values.cast<bool>();
   }
 
   Future<List<bool>> isSavedArtists(List<String> ids) async {
-    return await hetuMetadataUser.invoke(
+    final values = await hetuMetadataUser.invoke(
       "isSavedArtists",
       positionalArgs: [ids],
-    ) as List<bool>;
+    ) as List;
+
+    return values.cast<bool>();
   }
 }

@@ -2301,10 +2301,14 @@ class AudioPlayerStateTable extends Table
       type: DriftSqlType.string, requiredDuringInsert: true);
   late final GeneratedColumn<String> tracks = GeneratedColumn<String>(
       'tracks', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("[]"));
   late final GeneratedColumn<int> currentIndex = GeneratedColumn<int>(
       'current_index', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns =>
       [id, playing, loopMode, shuffled, collections, tracks, currentIndex];
@@ -2499,14 +2503,12 @@ class AudioPlayerStateTableCompanion
     required String loopMode,
     required bool shuffled,
     required String collections,
-    required String tracks,
-    required int currentIndex,
+    this.tracks = const Value.absent(),
+    this.currentIndex = const Value.absent(),
   })  : playing = Value(playing),
         loopMode = Value(loopMode),
         shuffled = Value(shuffled),
-        collections = Value(collections),
-        tracks = Value(tracks),
-        currentIndex = Value(currentIndex);
+        collections = Value(collections);
   static Insertable<AudioPlayerStateTableData> custom({
     Expression<int>? id,
     Expression<bool>? playing,

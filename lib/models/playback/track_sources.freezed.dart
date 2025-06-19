@@ -184,7 +184,7 @@ class __$$TrackSourceQueryImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$TrackSourceQueryImpl implements _TrackSourceQuery {
+class _$TrackSourceQueryImpl extends _TrackSourceQuery {
   _$TrackSourceQueryImpl(
       {required this.id,
       required this.title,
@@ -193,7 +193,8 @@ class _$TrackSourceQueryImpl implements _TrackSourceQuery {
       required this.durationMs,
       required this.isrc,
       required this.explicit})
-      : _artists = artists;
+      : _artists = artists,
+        super._();
 
   factory _$TrackSourceQueryImpl.fromJson(Map<String, dynamic> json) =>
       _$$TrackSourceQueryImplFromJson(json);
@@ -269,7 +270,7 @@ class _$TrackSourceQueryImpl implements _TrackSourceQuery {
   }
 }
 
-abstract class _TrackSourceQuery implements TrackSourceQuery {
+abstract class _TrackSourceQuery extends TrackSourceQuery {
   factory _TrackSourceQuery(
       {required final String id,
       required final String title,
@@ -278,6 +279,7 @@ abstract class _TrackSourceQuery implements TrackSourceQuery {
       required final int durationMs,
       required final String isrc,
       required final bool explicit}) = _$TrackSourceQueryImpl;
+  _TrackSourceQuery._() : super._();
 
   factory _TrackSourceQuery.fromJson(Map<String, dynamic> json) =
       _$TrackSourceQueryImpl.fromJson;

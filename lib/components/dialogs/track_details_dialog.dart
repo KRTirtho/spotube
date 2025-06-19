@@ -9,7 +9,6 @@ import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/server/track_sources.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class TrackDetailsDialog extends HookConsumerWidget {
   final SpotubeFullTrackObject track;
@@ -59,12 +58,13 @@ class TrackDetailsDialog extends HookConsumerWidget {
               overflow: TextOverflow.ellipsis,
             ),
             context.l10n.channel: Text(sourceInfo.artists),
-            context.l10n.streamUrl: Hyperlink(
-              (track as SourcedTrack).url,
-              (track as SourcedTrack).url,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+            if (sourcedTrack.asData?.value.url != null)
+              context.l10n.streamUrl: Hyperlink(
+                sourcedTrack.asData!.value.url,
+                sourcedTrack.asData!.value.url,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
           };
 
     return AlertDialog(

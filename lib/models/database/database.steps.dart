@@ -1921,10 +1921,10 @@ class Shape14 extends i0.VersionedTable {
 
 i1.GeneratedColumn<String> _column_57(String aliasedName) =>
     i1.GeneratedColumn<String>('tracks', aliasedName, false,
-        type: i1.DriftSqlType.string);
+        type: i1.DriftSqlType.string, defaultValue: const Constant("[]"));
 i1.GeneratedColumn<int> _column_58(String aliasedName) =>
     i1.GeneratedColumn<int>('current_index', aliasedName, false,
-        type: i1.DriftSqlType.int);
+        type: i1.DriftSqlType.int, defaultValue: const Constant(0));
 
 class Shape15 extends i0.VersionedTable {
   Shape15({required super.source, required super.alias}) : super.aliased();
