@@ -62,7 +62,7 @@ dependencies:
     sdk: flutter
   flutter_native_splash: ^2.4.6
   flutter_riverpod: ^2.5.1
-  flutter_secure_storage: ^9.0.0
+  flutter_secure_storage: ^9.2.4
   flutter_sharing_intent: ^1.1.0
   flutter_undraw: ^0.2.1
   form_builder_validators: ^11.1.1
@@ -119,7 +119,7 @@ dependencies:
   test: ^1.25.7
   timezone: ^0.10.0
   titlebar_buttons: ^1.0.0
-  tray_manager: ^0.4.0
+  tray_manager: ^0.5.0
   url_launcher: ^6.2.6
   uuid: ^4.4.0
   version: ^3.0.2
@@ -187,6 +187,12 @@ dependency_overrides:
   flutter_svg: ^2.0.17
   intl: any
   collection: any
+  flutter_secure_storage_linux:
+    git:
+      url: https://github.com/m-berto/flutter_secure_storage.git
+      ref: patch-2
+      path: flutter_secure_storage_linux
+  flutter_secure_storage_platform_interface: 2.0.0
 
 flutter:
   generate: true

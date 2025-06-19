@@ -33,36 +33,62 @@ WebSocketLoadEventData _$WebSocketLoadEventDataFromJson(
 
 /// @nodoc
 mixin _$WebSocketLoadEventData {
-  List<dynamic> get tracks => throw _privateConstructorUsedError;
+  @Assert("tracks is List<SpotubeFullTrackObject>",
+      "tracks must be a list of SpotubeFullTrackObject")
+  List<SpotubeTrackObject> get tracks => throw _privateConstructorUsedError;
   Object? get collection => throw _privateConstructorUsedError;
   int? get initialIndex => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimplePlaylistObject? collection, int? initialIndex)
+    required TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimplePlaylistObject? collection,
+            int? initialIndex)
         playlist,
-    required TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimpleAlbumObject? collection, int? initialIndex)
+    required TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimpleAlbumObject? collection,
+            int? initialIndex)
         album,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimplePlaylistObject? collection, int? initialIndex)?
+    TResult? Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimplePlaylistObject? collection,
+            int? initialIndex)?
         playlist,
-    TResult? Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimpleAlbumObject? collection, int? initialIndex)?
+    TResult? Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimpleAlbumObject? collection,
+            int? initialIndex)?
         album,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimplePlaylistObject? collection, int? initialIndex)?
+    TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimplePlaylistObject? collection,
+            int? initialIndex)?
         playlist,
-    TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimpleAlbumObject? collection, int? initialIndex)?
+    TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimpleAlbumObject? collection,
+            int? initialIndex)?
         album,
     required TResult orElse(),
   }) =>
@@ -103,7 +129,11 @@ abstract class $WebSocketLoadEventDataCopyWith<$Res> {
           $Res Function(WebSocketLoadEventData) then) =
       _$WebSocketLoadEventDataCopyWithImpl<$Res, WebSocketLoadEventData>;
   @useResult
-  $Res call({List<dynamic> tracks, int? initialIndex});
+  $Res call(
+      {@Assert("tracks is List<SpotubeFullTrackObject>",
+          "tracks must be a list of SpotubeFullTrackObject")
+      List<SpotubeTrackObject> tracks,
+      int? initialIndex});
 }
 
 /// @nodoc
@@ -129,7 +159,7 @@ class _$WebSocketLoadEventDataCopyWithImpl<$Res,
       tracks: null == tracks
           ? _value.tracks
           : tracks // ignore: cast_nullable_to_non_nullable
-              as List<dynamic>,
+              as List<SpotubeTrackObject>,
       initialIndex: freezed == initialIndex
           ? _value.initialIndex
           : initialIndex // ignore: cast_nullable_to_non_nullable
@@ -148,7 +178,9 @@ abstract class _$$WebSocketLoadEventDataPlaylistImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<SpotubeFullTrackObject> tracks,
+      {@Assert("tracks is List<SpotubeFullTrackObject>",
+          "tracks must be a list of SpotubeFullTrackObject")
+      List<SpotubeTrackObject> tracks,
       SpotubeSimplePlaylistObject? collection,
       int? initialIndex});
 
@@ -178,7 +210,7 @@ class __$$WebSocketLoadEventDataPlaylistImplCopyWithImpl<$Res>
       tracks: null == tracks
           ? _value._tracks
           : tracks // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeFullTrackObject>,
+              as List<SpotubeTrackObject>,
       collection: freezed == collection
           ? _value.collection
           : collection // ignore: cast_nullable_to_non_nullable
@@ -211,7 +243,9 @@ class __$$WebSocketLoadEventDataPlaylistImplCopyWithImpl<$Res>
 class _$WebSocketLoadEventDataPlaylistImpl
     extends WebSocketLoadEventDataPlaylist {
   _$WebSocketLoadEventDataPlaylistImpl(
-      {required final List<SpotubeFullTrackObject> tracks,
+      {@Assert("tracks is List<SpotubeFullTrackObject>",
+          "tracks must be a list of SpotubeFullTrackObject")
+      required final List<SpotubeTrackObject> tracks,
       this.collection,
       this.initialIndex,
       final String? $type})
@@ -223,9 +257,11 @@ class _$WebSocketLoadEventDataPlaylistImpl
           Map<String, dynamic> json) =>
       _$$WebSocketLoadEventDataPlaylistImplFromJson(json);
 
-  final List<SpotubeFullTrackObject> _tracks;
+  final List<SpotubeTrackObject> _tracks;
   @override
-  List<SpotubeFullTrackObject> get tracks {
+  @Assert("tracks is List<SpotubeFullTrackObject>",
+      "tracks must be a list of SpotubeFullTrackObject")
+  List<SpotubeTrackObject> get tracks {
     if (_tracks is EqualUnmodifiableListView) return _tracks;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_tracks);
@@ -274,11 +310,19 @@ class _$WebSocketLoadEventDataPlaylistImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimplePlaylistObject? collection, int? initialIndex)
+    required TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimplePlaylistObject? collection,
+            int? initialIndex)
         playlist,
-    required TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimpleAlbumObject? collection, int? initialIndex)
+    required TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimpleAlbumObject? collection,
+            int? initialIndex)
         album,
   }) {
     return playlist(tracks, collection, initialIndex);
@@ -287,11 +331,19 @@ class _$WebSocketLoadEventDataPlaylistImpl
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimplePlaylistObject? collection, int? initialIndex)?
+    TResult? Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimplePlaylistObject? collection,
+            int? initialIndex)?
         playlist,
-    TResult? Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimpleAlbumObject? collection, int? initialIndex)?
+    TResult? Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimpleAlbumObject? collection,
+            int? initialIndex)?
         album,
   }) {
     return playlist?.call(tracks, collection, initialIndex);
@@ -300,11 +352,19 @@ class _$WebSocketLoadEventDataPlaylistImpl
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimplePlaylistObject? collection, int? initialIndex)?
+    TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimplePlaylistObject? collection,
+            int? initialIndex)?
         playlist,
-    TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimpleAlbumObject? collection, int? initialIndex)?
+    TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimpleAlbumObject? collection,
+            int? initialIndex)?
         album,
     required TResult orElse(),
   }) {
@@ -355,7 +415,9 @@ class _$WebSocketLoadEventDataPlaylistImpl
 
 abstract class WebSocketLoadEventDataPlaylist extends WebSocketLoadEventData {
   factory WebSocketLoadEventDataPlaylist(
-      {required final List<SpotubeFullTrackObject> tracks,
+      {@Assert("tracks is List<SpotubeFullTrackObject>",
+          "tracks must be a list of SpotubeFullTrackObject")
+      required final List<SpotubeTrackObject> tracks,
       final SpotubeSimplePlaylistObject? collection,
       final int? initialIndex}) = _$WebSocketLoadEventDataPlaylistImpl;
   WebSocketLoadEventDataPlaylist._() : super._();
@@ -364,7 +426,9 @@ abstract class WebSocketLoadEventDataPlaylist extends WebSocketLoadEventData {
       _$WebSocketLoadEventDataPlaylistImpl.fromJson;
 
   @override
-  List<SpotubeFullTrackObject> get tracks;
+  @Assert("tracks is List<SpotubeFullTrackObject>",
+      "tracks must be a list of SpotubeFullTrackObject")
+  List<SpotubeTrackObject> get tracks;
   @override
   SpotubeSimplePlaylistObject? get collection;
   @override
@@ -389,7 +453,9 @@ abstract class _$$WebSocketLoadEventDataAlbumImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<SpotubeFullTrackObject> tracks,
+      {@Assert("tracks is List<SpotubeFullTrackObject>",
+          "tracks must be a list of SpotubeFullTrackObject")
+      List<SpotubeTrackObject> tracks,
       SpotubeSimpleAlbumObject? collection,
       int? initialIndex});
 
@@ -419,7 +485,7 @@ class __$$WebSocketLoadEventDataAlbumImplCopyWithImpl<$Res>
       tracks: null == tracks
           ? _value._tracks
           : tracks // ignore: cast_nullable_to_non_nullable
-              as List<SpotubeFullTrackObject>,
+              as List<SpotubeTrackObject>,
       collection: freezed == collection
           ? _value.collection
           : collection // ignore: cast_nullable_to_non_nullable
@@ -450,7 +516,9 @@ class __$$WebSocketLoadEventDataAlbumImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$WebSocketLoadEventDataAlbumImpl extends WebSocketLoadEventDataAlbum {
   _$WebSocketLoadEventDataAlbumImpl(
-      {required final List<SpotubeFullTrackObject> tracks,
+      {@Assert("tracks is List<SpotubeFullTrackObject>",
+          "tracks must be a list of SpotubeFullTrackObject")
+      required final List<SpotubeTrackObject> tracks,
       this.collection,
       this.initialIndex,
       final String? $type})
@@ -462,9 +530,11 @@ class _$WebSocketLoadEventDataAlbumImpl extends WebSocketLoadEventDataAlbum {
           Map<String, dynamic> json) =>
       _$$WebSocketLoadEventDataAlbumImplFromJson(json);
 
-  final List<SpotubeFullTrackObject> _tracks;
+  final List<SpotubeTrackObject> _tracks;
   @override
-  List<SpotubeFullTrackObject> get tracks {
+  @Assert("tracks is List<SpotubeFullTrackObject>",
+      "tracks must be a list of SpotubeFullTrackObject")
+  List<SpotubeTrackObject> get tracks {
     if (_tracks is EqualUnmodifiableListView) return _tracks;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_tracks);
@@ -512,11 +582,19 @@ class _$WebSocketLoadEventDataAlbumImpl extends WebSocketLoadEventDataAlbum {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimplePlaylistObject? collection, int? initialIndex)
+    required TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimplePlaylistObject? collection,
+            int? initialIndex)
         playlist,
-    required TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimpleAlbumObject? collection, int? initialIndex)
+    required TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimpleAlbumObject? collection,
+            int? initialIndex)
         album,
   }) {
     return album(tracks, collection, initialIndex);
@@ -525,11 +603,19 @@ class _$WebSocketLoadEventDataAlbumImpl extends WebSocketLoadEventDataAlbum {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimplePlaylistObject? collection, int? initialIndex)?
+    TResult? Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimplePlaylistObject? collection,
+            int? initialIndex)?
         playlist,
-    TResult? Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimpleAlbumObject? collection, int? initialIndex)?
+    TResult? Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimpleAlbumObject? collection,
+            int? initialIndex)?
         album,
   }) {
     return album?.call(tracks, collection, initialIndex);
@@ -538,11 +624,19 @@ class _$WebSocketLoadEventDataAlbumImpl extends WebSocketLoadEventDataAlbum {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimplePlaylistObject? collection, int? initialIndex)?
+    TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimplePlaylistObject? collection,
+            int? initialIndex)?
         playlist,
-    TResult Function(List<SpotubeFullTrackObject> tracks,
-            SpotubeSimpleAlbumObject? collection, int? initialIndex)?
+    TResult Function(
+            @Assert("tracks is List<SpotubeFullTrackObject>",
+                "tracks must be a list of SpotubeFullTrackObject")
+            List<SpotubeTrackObject> tracks,
+            SpotubeSimpleAlbumObject? collection,
+            int? initialIndex)?
         album,
     required TResult orElse(),
   }) {
@@ -593,7 +687,9 @@ class _$WebSocketLoadEventDataAlbumImpl extends WebSocketLoadEventDataAlbum {
 
 abstract class WebSocketLoadEventDataAlbum extends WebSocketLoadEventData {
   factory WebSocketLoadEventDataAlbum(
-      {required final List<SpotubeFullTrackObject> tracks,
+      {@Assert("tracks is List<SpotubeFullTrackObject>",
+          "tracks must be a list of SpotubeFullTrackObject")
+      required final List<SpotubeTrackObject> tracks,
       final SpotubeSimpleAlbumObject? collection,
       final int? initialIndex}) = _$WebSocketLoadEventDataAlbumImpl;
   WebSocketLoadEventDataAlbum._() : super._();
@@ -602,7 +698,9 @@ abstract class WebSocketLoadEventDataAlbum extends WebSocketLoadEventData {
       _$WebSocketLoadEventDataAlbumImpl.fromJson;
 
   @override
-  List<SpotubeFullTrackObject> get tracks;
+  @Assert("tracks is List<SpotubeFullTrackObject>",
+      "tracks must be a list of SpotubeFullTrackObject")
+  List<SpotubeTrackObject> get tracks;
   @override
   SpotubeSimpleAlbumObject? get collection;
   @override

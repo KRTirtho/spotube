@@ -73,7 +73,7 @@ class TrackSource with _$TrackSource {
 }
 
 @JsonSerializable()
-abstract class BasicSourcedTrack {
+class BasicSourcedTrack {
   final TrackSourceQuery query;
   final AudioSource source;
   final TrackSourceInfo info;

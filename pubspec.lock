@@ -983,34 +983,35 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_secure_storage
-      sha256: "165164745e6afb5c0e3e3fcc72a012fb9e58496fb26ffb92cf22e16a821e85d0"
+      sha256: "9cad52d75ebc511adfae3d447d5d13da15a55a92c9410e50f67335b6d21d16ea"
       url: "https://pub.dev"
     source: hosted
-    version: "9.2.2"
+    version: "9.2.4"
   flutter_secure_storage_linux:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: flutter_secure_storage_linux
-      sha256: "4d91bfc23047422cbcd73ac684bc169859ee766482517c22172c86596bf1464b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.1"
+      path: flutter_secure_storage_linux
+      ref: patch-2
+      resolved-ref: f076cbb65b075afd6e3b648122987a67306dc298
+      url: "https://github.com/m-berto/flutter_secure_storage.git"
+    source: git
+    version: "2.0.1"
   flutter_secure_storage_macos:
     dependency: transitive
     description:
       name: flutter_secure_storage_macos
-      sha256: "1693ab11121a5f925bbea0be725abfcfbbcf36c1e29e571f84a0c0f436147a81"
+      sha256: "6c0a2795a2d1de26ae202a0d78527d163f4acbb11cde4c75c670f3a0fc064247"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "3.1.3"
   flutter_secure_storage_platform_interface:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: flutter_secure_storage_platform_interface
-      sha256: cf91ad32ce5adef6fba4d736a542baca9daf3beac4db2d04be350b87f69ac4a8
+      sha256: b8337d3d52e429e6c0a7710e38cf9742a3bb05844bd927450eb94f80c11ef85d
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.2"
+    version: "2.0.0"
   flutter_secure_storage_web:
     dependency: transitive
     description:
@@ -2516,10 +2517,10 @@ packages:
     dependency: "direct main"
     description:
       name: tray_manager
-      sha256: c2da0f0f1ddb455e721cf68d05d1281fec75cf5df0a1d3cb67b6ca0bdfd5709d
+      sha256: ad18c4cd73003097d182884bacb0578ad2865f3ab842a0ad00f6d043ed49eaf0
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0"
+    version: "0.5.0"
   type_plus:
     dependency: transitive
     description:

@@ -7,7 +7,6 @@ import 'package:shadcn_flutter/shadcn_flutter.dart' hide Image;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/assets.gen.dart';
 
-import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -61,14 +60,12 @@ class UserPlaylistsPage extends HookConsumerWidget {
         if (searchText.value.isEmpty) {
           return [
             if (likedTracksPlaylist != null) likedTracksPlaylist,
-            ...?playlistsQuery.asData?.value.items
-                as List<SpotubeSimplePlaylistObject>?,
+            ...?playlistsQuery.asData?.value.items,
           ];
         }
         return [
           if (likedTracksPlaylist != null) likedTracksPlaylist,
-          ...?playlistsQuery.asData?.value.items
-              as List<SpotubeSimplePlaylistObject>?,
+          ...?playlistsQuery.asData?.value.items,
         ]
             .map((e) => (weightedRatio(e.name, searchText.value), e))
             .sorted((a, b) => b.$1.compareTo(a.$1))
@@ -116,19 +113,19 @@ class UserPlaylistsPage extends HookConsumerWidget {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
                 sliver: PlaybuttonView(
-                  leading: Expanded(
+                  leading: const Expanded(
                     child: Row(
                       children: [
-                        const PlaylistCreateDialogButton(),
-                        const Gap(10),
-                        Button.primary(
-                          leading: const Icon(SpotubeIcons.magic),
-                          child: Text(context.l10n.generate),
-                          onPressed: () {
-                            context.navigateTo(const PlaylistGeneratorRoute());
-                          },
-                        ),
-                        const Gap(10),
+                        PlaylistCreateDialogButton(),
+                        // const Gap(10),
+                        // Button.primary(
+                        //   leading: const Icon(SpotubeIcons.magic),
+                        //   child: Text(context.l10n.generate),
+                        //   onPressed: () {
+                        //     context.navigateTo(const PlaylistGeneratorRoute());
+                        //   },
+                        // ),
+                        // const Gap(10),
                       ],
                     ),
                   ),
