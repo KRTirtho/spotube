@@ -69,7 +69,7 @@ class StatsStreamFeesPage extends HookConsumerWidget {
                 padding: const EdgeInsets.all(16.0),
                 sliver: SliverToBoxAdapter(
                   child: Text(
-                    context.l10n.spotify_hipotetical_calculation,
+                    context.l10n.hipotetical_calculation,
                   ).small().muted(),
                 ),
               ),

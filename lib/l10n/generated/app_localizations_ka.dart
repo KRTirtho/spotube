@@ -380,12 +380,6 @@ class AppLocalizationsKa extends AppLocalizations {
   String get account => 'ანგარიში';
 
   @override
-  String get login_with_spotify => 'შედით თქვენი Spotify ანგარიშით';
-
-  @override
-  String get connect_with_spotify => 'დაუკავშირდით Spotify-ს';
-
-  @override
   String get logout => 'გასვლა';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsKa extends AppLocalizations {
   String get license => 'ლიცენზია';
 
   @override
-  String get add_spotify_credentials => 'დასაწყებად დაამატეთ თქვენი Spotify მონაცემები';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'არ ინერვიულოთ, თქვენი მონაცემები არ იქნება შეგროვებული ან გაზიარებული ვინმესთან';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'მიჰყევით ნაბიჯ-ნაბიჯ სახელმძღვანელოს';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name ქუქი';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get first_go_to => 'პირველი, გადადით';
-
-  @override
-  String get login_if_not_logged_in => 'და შესვლა/რეგისტრაცია, თუ არ ხართ შესული';
-
-  @override
-  String get step_2 => 'ნაბიჯი 2';
-
-  @override
-  String get step_2_steps => '1. როცა შეხვალთ, დააჭირეთ F12-ს ან მაუსის მარჯვენა ღილაკს > Inspect to Open the Browser devtools.\n2. შემდეგ გახსენით \"Application\" განყოფილება (Chrome, Edge, Brave etc..) ან \"Storage\" განყოფილება (Firefox, Palemoon etc..)\n3. შედით \"Cookies\" სექციაში და შემდეგ \"https://accounts.spotify.com\" სუბსექციაში';
-
-  @override
-  String get step_3 => 'ნაბიჯი 3';
-
-  @override
-  String get step_3_steps => 'დააკოპირეთ \"sp_dc\" ქუქი-ფაილის მნიშვნელობა';
-
-  @override
-  String get success_emoji => 'წარმატება🥳';
-
-  @override
-  String get success_message => 'თქვენ წარმატებით შეხვედით თქვენი Spotify ანგარიშით.';
-
-  @override
-  String get step_4 => 'ნაბიჯი 4';
-
-  @override
-  String get step_4_steps => 'ჩასვით კოპირებული \"sp_dc\" მნიშვნელობა';
 
   @override
   String get something_went_wrong => 'Რაღაც არასწორად წავიდა';
@@ -1212,7 +1171,7 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*ეს გამოითვლება Spotify-ის თითოეულ სტრიმზე\nგადახდის შესაბამისად, რომელიც \$0.003 დან \$0.005-მდეა. ეს არის ჰიპოთეტური\nგამოთვლა, რომელიც აჩვენებს მომხმარებელს რამდენი გადაიხდიდა\nარტისტებს, თუკი ისინი უსმენდნენ მათ სიმღერებს Spotify-ზე.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

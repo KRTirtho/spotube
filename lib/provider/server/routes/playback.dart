@@ -7,6 +7,7 @@ import 'package:dio/dio.dart' as dio_lib;
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
+import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:shelf/shelf.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -185,7 +186,7 @@ class ServerPlaybackRoutes {
       }
 
       final imageBytes = await ServiceUtils.downloadImage(
-        (playlistTrack.album?.images).asUrlString(
+        (playlistTrack.album.images).asUrlString(
           placeholder: ImagePlaceholder.albumArt,
           index: 1,
         ),

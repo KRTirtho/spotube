@@ -380,12 +380,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get login_with_spotify => 'Login with your Spotify account';
-
-  @override
-  String get connect_with_spotify => 'Connect with Spotify';
-
-  @override
   String get logout => 'Logout';
 
   @override
@@ -506,7 +500,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get please_sponsor => 'Please Sponsor/Donate';
 
   @override
-  String get spotube_description => 'Spotube, a lightweight, cross-platform, free-for-all spotify client';
+  String get spotube_description => 'Open source extensible music streaming platform and app, based on BYOMM (Bring your own music metadata) concept';
 
   @override
   String get version => 'Version';
@@ -538,9 +532,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get license => 'License';
 
   @override
-  String get add_spotify_credentials => 'Add your spotify credentials to get started';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Don\'t worry, any of your credentials won\'t be collected or shared with anyone';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Follow along the Step by Step guide';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookie';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get first_go_to => 'First, Go to';
-
-  @override
-  String get login_if_not_logged_in => 'and Login/Signup if you are not logged in';
-
-  @override
-  String get step_2 => 'Step 2';
-
-  @override
-  String get step_2_steps => '1. Once you\'re logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection';
-
-  @override
-  String get step_3 => 'Step 3';
-
-  @override
-  String get step_3_steps => 'Copy the value of \"sp_dc\" Cookie';
-
-  @override
-  String get success_emoji => 'Success🥳';
-
-  @override
-  String get success_message => 'Now you\'ve successfully Logged in with your Spotify account. Good Job, mate!';
-
-  @override
-  String get step_4 => 'Step 4';
-
-  @override
-  String get step_4_steps => 'Paste the copied \"sp_dc\" value';
 
   @override
   String get something_went_wrong => 'Something went wrong';
@@ -1212,7 +1171,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*This is calculated based on Spotify\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in Spotify.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

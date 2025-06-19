@@ -18,19 +18,17 @@ class SpotubeTrackObjectListConverter
 
   @override
   List<SpotubeTrackObject> fromSql(String fromDb) {
-    return fromDb
-        .split(",")
-        .where((e) => e.isNotEmpty)
-        .map(
-          (e) => SpotubeTrackObject.fromJson(
-            json.decode(e) as Map<String, dynamic>,
-          ),
-        )
+    final raw = (jsonDecode(fromDb) as List).cast<Map>();
+
+    return raw
+        .map((e) => SpotubeTrackObject.fromJson(e.cast<String, dynamic>()))
         .toList();
   }
 
   @override
   String toSql(List<SpotubeTrackObject> value) {
-    return value.map((e) => json.encode(e)).join(",");
+    return jsonEncode(
+      value.map((e) => e.toJson()).toList(),
+    );
   }
 }

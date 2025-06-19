@@ -380,12 +380,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get account => 'حساب';
 
   @override
-  String get login_with_spotify => 'تسجيل الدخول بواسطة حساب Spotify';
-
-  @override
-  String get connect_with_spotify => 'توصيل بـSpotify';
-
-  @override
   String get logout => 'تسجيل الخروج';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get license => 'الترخيص';
 
   @override
-  String get add_spotify_credentials => 'أضف بيانات Spotify الخاصة بك للبدء';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'لا تقلق، لن يتم جمع أي من بيانات الخاصة بك أو مشاركتها مع أي شخص';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'اتبع الدليل خطوة بخطوة';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name كوكيز';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get first_go_to => 'أولا، اذهب إلى';
-
-  @override
-  String get login_if_not_logged_in => 'وتسجيل الدخول/الاشتراك إذا لم تقم بتسجيل الدخول';
-
-  @override
-  String get step_2 => 'الخطوة 2';
-
-  @override
-  String get step_2_steps => '1. بمجرد تسجيل الدخول، اضغط على F12 أو انقر بزر الماوس الأيمن > فحص لفتح أدوات تطوير المتصفح.\n2. ثم انتقل إلى علامة التبويب \"التطبيقات\" (Chrome وEdge وBrave وما إلى ذلك.) أو علامة التبويب \"التخزين\" (Firefox وPalemoon وما إلى ذلك..)\n3. انتقل إلى قسم \"ملفات تعريف الارتباط\" ثم القسم الفرعي \"https://accounts.spotify.com\"';
-
-  @override
-  String get step_3 => 'الخطوة 3';
-
-  @override
-  String get step_3_steps => 'انسخ قيمة الكوكي \"sp_dc\"';
-
-  @override
-  String get success_emoji => 'نجاح 🥳';
-
-  @override
-  String get success_message => 'لقد قمت الآن بتسجيل الدخول بنجاح باستخدام حساب Spotify الخاص بك. عمل جيد يا صديقي!';
-
-  @override
-  String get step_4 => 'الخطوة 4';
-
-  @override
-  String get step_4_steps => 'الصق قيمة \"sp_dc\" المنسوخة';
 
   @override
   String get something_went_wrong => 'هناك خطأ ما';
@@ -1212,7 +1171,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*هذا محسوب بناءً على الدفع لكل بث من سبوتيفاي\nبقيمة 0.003 إلى 0.005 دولار. هذا حساب افتراضي\nلإعطاء المستخدم فكرة عن المبلغ الذي\nكان سيدفعه للفنانين إذا كانوا قد استمعوا\nإلى أغنيتهم على سبوتيفاي.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

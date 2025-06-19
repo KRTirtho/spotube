@@ -380,12 +380,6 @@ class AppLocalizationsEu extends AppLocalizations {
   String get account => 'Kontua';
 
   @override
-  String get login_with_spotify => 'Hasi saioa zure Spotify kontuarekin';
-
-  @override
-  String get connect_with_spotify => 'Spotify-rekin konektatu';
-
-  @override
   String get logout => 'Itxi saioa';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsEu extends AppLocalizations {
   String get license => 'Lizentzia';
 
   @override
-  String get add_spotify_credentials => 'Gehitu zure Spotify kredentzialak hasi ahal izateko';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Ez arduratu, zure kredentzialak ez ditugu bilduko edo inorekin elkarbanatuko';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Jarraitu pausoz-pausoko gida';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify-ren $name cookiea';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get first_go_to => 'Hasteko, joan hona';
-
-  @override
-  String get login_if_not_logged_in => 'eta hasi saioa/sortu kontua lehendik ez baduzu eginda';
-
-  @override
-  String get step_2 => '2. pausua';
-
-  @override
-  String get step_2_steps => '1. Saioa hasita duzularik, sakatu F12 edo saguaren eskuineko botoia klikatu > Ikuskatu nabigatzaileko garapen tresnak irekitzeko.\n2. Joan \"Aplikazio\" (Chrome, Edge, Brave, etab.) edo \"Biltegiratzea\" (Firefox, Palemoon, etab.)\n3. Joan \"Cookieak\" atalera eta gero \"https://accounts.spotify.com\" azpiatalera';
-
-  @override
-  String get step_3 => '3. pausua';
-
-  @override
-  String get step_3_steps => 'Kopiatu \"sp_dc\" cookiearen balioa';
-
-  @override
-  String get success_emoji => 'Eginda! 🥳';
-
-  @override
-  String get success_message => 'Ongi hasi duzu zure Spotify kontua. Lan bikaina, lagun!';
-
-  @override
-  String get step_4 => '4. pausua';
-
-  @override
-  String get step_4_steps => 'Itsatsi \"sp_dc\"-tik kopiatutako balioa';
 
   @override
   String get something_went_wrong => 'Zerbaitek huts egin du';
@@ -1212,7 +1171,7 @@ class AppLocalizationsEu extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Sportify-k stream bakoitzeko duen \$0.003 eta \$0.005\nordainsarian oinarritua da. Kalkulu hipotetiko bat,\nkanta hauek Spotify-n entzun bazenitu,\nberaiek artistari zenbat ordaiduko lioketen jakin dezazun.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

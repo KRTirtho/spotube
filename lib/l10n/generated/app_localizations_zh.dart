@@ -380,12 +380,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get account => '账户';
 
   @override
-  String get login_with_spotify => '使用 Spotify 登录';
-
-  @override
-  String get connect_with_spotify => '与 Spotify 账户连接';
-
-  @override
   String get logout => '退出';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get license => '许可证';
 
   @override
-  String get add_spotify_credentials => '添加你的 Spotify 登录信息以开始使用';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => '不用担心，软件不会收集或分享任何个人数据给第三方';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => '请按照以下指南进行';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookie';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get first_go_to => '首先，前往';
-
-  @override
-  String get login_if_not_logged_in => '如果尚未登录，请登录或者注册一个账户';
-
-  @override
-  String get step_2 => '步骤 2';
-
-  @override
-  String get step_2_steps => '1. 一旦你已经完成登录, 按 F12 键或者鼠标右击网页空白区域 > 选择“检查”以打开浏览器开发者工具（DevTools）\n2. 然后选择 \"应用（Application）\" 标签页（Chrome, Edge, Brave 等基于 Chromium 的浏览器） 或 \"存储（Storage）\" 标签页 （Firefox, Palemoon 等基于 Firefox 的浏览器））\n3. 选择 \"Cookies\" 栏目然后选择 \"https://accounts.spotify.com\" 子栏目';
-
-  @override
-  String get step_3 => '步骤 3';
-
-  @override
-  String get step_3_steps => '复制\"sp_dc\" Cookie的值';
-
-  @override
-  String get success_emoji => '成功🥳';
-
-  @override
-  String get success_message => '你已经成功使用 Spotify 登录。干得漂亮！';
-
-  @override
-  String get step_4 => '步骤 4';
-
-  @override
-  String get step_4_steps => '粘贴复制的\"sp_dc\"值';
 
   @override
   String get something_went_wrong => '某些地方出现了问题';
@@ -1212,7 +1171,7 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*根据 Spotify 每次流媒体的支付金额\n\$0.003 到 \$0.005 进行计算。这是一个假设性的\n计算，用于给用户了解他们如果在 Spotify 上\n收听歌曲会支付给艺术家的金额。';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

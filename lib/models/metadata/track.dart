@@ -84,6 +84,7 @@ extension ToMetadataSpotubeFullTrackObject on SpotubeFullTrackObject {
   Metadata toMetadata({
     required int fileLength,
     Uint8List? imageBytes,
+    String? mimeType,
   }) {
     return Metadata(
       title: name,
@@ -98,8 +99,9 @@ extension ToMetadataSpotubeFullTrackObject on SpotubeFullTrackObject {
       picture: imageBytes != null
           ? Picture(
               data: imageBytes,
-              // Spotify images are always JPEGs
-              mimeType: 'image/jpeg',
+              mimeType: mimeType ??
+                  lookupMimeType("", headerBytes: imageBytes) ??
+                  "image/jpeg",
             )
           : null,
     );

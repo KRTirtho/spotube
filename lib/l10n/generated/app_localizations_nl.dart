@@ -380,12 +380,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get login_with_spotify => 'Inloggen met je Spotify-account';
-
-  @override
-  String get connect_with_spotify => 'Verbinden met Spotify';
-
-  @override
   String get logout => 'Afmelden';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get license => 'Licentie';
 
   @override
-  String get add_spotify_credentials => 'Voeg om te beginnen je spotify-aanmeldgegevens toe';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Maak je geen zorgen, je gegevens worden niet verzameld of gedeeld met anderen.';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Volg de stapsgewijze handleiding';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookie';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get first_go_to => 'Ga eerst naar';
-
-  @override
-  String get login_if_not_logged_in => 'en Inloggen/Aanmelden als je niet bent ingelogd';
-
-  @override
-  String get step_2 => 'Stap 2';
-
-  @override
-  String get step_2_steps => '1. Zodra je bent aangemeld, druk je op F12 of klik je met de rechtermuisknop > Inspect om de Browser devtools te openen.\n2. Ga vervolgens naar het tabblad \"Toepassing\" (Chrome, Edge, Brave enz..) of naar het tabblad \"Opslag\" (Firefox, Palemoon enz..).\n3. Ga naar de sectie \"Cookies\" en vervolgens naar de subsectie \"https://accounts.spotify.com\".';
-
-  @override
-  String get step_3 => 'Stap 3';
-
-  @override
-  String get step_3_steps => 'De waarde van cookie \"sp_dc\" kopiëren';
-
-  @override
-  String get success_emoji => 'Succes🥳';
-
-  @override
-  String get success_message => 'Je bent nu ingelogd met je Spotify account. Goed gedaan!';
-
-  @override
-  String get step_4 => 'Stap 4';
-
-  @override
-  String get step_4_steps => 'De gekopieerde waarde \"sp_dc\" plakken';
 
   @override
   String get something_went_wrong => 'Er ging iets mis';
@@ -1212,7 +1171,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Dit is berekend op basis van Spotify\'s betaling per stream\nvan \$0.003 tot \$0.005. Dit is een hypothetische\nberekening om de gebruiker inzicht te geven in hoeveel ze\naan de artiesten zouden hebben betaald als ze hun liedjes op Spotify\nzouden luisteren.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

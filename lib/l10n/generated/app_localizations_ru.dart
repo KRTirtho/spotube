@@ -380,12 +380,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get account => 'Аккаунт';
 
   @override
-  String get login_with_spotify => 'Войдите с помощью своей учетной записи Spotify';
-
-  @override
-  String get connect_with_spotify => 'Подключитесь к Spotify';
-
-  @override
   String get logout => 'Выйти';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsRu extends AppLocalizations {
   String get license => 'Лицензия';
 
   @override
-  String get add_spotify_credentials => 'Добавьте ваши учетные данные Spotify, чтобы начать';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Не беспокойся, никакая личная информация не собирается и не передается';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Следуйте пошаговому руководству';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookie';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get first_go_to => 'Сначала перейдите в';
-
-  @override
-  String get login_if_not_logged_in => 'и войдите или зарегистрируйтесь, если вы не вошли в систему';
-
-  @override
-  String get step_2 => 'Шаг 2';
-
-  @override
-  String get step_2_steps => '1. После входа в систему нажмите F12 или щелкните правой кнопкой мыши > «Проверить», чтобы открыть инструменты разработчика браузера.\n2. Затем перейдите на вкладку \"Application\" (Chrome, Edge, Brave и т.д..) or \"Storage\" (Firefox, Palemoon и т.д..)\n3. Перейдите в раздел \"Cookies\", а затем в подраздел \"https://accounts.spotify.com\"';
-
-  @override
-  String get step_3 => 'Шаг 3';
-
-  @override
-  String get step_3_steps => 'Скопируйте значение Cookie \"sp_dc\"';
-
-  @override
-  String get success_emoji => 'Успешно🥳';
-
-  @override
-  String get success_message => 'Теперь вы успешно вошли в свою учетную запись Spotify. Отличная работа, приятель!';
-
-  @override
-  String get step_4 => 'Шаг 4';
-
-  @override
-  String get step_4_steps => 'Вставьте скопированное значение \"sp_dc\"';
 
   @override
   String get something_went_wrong => 'Что-то пошло не так';
@@ -1212,7 +1171,7 @@ class AppLocalizationsRu extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Это рассчитано на основе выплат Spotify за стрим\nот \$0.003 до \$0.005. Это гипотетический расчет,\nчтобы дать пользователю представление о том, сколько бы он\nзаплатил артистам, если бы слушал их песни на Spotify.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

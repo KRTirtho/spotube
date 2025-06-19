@@ -390,7 +390,6 @@ abstract class ServiceUtils {
     }
   }
 
-  /// Spotify Images are always JPEGs
   static Future<Uint8List?> downloadImage(
     String imageUrl,
   ) async {

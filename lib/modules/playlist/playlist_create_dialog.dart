@@ -70,24 +70,6 @@ class PlaylistCreateDialog extends HookConsumerWidget {
     }, [playlist]);
 
     final onError = useCallback((error) {
-      // if (error is SpotifyError || error is SpotifyException) {
-      //   showToast(
-      //     context: context,
-      //     location: ToastLocation.topRight,
-      //     builder: (context, overlay) {
-      //       return SurfaceCard(
-      //         child: Basic(
-      //           title: Text(
-      //             l10n.error(error.message ?? l10n.epic_failure),
-      //             style: theme.typography.normal.copyWith(
-      //               color: theme.colorScheme.destructive,
-      //             ),
-      //           ),
-      //         ),
-      //       );
-      //     },
-      //   );
-      // }
       showToast(
         context: context,
         location: ToastLocation.topRight,

@@ -380,12 +380,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get account => 'Akun';
 
   @override
-  String get login_with_spotify => 'Masuk dengan Spotify';
-
-  @override
-  String get connect_with_spotify => 'Hubungkan dengan Spotify';
-
-  @override
   String get logout => 'Keluar';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get license => 'Lisensi';
 
   @override
-  String get add_spotify_credentials => 'Tambahkan kredensial Spotify Anda untuk memulai';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Jangan khawatir, kredensial Anda tidak akan dikumpulkan atau dibagikan kepada siapa pun';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Ikuti panduan Langkah demi Langkah';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookie';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get first_go_to => 'Pertama, Pergi ke';
-
-  @override
-  String get login_if_not_logged_in => 'dan Masuk/Daftar jika Anda belum masuk';
-
-  @override
-  String get step_2 => 'Langkah 2';
-
-  @override
-  String get step_2_steps => '1. Setelah Anda masuk, tekan F12 atau Klik Kanan Mouse > Buka Browser Devtools.\n2. Lalu buka Tab \"Aplikasi\" (Chrome, Edge, Brave, dll.) atau Tab \"Penyimpanan\" (Firefox, Palemoon, dll.)\n3. Buka bagian \"Cookie\" lalu subbagian \"https://accounts.spotify.com\"';
-
-  @override
-  String get step_3 => 'Langkah 3';
-
-  @override
-  String get step_3_steps => 'Salin nilai Cookie \"sp_dc\" ';
-
-  @override
-  String get success_emoji => 'Berhasil🥳';
-
-  @override
-  String get success_message => 'Sekarang Anda telah berhasil Masuk dengan akun Spotify Anda. Kerja bagus, sobat!';
-
-  @override
-  String get step_4 => 'Langkah 4';
-
-  @override
-  String get step_4_steps => 'Tempel nilai \"sp_dc\" yang disalin';
 
   @override
   String get something_went_wrong => 'Terjadi kesalahan';
@@ -1212,7 +1171,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Ini dihitung berdasarkan pembayaran\nper stream Spotify dari \$0,003 hingga \$0,005.\nIni adalah perhitungan hipotetis untuk memberi\npengguna gambaran tentang berapa banyak\nmereka akan membayar kepada artis jika\nmereka mendengarkan lagu mereka di Spotify.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

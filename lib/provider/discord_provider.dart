@@ -86,14 +86,14 @@ class DiscordNotifier extends AsyncNotifier<void> {
         state: artistNames,
         assets: RPCAssets(
           largeImage:
-              track.album?.images.first.url ?? "spotube-logo-foreground",
-          largeText: track.album?.name ?? "Unknown album",
+              track.album.images.firstOrNull?.url ?? "spotube-logo-foreground",
+          largeText: track.album.name,
           smallImage: "spotube-logo-foreground",
           smallText: "Spotube",
         ),
         buttons: [
           RPCButton(
-            label: "Listen on Spotify",
+            label: "Listen on Spotube",
             url: track.externalUri,
           ),
         ],

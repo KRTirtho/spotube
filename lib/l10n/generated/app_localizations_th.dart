@@ -380,12 +380,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get account => 'บัญชี';
 
   @override
-  String get login_with_spotify => 'เข้าสู่ระบบด้วยบัญชี Spotify';
-
-  @override
-  String get connect_with_spotify => 'เชื่อมต่อกับ Spotify';
-
-  @override
   String get logout => 'ออกจากระบบ';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsTh extends AppLocalizations {
   String get license => 'ใบอนุญาต';
 
   @override
-  String get add_spotify_credentials => 'เพิ่มข้อมูลรับรอง Spotify ของคุณเพื่อเริ่มต้น';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'ไม่ต้องกังวล ข้อมูลรับรองใดๆ ของคุณจะไม่ถูกเก็บรวบรวมหรือแชร์กับใคร';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'ทำตามคู่มือทีละขั้น';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'คุกกี้ Spotify $name';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get first_go_to => 'ก่อนอื่น ไปที่';
-
-  @override
-  String get login_if_not_logged_in => 'ยังไม่ได้เข้าสู่ระบบ ให้เข้าสู่ระบบ/ลงทะเบียน';
-
-  @override
-  String get step_2 => 'ขั้นที่ 2';
-
-  @override
-  String get step_2_steps => '1. หลังจากเข้าสู่ระบบแล้ว กด F12 หรือ คลิกขวาที่เมาส์ > ตรวจสอบเพื่อเปิด Devtools เบราว์เซอร์\n2. จากนั้นไปที่แท็บ \"แอปพลิเคชัน\" (Chrome, Edge, Brave เป็นต้น) หรือแท็บ \"ที่เก็บข้อมูล\" (Firefox, Palemoon เป็นต้น)\n3. ไปที่ส่วน \"คุกกี้\" แล้วไปที่ subsection \"https: //accounts.spotify.com\"';
-
-  @override
-  String get step_3 => 'ขั้นที่ 3';
-
-  @override
-  String get step_3_steps => 'คัดลอกค่าคุกกี้ \"sp_dc\"';
-
-  @override
-  String get success_emoji => 'สำเร็จ';
-
-  @override
-  String get success_message => 'ตอนนี้คุณเข้าสู่ระบบด้วยบัญชี Spotify ของคุณเรียบร้อยแล้ว ยอดเยี่ยม!';
-
-  @override
-  String get step_4 => 'ขั้นที่ 4';
-
-  @override
-  String get step_4_steps => 'วางค่า \"sp_dc\" ที่คัดลอกมา';
 
   @override
   String get something_went_wrong => 'มีอะไรผิดพลาด';
@@ -1212,7 +1171,7 @@ class AppLocalizationsTh extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*คำนวณตามการจ่ายต่อสตรีมของ Spotify\nซึ่งอยู่ในช่วง \$0.003 ถึง \$0.005 นี่เป็นการคำนวณสมมุติ\nเพื่อให้ผู้ใช้ทราบว่าพวกเขาจะจ่ายเงินให้ศิลปินเท่าไหร่\nหากพวกเขาฟังเพลงของพวกเขาใน Spotify.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

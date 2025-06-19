@@ -380,12 +380,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get account => 'Käyttäjä';
 
   @override
-  String get login_with_spotify => 'Kirjaudu Spotify-käyttäjällä';
-
-  @override
-  String get connect_with_spotify => 'Yhdistä Spotify:lla';
-
-  @override
   String get logout => 'Kirjaudu ulos';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get license => 'Lisenssi';
 
   @override
-  String get add_spotify_credentials => 'Lisää Spotify-tunnuksesi aloittaaksesi';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Älä huoli, tunnuksiasi ei talleteta tai jaeta kenenkään kanssa';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Seuraa askel askeleelta opasta';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Keksi';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get first_go_to => 'Ensiksi, mene';
-
-  @override
-  String get login_if_not_logged_in => 'ja Kirjaudu/Tee tili jos et ole kirjautunut sisään';
-
-  @override
-  String get step_2 => 'Vaihe 2';
-
-  @override
-  String get step_2_steps => '1. Kun olet kirjautunut, paina F12 tai oikeaa hiiren näppäintä > Tarkista ja avaa selaimen kehittäjä työkalut.\n2. Mene sitten \"Application\"-välilehteen (Chrome, Edge, Brave jne..) tai \"Storage\"-välilehteen (Firefox, Palemoon jne..)\n3. Mene \"Cookies\"-osastoon, sitten \"https://accounts.spotify.com\" alakohtaan.';
-
-  @override
-  String get step_3 => 'Vaihe 3';
-
-  @override
-  String get step_3_steps => 'Kopioi Keksin \"sp_dc\" arvo';
-
-  @override
-  String get success_emoji => 'Onnistuit🥳';
-
-  @override
-  String get success_message => 'Olet nyt kirjautunut sisään Spotify-käyttäjällesi. Hyvää työtä toveri!';
-
-  @override
-  String get step_4 => 'Vaihe 4';
-
-  @override
-  String get step_4_steps => 'Liitä kopioitu \"sp_dc\" arvo';
 
   @override
   String get something_went_wrong => 'Jotain meni pieleen';
@@ -1212,7 +1171,7 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Tämä on laskettu Spotifyn suoratoiston\nmaksun perusteella, joka on 0,003–0,005 dollaria.\nTämä on hypoteettinen laskelma, joka antaa käyttäjälle käsityksen\nsiitä, kuinka paljon he olisivat maksaneet artisteille,\njollei heidän kappaleensa olisi kuunneltu Spotifyssa.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

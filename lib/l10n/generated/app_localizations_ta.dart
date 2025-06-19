@@ -380,12 +380,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get account => 'கணக்கு';
 
   @override
-  String get login_with_spotify => 'உங்கள் Spotify கணக்கில் உள்நுழைக';
-
-  @override
-  String get connect_with_spotify => 'Spotify உடன் இணைக்கவும்';
-
-  @override
   String get logout => 'வெளியேறு';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsTa extends AppLocalizations {
   String get license => 'உரிமம்';
 
   @override
-  String get add_spotify_credentials => 'தொடங்குவதற்கு உங்கள் spotify சான்றுகளைச் சேர்க்கவும்';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'கவலைப்பட வேண்டாம், உங்கள் சான்றுகள் எதுவும் சேகரிக்கப்படாது அல்லது யாருடனும் பகிரப்படாது';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'படிப்படியான வழிகாட்டியைப் பின்பற்றவும்';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name நட்புநிரல்';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get first_go_to => 'முதலில், செல்லவேண்டியது';
-
-  @override
-  String get login_if_not_logged_in => 'நீங்கள் உள்நுழையவில்லை என்றால் உள்நுழைக/பதிவுசெய்க';
-
-  @override
-  String get step_2 => 'இரண்டாம் படி';
-
-  @override
-  String get step_2_steps => '1. நீங்கள் உள்நுழைந்தவுடன், F12 ஐ அழுத்தவும் அல்லது வலது கிளிக் செய்து > ஆய்வு செய்யவும் உலாவி டெவ்டூல்களைத் திறக்கவும்.\n2. பின்னர் \"பயன்பாடு\" தாவலுக்குச் செல்லவும் (Chrome, Edge, Brave போன்றவை) அல்லது \"சேமிப்பகம்\" தாவல் (Firefox, Palemoon போன்றவை)\n3. \"குக்கிகள்\" பிரிவுக்குச் சென்று பின்னர் \"https://accounts.spotify.com\" பிரிவுக்குச் செல்லவும்';
-
-  @override
-  String get step_3 => 'மூன்றாம் படி';
-
-  @override
-  String get step_3_steps => '\"sp_dc\" நட்புநிரலின் மதிப்பை நகலெடுக்கவும்';
-
-  @override
-  String get success_emoji => 'வெற்றி🥳';
-
-  @override
-  String get success_message => 'இப்போது நீங்கள் உங்கள் Spotify கணக்கில் வெற்றிகரமாக உள்நுழைந்துள்ளீர்கள். நல்லது, நண்பரே!';
-
-  @override
-  String get step_4 => 'நான்காம் படி';
-
-  @override
-  String get step_4_steps => 'நகலெடுக்கப்பட்ட \"sp_dc\" மதிப்பை ஒட்டவும்';
 
   @override
   String get something_went_wrong => 'ஏதோ தவறு நடந்துவிட்டது';
@@ -1212,7 +1171,7 @@ class AppLocalizationsTa extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*இது Spotify இன் ஒவ்வொரு ஸ்ட்ரீமிற்கும்\n\$0.003 முதல் \$0.005 வரை அளவீடு அடிப்படையில் கணக்கிடப்படுகிறது. இது ஒரு கற்பனை\nகணக்கீடு ஆகும், பயனர் எந்த அளவிற்கு கலைஞர்களுக்கு\nஅதோர் பாடலை Spotify மென்பொருளில் கேட்டால் எவ்வளவு பணம் செலுத்தினார்கள் என்பதைக் கண்டுபிடிக்க.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

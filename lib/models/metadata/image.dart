@@ -19,7 +19,7 @@ enum ImagePlaceholder {
   online,
 }
 
-extension SpotifyImageExtensions on List<SpotubeImageObject>? {
+extension SpotubeImageExtensions on List<SpotubeImageObject>? {
   String asUrlString({
     int index = 1,
     required ImagePlaceholder placeholder,

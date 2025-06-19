@@ -380,12 +380,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get account => '계정';
 
   @override
-  String get login_with_spotify => 'Spotify 계정으로 로그인';
-
-  @override
-  String get connect_with_spotify => 'Spotify에 연결';
-
-  @override
   String get logout => '로그아웃';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get license => '라이선스';
 
   @override
-  String get add_spotify_credentials => '먼저 Spotify의 로그인정보를 추가하기';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => '걱정마세요. 개인정보를 수집하거나 공유하지 않습니다.';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => '사용법 확인하기';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookies';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get first_go_to => '가장 먼저 먼저 들어갈 곳은 ';
-
-  @override
-  String get login_if_not_logged_in => '그리고 로그인을 하지 않았다면 로그인해주세요';
-
-  @override
-  String get step_2 => '2단계';
-
-  @override
-  String get step_2_steps => '1. 로그인에 성공하면、F12나 마우스 우클릭 ＞ 검사(Inspect)을 눌러 브라우저의 개발자 도구(devtools)를 열어주세요.\n2. 애플리케이션 (Application) 탭 (Chrome, Edge, Brave 등) 또는 스토리지 탭 (Firefox, Palemoon 등)을 열어주세요.\n3. 쿠키 (Cookies) 섹션으로 들어가서, https://accounts.spotify.com 서브섹션으로 들어가주세요.';
-
-  @override
-  String get step_3 => '3단계';
-
-  @override
-  String get step_3_steps => '\"sp_dc\" 쿠키의 값을 복사';
-
-  @override
-  String get success_emoji => '성공🥳';
-
-  @override
-  String get success_message => '성공적으로 스포티파이 게정으로 로그인했습니다. 잘했어요!';
-
-  @override
-  String get step_4 => '4단계';
-
-  @override
-  String get step_4_steps => '복사한 \"sp_dc\"값을 붙여넣기';
 
   @override
   String get something_went_wrong => '알 수 없는 이유로 동작에 실패했습니다.';
@@ -1212,7 +1171,7 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Spotify의 스트림당 지불금 \$0.003에서 \$0.005까지의\n기준으로 계산되었습니다. 이는 사용자가 Spotify에서\n곡을 들을 때 아티스트에게 얼마를 지불했을지를\n알려주기 위한 가상의 계산입니다.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

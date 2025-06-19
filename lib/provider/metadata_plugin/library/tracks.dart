@@ -52,9 +52,10 @@ final metadataPluginSavedTracksProvider = AutoDisposeAsyncNotifierProvider<
 final metadataPluginIsSavedTrackProvider =
     FutureProvider.autoDispose.family<bool, String>(
   (ref, trackId) async {
-    final metadataPlugin = await ref.watch(metadataPluginProvider.future);
+    await ref.watch(metadataPluginSavedTracksProvider.future);
+    final allSavedTracks =
+        await ref.read(metadataPluginSavedTracksProvider.notifier).fetchAll();
 
-    return metadataPlugin!.user
-        .isSavedTracks([trackId]).then((value) => value.first);
+    return allSavedTracks.any((track) => track.id == trackId);
   },
 );

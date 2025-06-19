@@ -380,12 +380,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get account => 'Hesap';
 
   @override
-  String get login_with_spotify => 'Spotify hesabı ile giriş yap';
-
-  @override
-  String get connect_with_spotify => 'Spotify ile bağlan';
-
-  @override
   String get logout => 'Çıkış yap';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsTr extends AppLocalizations {
   String get license => 'Lisans';
 
   @override
-  String get add_spotify_credentials => 'Başlamak için spotify kimlik bilgilerinizi ekleyin';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Endişelenmeyin, kimlik bilgilerinizden hiçbiri toplanmayacak veya kimseyle paylaşılmayacak';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Adım adım kılavuzu takip edin';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name çerezi';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get first_go_to => 'İlk olarak şuraya gidin:';
-
-  @override
-  String get login_if_not_logged_in => 've oturum açmadıysanız Oturum açın/Kaydolun';
-
-  @override
-  String get step_2 => '2. Adım';
-
-  @override
-  String get step_2_steps => '1. Oturum açtıktan sonra, tarayıcı geliştirme araçlarını açmak için F12\'ye veya fareye sağ tıklayın > İncele\'ye basın.\n2. Daha sonra \"Uygulama\" sekmesine (Chrome, Edge, Brave vb..) veya \"Depolama\" sekmesine (Firefox, Palemoon vb..) gidin\n3. \"Çerezler\" bölümüne, ardından \"https://accounts.spotify.com\" alt bölümüne gidin';
-
-  @override
-  String get step_3 => '3. Adım';
-
-  @override
-  String get step_3_steps => '\"sp_dc\" Çerezinin değerini kopyalayın';
-
-  @override
-  String get success_emoji => 'Başarılı🥳';
-
-  @override
-  String get success_message => 'Artık Spotify hesabınızla başarıyla giriş yaptınız. Tebrik ederim!';
-
-  @override
-  String get step_4 => '4. Adım';
-
-  @override
-  String get step_4_steps => 'Kopyalanan \"sp_dc\" değerini yapıştırın';
 
   @override
   String get something_went_wrong => 'Bir hata oluştu';
@@ -1212,7 +1171,7 @@ class AppLocalizationsTr extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Bu, Spotify\'ın her yayın başına ödemenin\n\$0.003 ile \$0.005 arasında olduğu varsayımıyla hesaplanmıştır. Bu\nhipotetik bir hesaplamadır, kullanıcıya şarkılarını Spotify\'da dinlediklerinde\nsanatçılara ne kadar ödeme yapacaklarını gösterir.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

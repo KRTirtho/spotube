@@ -71,6 +71,10 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         ),
       );
     } else if (tracks.isNotEmpty) {
+      state = state.copyWith(
+        tracks: tracks,
+        currentIndex: currentIndex,
+      );
       await audioPlayer.openPlaylist(
         tracks.asMediaList(),
         initialIndex: currentIndex,

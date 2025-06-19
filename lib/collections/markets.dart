@@ -2,7 +2,7 @@
 
 import 'package:spotube/models/metadata/market.dart';
 
-final spotifyMarkets = [
+final marketsMap = [
   (Market.AL, "Albania (AL)"),
   (Market.DZ, "Algeria (DZ)"),
   (Market.AD, "Andorra (AD)"),

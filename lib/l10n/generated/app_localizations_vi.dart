@@ -380,12 +380,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get account => 'Tài khoản';
 
   @override
-  String get login_with_spotify => 'Đăng nhập bằng tài khoản Spotify của bạn';
-
-  @override
-  String get connect_with_spotify => 'Liên kết với Spotify';
-
-  @override
   String get logout => 'Đăng xuất';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsVi extends AppLocalizations {
   String get license => 'Giấy phép';
 
   @override
-  String get add_spotify_credentials => 'Điền thông tin đăng nhập Spotify của bạn';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Đừng lo, thông tin đăng nhập của bạn sẽ không được thu thập hoặc chia sẻ với bất kỳ ai';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Các bước lấy thông tin đăng nhập';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Cookie Spotify $name';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get first_go_to => 'Đầu tiên, truy cập';
-
-  @override
-  String get login_if_not_logged_in => 'và Đăng nhập/Đăng ký nếu chưa có tài khoản';
-
-  @override
-  String get step_2 => 'Bước 2';
-
-  @override
-  String get step_2_steps => '1. Sau khi đăng nhập, nhấn F12 hoặc Chuột phải > Mở devtools của trình duyệt.\n2. Sau đó, chuyển đến Tab \"Ứng dụng/Application\" (Chrome, Edge, Brave, v.v.) hoặc Tab \"Lưu trữ/Storage\" (Firefox, Palemoon, v.v.)\n3. Chuyển đến phần \"Cookie\" sau đó phần con \"https://accounts.spotify.com\"';
-
-  @override
-  String get step_3 => 'Bước 3';
-
-  @override
-  String get step_3_steps => 'Sao chép giá trị của Cookie \"sp_dc\" và \"sp_key\" (hoặc sp_gaid)';
-
-  @override
-  String get success_emoji => 'Thành công🥳';
-
-  @override
-  String get success_message => 'Bây giờ bạn đã đăng nhập thành công bằng tài khoản Spotify của mình. Làm tốt lắm!';
-
-  @override
-  String get step_4 => 'Bước 4';
-
-  @override
-  String get step_4_steps => 'Dán giá trị đã sao chép của Cookie \"sp_dc\" và \"sp_key\" (hoặc sp_gaid) vào các trường tương ứng';
 
   @override
   String get something_went_wrong => 'Đã xảy ra lỗi';
@@ -1212,7 +1171,7 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Được tính toán dựa trên khoản thanh toán của Spotify cho mỗi lượt phát\ntừ \$0.003 đến \$0.005. Đây là một tính toán giả định để\ncung cấp cho người dùng cái nhìn về số tiền họ sẽ phải trả\ncho các nghệ sĩ nếu họ nghe bài hát của họ trên Spotify.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

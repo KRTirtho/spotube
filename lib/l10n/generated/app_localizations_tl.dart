@@ -380,12 +380,6 @@ class AppLocalizationsTl extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get login_with_spotify => 'Mag-login gamit ang iyong Spotify account';
-
-  @override
-  String get connect_with_spotify => 'Kumonekta sa Spotify';
-
-  @override
   String get logout => 'Mag-logout';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsTl extends AppLocalizations {
   String get license => 'Lisensya';
 
   @override
-  String get add_spotify_credentials => 'Idagdag ang iyong mga kredensyal sa spotify para makapagsimula';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Huwag mag-alala, ang alinman sa iyong mga kredensyal ay hindi kokolektahin o ibabahagi sa sinuman';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Sundin ang Hakbang-hakbang na gabay';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookie';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get first_go_to => 'Una, Pumunta sa';
-
-  @override
-  String get login_if_not_logged_in => 'at Mag-login/Mag-signup kung hindi ka naka-log in';
-
-  @override
-  String get step_2 => 'Hakbang 2';
-
-  @override
-  String get step_2_steps => '1. Kapag naka-log in ka na, pindutin ang F12 o i-right click ang Mouse > Inspect para Buksan ang Browser devtools.\n2. Pagkatapos ay pumunta sa \"Application\" Tab (Chrome, Edge, Brave atbp..) o \"Storage\" Tab (Firefox, Palemoon atbp..)\n3. Pumunta sa \"Cookies\" na seksyon at pagkatapos sa \"https://accounts.spotify.com\" na subseksyon';
-
-  @override
-  String get step_3 => 'Hakbang 3';
-
-  @override
-  String get step_3_steps => 'Kopyahin ang halaga ng \"sp_dc\" Cookie';
-
-  @override
-  String get success_emoji => 'Tagumpay🥳';
-
-  @override
-  String get success_message => 'Ngayon ay matagumpay kang Naka-log in gamit ang iyong Spotify account. Magaling, kaibigan!';
-
-  @override
-  String get step_4 => 'Hakbang 4';
-
-  @override
-  String get step_4_steps => 'I-paste ang na-kopyang halaga ng \"sp_dc\"';
 
   @override
   String get something_went_wrong => 'May nangyaring mali';
@@ -1212,7 +1171,7 @@ class AppLocalizationsTl extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Ito ay kinalkula batay sa bawat stream\nna bayad ng Spotify na \$0.003 hanggang \$0.005. Ito ay isang hypothetical\nna pagkalkula para bigyan ang user ng ideya kung magkano\nang kanilang ibabayad sa mga artista kung sila ay nakikinig\nng kanilang kanta sa Spotify.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

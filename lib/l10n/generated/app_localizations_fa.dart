@@ -380,12 +380,6 @@ class AppLocalizationsFa extends AppLocalizations {
   String get account => 'حساب کاربری';
 
   @override
-  String get login_with_spotify => 'با حساب اسپوتیفای خود وارد شوید';
-
-  @override
-  String get connect_with_spotify => 'متصل شدن به اسپوتیفای';
-
-  @override
   String get logout => 'خارج شدن';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsFa extends AppLocalizations {
   String get license => 'مجوز';
 
   @override
-  String get add_spotify_credentials => 'برای شروع اعتبار اسپوتیفای خود را اضافه کنید';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'نگران نباشید هیچ کدوما از اعتبارات شما جمع اوری نمیشود یا با کسی اشتراک گزاشته نمیشود';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'راهنما را گام به گام دنبال کنید';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name کوکی';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get first_go_to => 'اول برو داخل ';
-
-  @override
-  String get login_if_not_logged_in => 'و اگر وارد نشده اید، وارد/ثبت نام کنید';
-
-  @override
-  String get step_2 => 'گام 2';
-
-  @override
-  String get step_2_steps => '1. پس از ورود به سیستم، F12 یا کلیک راست ماوس > Inspect را فشار دهید تا ابزارهای توسعه مرورگر باز شود..\n2. سپس به تب \"Application\" (Chrome, Edge, Brave etc..) یا \"Storage\" Tab (Firefox, Palemoon etc..)\n3. به قسمت \"Cookies\" و به پخش \"https://accounts.spotify.com\" بروید';
-
-  @override
-  String get step_3 => 'گام 3';
-
-  @override
-  String get step_3_steps => 'مقدار کوکی \"sp_dc\" را کپی کنید';
-
-  @override
-  String get success_emoji => 'موفقیت🥳';
-
-  @override
-  String get success_message => 'اکنون با موفقیت با حساب اسپوتیفای خود وارد شده اید';
-
-  @override
-  String get step_4 => 'مرحله 4';
-
-  @override
-  String get step_4_steps => 'مقدار کپی شده \"sp_dc\" را الصاق کنید';
 
   @override
   String get something_went_wrong => 'اشتباهی رخ داده';
@@ -1212,7 +1171,7 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*این بر اساس پرداخت هر پخش اسپاتیفای\nبه مبلغ 0.003 تا 0.005 دلار محاسبه شده است.\nاین یک محاسبه فرضی است که به کاربران نشان دهد چقدر ممکن است\nبه هنرمندان پرداخت می‌کردند اگر ترانه آنها را در اسپاتیفای گوش می‌دادند.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

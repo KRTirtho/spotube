@@ -44,6 +44,11 @@ final localTracksProvider =
     final downloadLocation = ref.watch(
       userPreferencesProvider.select((s) => s.downloadLocation),
     );
+
+    if (downloadLocation.isEmpty) {
+      return {};
+    }
+
     final downloadDir = Directory(downloadLocation);
     final cacheDir =
         Directory(await UserPreferencesNotifier.getMusicCacheDir());

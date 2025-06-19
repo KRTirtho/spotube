@@ -29,7 +29,7 @@ class ProfilePage extends HookConsumerWidget {
     //     context.l10n.profile_followers:
     //         meData.followers?.total.toString() ?? "N/A",
     //     context.l10n.birthday: meData.birthdate ?? context.l10n.not_born,
-    //     context.l10n.country: spotifyMarkets
+    //     context.l10n.country: markets
     //         .firstWhere((market) => market.$1 == meData.country)
     //         .$2,
     //     context.l10n.subscription: meData.product ?? context.l10n.hacker,
@@ -85,7 +85,7 @@ class ProfilePage extends HookConsumerWidget {
                         leading: const Icon(SpotubeIcons.edit),
                         onPressed: () {
                           launchUrlString(
-                            "https://www.spotify.com/account/profile/",
+                            meData.externalUri,
                             mode: LaunchMode.externalApplication,
                           );
                         },

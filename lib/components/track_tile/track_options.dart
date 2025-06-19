@@ -72,8 +72,7 @@ class TrackOptions extends HookConsumerWidget {
         );
 
   void actionShare(BuildContext context, SpotubeTrackObject track) {
-    final data = "https://open.spotify.com/track/${track.id}";
-    Clipboard.setData(ClipboardData(text: data)).then((_) {
+    Clipboard.setData(ClipboardData(text: track.externalUri)).then((_) {
       if (context.mounted) {
         showToast(
           context: context,
@@ -81,7 +80,7 @@ class TrackOptions extends HookConsumerWidget {
           builder: (context, overlay) {
             return SurfaceCard(
               child: Text(
-                context.l10n.copied_to_clipboard(data),
+                context.l10n.copied_to_clipboard(track.externalUri),
                 textAlign: TextAlign.center,
               ),
             );
@@ -108,71 +107,71 @@ class TrackOptions extends HookConsumerWidget {
     );
   }
 
-  void actionStartRadio(
-    BuildContext context,
-    WidgetRef ref,
-    SpotubeTrackObject track,
-  ) async {
-    final playback = ref.read(audioPlayerProvider.notifier);
-    final playlist = ref.read(audioPlayerProvider);
-    final query = "${track.name} Radio";
-    final metadataPlugin = await ref.read(metadataPluginProvider.future);
+  // void actionStartRadio(
+  //   BuildContext context,
+  //   WidgetRef ref,
+  //   SpotubeTrackObject track,
+  // ) async {
+  //   final playback = ref.read(audioPlayerProvider.notifier);
+  //   final playlist = ref.read(audioPlayerProvider);
+  //   final query = "${track.name} Radio";
+  //   final metadataPlugin = await ref.read(metadataPluginProvider.future);
 
-    if (metadataPlugin == null) {
-      throw MetadataPluginException.noDefaultPlugin(
-        "No default metadata plugin set",
-      );
-    }
+  //   if (metadataPlugin == null) {
+  //     throw MetadataPluginException.noDefaultPlugin(
+  //       "No default metadata plugin set",
+  //     );
+  //   }
 
-    final pages = await metadataPlugin.search.playlists(query);
+  //   final pages = await metadataPlugin.search.playlists(query);
 
-    final artists = track.artists.map((e) => e.name);
+  //   final artists = track.artists.map((e) => e.name);
 
-    final radio = pages.items.firstWhere(
-      (e) {
-        final validPlaylists = artists.where((a) => e.description.contains(a));
-        return e.name == "${track.name} Radio" &&
-            (validPlaylists.length >= 2 ||
-                validPlaylists.length == artists.length) &&
-            e.owner.name == "Spotify";
-      },
-      orElse: () => pages.items.first,
-    );
+  //   final radio = pages.items.firstWhere(
+  //     (e) {
+  //       final validPlaylists = artists.where((a) => e.description.contains(a));
+  //       return e.name.contains(track.name) &&
+  //           e.name.contains("Radio") &&
+  //           (validPlaylists.length >= 2 ||
+  //               validPlaylists.length == artists.length);
+  //     },
+  //     orElse: () => pages.items.first,
+  //   );
 
-    bool replaceQueue = false;
+  //   bool replaceQueue = false;
 
-    if (context.mounted && playlist.tracks.isNotEmpty) {
-      replaceQueue = await showPromptDialog(
-        context: context,
-        title: context.l10n.how_to_start_radio,
-        message: context.l10n.replace_queue_question,
-        okText: context.l10n.replace,
-        cancelText: context.l10n.add_to_queue,
-      );
-    }
+  //   if (context.mounted && playlist.tracks.isNotEmpty) {
+  //     replaceQueue = await showPromptDialog(
+  //       context: context,
+  //       title: context.l10n.how_to_start_radio,
+  //       message: context.l10n.replace_queue_question,
+  //       okText: context.l10n.replace,
+  //       cancelText: context.l10n.add_to_queue,
+  //     );
+  //   }
 
-    if (replaceQueue || playlist.tracks.isEmpty) {
-      await playback.stop();
-      await playback.load([track], autoPlay: true);
+  //   if (replaceQueue || playlist.tracks.isEmpty) {
+  //     await playback.stop();
+  //     await playback.load([track], autoPlay: true);
 
-      // we don't have to add those tracks as useEndlessPlayback will do it for us
-      return;
-    } else {
-      await playback.addTrack(track);
-    }
-    await ref.read(metadataPluginPlaylistTracksProvider(radio.id).future);
-    final tracks = await ref
-        .read(metadataPluginPlaylistTracksProvider(radio.id).notifier)
-        .fetchAll();
+  //     // we don't have to add those tracks as useEndlessPlayback will do it for us
+  //     return;
+  //   } else {
+  //     await playback.addTrack(track);
+  //   }
+  //   await ref.read(metadataPluginPlaylistTracksProvider(radio.id).future);
+  //   final tracks = await ref
+  //       .read(metadataPluginPlaylistTracksProvider(radio.id).notifier)
+  //       .fetchAll();
 
-    await playback.addTracks(
-      tracks.toList()
-        ..removeWhere((e) {
-          final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
-          return e.id == track.id || isDuplicate;
-        }),
-    );
-  }
+  //   await playback.addTracks(
+  //     tracks.toList()
+  //       ..removeWhere((e) {
+  //         final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
+  //         return e.id == track.id || isDuplicate;
+  //       }),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context, ref) {
@@ -339,7 +338,7 @@ class TrackOptions extends HookConsumerWidget {
             await downloadManager.addToQueue(track as SpotubeFullTrackObject);
             break;
           case TrackOptionValue.startRadio:
-            actionStartRadio(context, ref, track);
+            // actionStartRadio(context, ref, track);
             break;
         }
       },
@@ -431,11 +430,11 @@ class TrackOptions extends HookConsumerWidget {
             ),
           ),
         if (authenticated.asData?.value == true && !isLocalTrack) ...[
-          AdaptiveMenuButton(
-            value: TrackOptionValue.startRadio,
-            leading: const Icon(SpotubeIcons.radio),
-            child: Text(context.l10n.start_a_radio),
-          ),
+          // AdaptiveMenuButton(
+          //   value: TrackOptionValue.startRadio,
+          //   leading: const Icon(SpotubeIcons.radio),
+          //   child: Text(context.l10n.start_a_radio),
+          // ),
           AdaptiveMenuButton(
             value: TrackOptionValue.addToPlaylist,
             leading: const Icon(SpotubeIcons.playlistAdd),

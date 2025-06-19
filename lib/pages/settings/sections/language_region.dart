@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/language_codes.dart';
-import 'package:spotube/collections/spotify_markets.dart';
+import 'package:spotube/collections/markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/metadata/market.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
@@ -59,7 +59,7 @@ class SettingsLanguageRegionSection extends HookConsumerWidget {
             if (value == null) return;
             preferencesNotifier.setRecommendationMarket(value);
           },
-          options: spotifyMarkets
+          options: marketsMap
               .map(
                 (country) => SelectItemButton(
                   value: country.$1,

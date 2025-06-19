@@ -380,12 +380,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get account => 'Účet';
 
   @override
-  String get login_with_spotify => 'Přihlásit se pomocí Spotify účtu';
-
-  @override
-  String get connect_with_spotify => 'Připojit k Spotify';
-
-  @override
   String get logout => 'Odhlásit se';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get license => 'Licence';
 
   @override
-  String get add_spotify_credentials => 'Přidejte své přihlašovací údaje Spotify a začněte';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'Nebojte, žádné z vašich údajů nebudou shromažďovány ani s nikým sdíleny';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'Postupujte podle návodu';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Cookie Spotify $name';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get first_go_to => 'Nejprve jděte na';
-
-  @override
-  String get login_if_not_logged_in => 'a přihlašte se nebo se zaregistrujte, pokud nejste přihlášeni';
-
-  @override
-  String get step_2 => 'Krok 2';
-
-  @override
-  String get step_2_steps => '1. Jakmile jste přihlášeni, stiskněte F12 nebo pravé tlačítko myši > Prozkoumat, abyste otevřeli nástroje pro vývojáře prohlížeče.\n2. Poté přejděte na kartu \"Aplikace\" (Chrome, Edge, Brave atd.) nebo kartu \"Úložiště\" (Firefox, Palemoon atd.)\n3. Přejděte do sekce \"Cookies\" a pak do podsekce \"https://accounts.spotify.com\"';
-
-  @override
-  String get step_3 => 'Krok 3';
-
-  @override
-  String get step_3_steps => 'Zkopírujte hodnotu cookie \"sp_dc\"';
-
-  @override
-  String get success_emoji => 'Úspěch🥳';
-
-  @override
-  String get success_message => 'Nyní jste úspěšně přihlášeni pomocí svého Spotify účtu. Dobrá práce, kamaráde!';
-
-  @override
-  String get step_4 => 'Krok 4';
-
-  @override
-  String get step_4_steps => 'Vložte zkopírovanou hodnotu \"sp_dc\"';
 
   @override
   String get something_went_wrong => 'Něco se pokazilo';
@@ -1212,7 +1171,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Toto je vypočítáno na základě výplaty\nza stream Spotify od \$0.003 do \$0.005.\nToto je hypotetický výpočet,\nabyste měli představu o tom, kolik\nbyste zaplatili umělcům,\npokud byste poslouchali jejich píseň na Spotify.';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

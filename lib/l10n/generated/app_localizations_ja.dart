@@ -380,12 +380,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get account => 'アカウント';
 
   @override
-  String get login_with_spotify => 'Spotify アカウントでログイン';
-
-  @override
-  String get connect_with_spotify => 'Spotify に接続';
-
-  @override
   String get logout => 'ログアウト';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get license => 'ライセンス';
 
   @override
-  String get add_spotify_credentials => 'Spotify のログイン情報を追加してはじめましょう';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => '心配ありません。個人情報を収集したり、共有されることはありません';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'やり方の説明を見る';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookies';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get first_go_to => '最初にここを開き';
-
-  @override
-  String get login_if_not_logged_in => '、ログインしてないならログインまたは登録します';
-
-  @override
-  String get step_2 => 'ステップ 2';
-
-  @override
-  String get step_2_steps => '1. ログインしたら、F12を押すか、マウス右クリック ＞ 調査（検証）でブラウザの開発者ツール (devtools) を開きます。\n2. アプリケーション (Application) タブ (Chrome, Edge, Brave など) またはストレージタブ (Firefox, Palemoon など)\n3. Cookies 欄を選択し、https://accounts.spotify.com の枝を選びます';
-
-  @override
-  String get step_3 => 'ステップ 3';
-
-  @override
-  String get step_3_steps => '\"sp_dc\" Cookieの値をコピー';
-
-  @override
-  String get success_emoji => '成功🥳';
-
-  @override
-  String get success_message => 'アカウントへのログインに成功しました。よくできました！';
-
-  @override
-  String get step_4 => 'ステップ 4';
-
-  @override
-  String get step_4_steps => 'コピーした\"sp_dc\"の値を貼り付け';
 
   @override
   String get something_went_wrong => '何か誤りがあります';
@@ -1212,7 +1171,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*これは、Spotifyのストリームごとの支払い\nが \$0.003 から \$0.005 の範囲で計算されています。これは仮想的な\n計算で、Spotify で曲を聴いた場合に、アーティストに\nどれくらい支払ったかをユーザーに示すためのものです。';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

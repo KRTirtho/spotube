@@ -380,12 +380,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String get account => 'অ্যাকাউন্ট';
 
   @override
-  String get login_with_spotify => 'আপনার Spotify account দিয়ে লগইন করুন';
-
-  @override
-  String get connect_with_spotify => 'Spotify লগইন';
-
-  @override
   String get logout => 'লগআউট করুন';
 
   @override
@@ -538,9 +532,6 @@ class AppLocalizationsBn extends AppLocalizations {
   String get license => 'লাইসেন্স';
 
   @override
-  String get add_spotify_credentials => 'আপনার Spotify লগইন তথ্য যোগ করুন';
-
-  @override
   String get credentials_will_not_be_shared_disclaimer => 'চিন্তা করবেন না, আপনার কোনো লগইন তথ্য সংগ্রহ করা হবে না বা কারো সাথে শেয়ার করা হবে না';
 
   @override
@@ -548,11 +539,6 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get follow_step_by_step_guide => 'ধাপে ধাপে নির্দেশিকা অনুসরণ করুন';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name কুকি';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +568,6 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get first_go_to => 'প্রথমে যান';
-
-  @override
-  String get login_if_not_logged_in => 'এবং যদি আপনি লগইন/সাইন-আপ না থাকেন তবে লগইন/সাইন-আপ করুন';
-
-  @override
-  String get step_2 => 'ধাপ 2';
-
-  @override
-  String get step_2_steps => '১. একবার আপনি লগ ইন করলে, ব্রাউজার ডেভটুল খুলতে F12 বা মাউসের রাইট ক্লিক > \"Inspect to open Browser DevTools\"  টিপুন।\n২. তারপর \"Application\" ট্যাবে যান (Chrome, Edge, Brave etc..) অথবা \"Storage\" Tab (Firefox, Palemoon etc..)\n৩. \"Cookies \" বিভাগে যান তারপর \"https://accounts.spotify.com\" উপবিভাগে যান';
-
-  @override
-  String get step_3 => 'ধাপ 3';
-
-  @override
-  String get step_3_steps => 'কুকি \"sp_dc\" এর মানটি কপি করুন';
-
-  @override
-  String get success_emoji => 'আমরা সফল🥳';
-
-  @override
-  String get success_message => 'এখন আপনি সফলভাবে আপনার Spotify অ্যাকাউন্ট দিয়ে লগ ইন করেছেন। সাধুভাত আপনাকে';
-
-  @override
-  String get step_4 => 'ধাপ 4';
-
-  @override
-  String get step_4_steps => 'কপি করা \"sp_dc\" মানটি পেস্ট করুন';
 
   @override
   String get something_went_wrong => 'কিছু ভুল হয়েছে';
@@ -1212,7 +1171,7 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*এটি স্পোটিফাইয়ের প্রতি স্ট্রিম\n\$0.003 থেকে \$0.005 পেআউটের ভিত্তিতে গণনা করা হয়েছে। এটি একটি ধারণাগত\nগণনা ব্যবহারকারীদেরকে জানাতে দেয় যে কত টাকা\nতারা শিল্পীদের দিতো যদি তারা স্পোটিফাইতে\nতাদের গান শুনতেন।';
+  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {

@@ -827,18 +827,6 @@ abstract class AppLocalizations {
   /// **'Account'**
   String get account;
 
-  /// No description provided for @login_with_spotify.
-  ///
-  /// In en, this message translates to:
-  /// **'Login with your Spotify account'**
-  String get login_with_spotify;
-
-  /// No description provided for @connect_with_spotify.
-  ///
-  /// In en, this message translates to:
-  /// **'Connect with Spotify'**
-  String get connect_with_spotify;
-
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:
@@ -1082,7 +1070,7 @@ abstract class AppLocalizations {
   /// No description provided for @spotube_description.
   ///
   /// In en, this message translates to:
-  /// **'Spotube, a lightweight, cross-platform, free-for-all spotify client'**
+  /// **'Open source extensible music streaming platform and app, based on BYOMM (Bring your own music metadata) concept'**
   String get spotube_description;
 
   /// No description provided for @version.
@@ -1139,12 +1127,6 @@ abstract class AppLocalizations {
   /// **'License'**
   String get license;
 
-  /// No description provided for @add_spotify_credentials.
-  ///
-  /// In en, this message translates to:
-  /// **'Add your spotify credentials to get started'**
-  String get add_spotify_credentials;
-
   /// No description provided for @credentials_will_not_be_shared_disclaimer.
   ///
   /// In en, this message translates to:
@@ -1162,12 +1144,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Follow along the Step by Step guide'**
   String get follow_step_by_step_guide;
-
-  /// No description provided for @spotify_cookie.
-  ///
-  /// In en, this message translates to:
-  /// **'Spotify {name} Cookie'**
-  String spotify_cookie(Object name);
 
   /// No description provided for @cookie_name_cookie.
   ///
@@ -1222,60 +1198,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'First, Go to'**
   String get first_go_to;
-
-  /// No description provided for @login_if_not_logged_in.
-  ///
-  /// In en, this message translates to:
-  /// **'and Login/Signup if you are not logged in'**
-  String get login_if_not_logged_in;
-
-  /// No description provided for @step_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Step 2'**
-  String get step_2;
-
-  /// No description provided for @step_2_steps.
-  ///
-  /// In en, this message translates to:
-  /// **'1. Once you\'re logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection'**
-  String get step_2_steps;
-
-  /// No description provided for @step_3.
-  ///
-  /// In en, this message translates to:
-  /// **'Step 3'**
-  String get step_3;
-
-  /// No description provided for @step_3_steps.
-  ///
-  /// In en, this message translates to:
-  /// **'Copy the value of \"sp_dc\" Cookie'**
-  String get step_3_steps;
-
-  /// No description provided for @success_emoji.
-  ///
-  /// In en, this message translates to:
-  /// **'Success🥳'**
-  String get success_emoji;
-
-  /// No description provided for @success_message.
-  ///
-  /// In en, this message translates to:
-  /// **'Now you\'ve successfully Logged in with your Spotify account. Good Job, mate!'**
-  String get success_message;
-
-  /// No description provided for @step_4.
-  ///
-  /// In en, this message translates to:
-  /// **'Step 4'**
-  String get step_4;
-
-  /// No description provided for @step_4_steps.
-  ///
-  /// In en, this message translates to:
-  /// **'Paste the copied \"sp_dc\" value'**
-  String get step_4_steps;
 
   /// No description provided for @something_went_wrong.
   ///
@@ -2411,11 +2333,11 @@ abstract class AppLocalizations {
   /// **'Copied {shareUrl} to clipboard'**
   String copied_shareurl_to_clipboard(Object shareUrl);
 
-  /// No description provided for @spotify_hipotetical_calculation.
+  /// No description provided for @hipotetical_calculation.
   ///
   /// In en, this message translates to:
-  /// **'*This is calculated based on Spotify\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in Spotify.'**
-  String get spotify_hipotetical_calculation;
+  /// **'*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.'**
+  String get hipotetical_calculation;
 
   /// No description provided for @count_mins.
   ///
