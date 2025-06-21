@@ -149,25 +149,48 @@ abstract class SourcedTrack extends BasicSourcedTrack {
     return getUrlOfCodec(codec);
   }
 
+  /// Returns the URL of the track based on the codec and quality preferences.
+  /// If an exact match is not found, it will return the closest match based on
+  /// the user's audio quality preference.
+  ///
+  /// If no sources match the codec, it will return the first or last source
+  /// based on the user's audio quality preference.
   String getUrlOfCodec(SourceCodecs codec) {
     final preferences = ref.read(userPreferencesProvider);
 
-    return sources
-            .firstWhereOrNull(
-              (source) =>
-                  source.codec == codec &&
-                  source.quality == preferences.audioQuality,
-            )
-            ?.url ??
-        // fallback to the first available source of the same codec
-        sources.firstWhereOrNull((source) => source.codec == codec)?.url ??
-        // fallback to the first available source of any codec
-        sources
-            .firstWhereOrNull(
-                (source) => source.quality == preferences.audioQuality)
-            ?.url ??
-        // fallback to the first available source
-        sources.first.url;
+    final exactMatch = sources.firstWhereOrNull(
+      (source) =>
+          source.codec == codec && source.quality == preferences.audioQuality,
+    );
+
+    if (exactMatch != null) {
+      return exactMatch.url;
+    }
+
+    final sameCodecSources = sources
+        .where((source) => source.codec == codec)
+        .toList()
+        .sorted((a, b) {
+      final aDiff = (a.quality.index - preferences.audioQuality.index).abs();
+      final bDiff = (b.quality.index - preferences.audioQuality.index).abs();
+      return aDiff != bDiff ? aDiff - bDiff : a.quality.index - b.quality.index;
+    }).toList();
+
+    if (sameCodecSources.isNotEmpty) {
+      return preferences.audioQuality != SourceQualities.low
+          ? sameCodecSources.first.url
+          : sameCodecSources.last.url;
+    }
+
+    final fallbackSource = sources.sorted((a, b) {
+      final aDiff = (a.quality.index - preferences.audioQuality.index).abs();
+      final bDiff = (b.quality.index - preferences.audioQuality.index).abs();
+      return aDiff != bDiff ? aDiff - bDiff : a.quality.index - b.quality.index;
+    });
+
+    return preferences.audioQuality != SourceQualities.low
+        ? fallbackSource.first.url
+        : fallbackSource.last.url;
   }
 
   SourceCodecs get codec {

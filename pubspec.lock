@@ -1209,7 +1209,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "1aa924281d2dbe09aab27d8c2de1cffc853b0d16"
+      resolved-ref: eeb574c3fac0da07ba93c9d972b7eb38960538d2
       url: "https://github.com/KRTirtho/hetu_spotube_plugin.git"
     source: git
     version: "0.0.1"

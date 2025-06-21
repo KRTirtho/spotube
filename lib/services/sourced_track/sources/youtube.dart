@@ -95,17 +95,6 @@ class YoutubeSourcedTrack extends SourcedTrack {
   }
 
   static List<TrackSource> toTrackSources(StreamManifest manifest) {
-    var m4a = manifest.audioOnly
-        .where((audio) => audio.codec.mimeType == "audio/mp4")
-        .sortByBitrate();
-
-    var weba = manifest.audioOnly
-        .where((audio) => audio.codec.mimeType == "audio/webm")
-        .sortByBitrate();
-
-    m4a = m4a.isEmpty ? weba.toList() : m4a;
-    weba = weba.isEmpty ? m4a.toList() : weba;
-
     return manifest.audioOnly.map((streamInfo) {
       return TrackSource(
         url: streamInfo.url.toString(),
