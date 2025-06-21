@@ -17,7 +17,11 @@ class NewPipeEngine implements YouTubeEngine {
       FileSize.unknown,
       Bitrate(stream.bitrate),
       stream.codec,
-      stream.quality,
+      switch (stream.bitrate) {
+        > 130 * 1024 => "high",
+        > 64 * 1024 => "medium",
+        _ => "low",
+      },
       [],
       MediaType.parse(stream.mediaFormat!.mimeType),
       null,

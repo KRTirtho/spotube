@@ -11,8 +11,9 @@ class YouTubeExplodeEngine implements YouTubeEngine {
   }
 
   @override
-  Future<StreamManifest> getStreamManifest(String videoId) {
-    return _youtubeExplode.videos.streamsClient.getManifest(
+  Future<StreamManifest> getStreamManifest(String videoId) async {
+    final streamManifest =
+        await _youtubeExplode.videos.streamsClient.getManifest(
       videoId,
       requireWatchPage: false,
       ytClients: [
@@ -20,6 +21,28 @@ class YouTubeExplodeEngine implements YouTubeEngine {
         YoutubeApiClient.android,
         YoutubeApiClient.mweb,
       ],
+    );
+
+    return StreamManifest(
+      streamManifest.audioOnly.map((stream) {
+        return AudioOnlyStreamInfo(
+          stream.videoId,
+          stream.tag,
+          stream.url,
+          stream.container,
+          stream.size,
+          stream.bitrate,
+          stream.audioCodec,
+          switch (stream.bitrate.bitsPerSecond) {
+            > 130 * 1024 => "high",
+            > 64 * 1024 => "medium",
+            _ => "low",
+          },
+          stream.fragments,
+          stream.codec,
+          stream.audioTrack,
+        );
+      }),
     );
   }
 
