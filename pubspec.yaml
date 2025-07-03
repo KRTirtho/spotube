@@ -156,6 +156,7 @@ dependencies:
       url: https://github.com/KRTirtho/hetu_spotube_plugin.git
       ref: main
   get_it: ^8.0.3
+  flutter_markdown_plus: ^1.0.3
 
 dev_dependencies:
   build_runner: ^2.4.13

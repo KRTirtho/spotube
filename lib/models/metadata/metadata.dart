@@ -18,6 +18,7 @@ part 'metadata.freezed.dart';
 part 'album.dart';
 part 'artist.dart';
 part 'browse.dart';
+part 'fields.dart';
 part 'image.dart';
 part 'pagination.dart';
 part 'playlist.dart';

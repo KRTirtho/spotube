@@ -8,6 +8,7 @@ import 'package:hetu_std/hetu_std.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/routes.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/metadata/apis/localstorage.dart';
@@ -56,6 +57,20 @@ class MetadataPlugin {
       },
       onNavigatorPop: () {
         pageContext?.maybePop();
+      },
+      onShowForm: (title, fields) async {
+        if (rootNavigatorKey.currentContext == null) {
+          return [];
+        }
+
+        return await rootNavigatorKey.currentContext!.router
+            .push<List<Map<String, dynamic>>?>(
+          SettingsMetadataProviderFormRoute(
+            title: title,
+            fields:
+                fields.map((e) => MetadataFormFieldObject.fromJson(e)).toList(),
+          ),
+        );
       },
     );
 

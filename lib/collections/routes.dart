@@ -92,6 +92,10 @@ class AppRouter extends RootStackRouter {
               page: SettingsMetadataProviderRoute.page,
             ),
             AutoRoute(
+              path: "settings/metadata-provider/metadata-form",
+              page: SettingsMetadataProviderFormRoute.page,
+            ),
+            AutoRoute(
               path: "settings/blacklist",
               page: BlackListRoute.page,
             ),
