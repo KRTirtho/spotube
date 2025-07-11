@@ -1,15 +1,15 @@
 <script lang="ts">
-	// import { ADS_SLOTS, extendedDownloadLinks } from '$lib';
+	import { ADS_SLOTS, extendedDownloadLinks } from '$lib';
 	import { Download } from 'lucide-svelte';
-	// import { History, Sparkles, Package } from 'lucide-svelte';
+	import { History, Sparkles, Package } from 'lucide-svelte';
 	// import DownloadItems from '$lib/components/downloads/download-items.svelte';
-	// import Ads from '$lib/components/ads/ads.svelte';
+	import Ads from '$lib/components/ads/ads.svelte';
 
-	// const otherDownloads: [string, string, any][] = [
+	const otherDownloads: [string, string, any][] = [
 		// ['/downloads/packages', 'CLI Packages Managers', Package],
 		// ['/downloads/older', 'Older Versions', History],
-		// ['/downloads/nightly', 'Nightly Builds', Sparkles]
-	// ];
+		['/downloads/nightly', 'Nightly Builds', Sparkles]
+	];
 </script>
 
 <section class="p-4 md:p-16 md:pb-4">
@@ -24,22 +24,29 @@
 	<!-- <DownloadItems links={extendedDownloadLinks} /> -->
 
 	<h3 class="h3 text-red-500">
-		Versions of Spotube (&lt;=v4.0.2) are ceased to work with Spotify™ API. 
+		Versions of Spotube (&lt;=v4.0.2) are ceased to work with Spotify™ API.
 		<br />
-		So users can no longer use/download those versions. 
+		So users can no longer use/download those versions.
 		<br />
 		Please wait for the next version that will remedy this issue by not using such APIs.
 	</h3>
-
-	<p class="text-surface-500 mt-20">
+	<p class="text-surface-500 mt-5">
 		Spotube has no affiliation with Spotify™ or any of its subsidiaries.
 	</p>
+	<br />
+	<br />
+	<h6 class="h6 mb-5">
+		The new Spotube v5 is still under beta. Please use the Nightly version until stable release.
+	</h6>
+	<a href="/downloads/nightly">
+		<button type="button" class="btn variant-filled"> Download Nightly </button>
+	</a>
 
 	<br />
-	<!-- <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" /> -->
+	<Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
 	<br />
 
-	<!-- <h2 class="h2">Other Downloads</h2>
+	<h2 class="h2">Other Downloads</h2>
 	<br /><br />
 	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-w-3xl">
 		{#each otherDownloads as download}
@@ -51,6 +58,6 @@
 			</a>
 		{/each}
 	</div>
-	<br /> -->
-	<!-- <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" /> -->
+	<br />
+	<Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
 </section>

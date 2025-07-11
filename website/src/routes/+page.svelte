@@ -1,10 +1,5 @@
 <script lang="ts">
-	import {
-		faAndroid,
-		faWindows,
-		faApple,
-		faLinux
-	} from '@fortawesome/free-brands-svg-icons/index';
+	import { faAndroid, faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons/index';
 	import Fa from 'svelte-fa';
 	import { Download, Heart } from 'lucide-svelte';
 	import type { PageData } from './$types';
@@ -38,8 +33,7 @@
 			<h1 class="h1">Spotube</h1>
 			<br />
 			<h3 class="h3">
-				An Open Source Music Client for every
-				platform
+				A cross-platform Extensible open-source Music Streaming platform
 				<div class="inline-flex gap-3 items-center">
 					<Fa class="inline text-[#3DDC84]" icon={faAndroid} />
 					<Fa class="inline text-[#00A2F0]" icon={faWindows} />
@@ -65,17 +59,17 @@
 				</a> -->
 			</div>
 		</div>
-		<!-- <div class="flex justify-center">
-			<a href="/downloads" class="flex gap-2 btn variant-filled-primary">
-				Download
+		<div class="flex justify-center">
+			<a href="/downloads" class="flex gap-2 btn variant-filled">
+				Download Nightly
 				<Download />
 			</a>
-		</div> -->
+		</div>
 	</div>
 
-	<!-- <br />
+	<br />
 	<Ads adSlot={ADS_SLOTS.rootPageDisplay} adFormat="auto" />
-	<br /> -->
+	<br />
 
 	<div class="flex flex-col gap-4">
 		<h2 class="h2">
@@ -113,5 +107,5 @@
 		</div>
 	</div>
 	<br />
-	<!-- <Ads adSlot={ADS_SLOTS.rootPageDisplay} adFormat="auto" /> -->
+	<Ads adSlot={ADS_SLOTS.rootPageDisplay} adFormat="auto" />
 </section>

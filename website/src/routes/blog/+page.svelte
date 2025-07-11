@@ -44,12 +44,12 @@
 		{#each adAddedPosts as post}
 			{#if post.slug === 'ad'}
 				<p></p>
-				<!-- <Ads
+				<Ads
 					adSlot={ADS_SLOTS.blogPageInFeed}
 					adFormat="fluid"
 					adLayoutKey="-6l+eh+17-40+59"
 					fullWidthResponsive={false}
-				/> -->
+				/>
 			{:else}
 				<a
 					href={`/blog/${post.slug}`}

@@ -1,54 +1,47 @@
 <script lang="ts">
-    import SvelteMarkdown from "svelte-markdown";
-	import Layout from "$lib/components/markdown/layout.svelte";
-    
-    const mdContent = `
-## 🚨 Spotube is banned from using "Spotify™ API" 🚨
+	import SvelteMarkdown from 'svelte-markdown';
+	import Layout from '$lib/components/markdown/layout.svelte';
+	import { X } from 'lucide-svelte';
+	import { getModalStore } from '@skeletonlabs/skeleton';
 
-The developer of Spotube has received a cease and desist letter from Spotify USA Inc. and Spotify AB, asserting a legal threat concerning the distribution and development of any application that utilizes Spotify’s data API in conjunction with content from YouTube® to facilitate ad-free playback of music tracks. The letter contends that this specific use of the Spotify™ APIs contravenes the Spotify™ Agreements and may also infringe upon the rights of music rights holders.
+	const modalStore = getModalStore();
 
-Consequently, as the official maintainer of Spotube, I will immediately cease all forms of official distribution and development of Spotube that continue to employ the aforementioned 'Spotify™ APIs'
+	const mdContent = `
+## Spotube reborn 🦄
 
-<ins>Their exact reasoning</ins>: (any) "uses of Spotify’s data API in connection with content from YouTube to provide ad-free playback of music tracks. The use of the Spotify APIs in this manner violates the Spotify Agreements and may also violate the rights of music rights holders."
+After facing a legal threat(s) from Spotify™, Spotube has moved from using Spotify™ API for music metadata purposes.
+Now we're aiming to make Spotube an extensible music streaming platform and will continue to use free to use and open source music APIs.
 
-## So what's now?
+So users can bring their own metadata APIs (already finished) and playback APIs (WIP). And can plug things together using community plugins.
 
-> In short, we are cooked (legally)
+To reduce friction, by default, from Spotube v5, it will contain MusicBrainz and ListenBrainz plugin (including support for custom instances). But you can always
+bring your own metadata and playback APIs using plugins (there will be documentation on how to do that soon!).
 
-For now, I've to:
+Currently, the v5 is still under beta. So only nightly builds are downloadable. Please continue to use Nightly versions (it can contains bugs or not work at all) until stable Spotube v5 is released.
 
-1. Stop distributing/developing Spotube/any app that uses "Spotify™ APIs"
-
-   That means, I can no longer distribute Spotube through the website, GitHub, any app store and immediately have to take down the versions that uses Spotify™ APIs.
-
-1. Stop using their logo/image/name/intellectual property in a manner that "seems infringement"
-1. Forever desist from aiding or assisting any other person or entity in the activities described above
-
----
-
-**For the users of Spotube:**
-
-Don't worry, Spotube is banned only from (or assisting other) using those APIs. As long as the app isn't using them or no way helps anyone else to use them, it's ok.
-
-In future, I'll try to rewrite Spotube to ensure it operates within the bounds of copyright law and platform policies. And give ways for the users to extend the app to their use cases. Work is already in progress to implement this! So expect some big updates soon!
-
-But for eternity, you can't download versions of Spotube that still uses "Spotify™ APIs" from official means (website/Github/app stores). Those will be taken down.
-
-**But newer version of Spotube that _doesn't_ use "Spotify™ APIs" will be available to replace those.**
-
-That means, in the upcoming new versions, you will no longer be able to login with your "Spotify™ Account", access your saved playlists, albums, tracks, followed artists or perform any action on that account or anything that is from "Spotify™" or owned by "Spotify™" (yes the API public data (e.g. track metadata) as well) through Spotube.
-
-**Conclusion:** I'm extremely sorry for this disruption to your day to day music listening experience. Spotube existed and it used by a large number of users because they find it better. And we'll continue to be better than others but legally\* from now on.
-`
+Btw, please support the [MetaBrainz Foundation](https://metabrainz.org/) for their amazing work on MusicBrainz and ListenBrainz.
+They're open source and non-profit, so they need your support to keep the lights on and continue their work.
+`;
 </script>
 
-<div class="bg-primary-100 p-5 rounded-lg overflow-scroll max-h-[95vh]">
-    <Layout>
-        <SvelteMarkdown source={mdContent}/>
-    </Layout>
-    <p class="w-1 h-60"></p>
+<div class="bg-primary-100 p-5 rounded-lg overflow-scroll max-h-[95vh] relative">
+	<button
+		type="button"
+		class="btn variant-soft absolute top-2 right-2"
+		on:click={() => modalStore.close()}
+	>
+		<X />
+	</button>
+	<Layout>
+		<SvelteMarkdown source={mdContent} />
+	</Layout>
 
-    <p class="text-surface-500 mt-20">
+	<p class="text-surface-500 mt-5">
 		Spotube has no affiliation with Spotify™ or any of its subsidiaries.
 	</p>
+	<div class="flex justify-end mt-4">
+		<button type="button" class="btn variant-filled-primary" on:click={() => modalStore.close()}>
+			Understood
+		</button>
+	</div>
 </div>
