@@ -102,13 +102,13 @@ dependencies:
       ref: dart-3-support
       url: https://github.com/KRTirtho/scrobblenaut.git
   scroll_to_index: ^3.0.1
-  shadcn_flutter: ^0.0.34
+  shadcn_flutter: ^0.0.37
   shared_preferences: ^2.2.3
   shelf: ^1.4.1
   shelf_router: ^1.1.4
   shelf_web_socket: ^2.0.0
   simple_icons: ^10.1.3
-  skeletonizer: ^1.1.1
+  skeletonizer: ^2.1.0+1
   sliding_up_panel: ^2.0.0+1
   sliver_tools: ^0.2.12
   smtc_windows: ^1.0.0

@@ -30,5 +30,5 @@
     "README.md": "LICENSE,CODE_OF_CONDUCT.md,CONTRIBUTING.md,SECURITY.md,CONTRIBUTION.md,CHANGELOG.md,PRIVACY_POLICY.md",
     "*.dart": "${capture}.g.dart,${capture}.freezed.dart"
   },
-  "dart.flutterSdkPath": ".fvm/versions/3.29.2"
+  "dart.flutterSdkPath": ".fvm/versions/3.32.5"
 }

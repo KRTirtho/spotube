@@ -532,7 +532,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get license => '许可证';
 
   @override
-  String get credentials_will_not_be_shared_disclaimer => '不用担心，软件不会收集或分享任何个人数据给第三方';
+  String get credentials_will_not_be_shared_disclaimer =>
+      '不用担心，软件不会收集或分享任何个人数据给第三方';
 
   @override
   String get know_how_to_login => '不知道该怎么做？';
@@ -711,10 +712,12 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get download_warning => '如果你大量下载这些歌曲，你显然在侵犯音乐的版权并对音乐创作社区造成了伤害。我希望你能意识到这一点。永远要尊重并支持艺术家们的辛勤工作';
+  String get download_warning =>
+      '如果你大量下载这些歌曲，你显然在侵犯音乐的版权并对音乐创作社区造成了伤害。我希望你能意识到这一点。永远要尊重并支持艺术家们的辛勤工作';
 
   @override
-  String get download_ip_ban_warning => '小心，如果出现超出正常的下载请求那你的 IP 可能会被 YouTube 封禁，这意味着你的设备将在长达 2-3 个月的时间内无法使用该 IP 访问 YouTube（即使你没登录）。Spotube 对此不承担任何责任';
+  String get download_ip_ban_warning =>
+      '小心，如果出现超出正常的下载请求那你的 IP 可能会被 YouTube 封禁，这意味着你的设备将在长达 2-3 个月的时间内无法使用该 IP 访问 YouTube（即使你没登录）。Spotube 对此不承担任何责任';
 
   @override
   String get by_clicking_accept_terms => '点击 \'同意\' 代表着你同意以下的条款';
@@ -726,7 +729,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get download_agreement_2 => '我将尽可能支持艺术家的工作。我现在之所以做不到是因为缺乏资金来购买正版';
 
   @override
-  String get download_agreement_3 => '我完全了解我的 IP 存在被 YouTube的风险。我同意 Spotube 的所有者与贡献者们无须对我目前的行为所导致的任何后果负责';
+  String get download_agreement_3 =>
+      '我完全了解我的 IP 存在被 YouTube的风险。我同意 Spotube 的所有者与贡献者们无须对我目前的行为所导致的任何后果负责';
 
   @override
   String get decline => '拒绝';
@@ -807,7 +811,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get failed_to_encrypt => '加密失败';
 
   @override
-  String get encryption_failed_warning => 'Spotube使用加密来安全地存储您的数据。但是失败了。因此，它将回退到不安全的存储\n如果您使用Linux，请确保已安装gnome-keyring、kde-wallet和keepassxc等秘密服务';
+  String get encryption_failed_warning =>
+      'Spotube使用加密来安全地存储您的数据。但是失败了。因此，它将回退到不安全的存储\n如果您使用Linux，请确保已安装gnome-keyring、kde-wallet和keepassxc等秘密服务';
 
   @override
   String get querying_info => '正在查询信息...';
@@ -982,7 +987,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_project_grow => '帮助这个项目成长';
 
   @override
-  String get help_project_grow_description => 'Spotube是一个开源项目。您可以通过为项目做出贡献、报告错误或建议新功能来帮助该项目成长。';
+  String get help_project_grow_description =>
+      'Spotube是一个开源项目。您可以通过为项目做出贡献、报告错误或建议新功能来帮助该项目成长。';
 
   @override
   String get contribute_on_github => '在GitHub上做出贡献';
@@ -1149,7 +1155,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => '*基于 Spotify 每次播放的支付金额\n从 \$0.003 到 \$0.005 计算。这是一个假设性的\n计算，旨在让用户了解如果他们在 Spotify 上收听\n这些歌曲，可能会付给艺术家的金额。';
+  String get streaming_fees_hypothetical =>
+      '*基于 Spotify 每次播放的支付金额\n从 \$0.003 到 \$0.005 计算。这是一个假设性的\n计算，旨在让用户了解如果他们在 Spotify 上收听\n这些歌曲，可能会付给艺术家的金额。';
 
   @override
   String get minutes_listened => '听的分钟数';
@@ -1171,7 +1178,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1220,7 +1228,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get webview_not_found => '未找到 Webview';
 
   @override
-  String get webview_not_found_description => '您的设备中未安装 Webview 运行时。\n如果已安装，请确保它在 environment PATH 中\n\n安装后，重新启动应用程序';
+  String get webview_not_found_description =>
+      '您的设备中未安装 Webview 运行时。\n如果已安装，请确保它在 environment PATH 中\n\n安装后，重新启动应用程序';
 
   @override
   String get unsupported_platform => '不支持的平台';
@@ -1317,7 +1326,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => '在 macOS/Linux/Unix 类操作系统中，在 .zshrc/.bashrc/.bash_profile 等文件中设置路径无效。\n您需要在 shell 配置文件中设置路径';
+  String get youtube_engine_unix_issue_message =>
+      '在 macOS/Linux/Unix 类操作系统中，在 .zshrc/.bashrc/.bash_profile 等文件中设置路径无效。\n您需要在 shell 配置文件中设置路径';
 
   @override
   String get download => '下载';

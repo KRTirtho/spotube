@@ -356,7 +356,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get clear_all => 'Bersihkan semua';
 
   @override
-  String get show_hide_ui_on_hover => 'Tampil/Sembunyikan UI saat mengarahkan kursor';
+  String get show_hide_ui_on_hover =>
+      'Tampil/Sembunyikan UI saat mengarahkan kursor';
 
   @override
   String get always_on_top => 'Selalu di atas';
@@ -407,7 +408,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get layout_mode => 'Mode Tata Letak';
 
   @override
-  String get override_layout_settings => 'Ganti pengaturan mode tata letak responsif';
+  String get override_layout_settings =>
+      'Ganti pengaturan mode tata letak responsif';
 
   @override
   String get adaptive => 'Adaptif';
@@ -437,7 +439,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get sync_album_color => 'Sinkronkan warna album';
 
   @override
-  String get sync_album_color_description => 'Menggunakan warna dominan sampul album sebagai warna aksen';
+  String get sync_album_color_description =>
+      'Menggunakan warna dominan sampul album sebagai warna aksen';
 
   @override
   String get playback => 'Pemutaran';
@@ -455,7 +458,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get pre_download_play => 'Unduh dan putar';
 
   @override
-  String get pre_download_play_description => 'Daripada streaming audio, unduh byte dan mainkan (Direkomendasikan untuk pengguna bandwidth yang lebih tinggi)';
+  String get pre_download_play_description =>
+      'Daripada streaming audio, unduh byte dan mainkan (Direkomendasikan untuk pengguna bandwidth yang lebih tinggi)';
 
   @override
   String get skip_non_music => 'Lewati segmen non-musik (SponsorBlock)';
@@ -464,7 +468,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get blacklist_description => 'Lagu dan artis di daftar hitam';
 
   @override
-  String get wait_for_download_to_finish => 'Tunggu hingga unduhan saat ini selesai';
+  String get wait_for_download_to_finish =>
+      'Tunggu hingga unduhan saat ini selesai';
 
   @override
   String get desktop => 'Desktop';
@@ -500,7 +505,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get please_sponsor => 'Silakan Sponsor/Menyumbang';
 
   @override
-  String get spotube_description => 'Spotube, klien Spotify yang ringan, lintas platform, dan gratis untuk semua';
+  String get spotube_description =>
+      'Spotube, klien Spotify yang ringan, lintas platform, dan gratis untuk semua';
 
   @override
   String get version => 'Versi';
@@ -532,7 +538,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get license => 'Lisensi';
 
   @override
-  String get credentials_will_not_be_shared_disclaimer => 'Jangan khawatir, kredensial Anda tidak akan dikumpulkan atau dibagikan kepada siapa pun';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'Jangan khawatir, kredensial Anda tidak akan dikumpulkan atau dibagikan kepada siapa pun';
 
   @override
   String get know_how_to_login => 'Tidak tahu bagaimana melakukan ini?';
@@ -576,19 +583,23 @@ class AppLocalizationsId extends AppLocalizations {
   String get piped_instance => 'Piped Server Instance';
 
   @override
-  String get piped_description => 'The Piped server instance untuk digunakan sebagai pencocokan trek';
+  String get piped_description =>
+      'The Piped server instance untuk digunakan sebagai pencocokan trek';
 
   @override
-  String get piped_warning => 'Beberapa di antaranya mungkin tidak berfungsi dengan baik. Jadi gunakan dengan risiko Anda sendiri';
+  String get piped_warning =>
+      'Beberapa di antaranya mungkin tidak berfungsi dengan baik. Jadi gunakan dengan risiko Anda sendiri';
 
   @override
   String get invidious_instance => 'Invidious Server Instance';
 
   @override
-  String get invidious_description => 'The Invidious server instance to use for track matching';
+  String get invidious_description =>
+      'The Invidious server instance to use for track matching';
 
   @override
-  String get invidious_warning => 'Some of them might not work well. So use at your own risk';
+  String get invidious_warning =>
+      'Some of them might not work well. So use at your own risk';
 
   @override
   String get generate => 'Generate';
@@ -602,10 +613,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get replace_downloaded_tracks => 'Ganti semua trek yang diunduh';
 
   @override
-  String get skip_download_tracks => 'Lewati pengunduhan semua trek yang diunduh';
+  String get skip_download_tracks =>
+      'Lewati pengunduhan semua trek yang diunduh';
 
   @override
-  String get do_you_want_to_replace => 'Apakah Anda ingin mengganti track yang ada?';
+  String get do_you_want_to_replace =>
+      'Apakah Anda ingin mengganti track yang ada?';
 
   @override
   String get replace => 'Ganti';
@@ -711,22 +724,28 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'Jika Anda mengunduh semua Lagu secara massal, Anda jelas membajak Musik & menyebabkan kerusakan pada masyarakat kreatif Musik. Saya harap Anda menyadari hal ini. Selalu berusaha menghormati & mendukung kerja keras Artis';
+  String get download_warning =>
+      'Jika Anda mengunduh semua Lagu secara massal, Anda jelas membajak Musik & menyebabkan kerusakan pada masyarakat kreatif Musik. Saya harap Anda menyadari hal ini. Selalu berusaha menghormati & mendukung kerja keras Artis';
 
   @override
-  String get download_ip_ban_warning => 'BTW, IP Anda bisa diblokir di YouTube karena permintaan unduhan yang berlebihan dari biasanya. Blokir IP berarti Anda tidak dapat menggunakan YouTube (meskipun Anda masuk) setidaknya selama 2-3 bulan dari perangkat IP tersebut. Dan Spotube tidak bertanggung jawab jika hal ini terjadi';
+  String get download_ip_ban_warning =>
+      'BTW, IP Anda bisa diblokir di YouTube karena permintaan unduhan yang berlebihan dari biasanya. Blokir IP berarti Anda tidak dapat menggunakan YouTube (meskipun Anda masuk) setidaknya selama 2-3 bulan dari perangkat IP tersebut. Dan Spotube tidak bertanggung jawab jika hal ini terjadi';
 
   @override
-  String get by_clicking_accept_terms => 'Dengan mengklik \'terima\' Anda menyetujui ketentuan berikut:';
+  String get by_clicking_accept_terms =>
+      'Dengan mengklik \'terima\' Anda menyetujui ketentuan berikut:';
 
   @override
-  String get download_agreement_1 => 'Saya tahu saya membajak Musik. Saya buruk';
+  String get download_agreement_1 =>
+      'Saya tahu saya membajak Musik. Saya buruk';
 
   @override
-  String get download_agreement_2 => 'Saya akan mendukung Artis di mana pun saya bisa dan saya melakukan ini hanya karena saya tidak punya uang untuk membeli karya seni mereka';
+  String get download_agreement_2 =>
+      'Saya akan mendukung Artis di mana pun saya bisa dan saya melakukan ini hanya karena saya tidak punya uang untuk membeli karya seni mereka';
 
   @override
-  String get download_agreement_3 => 'Saya sepenuhnya menyadari bahwa IP saya dapat diblokir di YouTube & saya tidak menganggap Spotube atau pemilik/kontributornya bertanggung jawab atas kecelakaan apa pun yang disebabkan oleh tindakan saya saat ini';
+  String get download_agreement_3 =>
+      'Saya sepenuhnya menyadari bahwa IP saya dapat diblokir di YouTube & saya tidak menganggap Spotube atau pemilik/kontributornya bertanggung jawab atas kecelakaan apa pun yang disebabkan oleh tindakan saya saat ini';
 
   @override
   String get decline => 'Menolak';
@@ -807,7 +826,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get failed_to_encrypt => 'Gagal mengenkripsi';
 
   @override
-  String get encryption_failed_warning => 'Spotube menggunakan enkripsi untuk menyimpan data Anda dengan aman. Namun gagal melakukannya. Jadi itu akan kembali ke penyimpanan yang tidak aman\nJika Anda menggunakan linux, pastikan Anda telah menginstal layanan rahasia (gnome-keyring, kde-wallet, keepassxc, dll)';
+  String get encryption_failed_warning =>
+      'Spotube menggunakan enkripsi untuk menyimpan data Anda dengan aman. Namun gagal melakukannya. Jadi itu akan kembali ke penyimpanan yang tidak aman\nJika Anda menggunakan linux, pastikan Anda telah menginstal layanan rahasia (gnome-keyring, kde-wallet, keepassxc, dll)';
 
   @override
   String get querying_info => 'Mencari informasi...';
@@ -905,7 +925,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get friends => 'Daftar Teman';
 
   @override
-  String get no_lyrics_available => 'Maaf, tidak dapat menemukan lirik untuk lagu ini';
+  String get no_lyrics_available =>
+      'Maaf, tidak dapat menemukan lirik untuk lagu ini';
 
   @override
   String get start_a_radio => 'Putar Radio';
@@ -914,7 +935,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get how_to_start_radio => 'Bagaimana Anda ingin memutar radio?';
 
   @override
-  String get replace_queue_question => 'Apakah Anda ingin mengganti antrean saat ini atau menambahkannya?';
+  String get replace_queue_question =>
+      'Apakah Anda ingin mengganti antrean saat ini atau menambahkannya?';
 
   @override
   String get endless_playback => 'Pemutaran Tanpa Akhir';
@@ -923,7 +945,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get delete_playlist => 'Hapus Daftar Putar';
 
   @override
-  String get delete_playlist_confirmation => 'Anda yakin ingin menghapus daftar putar ini?';
+  String get delete_playlist_confirmation =>
+      'Anda yakin ingin menghapus daftar putar ini?';
 
   @override
   String get local_tracks => 'Trek Lokal';
@@ -941,22 +964,27 @@ class AppLocalizationsId extends AppLocalizations {
   String get freedom_of_music => '“Kebebasan Musik”';
 
   @override
-  String get freedom_of_music_palm => '“Kebebasan Musik di telapak tangan Anda”';
+  String get freedom_of_music_palm =>
+      '“Kebebasan Musik di telapak tangan Anda”';
 
   @override
   String get get_started => 'Mari kita mulai';
 
   @override
-  String get youtube_source_description => 'Direkomendasikan dan berfungsi paling baik.';
+  String get youtube_source_description =>
+      'Direkomendasikan dan berfungsi paling baik.';
 
   @override
-  String get piped_source_description => 'Merasa bebas? Sama seperti YouTube tetapi banyak yang gratis.';
+  String get piped_source_description =>
+      'Merasa bebas? Sama seperti YouTube tetapi banyak yang gratis.';
 
   @override
-  String get jiosaavn_source_description => 'Terbaik untuk wilayah Asia Selatan.';
+  String get jiosaavn_source_description =>
+      'Terbaik untuk wilayah Asia Selatan.';
 
   @override
-  String get invidious_source_description => 'Similar to Piped but with higher availability.';
+  String get invidious_source_description =>
+      'Similar to Piped but with higher availability.';
 
   @override
   String highest_quality(Object quality) {
@@ -967,13 +995,15 @@ class AppLocalizationsId extends AppLocalizations {
   String get select_audio_source => 'Pilih Sumber Suara';
 
   @override
-  String get endless_playback_description => 'Tambahkan lagu baru secara otomatis\nke akhir antrean';
+  String get endless_playback_description =>
+      'Tambahkan lagu baru secara otomatis\nke akhir antrean';
 
   @override
   String get choose_your_region => 'Pilih wilayah Anda';
 
   @override
-  String get choose_your_region_description => 'Ini akan membantu Spotube menampilkan konten yang tepat\nuntuk lokasi Anda.';
+  String get choose_your_region_description =>
+      'Ini akan membantu Spotube menampilkan konten yang tepat\nuntuk lokasi Anda.';
 
   @override
   String get choose_your_language => 'Pilih bahasa Anda';
@@ -982,7 +1012,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get help_project_grow => 'Bantu proyek ini berkembang';
 
   @override
-  String get help_project_grow_description => 'Spotube adalah proyek sumber terbuka. Anda dapat membantu proyek ini berkembang dengan berkontribusi pada proyek, melaporkan bug, atau menyarankan fitur baru.';
+  String get help_project_grow_description =>
+      'Spotube adalah proyek sumber terbuka. Anda dapat membantu proyek ini berkembang dengan berkontribusi pada proyek, melaporkan bug, atau menyarankan fitur baru.';
 
   @override
   String get contribute_on_github => 'Berkontribusi di GitHub';
@@ -997,7 +1028,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get enable_connect => 'Aktifkan Hubungkan';
 
   @override
-  String get enable_connect_description => 'Kontrol Spotube dari perangkat lain';
+  String get enable_connect_description =>
+      'Kontrol Spotube dari perangkat lain';
 
   @override
   String get devices => 'Perangkat';
@@ -1076,7 +1108,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get choose_the_device => 'Pilih perangkat:';
 
   @override
-  String get multiple_device_connected => 'Beberapa perangkat terhubung.\nPilih perangkat tempat Anda ingin melakukan tindakan ini';
+  String get multiple_device_connected =>
+      'Beberapa perangkat terhubung.\nPilih perangkat tempat Anda ingin melakukan tindakan ini';
 
   @override
   String get nothing_found => 'Tidak ditemukan apa pun';
@@ -1171,7 +1204,8 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1220,7 +1254,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get webview_not_found => 'Webview tidak ditemukan';
 
   @override
-  String get webview_not_found_description => 'Tidak ada runtime Webview yang diinstal di perangkat Anda.\nJika sudah diinstal, pastikan itu ada di environment PATH\n\nSetelah diinstal, restart aplikasi';
+  String get webview_not_found_description =>
+      'Tidak ada runtime Webview yang diinstal di perangkat Anda.\nJika sudah diinstal, pastikan itu ada di environment PATH\n\nSetelah diinstal, restart aplikasi';
 
   @override
   String get unsupported_platform => 'Platform tidak didukung';
@@ -1252,7 +1287,8 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get export_cache_confirmation => 'Do you want to export these files to';
+  String get export_cache_confirmation =>
+      'Do you want to export these files to';
 
   @override
   String exported_n_out_of_m_files(Object files, Object filesExported) {
@@ -1281,19 +1317,22 @@ class AppLocalizationsId extends AppLocalizations {
   String get view_all => 'View all';
 
   @override
-  String get no_tracks_added_yet => 'Looks like you haven\'t added any tracks yet';
+  String get no_tracks_added_yet =>
+      'Looks like you haven\'t added any tracks yet';
 
   @override
   String get no_tracks => 'Looks like there are no tracks here';
 
   @override
-  String get no_tracks_listened_yet => 'Looks like you haven\'t listened to anything yet';
+  String get no_tracks_listened_yet =>
+      'Looks like you haven\'t listened to anything yet';
 
   @override
   String get not_following_artists => 'You\'re not following any artists';
 
   @override
-  String get no_favorite_albums_yet => 'Looks like you haven\'t added any albums to your favorites yet';
+  String get no_favorite_albums_yet =>
+      'Looks like you haven\'t added any albums to your favorites yet';
 
   @override
   String get no_logs_found => 'No logs found';
@@ -1317,7 +1356,8 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'In macOS/Linux/unix like OS\'s, setting path on .zshrc/.bashrc/.bash_profile etc. won\'t work.\nYou need to set the path in the shell configuration file';
+  String get youtube_engine_unix_issue_message =>
+      'In macOS/Linux/unix like OS\'s, setting path on .zshrc/.bashrc/.bash_profile etc. won\'t work.\nYou need to set the path in the shell configuration file';
 
   @override
   String get download => 'Download';
@@ -1335,7 +1375,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get edit_port => 'Edit port';
 
   @override
-  String get port_helper_msg => 'Default adalah -1 yang menunjukkan angka acak. Jika Anda telah mengonfigurasi firewall, disarankan untuk mengatur ini.';
+  String get port_helper_msg =>
+      'Default adalah -1 yang menunjukkan angka acak. Jika Anda telah mengonfigurasi firewall, disarankan untuk mengatur ini.';
 
   @override
   String connect_request(Object client) {
@@ -1343,5 +1384,6 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'Koneksi ditolak. Pengguna menolak akses.';
+  String get connection_request_denied =>
+      'Koneksi ditolak. Pengguna menolak akses.';
 }

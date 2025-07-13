@@ -98,10 +98,10 @@ packages:
     dependency: "direct main"
     description:
       name: async
-      sha256: d2872f9c19731c2e5f10444b14686eb7cc85c76274bd6c16e1816bff9a3bab63
+      sha256: "758e6d74e971c3e5aceb4110bfd6698efc7f501675bcfe0c775459a8140750eb"
       url: "https://pub.dev"
     source: hosted
-    version: "2.12.0"
+    version: "2.13.0"
   audio_service:
     dependency: "direct main"
     description:
@@ -654,10 +654,10 @@ packages:
     dependency: transitive
     description:
       name: fake_async
-      sha256: "6a95e56b2449df2273fd8c45a662d6947ce1ebb7aafe80e550a3f68297f3cacc"
+      sha256: "5368f224a74523e8d2e7399ea1638b37aecfca824a3cc4dfdf77bf1fa905ac44"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.2"
+    version: "1.3.3"
   fast_noise:
     dependency: transitive
     description:
@@ -1463,10 +1463,10 @@ packages:
     dependency: transitive
     description:
       name: leak_tracker
-      sha256: c35baad643ba394b40aac41080300150a4f08fd0fd6a10378f8f7c6bc161acec
+      sha256: "6bb818ecbdffe216e81182c2f0714a2e62b593f4a4f13098713ff1685dfb6ab0"
       url: "https://pub.dev"
     source: hosted
-    version: "10.0.8"
+    version: "10.0.9"
   leak_tracker_flutter_testing:
     dependency: transitive
     description:
@@ -2104,10 +2104,10 @@ packages:
     dependency: "direct main"
     description:
       name: shadcn_flutter
-      sha256: "8635e8e0cd2e0fba0a3093a53fbe3bdd37d90d038c4c66d761728d7cfcf23ce3"
+      sha256: "979a86e203eb1fb139e8b5c84b49b17b28808804cbff189b43052d56ba6854b5"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.34"
+    version: "0.0.37"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -2232,10 +2232,10 @@ packages:
     dependency: "direct main"
     description:
       name: skeletonizer
-      sha256: "3b202e4fa9c49b017d368fb0e570d4952bcd19972b67b2face071bdd68abbfae"
+      sha256: eebc03dc86b298e2d7f61e0ebce5713e9dbbc3e786f825909b4591756f196eb6
       url: "https://pub.dev"
     source: hosted
-    version: "1.4.2"
+    version: "2.1.0+1"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -2717,10 +2717,10 @@ packages:
     dependency: transitive
     description:
       name: vm_service
-      sha256: "0968250880a6c5fe7edc067ed0a13d4bae1577fe2771dcf3010d52c4a9d3ca14"
+      sha256: ddfa8d30d89985b96407efce8acbdd124701f96741f2d981ca860662f1c0dc02
       url: "https://pub.dev"
     source: hosted
-    version: "14.3.1"
+    version: "15.0.0"
   watcher:
     dependency: transitive
     description:
@@ -2757,10 +2757,10 @@ packages:
     dependency: transitive
     description:
       name: webdriver
-      sha256: "3d773670966f02a646319410766d3b5e1037efb7f07cc68f844d5e06cd4d61c8"
+      sha256: "2f3a14ca026957870cfd9c635b83507e0e51d8091568e90129fbf805aba7cade"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.4"
+    version: "3.1.0"
   webkit_inspection_protocol:
     dependency: transitive
     description:
@@ -2844,4 +2844,4 @@ packages:
     version: "1.0.0"
 sdks:
   dart: ">=3.7.2 <4.0.0"
-  flutter: ">=3.29.0"
+  flutter: ">=3.32.0"

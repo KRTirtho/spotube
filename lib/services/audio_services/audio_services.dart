@@ -7,7 +7,6 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/mobile_audio_service.dart';
 import 'package:spotube/services/audio_services/windows_audio_service.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/platform.dart';
 
 class AudioServices with WidgetsBindingObserver {
@@ -31,13 +30,12 @@ class AudioServices with WidgetsBindingObserver {
                 Env.releaseChannel
               )) {
                 (true, _) => "spotube",
-                (_, ReleaseChannel.stable) => "com.krtirtho.Spotube",
-                (_, ReleaseChannel.nightly) => "com.krtirtho.Spotube.nightly",
+                (_, ReleaseChannel.stable) => "oss.krtirtho.spotube",
+                (_, ReleaseChannel.nightly) => "oss.krtirtho.spotube.nightly",
               },
               androidNotificationChannelName: 'Spotube',
               androidNotificationOngoing: false,
               androidStopForegroundOnPause: false,
-              androidNotificationIcon: "drawable/ic_launcher_monochrome",
               androidNotificationChannelDescription: "Spotube Media Controls",
             ),
           )
@@ -51,12 +49,12 @@ class AudioServices with WidgetsBindingObserver {
     await smtc?.addTrack(track);
     mobile?.addItem(MediaItem(
       id: track.id,
-      album: track.album?.name ?? "",
+      album: track.album.name,
       title: track.name,
       artist: track.artists.asString(),
       duration: Duration(milliseconds: track.durationMs),
       artUri: Uri.parse(
-        (track.album?.images).asUrlString(
+        (track.album.images).asUrlString(
           placeholder: ImagePlaceholder.albumArt,
         ),
       ),

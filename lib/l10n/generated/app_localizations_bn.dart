@@ -407,7 +407,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get layout_mode => 'UI বিন্যাস রূপ';
 
   @override
-  String get override_layout_settings => 'প্রতিক্রিয়াশীল UI বিন্যাস রূপের সেটিংস পরিবর্তন করুন';
+  String get override_layout_settings =>
+      'প্রতিক্রিয়াশীল UI বিন্যাস রূপের সেটিংস পরিবর্তন করুন';
 
   @override
   String get adaptive => 'অভিযোজিত';
@@ -437,7 +438,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get sync_album_color => 'অ্যালবাম সুসংগত UI এর রং';
 
   @override
-  String get sync_album_color_description => 'অ্যালবাম কভারের প্রভাবশালী রঙ UI অ্যাকসেন্ট রঙ হিসাবে ব্যবহার করে';
+  String get sync_album_color_description =>
+      'অ্যালবাম কভারের প্রভাবশালী রঙ UI অ্যাকসেন্ট রঙ হিসাবে ব্যবহার করে';
 
   @override
   String get playback => 'সংগীতের প্লেব্যাক';
@@ -455,16 +457,20 @@ class AppLocalizationsBn extends AppLocalizations {
   String get pre_download_play => 'আগে গান ডাউনলোড করে পরে চালান ';
 
   @override
-  String get pre_download_play_description => 'গান স্ট্রিম করার পরিবর্তে, ডাউনলোড করুন এবং প্লে করুন (উচ্চ ব্যান্ডউইথ ব্যবহারকারীদের জন্য প্রস্তাবিত)';
+  String get pre_download_play_description =>
+      'গান স্ট্রিম করার পরিবর্তে, ডাউনলোড করুন এবং প্লে করুন (উচ্চ ব্যান্ডউইথ ব্যবহারকারীদের জন্য প্রস্তাবিত)';
 
   @override
-  String get skip_non_music => 'গানের নন-মিউজিক সেগমেন্ট এড়িয়ে যান (SponsorBlock)';
+  String get skip_non_music =>
+      'গানের নন-মিউজিক সেগমেন্ট এড়িয়ে যান (SponsorBlock)';
 
   @override
-  String get blacklist_description => 'কালো তালিকাভুক্ত গানের ট্র্যাক এবং শিল্পী';
+  String get blacklist_description =>
+      'কালো তালিকাভুক্ত গানের ট্র্যাক এবং শিল্পী';
 
   @override
-  String get wait_for_download_to_finish => 'ডাউনলোড শেষ হওয়ার জন্য অপেক্ষা করুন';
+  String get wait_for_download_to_finish =>
+      'ডাউনলোড শেষ হওয়ার জন্য অপেক্ষা করুন';
 
   @override
   String get desktop => 'ডেস্কটপ';
@@ -500,7 +506,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get please_sponsor => 'স্পনসর/সহায়তা করুন';
 
   @override
-  String get spotube_description => 'Spotube, একটি কর্মদক্ষ, ক্রস-প্ল্যাটফর্ম, বিনামূল্যের জন্য Spotify ক্লায়েন্ট';
+  String get spotube_description =>
+      'Spotube, একটি কর্মদক্ষ, ক্রস-প্ল্যাটফর্ম, বিনামূল্যের জন্য Spotify ক্লায়েন্ট';
 
   @override
   String get version => 'সংস্করণ';
@@ -532,7 +539,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get license => 'লাইসেন্স';
 
   @override
-  String get credentials_will_not_be_shared_disclaimer => 'চিন্তা করবেন না, আপনার কোনো লগইন তথ্য সংগ্রহ করা হবে না বা কারো সাথে শেয়ার করা হবে না';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'চিন্তা করবেন না, আপনার কোনো লগইন তথ্য সংগ্রহ করা হবে না বা কারো সাথে শেয়ার করা হবে না';
 
   @override
   String get know_how_to_login => 'আপনি কিভাবে লগইন করবেন তা জানেন না?';
@@ -579,16 +587,19 @@ class AppLocalizationsBn extends AppLocalizations {
   String get piped_description => 'গান ম্যাচ করার জন্য ব্যবহৃত পাইপড সার্ভার';
 
   @override
-  String get piped_warning => 'এগুলোর মধ্যে কিছু ভাল কাজ নাও করতে পারে৷ তাই নিজ দায়িত্বে ব্যবহার করুন';
+  String get piped_warning =>
+      'এগুলোর মধ্যে কিছু ভাল কাজ নাও করতে পারে৷ তাই নিজ দায়িত্বে ব্যবহার করুন';
 
   @override
   String get invidious_instance => 'ইনভিডিয়াস সার্ভার ইন্সটেন্স';
 
   @override
-  String get invidious_description => 'ট্রাক মিলানোর জন্য ব্যবহৃত ইনভিডিয়াস সার্ভার';
+  String get invidious_description =>
+      'ট্রাক মিলানোর জন্য ব্যবহৃত ইনভিডিয়াস সার্ভার';
 
   @override
-  String get invidious_warning => 'কিছু সার্ভার ভাল কাজ নাও করতে পারে। নিজের ঝুঁকিতে ব্যবহার করুন';
+  String get invidious_warning =>
+      'কিছু সার্ভার ভাল কাজ নাও করতে পারে। নিজের ঝুঁকিতে ব্যবহার করুন';
 
   @override
   String get generate => 'উৎপন্ন করুন';
@@ -599,13 +610,15 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get replace_downloaded_tracks => 'সমস্ত ডাউনলোড করা ট্র্যাক প্রতিস্থাপন করুন';
+  String get replace_downloaded_tracks =>
+      'সমস্ত ডাউনলোড করা ট্র্যাক প্রতিস্থাপন করুন';
 
   @override
   String get skip_download_tracks => 'সমস্ত ডাউনলোড করা ট্র্যাক এ স্কিপ করুন';
 
   @override
-  String get do_you_want_to_replace => 'আপনি কি বিদ্যমান ট্র্যাকটি প্রতিস্থাপন করতে চান?';
+  String get do_you_want_to_replace =>
+      'আপনি কি বিদ্যমান ট্র্যাকটি প্রতিস্থাপন করতে চান?';
 
   @override
   String get replace => 'প্রতিস্থাপন করুন';
@@ -711,22 +724,27 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'যদি আপনি সমস্ত ট্র্যাকগুলি একসঙ্গে ডাউনলোড করেন, তবে আপনি নিশ্চিতভাবে সঙ্গীত চুরি করছেন এবং সৃষ্টিশীল সমাজে ক্ষতি দিচ্ছেন। আমি আশা করি আপনি এটা সম্পর্কে জানেন। সর্বদা, শিল্পীদের কঠিন পরিশ্রমকে সম্মান করতে চেষ্টা করুন এবং সমর্থন করুন';
+  String get download_warning =>
+      'যদি আপনি সমস্ত ট্র্যাকগুলি একসঙ্গে ডাউনলোড করেন, তবে আপনি নিশ্চিতভাবে সঙ্গীত চুরি করছেন এবং সৃষ্টিশীল সমাজে ক্ষতি দিচ্ছেন। আমি আশা করি আপনি এটা সম্পর্কে জানেন। সর্বদা, শিল্পীদের কঠিন পরিশ্রমকে সম্মান করতে চেষ্টা করুন এবং সমর্থন করুন';
 
   @override
-  String get download_ip_ban_warning => 'তথ্যবিশ্বস্ত করে নেওয়া যায় যে, আপনার IP ঠিকানাটি YouTube দ্বারা স্থানান্তরিত করা হতে পারে যখন সাধারন থেকে বেশি ডাউনলোড অনুরোধ হয়। IP ব্লকের মাধ্যমে আপনি কমপক্ষে ২-৩ মাস ধরে (ঐ IP ডিভাইস থেকে) YouTube ব্যবহার করতে পারবেন না। এবং Spotube কোনও দায়িত্ব সম্পর্কে দায়িত্ব বহন করে না যদি এটি ঘটে।';
+  String get download_ip_ban_warning =>
+      'তথ্যবিশ্বস্ত করে নেওয়া যায় যে, আপনার IP ঠিকানাটি YouTube দ্বারা স্থানান্তরিত করা হতে পারে যখন সাধারন থেকে বেশি ডাউনলোড অনুরোধ হয়। IP ব্লকের মাধ্যমে আপনি কমপক্ষে ২-৩ মাস ধরে (ঐ IP ডিভাইস থেকে) YouTube ব্যবহার করতে পারবেন না। এবং Spotube কোনও দায়িত্ব সম্পর্কে দায়িত্ব বহন করে না যদি এটি ঘটে।';
 
   @override
-  String get by_clicking_accept_terms => '\'গ্রহণ\' ক্লিক করে আপনি নিম্নলিখিত শর্তাদি স্বীকার করছেন:';
+  String get by_clicking_accept_terms =>
+      '\'গ্রহণ\' ক্লিক করে আপনি নিম্নলিখিত শর্তাদি স্বীকার করছেন:';
 
   @override
   String get download_agreement_1 => 'আমি জানি আমি সঙ্গীত চুরি করছি। আমি খারাপ';
 
   @override
-  String get download_agreement_2 => 'আমি কেবলমাত্র তাদের কাজ কেনার জন্য অর্থ নেই কিন্তু যেখানে প্রয়োজন সেখানে আমি শিল্পীদের সমর্থন করব।';
+  String get download_agreement_2 =>
+      'আমি কেবলমাত্র তাদের কাজ কেনার জন্য অর্থ নেই কিন্তু যেখানে প্রয়োজন সেখানে আমি শিল্পীদের সমর্থন করব।';
 
   @override
-  String get download_agreement_3 => 'আমি সম্পূর্ণরূপে জানি যে আমার IP YouTube-তে ব্লক হতে পারে এবং আমি Spotube বা তার মালিকানাধীন কোনও দায়িত্ব পেতে পারিনি আমার বর্তমান ক্রিয়াটি দ্বারা সৃষ্ট দুর্ঘটনা করার জন্য';
+  String get download_agreement_3 =>
+      'আমি সম্পূর্ণরূপে জানি যে আমার IP YouTube-তে ব্লক হতে পারে এবং আমি Spotube বা তার মালিকানাধীন কোনও দায়িত্ব পেতে পারিনি আমার বর্তমান ক্রিয়াটি দ্বারা সৃষ্ট দুর্ঘটনা করার জন্য';
 
   @override
   String get decline => 'অগ্রায়ন করুন';
@@ -807,7 +825,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get failed_to_encrypt => 'এনক্রিপ্ট করা ব্যর্থ হয়েছে';
 
   @override
-  String get encryption_failed_warning => 'Spotube আপনার তথ্যগুলি নিরাপদভাবে স্টোর করতে এনক্রিপশন ব্যবহার করে। কিন্তু এটি ব্যর্থ হয়েছে। তাই এটি অনিরাপদ স্টোরে ফলফল হবে\nযদি আপনি Linux ব্যবহার করেন, তবে দয়া করে নিশ্চিত হউন যে আপনার কোনও সিক্রেট-সার্ভিস gnome-keyring, kde-wallet, keepassxc ইত্যাদি ইনস্টল করা আছে';
+  String get encryption_failed_warning =>
+      'Spotube আপনার তথ্যগুলি নিরাপদভাবে স্টোর করতে এনক্রিপশন ব্যবহার করে। কিন্তু এটি ব্যর্থ হয়েছে। তাই এটি অনিরাপদ স্টোরে ফলফল হবে\nযদি আপনি Linux ব্যবহার করেন, তবে দয়া করে নিশ্চিত হউন যে আপনার কোনও সিক্রেট-সার্ভিস gnome-keyring, kde-wallet, keepassxc ইত্যাদি ইনস্টল করা আছে';
 
   @override
   String get querying_info => 'তথ্য অনুসন্ধান করা হচ্ছে';
@@ -881,7 +900,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get login => 'লগইন';
 
   @override
-  String get login_with_your_lastfm => 'আপনার Last.fm অ্যাকাউন্ট দিয়ে লগইন করুন';
+  String get login_with_your_lastfm =>
+      'আপনার Last.fm অ্যাকাউন্ট দিয়ে লগইন করুন';
 
   @override
   String get scrobble_to_lastfm => 'Last.fm এ স্ক্রবল করুন';
@@ -905,7 +925,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get friends => 'বন্ধু';
 
   @override
-  String get no_lyrics_available => 'দুঃখিত, এই ট্র্যাকের জন্য কথা খুঁজে পাওয়া গেলনা';
+  String get no_lyrics_available =>
+      'দুঃখিত, এই ট্র্যাকের জন্য কথা খুঁজে পাওয়া গেলনা';
 
   @override
   String get start_a_radio => 'রেডিও শুরু করুন';
@@ -914,7 +935,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get how_to_start_radio => 'রেডিও কিভাবে শুরু করতে চান?';
 
   @override
-  String get replace_queue_question => 'আপনি বর্তমান কিউটি প্রতিস্থাপন করতে চান কিনা বা এর সাথে যুক্ত করতে চান?';
+  String get replace_queue_question =>
+      'আপনি বর্তমান কিউটি প্রতিস্থাপন করতে চান কিনা বা এর সাথে যুক্ত করতে চান?';
 
   @override
   String get endless_playback => 'অবিরাম প্রচার';
@@ -923,7 +945,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get delete_playlist => 'প্লেলিস্ট মুছুন';
 
   @override
-  String get delete_playlist_confirmation => 'আপনি কি নিশ্চিত যে আপনি এই প্লেলিস্টটি মুছতে চান?';
+  String get delete_playlist_confirmation =>
+      'আপনি কি নিশ্চিত যে আপনি এই প্লেলিস্টটি মুছতে চান?';
 
   @override
   String get local_tracks => 'স্থানীয় ট্র্যাক';
@@ -956,7 +979,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get jiosaavn_source_description => 'দক্ষিণ এশিয়ান অঞ্চলের জন্য সেরা।';
 
   @override
-  String get invidious_source_description => 'পাইপের মতো কিন্তু আরও বেশি উপলব্ধতা সহ';
+  String get invidious_source_description =>
+      'পাইপের মতো কিন্তু আরও বেশি উপলব্ধতা সহ';
 
   @override
   String highest_quality(Object quality) {
@@ -967,13 +991,15 @@ class AppLocalizationsBn extends AppLocalizations {
   String get select_audio_source => 'অডিও উৎস নির্বাচন করুন';
 
   @override
-  String get endless_playback_description => 'নতুন গান নিজে নিজে প্লেলিস্টের শেষে\nসংযুক্ত করুন';
+  String get endless_playback_description =>
+      'নতুন গান নিজে নিজে প্লেলিস্টের শেষে\nসংযুক্ত করুন';
 
   @override
   String get choose_your_region => 'আপনার অঞ্চল নির্বাচন করুন';
 
   @override
-  String get choose_your_region_description => 'এটি স্পটুবে আপনাকে আপনার অবস্থানের জন্য ঠিক কন্টেন্ট দেখানোর সাহায্য করবে।';
+  String get choose_your_region_description =>
+      'এটি স্পটুবে আপনাকে আপনার অবস্থানের জন্য ঠিক কন্টেন্ট দেখানোর সাহায্য করবে।';
 
   @override
   String get choose_your_language => 'আপনার ভাষা নির্বাচন করুন';
@@ -982,7 +1008,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get help_project_grow => 'এই প্রকল্পের বৃদ্ধি করুন';
 
   @override
-  String get help_project_grow_description => 'স্পটুব একটি ওপেন সোর্স প্রকল্প। আপনি প্রকল্পে অবদান রাখেন, বাগ রিপোর্ট করেন, বা নতুন বৈশিষ্ট্যগুলি সুপারিশ করেন।';
+  String get help_project_grow_description =>
+      'স্পটুব একটি ওপেন সোর্স প্রকল্প। আপনি প্রকল্পে অবদান রাখেন, বাগ রিপোর্ট করেন, বা নতুন বৈশিষ্ট্যগুলি সুপারিশ করেন।';
 
   @override
   String get contribute_on_github => 'গিটহাবে অবদান রাখুন';
@@ -997,7 +1024,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get enable_connect => 'সংযোগ সক্রিয় করুন';
 
   @override
-  String get enable_connect_description => 'অন্যান্য ডিভাইস থেকে Spotube নিয়ন্ত্রণ করুন';
+  String get enable_connect_description =>
+      'অন্যান্য ডিভাইস থেকে Spotube নিয়ন্ত্রণ করুন';
 
   @override
   String get devices => 'ডিভাইস';
@@ -1076,7 +1104,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get choose_the_device => 'ডিভাইস নির্বাচন করুন:';
 
   @override
-  String get multiple_device_connected => 'একাধিক ডিভাইস সংযুক্ত রয়েছে।\nযে ডিভাইসে আপনি এই ক্রিয়াটি চালাতে চান সেটি নির্বাচন করুন';
+  String get multiple_device_connected =>
+      'একাধিক ডিভাইস সংযুক্ত রয়েছে।\nযে ডিভাইসে আপনি এই ক্রিয়াটি চালাতে চান সেটি নির্বাচন করুন';
 
   @override
   String get nothing_found => 'কিছুই পাওয়া যায়নি';
@@ -1171,7 +1200,8 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1220,7 +1250,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get webview_not_found => 'ওয়েবভিউ পাওয়া যায়নি';
 
   @override
-  String get webview_not_found_description => 'আপনার ডিভাইসে কোনো ওয়েবভিউ রানটাইম ইনস্টল করা নেই।\nযদি ইনস্টল থাকে, তা নিশ্চিত করুন যে এটি environment PATH এ রয়েছে\n\nইনস্টল করার পর, অ্যাপটি পুনরায় চালু করুন';
+  String get webview_not_found_description =>
+      'আপনার ডিভাইসে কোনো ওয়েবভিউ রানটাইম ইনস্টল করা নেই।\nযদি ইনস্টল থাকে, তা নিশ্চিত করুন যে এটি environment PATH এ রয়েছে\n\nইনস্টল করার পর, অ্যাপটি পুনরায় চালু করুন';
 
   @override
   String get unsupported_platform => 'সমর্থিত প্ল্যাটফর্ম নয়';
@@ -1252,7 +1283,8 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get export_cache_confirmation => 'আপনি কি এই ফাইলগুলি রপ্তানি করতে চান';
+  String get export_cache_confirmation =>
+      'আপনি কি এই ফাইলগুলি রপ্তানি করতে চান';
 
   @override
   String exported_n_out_of_m_files(Object files, Object filesExported) {
@@ -1293,7 +1325,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get not_following_artists => 'আপনি কোনো শিল্পীকে অনুসরণ করছেন না';
 
   @override
-  String get no_favorite_albums_yet => 'এখনও কোনো অ্যালবাম প্রিয় তালিকায় যোগ করা হয়নি মনে হচ্ছে';
+  String get no_favorite_albums_yet =>
+      'এখনও কোনো অ্যালবাম প্রিয় তালিকায় যোগ করা হয়নি মনে হচ্ছে';
 
   @override
   String get no_logs_found => 'কোনো লগ পাওয়া যায়নি';
@@ -1317,7 +1350,8 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'macOS/Linux/Unix-এর মতো অপারেটিং সিস্টেমে, .zshrc/.bashrc/.bash_profile ইত্যাদিতে পাথ সেট করা কাজ করবে না।\nআপনাকে শেল কনফিগারেশন ফাইলে পাথ সেট করতে হবে';
+  String get youtube_engine_unix_issue_message =>
+      'macOS/Linux/Unix-এর মতো অপারেটিং সিস্টেমে, .zshrc/.bashrc/.bash_profile ইত্যাদিতে পাথ সেট করা কাজ করবে না।\nআপনাকে শেল কনফিগারেশন ফাইলে পাথ সেট করতে হবে';
 
   @override
   String get download => 'ডাউনলোড';
@@ -1335,7 +1369,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get edit_port => 'পোর্ট সম্পাদনা করুন';
 
   @override
-  String get port_helper_msg => 'ডিফল্ট হল -1 যা এলোমেলো সংখ্যা নির্দেশ করে। যদি আপনার ফায়ারওয়াল কনফিগার করা থাকে, তবে এটি সেট করা সুপারিশ করা হয়।';
+  String get port_helper_msg =>
+      'ডিফল্ট হল -1 যা এলোমেলো সংখ্যা নির্দেশ করে। যদি আপনার ফায়ারওয়াল কনফিগার করা থাকে, তবে এটি সেট করা সুপারিশ করা হয়।';
 
   @override
   String connect_request(Object client) {
@@ -1343,5 +1378,6 @@ class AppLocalizationsBn extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'সংযোগ অস্বীকৃত। ব্যবহারকারী প্রবেশাধিকার অস্বীকার করেছে।';
+  String get connection_request_denied =>
+      'সংযোগ অস্বীকৃত। ব্যবহারকারী প্রবেশাধিকার অস্বীকার করেছে।';
 }

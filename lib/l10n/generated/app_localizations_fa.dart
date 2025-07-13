@@ -407,7 +407,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get layout_mode => 'حالت چیدمان';
 
   @override
-  String get override_layout_settings => 'تنطیمات حالت واکنشگرای چیدمان را لغو کن';
+  String get override_layout_settings =>
+      'تنطیمات حالت واکنشگرای چیدمان را لغو کن';
 
   @override
   String get adaptive => 'قابل تطبیق';
@@ -437,7 +438,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get sync_album_color => 'هنگام سازی رنگ البوم';
 
   @override
-  String get sync_album_color_description => 'از رنگ البوم هنرمند به عنوان رنگ تاکیدی استفاده میکند';
+  String get sync_album_color_description =>
+      'از رنگ البوم هنرمند به عنوان رنگ تاکیدی استفاده میکند';
 
   @override
   String get playback => 'پخش';
@@ -455,7 +457,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get pre_download_play => 'دانلود و پخش کنید';
 
   @override
-  String get pre_download_play_description => 'به جای پخش جریانی صدا، بایت ها را دانلود کنید و به جای آن پخش کنید (برای کاربران با پهنای باند بالاتر توصیه می شود)';
+  String get pre_download_play_description =>
+      'به جای پخش جریانی صدا، بایت ها را دانلود کنید و به جای آن پخش کنید (برای کاربران با پهنای باند بالاتر توصیه می شود)';
 
   @override
   String get skip_non_music => 'رد شدن از پخش های غیر موسیقی (SponsorBlock)';
@@ -464,7 +467,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get blacklist_description => 'آهنگ ها و هنرمند های در لیست سیاه';
 
   @override
-  String get wait_for_download_to_finish => 'لطفا صبر کنید تا دانلود آهنگ جاری تمام شود';
+  String get wait_for_download_to_finish =>
+      'لطفا صبر کنید تا دانلود آهنگ جاری تمام شود';
 
   @override
   String get desktop => 'میز کار';
@@ -500,7 +504,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get please_sponsor => 'لطفا کمک/حمایت کنید';
 
   @override
-  String get spotube_description => 'یک برنامه سبک و مولتی پلتفرم و رایگان برای همه استSpotube';
+  String get spotube_description =>
+      'یک برنامه سبک و مولتی پلتفرم و رایگان برای همه استSpotube';
 
   @override
   String get version => 'نسخه';
@@ -532,7 +537,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get license => 'مجوز';
 
   @override
-  String get credentials_will_not_be_shared_disclaimer => 'نگران نباشید هیچ کدوما از اعتبارات شما جمع اوری نمیشود یا با کسی اشتراک گزاشته نمیشود';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'نگران نباشید هیچ کدوما از اعتبارات شما جمع اوری نمیشود یا با کسی اشتراک گزاشته نمیشود';
 
   @override
   String get know_how_to_login => 'نمیدانی چگونه این کار را انجام بدهی؟';
@@ -579,7 +585,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get piped_description => 'مشکل در ارتباط با سرور در دریافت آهنگ ها';
 
   @override
-  String get piped_warning => 'برخی از آنها ممکن است خوب کارنکند.بنابراین با مسولیت خود استفاده کنید';
+  String get piped_warning =>
+      'برخی از آنها ممکن است خوب کارنکند.بنابراین با مسولیت خود استفاده کنید';
 
   @override
   String get invidious_instance => 'نمونه سرور Invidious';
@@ -588,7 +595,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get invidious_description => 'نمونه سرور Invidious برای تطبیق آهنگ';
 
   @override
-  String get invidious_warning => 'برخی از نمونه‌ها ممکن است به خوبی کار نکنند. با احتیاط استفاده کنید';
+  String get invidious_warning =>
+      'برخی از نمونه‌ها ممکن است به خوبی کار نکنند. با احتیاط استفاده کنید';
 
   @override
   String get generate => 'ایجاد';
@@ -599,13 +607,15 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get replace_downloaded_tracks => 'همه ی آهنگ های دانلود شده را جایگزین کنید';
+  String get replace_downloaded_tracks =>
+      'همه ی آهنگ های دانلود شده را جایگزین کنید';
 
   @override
   String get skip_download_tracks => 'همه ی آهنگ های دانلود شده را رد کنید';
 
   @override
-  String get do_you_want_to_replace => 'ایا میخواهید آهنگ های موجود جایگزین کنید؟';
+  String get do_you_want_to_replace =>
+      'ایا میخواهید آهنگ های موجود جایگزین کنید؟';
 
   @override
   String get replace => 'جایگزین کردن';
@@ -711,22 +721,27 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'اگر همه ی آهنگ ها را به صورت انبو دانلود کنید به وضوح در حال دزدی موسقی هستید و در حال اسیب وارد کردن به جامه ی خلاق هنری می باشید .امیدوارم که از این موضوع اگاه باشید .همیشه سعی کنید به کار سخت هنرمند اخترام بگذارید.';
+  String get download_warning =>
+      'اگر همه ی آهنگ ها را به صورت انبو دانلود کنید به وضوح در حال دزدی موسقی هستید و در حال اسیب وارد کردن به جامه ی خلاق هنری می باشید .امیدوارم که از این موضوع اگاه باشید .همیشه سعی کنید به کار سخت هنرمند اخترام بگذارید.';
 
   @override
-  String get download_ip_ban_warning => 'راستی آی پی شما می تواند در یوتوب به دلیل درخواست های دانلود بیش از حد معمول مسدود شود. بلوک آی پی به این معنی است که شما نمی توانید از یوتوب (حتی اگر وارد سیستم شده باشید) حداقل 2-3 ماه از آن دستگاه آی پی استفاده کنید. و Spotube هیچ مسئولیتی در صورت وقوع این اتفاق ندارد';
+  String get download_ip_ban_warning =>
+      'راستی آی پی شما می تواند در یوتوب به دلیل درخواست های دانلود بیش از حد معمول مسدود شود. بلوک آی پی به این معنی است که شما نمی توانید از یوتوب (حتی اگر وارد سیستم شده باشید) حداقل 2-3 ماه از آن دستگاه آی پی استفاده کنید. و Spotube هیچ مسئولیتی در صورت وقوع این اتفاق ندارد';
 
   @override
-  String get by_clicking_accept_terms => 'با کلیک بر روی قبول با شرایط زیر موافقت می کنید:';
+  String get by_clicking_accept_terms =>
+      'با کلیک بر روی قبول با شرایط زیر موافقت می کنید:';
 
   @override
   String get download_agreement_1 => 'من میدانم در حال دزدی هستم .من بد هستم';
 
   @override
-  String get download_agreement_2 => 'من هر کجا ک بتوانم از هنرمندان حمایت میکنم اما این کارا فقط به دلیل اینکه توانایی مالی ندارم انجام میدهم';
+  String get download_agreement_2 =>
+      'من هر کجا ک بتوانم از هنرمندان حمایت میکنم اما این کارا فقط به دلیل اینکه توانایی مالی ندارم انجام میدهم';
 
   @override
-  String get download_agreement_3 => 'من کاملا میدانم که از طرف یوتوب بلاک میشم و این برنامه و مالکان را مسول این حادثه نمیدانم.';
+  String get download_agreement_3 =>
+      'من کاملا میدانم که از طرف یوتوب بلاک میشم و این برنامه و مالکان را مسول این حادثه نمیدانم.';
 
   @override
   String get decline => 'قبول نکردن';
@@ -807,7 +822,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get failed_to_encrypt => 'رمز گذاری نشده';
 
   @override
-  String get encryption_failed_warning => 'Spotube از رمزگذاری برای ذخیره ایمن داده های شما استفاده می کند. اما موفق به انجام این کار نشد. بنابراین به فضای ذخیره‌سازی ناامن تبدیل می‌شود\nاگر از لینوکس استفاده می‌کنید، لطفاً مطمئن شوید که سرویس مخفی (gnome-keyring، kde-wallet، keepassxc و غیره) را نصب کرده‌اید.';
+  String get encryption_failed_warning =>
+      'Spotube از رمزگذاری برای ذخیره ایمن داده های شما استفاده می کند. اما موفق به انجام این کار نشد. بنابراین به فضای ذخیره‌سازی ناامن تبدیل می‌شود\nاگر از لینوکس استفاده می‌کنید، لطفاً مطمئن شوید که سرویس مخفی (gnome-keyring، kde-wallet، keepassxc و غیره) را نصب کرده‌اید.';
 
   @override
   String get querying_info => 'جستجو درباره ';
@@ -905,7 +921,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get friends => 'دوستان';
 
   @override
-  String get no_lyrics_available => 'متاسفیم، قادر به یافتن متن این قطعه نیستیم';
+  String get no_lyrics_available =>
+      'متاسفیم، قادر به یافتن متن این قطعه نیستیم';
 
   @override
   String get start_a_radio => 'شروع یک رادیو';
@@ -914,7 +931,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get how_to_start_radio => 'چگونه می‌خواهید رادیو را شروع کنید؟';
 
   @override
-  String get replace_queue_question => 'آیا می‌خواهید لیست پخش فعلی را جایگزین کنید یا به آن اضافه کنید؟';
+  String get replace_queue_question =>
+      'آیا می‌خواهید لیست پخش فعلی را جایگزین کنید یا به آن اضافه کنید؟';
 
   @override
   String get endless_playback => 'پخش بی‌پایان';
@@ -923,7 +941,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get delete_playlist => 'حذف لیست پخش';
 
   @override
-  String get delete_playlist_confirmation => 'آیا مطمئن هستید که می‌خواهید این لیست پخش را حذف کنید؟';
+  String get delete_playlist_confirmation =>
+      'آیا مطمئن هستید که می‌خواهید این لیست پخش را حذف کنید؟';
 
   @override
   String get local_tracks => 'موسیقی‌های محلی';
@@ -950,13 +969,15 @@ class AppLocalizationsFa extends AppLocalizations {
   String get youtube_source_description => 'پیشنهاد شده و بهترین عمل می‌کند.';
 
   @override
-  String get piped_source_description => 'احساس آزادی می‌کنید؟ مانند یوتیوب اما بیشتر آزاد.';
+  String get piped_source_description =>
+      'احساس آزادی می‌کنید؟ مانند یوتیوب اما بیشتر آزاد.';
 
   @override
   String get jiosaavn_source_description => 'بهترین برای منطقه جنوب آسیا.';
 
   @override
-  String get invidious_source_description => 'شبیه Piped اما با در دسترس بودن بیشتر';
+  String get invidious_source_description =>
+      'شبیه Piped اما با در دسترس بودن بیشتر';
 
   @override
   String highest_quality(Object quality) {
@@ -967,13 +988,15 @@ class AppLocalizationsFa extends AppLocalizations {
   String get select_audio_source => 'انتخاب منبع صوتی';
 
   @override
-  String get endless_playback_description => 'خودکار اضافه کردن آهنگ‌های جدید\nبه انتهای صف';
+  String get endless_playback_description =>
+      'خودکار اضافه کردن آهنگ‌های جدید\nبه انتهای صف';
 
   @override
   String get choose_your_region => 'منطقه خود را انتخاب کنید';
 
   @override
-  String get choose_your_region_description => 'این به Spotube کمک می‌کند تا محتوای مناسبی را برای موقعیت شما نشان دهد.';
+  String get choose_your_region_description =>
+      'این به Spotube کمک می‌کند تا محتوای مناسبی را برای موقعیت شما نشان دهد.';
 
   @override
   String get choose_your_language => 'زبان خود را انتخاب کنید';
@@ -982,7 +1005,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get help_project_grow => 'کمک به رشد این پروژه';
 
   @override
-  String get help_project_grow_description => 'Spotube یک پروژه متن باز است. شما می‌توانید با به پروژه کمک کردن، گزارش دادن اشکالات یا پیشنهاد ویژگی‌های جدید، به این پروژه کمک کنید.';
+  String get help_project_grow_description =>
+      'Spotube یک پروژه متن باز است. شما می‌توانید با به پروژه کمک کردن، گزارش دادن اشکالات یا پیشنهاد ویژگی‌های جدید، به این پروژه کمک کنید.';
 
   @override
   String get contribute_on_github => 'مشارکت در GitHub';
@@ -1076,7 +1100,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get choose_the_device => 'دستگاه را انتخاب کنید:';
 
   @override
-  String get multiple_device_connected => 'چندین دستگاه متصل هستند.\nدستگاهی را انتخاب کنید که می‌خواهید این عملیات بر روی آن انجام شود';
+  String get multiple_device_connected =>
+      'چندین دستگاه متصل هستند.\nدستگاهی را انتخاب کنید که می‌خواهید این عملیات بر روی آن انجام شود';
 
   @override
   String get nothing_found => 'چیزی پیدا نشد';
@@ -1171,7 +1196,8 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get hipotetical_calculation => '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1220,7 +1246,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get webview_not_found => 'وب‌ویو پیدا نشد';
 
   @override
-  String get webview_not_found_description => 'هیچ اجرای وب‌ویو روی دستگاه شما نصب نشده است.\nدر صورت نصب، مطمئن شوید که در environment PATH قرار دارد\n\nپس از نصب، برنامه را مجدداً راه‌اندازی کنید';
+  String get webview_not_found_description =>
+      'هیچ اجرای وب‌ویو روی دستگاه شما نصب نشده است.\nدر صورت نصب، مطمئن شوید که در environment PATH قرار دارد\n\nپس از نصب، برنامه را مجدداً راه‌اندازی کنید';
 
   @override
   String get unsupported_platform => 'پلتفرم پشتیبانی نمی‌شود';
@@ -1241,7 +1268,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get clear_cache => 'پاک کردن حافظه موقت';
 
   @override
-  String get clear_cache_confirmation => 'آیا می‌خواهید حافظه موقت را پاک کنید؟';
+  String get clear_cache_confirmation =>
+      'آیا می‌خواهید حافظه موقت را پاک کنید؟';
 
   @override
   String get export_cache_files => 'صادر کردن فایل‌های حافظه موقت';
@@ -1252,7 +1280,8 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get export_cache_confirmation => 'آیا می‌خواهید این فایل‌ها را صادر کنید به';
+  String get export_cache_confirmation =>
+      'آیا می‌خواهید این فایل‌ها را صادر کنید به';
 
   @override
   String exported_n_out_of_m_files(Object files, Object filesExported) {
@@ -1281,7 +1310,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get view_all => 'مشاهده همه';
 
   @override
-  String get no_tracks_added_yet => 'به نظر می‌رسد هنوز هیچ آهنگی اضافه نکرده‌اید.';
+  String get no_tracks_added_yet =>
+      'به نظر می‌رسد هنوز هیچ آهنگی اضافه نکرده‌اید.';
 
   @override
   String get no_tracks => 'به نظر می‌رسد هیچ آهنگی در اینجا وجود ندارد.';
@@ -1293,7 +1323,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get not_following_artists => 'شما هیچ هنرمندی را دنبال نمی‌کنید.';
 
   @override
-  String get no_favorite_albums_yet => 'به نظر می‌رسد هنوز هیچ آلبومی را به علاقه‌مندی‌هایتان اضافه نکرده‌اید.';
+  String get no_favorite_albums_yet =>
+      'به نظر می‌رسد هنوز هیچ آلبومی را به علاقه‌مندی‌هایتان اضافه نکرده‌اید.';
 
   @override
   String get no_logs_found => 'هیچ لاگی پیدا نشد';
@@ -1317,7 +1348,8 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'در macOS/Linux/سیستم‌عامل‌های مشابه Unix، تنظیم مسیر در .zshrc/.bashrc/.bash_profile و غیره کار نمی‌کند.\nباید مسیر را در فایل پیکربندی شل تنظیم کنید.';
+  String get youtube_engine_unix_issue_message =>
+      'در macOS/Linux/سیستم‌عامل‌های مشابه Unix، تنظیم مسیر در .zshrc/.bashrc/.bash_profile و غیره کار نمی‌کند.\nباید مسیر را در فایل پیکربندی شل تنظیم کنید.';
 
   @override
   String get download => 'دانلود';
@@ -1335,7 +1367,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get edit_port => 'ویرایش پورت';
 
   @override
-  String get port_helper_msg => 'پیش‌فرض -1 است که نشان‌دهنده یک عدد تصادفی است. اگر فایروال شما پیکربندی شده است، توصیه می‌شود این را تنظیم کنید.';
+  String get port_helper_msg =>
+      'پیش‌فرض -1 است که نشان‌دهنده یک عدد تصادفی است. اگر فایروال شما پیکربندی شده است، توصیه می‌شود این را تنظیم کنید.';
 
   @override
   String connect_request(Object client) {
@@ -1343,5 +1376,6 @@ class AppLocalizationsFa extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'اتصال رد شد. کاربر دسترسی را رد کرد.';
+  String get connection_request_denied =>
+      'اتصال رد شد. کاربر دسترسی را رد کرد.';
 }
