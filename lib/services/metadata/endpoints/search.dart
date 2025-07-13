@@ -10,6 +10,10 @@ class MetadataPluginSearchEndpoint {
       (hetu.fetch("metadataPlugin") as HTInstance).memberGet("search")
           as HTInstance;
 
+  List<String> get chips {
+    return (hetuMetadataSearch.memberGet("chips") as List).cast<String>();
+  }
+
   Future<SpotubeSearchResponseObject> all(String query) async {
     if (query.isEmpty) {
       return SpotubeSearchResponseObject(

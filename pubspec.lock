@@ -1226,7 +1226,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: d3720be2a92022f7b95a3082d40322d8458c70da
+      resolved-ref: "7e9032c054c547f7900c9c9fe4b76e29c8ac1cd1"
       url: "https://github.com/hetu-community/hetu_std.git"
     source: git
     version: "1.0.0"

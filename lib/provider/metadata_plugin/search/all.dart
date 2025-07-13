@@ -17,3 +17,14 @@ final metadataPluginSearchAllProvider =
     return metadataPlugin.search.all(query);
   },
 );
+
+final metadataPluginSearchChipsProvider = FutureProvider((ref) async {
+  final metadataPlugin = await ref.watch(metadataPluginProvider.future);
+
+  if (metadataPlugin == null) {
+    throw MetadataPluginException.noDefaultPlugin(
+      "No default metadata plugin found",
+    );
+  }
+  return metadataPlugin.search.chips;
+});

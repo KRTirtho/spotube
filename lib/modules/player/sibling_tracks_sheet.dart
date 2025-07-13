@@ -107,7 +107,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
           return siblingType.info;
         }));
 
-        final activeSourceInfo = activeTrackSource as TrackSourceInfo;
+        final activeSourceInfo = activeTrackSource?.info as TrackSourceInfo;
 
         return results
           ..removeWhere((element) => element.id == activeSourceInfo.id)
@@ -127,7 +127,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
             return siblingType.info;
           }),
         );
-        final activeSourceInfo = activeTrackSource as TrackSourceInfo;
+        final activeSourceInfo = activeTrackSource?.info as TrackSourceInfo;
         return searchResults
           ..removeWhere((element) => element.id == activeSourceInfo.id)
           ..insert(

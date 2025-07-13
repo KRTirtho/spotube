@@ -195,9 +195,11 @@ class ArtistPageHeader extends HookConsumerWidget {
                           Flexible(
                             child: AutoSizeText(
                               context.l10n.followers(
-                                PrimitiveUtils.toReadableNumber(
-                                  artist.followers!.toDouble(),
-                                ),
+                                artist.followers == null
+                                    ? double.infinity
+                                    : PrimitiveUtils.toReadableNumber(
+                                        artist.followers!.toDouble(),
+                                      ),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
