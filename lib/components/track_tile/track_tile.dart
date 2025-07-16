@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -70,6 +70,13 @@ class TrackTile extends HookConsumerWidget {
     final isPlaying = playlist.activeTrack?.id == track.id;
 
     final isSelected = isPlaying || isLoading.value;
+
+    final imageProvider = useMemoized(
+      () => UniversalImage.imageProvider(
+        (track.album.images).smallest(ImagePlaceholder.albumArt),
+      ),
+      [track.album.images],
+    );
 
     return LayoutBuilder(builder: (context, constrains) {
       return Listener(
@@ -147,11 +154,7 @@ class TrackTile extends HookConsumerWidget {
                         borderRadius: theme.borderRadiusMd,
                         image: DecorationImage(
                           fit: BoxFit.cover,
-                          image: UniversalImage.imageProvider(
-                            (track.album.images).asUrlString(
-                              placeholder: ImagePlaceholder.albumArt,
-                            ),
-                          ),
+                          image: imageProvider,
                         ),
                       ),
                     ),

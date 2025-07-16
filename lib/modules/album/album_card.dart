@@ -42,32 +42,36 @@ class AlbumCard extends HookConsumerWidget {
     final historyNotifier = ref.read(playbackHistoryActionsProvider);
     final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
 
-    bool isPlaylistPlaying = useMemoized(
+    final isPlaylistPlaying = useMemoized<bool>(
       () => playlist.containsCollection(album.id),
       [playlist, album.id],
     );
 
     final updating = useState(false);
 
-    Future<List<SpotubeFullTrackObject>> fetchAllTrack() async {
+    final fetchAllTrack = useCallback(() async {
       await ref.read(metadataPluginAlbumTracksProvider(album.id).future);
       return ref
           .read(metadataPluginAlbumTracksProvider(album.id).notifier)
           .fetchAll();
-    }
+    }, [album.id, ref]);
 
-    var imageUrl = album.images.asUrlString(
-      placeholder: ImagePlaceholder.collection,
+    final imageUrl = useMemoized(
+      () => album.images.from200PxTo300PxOrSmallestImage(
+        ImagePlaceholder.collection,
+      ),
+      [album.images],
     );
-    var isLoading =
+
+    final isLoading =
         (isPlaylistPlaying && isFetchingActiveTrack) || updating.value;
-    var description = "${album.albumType.name} • ${album.artists.asString()}";
+    final description = "${album.albumType.name} • ${album.artists.asString()}";
 
-    void onTap() {
+    final onTap = useCallback(() {
       context.navigateTo(AlbumRoute(id: album.id, album: album));
-    }
+    }, [context, album]);
 
-    void onPlaybuttonPressed() async {
+    final onPlaybuttonPressed = useCallback(() async {
       updating.value = true;
       try {
         if (isPlaylistPlaying) {
@@ -96,9 +100,20 @@ class AlbumCard extends HookConsumerWidget {
       } finally {
         updating.value = false;
       }
-    }
+    }, [
+      isPlaylistPlaying,
+      playing,
+      audioPlayer,
+      fetchAllTrack,
+      context,
+      ref,
+      playlistNotifier,
+      album,
+      historyNotifier,
+      updating
+    ]);
 
-    void onAddToQueuePressed() async {
+    final onAddToQueuePressed = useCallback(() async {
       if (isPlaylistPlaying) {
         return;
       }
@@ -135,7 +150,16 @@ class AlbumCard extends HookConsumerWidget {
       } finally {
         updating.value = false;
       }
-    }
+    }, [
+      isPlaylistPlaying,
+      updating.value,
+      fetchAllTrack,
+      playlistNotifier,
+      album.id,
+      historyNotifier,
+      album,
+      context
+    ]);
 
     if (_isTile) {
       return PlaybuttonTile(

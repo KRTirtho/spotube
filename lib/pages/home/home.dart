@@ -85,7 +85,7 @@ class HomePage extends HookConsumerWidget {
                   };
                 },
               ),
-              const HomePageBrowseSection(),
+              const SliverSafeArea(sliver: HomePageBrowseSection()),
             ],
           ),
         ));

@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/playbutton_view/playbutton_card.dart';
@@ -41,7 +41,8 @@ class PlaylistCard extends HookConsumerWidget {
 
     final playing =
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
-    bool isPlaylistPlaying = useMemoized(
+
+    final isPlaylistPlaying = useMemoized<bool>(
       () => playlistQueue.containsCollection(playlist.id),
       [playlistQueue, playlist.id],
     );
@@ -49,7 +50,7 @@ class PlaylistCard extends HookConsumerWidget {
     final updating = useState(false);
     final me = ref.watch(metadataPluginUserProvider);
 
-    Future<List<SpotubeTrackObject>> fetchInitialTracks() async {
+    final fetchInitialTracks = useCallback(() async {
       if (playlist.id == 'user-liked-tracks') {
         final tracks = await ref.read(metadataPluginSavedTracksProvider.future);
         return tracks.items;
@@ -59,9 +60,9 @@ class PlaylistCard extends HookConsumerWidget {
           .read(metadataPluginPlaylistTracksProvider(playlist.id).future);
 
       return result.items;
-    }
+    }, [playlist.id, ref]);
 
-    Future<List<SpotubeTrackObject>> fetchAllTracks() async {
+    final fetchAllTracks = useCallback(() async {
       await fetchInitialTracks();
 
       if (playlist.id == 'user-liked-tracks') {
@@ -71,13 +72,13 @@ class PlaylistCard extends HookConsumerWidget {
       return ref
           .read(metadataPluginPlaylistTracksProvider(playlist.id).notifier)
           .fetchAll();
-    }
+    }, [playlist.id, ref, fetchInitialTracks]);
 
-    void onTap() {
+    final onTap = useCallback(() {
       context.navigateTo(PlaylistRoute(id: playlist.id, playlist: playlist));
-    }
+    }, [context, playlist]);
 
-    void onPlaybuttonPressed() async {
+    final onPlaybuttonPressed = useCallback(() async {
       try {
         updating.value = true;
         if (isPlaylistPlaying && playing) {
@@ -97,7 +98,7 @@ class PlaylistCard extends HookConsumerWidget {
           final allTracks = await fetchAllTracks();
           await remotePlayback.load(
             WebSocketLoadEventData.playlist(
-              tracks: allTracks as List<SpotubeFullTrackObject>,
+              tracks: allTracks,
               collection: playlist,
             ),
           );
@@ -116,9 +117,23 @@ class PlaylistCard extends HookConsumerWidget {
           updating.value = false;
         }
       }
-    }
+    }, [
+      isPlaylistPlaying,
+      playing,
+      fetchInitialTracks,
+      context,
+      showSelectDeviceDialog,
+      ref,
+      connectProvider,
+      fetchAllTracks,
+      playlistNotifier,
+      playlist.id,
+      historyNotifier,
+      playlist,
+      updating
+    ]);
 
-    void onAddToQueuePressed() async {
+    final onAddToQueuePressed = useCallback(() async {
       updating.value = true;
       try {
         if (isPlaylistPlaying) return;
@@ -155,11 +170,24 @@ class PlaylistCard extends HookConsumerWidget {
       } finally {
         updating.value = false;
       }
-    }
+    }, [
+      isPlaylistPlaying,
+      fetchAllTracks,
+      playlistNotifier,
+      playlist.id,
+      historyNotifier,
+      playlist,
+      context,
+      updating
+    ]);
 
-    final imageUrl = playlist.images.asUrlString(
-      placeholder: ImagePlaceholder.collection,
+    final imageUrl = useMemoized(
+      () => playlist.images.from200PxTo300PxOrSmallestImage(
+        ImagePlaceholder.collection,
+      ),
+      [playlist.images],
     );
+
     final isLoading =
         (isPlaylistPlaying && isFetchingActiveTrack) || updating.value;
     final isOwner = playlist.owner.id == me.asData?.value?.id &&
