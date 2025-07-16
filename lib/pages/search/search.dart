@@ -17,7 +17,7 @@ import 'package:spotube/pages/search/tabs/all.dart';
 import 'package:spotube/pages/search/tabs/artists.dart';
 import 'package:spotube/pages/search/tabs/playlists.dart';
 import 'package:spotube/pages/search/tabs/tracks.dart';
-import 'package:spotube/provider/metadata_plugin/auth.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/search/all.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:auto_route/auto_route.dart';

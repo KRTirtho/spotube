@@ -15,7 +15,7 @@ import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
-import 'package:spotube/provider/metadata_plugin/user.dart';
+import 'package:spotube/provider/metadata_plugin/core/user.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 class PlaylistCard extends HookConsumerWidget {

@@ -4815,3 +4815,216 @@ abstract class _PluginConfiguration extends PluginConfiguration {
   _$$PluginConfigurationImplCopyWith<_$PluginConfigurationImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
+
+MetadataPluginRepository _$MetadataPluginRepositoryFromJson(
+    Map<String, dynamic> json) {
+  return _MetadataPluginRepository.fromJson(json);
+}
+
+/// @nodoc
+mixin _$MetadataPluginRepository {
+  String get name => throw _privateConstructorUsedError;
+  String get owner => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
+  String get repoUrl => throw _privateConstructorUsedError;
+
+  /// Serializes this MetadataPluginRepository to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of MetadataPluginRepository
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $MetadataPluginRepositoryCopyWith<MetadataPluginRepository> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $MetadataPluginRepositoryCopyWith<$Res> {
+  factory $MetadataPluginRepositoryCopyWith(MetadataPluginRepository value,
+          $Res Function(MetadataPluginRepository) then) =
+      _$MetadataPluginRepositoryCopyWithImpl<$Res, MetadataPluginRepository>;
+  @useResult
+  $Res call({String name, String owner, String description, String repoUrl});
+}
+
+/// @nodoc
+class _$MetadataPluginRepositoryCopyWithImpl<$Res,
+        $Val extends MetadataPluginRepository>
+    implements $MetadataPluginRepositoryCopyWith<$Res> {
+  _$MetadataPluginRepositoryCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of MetadataPluginRepository
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? owner = null,
+    Object? description = null,
+    Object? repoUrl = null,
+  }) {
+    return _then(_value.copyWith(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      owner: null == owner
+          ? _value.owner
+          : owner // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      repoUrl: null == repoUrl
+          ? _value.repoUrl
+          : repoUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$MetadataPluginRepositoryImplCopyWith<$Res>
+    implements $MetadataPluginRepositoryCopyWith<$Res> {
+  factory _$$MetadataPluginRepositoryImplCopyWith(
+          _$MetadataPluginRepositoryImpl value,
+          $Res Function(_$MetadataPluginRepositoryImpl) then) =
+      __$$MetadataPluginRepositoryImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String name, String owner, String description, String repoUrl});
+}
+
+/// @nodoc
+class __$$MetadataPluginRepositoryImplCopyWithImpl<$Res>
+    extends _$MetadataPluginRepositoryCopyWithImpl<$Res,
+        _$MetadataPluginRepositoryImpl>
+    implements _$$MetadataPluginRepositoryImplCopyWith<$Res> {
+  __$$MetadataPluginRepositoryImplCopyWithImpl(
+      _$MetadataPluginRepositoryImpl _value,
+      $Res Function(_$MetadataPluginRepositoryImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of MetadataPluginRepository
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = null,
+    Object? owner = null,
+    Object? description = null,
+    Object? repoUrl = null,
+  }) {
+    return _then(_$MetadataPluginRepositoryImpl(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      owner: null == owner
+          ? _value.owner
+          : owner // ignore: cast_nullable_to_non_nullable
+              as String,
+      description: null == description
+          ? _value.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String,
+      repoUrl: null == repoUrl
+          ? _value.repoUrl
+          : repoUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$MetadataPluginRepositoryImpl implements _MetadataPluginRepository {
+  _$MetadataPluginRepositoryImpl(
+      {required this.name,
+      required this.owner,
+      required this.description,
+      required this.repoUrl});
+
+  factory _$MetadataPluginRepositoryImpl.fromJson(Map<String, dynamic> json) =>
+      _$$MetadataPluginRepositoryImplFromJson(json);
+
+  @override
+  final String name;
+  @override
+  final String owner;
+  @override
+  final String description;
+  @override
+  final String repoUrl;
+
+  @override
+  String toString() {
+    return 'MetadataPluginRepository(name: $name, owner: $owner, description: $description, repoUrl: $repoUrl)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$MetadataPluginRepositoryImpl &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.owner, owner) || other.owner == owner) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.repoUrl, repoUrl) || other.repoUrl == repoUrl));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, name, owner, description, repoUrl);
+
+  /// Create a copy of MetadataPluginRepository
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$MetadataPluginRepositoryImplCopyWith<_$MetadataPluginRepositoryImpl>
+      get copyWith => __$$MetadataPluginRepositoryImplCopyWithImpl<
+          _$MetadataPluginRepositoryImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$MetadataPluginRepositoryImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _MetadataPluginRepository implements MetadataPluginRepository {
+  factory _MetadataPluginRepository(
+      {required final String name,
+      required final String owner,
+      required final String description,
+      required final String repoUrl}) = _$MetadataPluginRepositoryImpl;
+
+  factory _MetadataPluginRepository.fromJson(Map<String, dynamic> json) =
+      _$MetadataPluginRepositoryImpl.fromJson;
+
+  @override
+  String get name;
+  @override
+  String get owner;
+  @override
+  String get description;
+  @override
+  String get repoUrl;
+
+  /// Create a copy of MetadataPluginRepository
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$MetadataPluginRepositoryImplCopyWith<_$MetadataPluginRepositoryImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}

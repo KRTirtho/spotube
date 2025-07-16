@@ -27,3 +27,4 @@ part 'track.dart';
 part 'user.dart';
 
 part 'plugin.dart';
+part 'repository.dart';

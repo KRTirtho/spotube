@@ -137,4 +137,6 @@ abstract class SpotubeIcons {
   static const extensions = FeatherIcons.package;
   static const message = FeatherIcons.send;
   static const upload = FeatherIcons.uploadCloud;
+  static const plugin = Icons.extension_outlined;
+  static const warning = FeatherIcons.alertTriangle;
 }

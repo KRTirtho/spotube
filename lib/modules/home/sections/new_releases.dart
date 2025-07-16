@@ -4,7 +4,7 @@ import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_pl
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/album/releases.dart';
-import 'package:spotube/provider/metadata_plugin/auth.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
 class HomeNewReleasesSection extends HookConsumerWidget {

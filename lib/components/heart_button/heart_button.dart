@@ -4,9 +4,9 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/components/heart_button/use_track_toggle_like.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/provider/metadata_plugin/auth.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
-import 'package:spotube/provider/metadata_plugin/user.dart';
+import 'package:spotube/provider/metadata_plugin/core/user.dart';
 
 class HeartButton extends HookConsumerWidget {
   final bool isLiked;

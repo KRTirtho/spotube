@@ -26,11 +26,11 @@ import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/metadata_plugin/auth.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
-import 'package:spotube/provider/metadata_plugin/user.dart';
+import 'package:spotube/provider/metadata_plugin/core/user.dart';
 import 'package:spotube/services/metadata/endpoints/error.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';

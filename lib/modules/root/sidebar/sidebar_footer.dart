@@ -11,8 +11,8 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/connect/connect_device.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/metadata_plugin/auth.dart';
-import 'package:spotube/provider/metadata_plugin/user.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
+import 'package:spotube/provider/metadata_plugin/core/user.dart';
 
 class SidebarFooter extends HookConsumerWidget implements NavigationBarItem {
   const SidebarFooter({

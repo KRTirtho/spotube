@@ -12,7 +12,7 @@ import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/metadata_plugin/artist/artist.dart';
-import 'package:spotube/provider/metadata_plugin/auth.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/artists.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 

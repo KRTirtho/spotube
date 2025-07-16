@@ -462,3 +462,21 @@ const _$PluginApisEnumMap = {
 const _$PluginAbilitiesEnumMap = {
   PluginAbilities.authentication: 'authentication',
 };
+
+_$MetadataPluginRepositoryImpl _$$MetadataPluginRepositoryImplFromJson(
+        Map json) =>
+    _$MetadataPluginRepositoryImpl(
+      name: json['name'] as String,
+      owner: json['owner'] as String,
+      description: json['description'] as String,
+      repoUrl: json['repoUrl'] as String,
+    );
+
+Map<String, dynamic> _$$MetadataPluginRepositoryImplToJson(
+        _$MetadataPluginRepositoryImpl instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'owner': instance.owner,
+      'description': instance.description,
+      'repoUrl': instance.repoUrl,
+    };

@@ -18,7 +18,7 @@ import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
-import 'package:spotube/provider/metadata_plugin/auth.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/sleep_timer_provider.dart';
 
 class PlayerActions extends HookConsumerWidget {

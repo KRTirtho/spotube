@@ -130,7 +130,11 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     final parsedUri = Uri.parse(repoUrl);
     final uri = parsedUri.replace(
       host: "api.github.com",
-      path: "/repos/${parsedUri.path}/releases",
+      pathSegments: [
+        "repos",
+        ...parsedUri.pathSegments,
+        "releases",
+      ],
       queryParameters: {
         "per_page": "1",
         "page": "1",
@@ -143,7 +147,13 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
   Uri _getCodebergeReleasesUrl(String repoUrl) {
     final parsedUri = Uri.parse(repoUrl);
     final uri = parsedUri.replace(
-      path: "/api/v1/repos/${parsedUri.path}/releases",
+      pathSegments: [
+        "api",
+        "v1",
+        "repos",
+        ...parsedUri.pathSegments,
+        "releases",
+      ],
       queryParameters: {
         "limit": "1",
         "page": "1",
@@ -154,6 +164,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
   }
 
   Future<String> _getPluginDownloadUrl(Uri uri) async {
+    print("Getting plugin download URL from: $uri");
     final res = await globalDio.getUri(
       uri,
       options: Options(responseType: ResponseType.json),
@@ -227,8 +238,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
   Future<PluginConfiguration> downloadAndCachePlugin(String url) async {
     final res = await globalDio.head(url);
     final isSupportedWebsite =
-        (res.headers["Content-Type"] as String?)?.startsWith("text/html") ==
-                true &&
+        (res.headers["Content-Type"]?.first)?.startsWith("text/html") == true &&
             allowedDomainsRegex.hasMatch(url);
     String pluginDownloadUrl = url;
     if (isSupportedWebsite) {
@@ -328,6 +338,22 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     }
 
     return await libraryFile.readAsBytes();
+  }
+
+  Future<File?> getLogoPath(PluginConfiguration plugin) async {
+    final pluginDir = await _getPluginDir();
+    final pluginExtractionDirPath = join(
+      pluginDir.path,
+      ServiceUtils.sanitizeFilename(plugin.name),
+    );
+
+    final logoFile = File(join(pluginExtractionDirPath, "logo.png"));
+
+    if (!logoFile.existsSync()) {
+      return null;
+    }
+
+    return logoFile;
   }
 }
 

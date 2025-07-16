@@ -7,7 +7,7 @@ import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
-import 'package:spotube/provider/metadata_plugin/user.dart';
+import 'package:spotube/provider/metadata_plugin/core/user.dart';
 
 class PlaylistAddTrackDialog extends HookConsumerWidget {
   /// The id of the playlist this dialog was opened from

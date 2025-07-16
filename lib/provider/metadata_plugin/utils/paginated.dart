@@ -27,8 +27,7 @@ mixin PaginatedAsyncNotifierMixin<K>
             state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
         final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
-        return newState.copyWith(items: <K>[...oldItems, ...items])
-            as SpotubePaginationResponseObject<K>;
+        return newState.copyWith(items: <K>[...oldItems, ...items]);
       },
     );
   }
@@ -48,8 +47,7 @@ mixin PaginatedAsyncNotifierMixin<K>
         hasMore = newState.hasMore;
         final oldItems = state.items.isEmpty ? <K>[] : state.items.cast<K>();
         final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
-        return newState.copyWith(items: <K>[...oldItems, ...items])
-            as SpotubePaginationResponseObject<K>;
+        return newState.copyWith(items: <K>[...oldItems, ...items]);
       });
     }
 
