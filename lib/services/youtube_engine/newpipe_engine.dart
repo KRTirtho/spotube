@@ -110,4 +110,7 @@ class NewPipeEngine implements YouTubeEngine {
 
     return resultsWithVideos;
   }
+
+  @override
+  void dispose() {}
 }
