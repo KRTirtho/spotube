@@ -3878,6 +3878,18 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("selected" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _repositoryMeta =
+      const VerificationMeta('repository');
+  @override
+  late final GeneratedColumn<String> repository = GeneratedColumn<String>(
+      'repository', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  static const VerificationMeta _pluginApiVersionMeta =
+      const VerificationMeta('pluginApiVersion');
+  @override
+  late final GeneratedColumn<String> pluginApiVersion = GeneratedColumn<String>(
+      'plugin_api_version', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -3888,7 +3900,9 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
         entryPoint,
         apis,
         abilities,
-        selected
+        selected,
+        repository,
+        pluginApiVersion
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3944,6 +3958,20 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
       context.handle(_selectedMeta,
           selected.isAcceptableOrUnknown(data['selected']!, _selectedMeta));
     }
+    if (data.containsKey('repository')) {
+      context.handle(
+          _repositoryMeta,
+          repository.isAcceptableOrUnknown(
+              data['repository']!, _repositoryMeta));
+    }
+    if (data.containsKey('plugin_api_version')) {
+      context.handle(
+          _pluginApiVersionMeta,
+          pluginApiVersion.isAcceptableOrUnknown(
+              data['plugin_api_version']!, _pluginApiVersionMeta));
+    } else if (isInserting) {
+      context.missing(_pluginApiVersionMeta);
+    }
     return context;
   }
 
@@ -3974,6 +4002,10 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
               .read(DriftSqlType.string, data['${effectivePrefix}abilities'])!),
       selected: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}selected'])!,
+      repository: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}repository']),
+      pluginApiVersion: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}plugin_api_version'])!,
     );
   }
 
@@ -3999,6 +4031,8 @@ class MetadataPluginsTableData extends DataClass
   final List<String> apis;
   final List<String> abilities;
   final bool selected;
+  final String? repository;
+  final String pluginApiVersion;
   const MetadataPluginsTableData(
       {required this.id,
       required this.name,
@@ -4008,7 +4042,9 @@ class MetadataPluginsTableData extends DataClass
       required this.entryPoint,
       required this.apis,
       required this.abilities,
-      required this.selected});
+      required this.selected,
+      this.repository,
+      required this.pluginApiVersion});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -4027,6 +4063,10 @@ class MetadataPluginsTableData extends DataClass
           $MetadataPluginsTableTable.$converterabilities.toSql(abilities));
     }
     map['selected'] = Variable<bool>(selected);
+    if (!nullToAbsent || repository != null) {
+      map['repository'] = Variable<String>(repository);
+    }
+    map['plugin_api_version'] = Variable<String>(pluginApiVersion);
     return map;
   }
 
@@ -4041,6 +4081,10 @@ class MetadataPluginsTableData extends DataClass
       apis: Value(apis),
       abilities: Value(abilities),
       selected: Value(selected),
+      repository: repository == null && nullToAbsent
+          ? const Value.absent()
+          : Value(repository),
+      pluginApiVersion: Value(pluginApiVersion),
     );
   }
 
@@ -4057,6 +4101,8 @@ class MetadataPluginsTableData extends DataClass
       apis: serializer.fromJson<List<String>>(json['apis']),
       abilities: serializer.fromJson<List<String>>(json['abilities']),
       selected: serializer.fromJson<bool>(json['selected']),
+      repository: serializer.fromJson<String?>(json['repository']),
+      pluginApiVersion: serializer.fromJson<String>(json['pluginApiVersion']),
     );
   }
   @override
@@ -4072,6 +4118,8 @@ class MetadataPluginsTableData extends DataClass
       'apis': serializer.toJson<List<String>>(apis),
       'abilities': serializer.toJson<List<String>>(abilities),
       'selected': serializer.toJson<bool>(selected),
+      'repository': serializer.toJson<String?>(repository),
+      'pluginApiVersion': serializer.toJson<String>(pluginApiVersion),
     };
   }
 
@@ -4084,7 +4132,9 @@ class MetadataPluginsTableData extends DataClass
           String? entryPoint,
           List<String>? apis,
           List<String>? abilities,
-          bool? selected}) =>
+          bool? selected,
+          Value<String?> repository = const Value.absent(),
+          String? pluginApiVersion}) =>
       MetadataPluginsTableData(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -4095,6 +4145,8 @@ class MetadataPluginsTableData extends DataClass
         apis: apis ?? this.apis,
         abilities: abilities ?? this.abilities,
         selected: selected ?? this.selected,
+        repository: repository.present ? repository.value : this.repository,
+        pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
       );
   MetadataPluginsTableData copyWithCompanion(
       MetadataPluginsTableCompanion data) {
@@ -4110,6 +4162,11 @@ class MetadataPluginsTableData extends DataClass
       apis: data.apis.present ? data.apis.value : this.apis,
       abilities: data.abilities.present ? data.abilities.value : this.abilities,
       selected: data.selected.present ? data.selected.value : this.selected,
+      repository:
+          data.repository.present ? data.repository.value : this.repository,
+      pluginApiVersion: data.pluginApiVersion.present
+          ? data.pluginApiVersion.value
+          : this.pluginApiVersion,
     );
   }
 
@@ -4124,14 +4181,16 @@ class MetadataPluginsTableData extends DataClass
           ..write('entryPoint: $entryPoint, ')
           ..write('apis: $apis, ')
           ..write('abilities: $abilities, ')
-          ..write('selected: $selected')
+          ..write('selected: $selected, ')
+          ..write('repository: $repository, ')
+          ..write('pluginApiVersion: $pluginApiVersion')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, name, description, version, author,
-      entryPoint, apis, abilities, selected);
+      entryPoint, apis, abilities, selected, repository, pluginApiVersion);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -4144,7 +4203,9 @@ class MetadataPluginsTableData extends DataClass
           other.entryPoint == this.entryPoint &&
           other.apis == this.apis &&
           other.abilities == this.abilities &&
-          other.selected == this.selected);
+          other.selected == this.selected &&
+          other.repository == this.repository &&
+          other.pluginApiVersion == this.pluginApiVersion);
 }
 
 class MetadataPluginsTableCompanion
@@ -4158,6 +4219,8 @@ class MetadataPluginsTableCompanion
   final Value<List<String>> apis;
   final Value<List<String>> abilities;
   final Value<bool> selected;
+  final Value<String?> repository;
+  final Value<String> pluginApiVersion;
   const MetadataPluginsTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -4168,6 +4231,8 @@ class MetadataPluginsTableCompanion
     this.apis = const Value.absent(),
     this.abilities = const Value.absent(),
     this.selected = const Value.absent(),
+    this.repository = const Value.absent(),
+    this.pluginApiVersion = const Value.absent(),
   });
   MetadataPluginsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -4179,13 +4244,16 @@ class MetadataPluginsTableCompanion
     required List<String> apis,
     required List<String> abilities,
     this.selected = const Value.absent(),
+    this.repository = const Value.absent(),
+    required String pluginApiVersion,
   })  : name = Value(name),
         description = Value(description),
         version = Value(version),
         author = Value(author),
         entryPoint = Value(entryPoint),
         apis = Value(apis),
-        abilities = Value(abilities);
+        abilities = Value(abilities),
+        pluginApiVersion = Value(pluginApiVersion);
   static Insertable<MetadataPluginsTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -4196,6 +4264,8 @@ class MetadataPluginsTableCompanion
     Expression<String>? apis,
     Expression<String>? abilities,
     Expression<bool>? selected,
+    Expression<String>? repository,
+    Expression<String>? pluginApiVersion,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -4207,6 +4277,8 @@ class MetadataPluginsTableCompanion
       if (apis != null) 'apis': apis,
       if (abilities != null) 'abilities': abilities,
       if (selected != null) 'selected': selected,
+      if (repository != null) 'repository': repository,
+      if (pluginApiVersion != null) 'plugin_api_version': pluginApiVersion,
     });
   }
 
@@ -4219,7 +4291,9 @@ class MetadataPluginsTableCompanion
       Value<String>? entryPoint,
       Value<List<String>>? apis,
       Value<List<String>>? abilities,
-      Value<bool>? selected}) {
+      Value<bool>? selected,
+      Value<String?>? repository,
+      Value<String>? pluginApiVersion}) {
     return MetadataPluginsTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -4230,6 +4304,8 @@ class MetadataPluginsTableCompanion
       apis: apis ?? this.apis,
       abilities: abilities ?? this.abilities,
       selected: selected ?? this.selected,
+      repository: repository ?? this.repository,
+      pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
     );
   }
 
@@ -4266,6 +4342,12 @@ class MetadataPluginsTableCompanion
     if (selected.present) {
       map['selected'] = Variable<bool>(selected.value);
     }
+    if (repository.present) {
+      map['repository'] = Variable<String>(repository.value);
+    }
+    if (pluginApiVersion.present) {
+      map['plugin_api_version'] = Variable<String>(pluginApiVersion.value);
+    }
     return map;
   }
 
@@ -4280,7 +4362,9 @@ class MetadataPluginsTableCompanion
           ..write('entryPoint: $entryPoint, ')
           ..write('apis: $apis, ')
           ..write('abilities: $abilities, ')
-          ..write('selected: $selected')
+          ..write('selected: $selected, ')
+          ..write('repository: $repository, ')
+          ..write('pluginApiVersion: $pluginApiVersion')
           ..write(')'))
         .toString();
   }
@@ -6280,6 +6364,8 @@ typedef $$MetadataPluginsTableTableCreateCompanionBuilder
   required List<String> apis,
   required List<String> abilities,
   Value<bool> selected,
+  Value<String?> repository,
+  required String pluginApiVersion,
 });
 typedef $$MetadataPluginsTableTableUpdateCompanionBuilder
     = MetadataPluginsTableCompanion Function({
@@ -6292,6 +6378,8 @@ typedef $$MetadataPluginsTableTableUpdateCompanionBuilder
   Value<List<String>> apis,
   Value<List<String>> abilities,
   Value<bool> selected,
+  Value<String?> repository,
+  Value<String> pluginApiVersion,
 });
 
 class $$MetadataPluginsTableTableFilterComposer
@@ -6333,6 +6421,13 @@ class $$MetadataPluginsTableTableFilterComposer
 
   ColumnFilters<bool> get selected => $composableBuilder(
       column: $table.selected, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get repository => $composableBuilder(
+      column: $table.repository, builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<String> get pluginApiVersion => $composableBuilder(
+      column: $table.pluginApiVersion,
+      builder: (column) => ColumnFilters(column));
 }
 
 class $$MetadataPluginsTableTableOrderingComposer
@@ -6370,6 +6465,13 @@ class $$MetadataPluginsTableTableOrderingComposer
 
   ColumnOrderings<bool> get selected => $composableBuilder(
       column: $table.selected, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get repository => $composableBuilder(
+      column: $table.repository, builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<String> get pluginApiVersion => $composableBuilder(
+      column: $table.pluginApiVersion,
+      builder: (column) => ColumnOrderings(column));
 }
 
 class $$MetadataPluginsTableTableAnnotationComposer
@@ -6407,6 +6509,12 @@ class $$MetadataPluginsTableTableAnnotationComposer
 
   GeneratedColumn<bool> get selected =>
       $composableBuilder(column: $table.selected, builder: (column) => column);
+
+  GeneratedColumn<String> get repository => $composableBuilder(
+      column: $table.repository, builder: (column) => column);
+
+  GeneratedColumn<String> get pluginApiVersion => $composableBuilder(
+      column: $table.pluginApiVersion, builder: (column) => column);
 }
 
 class $$MetadataPluginsTableTableTableManager extends RootTableManager<
@@ -6448,6 +6556,8 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             Value<List<String>> apis = const Value.absent(),
             Value<List<String>> abilities = const Value.absent(),
             Value<bool> selected = const Value.absent(),
+            Value<String?> repository = const Value.absent(),
+            Value<String> pluginApiVersion = const Value.absent(),
           }) =>
               MetadataPluginsTableCompanion(
             id: id,
@@ -6459,6 +6569,8 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             apis: apis,
             abilities: abilities,
             selected: selected,
+            repository: repository,
+            pluginApiVersion: pluginApiVersion,
           ),
           createCompanionCallback: ({
             Value<int> id = const Value.absent(),
@@ -6470,6 +6582,8 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             required List<String> apis,
             required List<String> abilities,
             Value<bool> selected = const Value.absent(),
+            Value<String?> repository = const Value.absent(),
+            required String pluginApiVersion,
           }) =>
               MetadataPluginsTableCompanion.insert(
             id: id,
@@ -6481,6 +6595,8 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             apis: apis,
             abilities: abilities,
             selected: selected,
+            repository: repository,
+            pluginApiVersion: pluginApiVersion,
           ),
           withReferenceMapper: (p0) => p0
               .map((e) => (e.readTable(table), BaseReferences(db, table, e)))

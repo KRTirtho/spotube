@@ -17,8 +17,10 @@ class PluginConfiguration with _$PluginConfiguration {
     required String version,
     required String author,
     required String entryPoint,
+    required String pluginApiVersion,
     @Default([]) List<PluginApis> apis,
     @Default([]) List<PluginAbilities> abilities,
+    String? repository,
   }) = _PluginConfiguration;
 
   factory PluginConfiguration.fromJson(Map<String, dynamic> json) =>

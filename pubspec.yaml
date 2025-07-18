@@ -129,7 +129,7 @@ dependencies:
   wikipedia_api: ^0.1.0
   win32_registry: ^1.1.5
   window_manager: ^0.4.3
-  youtube_explode_dart: ^2.4.2
+  youtube_explode_dart: ^2.5.1
   yt_dlp_dart:
     git:
       url: https://github.com/KRTirtho/yt_dlp_dart.git

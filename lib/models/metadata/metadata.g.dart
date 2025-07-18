@@ -425,6 +425,7 @@ _$PluginConfigurationImpl _$$PluginConfigurationImplFromJson(Map json) =>
       version: json['version'] as String,
       author: json['author'] as String,
       entryPoint: json['entryPoint'] as String,
+      pluginApiVersion: json['pluginApiVersion'] as String,
       apis: (json['apis'] as List<dynamic>?)
               ?.map((e) => $enumDecode(_$PluginApisEnumMap, e))
               .toList() ??
@@ -433,6 +434,7 @@ _$PluginConfigurationImpl _$$PluginConfigurationImplFromJson(Map json) =>
               ?.map((e) => $enumDecode(_$PluginAbilitiesEnumMap, e))
               .toList() ??
           const [],
+      repository: json['repository'] as String?,
     );
 
 Map<String, dynamic> _$$PluginConfigurationImplToJson(
@@ -444,9 +446,11 @@ Map<String, dynamic> _$$PluginConfigurationImplToJson(
       'version': instance.version,
       'author': instance.author,
       'entryPoint': instance.entryPoint,
+      'pluginApiVersion': instance.pluginApiVersion,
       'apis': instance.apis.map((e) => _$PluginApisEnumMap[e]!).toList(),
       'abilities':
           instance.abilities.map((e) => _$PluginAbilitiesEnumMap[e]!).toList(),
+      'repository': instance.repository,
     };
 
 const _$PluginTypeEnumMap = {

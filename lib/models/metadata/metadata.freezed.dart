@@ -4505,8 +4505,10 @@ mixin _$PluginConfiguration {
   String get version => throw _privateConstructorUsedError;
   String get author => throw _privateConstructorUsedError;
   String get entryPoint => throw _privateConstructorUsedError;
+  String get pluginApiVersion => throw _privateConstructorUsedError;
   List<PluginApis> get apis => throw _privateConstructorUsedError;
   List<PluginAbilities> get abilities => throw _privateConstructorUsedError;
+  String? get repository => throw _privateConstructorUsedError;
 
   /// Serializes this PluginConfiguration to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -4531,8 +4533,10 @@ abstract class $PluginConfigurationCopyWith<$Res> {
       String version,
       String author,
       String entryPoint,
+      String pluginApiVersion,
       List<PluginApis> apis,
-      List<PluginAbilities> abilities});
+      List<PluginAbilities> abilities,
+      String? repository});
 }
 
 /// @nodoc
@@ -4556,8 +4560,10 @@ class _$PluginConfigurationCopyWithImpl<$Res, $Val extends PluginConfiguration>
     Object? version = null,
     Object? author = null,
     Object? entryPoint = null,
+    Object? pluginApiVersion = null,
     Object? apis = null,
     Object? abilities = null,
+    Object? repository = freezed,
   }) {
     return _then(_value.copyWith(
       type: null == type
@@ -4584,6 +4590,10 @@ class _$PluginConfigurationCopyWithImpl<$Res, $Val extends PluginConfiguration>
           ? _value.entryPoint
           : entryPoint // ignore: cast_nullable_to_non_nullable
               as String,
+      pluginApiVersion: null == pluginApiVersion
+          ? _value.pluginApiVersion
+          : pluginApiVersion // ignore: cast_nullable_to_non_nullable
+              as String,
       apis: null == apis
           ? _value.apis
           : apis // ignore: cast_nullable_to_non_nullable
@@ -4592,6 +4602,10 @@ class _$PluginConfigurationCopyWithImpl<$Res, $Val extends PluginConfiguration>
           ? _value.abilities
           : abilities // ignore: cast_nullable_to_non_nullable
               as List<PluginAbilities>,
+      repository: freezed == repository
+          ? _value.repository
+          : repository // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -4611,8 +4625,10 @@ abstract class _$$PluginConfigurationImplCopyWith<$Res>
       String version,
       String author,
       String entryPoint,
+      String pluginApiVersion,
       List<PluginApis> apis,
-      List<PluginAbilities> abilities});
+      List<PluginAbilities> abilities,
+      String? repository});
 }
 
 /// @nodoc
@@ -4634,8 +4650,10 @@ class __$$PluginConfigurationImplCopyWithImpl<$Res>
     Object? version = null,
     Object? author = null,
     Object? entryPoint = null,
+    Object? pluginApiVersion = null,
     Object? apis = null,
     Object? abilities = null,
+    Object? repository = freezed,
   }) {
     return _then(_$PluginConfigurationImpl(
       type: null == type
@@ -4662,6 +4680,10 @@ class __$$PluginConfigurationImplCopyWithImpl<$Res>
           ? _value.entryPoint
           : entryPoint // ignore: cast_nullable_to_non_nullable
               as String,
+      pluginApiVersion: null == pluginApiVersion
+          ? _value.pluginApiVersion
+          : pluginApiVersion // ignore: cast_nullable_to_non_nullable
+              as String,
       apis: null == apis
           ? _value._apis
           : apis // ignore: cast_nullable_to_non_nullable
@@ -4670,6 +4692,10 @@ class __$$PluginConfigurationImplCopyWithImpl<$Res>
           ? _value._abilities
           : abilities // ignore: cast_nullable_to_non_nullable
               as List<PluginAbilities>,
+      repository: freezed == repository
+          ? _value.repository
+          : repository // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -4684,8 +4710,10 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
       required this.version,
       required this.author,
       required this.entryPoint,
+      required this.pluginApiVersion,
       final List<PluginApis> apis = const [],
-      final List<PluginAbilities> abilities = const []})
+      final List<PluginAbilities> abilities = const [],
+      this.repository})
       : _apis = apis,
         _abilities = abilities,
         super._();
@@ -4705,6 +4733,8 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
   final String author;
   @override
   final String entryPoint;
+  @override
+  final String pluginApiVersion;
   final List<PluginApis> _apis;
   @override
   @JsonKey()
@@ -4724,8 +4754,11 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
   }
 
   @override
+  final String? repository;
+
+  @override
   String toString() {
-    return 'PluginConfiguration(type: $type, name: $name, description: $description, version: $version, author: $author, entryPoint: $entryPoint, apis: $apis, abilities: $abilities)';
+    return 'PluginConfiguration(type: $type, name: $name, description: $description, version: $version, author: $author, entryPoint: $entryPoint, pluginApiVersion: $pluginApiVersion, apis: $apis, abilities: $abilities, repository: $repository)';
   }
 
   @override
@@ -4741,9 +4774,13 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
             (identical(other.author, author) || other.author == author) &&
             (identical(other.entryPoint, entryPoint) ||
                 other.entryPoint == entryPoint) &&
+            (identical(other.pluginApiVersion, pluginApiVersion) ||
+                other.pluginApiVersion == pluginApiVersion) &&
             const DeepCollectionEquality().equals(other._apis, _apis) &&
             const DeepCollectionEquality()
-                .equals(other._abilities, _abilities));
+                .equals(other._abilities, _abilities) &&
+            (identical(other.repository, repository) ||
+                other.repository == repository));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -4756,8 +4793,10 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
       version,
       author,
       entryPoint,
+      pluginApiVersion,
       const DeepCollectionEquality().hash(_apis),
-      const DeepCollectionEquality().hash(_abilities));
+      const DeepCollectionEquality().hash(_abilities),
+      repository);
 
   /// Create a copy of PluginConfiguration
   /// with the given fields replaced by the non-null parameter values.
@@ -4784,8 +4823,10 @@ abstract class _PluginConfiguration extends PluginConfiguration {
       required final String version,
       required final String author,
       required final String entryPoint,
+      required final String pluginApiVersion,
       final List<PluginApis> apis,
-      final List<PluginAbilities> abilities}) = _$PluginConfigurationImpl;
+      final List<PluginAbilities> abilities,
+      final String? repository}) = _$PluginConfigurationImpl;
   _PluginConfiguration._() : super._();
 
   factory _PluginConfiguration.fromJson(Map<String, dynamic> json) =
@@ -4804,9 +4845,13 @@ abstract class _PluginConfiguration extends PluginConfiguration {
   @override
   String get entryPoint;
   @override
+  String get pluginApiVersion;
+  @override
   List<PluginApis> get apis;
   @override
   List<PluginAbilities> get abilities;
+  @override
+  String? get repository;
 
   /// Create a copy of PluginConfiguration
   /// with the given fields replaced by the non-null parameter values.

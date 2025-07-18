@@ -1,23 +1,24 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/form/text_form_field.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/provider/metadata_plugin/core/auth.dart';
+import 'package:spotube/modules/metadata_plugins/installed_plugin.dart';
+import 'package:spotube/modules/metadata_plugins/plugin_repository.dart';
 import 'package:spotube/provider/metadata_plugin/core/repositories.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 @RoutePage()
 class SettingsMetadataProviderPage extends HookConsumerWidget {
@@ -29,13 +30,27 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
 
     final plugins = ref.watch(metadataPluginsProvider);
     final pluginsNotifier = ref.watch(metadataPluginsProvider.notifier);
-    final metadataPlugin = ref.watch(metadataPluginProvider);
-    final isAuthenticated = ref.watch(metadataPluginAuthenticatedProvider);
 
     final pluginReposSnapshot = ref.watch(metadataPluginRepositoriesProvider);
     final pluginReposNotifier =
         ref.watch(metadataPluginRepositoriesProvider.notifier);
-    final pluginRepos = pluginReposSnapshot.asData?.value.items ?? [];
+
+    final pluginRepos = useMemoized(
+      () {
+        final installedPluginIds = plugins.asData?.value.plugins
+                .map((e) => e.repository)
+                .nonNulls
+                .toList() ??
+            [];
+
+        final pluginRepos = pluginReposSnapshot.asData?.value.items ?? [];
+        if (installedPluginIds.isEmpty) return pluginRepos;
+        return pluginRepos
+            .whereNot((repo) => installedPluginIds.contains(repo.repoUrl))
+            .toList();
+      },
+      [plugins.asData?.value.plugins, pluginReposSnapshot.asData?.value],
+    );
 
     return Scaffold(
       headers: const [
@@ -115,17 +130,18 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
               ),
             ),
             const SliverGap(12),
-            SliverToBoxAdapter(
-              child: Row(
-                children: [
-                  const Gap(8),
-                  const Text("Installed").h4,
-                  const Gap(8),
-                  const Expanded(child: Divider()),
-                  const Gap(8),
-                ],
+            if (plugins.asData?.value.plugins.isNotEmpty ?? false)
+              SliverToBoxAdapter(
+                child: Row(
+                  children: [
+                    const Gap(8),
+                    const Text("Installed").h4,
+                    const Gap(8),
+                    const Expanded(child: Divider()),
+                    const Gap(8),
+                  ],
+                ),
               ),
-            ),
             const SliverGap(20),
             SliverList.separated(
               itemCount: plugins.asData?.value.plugins.length ?? 0,
@@ -133,105 +149,9 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
               itemBuilder: (context, index) {
                 final plugin = plugins.asData!.value.plugins[index];
                 final isDefault = plugins.asData!.value.defaultPlugin == index;
-                final requiresAuth = isDefault &&
-                    plugin.abilities.contains(PluginAbilities.authentication);
-
-                return Card(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 12,
-                    children: [
-                      FutureBuilder(
-                        future: pluginsNotifier.getLogoPath(plugin),
-                        builder: (context, snapshot) {
-                          return Basic(
-                            leading: snapshot.hasData
-                                ? Image.file(
-                                    snapshot.data!,
-                                    width: 36,
-                                    height: 36,
-                                  )
-                                : Container(
-                                    height: 36,
-                                    width: 36,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color:
-                                          context.theme.colorScheme.secondary,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: const Icon(SpotubeIcons.plugin),
-                                  ),
-                            title: Text(plugin.name),
-                            subtitle: Text(plugin.description),
-                            trailing: IconButton.ghost(
-                              onPressed: () async {
-                                await pluginsNotifier.removePlugin(plugin);
-                              },
-                              icon: const Icon(
-                                SpotubeIcons.trash,
-                                color: Colors.red,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                      if (plugin.abilities
-                              .contains(PluginAbilities.authentication) &&
-                          isDefault)
-                        Container(
-                          decoration: BoxDecoration(
-                            color: context.theme.colorScheme.secondary,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: const EdgeInsets.all(12),
-                          child: const Row(
-                            spacing: 8,
-                            children: [
-                              Icon(SpotubeIcons.warning, color: Colors.yellow),
-                              Text("Plugin requires authentication"),
-                            ],
-                          ),
-                        ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Button.secondary(
-                            enabled: !isDefault,
-                            onPressed: () async {
-                              await pluginsNotifier.setDefaultPlugin(plugin);
-                            },
-                            child: isDefault
-                                ? const Text("Default")
-                                : const Text("Set default"),
-                          ),
-                          if (isAuthenticated.asData?.value != true &&
-                              requiresAuth &&
-                              isDefault)
-                            Button.primary(
-                              onPressed: () async {
-                                await metadataPlugin.asData?.value?.auth
-                                    .authenticate();
-                              },
-                              leading: const Icon(SpotubeIcons.login),
-                              child: const Text("Login"),
-                            )
-                          else if (isAuthenticated.asData?.value == true &&
-                              requiresAuth &&
-                              isDefault)
-                            Button.destructive(
-                              onPressed: () async {
-                                await metadataPlugin.asData?.value?.auth
-                                    .logout();
-                              },
-                              leading: const Icon(SpotubeIcons.logout),
-                              child: const Text("Logout"),
-                            )
-                        ],
-                      )
-                    ],
-                  ),
+                return MetadataInstalledPluginItem(
+                  plugin: plugin,
+                  isDefault: isDefault,
                 );
               },
             ),
@@ -248,67 +168,70 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
               ),
             ),
             const SliverGap(12),
-            Skeletonizer.sliver(
-              enabled: pluginReposSnapshot.isLoading,
-              child: SliverInfiniteList(
-                isLoading: pluginReposSnapshot.isLoading &&
-                    !pluginReposSnapshot.isLoadingNextPage,
-                itemCount: pluginRepos.length,
-                onFetchData: pluginReposNotifier.fetchMore,
-                itemBuilder: (context, index) {
-                  final pluginRepo = pluginRepos[index];
-                  final host = Uri.parse(pluginRepo.repoUrl).host;
+            SliverInfiniteList(
+              isLoading: pluginReposSnapshot.isLoading &&
+                  !pluginReposSnapshot.isLoadingNextPage,
+              itemCount: pluginRepos.length,
+              onFetchData: pluginReposNotifier.fetchMore,
+              loadingBuilder: (context) {
+                return Skeletonizer(
+                  enabled: true,
+                  child: MetadataPluginRepositoryItem(
+                    pluginRepo: MetadataPluginRepository(
+                      name: "Loading...",
+                      description: "Loading...",
+                      repoUrl: "",
+                      owner: "",
+                    ),
+                  ),
+                );
+              },
+              itemBuilder: (context, index) {
+                final pluginRepo = pluginRepos[index];
 
-                  return Card(
-                    child: Basic(
-                      title: Text(pluginRepo.name),
-                      subtitle: Column(
+                return MetadataPluginRepositoryItem(
+                  pluginRepo: pluginRepo,
+                );
+              },
+            ),
+            SliverCrossAxisConstrained(
+              maxCrossAxisExtent: 720,
+              child: SliverFillRemaining(
+                hasScrollBody: false,
+                child: Container(
+                  alignment: Alignment.bottomCenter,
+                  margin: const EdgeInsets.only(bottom: 20),
+                  child: SafeArea(
+                    child: Card(
+                      child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 8,
+                        spacing: 12,
                         children: [
-                          Text(pluginRepo.description),
                           Row(
                             spacing: 8,
                             children: [
-                              if (pluginRepo.owner == "KRTirtho") ...[
-                                const PrimaryBadge(
-                                  leading: Icon(SpotubeIcons.done),
-                                  child: Text("Official"),
-                                ),
-                                SecondaryBadge(
-                                  leading: host == "github.com"
-                                      ? const Icon(SpotubeIcons.github)
-                                      : null,
-                                  child: Text(host),
-                                  onPressed: () {
-                                    launchUrlString(pluginRepo.repoUrl);
-                                  },
-                                ),
-                              ] else ...[
-                                Text("Author: ${pluginRepo.owner}"),
-                                const DestructiveBadge(
-                                  leading: Icon(SpotubeIcons.warning),
-                                  child: Text("Third-party"),
-                                )
-                              ]
+                              const Icon(SpotubeIcons.warning, size: 16),
+                              const Text(
+                                "Disclaimer",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ).bold,
                             ],
                           ),
+                          const Text(
+                            "The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\n"
+                            "Please use them at your own risk. For any bugs/issues, please report them to the plugin repository."
+                            "\n\n"
+                            "If any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, "
+                            "please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. "
+                            "Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We're not curating them, "
+                            "so we cannot take any action on them.\n\n",
+                          ).muted.xSmall,
                         ],
                       ),
-                      trailing: Button.primary(
-                        onPressed: () async {
-                          final pluginConfig = await pluginsNotifier
-                              .downloadAndCachePlugin(pluginRepo.repoUrl);
-
-                          await pluginsNotifier.addPlugin(pluginConfig);
-                        },
-                        leading: const Icon(SpotubeIcons.add),
-                        child: const Text("Install"),
-                      ),
                     ),
-                  );
-                },
+                  ),
+                ),
               ),
             ),
           ],

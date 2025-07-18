@@ -93,7 +93,6 @@ class BasicSourcedTrack {
   final AudioSource source;
   final TrackSourceInfo info;
   final List<TrackSource> sources;
-  @JsonKey(defaultValue: [])
   final List<TrackSourceInfo> siblings;
   BasicSourcedTrack({
     required this.query,

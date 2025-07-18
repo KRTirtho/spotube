@@ -3070,6 +3070,12 @@ class MetadataPluginsTable extends Table
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("selected" IN (0, 1))'),
       defaultValue: const Constant(false));
+  late final GeneratedColumn<String> repository = GeneratedColumn<String>(
+      'repository', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  late final GeneratedColumn<String> pluginApiVersion = GeneratedColumn<String>(
+      'plugin_api_version', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -3080,7 +3086,9 @@ class MetadataPluginsTable extends Table
         entryPoint,
         apis,
         abilities,
-        selected
+        selected,
+        repository,
+        pluginApiVersion
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -3112,6 +3120,10 @@ class MetadataPluginsTable extends Table
           .read(DriftSqlType.string, data['${effectivePrefix}abilities'])!,
       selected: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}selected'])!,
+      repository: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}repository']),
+      pluginApiVersion: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}plugin_api_version'])!,
     );
   }
 
@@ -3132,6 +3144,8 @@ class MetadataPluginsTableData extends DataClass
   final String apis;
   final String abilities;
   final bool selected;
+  final String? repository;
+  final String pluginApiVersion;
   const MetadataPluginsTableData(
       {required this.id,
       required this.name,
@@ -3141,7 +3155,9 @@ class MetadataPluginsTableData extends DataClass
       required this.entryPoint,
       required this.apis,
       required this.abilities,
-      required this.selected});
+      required this.selected,
+      this.repository,
+      required this.pluginApiVersion});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -3154,6 +3170,10 @@ class MetadataPluginsTableData extends DataClass
     map['apis'] = Variable<String>(apis);
     map['abilities'] = Variable<String>(abilities);
     map['selected'] = Variable<bool>(selected);
+    if (!nullToAbsent || repository != null) {
+      map['repository'] = Variable<String>(repository);
+    }
+    map['plugin_api_version'] = Variable<String>(pluginApiVersion);
     return map;
   }
 
@@ -3168,6 +3188,10 @@ class MetadataPluginsTableData extends DataClass
       apis: Value(apis),
       abilities: Value(abilities),
       selected: Value(selected),
+      repository: repository == null && nullToAbsent
+          ? const Value.absent()
+          : Value(repository),
+      pluginApiVersion: Value(pluginApiVersion),
     );
   }
 
@@ -3184,6 +3208,8 @@ class MetadataPluginsTableData extends DataClass
       apis: serializer.fromJson<String>(json['apis']),
       abilities: serializer.fromJson<String>(json['abilities']),
       selected: serializer.fromJson<bool>(json['selected']),
+      repository: serializer.fromJson<String?>(json['repository']),
+      pluginApiVersion: serializer.fromJson<String>(json['pluginApiVersion']),
     );
   }
   @override
@@ -3199,6 +3225,8 @@ class MetadataPluginsTableData extends DataClass
       'apis': serializer.toJson<String>(apis),
       'abilities': serializer.toJson<String>(abilities),
       'selected': serializer.toJson<bool>(selected),
+      'repository': serializer.toJson<String?>(repository),
+      'pluginApiVersion': serializer.toJson<String>(pluginApiVersion),
     };
   }
 
@@ -3211,7 +3239,9 @@ class MetadataPluginsTableData extends DataClass
           String? entryPoint,
           String? apis,
           String? abilities,
-          bool? selected}) =>
+          bool? selected,
+          Value<String?> repository = const Value.absent(),
+          String? pluginApiVersion}) =>
       MetadataPluginsTableData(
         id: id ?? this.id,
         name: name ?? this.name,
@@ -3222,6 +3252,8 @@ class MetadataPluginsTableData extends DataClass
         apis: apis ?? this.apis,
         abilities: abilities ?? this.abilities,
         selected: selected ?? this.selected,
+        repository: repository.present ? repository.value : this.repository,
+        pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
       );
   MetadataPluginsTableData copyWithCompanion(
       MetadataPluginsTableCompanion data) {
@@ -3237,6 +3269,11 @@ class MetadataPluginsTableData extends DataClass
       apis: data.apis.present ? data.apis.value : this.apis,
       abilities: data.abilities.present ? data.abilities.value : this.abilities,
       selected: data.selected.present ? data.selected.value : this.selected,
+      repository:
+          data.repository.present ? data.repository.value : this.repository,
+      pluginApiVersion: data.pluginApiVersion.present
+          ? data.pluginApiVersion.value
+          : this.pluginApiVersion,
     );
   }
 
@@ -3251,14 +3288,16 @@ class MetadataPluginsTableData extends DataClass
           ..write('entryPoint: $entryPoint, ')
           ..write('apis: $apis, ')
           ..write('abilities: $abilities, ')
-          ..write('selected: $selected')
+          ..write('selected: $selected, ')
+          ..write('repository: $repository, ')
+          ..write('pluginApiVersion: $pluginApiVersion')
           ..write(')'))
         .toString();
   }
 
   @override
   int get hashCode => Object.hash(id, name, description, version, author,
-      entryPoint, apis, abilities, selected);
+      entryPoint, apis, abilities, selected, repository, pluginApiVersion);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -3271,7 +3310,9 @@ class MetadataPluginsTableData extends DataClass
           other.entryPoint == this.entryPoint &&
           other.apis == this.apis &&
           other.abilities == this.abilities &&
-          other.selected == this.selected);
+          other.selected == this.selected &&
+          other.repository == this.repository &&
+          other.pluginApiVersion == this.pluginApiVersion);
 }
 
 class MetadataPluginsTableCompanion
@@ -3285,6 +3326,8 @@ class MetadataPluginsTableCompanion
   final Value<String> apis;
   final Value<String> abilities;
   final Value<bool> selected;
+  final Value<String?> repository;
+  final Value<String> pluginApiVersion;
   const MetadataPluginsTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
@@ -3295,6 +3338,8 @@ class MetadataPluginsTableCompanion
     this.apis = const Value.absent(),
     this.abilities = const Value.absent(),
     this.selected = const Value.absent(),
+    this.repository = const Value.absent(),
+    this.pluginApiVersion = const Value.absent(),
   });
   MetadataPluginsTableCompanion.insert({
     this.id = const Value.absent(),
@@ -3306,13 +3351,16 @@ class MetadataPluginsTableCompanion
     required String apis,
     required String abilities,
     this.selected = const Value.absent(),
+    this.repository = const Value.absent(),
+    required String pluginApiVersion,
   })  : name = Value(name),
         description = Value(description),
         version = Value(version),
         author = Value(author),
         entryPoint = Value(entryPoint),
         apis = Value(apis),
-        abilities = Value(abilities);
+        abilities = Value(abilities),
+        pluginApiVersion = Value(pluginApiVersion);
   static Insertable<MetadataPluginsTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -3323,6 +3371,8 @@ class MetadataPluginsTableCompanion
     Expression<String>? apis,
     Expression<String>? abilities,
     Expression<bool>? selected,
+    Expression<String>? repository,
+    Expression<String>? pluginApiVersion,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -3334,6 +3384,8 @@ class MetadataPluginsTableCompanion
       if (apis != null) 'apis': apis,
       if (abilities != null) 'abilities': abilities,
       if (selected != null) 'selected': selected,
+      if (repository != null) 'repository': repository,
+      if (pluginApiVersion != null) 'plugin_api_version': pluginApiVersion,
     });
   }
 
@@ -3346,7 +3398,9 @@ class MetadataPluginsTableCompanion
       Value<String>? entryPoint,
       Value<String>? apis,
       Value<String>? abilities,
-      Value<bool>? selected}) {
+      Value<bool>? selected,
+      Value<String?>? repository,
+      Value<String>? pluginApiVersion}) {
     return MetadataPluginsTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
@@ -3357,6 +3411,8 @@ class MetadataPluginsTableCompanion
       apis: apis ?? this.apis,
       abilities: abilities ?? this.abilities,
       selected: selected ?? this.selected,
+      repository: repository ?? this.repository,
+      pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
     );
   }
 
@@ -3390,6 +3446,12 @@ class MetadataPluginsTableCompanion
     if (selected.present) {
       map['selected'] = Variable<bool>(selected.value);
     }
+    if (repository.present) {
+      map['repository'] = Variable<String>(repository.value);
+    }
+    if (pluginApiVersion.present) {
+      map['plugin_api_version'] = Variable<String>(pluginApiVersion.value);
+    }
     return map;
   }
 
@@ -3404,7 +3466,9 @@ class MetadataPluginsTableCompanion
           ..write('entryPoint: $entryPoint, ')
           ..write('apis: $apis, ')
           ..write('abilities: $abilities, ')
-          ..write('selected: $selected')
+          ..write('selected: $selected, ')
+          ..write('repository: $repository, ')
+          ..write('pluginApiVersion: $pluginApiVersion')
           ..write(')'))
         .toString();
   }

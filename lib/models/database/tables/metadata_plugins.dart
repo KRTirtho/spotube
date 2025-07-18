@@ -10,4 +10,6 @@ class MetadataPluginsTable extends Table {
   TextColumn get apis => text().map(const StringListConverter())();
   TextColumn get abilities => text().map(const StringListConverter())();
   BoolColumn get selected => boolean().withDefault(const Constant(false))();
+  TextColumn get repository => text().nullable()();
+  TextColumn get pluginApiVersion => text()();
 }

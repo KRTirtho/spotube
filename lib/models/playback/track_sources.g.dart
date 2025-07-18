@@ -19,7 +19,7 @@ BasicSourcedTrack _$BasicSourcedTrackFromJson(Map json) => BasicSourcedTrack(
               ?.map((e) =>
                   TrackSourceInfo.fromJson(Map<String, dynamic>.from(e as Map)))
               .toList() ??
-          [],
+          const [],
     );
 
 Map<String, dynamic> _$BasicSourcedTrackToJson(BasicSourcedTrack instance) =>

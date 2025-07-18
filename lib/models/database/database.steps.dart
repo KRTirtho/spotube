@@ -1891,6 +1891,8 @@ final class Schema7 extends i0.VersionedSchema {
           _column_64,
           _column_65,
           _column_66,
+          _column_67,
+          _column_68,
         ],
         attachedDatabase: database,
       ),
@@ -1946,6 +1948,10 @@ class Shape15 extends i0.VersionedTable {
       columnsByName['abilities']! as i1.GeneratedColumn<String>;
   i1.GeneratedColumn<bool> get selected =>
       columnsByName['selected']! as i1.GeneratedColumn<bool>;
+  i1.GeneratedColumn<String> get repository =>
+      columnsByName['repository']! as i1.GeneratedColumn<String>;
+  i1.GeneratedColumn<String> get pluginApiVersion =>
+      columnsByName['plugin_api_version']! as i1.GeneratedColumn<String>;
 }
 
 i1.GeneratedColumn<String> _column_59(String aliasedName) =>
@@ -1977,6 +1983,12 @@ i1.GeneratedColumn<bool> _column_66(String aliasedName) =>
         defaultConstraints: i1.GeneratedColumn.constraintIsAlways(
             'CHECK ("selected" IN (0, 1))'),
         defaultValue: const Constant(false));
+i1.GeneratedColumn<String> _column_67(String aliasedName) =>
+    i1.GeneratedColumn<String>('repository', aliasedName, true,
+        type: i1.DriftSqlType.string);
+i1.GeneratedColumn<String> _column_68(String aliasedName) =>
+    i1.GeneratedColumn<String>('plugin_api_version', aliasedName, false,
+        type: i1.DriftSqlType.string);
 i0.MigrationStepWithVersion migrationSteps({
   required Future<void> Function(i1.Migrator m, Schema2 schema) from1To2,
   required Future<void> Function(i1.Migrator m, Schema3 schema) from2To3,

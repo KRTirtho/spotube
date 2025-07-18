@@ -101,6 +101,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
           description: plugin.description,
           version: plugin.version,
           entryPoint: plugin.entryPoint,
+          pluginApiVersion: plugin.pluginApiVersion,
+          repository: plugin.repository,
           apis: plugin.apis
               .map(
                 (e) => PluginApis.values.firstWhereOrNull(
@@ -298,6 +300,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         entryPoint: plugin.entryPoint,
         apis: plugin.apis.map((e) => e.name).toList(),
         abilities: plugin.abilities.map((e) => e.name).toList(),
+        pluginApiVersion: plugin.pluginApiVersion,
+        repository: Value(plugin.repository),
       ),
     );
   }
