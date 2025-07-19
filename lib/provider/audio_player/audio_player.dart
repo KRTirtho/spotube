@@ -144,16 +144,21 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       }),
       audioPlayer.playlistStream.listen((playlist) async {
         try {
+          // Playlist and state has to be in sync. This is only meant for
+          // the shuffle/re-ordering indices to be in sync
+          if (playlist.medias.length != state.tracks.length) return;
+
           final queries = playlist.medias
               .map((media) => TrackSourceQuery.parseUri(media.uri))
               .toList();
 
+          final trackGroupedById = groupBy(
+            state.tracks,
+            (query) => query.id,
+          );
+
           final tracks = queries
-              .map(
-                (query) => state.tracks.firstWhereOrNull(
-                  (element) => element.id == query.id,
-                ),
-              )
+              .map((query) => trackGroupedById[query.id]?.firstOrNull)
               .nonNulls
               .toList();
 
@@ -269,12 +274,12 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     _assertAllowedTracks(tracks);
 
     tracks = _blacklist.filter(tracks).toList();
-    for (final track in tracks) {
-      await audioPlayer.addTrack(SpotubeMedia(track));
-    }
     state = state.copyWith(
       tracks: [...state.tracks, ...tracks],
     );
+    for (final track in tracks) {
+      await audioPlayer.addTrack(SpotubeMedia(track));
+    }
   }
 
   Future<void> removeTrack(String trackId) async {

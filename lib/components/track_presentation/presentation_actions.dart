@@ -15,48 +15,52 @@ import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
+ToastOverlay showToastForAction(
+  BuildContext context,
+  String action,
+  int count,
+) {
+  final message = switch (action) {
+    "download" => (context.l10n.download_count(count), SpotubeIcons.download),
+    "add-to-playlist" => (
+        context.l10n.add_count_to_playlist(count),
+        SpotubeIcons.playlistAdd
+      ),
+    "add-to-queue" => (
+        context.l10n.add_count_to_queue(count),
+        SpotubeIcons.queueAdd
+      ),
+    "play-next" => (
+        context.l10n.play_count_next(count),
+        SpotubeIcons.lightning
+      ),
+    _ => ("", SpotubeIcons.error),
+  };
+
+  return showToast(
+    context: context,
+    location: ToastLocation.topRight,
+    builder: (context, overlay) {
+      return SurfaceCard(
+        child: Basic(
+          leading: Icon(message.$2),
+          title: Text(message.$1),
+          leadingAlignment: Alignment.center,
+          trailing: IconButton.ghost(
+            size: ButtonSize.small,
+            icon: const Icon(SpotubeIcons.close),
+            onPressed: () {
+              overlay.close();
+            },
+          ),
+        ),
+      );
+    },
+  );
+}
+
 class TrackPresentationActionsSection extends HookConsumerWidget {
   const TrackPresentationActionsSection({super.key});
-
-  showToastForAction(BuildContext context, String action, int count) {
-    final message = switch (action) {
-      "download" => (context.l10n.download_count(count), SpotubeIcons.download),
-      "add-to-playlist" => (
-          context.l10n.add_count_to_playlist(count),
-          SpotubeIcons.playlistAdd
-        ),
-      "add-to-queue" => (
-          context.l10n.add_count_to_queue(count),
-          SpotubeIcons.queueAdd
-        ),
-      "play-next" => (
-          context.l10n.play_count_next(count),
-          SpotubeIcons.lightning
-        ),
-      _ => ("", SpotubeIcons.error),
-    };
-
-    showToast(
-      context: context,
-      location: ToastLocation.topRight,
-      builder: (context, overlay) {
-        return SurfaceCard(
-          child: Basic(
-            leading: Icon(message.$2),
-            title: Text(message.$1),
-            leadingAlignment: Alignment.center,
-            trailing: IconButton.ghost(
-              size: ButtonSize.small,
-              icon: const Icon(SpotubeIcons.close),
-              onPressed: () {
-                overlay.close();
-              },
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context, ref) {

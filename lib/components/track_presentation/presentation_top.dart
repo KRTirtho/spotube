@@ -30,7 +30,7 @@ class TrackPresentationTopSection extends HookConsumerWidget {
 
     final imageDimension = mediaQuery.mdAndUp ? 200 : 120;
 
-    final (:isLoading, :isActive, :onPlay, :onShuffle) =
+    final (:isLoading, :isActive, :onPlay, :onShuffle, :onAddToQueue) =
         useActionCallbacks(ref);
 
     final playbackActions = Row(
@@ -59,15 +59,15 @@ class TrackPresentationTopSection extends HookConsumerWidget {
             child: IconButton.secondary(
               icon: const Icon(SpotubeIcons.queueAdd),
               enabled: !isLoading && !isActive,
-              onPressed: () {},
+              onPressed: onAddToQueue,
             ),
           )
         else
           Button.secondary(
             leading: const Icon(SpotubeIcons.add),
             enabled: !isLoading && !isActive,
+            onPressed: onAddToQueue,
             child: Text(context.l10n.queue),
-            onPressed: () {},
           ),
         Button.primary(
           alignment: Alignment.center,
