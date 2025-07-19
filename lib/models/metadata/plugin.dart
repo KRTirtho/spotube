@@ -28,3 +28,15 @@ class PluginConfiguration with _$PluginConfiguration {
 
   String get slug => name.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '-');
 }
+
+@freezed
+class PluginUpdateAvailable with _$PluginUpdateAvailable {
+  factory PluginUpdateAvailable({
+    required String downloadUrl,
+    required String version,
+    String? changelog,
+  }) = _PluginUpdateAvailable;
+
+  factory PluginUpdateAvailable.fromJson(Map<String, dynamic> json) =>
+      _$PluginUpdateAvailableFromJson(json);
+}

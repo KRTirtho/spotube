@@ -4861,6 +4861,198 @@ abstract class _PluginConfiguration extends PluginConfiguration {
       throw _privateConstructorUsedError;
 }
 
+PluginUpdateAvailable _$PluginUpdateAvailableFromJson(
+    Map<String, dynamic> json) {
+  return _PluginUpdateAvailable.fromJson(json);
+}
+
+/// @nodoc
+mixin _$PluginUpdateAvailable {
+  String get downloadUrl => throw _privateConstructorUsedError;
+  String get version => throw _privateConstructorUsedError;
+  String? get changelog => throw _privateConstructorUsedError;
+
+  /// Serializes this PluginUpdateAvailable to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of PluginUpdateAvailable
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $PluginUpdateAvailableCopyWith<PluginUpdateAvailable> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $PluginUpdateAvailableCopyWith<$Res> {
+  factory $PluginUpdateAvailableCopyWith(PluginUpdateAvailable value,
+          $Res Function(PluginUpdateAvailable) then) =
+      _$PluginUpdateAvailableCopyWithImpl<$Res, PluginUpdateAvailable>;
+  @useResult
+  $Res call({String downloadUrl, String version, String? changelog});
+}
+
+/// @nodoc
+class _$PluginUpdateAvailableCopyWithImpl<$Res,
+        $Val extends PluginUpdateAvailable>
+    implements $PluginUpdateAvailableCopyWith<$Res> {
+  _$PluginUpdateAvailableCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of PluginUpdateAvailable
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? downloadUrl = null,
+    Object? version = null,
+    Object? changelog = freezed,
+  }) {
+    return _then(_value.copyWith(
+      downloadUrl: null == downloadUrl
+          ? _value.downloadUrl
+          : downloadUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      version: null == version
+          ? _value.version
+          : version // ignore: cast_nullable_to_non_nullable
+              as String,
+      changelog: freezed == changelog
+          ? _value.changelog
+          : changelog // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$PluginUpdateAvailableImplCopyWith<$Res>
+    implements $PluginUpdateAvailableCopyWith<$Res> {
+  factory _$$PluginUpdateAvailableImplCopyWith(
+          _$PluginUpdateAvailableImpl value,
+          $Res Function(_$PluginUpdateAvailableImpl) then) =
+      __$$PluginUpdateAvailableImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String downloadUrl, String version, String? changelog});
+}
+
+/// @nodoc
+class __$$PluginUpdateAvailableImplCopyWithImpl<$Res>
+    extends _$PluginUpdateAvailableCopyWithImpl<$Res,
+        _$PluginUpdateAvailableImpl>
+    implements _$$PluginUpdateAvailableImplCopyWith<$Res> {
+  __$$PluginUpdateAvailableImplCopyWithImpl(_$PluginUpdateAvailableImpl _value,
+      $Res Function(_$PluginUpdateAvailableImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of PluginUpdateAvailable
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? downloadUrl = null,
+    Object? version = null,
+    Object? changelog = freezed,
+  }) {
+    return _then(_$PluginUpdateAvailableImpl(
+      downloadUrl: null == downloadUrl
+          ? _value.downloadUrl
+          : downloadUrl // ignore: cast_nullable_to_non_nullable
+              as String,
+      version: null == version
+          ? _value.version
+          : version // ignore: cast_nullable_to_non_nullable
+              as String,
+      changelog: freezed == changelog
+          ? _value.changelog
+          : changelog // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$PluginUpdateAvailableImpl implements _PluginUpdateAvailable {
+  _$PluginUpdateAvailableImpl(
+      {required this.downloadUrl, required this.version, this.changelog});
+
+  factory _$PluginUpdateAvailableImpl.fromJson(Map<String, dynamic> json) =>
+      _$$PluginUpdateAvailableImplFromJson(json);
+
+  @override
+  final String downloadUrl;
+  @override
+  final String version;
+  @override
+  final String? changelog;
+
+  @override
+  String toString() {
+    return 'PluginUpdateAvailable(downloadUrl: $downloadUrl, version: $version, changelog: $changelog)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$PluginUpdateAvailableImpl &&
+            (identical(other.downloadUrl, downloadUrl) ||
+                other.downloadUrl == downloadUrl) &&
+            (identical(other.version, version) || other.version == version) &&
+            (identical(other.changelog, changelog) ||
+                other.changelog == changelog));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, downloadUrl, version, changelog);
+
+  /// Create a copy of PluginUpdateAvailable
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$PluginUpdateAvailableImplCopyWith<_$PluginUpdateAvailableImpl>
+      get copyWith => __$$PluginUpdateAvailableImplCopyWithImpl<
+          _$PluginUpdateAvailableImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$PluginUpdateAvailableImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _PluginUpdateAvailable implements PluginUpdateAvailable {
+  factory _PluginUpdateAvailable(
+      {required final String downloadUrl,
+      required final String version,
+      final String? changelog}) = _$PluginUpdateAvailableImpl;
+
+  factory _PluginUpdateAvailable.fromJson(Map<String, dynamic> json) =
+      _$PluginUpdateAvailableImpl.fromJson;
+
+  @override
+  String get downloadUrl;
+  @override
+  String get version;
+  @override
+  String? get changelog;
+
+  /// Create a copy of PluginUpdateAvailable
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$PluginUpdateAvailableImplCopyWith<_$PluginUpdateAvailableImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
 MetadataPluginRepository _$MetadataPluginRepositoryFromJson(
     Map<String, dynamic> json) {
   return _MetadataPluginRepository.fromJson(json);

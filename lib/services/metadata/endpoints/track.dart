@@ -26,4 +26,19 @@ class MetadataPluginTrackEndpoint {
   Future<void> unsave(List<String> ids) async {
     await hetuMetadataTrack.invoke("unsave", positionalArgs: [ids]);
   }
+
+  Future<List<SpotubeFullTrackObject>> radio(String id) async {
+    final result = await hetuMetadataTrack.invoke(
+      "radio",
+      positionalArgs: [id],
+    );
+
+    return (result as List)
+        .map(
+          (e) => SpotubeFullTrackObject.fromJson(
+            (e as Map).cast<String, dynamic>(),
+          ),
+        )
+        .toList();
+  }
 }

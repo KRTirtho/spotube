@@ -467,6 +467,21 @@ const _$PluginAbilitiesEnumMap = {
   PluginAbilities.authentication: 'authentication',
 };
 
+_$PluginUpdateAvailableImpl _$$PluginUpdateAvailableImplFromJson(Map json) =>
+    _$PluginUpdateAvailableImpl(
+      downloadUrl: json['downloadUrl'] as String,
+      version: json['version'] as String,
+      changelog: json['changelog'] as String?,
+    );
+
+Map<String, dynamic> _$$PluginUpdateAvailableImplToJson(
+        _$PluginUpdateAvailableImpl instance) =>
+    <String, dynamic>{
+      'downloadUrl': instance.downloadUrl,
+      'version': instance.version,
+      'changelog': instance.changelog,
+    };
+
 _$MetadataPluginRepositoryImpl _$$MetadataPluginRepositoryImplFromJson(
         Map json) =>
     _$MetadataPluginRepositoryImpl(

@@ -29,7 +29,6 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
 import 'package:spotube/provider/metadata_plugin/core/user.dart';
 import 'package:spotube/services/metadata/endpoints/error.dart';
 
@@ -107,71 +106,53 @@ class TrackOptions extends HookConsumerWidget {
     );
   }
 
-  // void actionStartRadio(
-  //   BuildContext context,
-  //   WidgetRef ref,
-  //   SpotubeTrackObject track,
-  // ) async {
-  //   final playback = ref.read(audioPlayerProvider.notifier);
-  //   final playlist = ref.read(audioPlayerProvider);
-  //   final query = "${track.name} Radio";
-  //   final metadataPlugin = await ref.read(metadataPluginProvider.future);
+  void actionStartRadio(
+    BuildContext context,
+    WidgetRef ref,
+    SpotubeTrackObject track,
+  ) async {
+    final playback = ref.read(audioPlayerProvider.notifier);
+    final playlist = ref.read(audioPlayerProvider);
+    final metadataPlugin = await ref.read(metadataPluginProvider.future);
 
-  //   if (metadataPlugin == null) {
-  //     throw MetadataPluginException.noDefaultPlugin(
-  //       "No default metadata plugin set",
-  //     );
-  //   }
+    if (metadataPlugin == null) {
+      throw MetadataPluginException.noDefaultPlugin(
+        "No default metadata plugin set",
+      );
+    }
 
-  //   final pages = await metadataPlugin.search.playlists(query);
+    final tracks = await metadataPlugin.track.radio(track.id);
 
-  //   final artists = track.artists.map((e) => e.name);
+    bool replaceQueue = false;
 
-  //   final radio = pages.items.firstWhere(
-  //     (e) {
-  //       final validPlaylists = artists.where((a) => e.description.contains(a));
-  //       return e.name.contains(track.name) &&
-  //           e.name.contains("Radio") &&
-  //           (validPlaylists.length >= 2 ||
-  //               validPlaylists.length == artists.length);
-  //     },
-  //     orElse: () => pages.items.first,
-  //   );
+    if (context.mounted && playlist.tracks.isNotEmpty) {
+      replaceQueue = await showPromptDialog(
+        context: context,
+        title: context.l10n.how_to_start_radio,
+        message: context.l10n.replace_queue_question,
+        okText: context.l10n.replace,
+        cancelText: context.l10n.add_to_queue,
+      );
+    }
 
-  //   bool replaceQueue = false;
+    if (replaceQueue || playlist.tracks.isEmpty) {
+      await playback.stop();
+      await playback.load([track], autoPlay: true);
 
-  //   if (context.mounted && playlist.tracks.isNotEmpty) {
-  //     replaceQueue = await showPromptDialog(
-  //       context: context,
-  //       title: context.l10n.how_to_start_radio,
-  //       message: context.l10n.replace_queue_question,
-  //       okText: context.l10n.replace,
-  //       cancelText: context.l10n.add_to_queue,
-  //     );
-  //   }
+      // we don't have to add those tracks as useEndlessPlayback will do it for us
+      return;
+    } else {
+      await playback.addTrack(track);
+    }
 
-  //   if (replaceQueue || playlist.tracks.isEmpty) {
-  //     await playback.stop();
-  //     await playback.load([track], autoPlay: true);
-
-  //     // we don't have to add those tracks as useEndlessPlayback will do it for us
-  //     return;
-  //   } else {
-  //     await playback.addTrack(track);
-  //   }
-  //   await ref.read(metadataPluginPlaylistTracksProvider(radio.id).future);
-  //   final tracks = await ref
-  //       .read(metadataPluginPlaylistTracksProvider(radio.id).notifier)
-  //       .fetchAll();
-
-  //   await playback.addTracks(
-  //     tracks.toList()
-  //       ..removeWhere((e) {
-  //         final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
-  //         return e.id == track.id || isDuplicate;
-  //       }),
-  //   );
-  // }
+    await playback.addTracks(
+      tracks.toList()
+        ..removeWhere((e) {
+          final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
+          return e.id == track.id || isDuplicate;
+        }),
+    );
+  }
 
   @override
   Widget build(BuildContext context, ref) {
@@ -338,7 +319,7 @@ class TrackOptions extends HookConsumerWidget {
             await downloadManager.addToQueue(track as SpotubeFullTrackObject);
             break;
           case TrackOptionValue.startRadio:
-            // actionStartRadio(context, ref, track);
+            actionStartRadio(context, ref, track);
             break;
         }
       },
@@ -430,11 +411,11 @@ class TrackOptions extends HookConsumerWidget {
             ),
           ),
         if (authenticated.asData?.value == true && !isLocalTrack) ...[
-          // AdaptiveMenuButton(
-          //   value: TrackOptionValue.startRadio,
-          //   leading: const Icon(SpotubeIcons.radio),
-          //   child: Text(context.l10n.start_a_radio),
-          // ),
+          AdaptiveMenuButton(
+            value: TrackOptionValue.startRadio,
+            leading: const Icon(SpotubeIcons.radio),
+            child: Text(context.l10n.start_a_radio),
+          ),
           AdaptiveMenuButton(
             value: TrackOptionValue.addToPlaylist,
             leading: const Icon(SpotubeIcons.playlistAdd),

@@ -76,4 +76,26 @@ class MetadataPluginArtistEndpoint {
       positionalArgs: [ids],
     );
   }
+
+  Future<SpotubePaginationResponseObject<SpotubeFullArtistObject>> related(
+    String id, {
+    int? offset,
+    int? limit,
+  }) async {
+    final raw = await hetuMetadataArtist.invoke(
+      "related",
+      positionalArgs: [id],
+      namedArgs: {
+        "offset": offset,
+        "limit": limit ?? 20,
+      }..removeWhere((key, value) => value == null),
+    ) as Map;
+
+    return SpotubePaginationResponseObject<SpotubeFullArtistObject>.fromJson(
+      raw.cast<String, dynamic>(),
+      (Map json) => SpotubeFullArtistObject.fromJson(
+        json.cast<String, dynamic>(),
+      ),
+    );
+  }
 }

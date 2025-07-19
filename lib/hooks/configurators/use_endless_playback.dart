@@ -1,4 +1,4 @@
-import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
+import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,85 +6,60 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
-// TODO: Implement endless playback functionality
 void useEndlessPlayback(WidgetRef ref) {
-  // final auth = ref.watch(authenticationProvider);
-  // final playback = ref.watch(audioPlayerProvider.notifier);
-  // final audioPlayerState = ref.watch(audioPlayerProvider);
-  // final spotify = ref.watch(spotifyProvider);
-  // final endlessPlayback =
-  //     ref.watch(userPreferencesProvider.select((s) => s.endlessPlayback));
+  final playback = ref.watch(audioPlayerProvider.notifier);
+  final audioPlayerState = ref.watch(audioPlayerProvider);
+  final endlessPlayback =
+      ref.watch(userPreferencesProvider.select((s) => s.endlessPlayback));
+  final metadataPlugin = ref.watch(metadataPluginProvider.future);
 
-  // useEffect(
-  //   () {
-  //     if (!endlessPlayback || auth.asData?.value == null) return null;
+  useEffect(
+    () {
+      if (!endlessPlayback) return null;
 
-  //     void listener(int index) async {
-  //       try {
-  //         final playlist = ref.read(audioPlayerProvider);
-  //         if (index != playlist.tracks.length - 1) return;
+      void listener(int index) async {
+        try {
+          final playlist = ref.read(audioPlayerProvider);
+          if (index != playlist.tracks.length - 1) return;
 
-  //         final track = playlist.tracks.last;
+          final track = playlist.tracks.last;
 
-  //         final query = "${track.name} Radio";
-  //         final pages = await spotify.invoke((api) =>
-  //             api.search.get(query, types: [SearchType.playlist]).first());
+          final tracks = await (await metadataPlugin)?.track.radio(track.id);
 
-  //         final radios = pages
-  //             .expand((e) => e.items?.toList() ?? <PlaylistSimple>[])
-  //             .toList()
-  //             .cast<PlaylistSimple>();
+          if (tracks == null || tracks.isEmpty) return;
 
-  //         final artists = track.artists.map((e) => e.name);
+          await playback.addTracks(
+            tracks.toList()
+              ..removeWhere((e) {
+                final playlist = ref.read(audioPlayerProvider);
+                final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
+                return e.id == track.id || isDuplicate;
+              }),
+          );
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        }
+      }
 
-  //         final radio = radios.firstWhere(
-  //           (e) {
-  //             final validPlaylists =
-  //                 artists.where((a) => e.description!.contains(a));
-  //             return e.name == "${track.name} Radio" &&
-  //                 (validPlaylists.length >= 2 ||
-  //                     validPlaylists.length == artists.length) &&
-  //                 e.owner?.displayName != "Spotify";
-  //           },
-  //           orElse: () => radios.first,
-  //         );
+      // Sometimes user can change settings for which the currentIndexChanged
+      // might not be called. So we need to check if the current track is the
+      // last track and if it is then we need to call the listener manually.
+      if (audioPlayerState.currentIndex == audioPlayerState.tracks.length - 1 &&
+          audioPlayer.isPlaying) {
+        listener(audioPlayerState.currentIndex);
+      }
 
-  //         final tracks =
-  //             ref.read(metadataPluginPlaylistTracksProvider(radio.id!));
+      final subscription =
+          audioPlayer.currentIndexChangedStream.listen(listener);
 
-  //         await playback.addTracks(
-  //           tracks.toList()
-  //             ..removeWhere((e) {
-  //               final playlist = ref.read(audioPlayerProvider);
-  //               final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
-  //               return e.id == track.id || isDuplicate;
-  //             }),
-  //         );
-  //       } catch (e, stack) {
-  //         AppLogger.reportError(e, stack);
-  //       }
-  //     }
-
-  //     // Sometimes user can change settings for which the currentIndexChanged
-  //     // might not be called. So we need to check if the current track is the
-  //     // last track and if it is then we need to call the listener manually.
-  //     if (audioPlayerState.currentIndex == audioPlayerState.tracks.length - 1 &&
-  //         audioPlayer.isPlaying) {
-  //       listener(audioPlayerState.currentIndex);
-  //     }
-
-  //     final subscription =
-  //         audioPlayer.currentIndexChangedStream.listen(listener);
-
-  //     return subscription.cancel;
-  //   },
-  //   [
-  //     spotify,
-  //     playback,
-  //     audioPlayerState.tracks,
-  //     audioPlayerState.currentIndex,
-  //     endlessPlayback,
-  //     auth,
-  //   ],
-  // );
+      return subscription.cancel;
+    },
+    [
+      metadataPlugin,
+      playback,
+      audioPlayerState.tracks,
+      audioPlayerState.currentIndex,
+      endlessPlayback,
+    ],
+  );
 }
