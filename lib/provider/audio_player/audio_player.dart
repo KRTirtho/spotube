@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/extensions/list.dart';
@@ -149,10 +150,13 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
           final tracks = queries
               .map(
-                (query) => state.tracks
-                    .firstWhere((element) => element.id == query.id),
+                (query) => state.tracks.firstWhereOrNull(
+                  (element) => element.id == query.id,
+                ),
               )
+              .nonNulls
               .toList();
+
           state = state.copyWith(
             tracks: tracks,
             currentIndex: playlist.index,
@@ -265,12 +269,12 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     _assertAllowedTracks(tracks);
 
     tracks = _blacklist.filter(tracks).toList();
-    state = state.copyWith(
-      tracks: [...state.tracks, ...tracks],
-    );
     for (final track in tracks) {
       await audioPlayer.addTrack(SpotubeMedia(track));
     }
+    state = state.copyWith(
+      tracks: [...state.tracks, ...tracks],
+    );
   }
 
   Future<void> removeTrack(String trackId) async {
