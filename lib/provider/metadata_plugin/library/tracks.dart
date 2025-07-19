@@ -29,17 +29,13 @@ class MetadataPluginSavedTracksNotifier
   Future<void> addFavorite(List<SpotubeTrackObject> tracks) async {
     await (await metadataPlugin).track.save(tracks.map((e) => e.id).toList());
 
-    for (final track in tracks) {
-      ref.invalidate(metadataPluginIsSavedTrackProvider(track.id));
-    }
+    ref.invalidateSelf();
   }
 
   Future<void> removeFavorite(List<SpotubeTrackObject> tracks) async {
     await (await metadataPlugin).track.unsave(tracks.map((e) => e.id).toList());
 
-    for (final track in tracks) {
-      ref.invalidate(metadataPluginIsSavedTrackProvider(track.id));
-    }
+    ref.invalidateSelf();
   }
 }
 
