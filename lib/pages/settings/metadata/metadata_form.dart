@@ -25,122 +25,127 @@ class SettingsMetadataProviderFormPage extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>(), []);
 
-    return Scaffold(
-      headers: [
-        TitleBar(
-          title: Text(title),
-        ),
-      ],
-      child: FormBuilder(
-        key: formKey,
-        child: Center(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            constraints: const BoxConstraints(maxWidth: 600),
-            child: CustomScrollView(
-              shrinkWrap: true,
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: context.theme.typography.h2,
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: [
+          TitleBar(
+            title: Text(title),
+          ),
+        ],
+        child: FormBuilder(
+          key: formKey,
+          child: Center(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              constraints: const BoxConstraints(maxWidth: 600),
+              child: CustomScrollView(
+                shrinkWrap: true,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: context.theme.typography.h2,
+                    ),
                   ),
-                ),
-                const SliverGap(24),
-                SliverList.separated(
-                  itemCount: fields.length,
-                  separatorBuilder: (context, index) => const Gap(12),
-                  itemBuilder: (context, index) {
-                    if (fields[index] is MetadataFormFieldTextObject) {
-                      final field =
-                          fields[index] as MetadataFormFieldTextObject;
-                      return MarkdownBody(
-                        data: field.text,
-                        onTapLink: (text, href, title) {
-                          // TODO: Confirm link opening behavior
-                          if (href != null) {
-                            launchUrlString(href);
-                          }
-                        },
-                      );
-                    }
-
-                    final field = fields[index] as MetadataFormFieldInputObject;
-                    return FormBuilderField(
-                      name: field.id,
-                      initialValue: field.defaultValue,
-                      validator: FormBuilderValidators.compose([
-                        if (field.required == true)
-                          FormBuilderValidators.required(
-                            errorText: 'This field is required',
-                          ),
-                        if (field.regex != null)
-                          FormBuilderValidators.match(
-                            RegExp(field.regex!),
-                            errorText:
-                                "Input doesn't match the required format",
-                          ),
-                      ]),
-                      builder: (formField) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 4,
-                          children: [
-                            TextField(
-                              placeholder: field.placeholder == null
-                                  ? null
-                                  : Text(field.placeholder!),
-                              initialValue: formField.value,
-                              onChanged: (value) {
-                                formField.didChange(value);
-                              },
-                              obscureText:
-                                  field.variant == FormFieldVariant.password,
-                              keyboardType:
-                                  field.variant == FormFieldVariant.number
-                                      ? TextInputType.number
-                                      : TextInputType.text,
-                              features: [
-                                if (field.variant == FormFieldVariant.password)
-                                  const InputFeature.passwordToggle(),
-                              ],
-                            ),
-                            if (formField.hasError)
-                              Text(
-                                formField.errorText ?? '',
-                                style: const TextStyle(
-                                    color: Colors.red, fontSize: 12),
-                              ),
-                          ],
+                  const SliverGap(24),
+                  SliverList.separated(
+                    itemCount: fields.length,
+                    separatorBuilder: (context, index) => const Gap(12),
+                    itemBuilder: (context, index) {
+                      if (fields[index] is MetadataFormFieldTextObject) {
+                        final field =
+                            fields[index] as MetadataFormFieldTextObject;
+                        return MarkdownBody(
+                          data: field.text,
+                          onTapLink: (text, href, title) {
+                            // TODO: Confirm link opening behavior
+                            if (href != null) {
+                              launchUrlString(href);
+                            }
+                          },
                         );
-                      },
-                    );
-                  },
-                ),
-                const SliverGap(24),
-                SliverToBoxAdapter(
-                  child: Button.primary(
-                    onPressed: () {
-                      if (formKey.currentState?.saveAndValidate() != true) {
-                        return;
                       }
 
-                      final data = formKey.currentState!.value.entries
-                          .map((e) => <String, dynamic>{
-                                "id": e.key,
-                                "value": e.value,
-                              })
-                          .toList();
-
-                      context.router.maybePop(data);
+                      final field =
+                          fields[index] as MetadataFormFieldInputObject;
+                      return FormBuilderField(
+                        name: field.id,
+                        initialValue: field.defaultValue,
+                        validator: FormBuilderValidators.compose([
+                          if (field.required == true)
+                            FormBuilderValidators.required(
+                              errorText: 'This field is required',
+                            ),
+                          if (field.regex != null)
+                            FormBuilderValidators.match(
+                              RegExp(field.regex!),
+                              errorText:
+                                  "Input doesn't match the required format",
+                            ),
+                        ]),
+                        builder: (formField) {
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 4,
+                            children: [
+                              TextField(
+                                placeholder: field.placeholder == null
+                                    ? null
+                                    : Text(field.placeholder!),
+                                initialValue: formField.value,
+                                onChanged: (value) {
+                                  formField.didChange(value);
+                                },
+                                obscureText:
+                                    field.variant == FormFieldVariant.password,
+                                keyboardType:
+                                    field.variant == FormFieldVariant.number
+                                        ? TextInputType.number
+                                        : TextInputType.text,
+                                features: [
+                                  if (field.variant ==
+                                      FormFieldVariant.password)
+                                    const InputFeature.passwordToggle(),
+                                ],
+                              ),
+                              if (formField.hasError)
+                                Text(
+                                  formField.errorText ?? '',
+                                  style: const TextStyle(
+                                      color: Colors.red, fontSize: 12),
+                                ),
+                            ],
+                          );
+                        },
+                      );
                     },
-                    child: Text(context.l10n.submit),
                   ),
-                ),
-                const SliverGap(200)
-              ],
+                  const SliverGap(24),
+                  SliverToBoxAdapter(
+                    child: Button.primary(
+                      onPressed: () {
+                        if (formKey.currentState?.saveAndValidate() != true) {
+                          return;
+                        }
+
+                        final data = formKey.currentState!.value.entries
+                            .map((e) => <String, dynamic>{
+                                  "id": e.key,
+                                  "value": e.value,
+                                })
+                            .toList();
+
+                        context.router.maybePop(data);
+                      },
+                      child: Text(context.l10n.submit),
+                    ),
+                  ),
+                  const SliverGap(200)
+                ],
+              ),
             ),
           ),
         ),

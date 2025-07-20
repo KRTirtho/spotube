@@ -52,189 +52,194 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
       [plugins.asData?.value.plugins, pluginReposSnapshot.asData?.value],
     );
 
-    return Scaffold(
-      headers: const [
-        TitleBar(
-          title: Text("Metadata provider plugin"),
-        )
-      ],
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Row(
-                spacing: 8,
-                children: [
-                  Expanded(
-                    child: FormBuilder(
-                      key: formKey,
-                      child: TextFormBuilderField(
-                        name: "plugin_url",
-                        validator: FormBuilderValidators.url(
-                            protocols: ["http", "https"]),
-                        placeholder: const Text(
-                          "Add GitHub/Codeberg URL to plugin repository "
-                          "or direct link to .smplug file",
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: const [
+          TitleBar(
+            title: Text("Metadata provider plugin"),
+          )
+        ],
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: Row(
+                  spacing: 8,
+                  children: [
+                    Expanded(
+                      child: FormBuilder(
+                        key: formKey,
+                        child: TextFormBuilderField(
+                          name: "plugin_url",
+                          validator: FormBuilderValidators.url(
+                              protocols: ["http", "https"]),
+                          placeholder: const Text(
+                            "Add GitHub/Codeberg URL to plugin repository "
+                            "or direct link to .smplug file",
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Tooltip(
-                    tooltip: const TooltipContainer(
-                      child: Text("Download and install plugin from url"),
-                    ).call,
-                    child: IconButton.secondary(
-                      icon: const Icon(SpotubeIcons.download),
-                      onPressed: () async {
-                        if (formKey.currentState?.saveAndValidate() ?? false) {
-                          final url = formKey.currentState?.fields["plugin_url"]
-                              ?.value as String;
+                    Tooltip(
+                      tooltip: const TooltipContainer(
+                        child: Text("Download and install plugin from url"),
+                      ).call,
+                      child: IconButton.secondary(
+                        icon: const Icon(SpotubeIcons.download),
+                        onPressed: () async {
+                          if (formKey.currentState?.saveAndValidate() ??
+                              false) {
+                            final url = formKey.currentState
+                                ?.fields["plugin_url"]?.value as String;
 
-                          if (url.isNotEmpty) {
-                            final pluginConfig = await pluginsNotifier
-                                .downloadAndCachePlugin(url);
+                            if (url.isNotEmpty) {
+                              final pluginConfig = await pluginsNotifier
+                                  .downloadAndCachePlugin(url);
 
-                            await pluginsNotifier.addPlugin(pluginConfig);
+                              await pluginsNotifier.addPlugin(pluginConfig);
+                            }
                           }
-                        }
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                  Tooltip(
-                    tooltip: const TooltipContainer(
-                      child: Text("Upload plugin from file"),
-                    ).call,
-                    child: IconButton.primary(
-                      icon: const Icon(SpotubeIcons.upload),
-                      onPressed: () async {
-                        final result = await FilePicker.platform.pickFiles(
-                          type: kIsAndroid ? FileType.any : FileType.custom,
-                          allowedExtensions: kIsAndroid ? [] : ["smplug"],
-                          withData: true,
-                        );
+                    Tooltip(
+                      tooltip: const TooltipContainer(
+                        child: Text("Upload plugin from file"),
+                      ).call,
+                      child: IconButton.primary(
+                        icon: const Icon(SpotubeIcons.upload),
+                        onPressed: () async {
+                          final result = await FilePicker.platform.pickFiles(
+                            type: kIsAndroid ? FileType.any : FileType.custom,
+                            allowedExtensions: kIsAndroid ? [] : ["smplug"],
+                            withData: true,
+                          );
 
-                        if (result == null) return;
+                          if (result == null) return;
 
-                        final file = result.files.first;
+                          final file = result.files.first;
 
-                        if (file.bytes == null) return;
+                          if (file.bytes == null) return;
 
-                        final pluginConfig = await pluginsNotifier
-                            .extractPluginArchive(file.bytes!);
-                        await pluginsNotifier.addPlugin(pluginConfig);
-                      },
+                          final pluginConfig = await pluginsNotifier
+                              .extractPluginArchive(file.bytes!);
+                          await pluginsNotifier.addPlugin(pluginConfig);
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SliverGap(12),
-            if (plugins.asData?.value.plugins.isNotEmpty ?? false)
+              const SliverGap(12),
+              if (plugins.asData?.value.plugins.isNotEmpty ?? false)
+                SliverToBoxAdapter(
+                  child: Row(
+                    children: [
+                      const Gap(8),
+                      const Text("Installed").h4,
+                      const Gap(8),
+                      const Expanded(child: Divider()),
+                      const Gap(8),
+                    ],
+                  ),
+                ),
+              const SliverGap(20),
+              SliverList.separated(
+                itemCount: plugins.asData?.value.plugins.length ?? 0,
+                separatorBuilder: (context, index) => const Gap(12),
+                itemBuilder: (context, index) {
+                  final plugin = plugins.asData!.value.plugins[index];
+                  final isDefault =
+                      plugins.asData!.value.defaultPlugin == index;
+                  return MetadataInstalledPluginItem(
+                    plugin: plugin,
+                    isDefault: isDefault,
+                  );
+                },
+              ),
+              const SliverGap(12),
               SliverToBoxAdapter(
                 child: Row(
                   children: [
                     const Gap(8),
-                    const Text("Installed").h4,
+                    const Text("Available plugins").h4,
                     const Gap(8),
                     const Expanded(child: Divider()),
                     const Gap(8),
                   ],
                 ),
               ),
-            const SliverGap(20),
-            SliverList.separated(
-              itemCount: plugins.asData?.value.plugins.length ?? 0,
-              separatorBuilder: (context, index) => const Gap(12),
-              itemBuilder: (context, index) {
-                final plugin = plugins.asData!.value.plugins[index];
-                final isDefault = plugins.asData!.value.defaultPlugin == index;
-                return MetadataInstalledPluginItem(
-                  plugin: plugin,
-                  isDefault: isDefault,
-                );
-              },
-            ),
-            const SliverGap(12),
-            SliverToBoxAdapter(
-              child: Row(
-                children: [
-                  const Gap(8),
-                  const Text("Available plugins").h4,
-                  const Gap(8),
-                  const Expanded(child: Divider()),
-                  const Gap(8),
-                ],
-              ),
-            ),
-            const SliverGap(12),
-            SliverInfiniteList(
-              isLoading: pluginReposSnapshot.isLoading &&
-                  !pluginReposSnapshot.isLoadingNextPage,
-              itemCount: pluginRepos.length,
-              onFetchData: pluginReposNotifier.fetchMore,
-              loadingBuilder: (context) {
-                return Skeletonizer(
-                  enabled: true,
-                  child: MetadataPluginRepositoryItem(
-                    pluginRepo: MetadataPluginRepository(
-                      name: "Loading...",
-                      description: "Loading...",
-                      repoUrl: "",
-                      owner: "",
+              const SliverGap(12),
+              SliverInfiniteList(
+                isLoading: pluginReposSnapshot.isLoading &&
+                    !pluginReposSnapshot.isLoadingNextPage,
+                itemCount: pluginRepos.length,
+                onFetchData: pluginReposNotifier.fetchMore,
+                loadingBuilder: (context) {
+                  return Skeletonizer(
+                    enabled: true,
+                    child: MetadataPluginRepositoryItem(
+                      pluginRepo: MetadataPluginRepository(
+                        name: "Loading...",
+                        description: "Loading...",
+                        repoUrl: "",
+                        owner: "",
+                      ),
                     ),
-                  ),
-                );
-              },
-              itemBuilder: (context, index) {
-                final pluginRepo = pluginRepos[index];
+                  );
+                },
+                itemBuilder: (context, index) {
+                  final pluginRepo = pluginRepos[index];
 
-                return MetadataPluginRepositoryItem(
-                  pluginRepo: pluginRepo,
-                );
-              },
-            ),
-            SliverCrossAxisConstrained(
-              maxCrossAxisExtent: 720,
-              child: SliverFillRemaining(
-                hasScrollBody: false,
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  margin: const EdgeInsets.only(bottom: 20),
-                  child: SafeArea(
-                    child: Card(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 12,
-                        children: [
-                          Row(
-                            spacing: 8,
-                            children: [
-                              const Icon(SpotubeIcons.warning, size: 16),
-                              const Text(
-                                "Disclaimer",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ).bold,
-                            ],
-                          ),
-                          const Text(
-                            "The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\n"
-                            "Please use them at your own risk. For any bugs/issues, please report them to the plugin repository."
-                            "\n\n"
-                            "If any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, "
-                            "please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. "
-                            "Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We're not curating them, "
-                            "so we cannot take any action on them.\n\n",
-                          ).muted.xSmall,
-                        ],
+                  return MetadataPluginRepositoryItem(
+                    pluginRepo: pluginRepo,
+                  );
+                },
+              ),
+              SliverCrossAxisConstrained(
+                maxCrossAxisExtent: 720,
+                child: SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Container(
+                    alignment: Alignment.bottomCenter,
+                    margin: const EdgeInsets.only(bottom: 20),
+                    child: SafeArea(
+                      child: Card(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          spacing: 12,
+                          children: [
+                            Row(
+                              spacing: 8,
+                              children: [
+                                const Icon(SpotubeIcons.warning, size: 16),
+                                const Text(
+                                  "Disclaimer",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ).bold,
+                              ],
+                            ),
+                            const Text(
+                              "The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\n"
+                              "Please use them at your own risk. For any bugs/issues, please report them to the plugin repository."
+                              "\n\n"
+                              "If any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, "
+                              "please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. "
+                              "Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We're not curating them, "
+                              "so we cannot take any action on them.\n\n",
+                            ).muted.xSmall,
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/utils/paginated.dart';
 
 class MetadataPluginBrowseSectionsNotifier
@@ -19,7 +19,7 @@ class MetadataPluginBrowseSectionsNotifier
 
   @override
   build() async {
-    ref.watch(metadataPluginProvider);
+    ref.watch(metadataPluginAuthenticatedProvider);
     return await fetch(0, 20);
   }
 }
