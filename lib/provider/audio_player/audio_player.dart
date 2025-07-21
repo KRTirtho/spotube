@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:spotube/extensions/list.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -241,21 +242,31 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       return addTracks(tracks);
     }
 
-    tracks = _blacklist.filter(tracks).toList();
+    final addableTracks = _blacklist.filter(tracks).where(
+          (track) =>
+              allowDuplicates ||
+              !state.tracks.any((element) => _compareTracks(element, track)),
+        );
 
-    for (int i = 0; i < tracks.length; i++) {
-      final track = tracks.elementAt(i);
+    state = state.copyWith(
+      tracks: [...addableTracks, ...state.tracks],
+    );
 
-      if (!allowDuplicates &&
-          state.tracks.any((element) => _compareTracks(element, track))) {
-        continue;
-      }
+    for (int i = 0; i < addableTracks.length; i++) {
+      final track = addableTracks.elementAt(i);
 
       await audioPlayer.addTrackAt(
         SpotubeMedia(track),
         max(state.currentIndex, 0) + i + 1,
       );
     }
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
   Future<void> addTrack(SpotubeTrackObject track) async {
@@ -267,7 +278,15 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     state = state.copyWith(
       tracks: [...state.tracks, track],
     );
+
     await audioPlayer.addTrack(SpotubeMedia(track));
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
   Future<void> addTracks(Iterable<SpotubeTrackObject> tracks) async {
@@ -277,9 +296,17 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     state = state.copyWith(
       tracks: [...state.tracks, ...tracks],
     );
+
     for (final track in tracks) {
       await audioPlayer.addTrack(SpotubeMedia(track));
     }
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
   Future<void> removeTrack(String trackId) async {
@@ -287,13 +314,43 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
     if (index == -1) return;
 
+    state = state.copyWith(
+      tracks: List.of(state.tracks)..removeAt(index),
+    );
+
     await audioPlayer.removeTrack(index);
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
   Future<void> removeTracks(Iterable<String> trackIds) async {
-    for (final trackId in trackIds) {
-      await removeTrack(trackId);
+    final trackIndexes = state.tracks
+        .where((element) => trackIds.any((trackId) => trackId == element.id))
+        .mapIndexed((index, element) => index);
+
+    final tracks = state.tracks.where(
+      (element) => !trackIds.contains(element.id),
+    );
+
+    state = state.copyWith(
+      tracks: tracks.toList(),
+    );
+
+    for (final index in trackIndexes) {
+      await audioPlayer.removeTrack(index);
     }
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
   bool _compareTracks(SpotubeTrackObject a, SpotubeTrackObject b) {
@@ -346,6 +403,13 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       initialIndex: initialIndex,
       autoPlay: autoPlay,
     );
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
   Future<void> jumpToTrack(SpotubeTrackObject track) async {
@@ -368,8 +432,25 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   }
 
   Future<void> stop() async {
+    state = state.copyWith(
+      tracks: [],
+      currentIndex: 0,
+      collections: [],
+      loopMode: PlaylistMode.none,
+      playing: false,
+      shuffled: false,
+    );
     await audioPlayer.stop();
-    await removeCollections(state.collections);
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: const Value(0),
+        collections: const Value(<String>[]),
+        loopMode: const Value(PlaylistMode.none),
+        playing: const Value(false),
+        shuffled: const Value(false),
+      ),
+    );
     ref.read(discordProvider.notifier).clear();
   }
 }
