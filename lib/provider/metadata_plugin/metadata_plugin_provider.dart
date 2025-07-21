@@ -11,10 +11,13 @@ import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/dio/dio.dart';
+import 'package:spotube/services/logger/logger.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:uuid/uuid.dart';
 import 'package:archive/archive.dart';
+import 'package:pub_semver/pub_semver.dart';
 
 final allowedDomainsRegex = RegExp(
   r"^(https?:\/\/)?(www\.)?(github\.com|codeberg\.org)\/.+",
@@ -166,35 +169,48 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
   }
 
   Future<String> _getPluginDownloadUrl(Uri uri) async {
-    print("Getting plugin download URL from: $uri");
+    AppLogger.log.i("Getting plugin download URL from: $uri");
     final res = await globalDio.getUri(
       uri,
       options: Options(responseType: ResponseType.json),
     );
 
     if (res.statusCode != 200) {
-      throw Exception("Failed to get releases");
+      throw MetadataPluginException.failedToGetRelease();
     }
     final releases = res.data as List;
     if (releases.isEmpty) {
-      throw Exception("No releases found");
+      throw MetadataPluginException.noReleasesFound();
     }
     final latestRelease = releases.first;
     final downloadUrl = (latestRelease["assets"] as List).firstWhere(
       (asset) => (asset["name"] as String).endsWith(".smplug"),
     )["browser_download_url"];
     if (downloadUrl == null) {
-      throw Exception("No download URL found");
+      throw MetadataPluginException.assetUrlNotFound();
     }
     return downloadUrl;
   }
 
-  Future<Directory> _getPluginDir() async => Directory(
+  /// Root directory where all metadata plugins are stored.
+  Future<Directory> _getPluginRootDir() async => Directory(
         join(
           (await getApplicationCacheDirectory()).path,
           "metadata-plugins",
         ),
       );
+
+  /// Directory where the plugin will be extracted.
+  /// This is a unique directory for each plugin version.
+  /// It is used to avoid conflicts when multiple versions of the same plugin are installed
+  Future<Directory> _getPluginExtractionDir(PluginConfiguration plugin) async {
+    final pluginDir = await _getPluginRootDir();
+    final pluginExtractionDirPath = join(
+      pluginDir.path,
+      "${ServiceUtils.sanitizeFilename(plugin.name)}-${plugin.version}",
+    );
+    return Directory(pluginExtractionDirPath);
+  }
 
   Future<PluginConfiguration> extractPluginArchive(List<int> bytes) async {
     final archive = ZipDecoder().decodeBytes(bytes);
@@ -202,7 +218,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         .firstWhereOrNull((file) => file.isFile && file.name == "plugin.json");
 
     if (pluginJson == null) {
-      throw Exception("No plugin.json found");
+      throw MetadataPluginException.pluginConfigJsonNotFound();
     }
     final pluginConfig = PluginConfiguration.fromJson(
       jsonDecode(
@@ -210,20 +226,17 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
       ) as Map<String, dynamic>,
     );
 
-    final pluginDir = await _getPluginDir();
+    final pluginDir = await _getPluginRootDir();
     await pluginDir.create(recursive: true);
 
-    final pluginExtractionDirPath = join(
-      pluginDir.path,
-      ServiceUtils.sanitizeFilename(pluginConfig.name),
-    );
+    final pluginExtractionDir = await _getPluginExtractionDir(pluginConfig);
 
     for (final file in archive) {
       if (file.isFile) {
         final filename = file.name;
         final data = file.content as List<int>;
         final extractedFile = File(join(
-          pluginExtractionDirPath,
+          pluginExtractionDir.path,
           filename,
         ));
         await extractedFile.create(recursive: true);
@@ -251,12 +264,12 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         final uri = _getCodebergeReleasesUrl(url);
         pluginDownloadUrl = await _getPluginDownloadUrl(uri);
       } else {
-        throw Exception("Unsupported website");
+        throw MetadataPluginException.unsupportedPluginDownloadWebsite();
       }
     }
 
     // Now let's download, extract and cache the plugin
-    final pluginDir = await _getPluginDir();
+    final pluginDir = await _getPluginRootDir();
     await pluginDir.create(recursive: true);
 
     final tempPluginName = "${const Uuid().v4()}.smplug";
@@ -273,13 +286,32 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     );
 
     if ((pluginRes.statusCode ?? 500) > 299) {
-      throw Exception("Failed to download plugin");
+      throw MetadataPluginException.pluginDownloadFailed();
     }
 
     return await extractPluginArchive(await pluginFile.readAsBytes());
   }
 
+  bool validatePluginApiCompatibility(PluginConfiguration plugin) {
+    final configPluginApiVersion = Version.parse(plugin.pluginApiVersion);
+    final appPluginApiVersion = MetadataPlugin.pluginApiVersion;
+
+    // Plugin API's major version must match the app's major version
+    if (configPluginApiVersion.major != appPluginApiVersion.major) {
+      return false;
+    }
+    return configPluginApiVersion >= appPluginApiVersion;
+  }
+
+  void _assertPluginApiCompatibility(PluginConfiguration plugin) {
+    if (!validatePluginApiCompatibility(plugin)) {
+      throw MetadataPluginException.pluginApiVersionMismatch();
+    }
+  }
+
   Future<void> addPlugin(PluginConfiguration plugin) async {
+    _assertPluginApiCompatibility(plugin);
+
     final pluginRes = await (database.metadataPluginsTable.select()
           ..where(
             (tbl) => tbl.name.equals(plugin.name),
@@ -288,7 +320,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         .get();
 
     if (pluginRes.isNotEmpty) {
-      throw Exception("Plugin already exists");
+      throw MetadataPluginException.duplicatePlugin();
     }
 
     await database.metadataPluginsTable.insertOne(
@@ -307,17 +339,34 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
   }
 
   Future<void> removePlugin(PluginConfiguration plugin) async {
-    final pluginDir = await _getPluginDir();
-    final pluginExtractionDirPath = join(
-      pluginDir.path,
-      ServiceUtils.sanitizeFilename(plugin.name),
-    );
-    final pluginExtractionDir = Directory(pluginExtractionDirPath);
+    final pluginExtractionDir = await _getPluginExtractionDir(plugin);
+
     if (pluginExtractionDir.existsSync()) {
       await pluginExtractionDir.delete(recursive: true);
     }
     await database.metadataPluginsTable
         .deleteWhere((tbl) => tbl.name.equals(plugin.name));
+  }
+
+  Future<void> updatePlugin(
+    PluginConfiguration plugin,
+    PluginUpdateAvailable update,
+  ) async {
+    final isDefault = plugin == state.valueOrNull?.defaultPluginConfig;
+    final pluginUpdatedConfig =
+        await downloadAndCachePlugin(update.downloadUrl);
+
+    if (pluginUpdatedConfig.name != plugin.name) {
+      throw MetadataPluginException.invalidPluginConfiguration();
+    }
+    _assertPluginApiCompatibility(pluginUpdatedConfig);
+
+    await removePlugin(plugin);
+    await addPlugin(pluginUpdatedConfig);
+
+    if (isDefault) {
+      await setDefaultPlugin(pluginUpdatedConfig);
+    }
   }
 
   Future<void> setDefaultPlugin(PluginConfiguration plugin) async {
@@ -329,29 +378,21 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
   }
 
   Future<Uint8List> getPluginByteCode(PluginConfiguration plugin) async {
-    final pluginDir = await _getPluginDir();
-    final pluginExtractionDirPath = join(
-      pluginDir.path,
-      ServiceUtils.sanitizeFilename(plugin.name),
-    );
+    final pluginExtractionDirPath = await _getPluginExtractionDir(plugin);
 
-    final libraryFile = File(join(pluginExtractionDirPath, "plugin.out"));
+    final libraryFile = File(join(pluginExtractionDirPath.path, "plugin.out"));
 
     if (!libraryFile.existsSync()) {
-      throw Exception("No plugin.out (Bytecode) file found");
+      throw MetadataPluginException.pluginByteCodeFileNotFound();
     }
 
     return await libraryFile.readAsBytes();
   }
 
   Future<File?> getLogoPath(PluginConfiguration plugin) async {
-    final pluginDir = await _getPluginDir();
-    final pluginExtractionDirPath = join(
-      pluginDir.path,
-      ServiceUtils.sanitizeFilename(plugin.name),
-    );
+    final pluginExtractionDirPath = await _getPluginExtractionDir(plugin);
 
-    final logoFile = File(join(pluginExtractionDirPath, "logo.png"));
+    final logoFile = File(join(pluginExtractionDirPath.path, "logo.png"));
 
     if (!logoFile.existsSync()) {
       return null;

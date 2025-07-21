@@ -3,8 +3,10 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/modules/metadata_plugins/plugin_update_available_dialog.dart';
 import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/metadata_plugin/updater/update_checker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MetadataInstalledPluginItem extends HookConsumerWidget {
@@ -23,6 +25,9 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
     final pluginsNotifier = ref.watch(metadataPluginsProvider.notifier);
     final requiresAuth =
         isDefault && plugin.abilities.contains(PluginAbilities.authentication);
+    final updateAvailable =
+        isDefault ? ref.watch(metadataPluginUpdateCheckerProvider) : null;
+    final hasUpdate = isDefault && updateAvailable?.asData?.value != null;
 
     return Card(
       child: Column(
@@ -105,19 +110,48 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
               );
             },
           ),
-          if (plugin.abilities.contains(PluginAbilities.authentication) &&
-              isDefault)
+          if (requiresAuth || hasUpdate)
             Container(
               decoration: BoxDecoration(
                 color: context.theme.colorScheme.secondary,
                 borderRadius: BorderRadius.circular(8),
               ),
               padding: const EdgeInsets.all(12),
-              child: const Row(
-                spacing: 8,
+              child: Column(
+                spacing: 12,
                 children: [
-                  Icon(SpotubeIcons.warning, color: Colors.yellow),
-                  Text("Plugin requires authentication"),
+                  if (requiresAuth)
+                    const Row(
+                      spacing: 8,
+                      children: [
+                        Icon(SpotubeIcons.warning, color: Colors.yellow),
+                        Text("Plugin requires authentication"),
+                      ],
+                    ),
+                  if (hasUpdate)
+                    SizedBox(
+                      width: double.infinity,
+                      child: Basic(
+                        leading: const Icon(SpotubeIcons.update),
+                        title: const Text("Update available"),
+                        subtitle: Text(
+                          updateAvailable!.asData!.value!.version,
+                        ),
+                        trailing: Button.primary(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) =>
+                                  MetadataPluginUpdateAvailableDialog(
+                                plugin: plugin,
+                                update: updateAvailable.asData!.value!,
+                              ),
+                            );
+                          },
+                          child: const Text("Update"),
+                        ),
+                      ),
+                    )
                 ],
               ),
             ),

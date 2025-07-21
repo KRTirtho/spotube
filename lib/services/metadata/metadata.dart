@@ -5,6 +5,7 @@ import 'package:hetu_otp_util/hetu_otp_util.dart';
 import 'package:hetu_script/hetu_script.dart';
 import 'package:hetu_spotube_plugin/hetu_spotube_plugin.dart';
 import 'package:hetu_std/hetu_std.dart';
+import 'package:pub_semver/pub_semver.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/collections/routes.dart';
@@ -19,11 +20,14 @@ import 'package:spotube/services/metadata/endpoints/browse.dart';
 import 'package:spotube/services/metadata/endpoints/playlist.dart';
 import 'package:spotube/services/metadata/endpoints/search.dart';
 import 'package:spotube/services/metadata/endpoints/track.dart';
+import 'package:spotube/services/metadata/endpoints/updater.dart';
 import 'package:spotube/services/metadata/endpoints/user.dart';
 
 const defaultMetadataLimit = "20";
 
 class MetadataPlugin {
+  static final pluginApiVersion = Version.parse("1.0.0");
+
   static Future<MetadataPlugin> create(
     PluginConfiguration config,
     Uint8List byteCode,
@@ -101,6 +105,7 @@ class MetadataPlugin {
   late final MetadataPluginPlaylistEndpoint playlist;
   late final MetadataPluginTrackEndpoint track;
   late final MetadataPluginUserEndpoint user;
+  late final MetadataPluginUpdaterEndpoint updater;
 
   MetadataPlugin._(this.hetu) {
     auth = MetadataAuthEndpoint(hetu);
@@ -112,5 +117,6 @@ class MetadataPlugin {
     playlist = MetadataPluginPlaylistEndpoint(hetu);
     track = MetadataPluginTrackEndpoint(hetu);
     user = MetadataPluginUserEndpoint(hetu);
+    updater = MetadataPluginUpdaterEndpoint(hetu);
   }
 }

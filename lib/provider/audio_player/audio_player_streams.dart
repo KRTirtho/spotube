@@ -135,9 +135,11 @@ class AudioPlayerStreamListeners {
           return;
         }
         final nextTrack = audioPlayerState.tracks
-            .elementAt(audioPlayerState.currentIndex + 1);
+            .elementAtOrNull(audioPlayerState.currentIndex + 1);
 
-        if (lastTrack == nextTrack.id || nextTrack is SpotubeLocalTrackObject) {
+        if (nextTrack == null ||
+            lastTrack == nextTrack.id ||
+            nextTrack is SpotubeLocalTrackObject) {
           return;
         }
 
