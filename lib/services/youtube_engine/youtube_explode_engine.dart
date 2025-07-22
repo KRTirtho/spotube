@@ -148,7 +148,7 @@ class YouTubeExplodeEngine implements YouTubeEngine {
       ytClients: [
         YoutubeApiClient.ios,
         YoutubeApiClient.android,
-        YoutubeApiClient.mweb,
+        YoutubeApiClient.androidVr,
       ],
     );
 
