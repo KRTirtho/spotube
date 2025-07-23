@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -22,6 +23,17 @@ import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/utils/platform.dart';
+
+final isBlacklistedProvider =
+    Provider.autoDispose.family<bool, SpotubeTrackObject>(
+  (ref, track) {
+    ref.watch(blacklistProvider);
+    final blacklist = ref.read(blacklistProvider.notifier);
+    return blacklist.contains(track);
+  },
+);
+
+final _overlay = ValueNotifier<OverlayCompleter<dynamic>?>(null);
 
 class TrackTile extends HookConsumerWidget {
   /// [index] will not be shown if null
@@ -51,19 +63,35 @@ class TrackTile extends HookConsumerWidget {
     this.leadingActions,
   });
 
+  OverlayCompleter<dynamic> showOptions(
+    BuildContext context,
+    Offset offset,
+  ) {
+    return showPopover(
+      context: context,
+      position: offset,
+      alignment: Alignment.bottomRight,
+      builder: (context) {
+        return SizedBox(
+          width: 220 * context.theme.scaling,
+          child: Card(
+            padding: const EdgeInsets.all(8),
+            child: TrackOptions(
+              track: track,
+              playlistId: playlistId,
+              userPlaylist: userPlaylist,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
 
-    final blacklist = ref.watch(blacklistProvider);
-    final blacklistNotifier = ref.watch(blacklistProvider.notifier);
-
-    final isBlackListed = useMemoized(
-      () => blacklistNotifier.contains(track),
-      [blacklist, track],
-    );
-
-    final showOptionCbRef = useRef<ValueChanged<RelativeRect>?>(null);
+    final isBlackListed = ref.watch(isBlacklistedProvider(track));
 
     final isLoading = useState(false);
 
@@ -82,13 +110,13 @@ class TrackTile extends HookConsumerWidget {
       return Listener(
         onPointerDown: (event) {
           if (event.buttons != kSecondaryMouseButton) return;
-          showOptionCbRef.value?.call(
-            RelativeRect.fromLTRB(
-              event.position.dx,
-              event.position.dy,
-              constrains.maxWidth - event.position.dx,
-              constrains.maxHeight - event.position.dy,
-            ),
+          if (_overlay.value != null) {
+            _overlay.value?.remove();
+            _overlay.value = null;
+          }
+          _overlay.value = showOptions(
+            context,
+            Offset.zero,
           );
         },
         child: HoverBuilder(
@@ -303,11 +331,91 @@ class TrackTile extends HookConsumerWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                TrackOptions(
-                  track: track,
-                  playlistId: playlistId,
-                  userPlaylist: userPlaylist,
-                  showMenuCbRef: showOptionCbRef,
+                Builder(
+                  builder: (context) {
+                    return IconButton.ghost(
+                      icon: const Icon(SpotubeIcons.moreHorizontal),
+                      onPressed: () {
+                        final mediaQuery = MediaQuery.sizeOf(context);
+
+                        if (mediaQuery.lgAndUp) {
+                          final renderBox =
+                              context.findRenderObject() as RenderBox;
+                          final position = RelativeRect.fromRect(
+                            Rect.fromPoints(
+                              renderBox.localToGlobal(Offset.zero,
+                                  ancestor: context.findRenderObject()),
+                              renderBox.localToGlobal(
+                                  renderBox.size.bottomRight(Offset.zero),
+                                  ancestor: context.findRenderObject()),
+                            ),
+                            Offset.zero & mediaQuery,
+                          );
+                          final offset = Offset(position.left, position.top);
+                          showOptions(context, offset);
+                        } else {
+                          openDrawer(
+                            context: context,
+                            position: OverlayPosition.bottom,
+                            draggable: true,
+                            showDragHandle: true,
+                            borderRadius: context.theme.borderRadiusMd,
+                            transformBackdrop: false,
+                            builder: (context) {
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 8.0,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  spacing: 8,
+                                  children: [
+                                    Basic(
+                                      leading: Container(
+                                        width: 40,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              context.theme.borderRadiusMd,
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: imageProvider,
+                                          ),
+                                        ),
+                                      ),
+                                      title: Text(
+                                        track.name,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                      ).semiBold(),
+                                      subtitle: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: ArtistLink(
+                                          artists: track.artists,
+                                          onOverflowArtistClick: () =>
+                                              context.navigateTo(
+                                            TrackRoute(trackId: track.id),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const Divider(),
+                                    TrackOptions(
+                                      track: track,
+                                      userPlaylist: userPlaylist,
+                                      playlistId: playlistId,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }
+                      },
+                    );
+                  },
                 ),
                 if (kIsDesktop) const Gap(10),
               ],

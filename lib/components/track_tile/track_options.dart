@@ -1,7 +1,3 @@
-import 'dart:io';
-
-import 'package:auto_route/auto_route.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,59 +5,22 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/assets.gen.dart';
-import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/adaptive/adaptive_pop_sheet_list.dart';
-import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
-import 'package:spotube/components/dialogs/prompt_dialog.dart';
-import 'package:spotube/components/dialogs/track_details_dialog.dart';
-import 'package:spotube/components/heart_button/use_track_toggle_like.dart';
-import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/components/links/artist_link.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
-import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/metadata_plugin/core/auth.dart';
-import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
-import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:spotube/provider/metadata_plugin/core/user.dart';
-import 'package:spotube/services/metadata/endpoints/error.dart';
-
-import 'package:url_launcher/url_launcher_string.dart';
-
-enum TrackOptionValue {
-  album,
-  share,
-  songlink,
-  addToPlaylist,
-  addToQueue,
-  removeFromPlaylist,
-  removeFromQueue,
-  blacklist,
-  delete,
-  playNext,
-  favorite,
-  details,
-  download,
-  startRadio,
-}
+import 'package:spotube/provider/track_options/track_options_provider.dart';
 
 /// [track] must be a [SpotubeFullTrackObject] or [SpotubeLocalTrackObject]
 class TrackOptions extends HookConsumerWidget {
   final SpotubeTrackObject track;
   final bool userPlaylist;
   final String? playlistId;
-  final ObjectRef<ValueChanged<RelativeRect>?>? showMenuCbRef;
   final Widget? icon;
   const TrackOptions({
     super.key,
     required this.track,
-    this.showMenuCbRef,
     this.userPlaylist = false,
     this.playlistId,
     this.icon,
@@ -70,302 +29,53 @@ class TrackOptions extends HookConsumerWidget {
           "Track must be a SpotubeFullTrackObject, SpotubeLocalTrackObject",
         );
 
-  void actionShare(BuildContext context, SpotubeTrackObject track) {
-    Clipboard.setData(ClipboardData(text: track.externalUri)).then((_) {
-      if (context.mounted) {
-        showToast(
-          context: context,
-          location: ToastLocation.topRight,
-          builder: (context, overlay) {
-            return SurfaceCard(
-              child: Text(
-                context.l10n.copied_to_clipboard(track.externalUri),
-                textAlign: TextAlign.center,
-              ),
-            );
-          },
-        );
-      }
-    });
-  }
-
-  void actionAddToPlaylist(
-    BuildContext context,
-    SpotubeTrackObject track,
-  ) {
-    /// showDialog doesn't work for some reason. So we have to
-    /// manually push a Dialog Route in the Navigator to get it working
-    showDialog(
-      context: context,
-      builder: (context) {
-        return PlaylistAddTrackDialog(
-          tracks: [track],
-          openFromPlaylist: playlistId,
-        );
-      },
-    );
-  }
-
-  void actionStartRadio(
-    BuildContext context,
-    WidgetRef ref,
-    SpotubeTrackObject track,
-  ) async {
-    final playback = ref.read(audioPlayerProvider.notifier);
-    final playlist = ref.read(audioPlayerProvider);
-    final metadataPlugin = await ref.read(metadataPluginProvider.future);
-
-    if (metadataPlugin == null) {
-      throw MetadataPluginException.noDefaultPlugin(
-        "No default metadata plugin set",
-      );
-    }
-
-    final tracks = await metadataPlugin.track.radio(track.id);
-
-    bool replaceQueue = false;
-
-    if (context.mounted && playlist.tracks.isNotEmpty) {
-      replaceQueue = await showPromptDialog(
-        context: context,
-        title: context.l10n.how_to_start_radio,
-        message: context.l10n.replace_queue_question,
-        okText: context.l10n.replace,
-        cancelText: context.l10n.add_to_queue,
-      );
-    }
-
-    if (replaceQueue || playlist.tracks.isEmpty) {
-      await playback.stop();
-      await playback.load([track], autoPlay: true);
-
-      // we don't have to add those tracks as useEndlessPlayback will do it for us
-      return;
-    } else {
-      await playback.addTrack(track);
-    }
-
-    await playback.addTracks(
-      tracks.toList()
-        ..removeWhere((e) {
-          final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
-          return e.id == track.id || isDuplicate;
-        }),
-    );
-  }
-
   @override
   Widget build(BuildContext context, ref) {
     final mediaQuery = MediaQuery.of(context);
     final ThemeData(:colorScheme) = Theme.of(context);
 
-    final playlist = ref.watch(audioPlayerProvider);
-    final playback = ref.watch(audioPlayerProvider.notifier);
-    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
-    ref.watch(downloadManagerProvider);
-    final downloadManager = ref.watch(downloadManagerProvider.notifier);
-    final blacklist = ref.watch(blacklistProvider);
-    final me = ref.watch(metadataPluginUserProvider);
-
-    final favorites = useTrackToggleLike(track, ref);
-
-    final isBlackListed = useMemoized(
-      () => blacklist.asData?.value.any(
-        (element) => element.elementId == track.id,
-      ),
-      [blacklist, track],
-    );
-
-    final removingTrack = useState<String?>(null);
-    final favoritePlaylistsNotifier =
-        ref.watch(metadataPluginSavedPlaylistsProvider.notifier);
-
-    final isInDownloadQueue = useMemoized(() {
-      if (playlist.activeTrack == null ||
-          playlist.activeTrack! is SpotubeLocalTrackObject) {
-        return false;
-      }
-      return downloadManager.isActive(
-        playlist.activeTrack! as SpotubeFullTrackObject,
-      );
-    }, [
-      playlist.activeTrack,
-      downloadManager,
-    ]);
-
-    final progressNotifier = useMemoized(() {
-      if (track is SpotubeLocalTrackObject) {
-        return null;
-      }
-      return downloadManager
-          .getProgressNotifier(track as SpotubeFullTrackObject);
-    }, [downloadManager, track]);
-
+    final trackOptionActions = ref.watch(trackOptionActionsProvider(track));
+    final (
+      :isBlacklisted,
+      :isInDownloadQueue,
+      :isInQueue,
+      :isActiveTrack,
+      :isAuthenticated,
+      :isLiked,
+      :progressNotifier
+    ) = ref.watch(trackOptionsStateProvider(track));
     final isLocalTrack = track is SpotubeLocalTrackObject;
 
-    final adaptivePopSheetList = AdaptivePopSheetList<TrackOptionValue>(
-      tooltip: context.l10n.more_actions,
-      onSelected: (value) async {
-        switch (value) {
-          case TrackOptionValue.album:
-            await context.navigateTo(
-              AlbumRoute(id: track.album.id, album: track.album),
-            );
-            break;
-          case TrackOptionValue.delete:
-            await File((track as SpotubeLocalTrackObject).path).delete();
-            ref.invalidate(localTracksProvider);
-            break;
-          case TrackOptionValue.addToQueue:
-            await playback.addTrack(track);
-            if (context.mounted) {
-              showToast(
-                context: context,
-                location: ToastLocation.topRight,
-                builder: (context, overlay) {
-                  return SurfaceCard(
-                    child: Text(
-                      context.l10n.added_track_to_queue(track.name),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                },
-              );
-            }
-            break;
-          case TrackOptionValue.playNext:
-            playback.addTracksAtFirst([track]);
-
-            if (context.mounted) {
-              showToast(
-                context: context,
-                location: ToastLocation.topRight,
-                builder: (context, overlay) {
-                  return SurfaceCard(
-                    child: Text(
-                      context.l10n.track_will_play_next(track.name),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                },
-              );
-            }
-            break;
-          case TrackOptionValue.removeFromQueue:
-            playback.removeTrack(track.id);
-
-            if (context.mounted) {
-              showToast(
-                context: context,
-                location: ToastLocation.topRight,
-                builder: (context, overlay) {
-                  return SurfaceCard(
-                    child: Text(
-                      context.l10n.removed_track_from_queue(
-                        track.name,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                },
-              );
-            }
-            break;
-          case TrackOptionValue.favorite:
-            favorites.toggleTrackLike(track);
-            break;
-          case TrackOptionValue.addToPlaylist:
-            actionAddToPlaylist(context, track);
-            break;
-          case TrackOptionValue.removeFromPlaylist:
-            removingTrack.value = track.externalUri;
-            favoritePlaylistsNotifier
-                .removeTracks(playlistId ?? "", [track.id]);
-            break;
-          case TrackOptionValue.blacklist:
-            if (isBlackListed == null) break;
-            if (isBlackListed == true) {
-              await ref.read(blacklistProvider.notifier).remove(track.id);
-            } else {
-              await ref.read(blacklistProvider.notifier).add(
-                    BlacklistTableCompanion.insert(
-                      name: track.name,
-                      elementId: track.id,
-                      elementType: BlacklistedType.track,
-                    ),
-                  );
-            }
-            break;
-          case TrackOptionValue.share:
-            actionShare(context, track);
-            break;
-          case TrackOptionValue.songlink:
-            final url = "https://song.link/s/${track.id}";
-            await launchUrlString(url);
-            break;
-          case TrackOptionValue.details:
-            if (track is! SpotubeFullTrackObject) break;
-            showDialog(
-              context: context,
-              builder: (context) => ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 400),
-                child:
-                    TrackDetailsDialog(track: track as SpotubeFullTrackObject),
-              ),
-            );
-            break;
-          case TrackOptionValue.download:
-            if (track is! SpotubeFullTrackObject) break;
-            await downloadManager.addToQueue(track as SpotubeFullTrackObject);
-            break;
-          case TrackOptionValue.startRadio:
-            actionStartRadio(context, ref, track);
-            break;
-        }
-      },
-      icon: icon ?? const Icon(SpotubeIcons.moreHorizontal),
-      variance: ButtonVariance.ghost,
-      headings: [
-        Basic(
-          leading: AspectRatio(
-            aspectRatio: 1,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: UniversalImage(
-                path: track.album.images
-                    .asUrlString(placeholder: ImagePlaceholder.albumArt),
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          title: Text(
-            track.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ).semiBold(),
-          subtitle: Align(
-            alignment: Alignment.centerLeft,
-            child: ArtistLink(
-              artists: track.artists,
-              onOverflowArtistClick: () => context.navigateTo(
-                TrackRoute(trackId: track.id),
-              ),
-            ),
-          ),
-        ),
-      ],
-      items: (context) => [
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      spacing: 8,
+      children: [
         if (isLocalTrack)
-          AdaptiveMenuButton(
-            value: TrackOptionValue.delete,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.delete,
+                playlistId,
+              );
+            },
             leading: const Icon(SpotubeIcons.trash),
-            child: Text(context.l10n.delete),
+            title: Text(context.l10n.delete),
           ),
         if (mediaQuery.smAndDown && !isLocalTrack)
-          AdaptiveMenuButton(
-            value: TrackOptionValue.album,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.album,
+                playlistId,
+              );
+            },
             leading: const Icon(SpotubeIcons.album),
-            child: Column(
+            title: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -377,62 +87,116 @@ class TrackOptions extends HookConsumerWidget {
               ],
             ),
           ),
-        if (!playlist.containsTrack(track)) ...[
-          AdaptiveMenuButton(
-            value: TrackOptionValue.addToQueue,
+        if (!isInQueue) ...[
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.addToQueue,
+                playlistId,
+              );
+            },
             leading: const Icon(SpotubeIcons.queueAdd),
-            child: Text(context.l10n.add_to_queue),
+            title: Text(context.l10n.add_to_queue),
           ),
-          AdaptiveMenuButton(
-            value: TrackOptionValue.playNext,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.playNext,
+                playlistId,
+              );
+            },
             leading: const Icon(SpotubeIcons.lightning),
-            child: Text(context.l10n.play_next),
+            title: Text(context.l10n.play_next),
           ),
         ] else
-          AdaptiveMenuButton(
-            value: TrackOptionValue.removeFromQueue,
-            enabled: playlist.activeTrack?.id != track.id,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.removeFromQueue,
+                playlistId,
+              );
+            },
+            enabled: !isActiveTrack,
             leading: const Icon(SpotubeIcons.queueRemove),
-            child: Text(context.l10n.remove_from_queue),
+            title: Text(context.l10n.remove_from_queue),
           ),
-        if (me.asData?.value != null && !isLocalTrack)
-          AdaptiveMenuButton(
-            value: TrackOptionValue.favorite,
-            leading: favorites.isLiked
+        if (isAuthenticated && !isLocalTrack)
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.favorite,
+                playlistId,
+              );
+            },
+            leading: isLiked
                 ? const Icon(
                     SpotubeIcons.heartFilled,
                     color: Colors.pink,
                   )
                 : const Icon(SpotubeIcons.heart),
-            child: Text(
-              favorites.isLiked
+            title: Text(
+              isLiked
                   ? context.l10n.remove_from_favorites
                   : context.l10n.save_as_favorite,
             ),
           ),
-        if (authenticated.asData?.value == true && !isLocalTrack) ...[
-          AdaptiveMenuButton(
-            value: TrackOptionValue.startRadio,
+        if (isAuthenticated && !isLocalTrack) ...[
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.startRadio,
+                playlistId,
+              );
+            },
             leading: const Icon(SpotubeIcons.radio),
-            child: Text(context.l10n.start_a_radio),
+            title: Text(context.l10n.start_a_radio),
           ),
-          AdaptiveMenuButton(
-            value: TrackOptionValue.addToPlaylist,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.addToPlaylist,
+                playlistId,
+              );
+            },
             leading: const Icon(SpotubeIcons.playlistAdd),
-            child: Text(context.l10n.add_to_playlist),
+            title: Text(context.l10n.add_to_playlist),
           ),
         ],
-        if (userPlaylist &&
-            authenticated.asData?.value == true &&
-            !isLocalTrack)
-          AdaptiveMenuButton(
-            value: TrackOptionValue.removeFromPlaylist,
+        if (userPlaylist && isAuthenticated && !isLocalTrack)
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.removeFromPlaylist,
+                playlistId,
+              );
+            },
             leading: const Icon(SpotubeIcons.removeFilled),
-            child: Text(context.l10n.remove_from_playlist),
+            title: Text(context.l10n.remove_from_playlist),
           ),
         if (!isLocalTrack)
-          AdaptiveMenuButton(
-            value: TrackOptionValue.download,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.download,
+                playlistId,
+              );
+            },
             enabled: !isInDownloadQueue,
             leading: isInDownloadQueue
                 ? HookBuilder(builder: (context) {
@@ -442,58 +206,75 @@ class TrackOptions extends HookConsumerWidget {
                     );
                   })
                 : const Icon(SpotubeIcons.download),
-            child: Text(context.l10n.download_track),
+            title: Text(context.l10n.download_track),
           ),
         if (!isLocalTrack)
-          AdaptiveMenuButton(
-            value: TrackOptionValue.blacklist,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.blacklist,
+                playlistId,
+              );
+            },
             leading: Icon(
               SpotubeIcons.playlistRemove,
-              color: isBlackListed != true ? Colors.red[400] : null,
+              color: isBlacklisted != true ? Colors.red[400] : null,
             ),
-            child: Text(
-              isBlackListed == true
+            title: Text(
+              isBlacklisted == true
                   ? context.l10n.remove_from_blacklist
                   : context.l10n.add_to_blacklist,
               style: TextStyle(
-                color: isBlackListed != true ? Colors.red[400] : null,
+                color: isBlacklisted != true ? Colors.red[400] : null,
               ),
             ),
           ),
         if (!isLocalTrack)
-          AdaptiveMenuButton(
-            value: TrackOptionValue.share,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.share,
+                playlistId,
+              );
+            },
             leading: const Icon(SpotubeIcons.share),
-            child: Text(context.l10n.share),
+            title: Text(context.l10n.share),
           ),
         if (!isLocalTrack)
-          AdaptiveMenuButton(
-            value: TrackOptionValue.songlink,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.songlink,
+                playlistId,
+              );
+            },
             leading: Assets.logos.songlinkTransparent.image(
               width: 22,
               height: 22,
               color: colorScheme.foreground.withValues(alpha: 0.5),
             ),
-            child: Text(context.l10n.song_link),
+            title: Text(context.l10n.song_link),
           ),
         if (!isLocalTrack)
-          AdaptiveMenuButton(
-            value: TrackOptionValue.details,
+          ButtonTile(
+            style: ButtonVariance.menu,
+            onPressed: () async {
+              await trackOptionActions.action(
+                context,
+                TrackOptionValue.details,
+                playlistId,
+              );
+            },
             leading: const Icon(SpotubeIcons.info),
-            child: Text(context.l10n.details),
+            title: Text(context.l10n.details),
           ),
       ],
     );
-
-    //! This is the most ANTI pattern I've ever done, but it works
-    showMenuCbRef?.value = (relativeRect) {
-      final offsetFromRect = Offset(
-        relativeRect.left,
-        relativeRect.top,
-      );
-      adaptivePopSheetList.showDropdownMenu(context, offsetFromRect);
-    };
-
-    return adaptivePopSheetList;
   }
 }
