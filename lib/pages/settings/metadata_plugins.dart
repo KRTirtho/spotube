@@ -76,7 +76,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                           validator: FormBuilderValidators.url(
                               protocols: ["http", "https"]),
                           placeholder: const Text(
-                            "Add GitHub/Codeberg URL to plugin repository "
+                            "Paste download url or GitHub/Codeberg repo url"
                             "or direct link to .smplug file",
                           ),
                         ),
@@ -198,6 +198,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                   );
                 },
               ),
+              const SliverGap(20),
               SliverCrossAxisConstrained(
                 maxCrossAxisExtent: 720,
                 child: SliverFillRemaining(

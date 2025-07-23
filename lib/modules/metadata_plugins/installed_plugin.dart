@@ -21,10 +21,12 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final metadataPlugin = ref.watch(metadataPluginProvider);
-    final isAuthenticated = ref.watch(metadataPluginAuthenticatedProvider);
+    final isAuthenticatedSnapshot =
+        ref.watch(metadataPluginAuthenticatedProvider);
     final pluginsNotifier = ref.watch(metadataPluginsProvider.notifier);
     final requiresAuth =
         isDefault && plugin.abilities.contains(PluginAbilities.authentication);
+    final isAuthenticated = isAuthenticatedSnapshot.asData?.value == true;
     final updateAvailable =
         isDefault ? ref.watch(metadataPluginUpdateCheckerProvider) : null;
     final hasUpdate = isDefault && updateAvailable?.asData?.value != null;
@@ -70,8 +72,9 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                   children: [
                     Text(plugin.description),
                     if (repoUrl != null)
-                      Row(
+                      Wrap(
                         spacing: 8,
+                        runSpacing: 8,
                         children: [
                           if (isOfficial)
                             const PrimaryBadge(
@@ -110,7 +113,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
               );
             },
           ),
-          if (requiresAuth || hasUpdate)
+          if ((requiresAuth && !isAuthenticated) || hasUpdate)
             Container(
               decoration: BoxDecoration(
                 color: context.theme.colorScheme.secondary,
@@ -120,7 +123,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
               child: Column(
                 spacing: 12,
                 children: [
-                  if (requiresAuth)
+                  if (requiresAuth && !isAuthenticated)
                     const Row(
                       spacing: 8,
                       children: [
@@ -167,9 +170,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                     ? const Text("Default")
                     : const Text("Set default"),
               ),
-              if (isAuthenticated.asData?.value != true &&
-                  requiresAuth &&
-                  isDefault)
+              if (isDefault && requiresAuth && !isAuthenticated)
                 Button.primary(
                   onPressed: () async {
                     await metadataPlugin.asData?.value?.auth.authenticate();
@@ -177,9 +178,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                   leading: const Icon(SpotubeIcons.login),
                   child: const Text("Login"),
                 )
-              else if (isAuthenticated.asData?.value == true &&
-                  requiresAuth &&
-                  isDefault)
+              else if (isDefault && requiresAuth && isAuthenticated)
                 Button.destructive(
                   onPressed: () async {
                     await metadataPlugin.asData?.value?.auth.logout();

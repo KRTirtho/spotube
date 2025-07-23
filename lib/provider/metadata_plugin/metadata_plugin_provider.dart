@@ -370,6 +370,10 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
   }
 
   Future<void> setDefaultPlugin(PluginConfiguration plugin) async {
+    await database.metadataPluginsTable
+        .update()
+        .write(const MetadataPluginsTableCompanion(selected: Value(false)));
+
     await (database.metadataPluginsTable.update()
           ..where((tbl) => tbl.name.equals(plugin.name)))
         .write(
