@@ -11,7 +11,7 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/components/track_tile/track_options.dart';
+import 'package:spotube/components/track_tile/track_options_button.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/list.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -231,7 +231,7 @@ class TrackPage extends HookConsumerWidget {
                                       else
                                         const Gap(20),
                                       TrackHeartButton(track: track),
-                                      TrackOptions(
+                                      TrackOptionsButton(
                                         track: track,
                                         userPlaylist: false,
                                       ),
