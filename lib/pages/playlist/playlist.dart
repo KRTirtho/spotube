@@ -95,7 +95,11 @@ class PlaylistPage extends HookConsumerWidget {
                   if (!confirmed) return null;
 
                   if (isFavoritePlaylist.asData!.value) {
-                    await favoritePlaylistsNotifier.removeFavorite(playlist);
+                    if (isUserPlaylist) {
+                      await favoritePlaylistsNotifier.delete(playlist.id);
+                    } else {
+                      await favoritePlaylistsNotifier.removeFavorite(playlist);
+                    }
                   } else {
                     await favoritePlaylistsNotifier.addFavorite(playlist);
                   }

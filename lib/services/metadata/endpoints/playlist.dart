@@ -127,7 +127,7 @@ class MetadataPluginPlaylistEndpoint {
   }
 
   Future<void> deletePlaylist(String playlistId) async {
-    await hetuMetadataPlaylist.invoke(
+    return await hetuMetadataPlaylist.invoke(
       "deletePlaylist",
       positionalArgs: [playlistId],
     );

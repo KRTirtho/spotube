@@ -64,15 +64,18 @@ class MetadataPluginSavedPlaylistsNotifier
   }
 
   Future<void> delete(String playlistId) async {
-    await update((state) async {
-      (await metadataPlugin).playlist.deletePlaylist(playlistId);
-      return state.copyWith(
-        items: state.items.where((e) => (e).id != playlistId).toList(),
-      );
-    });
-
-    ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlistId));
-    ref.invalidate(metadataPluginPlaylistTracksProvider(playlistId));
+    if (state.value == null) return;
+    final oldState = state;
+    try {
+      state = const AsyncLoading();
+      await (await metadataPlugin).playlist.deletePlaylist(playlistId);
+      ref.invalidateSelf();
+      ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlistId));
+      ref.invalidate(metadataPluginPlaylistTracksProvider(playlistId));
+    } catch (e) {
+      state = oldState;
+      rethrow;
+    }
   }
 
   Future<void> addTracks(String playlistId, List<String> trackIds) async {

@@ -40,23 +40,23 @@ class MetadataPluginPlaylistNotifier
     if (userId == null) {
       throw Exception('User ID is not available. Please log in first.');
     }
-    await update(
-      (prev) async {
-        try {
-          final playlist = await (await metadataPlugin).playlist.create(
-                userId,
-                name: name,
-                description: description,
-                public: public,
-                collaborative: collaborative,
-              );
-          return playlist!;
-        } catch (e) {
-          onError?.call(e);
-          rethrow;
-        }
-      },
-    );
+    state = const AsyncValue.loading();
+    try {
+      final playlist = await (await metadataPlugin).playlist.create(
+            userId,
+            name: name,
+            description: description,
+            public: public,
+            collaborative: collaborative,
+          );
+      if (playlist != null) {
+        state = AsyncValue.data(playlist);
+      }
+      ref.invalidate(metadataPluginSavedPlaylistsProvider);
+    } catch (e) {
+      onError?.call(e);
+      rethrow;
+    }
   }
 
   Future<void> modify({
