@@ -216,6 +216,7 @@ flutter:
     - packages/flutter_undraw/assets/undraw/taken.svg
     - packages/flutter_undraw/assets/undraw/empty.svg
     - packages/flutter_undraw/assets/undraw/no_data.svg
+    - packages/flutter_undraw/assets/undraw/process.svg
     # hetu script bytecode
     - packages/hetu_std/assets/bytecode/std.out
     - packages/hetu_otp_util/assets/bytecode/otp_util.out

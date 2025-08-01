@@ -5,6 +5,9 @@ import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/horizontal_playbutton_card_view/horizontal_playbutton_card_view.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/metadata_plugin/browse/sections.dart';
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
+import 'package:very_good_infinite_list/very_good_infinite_list.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
 
 class HomePageBrowseSection extends HookConsumerWidget {
   const HomePageBrowseSection({super.key});
@@ -13,8 +16,40 @@ class HomePageBrowseSection extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final browseSections = ref.watch(metadataPluginBrowseSectionsProvider);
     final sections = browseSections.asData?.value.items;
+    final ThemeData(:colorScheme) = Theme.of(context);
 
-    return SliverList.builder(
+    if (browseSections.isLoading) {
+      return SliverToBoxAdapter(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 16,
+          children: [
+            Undraw(
+              height: 200,
+              illustration: UndrawIllustration.process,
+              color: colorScheme.primary,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 8,
+              children: [
+                const CircularProgressIndicator(),
+                const Text("Building your timeline based on your listenings...")
+                    .muted,
+              ],
+            ),
+            const Gap(16),
+          ],
+        ),
+      );
+    }
+
+    return SliverInfiniteList(
+      hasReachedMax: browseSections.asData?.value.hasMore == false,
+      isLoading: !browseSections.isLoading && browseSections.isLoadingNextPage,
+      onFetchData: () {
+        ref.read(metadataPluginBrowseSectionsProvider.notifier).fetchMore();
+      },
       itemCount: sections?.length ?? 0,
       itemBuilder: (context, index) {
         final section = sections![index];
