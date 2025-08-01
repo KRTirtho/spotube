@@ -4,7 +4,7 @@ enum PluginType { metadata }
 
 enum PluginApis { webview, localstorage, timezone }
 
-enum PluginAbilities { authentication }
+enum PluginAbilities { authentication, scrobbling }
 
 @freezed
 class PluginConfiguration with _$PluginConfiguration {

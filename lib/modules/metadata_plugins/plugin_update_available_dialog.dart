@@ -1,11 +1,10 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/markdown/markdown.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 class MetadataPluginUpdateAvailableDialog extends HookConsumerWidget {
   final PluginConfiguration plugin;
@@ -53,13 +52,8 @@ class MetadataPluginUpdateAvailableDialog extends HookConsumerWidget {
         children: [
           Text('${plugin.name} (${update.version}) available.'),
           if (update.changelog != null && update.changelog!.isNotEmpty)
-            MarkdownBody(
+            AppMarkdown(
               data: '### Changelog: \n\n${update.changelog}',
-              onTapLink: (text, href, title) {
-                if (href != null) {
-                  launchUrlString(href);
-                }
-              },
             ),
         ],
       ),

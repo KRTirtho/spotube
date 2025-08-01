@@ -1,10 +1,13 @@
+import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/markdown/markdown.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/metadata_plugins/plugin_update_available_dialog.dart';
 import 'package:spotube/provider/metadata_plugin/core/auth.dart';
+import 'package:spotube/provider/metadata_plugin/core/support.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/provider/metadata_plugin/updater/update_checker.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -26,6 +29,8 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
     final pluginsNotifier = ref.watch(metadataPluginsProvider.notifier);
     final requiresAuth =
         isDefault && plugin.abilities.contains(PluginAbilities.authentication);
+    final supportsScrobbling =
+        isDefault && plugin.abilities.contains(PluginAbilities.scrobbling);
     final isAuthenticated = isAuthenticatedSnapshot.asData?.value == true;
     final updateAvailable =
         isDefault ? ref.watch(metadataPluginUpdateCheckerProvider) : null;
@@ -89,9 +94,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                             )
                           ],
                           SecondaryBadge(
-                            leading: repoUrl.host == "github.com"
-                                ? const Icon(SpotubeIcons.github)
-                                : null,
+                            leading: const Icon(SpotubeIcons.connect),
                             child: Text(repoUrl.host),
                             onPressed: () {
                               launchUrl(repoUrl);
@@ -113,7 +116,9 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
               );
             },
           ),
-          if ((requiresAuth && !isAuthenticated) || hasUpdate)
+          if ((requiresAuth && !isAuthenticated) ||
+              hasUpdate ||
+              supportsScrobbling)
             Container(
               decoration: BoxDecoration(
                 color: context.theme.colorScheme.secondary,
@@ -154,12 +159,23 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                           child: const Text("Update"),
                         ),
                       ),
+                    ),
+                  if (supportsScrobbling)
+                    const SizedBox(
+                      width: double.infinity,
+                      child: Basic(
+                        leading: Icon(SpotubeIcons.info),
+                        title: Text("Supports scrobbling"),
+                        subtitle: Text(
+                          "This plugin scrobbles your music to generate your listening history.",
+                        ),
+                      ),
                     )
                 ],
               ),
             ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            spacing: 8,
             children: [
               Button.secondary(
                 enabled: !isDefault,
@@ -170,6 +186,80 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                     ? const Text("Default")
                     : const Text("Set default"),
               ),
+              if (isDefault)
+                Consumer(builder: (context, ref, _) {
+                  final supportTextSnapshot =
+                      ref.watch(metadataPluginSupportTextProvider);
+
+                  if (supportTextSnapshot.hasValue &&
+                      supportTextSnapshot.value == null) {
+                    return const SizedBox.shrink();
+                  }
+
+                  final bgColor = context.theme.brightness == Brightness.dark
+                      ? const Color.fromARGB(255, 255, 145, 175)
+                      : Colors.pink[600];
+                  final textColor = context.theme.brightness == Brightness.dark
+                      ? Colors.pink[700]
+                      : Colors.pink[50];
+
+                  final mediaQuery = MediaQuery.sizeOf(context);
+
+                  return Button(
+                    style: ButtonVariance.secondary.copyWith(
+                      decoration: (context, states, value) {
+                        return value.copyWithIfBoxDecoration(
+                          color: bgColor,
+                        );
+                      },
+                      textStyle: (context, states, value) {
+                        return value.copyWith(
+                          color: textColor,
+                        );
+                      },
+                      iconTheme: (context, states, value) {
+                        return value.copyWith(
+                          color: textColor,
+                        );
+                      },
+                    ),
+                    leading: const Icon(SpotubeIcons.heartFilled),
+                    child: const Text("Support"),
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: const Text("Support plugin development"),
+                            content: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxHeight: mediaQuery.height * 0.8,
+                                maxWidth: 720,
+                              ),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: SingleChildScrollView(
+                                  child: AppMarkdown(
+                                    data: supportTextSnapshot.value ?? "",
+                                  ),
+                                ),
+                              ),
+                            ),
+                            actions: [
+                              Button.secondary(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Close"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  );
+                }),
+              const Spacer(),
               if (isDefault && requiresAuth && !isAuthenticated)
                 Button.primary(
                   onPressed: () async {

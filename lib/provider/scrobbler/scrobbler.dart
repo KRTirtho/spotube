@@ -48,7 +48,7 @@ class ScrobblerNotifier extends AsyncNotifier<Scrobblenaut?> {
         await state.asData?.value?.track.scrobble(
           artist: track.artists.first.name,
           track: track.name,
-          album: track.album!.name,
+          album: track.album.name,
           chosenByUser: true,
           duration: Duration(milliseconds: track.durationMs),
           timestamp: DateTime.now().toUtc(),

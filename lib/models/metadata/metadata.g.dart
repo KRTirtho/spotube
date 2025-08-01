@@ -465,6 +465,7 @@ const _$PluginApisEnumMap = {
 
 const _$PluginAbilitiesEnumMap = {
   PluginAbilities.authentication: 'authentication',
+  PluginAbilities.scrobbling: 'scrobbling',
 };
 
 _$PluginUpdateAvailableImpl _$$PluginUpdateAvailableImplFromJson(Map json) =>

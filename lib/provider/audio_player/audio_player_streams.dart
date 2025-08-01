@@ -8,6 +8,7 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/provider/history/history.dart';
+import 'package:spotube/provider/metadata_plugin/core/scrobble.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/provider/server/track_sources.dart';
 import 'package:spotube/provider/skip_segments/skip_segments.dart';
@@ -90,13 +91,23 @@ class AudioPlayerStreamListeners {
             ? (audioPlayerState.activeTrack as SpotubeLocalTrackObject).path
             : audioPlayerState.activeTrack?.id;
 
+        /// According to Listenbrainz and Last.fm, a scrobble should be sent
+        /// after 4 minutes of listening or 50% of the track duration,
+        /// whichever is less.
+        final minimumListenTime = min(audioPlayer.duration.inSeconds ~/ 2, 240);
+
         if (audioPlayerState.activeTrack == null ||
             lastScrobbled == uid ||
-            position.inSeconds < 30) {
+            position.inSeconds < minimumListenTime ||
+            audioPlayer.duration == Duration.zero ||
+            position == Duration.zero) {
           return;
         }
 
         scrobbler.scrobble(audioPlayerState.activeTrack!);
+        ref
+            .read(metadataPluginScrobbleProvider.notifier)
+            .scrobble(audioPlayerState.activeTrack!);
         lastScrobbled = uid;
 
         /// The [Track] from Playlist.getTracks doesn't contain artist images

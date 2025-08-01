@@ -1,15 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
+import 'package:spotube/components/markdown/markdown.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 @RoutePage()
 class SettingsMetadataProviderFormPage extends HookConsumerWidget {
@@ -57,15 +56,7 @@ class SettingsMetadataProviderFormPage extends HookConsumerWidget {
                       if (fields[index] is MetadataFormFieldTextObject) {
                         final field =
                             fields[index] as MetadataFormFieldTextObject;
-                        return MarkdownBody(
-                          data: field.text,
-                          onTapLink: (text, href, title) {
-                            // TODO: Confirm link opening behavior
-                            if (href != null) {
-                              launchUrlString(href);
-                            }
-                          },
-                        );
+                        return AppMarkdown(data: field.text);
                       }
 
                       final field =

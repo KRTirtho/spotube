@@ -1,9 +1,9 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/markdown/markdown.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -124,16 +124,11 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
                                 },
                               ),
                               const Gap(8),
-                              MarkdownBody(
+                              AppMarkdown(
                                 data: "**Author**: ${pluginConfig.author}\n\n"
                                     "**Repository**: [${pluginConfig.repository ?? 'N/A'}](${pluginConfig.repository})\n\n\n\n"
                                     "This plugin can do following:\n\n"
                                     "$pluginAbilities",
-                                onTapLink: (text, href, title) {
-                                  if (href != null) {
-                                    launchUrlString(href);
-                                  }
-                                },
                               ),
                             ],
                           ),
