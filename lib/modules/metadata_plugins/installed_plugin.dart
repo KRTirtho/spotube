@@ -55,10 +55,13 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
 
               return Basic(
                 leading: snapshot.hasData
-                    ? Image.file(
-                        snapshot.data!,
-                        width: 36,
-                        height: 36,
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          snapshot.data!,
+                          width: 36,
+                          height: 36,
+                        ),
                       )
                     : Container(
                         height: 36,
