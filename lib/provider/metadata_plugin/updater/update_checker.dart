@@ -12,6 +12,6 @@ final metadataPluginUpdateCheckerProvider =
     return null;
   }
 
-  return metadataPlugin.updater
-      .check(metadataPluginConfigs.defaultPluginConfig!);
+  return metadataPlugin.core
+      .checkUpdate(metadataPluginConfigs.defaultPluginConfig!);
 });

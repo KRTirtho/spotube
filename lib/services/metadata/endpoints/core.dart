@@ -2,18 +2,20 @@ import 'package:hetu_script/hetu_script.dart';
 import 'package:hetu_script/values.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 
-class MetadataPluginUpdaterEndpoint {
+class MetadataPluginCore {
   final Hetu hetu;
 
-  MetadataPluginUpdaterEndpoint(this.hetu);
+  MetadataPluginCore(this.hetu);
 
   HTInstance get hetuMetadataPluginUpdater =>
-      (hetu.fetch("metadataPlugin") as HTInstance).memberGet("updater")
+      (hetu.fetch("metadataPlugin") as HTInstance).memberGet("core")
           as HTInstance;
 
-  Future<PluginUpdateAvailable?> check(PluginConfiguration pluginConfig) async {
+  Future<PluginUpdateAvailable?> checkUpdate(
+    PluginConfiguration pluginConfig,
+  ) async {
     final result = await hetuMetadataPluginUpdater.invoke(
-      "check",
+      "checkUpdate",
       positionalArgs: [pluginConfig.toJson()],
     );
 
