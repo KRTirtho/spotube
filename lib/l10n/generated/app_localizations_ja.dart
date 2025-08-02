@@ -380,12 +380,6 @@ class AppLocalizationsJa extends AppLocalizations {
   String get account => 'アカウント';
 
   @override
-  String get login_with_spotify => 'Spotify アカウントでログイン';
-
-  @override
-  String get connect_with_spotify => 'Spotify に接続';
-
-  @override
   String get logout => 'ログアウト';
 
   @override
@@ -461,7 +455,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get pre_download_play => '事前ダウンロードと再生';
 
   @override
-  String get pre_download_play_description => '音声をストリーミングする代わりに、データをバイト単位でダウンロードして再生 (回線速度が早いユーザーにおすすめ)';
+  String get pre_download_play_description =>
+      '音声をストリーミングする代わりに、データをバイト単位でダウンロードして再生 (回線速度が早いユーザーにおすすめ)';
 
   @override
   String get skip_non_music => '音楽でない部分をスキップ (SponsorBlock)';
@@ -506,7 +501,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get please_sponsor => '出資/寄付もお待ちします';
 
   @override
-  String get spotube_description => 'Spotube は、軽量でクロスプラットフォームな、すべて無料の spotify クライアント';
+  String get spotube_description =>
+      'Spotube は、軽量でクロスプラットフォームな、すべて無料の spotify クライアント';
 
   @override
   String get version => 'バージョン';
@@ -538,21 +534,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get license => 'ライセンス';
 
   @override
-  String get add_spotify_credentials => 'Spotify のログイン情報を追加してはじめましょう';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => '心配ありません。個人情報を収集したり、共有されることはありません';
+  String get credentials_will_not_be_shared_disclaimer =>
+      '心配ありません。個人情報を収集したり、共有されることはありません';
 
   @override
   String get know_how_to_login => 'やり方が分からないですか？';
 
   @override
   String get follow_step_by_step_guide => 'やり方の説明を見る';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookies';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +571,6 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get first_go_to => '最初にここを開き';
-
-  @override
-  String get login_if_not_logged_in => '、ログインしてないならログインまたは登録します';
-
-  @override
-  String get step_2 => 'ステップ 2';
-
-  @override
-  String get step_2_steps => '1. ログインしたら、F12を押すか、マウス右クリック ＞ 調査（検証）でブラウザの開発者ツール (devtools) を開きます。\n2. アプリケーション (Application) タブ (Chrome, Edge, Brave など) またはストレージタブ (Firefox, Palemoon など)\n3. Cookies 欄を選択し、https://accounts.spotify.com の枝を選びます';
-
-  @override
-  String get step_3 => 'ステップ 3';
-
-  @override
-  String get step_3_steps => '\"sp_dc\" Cookieの値をコピー';
-
-  @override
-  String get success_emoji => '成功🥳';
-
-  @override
-  String get success_message => 'アカウントへのログインに成功しました。よくできました！';
-
-  @override
-  String get step_4 => 'ステップ 4';
-
-  @override
-  String get step_4_steps => 'コピーした\"sp_dc\"の値を貼り付け';
 
   @override
   String get something_went_wrong => '何か誤りがあります';
@@ -752,10 +714,12 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get download_warning => '全曲の一括ダウンロードは明らかに音楽への海賊行為であり、音楽を生み出す共同体に損害を与えるでしょう。気づいてほしい。アーティストの多大な努力に敬意を払い、支援するようにしてください';
+  String get download_warning =>
+      '全曲の一括ダウンロードは明らかに音楽への海賊行為であり、音楽を生み出す共同体に損害を与えるでしょう。気づいてほしい。アーティストの多大な努力に敬意を払い、支援するようにしてください';
 
   @override
-  String get download_ip_ban_warning => 'また、通常よりも過剰なダウンロード要求があれば、YouTubeはあなたのIPをブロックします。つまりそのIPの端末からは、少なくとも2-3か月の間、（ログインしても）YouTubeを利用できなくなりす。そうなっても Spotube は一切の責任を負いません';
+  String get download_ip_ban_warning =>
+      'また、通常よりも過剰なダウンロード要求があれば、YouTubeはあなたのIPをブロックします。つまりそのIPの端末からは、少なくとも2-3か月の間、（ログインしても）YouTubeを利用できなくなりす。そうなっても Spotube は一切の責任を負いません';
 
   @override
   String get by_clicking_accept_terms => '「同意する」のクリックにより、以下への同意となります:';
@@ -767,7 +731,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get download_agreement_2 => '芸術作品を買うお金がないのでそうするしかないが、アーティストをできる限り支援する';
 
   @override
-  String get download_agreement_3 => '私のIPがYouTubeにブロックされることがあると完全に把握した。私のこの行動により起きたどんな事故も、Spotube やその所有者/貢献者に責任はありません。';
+  String get download_agreement_3 =>
+      '私のIPがYouTubeにブロックされることがあると完全に把握した。私のこの行動により起きたどんな事故も、Spotube やその所有者/貢献者に責任はありません。';
 
   @override
   String get decline => '同意しない';
@@ -848,7 +813,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get failed_to_encrypt => '暗号化に失敗しました';
 
   @override
-  String get encryption_failed_warning => 'Spotubeはデータを安全に保存するために暗号化を使用しています。しかし、失敗しました。したがって、安全でないストレージにフォールバックします\nLinuxを使用している場合は、gnome-keyring、kde-wallet、keepassxcなどのシークレットサービスがインストールされていることを確認してください';
+  String get encryption_failed_warning =>
+      'Spotubeはデータを安全に保存するために暗号化を使用しています。しかし、失敗しました。したがって、安全でないストレージにフォールバックします\nLinuxを使用している場合は、gnome-keyring、kde-wallet、keepassxcなどのシークレットサービスがインストールされていることを確認してください';
 
   @override
   String get querying_info => '情報を取得中...';
@@ -1014,7 +980,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get choose_your_region => '地域を選択';
 
   @override
-  String get choose_your_region_description => 'これにより、Spotubeがあなたの場所に適したコンテンツを表示できます。';
+  String get choose_your_region_description =>
+      'これにより、Spotubeがあなたの場所に適したコンテンツを表示できます。';
 
   @override
   String get choose_your_language => '言語を選択してください';
@@ -1023,7 +990,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get help_project_grow => 'このプロジェクトの成長を支援する';
 
   @override
-  String get help_project_grow_description => 'Spotubeはオープンソースプロジェクトです。プロジェクトに貢献したり、バグを報告したり、新しい機能を提案することで、このプロジェクトの成長に貢献できます。';
+  String get help_project_grow_description =>
+      'Spotubeはオープンソースプロジェクトです。プロジェクトに貢献したり、バグを報告したり、新しい機能を提案することで、このプロジェクトの成長に貢献できます。';
 
   @override
   String get contribute_on_github => 'GitHubで貢献する';
@@ -1117,7 +1085,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get choose_the_device => 'デバイスを選択：';
 
   @override
-  String get multiple_device_connected => '複数のデバイスが接続されています。\nこのアクションを実行するデバイスを選択してください';
+  String get multiple_device_connected =>
+      '複数のデバイスが接続されています。\nこのアクションを実行するデバイスを選択してください';
 
   @override
   String get nothing_found => '何も見つかりませんでした';
@@ -1190,7 +1159,8 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => '*これは Spotify のストリームあたりの支払い\nが \$0.003 から \$0.005 であると仮定して計算されています。\nこれは、Spotify でその曲を聴いた場合にアーティストにいくら支払ったかの\n洞察を得るための仮定の計算です。';
+  String get streaming_fees_hypothetical =>
+      '*これは Spotify のストリームあたりの支払い\nが \$0.003 から \$0.005 であると仮定して計算されています。\nこれは、Spotify でその曲を聴いた場合にアーティストにいくら支払ったかの\n洞察を得るための仮定の計算です。';
 
   @override
   String get minutes_listened => 'リスニング時間';
@@ -1212,7 +1182,8 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*これは、Spotifyのストリームごとの支払い\nが \$0.003 から \$0.005 の範囲で計算されています。これは仮想的な\n計算で、Spotify で曲を聴いた場合に、アーティストに\nどれくらい支払ったかをユーザーに示すためのものです。';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1232,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get webview_not_found => 'Webviewが見つかりません';
 
   @override
-  String get webview_not_found_description => 'デバイスにWebviewランタイムがインストールされていません。\nインストールされている場合は、environment PATHにあることを確認してください\n\nインストール後、アプリを再起動してください';
+  String get webview_not_found_description =>
+      'デバイスにWebviewランタイムがインストールされていません。\nインストールされている場合は、environment PATHにあることを確認してください\n\nインストール後、アプリを再起動してください';
 
   @override
   String get unsupported_platform => 'サポートされていないプラットフォーム';
@@ -1358,7 +1330,8 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'macOS/Linux/Unix系OSでは、.zshrc/.bashrc/.bash_profileなどでパスを設定しても動作しません。\nシェルの設定ファイルにパスを設定する必要があります';
+  String get youtube_engine_unix_issue_message =>
+      'macOS/Linux/Unix系OSでは、.zshrc/.bashrc/.bash_profileなどでパスを設定しても動作しません。\nシェルの設定ファイルにパスを設定する必要があります';
 
   @override
   String get download => 'ダウンロード';
@@ -1376,7 +1349,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get edit_port => 'ポートを編集';
 
   @override
-  String get port_helper_msg => 'デフォルトは-1で、ランダムな番号を示します。ファイアウォールを設定している場合は、これを設定することをお勧めします。';
+  String get port_helper_msg =>
+      'デフォルトは-1で、ランダムな番号を示します。ファイアウォールを設定している場合は、これを設定することをお勧めします。';
 
   @override
   String connect_request(Object client) {

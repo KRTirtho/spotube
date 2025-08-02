@@ -89,7 +89,8 @@ import 'app_localizations_zh.dart';
 /// be consistent with the languages listed in the AppLocalizations.supportedLocales
 /// property.
 abstract class AppLocalizations {
-  AppLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  AppLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
@@ -97,7 +98,8 @@ abstract class AppLocalizations {
     return Localizations.of<AppLocalizations>(context, AppLocalizations);
   }
 
-  static const LocalizationsDelegate<AppLocalizations> delegate = _AppLocalizationsDelegate();
+  static const LocalizationsDelegate<AppLocalizations> delegate =
+      _AppLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -109,7 +111,8 @@ abstract class AppLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -827,18 +830,6 @@ abstract class AppLocalizations {
   /// **'Account'**
   String get account;
 
-  /// No description provided for @login_with_spotify.
-  ///
-  /// In en, this message translates to:
-  /// **'Login with your Spotify account'**
-  String get login_with_spotify;
-
-  /// No description provided for @connect_with_spotify.
-  ///
-  /// In en, this message translates to:
-  /// **'Connect with Spotify'**
-  String get connect_with_spotify;
-
   /// No description provided for @logout.
   ///
   /// In en, this message translates to:
@@ -1082,7 +1073,7 @@ abstract class AppLocalizations {
   /// No description provided for @spotube_description.
   ///
   /// In en, this message translates to:
-  /// **'Spotube, a lightweight, cross-platform, free-for-all spotify client'**
+  /// **'Open source extensible music streaming platform and app, based on BYOMM (Bring your own music metadata) concept'**
   String get spotube_description;
 
   /// No description provided for @version.
@@ -1139,12 +1130,6 @@ abstract class AppLocalizations {
   /// **'License'**
   String get license;
 
-  /// No description provided for @add_spotify_credentials.
-  ///
-  /// In en, this message translates to:
-  /// **'Add your spotify credentials to get started'**
-  String get add_spotify_credentials;
-
   /// No description provided for @credentials_will_not_be_shared_disclaimer.
   ///
   /// In en, this message translates to:
@@ -1162,12 +1147,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Follow along the Step by Step guide'**
   String get follow_step_by_step_guide;
-
-  /// No description provided for @spotify_cookie.
-  ///
-  /// In en, this message translates to:
-  /// **'Spotify {name} Cookie'**
-  String spotify_cookie(Object name);
 
   /// No description provided for @cookie_name_cookie.
   ///
@@ -1222,60 +1201,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'First, Go to'**
   String get first_go_to;
-
-  /// No description provided for @login_if_not_logged_in.
-  ///
-  /// In en, this message translates to:
-  /// **'and Login/Signup if you are not logged in'**
-  String get login_if_not_logged_in;
-
-  /// No description provided for @step_2.
-  ///
-  /// In en, this message translates to:
-  /// **'Step 2'**
-  String get step_2;
-
-  /// No description provided for @step_2_steps.
-  ///
-  /// In en, this message translates to:
-  /// **'1. Once you\'re logged in, press F12 or Mouse Right Click > Inspect to Open the Browser devtools.\n2. Then go the \"Application\" Tab (Chrome, Edge, Brave etc..) or \"Storage\" Tab (Firefox, Palemoon etc..)\n3. Go to the \"Cookies\" section then the \"https://accounts.spotify.com\" subsection'**
-  String get step_2_steps;
-
-  /// No description provided for @step_3.
-  ///
-  /// In en, this message translates to:
-  /// **'Step 3'**
-  String get step_3;
-
-  /// No description provided for @step_3_steps.
-  ///
-  /// In en, this message translates to:
-  /// **'Copy the value of \"sp_dc\" Cookie'**
-  String get step_3_steps;
-
-  /// No description provided for @success_emoji.
-  ///
-  /// In en, this message translates to:
-  /// **'Success🥳'**
-  String get success_emoji;
-
-  /// No description provided for @success_message.
-  ///
-  /// In en, this message translates to:
-  /// **'Now you\'ve successfully Logged in with your Spotify account. Good Job, mate!'**
-  String get success_message;
-
-  /// No description provided for @step_4.
-  ///
-  /// In en, this message translates to:
-  /// **'Step 4'**
-  String get step_4;
-
-  /// No description provided for @step_4_steps.
-  ///
-  /// In en, this message translates to:
-  /// **'Paste the copied \"sp_dc\" value'**
-  String get step_4_steps;
 
   /// No description provided for @something_went_wrong.
   ///
@@ -2411,11 +2336,11 @@ abstract class AppLocalizations {
   /// **'Copied {shareUrl} to clipboard'**
   String copied_shareurl_to_clipboard(Object shareUrl);
 
-  /// No description provided for @spotify_hipotetical_calculation.
+  /// No description provided for @hipotetical_calculation.
   ///
   /// In en, this message translates to:
-  /// **'*This is calculated based on Spotify\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in Spotify.'**
-  String get spotify_hipotetical_calculation;
+  /// **'*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.'**
+  String get hipotetical_calculation;
 
   /// No description provided for @count_mins.
   ///
@@ -2730,7 +2655,8 @@ abstract class AppLocalizations {
   String get connection_request_denied;
 }
 
-class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
+class _AppLocalizationsDelegate
+    extends LocalizationsDelegate<AppLocalizations> {
   const _AppLocalizationsDelegate();
 
   @override
@@ -2739,52 +2665,108 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['ar', 'bn', 'ca', 'cs', 'de', 'en', 'es', 'eu', 'fa', 'fi', 'fr', 'hi', 'id', 'it', 'ja', 'ka', 'ko', 'ne', 'nl', 'pl', 'pt', 'ru', 'ta', 'th', 'tl', 'tr', 'uk', 'vi', 'zh'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>[
+        'ar',
+        'bn',
+        'ca',
+        'cs',
+        'de',
+        'en',
+        'es',
+        'eu',
+        'fa',
+        'fi',
+        'fr',
+        'hi',
+        'id',
+        'it',
+        'ja',
+        'ka',
+        'ko',
+        'ne',
+        'nl',
+        'pl',
+        'pt',
+        'ru',
+        'ta',
+        'th',
+        'tl',
+        'tr',
+        'uk',
+        'vi',
+        'zh'
+      ].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
-
-
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'ar': return AppLocalizationsAr();
-    case 'bn': return AppLocalizationsBn();
-    case 'ca': return AppLocalizationsCa();
-    case 'cs': return AppLocalizationsCs();
-    case 'de': return AppLocalizationsDe();
-    case 'en': return AppLocalizationsEn();
-    case 'es': return AppLocalizationsEs();
-    case 'eu': return AppLocalizationsEu();
-    case 'fa': return AppLocalizationsFa();
-    case 'fi': return AppLocalizationsFi();
-    case 'fr': return AppLocalizationsFr();
-    case 'hi': return AppLocalizationsHi();
-    case 'id': return AppLocalizationsId();
-    case 'it': return AppLocalizationsIt();
-    case 'ja': return AppLocalizationsJa();
-    case 'ka': return AppLocalizationsKa();
-    case 'ko': return AppLocalizationsKo();
-    case 'ne': return AppLocalizationsNe();
-    case 'nl': return AppLocalizationsNl();
-    case 'pl': return AppLocalizationsPl();
-    case 'pt': return AppLocalizationsPt();
-    case 'ru': return AppLocalizationsRu();
-    case 'ta': return AppLocalizationsTa();
-    case 'th': return AppLocalizationsTh();
-    case 'tl': return AppLocalizationsTl();
-    case 'tr': return AppLocalizationsTr();
-    case 'uk': return AppLocalizationsUk();
-    case 'vi': return AppLocalizationsVi();
-    case 'zh': return AppLocalizationsZh();
+    case 'ar':
+      return AppLocalizationsAr();
+    case 'bn':
+      return AppLocalizationsBn();
+    case 'ca':
+      return AppLocalizationsCa();
+    case 'cs':
+      return AppLocalizationsCs();
+    case 'de':
+      return AppLocalizationsDe();
+    case 'en':
+      return AppLocalizationsEn();
+    case 'es':
+      return AppLocalizationsEs();
+    case 'eu':
+      return AppLocalizationsEu();
+    case 'fa':
+      return AppLocalizationsFa();
+    case 'fi':
+      return AppLocalizationsFi();
+    case 'fr':
+      return AppLocalizationsFr();
+    case 'hi':
+      return AppLocalizationsHi();
+    case 'id':
+      return AppLocalizationsId();
+    case 'it':
+      return AppLocalizationsIt();
+    case 'ja':
+      return AppLocalizationsJa();
+    case 'ka':
+      return AppLocalizationsKa();
+    case 'ko':
+      return AppLocalizationsKo();
+    case 'ne':
+      return AppLocalizationsNe();
+    case 'nl':
+      return AppLocalizationsNl();
+    case 'pl':
+      return AppLocalizationsPl();
+    case 'pt':
+      return AppLocalizationsPt();
+    case 'ru':
+      return AppLocalizationsRu();
+    case 'ta':
+      return AppLocalizationsTa();
+    case 'th':
+      return AppLocalizationsTh();
+    case 'tl':
+      return AppLocalizationsTl();
+    case 'tr':
+      return AppLocalizationsTr();
+    case 'uk':
+      return AppLocalizationsUk();
+    case 'vi':
+      return AppLocalizationsVi();
+    case 'zh':
+      return AppLocalizationsZh();
   }
 
   throw FlutterError(
-    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
-  );
+      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

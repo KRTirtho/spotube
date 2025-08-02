@@ -338,13 +338,16 @@ class WebSocketRemoveTrackEvent extends WebSocketEvent<String> {
   WebSocketRemoveTrackEvent(String data) : super(WsEvent.removeTrack, data);
 }
 
-class WebSocketAddTrackEvent extends WebSocketEvent<Track> {
-  WebSocketAddTrackEvent(Track data) : super(WsEvent.addTrack, data);
+class WebSocketAddTrackEvent extends WebSocketEvent<SpotubeFullTrackObject> {
+  WebSocketAddTrackEvent(SpotubeFullTrackObject data)
+      : super(WsEvent.addTrack, data);
 
   WebSocketAddTrackEvent.fromJson(Map<String, dynamic> json)
       : super(
           WsEvent.addTrack,
-          Track.fromJson(json["data"] as Map<String, dynamic>),
+          SpotubeFullTrackObject.fromJson(
+            json["data"] as Map<String, dynamic>,
+          ),
         );
 }
 

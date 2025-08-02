@@ -380,12 +380,6 @@ class AppLocalizationsKo extends AppLocalizations {
   String get account => '계정';
 
   @override
-  String get login_with_spotify => 'Spotify 계정으로 로그인';
-
-  @override
-  String get connect_with_spotify => 'Spotify에 연결';
-
-  @override
   String get logout => '로그아웃';
 
   @override
@@ -461,7 +455,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get pre_download_play => '재생할 곡을 미리 다운로드';
 
   @override
-  String get pre_download_play_description => '스트리밍 방식을 쓰는 대신 파일 단위로 다운로드 받고 재생 (인터넷 대역폭이 높은 환경에서 추천)';
+  String get pre_download_play_description =>
+      '스트리밍 방식을 쓰는 대신 파일 단위로 다운로드 받고 재생 (인터넷 대역폭이 높은 환경에서 추천)';
 
   @override
   String get skip_non_music => '음악이 아닌 부분을 스킵 (SponsorBlock)';
@@ -506,7 +501,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get please_sponsor => '후원해주시면 감사하겠습니다.';
 
   @override
-  String get spotube_description => 'Spotube는, 경량에 크로스플랫폼인데다 무료이기까지한 스포티파이 클라이언트입니다';
+  String get spotube_description =>
+      'Spotube는, 경량에 크로스플랫폼인데다 무료이기까지한 스포티파이 클라이언트입니다';
 
   @override
   String get version => '버전';
@@ -538,21 +534,14 @@ class AppLocalizationsKo extends AppLocalizations {
   String get license => '라이선스';
 
   @override
-  String get add_spotify_credentials => '먼저 Spotify의 로그인정보를 추가하기';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => '걱정마세요. 개인정보를 수집하거나 공유하지 않습니다.';
+  String get credentials_will_not_be_shared_disclaimer =>
+      '걱정마세요. 개인정보를 수집하거나 공유하지 않습니다.';
 
   @override
   String get know_how_to_login => '어떻게 하는건지 모르겠나요?';
 
   @override
   String get follow_step_by_step_guide => '사용법 확인하기';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookies';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +571,6 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get first_go_to => '가장 먼저 먼저 들어갈 곳은 ';
-
-  @override
-  String get login_if_not_logged_in => '그리고 로그인을 하지 않았다면 로그인해주세요';
-
-  @override
-  String get step_2 => '2단계';
-
-  @override
-  String get step_2_steps => '1. 로그인에 성공하면、F12나 마우스 우클릭 ＞ 검사(Inspect)을 눌러 브라우저의 개발자 도구(devtools)를 열어주세요.\n2. 애플리케이션 (Application) 탭 (Chrome, Edge, Brave 등) 또는 스토리지 탭 (Firefox, Palemoon 등)을 열어주세요.\n3. 쿠키 (Cookies) 섹션으로 들어가서, https://accounts.spotify.com 서브섹션으로 들어가주세요.';
-
-  @override
-  String get step_3 => '3단계';
-
-  @override
-  String get step_3_steps => '\"sp_dc\" 쿠키의 값을 복사';
-
-  @override
-  String get success_emoji => '성공🥳';
-
-  @override
-  String get success_message => '성공적으로 스포티파이 게정으로 로그인했습니다. 잘했어요!';
-
-  @override
-  String get step_4 => '4단계';
-
-  @override
-  String get step_4_steps => '복사한 \"sp_dc\"값을 붙여넣기';
 
   @override
   String get something_went_wrong => '알 수 없는 이유로 동작에 실패했습니다.';
@@ -752,10 +714,12 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get download_warning => '모든 트랙을 대량으로 다운로드하는 것은 명백한 불법 복제이며 음악 창작 사회에 피해를 입히는 행위입니다. 이 점을 알아주셨으면 합니다. 항상 아티스트의 노력을 존중하고 응원해 주세요.';
+  String get download_warning =>
+      '모든 트랙을 대량으로 다운로드하는 것은 명백한 불법 복제이며 음악 창작 사회에 피해를 입히는 행위입니다. 이 점을 알아주셨으면 합니다. 항상 아티스트의 노력을 존중하고 응원해 주세요.';
 
   @override
-  String get download_ip_ban_warning => '참고로, 평소보다 과도한 다운로드 요청으로 인해 YouTube에서 IP가 차단될 수 있습니다. IP 차단은 해당 IP 기기에서 최소 2~3개월 동안 (로그인한 상태에서도) YouTube를 사용할 수 없음을 의미합니다. 그리고 이런 일이 발생하더라도 스포튜브는 어떠한 책임도 지지 않습니다.';
+  String get download_ip_ban_warning =>
+      '참고로, 평소보다 과도한 다운로드 요청으로 인해 YouTube에서 IP가 차단될 수 있습니다. IP 차단은 해당 IP 기기에서 최소 2~3개월 동안 (로그인한 상태에서도) YouTube를 사용할 수 없음을 의미합니다. 그리고 이런 일이 발생하더라도 스포튜브는 어떠한 책임도 지지 않습니다.';
 
   @override
   String get by_clicking_accept_terms => '\'동의\'를 클릭하면 다음 약관에 동의하는 것입니다:';
@@ -764,10 +728,12 @@ class AppLocalizationsKo extends AppLocalizations {
   String get download_agreement_1 => '알고 있습니다. 전 나쁜 사람입니다.';
 
   @override
-  String get download_agreement_2 => '제가 할 수 있는 모든 곳에서 아티스트를 지원할 것이며, 저는 그들의 작품을 살 돈이 없기 때문에 이렇게 하는 것뿐입니다.';
+  String get download_agreement_2 =>
+      '제가 할 수 있는 모든 곳에서 아티스트를 지원할 것이며, 저는 그들의 작품을 살 돈이 없기 때문에 이렇게 하는 것뿐입니다.';
 
   @override
-  String get download_agreement_3 => '본인은 YouTube에서 내 IP가 차단될 수 있음을 완전히 알고 있으며, 현재 내 행동으로 인해 발생하는 사고에 대해 Spotube 또는 그 소유자/기여자에게 책임을 묻지 않습니다.';
+  String get download_agreement_3 =>
+      '본인은 YouTube에서 내 IP가 차단될 수 있음을 완전히 알고 있으며, 현재 내 행동으로 인해 발생하는 사고에 대해 Spotube 또는 그 소유자/기여자에게 책임을 묻지 않습니다.';
 
   @override
   String get decline => '거절';
@@ -848,7 +814,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get failed_to_encrypt => '암호화에 실패했습니다';
 
   @override
-  String get encryption_failed_warning => 'Spotube는 암호화를 사용하여 데이터를 안전하게 저장합니다. 하지만 그렇게 하지 못했습니다. 따라서 안전하지 않은 저장소로 대체됩니다.\n리눅스를 사용하는 경우, 비밀 서비스(gnome-keyring, kde-wallet, keepassxc 등)가 설치되어 있는지 확인하세요.';
+  String get encryption_failed_warning =>
+      'Spotube는 암호화를 사용하여 데이터를 안전하게 저장합니다. 하지만 그렇게 하지 못했습니다. 따라서 안전하지 않은 저장소로 대체됩니다.\n리눅스를 사용하는 경우, 비밀 서비스(gnome-keyring, kde-wallet, keepassxc 등)가 설치되어 있는지 확인하세요.';
 
   @override
   String get querying_info => '정보를 얻는 중...';
@@ -991,7 +958,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get youtube_source_description => '추천되며 가장 잘 작동합니다.';
 
   @override
-  String get piped_source_description => '자유로운 기분이 듭니까? YouTube와 같지만 훨씬 더 무료합니다.';
+  String get piped_source_description =>
+      '자유로운 기분이 듭니까? YouTube와 같지만 훨씬 더 무료합니다.';
 
   @override
   String get jiosaavn_source_description => '남아시아 지역에 최적입니다.';
@@ -1014,7 +982,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get choose_your_region => '지역 선택';
 
   @override
-  String get choose_your_region_description => '이것은 Spotube가 위치에 맞는 콘텐츠를 표시하는 데 도움이 됩니다.';
+  String get choose_your_region_description =>
+      '이것은 Spotube가 위치에 맞는 콘텐츠를 표시하는 데 도움이 됩니다.';
 
   @override
   String get choose_your_language => '언어 선택';
@@ -1023,7 +992,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get help_project_grow => '이 프로젝트 성장에 도움을 주세요';
 
   @override
-  String get help_project_grow_description => 'Spotube는 오픈 소스 프로젝트입니다. 프로젝트에 기여하거나 버그를 보고하거나 새로운 기능을 제안하여이 프로젝트의 성장에 도움을 줄 수 있습니다.';
+  String get help_project_grow_description =>
+      'Spotube는 오픈 소스 프로젝트입니다. 프로젝트에 기여하거나 버그를 보고하거나 새로운 기능을 제안하여이 프로젝트의 성장에 도움을 줄 수 있습니다.';
 
   @override
   String get contribute_on_github => 'GitHub에서 기여하기';
@@ -1117,7 +1087,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get choose_the_device => '디바이스 선택:';
 
   @override
-  String get multiple_device_connected => '여러 디바이스가 연결되어 있습니다.\n이 작업을 실행할 디바이스를 선택하세요';
+  String get multiple_device_connected =>
+      '여러 디바이스가 연결되어 있습니다.\n이 작업을 실행할 디바이스를 선택하세요';
 
   @override
   String get nothing_found => '찾을 수 없음';
@@ -1190,7 +1161,8 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => '*이것은 Spotify의 스트림당 지급액\n\$0.003에서 \$0.005를 기준으로 계산된 것입니다.\n이것은 사용자가 Spotify에서 곡을 들었을 때\n아티스트에게 지불했을 금액에 대한 통찰을 제공하기 위한\n가상의 계산입니다.';
+  String get streaming_fees_hypothetical =>
+      '*이것은 Spotify의 스트림당 지급액\n\$0.003에서 \$0.005를 기준으로 계산된 것입니다.\n이것은 사용자가 Spotify에서 곡을 들었을 때\n아티스트에게 지불했을 금액에 대한 통찰을 제공하기 위한\n가상의 계산입니다.';
 
   @override
   String get minutes_listened => '청취한 시간';
@@ -1212,7 +1184,8 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Spotify의 스트림당 지불금 \$0.003에서 \$0.005까지의\n기준으로 계산되었습니다. 이는 사용자가 Spotify에서\n곡을 들을 때 아티스트에게 얼마를 지불했을지를\n알려주기 위한 가상의 계산입니다.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1234,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get webview_not_found => '웹뷰를 찾을 수 없음';
 
   @override
-  String get webview_not_found_description => '기기에 웹뷰 런타임이 설치되지 않았습니다.\n설치되어 있으면 environment PATH에 있는지 확인하십시오\n\n설치 후 앱을 다시 시작하세요';
+  String get webview_not_found_description =>
+      '기기에 웹뷰 런타임이 설치되지 않았습니다.\n설치되어 있으면 environment PATH에 있는지 확인하십시오\n\n설치 후 앱을 다시 시작하세요';
 
   @override
   String get unsupported_platform => '지원되지 않는 플랫폼';
@@ -1358,7 +1332,8 @@ class AppLocalizationsKo extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'macOS/Linux/unix와 같은 운영 체제에서는 .zshrc/.bashrc/.bash_profile 등에 경로 설정이 작동하지 않습니다.\n셸 구성 파일에 경로를 설정해야 합니다';
+  String get youtube_engine_unix_issue_message =>
+      'macOS/Linux/unix와 같은 운영 체제에서는 .zshrc/.bashrc/.bash_profile 등에 경로 설정이 작동하지 않습니다.\n셸 구성 파일에 경로를 설정해야 합니다';
 
   @override
   String get download => '다운로드';
@@ -1376,7 +1351,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get edit_port => '포트 편집';
 
   @override
-  String get port_helper_msg => '기본값은 -1로 무작위 숫자를 나타냅니다. 방화벽이 구성된 경우 이를 설정하는 것이 좋습니다.';
+  String get port_helper_msg =>
+      '기본값은 -1로 무작위 숫자를 나타냅니다. 방화벽이 구성된 경우 이를 설정하는 것이 좋습니다.';
 
   @override
   String connect_request(Object client) {

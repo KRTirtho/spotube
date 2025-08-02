@@ -1,18 +1,19 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/presentation_state.dart';
 import 'package:spotube/extensions/list.dart';
 
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 
-Future<void> Function(Track track, int index) useTrackTilePlayCallback(
+Future<void> Function(SpotubeTrackObject track, int index)
+    useTrackTilePlayCallback(
   WidgetRef ref,
 ) {
   final context = useContext();
@@ -26,7 +27,8 @@ Future<void> Function(Track track, int index) useTrackTilePlayCallback(
     [playlist.collections, options.collectionId],
   );
 
-  final onTapTrackTile = useCallback((Track track, int index) async {
+  final onTapTrackTile =
+      useCallback((SpotubeTrackObject track, int index) async {
     final state = ref.read(presentationStateProvider(options.collection));
     final notifier =
         ref.read(presentationStateProvider(options.collection).notifier);
@@ -52,15 +54,15 @@ Future<void> Function(Track track, int index) useTrackTilePlayCallback(
       } else {
         final tracks = await options.pagination.onFetchAll();
         await remotePlayback.load(
-          options.collection is AlbumSimple
+          options.collection is SpotubeSimpleAlbumObject
               ? WebSocketLoadEventData.album(
                   tracks: tracks,
-                  collection: options.collection as AlbumSimple,
+                  collection: options.collection as SpotubeSimpleAlbumObject,
                   initialIndex: index,
                 )
               : WebSocketLoadEventData.playlist(
                   tracks: tracks,
-                  collection: options.collection as PlaylistSimple,
+                  collection: options.collection as SpotubeSimplePlaylistObject,
                   initialIndex: index,
                 ),
         );
@@ -76,10 +78,12 @@ Future<void> Function(Track track, int index) useTrackTilePlayCallback(
           autoPlay: true,
         );
         playlistNotifier.addCollection(options.collectionId);
-        if (options.collection is AlbumSimple) {
-          historyNotifier.addAlbums([options.collection as AlbumSimple]);
+        if (options.collection is SpotubeSimpleAlbumObject) {
+          historyNotifier
+              .addAlbums([options.collection as SpotubeSimpleAlbumObject]);
         } else {
-          historyNotifier.addPlaylists([options.collection as PlaylistSimple]);
+          historyNotifier.addPlaylists(
+              [options.collection as SpotubeSimplePlaylistObject]);
         }
       }
     }

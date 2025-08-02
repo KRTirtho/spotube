@@ -380,12 +380,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get login_with_spotify => 'Inloggen met je Spotify-account';
-
-  @override
-  String get connect_with_spotify => 'Verbinden met Spotify';
-
-  @override
   String get logout => 'Afmelden';
 
   @override
@@ -413,7 +407,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get layout_mode => 'Opmaakmodus';
 
   @override
-  String get override_layout_settings => 'Instellingen voor responsieve opmaakmodus opheffen';
+  String get override_layout_settings =>
+      'Instellingen voor responsieve opmaakmodus opheffen';
 
   @override
   String get adaptive => 'Adaptief';
@@ -443,7 +438,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get sync_album_color => 'Albumkleur synchroniseren';
 
   @override
-  String get sync_album_color_description => 'Gebruikt de overheersende kleur van het album als accentkleur';
+  String get sync_album_color_description =>
+      'Gebruikt de overheersende kleur van het album als accentkleur';
 
   @override
   String get playback => 'Weergave';
@@ -461,7 +457,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pre_download_play => 'Vooraf downloaden en afspelen';
 
   @override
-  String get pre_download_play_description => 'In plaats van audio te streamen, kun je bytes downloaden en afspelen (aanbevolen voor gebruikers met een hogere bandbreedte)';
+  String get pre_download_play_description =>
+      'In plaats van audio te streamen, kun je bytes downloaden en afspelen (aanbevolen voor gebruikers met een hogere bandbreedte)';
 
   @override
   String get skip_non_music => 'Niet-muzieksegmenten overslaan (SponsorBlock)';
@@ -470,7 +467,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get blacklist_description => 'Nummers en artiesten op de zwarte lijst';
 
   @override
-  String get wait_for_download_to_finish => 'Wacht tot de huidige download is voltooid';
+  String get wait_for_download_to_finish =>
+      'Wacht tot de huidige download is voltooid';
 
   @override
   String get desktop => 'Bureaublad';
@@ -506,7 +504,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get please_sponsor => 'Sponsor/Doneer a.u.b.';
 
   @override
-  String get spotube_description => 'Spotube, een lichtgewicht, cross-platform, vrij-voor-alles Spotify-client';
+  String get spotube_description =>
+      'Spotube, een lichtgewicht, cross-platform, vrij-voor-alles Spotify-client';
 
   @override
   String get version => 'Versie';
@@ -538,21 +537,14 @@ class AppLocalizationsNl extends AppLocalizations {
   String get license => 'Licentie';
 
   @override
-  String get add_spotify_credentials => 'Voeg om te beginnen je spotify-aanmeldgegevens toe';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => 'Maak je geen zorgen, je gegevens worden niet verzameld of gedeeld met anderen.';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'Maak je geen zorgen, je gegevens worden niet verzameld of gedeeld met anderen.';
 
   @override
   String get know_how_to_login => 'Weet je niet hoe je dit moet doen?';
 
   @override
   String get follow_step_by_step_guide => 'Volg de stapsgewijze handleiding';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookie';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -584,52 +576,29 @@ class AppLocalizationsNl extends AppLocalizations {
   String get first_go_to => 'Ga eerst naar';
 
   @override
-  String get login_if_not_logged_in => 'en Inloggen/Aanmelden als je niet bent ingelogd';
-
-  @override
-  String get step_2 => 'Stap 2';
-
-  @override
-  String get step_2_steps => '1. Zodra je bent aangemeld, druk je op F12 of klik je met de rechtermuisknop > Inspect om de Browser devtools te openen.\n2. Ga vervolgens naar het tabblad \"Toepassing\" (Chrome, Edge, Brave enz..) of naar het tabblad \"Opslag\" (Firefox, Palemoon enz..).\n3. Ga naar de sectie \"Cookies\" en vervolgens naar de subsectie \"https://accounts.spotify.com\".';
-
-  @override
-  String get step_3 => 'Stap 3';
-
-  @override
-  String get step_3_steps => 'De waarde van cookie \"sp_dc\" kopiëren';
-
-  @override
-  String get success_emoji => 'Succes🥳';
-
-  @override
-  String get success_message => 'Je bent nu ingelogd met je Spotify account. Goed gedaan!';
-
-  @override
-  String get step_4 => 'Stap 4';
-
-  @override
-  String get step_4_steps => 'De gekopieerde waarde \"sp_dc\" plakken';
-
-  @override
   String get something_went_wrong => 'Er ging iets mis';
 
   @override
   String get piped_instance => 'Piped-serverinstantie';
 
   @override
-  String get piped_description => 'De Piped-serverinstantie die moet worden gebruikt voor overeenkomstige nummers';
+  String get piped_description =>
+      'De Piped-serverinstantie die moet worden gebruikt voor overeenkomstige nummers';
 
   @override
-  String get piped_warning => 'Sommige werken misschien niet goed. Dus gebruik ze op eigen risico';
+  String get piped_warning =>
+      'Sommige werken misschien niet goed. Dus gebruik ze op eigen risico';
 
   @override
   String get invidious_instance => 'Invidious-serverinstantie';
 
   @override
-  String get invidious_description => 'De Invidious-serverinstantie die gebruikt wordt voor trackmatching';
+  String get invidious_description =>
+      'De Invidious-serverinstantie die gebruikt wordt voor trackmatching';
 
   @override
-  String get invidious_warning => 'Sommigen werken mogelijk niet goed. Gebruik op eigen risico';
+  String get invidious_warning =>
+      'Sommigen werken mogelijk niet goed. Gebruik op eigen risico';
 
   @override
   String get generate => 'Genereren';
@@ -643,7 +612,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get replace_downloaded_tracks => 'Alle gedownloade nummers vervangen';
 
   @override
-  String get skip_download_tracks => 'Downloaden van alle gedownloade nummers overslaan';
+  String get skip_download_tracks =>
+      'Downloaden van alle gedownloade nummers overslaan';
 
   @override
   String get do_you_want_to_replace => 'Wil je het bestaande nummer vervangen?';
@@ -752,22 +722,28 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'Als je alle nummers in bulk downloadt, ben je duidelijk bezig met muziekpiraterij en breng je schade toe aan de creatieve muziekmaatschappij. Ik hoop dat je je hiervan bewust bent. Probeer altijd het harde werk van artiesten te respecteren en te steunen.';
+  String get download_warning =>
+      'Als je alle nummers in bulk downloadt, ben je duidelijk bezig met muziekpiraterij en breng je schade toe aan de creatieve muziekmaatschappij. Ik hoop dat je je hiervan bewust bent. Probeer altijd het harde werk van artiesten te respecteren en te steunen.';
 
   @override
-  String get download_ip_ban_warning => 'BTW, je IP-adres kan worden geblokkeerd op YouTube als gevolg van buitensporige downloadverzoeken. IP-blokkering betekent dat je YouTube niet kunt gebruiken (zelfs als je ingelogd bent) voor tenminste 2-3 maanden vanaf dat IP-apparaat. Spotube is niet verantwoordelijk als dit ooit gebeurt.';
+  String get download_ip_ban_warning =>
+      'BTW, je IP-adres kan worden geblokkeerd op YouTube als gevolg van buitensporige downloadverzoeken. IP-blokkering betekent dat je YouTube niet kunt gebruiken (zelfs als je ingelogd bent) voor tenminste 2-3 maanden vanaf dat IP-apparaat. Spotube is niet verantwoordelijk als dit ooit gebeurt.';
 
   @override
-  String get by_clicking_accept_terms => 'Door op \'accepteren\' te klikken ga je akkoord met de volgende voorwaarden:';
+  String get by_clicking_accept_terms =>
+      'Door op \'accepteren\' te klikken ga je akkoord met de volgende voorwaarden:';
 
   @override
-  String get download_agreement_1 => 'Ik weet dat ik muziek illegaal donload. Ik ben slecht.';
+  String get download_agreement_1 =>
+      'Ik weet dat ik muziek illegaal donload. Ik ben slecht.';
 
   @override
-  String get download_agreement_2 => 'Ik steun de artiest waar ik kan en ik doe dit alleen omdat ik geen geld heb om hun kunst te kopen.';
+  String get download_agreement_2 =>
+      'Ik steun de artiest waar ik kan en ik doe dit alleen omdat ik geen geld heb om hun kunst te kopen.';
 
   @override
-  String get download_agreement_3 => 'Ik ben me er volledig van bewust dat mijn IP geblokkeerd kan worden op YouTube & ik houd Spotube of zijn eigenaars/contributeurs niet verantwoordelijk voor ongelukken die veroorzaakt worden door mijn huidige actie.';
+  String get download_agreement_3 =>
+      'Ik ben me er volledig van bewust dat mijn IP geblokkeerd kan worden op YouTube & ik houd Spotube of zijn eigenaars/contributeurs niet verantwoordelijk voor ongelukken die veroorzaakt worden door mijn huidige actie.';
 
   @override
   String get decline => 'Weigeren';
@@ -848,7 +824,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get failed_to_encrypt => 'Versleuteling mislukt';
 
   @override
-  String get encryption_failed_warning => 'Spotube gebruikt versleuteling om je gegevens veilig op te slaan. Maar dat is niet gelukt. Dus zal het terugvallen op onveilige opslag.\nAls je linux gebruikt, zorg er dan voor dat je een geheim-dienst (gnome-keyring, kde-wallet, keepassxc etc) hebt geïnstalleerd.';
+  String get encryption_failed_warning =>
+      'Spotube gebruikt versleuteling om je gegevens veilig op te slaan. Maar dat is niet gelukt. Dus zal het terugvallen op onveilige opslag.\nAls je linux gebruikt, zorg er dan voor dat je een geheim-dienst (gnome-keyring, kde-wallet, keepassxc etc) hebt geïnstalleerd.';
 
   @override
   String get querying_info => 'Info opvragen…';
@@ -946,7 +923,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get friends => 'Vrienden';
 
   @override
-  String get no_lyrics_available => 'Sorry, geen teksten gevonden voor dit nummer';
+  String get no_lyrics_available =>
+      'Sorry, geen teksten gevonden voor dit nummer';
 
   @override
   String get start_a_radio => 'Start een Radio';
@@ -955,7 +933,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get how_to_start_radio => 'Hoe wilt u de radio starten?';
 
   @override
-  String get replace_queue_question => 'Wilt u de huidige wachtrij vervangen of eraan toevoegen?';
+  String get replace_queue_question =>
+      'Wilt u de huidige wachtrij vervangen of eraan toevoegen?';
 
   @override
   String get endless_playback => 'Eindeloze Afspelen';
@@ -964,7 +943,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get delete_playlist => 'Verwijder Afspeellijst';
 
   @override
-  String get delete_playlist_confirmation => 'Weet u zeker dat u deze afspeellijst wilt verwijderen?';
+  String get delete_playlist_confirmation =>
+      'Weet u zeker dat u deze afspeellijst wilt verwijderen?';
 
   @override
   String get local_tracks => 'Lokale Nummers';
@@ -982,7 +962,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get freedom_of_music => '“Vrijheid van Muziek”';
 
   @override
-  String get freedom_of_music_palm => '“Vrijheid van Muziek in de palm van je hand”';
+  String get freedom_of_music_palm =>
+      '“Vrijheid van Muziek in de palm van je hand”';
 
   @override
   String get get_started => 'Laten we beginnen';
@@ -991,13 +972,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get youtube_source_description => 'Aanbevolen en werkt het beste.';
 
   @override
-  String get piped_source_description => 'Voel je vrij? Hetzelfde als YouTube maar veel gratis.';
+  String get piped_source_description =>
+      'Voel je vrij? Hetzelfde als YouTube maar veel gratis.';
 
   @override
-  String get jiosaavn_source_description => 'Het beste voor de Zuid-Aziatische regio.';
+  String get jiosaavn_source_description =>
+      'Het beste voor de Zuid-Aziatische regio.';
 
   @override
-  String get invidious_source_description => 'Vergelijkbaar met Piped, maar met een hogere beschikbaarheid.';
+  String get invidious_source_description =>
+      'Vergelijkbaar met Piped, maar met een hogere beschikbaarheid.';
 
   @override
   String highest_quality(Object quality) {
@@ -1008,13 +992,15 @@ class AppLocalizationsNl extends AppLocalizations {
   String get select_audio_source => 'Selecteer Audiobron';
 
   @override
-  String get endless_playback_description => 'Voeg automatisch nieuwe nummers toe aan het einde van de wachtrij';
+  String get endless_playback_description =>
+      'Voeg automatisch nieuwe nummers toe aan het einde van de wachtrij';
 
   @override
   String get choose_your_region => 'Kies uw regio';
 
   @override
-  String get choose_your_region_description => 'Dit zal Spotube helpen om de juiste inhoud voor uw locatie te tonen.';
+  String get choose_your_region_description =>
+      'Dit zal Spotube helpen om de juiste inhoud voor uw locatie te tonen.';
 
   @override
   String get choose_your_language => 'Kies uw taal';
@@ -1023,7 +1009,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get help_project_grow => 'Help dit project groeien';
 
   @override
-  String get help_project_grow_description => 'Spotube is een open-source project. U kunt dit project helpen groeien door bij te dragen aan het project, bugs te melden of nieuwe functies voor te stellen.';
+  String get help_project_grow_description =>
+      'Spotube is een open-source project. U kunt dit project helpen groeien door bij te dragen aan het project, bugs te melden of nieuwe functies voor te stellen.';
 
   @override
   String get contribute_on_github => 'Bijdragen op GitHub';
@@ -1038,7 +1025,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get enable_connect => 'Verbinding inschakelen';
 
   @override
-  String get enable_connect_description => 'Spotube bedienen vanaf andere apparaten';
+  String get enable_connect_description =>
+      'Spotube bedienen vanaf andere apparaten';
 
   @override
   String get devices => 'Apparaten';
@@ -1117,7 +1105,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get choose_the_device => 'Kies het apparaat:';
 
   @override
-  String get multiple_device_connected => 'Er zijn meerdere apparaten verbonden.\nKies het apparaat waarop je deze actie wilt uitvoeren';
+  String get multiple_device_connected =>
+      'Er zijn meerdere apparaten verbonden.\nKies het apparaat waarop je deze actie wilt uitvoeren';
 
   @override
   String get nothing_found => 'Niets gevonden';
@@ -1190,7 +1179,8 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => '*Dit is berekend op basis van Spotify\'s uitbetaling per stream\nvan \$0.003 tot \$0.005. Dit is een hypothetische\nberekening om gebruikers inzicht te geven in hoeveel ze\naan de artiesten zouden hebben betaald als ze hun lied op Spotify zouden hebben beluisterd.';
+  String get streaming_fees_hypothetical =>
+      '*Dit is berekend op basis van Spotify\'s uitbetaling per stream\nvan \$0.003 tot \$0.005. Dit is een hypothetische\nberekening om gebruikers inzicht te geven in hoeveel ze\naan de artiesten zouden hebben betaald als ze hun lied op Spotify zouden hebben beluisterd.';
 
   @override
   String get minutes_listened => 'Luistertijd';
@@ -1212,7 +1202,8 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Dit is berekend op basis van Spotify\'s betaling per stream\nvan \$0.003 tot \$0.005. Dit is een hypothetische\nberekening om de gebruiker inzicht te geven in hoeveel ze\naan de artiesten zouden hebben betaald als ze hun liedjes op Spotify\nzouden luisteren.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1252,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get webview_not_found => 'Webview niet gevonden';
 
   @override
-  String get webview_not_found_description => 'Er is geen Webview-runtime geïnstalleerd op uw apparaat.\nAls het is geïnstalleerd, zorg ervoor dat het in het environment PATH staat\n\nHerstart de app na installatie';
+  String get webview_not_found_description =>
+      'Er is geen Webview-runtime geïnstalleerd op uw apparaat.\nAls het is geïnstalleerd, zorg ervoor dat het in het environment PATH staat\n\nHerstart de app na installatie';
 
   @override
   String get unsupported_platform => 'Niet ondersteund platform';
@@ -1293,7 +1285,8 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get export_cache_confirmation => 'Wilt u deze bestanden exporteren naar';
+  String get export_cache_confirmation =>
+      'Wilt u deze bestanden exporteren naar';
 
   @override
   String exported_n_out_of_m_files(Object files, Object filesExported) {
@@ -1322,19 +1315,22 @@ class AppLocalizationsNl extends AppLocalizations {
   String get view_all => 'Bekijk alles';
 
   @override
-  String get no_tracks_added_yet => 'Het lijkt erop dat je nog geen nummers hebt toegevoegd';
+  String get no_tracks_added_yet =>
+      'Het lijkt erop dat je nog geen nummers hebt toegevoegd';
 
   @override
   String get no_tracks => 'Het lijkt erop dat er hier geen nummers zijn';
 
   @override
-  String get no_tracks_listened_yet => 'Het lijkt erop dat je nog niets hebt beluisterd';
+  String get no_tracks_listened_yet =>
+      'Het lijkt erop dat je nog niets hebt beluisterd';
 
   @override
   String get not_following_artists => 'Je volgt geen artiesten';
 
   @override
-  String get no_favorite_albums_yet => 'Het lijkt erop dat je nog geen albums aan je favorieten hebt toegevoegd';
+  String get no_favorite_albums_yet =>
+      'Het lijkt erop dat je nog geen albums aan je favorieten hebt toegevoegd';
 
   @override
   String get no_logs_found => 'Geen logbestanden gevonden';
@@ -1358,7 +1354,8 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'Op macOS/Linux/unix-achtige besturingssystemen werkt het instellen van paden in .zshrc/.bashrc/.bash_profile enz. niet.\nJe moet het pad instellen in het shell-configuratiebestand';
+  String get youtube_engine_unix_issue_message =>
+      'Op macOS/Linux/unix-achtige besturingssystemen werkt het instellen van paden in .zshrc/.bashrc/.bash_profile enz. niet.\nJe moet het pad instellen in het shell-configuratiebestand';
 
   @override
   String get download => 'Downloaden';
@@ -1376,7 +1373,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get edit_port => 'Poort bewerken';
 
   @override
-  String get port_helper_msg => 'Standaard is -1, wat een willekeurig nummer aangeeft. Als je een firewall hebt geconfigureerd, wordt aanbevolen dit in te stellen.';
+  String get port_helper_msg =>
+      'Standaard is -1, wat een willekeurig nummer aangeeft. Als je een firewall hebt geconfigureerd, wordt aanbevolen dit in te stellen.';
 
   @override
   String connect_request(Object client) {
@@ -1384,5 +1382,6 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'Verbinding geweigerd. Gebruiker heeft toegang geweigerd.';
+  String get connection_request_denied =>
+      'Verbinding geweigerd. Gebruiker heeft toegang geweigerd.';
 }

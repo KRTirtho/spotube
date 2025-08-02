@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -80,9 +81,12 @@ class PresentationListSection extends HookConsumerWidget {
           ),
         ),
       ),
-      itemBuilder: (context, index) {
+      itemBuilder: (context, index) => HookBuilder(builder: (context) {
         final track = state.presentationTracks[index];
-        final isSelected = state.selectedTracks.any((e) => e.id == track.id);
+        final isSelected = useMemoized(
+          () => state.selectedTracks.any((e) => e.id == track.id),
+          [track.id, state.selectedTracks],
+        );
         return TrackTile(
           userPlaylist: isUserPlaylist,
           playlistId: options.collectionId,
@@ -105,7 +109,7 @@ class PresentationListSection extends HookConsumerWidget {
             HapticFeedback.selectionClick();
           },
         );
-      },
+      }),
     );
   }
 }

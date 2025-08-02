@@ -146,4 +146,7 @@ class YtDlpEngine implements YouTubeEngine {
 
     return json.map((e) => _parseInfo(e)).toList();
   }
+
+  @override
+  void dispose() {}
 }

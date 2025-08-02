@@ -13,6 +13,9 @@ class FontFamily {
   /// Font family: BootstrapIcons
   static const String bootstrapIcons = 'BootstrapIcons';
 
+  /// Font family: Cookie
+  static const String cookie = 'Cookie';
+
   /// Font family: RadixIcons
   static const String radixIcons = 'RadixIcons';
 }

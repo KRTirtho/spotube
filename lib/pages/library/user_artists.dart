@@ -17,8 +17,8 @@ import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
+import 'package:spotube/provider/metadata_plugin/library/artists.dart';
 import 'package:auto_route/auto_route.dart';
 
 @RoutePage()
@@ -28,10 +28,11 @@ class UserArtistsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
 
-    final artistQuery = ref.watch(followedArtistsProvider);
-    final artistQueryNotifier = ref.watch(followedArtistsProvider.notifier);
+    final artistQuery = ref.watch(metadataPluginSavedArtistsProvider);
+    final artistQueryNotifier =
+        ref.watch(metadataPluginSavedArtistsProvider.notifier);
 
     final searchText = useState('');
 
@@ -43,7 +44,7 @@ class UserArtistsPage extends HookConsumerWidget {
       }
       return artists
           .map((e) => (
-                weightedRatio(e.name!, searchText.value),
+                weightedRatio(e.name, searchText.value),
                 e,
               ))
           .sorted((a, b) => b.$1.compareTo(a.$1))
@@ -54,7 +55,7 @@ class UserArtistsPage extends HookConsumerWidget {
 
     final controller = useScrollController();
 
-    if (auth.asData?.value == null) {
+    if (authenticated.asData?.value != true) {
       return const AnonymousFallback();
     }
 
@@ -63,7 +64,7 @@ class UserArtistsPage extends HookConsumerWidget {
       child: Scaffold(
         child: material.RefreshIndicator.adaptive(
           onRefresh: () async {
-            ref.invalidate(followedArtistsProvider);
+            ref.invalidate(metadataPluginSavedArtistsProvider);
           },
           child: InterScrollbar(
             controller: controller,

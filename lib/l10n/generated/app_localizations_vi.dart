@@ -356,7 +356,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get clear_all => 'Xóa tất cả';
 
   @override
-  String get show_hide_ui_on_hover => 'Hiển thị/Ẩn giao diện người dùng khi di chuột qua';
+  String get show_hide_ui_on_hover =>
+      'Hiển thị/Ẩn giao diện người dùng khi di chuột qua';
 
   @override
   String get always_on_top => 'Luôn ở trên cùng';
@@ -378,12 +379,6 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get account => 'Tài khoản';
-
-  @override
-  String get login_with_spotify => 'Đăng nhập bằng tài khoản Spotify của bạn';
-
-  @override
-  String get connect_with_spotify => 'Liên kết với Spotify';
 
   @override
   String get logout => 'Đăng xuất';
@@ -443,7 +438,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get sync_album_color => 'Đồng bộ màu album';
 
   @override
-  String get sync_album_color_description => 'Sử dụng màu chủ đạo của hình ảnh album làm màu nhấn';
+  String get sync_album_color_description =>
+      'Sử dụng màu chủ đạo của hình ảnh album làm màu nhấn';
 
   @override
   String get playback => 'Phát';
@@ -461,7 +457,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get pre_download_play => 'Tải xuống và phát';
 
   @override
-  String get pre_download_play_description => 'Thay vì stream âm thanh, tải xuống trước và phát (Khuyến nghị cho người dùng có băng thông cao)';
+  String get pre_download_play_description =>
+      'Thay vì stream âm thanh, tải xuống trước và phát (Khuyến nghị cho người dùng có băng thông cao)';
 
   @override
   String get skip_non_music => 'Bỏ qua các đoạn không phải nhạc (SponsorBlock)';
@@ -470,7 +467,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get blacklist_description => 'Các bài hát và nghệ sĩ trong blacklist';
 
   @override
-  String get wait_for_download_to_finish => 'Vui lòng đợi quá trình tải xuống hiện tại hoàn thành';
+  String get wait_for_download_to_finish =>
+      'Vui lòng đợi quá trình tải xuống hiện tại hoàn thành';
 
   @override
   String get desktop => 'Máy tính';
@@ -506,7 +504,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get please_sponsor => 'Vui lòng tài trợ/ủng hộ';
 
   @override
-  String get spotube_description => 'Spotube, một ứng dụng Spotify nhẹ, đa nền tảng và miễn phí';
+  String get spotube_description =>
+      'Spotube, một ứng dụng Spotify nhẹ, đa nền tảng và miễn phí';
 
   @override
   String get version => 'Phiên bản';
@@ -538,21 +537,14 @@ class AppLocalizationsVi extends AppLocalizations {
   String get license => 'Giấy phép';
 
   @override
-  String get add_spotify_credentials => 'Điền thông tin đăng nhập Spotify của bạn';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => 'Đừng lo, thông tin đăng nhập của bạn sẽ không được thu thập hoặc chia sẻ với bất kỳ ai';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'Đừng lo, thông tin đăng nhập của bạn sẽ không được thu thập hoặc chia sẻ với bất kỳ ai';
 
   @override
   String get know_how_to_login => 'Không biết cách lấy thông tin đăng nhập?';
 
   @override
   String get follow_step_by_step_guide => 'Các bước lấy thông tin đăng nhập';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Cookie Spotify $name';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -584,52 +576,29 @@ class AppLocalizationsVi extends AppLocalizations {
   String get first_go_to => 'Đầu tiên, truy cập';
 
   @override
-  String get login_if_not_logged_in => 'và Đăng nhập/Đăng ký nếu chưa có tài khoản';
-
-  @override
-  String get step_2 => 'Bước 2';
-
-  @override
-  String get step_2_steps => '1. Sau khi đăng nhập, nhấn F12 hoặc Chuột phải > Mở devtools của trình duyệt.\n2. Sau đó, chuyển đến Tab \"Ứng dụng/Application\" (Chrome, Edge, Brave, v.v.) hoặc Tab \"Lưu trữ/Storage\" (Firefox, Palemoon, v.v.)\n3. Chuyển đến phần \"Cookie\" sau đó phần con \"https://accounts.spotify.com\"';
-
-  @override
-  String get step_3 => 'Bước 3';
-
-  @override
-  String get step_3_steps => 'Sao chép giá trị của Cookie \"sp_dc\" và \"sp_key\" (hoặc sp_gaid)';
-
-  @override
-  String get success_emoji => 'Thành công🥳';
-
-  @override
-  String get success_message => 'Bây giờ bạn đã đăng nhập thành công bằng tài khoản Spotify của mình. Làm tốt lắm!';
-
-  @override
-  String get step_4 => 'Bước 4';
-
-  @override
-  String get step_4_steps => 'Dán giá trị đã sao chép của Cookie \"sp_dc\" và \"sp_key\" (hoặc sp_gaid) vào các trường tương ứng';
-
-  @override
   String get something_went_wrong => 'Đã xảy ra lỗi';
 
   @override
   String get piped_instance => 'Phiên bản Server Piped';
 
   @override
-  String get piped_description => 'Phiên bản Piped để sử dụng cho Track matching';
+  String get piped_description =>
+      'Phiên bản Piped để sử dụng cho Track matching';
 
   @override
-  String get piped_warning => 'Một số phiên bản Piped có thể không hoạt động tốt';
+  String get piped_warning =>
+      'Một số phiên bản Piped có thể không hoạt động tốt';
 
   @override
   String get invidious_instance => 'Phiên bản máy chủ Invidious';
 
   @override
-  String get invidious_description => 'Phiên bản máy chủ Invidious để sử dụng để so khớp bản nhạc';
+  String get invidious_description =>
+      'Phiên bản máy chủ Invidious để sử dụng để so khớp bản nhạc';
 
   @override
-  String get invidious_warning => 'Một số có thể sẽ không hoạt động tốt. Vì vậy hãy sử dụng với rủi ro của riêng bạn';
+  String get invidious_warning =>
+      'Một số có thể sẽ không hoạt động tốt. Vì vậy hãy sử dụng với rủi ro của riêng bạn';
 
   @override
   String get generate => 'Tạo';
@@ -643,10 +612,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get replace_downloaded_tracks => 'Thay thế tất cả các bài hát đã tải';
 
   @override
-  String get skip_download_tracks => 'Bỏ qua tải xuống tất cả các bài hát đã tải';
+  String get skip_download_tracks =>
+      'Bỏ qua tải xuống tất cả các bài hát đã tải';
 
   @override
-  String get do_you_want_to_replace => 'Bạn có muốn thay thế bài hát hiện có không?';
+  String get do_you_want_to_replace =>
+      'Bạn có muốn thay thế bài hát hiện có không?';
 
   @override
   String get replace => 'Thay thế';
@@ -744,7 +715,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get are_you_sure => 'Bạn có chắc chắn?';
 
   @override
-  String get generating_playlist => 'Đang tạo danh sách phát tùy chỉnh của bạn...';
+  String get generating_playlist =>
+      'Đang tạo danh sách phát tùy chỉnh của bạn...';
 
   @override
   String selected_count_tracks(Object count) {
@@ -752,22 +724,28 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'Tải xuống tất cả các bài hát một lần, sẽ vi phạm bản quyền âm nhạc và gây thiệt hại cho xã hội sáng tạo âm nhạc. Hy vọng bạn nhận thức được điều này. Hãy luôn tôn trọng và ủng hộ công sức của nghệ sĩ';
+  String get download_warning =>
+      'Tải xuống tất cả các bài hát một lần, sẽ vi phạm bản quyền âm nhạc và gây thiệt hại cho xã hội sáng tạo âm nhạc. Hy vọng bạn nhận thức được điều này. Hãy luôn tôn trọng và ủng hộ công sức của nghệ sĩ';
 
   @override
-  String get download_ip_ban_warning => 'Địa chỉ IP của bạn có thể bị chặn trên YouTube do yêu cầu tải xuống quá mức so với bình thường. Chặn IP có nghĩa là bạn không thể sử dụng YouTube (ngay cả khi bạn đã đăng nhập) ít nhất 2-3 tháng từ thiết bị IP đó. Và Spotube không chịu trách nhiệm nếu điều này xảy ra';
+  String get download_ip_ban_warning =>
+      'Địa chỉ IP của bạn có thể bị chặn trên YouTube do yêu cầu tải xuống quá mức so với bình thường. Chặn IP có nghĩa là bạn không thể sử dụng YouTube (ngay cả khi bạn đã đăng nhập) ít nhất 2-3 tháng từ thiết bị IP đó. Và Spotube không chịu trách nhiệm nếu điều này xảy ra';
 
   @override
-  String get by_clicking_accept_terms => 'Bằng cách nhấp vào \'Chấp nhận\', bạn đồng ý với các điều khoản sau:';
+  String get by_clicking_accept_terms =>
+      'Bằng cách nhấp vào \'Chấp nhận\', bạn đồng ý với các điều khoản sau:';
 
   @override
-  String get download_agreement_1 => 'Tôi biết mình đang vi phạm bản quyền âm nhạc. Đó là không tốt.';
+  String get download_agreement_1 =>
+      'Tôi biết mình đang vi phạm bản quyền âm nhạc. Đó là không tốt.';
 
   @override
-  String get download_agreement_2 => 'Tôi sẽ ủng hộ nghệ sĩ bất cứ nơi nào tôi có thể và tôi chỉ làm điều này vì tôi không có tiền để mua tác phẩm của họ';
+  String get download_agreement_2 =>
+      'Tôi sẽ ủng hộ nghệ sĩ bất cứ nơi nào tôi có thể và tôi chỉ làm điều này vì tôi không có tiền để mua tác phẩm của họ';
 
   @override
-  String get download_agreement_3 => 'Tôi hoàn toàn nhận thức được rằng địa chỉ IP của tôi có thể bị chặn trên YouTube và tôi không đổ lỗi cho Spotube hoặc chủ sở hữu/người đóng góp của nó về bất kỳ tai nạn nào do hành động này của tôi';
+  String get download_agreement_3 =>
+      'Tôi hoàn toàn nhận thức được rằng địa chỉ IP của tôi có thể bị chặn trên YouTube và tôi không đổ lỗi cho Spotube hoặc chủ sở hữu/người đóng góp của nó về bất kỳ tai nạn nào do hành động này của tôi';
 
   @override
   String get decline => 'Từ chối';
@@ -848,7 +826,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get failed_to_encrypt => 'Mã hóa không thành công';
 
   @override
-  String get encryption_failed_warning => 'Spotube không thành công trong việc mã hóa nhằm lưu trữ dữ liêu an toàn. vậy nên sẽ chuyển về lưu trữ không an toàn\nNếu bạn đang sử dụng Linux, đảm bảo rằng bạn có sử dụng dịch vụ bảo mật (gnome-keyring, kde-wallet, keepassxc, v.v.)';
+  String get encryption_failed_warning =>
+      'Spotube không thành công trong việc mã hóa nhằm lưu trữ dữ liêu an toàn. vậy nên sẽ chuyển về lưu trữ không an toàn\nNếu bạn đang sử dụng Linux, đảm bảo rằng bạn có sử dụng dịch vụ bảo mật (gnome-keyring, kde-wallet, keepassxc, v.v.)';
 
   @override
   String get querying_info => 'Đang truy vấn thông tin...';
@@ -865,7 +844,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get you_are_offline => 'Bạn đang ngoại tuyến';
 
   @override
-  String get connection_restored => 'Kết nối internet của bạn đã được khôi phục';
+  String get connection_restored =>
+      'Kết nối internet của bạn đã được khôi phục';
 
   @override
   String get use_system_title_bar => 'Sử dụng thanh tiêu đề hệ thống';
@@ -922,7 +902,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get login => 'Đăng nhập';
 
   @override
-  String get login_with_your_lastfm => 'Đăng nhập bằng tài khoản Last.fm của bạn';
+  String get login_with_your_lastfm =>
+      'Đăng nhập bằng tài khoản Last.fm của bạn';
 
   @override
   String get scrobble_to_lastfm => 'Scrobble đến Last.fm';
@@ -946,16 +927,19 @@ class AppLocalizationsVi extends AppLocalizations {
   String get friends => 'Bạn bè';
 
   @override
-  String get no_lyrics_available => 'Xin lỗi, không tìm thấy lời cho bài hát này';
+  String get no_lyrics_available =>
+      'Xin lỗi, không tìm thấy lời cho bài hát này';
 
   @override
   String get start_a_radio => 'Bắt đầu Một Đài phát thanh';
 
   @override
-  String get how_to_start_radio => 'Bạn muốn bắt đầu đài phát thanh như thế nào?';
+  String get how_to_start_radio =>
+      'Bạn muốn bắt đầu đài phát thanh như thế nào?';
 
   @override
-  String get replace_queue_question => 'Bạn muốn thay thế hàng đợi hiện tại hay thêm vào?';
+  String get replace_queue_question =>
+      'Bạn muốn thay thế hàng đợi hiện tại hay thêm vào?';
 
   @override
   String get endless_playback => 'Phát không giới hạn';
@@ -964,7 +948,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get delete_playlist => 'Xóa Danh sách phát';
 
   @override
-  String get delete_playlist_confirmation => 'Bạn có chắc chắn muốn xóa danh sách phát này không?';
+  String get delete_playlist_confirmation =>
+      'Bạn có chắc chắn muốn xóa danh sách phát này không?';
 
   @override
   String get local_tracks => 'Bài hát Địa phương';
@@ -982,22 +967,26 @@ class AppLocalizationsVi extends AppLocalizations {
   String get freedom_of_music => '“Sự Tự do của Âm nhạc”';
 
   @override
-  String get freedom_of_music_palm => '“Sự Tự do của Âm nhạc trong lòng bàn tay của bạn”';
+  String get freedom_of_music_palm =>
+      '“Sự Tự do của Âm nhạc trong lòng bàn tay của bạn”';
 
   @override
   String get get_started => 'Bắt đầu thôi';
 
   @override
-  String get youtube_source_description => 'Được đề xuất và hoạt động tốt nhất.';
+  String get youtube_source_description =>
+      'Được đề xuất và hoạt động tốt nhất.';
 
   @override
-  String get piped_source_description => 'Cảm thấy tự do? Giống như YouTube nhưng miễn phí hơn rất nhiều.';
+  String get piped_source_description =>
+      'Cảm thấy tự do? Giống như YouTube nhưng miễn phí hơn rất nhiều.';
 
   @override
   String get jiosaavn_source_description => 'Tốt nhất cho khu vực Nam Á.';
 
   @override
-  String get invidious_source_description => 'Tương tự như Piped nhưng có tính khả dụng cao hơn.';
+  String get invidious_source_description =>
+      'Tương tự như Piped nhưng có tính khả dụng cao hơn.';
 
   @override
   String highest_quality(Object quality) {
@@ -1008,13 +997,15 @@ class AppLocalizationsVi extends AppLocalizations {
   String get select_audio_source => 'Chọn Nguồn Âm thanh';
 
   @override
-  String get endless_playback_description => 'Tự động thêm các bài hát mới\nvào cuối hàng đợi';
+  String get endless_playback_description =>
+      'Tự động thêm các bài hát mới\nvào cuối hàng đợi';
 
   @override
   String get choose_your_region => 'Chọn khu vực của bạn';
 
   @override
-  String get choose_your_region_description => 'Điều này sẽ giúp Spotube hiển thị nội dung phù hợp cho vị trí của bạn.';
+  String get choose_your_region_description =>
+      'Điều này sẽ giúp Spotube hiển thị nội dung phù hợp cho vị trí của bạn.';
 
   @override
   String get choose_your_language => 'Chọn ngôn ngữ của bạn';
@@ -1023,7 +1014,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get help_project_grow => 'Hãy giúp dự án này phát triển';
 
   @override
-  String get help_project_grow_description => 'Spotube là một dự án mã nguồn mở. Bạn có thể giúp dự án này phát triển bằng cách đóng góp vào dự án, báo cáo lỗi hoặc đề xuất tính năng mới.';
+  String get help_project_grow_description =>
+      'Spotube là một dự án mã nguồn mở. Bạn có thể giúp dự án này phát triển bằng cách đóng góp vào dự án, báo cáo lỗi hoặc đề xuất tính năng mới.';
 
   @override
   String get contribute_on_github => 'Đóng góp trên GitHub';
@@ -1038,7 +1030,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get enable_connect => 'Kích hoạt kết nối';
 
   @override
-  String get enable_connect_description => 'Điều khiển Spotube từ các thiết bị khác';
+  String get enable_connect_description =>
+      'Điều khiển Spotube từ các thiết bị khác';
 
   @override
   String get devices => 'Thiết bị';
@@ -1117,7 +1110,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get choose_the_device => 'Chọn thiết bị:';
 
   @override
-  String get multiple_device_connected => 'Có nhiều thiết bị kết nối.\nChọn thiết bị mà bạn muốn thực hiện hành động này';
+  String get multiple_device_connected =>
+      'Có nhiều thiết bị kết nối.\nChọn thiết bị mà bạn muốn thực hiện hành động này';
 
   @override
   String get nothing_found => 'Không tìm thấy gì';
@@ -1190,7 +1184,8 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => '*Tính toán dựa trên thanh toán của Spotify cho mỗi lần phát\ntừ \$0.003 đến \$0.005. Đây là một tính toán giả định để\ngive người dùng cái nhìn về số tiền họ sẽ chi trả cho các nghệ sĩ nếu họ nghe\nbài hát của họ trên Spotify.';
+  String get streaming_fees_hypothetical =>
+      '*Tính toán dựa trên thanh toán của Spotify cho mỗi lần phát\ntừ \$0.003 đến \$0.005. Đây là một tính toán giả định để\ngive người dùng cái nhìn về số tiền họ sẽ chi trả cho các nghệ sĩ nếu họ nghe\nbài hát của họ trên Spotify.';
 
   @override
   String get minutes_listened => 'Thời gian nghe';
@@ -1212,7 +1207,8 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Được tính toán dựa trên khoản thanh toán của Spotify cho mỗi lượt phát\ntừ \$0.003 đến \$0.005. Đây là một tính toán giả định để\ncung cấp cho người dùng cái nhìn về số tiền họ sẽ phải trả\ncho các nghệ sĩ nếu họ nghe bài hát của họ trên Spotify.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1257,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get webview_not_found => 'Không tìm thấy Webview';
 
   @override
-  String get webview_not_found_description => 'Không có runtime Webview nào được cài đặt trên thiết bị của bạn.\nNếu đã cài đặt, hãy đảm bảo rằng nó nằm trong environment PATH\n\nSau khi cài đặt, hãy khởi động lại ứng dụng';
+  String get webview_not_found_description =>
+      'Không có runtime Webview nào được cài đặt trên thiết bị của bạn.\nNếu đã cài đặt, hãy đảm bảo rằng nó nằm trong environment PATH\n\nSau khi cài đặt, hãy khởi động lại ứng dụng';
 
   @override
   String get unsupported_platform => 'Nền tảng không được hỗ trợ';
@@ -1331,10 +1328,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get no_tracks_listened_yet => 'Có vẻ bạn chưa nghe gì cả';
 
   @override
-  String get not_following_artists => 'Bạn không đang theo dõi bất kỳ nghệ sĩ nào';
+  String get not_following_artists =>
+      'Bạn không đang theo dõi bất kỳ nghệ sĩ nào';
 
   @override
-  String get no_favorite_albums_yet => 'Có vẻ bạn chưa thêm album nào vào danh sách yêu thích';
+  String get no_favorite_albums_yet =>
+      'Có vẻ bạn chưa thêm album nào vào danh sách yêu thích';
 
   @override
   String get no_logs_found => 'Không tìm thấy nhật ký';
@@ -1358,7 +1357,8 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'Trên macOS/Linux/Unix, việc thiết lập đường dẫn trong .zshrc/.bashrc/.bash_profile v.v. sẽ không hoạt động.\nBạn cần thiết lập đường dẫn trong tệp cấu hình shell';
+  String get youtube_engine_unix_issue_message =>
+      'Trên macOS/Linux/Unix, việc thiết lập đường dẫn trong .zshrc/.bashrc/.bash_profile v.v. sẽ không hoạt động.\nBạn cần thiết lập đường dẫn trong tệp cấu hình shell';
 
   @override
   String get download => 'Tải xuống';
@@ -1376,7 +1376,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get edit_port => 'Chỉnh sửa cổng';
 
   @override
-  String get port_helper_msg => 'Mặc định là -1, có nghĩa là số ngẫu nhiên. Nếu bạn đã cấu hình tường lửa, nên đặt điều này.';
+  String get port_helper_msg =>
+      'Mặc định là -1, có nghĩa là số ngẫu nhiên. Nếu bạn đã cấu hình tường lửa, nên đặt điều này.';
 
   @override
   String connect_request(Object client) {
@@ -1384,5 +1385,6 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'Kết nối bị từ chối. Người dùng đã từ chối quyền truy cập.';
+  String get connection_request_denied =>
+      'Kết nối bị từ chối. Người dùng đã từ chối quyền truy cập.';
 }

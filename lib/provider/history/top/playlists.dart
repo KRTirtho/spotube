@@ -1,40 +1,19 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/history/top.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/utils/family_paginated.dart';
 
-typedef PlaybackHistoryPlaylist = ({int count, PlaylistSimple playlist});
-
-class HistoryTopPlaylistsState extends PaginatedState<PlaybackHistoryPlaylist> {
-  HistoryTopPlaylistsState({
-    required super.items,
-    required super.offset,
-    required super.limit,
-    required super.hasMore,
-  });
-
-  @override
-  HistoryTopPlaylistsState copyWith({
-    List<PlaybackHistoryPlaylist>? items,
-    int? offset,
-    int? limit,
-    bool? hasMore,
-  }) {
-    return HistoryTopPlaylistsState(
-      items: items ?? this.items,
-      offset: offset ?? this.offset,
-      limit: limit ?? this.limit,
-      hasMore: hasMore ?? this.hasMore,
-    );
-  }
-}
+typedef PlaybackHistoryPlaylist = ({
+  int count,
+  SpotubeSimplePlaylistObject playlist
+});
 
 class HistoryTopPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
-    PlaybackHistoryPlaylist, HistoryTopPlaylistsState, HistoryDuration> {
+    PlaybackHistoryPlaylist, HistoryDuration> {
   HistoryTopPlaylistsNotifier() : super();
 
   SimpleSelectStatement<$HistoryTableTable, HistoryTableData>
@@ -52,22 +31,22 @@ class HistoryTopPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
   }
 
   @override
-  fetch(arg, offset, limit) async {
+  fetch(offset, limit) async {
     final playlistsQuery = createPlaylistsQuery()..limit(limit, offset: offset);
 
     final items = getPlaylistsWithCount(await playlistsQuery.get());
 
-    return (
+    return SpotubePaginationResponseObject(
       items: items,
-      hasMore: items.length == limit,
       nextOffset: offset + limit,
+      total: items.length,
+      limit: limit,
+      hasMore: items.length == limit,
     );
   }
 
   @override
   build(arg) async {
-    final (items: playlists, :hasMore, :nextOffset) = await fetch(arg, 0, 20);
-
     final subscription = createPlaylistsQuery().watch().listen((event) {
       if (state.asData == null) return;
       state = AsyncData(state.asData!.value.copyWith(
@@ -80,18 +59,13 @@ class HistoryTopPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
       subscription.cancel();
     });
 
-    return HistoryTopPlaylistsState(
-      items: playlists,
-      offset: nextOffset,
-      limit: 20,
-      hasMore: hasMore,
-    );
+    return await fetch(0, 20);
   }
 
   List<PlaybackHistoryPlaylist> getPlaylistsWithCount(
     List<HistoryTableData> playlists,
   ) {
-    return groupBy(playlists, (playlist) => playlist.playlist!.id!)
+    return groupBy(playlists, (playlist) => playlist.playlist!.id)
         .entries
         .map((entry) {
           return (
@@ -105,6 +79,8 @@ class HistoryTopPlaylistsNotifier extends FamilyPaginatedAsyncNotifier<
 }
 
 final historyTopPlaylistsProvider = AsyncNotifierProviderFamily<
-    HistoryTopPlaylistsNotifier, HistoryTopPlaylistsState, HistoryDuration>(
+    HistoryTopPlaylistsNotifier,
+    SpotubePaginationResponseObject<PlaybackHistoryPlaylist>,
+    HistoryDuration>(
   () => HistoryTopPlaylistsNotifier(),
 );

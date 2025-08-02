@@ -11,12 +11,12 @@ import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/components/track_tile/track_options.dart';
+import 'package:spotube/components/track_tile/track_options_button.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/extensions/list.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/tracks/track.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 import 'package:spotube/extensions/constrains.dart';
@@ -42,7 +42,7 @@ class TrackPage extends HookConsumerWidget {
 
     final isActive = playlist.activeTrack?.id == trackId;
 
-    final trackQuery = ref.watch(trackProvider(trackId));
+    final trackQuery = ref.watch(metadataPluginTrackProvider(trackId));
 
     final track = trackQuery.asData?.value ?? FakeData.track;
 
@@ -71,7 +71,7 @@ class TrackPage extends HookConsumerWidget {
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: UniversalImage.imageProvider(
-                      track.album!.images.asUrlString(
+                      track.album.images.asUrlString(
                         placeholder: ImagePlaceholder.albumArt,
                       ),
                     ),
@@ -116,7 +116,7 @@ class TrackPage extends HookConsumerWidget {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: UniversalImage(
-                                path: track.album!.images.asUrlString(
+                                path: track.album.images.asUrlString(
                                   placeholder: ImagePlaceholder.albumArt,
                                 ),
                                 height: 200,
@@ -134,7 +134,7 @@ class TrackPage extends HookConsumerWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  track.name!,
+                                  track.name,
                                 ).large().semiBold(),
                                 const Gap(10),
                                 Row(
@@ -144,10 +144,10 @@ class TrackPage extends HookConsumerWidget {
                                     const Gap(5),
                                     Flexible(
                                       child: LinkText(
-                                        track.album!.name!,
+                                        track.album.name,
                                         AlbumRoute(
-                                          id: track.album!.id!,
-                                          album: track.album!,
+                                          id: track.album.id,
+                                          album: track.album,
                                         ),
                                         push: true,
                                       ),
@@ -162,7 +162,7 @@ class TrackPage extends HookConsumerWidget {
                                     const Gap(5),
                                     Flexible(
                                       child: ArtistLink(
-                                        artists: track.artists!,
+                                        artists: track.artists,
                                         hideOverflowArtist: false,
                                       ),
                                     ),
@@ -231,7 +231,7 @@ class TrackPage extends HookConsumerWidget {
                                       else
                                         const Gap(20),
                                       TrackHeartButton(track: track),
-                                      TrackOptions(
+                                      TrackOptionsButton(
                                         track: track,
                                         userPlaylist: false,
                                       ),
