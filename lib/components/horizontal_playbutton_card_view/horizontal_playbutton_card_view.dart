@@ -4,8 +4,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
@@ -30,14 +30,16 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
   }) : assert(
           items.every(
             (item) =>
-                item is PlaylistSimple || item is Artist || item is AlbumSimple,
+                item is SpotubeSimpleAlbumObject ||
+                item is SpotubeSimplePlaylistObject ||
+                item is SpotubeFullArtistObject,
           ),
         );
 
   @override
   Widget build(BuildContext context) {
     final scrollController = useScrollController();
-    final isArtist = items.every((s) => s is Artist);
+    final isArtist = items.every((s) => s is SpotubeFullArtistObject);
     final scale = context.theme.scaling;
 
     return Padding(
@@ -98,10 +100,12 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
                           final item = items[index];
 
                           return switch (item) {
-                            PlaylistSimple() =>
-                              PlaylistCard(item as PlaylistSimple),
-                            AlbumSimple() => AlbumCard(item as AlbumSimple),
-                            Artist() => ArtistCard(item as Artist),
+                            SpotubeSimplePlaylistObject() =>
+                              PlaylistCard(item as SpotubeSimplePlaylistObject),
+                            SpotubeSimpleAlbumObject() =>
+                              AlbumCard(item as SpotubeSimpleAlbumObject),
+                            SpotubeFullArtistObject() =>
+                              ArtistCard(item as SpotubeFullArtistObject),
                             _ => const SizedBox.shrink(),
                           };
                         }),

@@ -1,8 +1,7 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/language_codes.dart';
-import 'package:spotube/collections/spotify_markets.dart';
+import 'package:spotube/collections/markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
@@ -14,11 +13,9 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
   const GettingStartedPageLanguageRegionSection(
       {super.key, required this.onNext});
 
-  bool filterMarkets(Market item, String query) {
-    final market = spotifyMarkets
-        .firstWhere((element) => element.$1 == item)
-        .$2
-        .toLowerCase();
+  bool filterMarkets(dynamic item, String query) {
+    final market =
+        marketsMap.firstWhere((element) => element.$1 == item).$2.toLowerCase();
 
     return market.contains(query.toLowerCase());
   }
@@ -64,7 +61,7 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                   const Gap(8),
                   SizedBox(
                     width: double.infinity,
-                    child: Select<Market>(
+                    child: Select(
                       value: preferences.market,
                       onChanged: (value) {
                         if (value == null) return;
@@ -74,7 +71,7 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                       },
                       placeholder: Text(preferences.market.name),
                       itemBuilder: (context, value) => Text(
-                        spotifyMarkets
+                        marketsMap
                             .firstWhere((element) => element.$1 == value)
                             .$2,
                       ),
@@ -83,8 +80,8 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                         builder: (context, searchQuery) {
                           final filteredMarkets = searchQuery == null ||
                                   searchQuery.isEmpty
-                              ? spotifyMarkets
-                              : spotifyMarkets
+                              ? marketsMap
+                              : marketsMap
                                   .where(
                                     (element) =>
                                         filterMarkets(element.$1, searchQuery),

@@ -380,12 +380,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get account => 'Účet';
 
   @override
-  String get login_with_spotify => 'Přihlásit se pomocí Spotify účtu';
-
-  @override
-  String get connect_with_spotify => 'Připojit k Spotify';
-
-  @override
   String get logout => 'Odhlásit se';
 
   @override
@@ -443,7 +437,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get sync_album_color => 'Synchronizovat barvu alba';
 
   @override
-  String get sync_album_color_description => 'Používá dominantní barvu obalu alba jako barvu akcentu';
+  String get sync_album_color_description =>
+      'Používá dominantní barvu obalu alba jako barvu akcentu';
 
   @override
   String get playback => 'Přehrávání';
@@ -461,7 +456,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pre_download_play => 'Předstáhnout a přehrát';
 
   @override
-  String get pre_download_play_description => 'Místo streamování audia stáhnout skladbu a přehrát (doporučeno pro uživatele s rychlejším internetem)';
+  String get pre_download_play_description =>
+      'Místo streamování audia stáhnout skladbu a přehrát (doporučeno pro uživatele s rychlejším internetem)';
 
   @override
   String get skip_non_music => 'Přeskočit nehudební segmenty (SponsorBlock)';
@@ -506,7 +502,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get please_sponsor => 'Sponzorovat/darovat';
 
   @override
-  String get spotube_description => 'Spotube, rychlý, multiplatformní, bezplatný Spotify klient';
+  String get spotube_description =>
+      'Spotube, rychlý, multiplatformní, bezplatný Spotify klient';
 
   @override
   String get version => 'Verze';
@@ -538,21 +535,14 @@ class AppLocalizationsCs extends AppLocalizations {
   String get license => 'Licence';
 
   @override
-  String get add_spotify_credentials => 'Přidejte své přihlašovací údaje Spotify a začněte';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => 'Nebojte, žádné z vašich údajů nebudou shromažďovány ani s nikým sdíleny';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'Nebojte, žádné z vašich údajů nebudou shromažďovány ani s nikým sdíleny';
 
   @override
   String get know_how_to_login => 'Nevíte, jak na to?';
 
   @override
   String get follow_step_by_step_guide => 'Postupujte podle návodu';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Cookie Spotify $name';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -584,52 +574,29 @@ class AppLocalizationsCs extends AppLocalizations {
   String get first_go_to => 'Nejprve jděte na';
 
   @override
-  String get login_if_not_logged_in => 'a přihlašte se nebo se zaregistrujte, pokud nejste přihlášeni';
-
-  @override
-  String get step_2 => 'Krok 2';
-
-  @override
-  String get step_2_steps => '1. Jakmile jste přihlášeni, stiskněte F12 nebo pravé tlačítko myši > Prozkoumat, abyste otevřeli nástroje pro vývojáře prohlížeče.\n2. Poté přejděte na kartu \"Aplikace\" (Chrome, Edge, Brave atd.) nebo kartu \"Úložiště\" (Firefox, Palemoon atd.)\n3. Přejděte do sekce \"Cookies\" a pak do podsekce \"https://accounts.spotify.com\"';
-
-  @override
-  String get step_3 => 'Krok 3';
-
-  @override
-  String get step_3_steps => 'Zkopírujte hodnotu cookie \"sp_dc\"';
-
-  @override
-  String get success_emoji => 'Úspěch🥳';
-
-  @override
-  String get success_message => 'Nyní jste úspěšně přihlášeni pomocí svého Spotify účtu. Dobrá práce, kamaráde!';
-
-  @override
-  String get step_4 => 'Krok 4';
-
-  @override
-  String get step_4_steps => 'Vložte zkopírovanou hodnotu \"sp_dc\"';
-
-  @override
   String get something_went_wrong => 'Něco se pokazilo';
 
   @override
   String get piped_instance => 'Instance serveru Piped';
 
   @override
-  String get piped_description => 'Instance serveru Piped, kterou použít pro hledání skladeb';
+  String get piped_description =>
+      'Instance serveru Piped, kterou použít pro hledání skladeb';
 
   @override
-  String get piped_warning => 'Některé z nich nemusí dobře fungovat. Používejte na vlastní riziko';
+  String get piped_warning =>
+      'Některé z nich nemusí dobře fungovat. Používejte na vlastní riziko';
 
   @override
   String get invidious_instance => 'Instance serveru Invidious';
 
   @override
-  String get invidious_description => 'Instance serveru Invidious pro párování stop';
+  String get invidious_description =>
+      'Instance serveru Invidious pro párování stop';
 
   @override
-  String get invidious_warning => 'Některé instance nemusí fungovat správně. Používejte na vlastní riziko';
+  String get invidious_warning =>
+      'Některé instance nemusí fungovat správně. Používejte na vlastní riziko';
 
   @override
   String get generate => 'Generovat';
@@ -643,7 +610,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get replace_downloaded_tracks => 'Nahradit všechny stažené skladby';
 
   @override
-  String get skip_download_tracks => 'Přeskočit stahování všech stažených skladeb';
+  String get skip_download_tracks =>
+      'Přeskočit stahování všech stažených skladeb';
 
   @override
   String get do_you_want_to_replace => 'Chcete nahradit existující skladbu??';
@@ -752,22 +720,27 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'Pokud stáhnete všechny skladby najednou, pirátíte tím hudbu a škodíte kreativní společnosti hudby. Doufám, že jste si toho vědomi. Vždy se snažte respektovat a podporovat tvrdou práci umělců';
+  String get download_warning =>
+      'Pokud stáhnete všechny skladby najednou, pirátíte tím hudbu a škodíte kreativní společnosti hudby. Doufám, že jste si toho vědomi. Vždy se snažte respektovat a podporovat tvrdou práci umělců';
 
   @override
-  String get download_ip_ban_warning => 'Mimochodem, vaše IP může být na YouTube zablokována kvůli nadměrným požadavkům na stahování. Blokování IP znamená, že nemůžete používat YouTube (i když jste přihlášeni) alespoň 2-3 měsíce ze zařízení s touto IP. A Spotube nenese žádnou odpovědnost, pokud se to někdy stane';
+  String get download_ip_ban_warning =>
+      'Mimochodem, vaše IP může být na YouTube zablokována kvůli nadměrným požadavkům na stahování. Blokování IP znamená, že nemůžete používat YouTube (i když jste přihlášeni) alespoň 2-3 měsíce ze zařízení s touto IP. A Spotube nenese žádnou odpovědnost, pokud se to někdy stane';
 
   @override
-  String get by_clicking_accept_terms => 'Kliknutím na \'přijmout\' souhlasíte s následujícími podmínkami:';
+  String get by_clicking_accept_terms =>
+      'Kliknutím na \'přijmout\' souhlasíte s následujícími podmínkami:';
 
   @override
   String get download_agreement_1 => 'Vím, že pirátím hudbu. Jsem špatný';
 
   @override
-  String get download_agreement_2 => 'Budu podporovat umělce, kdekoliv to bude možné, a dělám to jen proto, že nemám peníze na koupi jejich umění';
+  String get download_agreement_2 =>
+      'Budu podporovat umělce, kdekoliv to bude možné, a dělám to jen proto, že nemám peníze na koupi jejich umění';
 
   @override
-  String get download_agreement_3 => 'Jsem si naprosto vědom toho, že moje IP může být na YouTube zablokována a nenesu žádnou odpovědnost za nehody způsobené mým současným jednáním';
+  String get download_agreement_3 =>
+      'Jsem si naprosto vědom toho, že moje IP může být na YouTube zablokována a nenesu žádnou odpovědnost za nehody způsobené mým současným jednáním';
 
   @override
   String get decline => 'Odmítnout';
@@ -848,7 +821,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get failed_to_encrypt => 'Šifrování selhalo';
 
   @override
-  String get encryption_failed_warning => 'Spotube používá šifrování k bezpečnému ukládání vašich dat. Ale selhalo. Takže se vrátí k nezabezpečenému úložišti\nPokud používáte linux, ujistěte se, že máte nainstalovanou jakoukoli službu k ukládání bezpečnostních pověření (gnome-keyring, kde-wallet, keepassxc atd.)';
+  String get encryption_failed_warning =>
+      'Spotube používá šifrování k bezpečnému ukládání vašich dat. Ale selhalo. Takže se vrátí k nezabezpečenému úložišti\nPokud používáte linux, ujistěte se, že máte nainstalovanou jakoukoli službu k ukládání bezpečnostních pověření (gnome-keyring, kde-wallet, keepassxc atd.)';
 
   @override
   String get querying_info => 'Získávání informací...';
@@ -922,7 +896,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get login => 'Přihlásit se';
 
   @override
-  String get login_with_your_lastfm => 'Přihlásit se pomocí vašeho Last.fm účtu';
+  String get login_with_your_lastfm =>
+      'Přihlásit se pomocí vašeho Last.fm účtu';
 
   @override
   String get scrobble_to_lastfm => 'Scrobble na Last.fm';
@@ -946,7 +921,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get friends => 'Přátelé';
 
   @override
-  String get no_lyrics_available => 'Omlouváme se, není možné najít texty pro tuto skladbu';
+  String get no_lyrics_available =>
+      'Omlouváme se, není možné najít texty pro tuto skladbu';
 
   @override
   String get start_a_radio => 'Vytvořit rádio';
@@ -955,7 +931,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get how_to_start_radio => 'Jak chcete vytvořit rádio?';
 
   @override
-  String get replace_queue_question => 'Chcete nahradit aktuální frontu nebo k ní přidat?';
+  String get replace_queue_question =>
+      'Chcete nahradit aktuální frontu nebo k ní přidat?';
 
   @override
   String get endless_playback => 'Nekonečné přehrávání';
@@ -964,7 +941,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get delete_playlist => 'Smazat playlist';
 
   @override
-  String get delete_playlist_confirmation => 'Jste si jisti, že chcete smazat tento playlist?';
+  String get delete_playlist_confirmation =>
+      'Jste si jisti, že chcete smazat tento playlist?';
 
   @override
   String get local_tracks => 'Místní skladby';
@@ -991,13 +969,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get youtube_source_description => 'Doporučeno a funguje nejlépe.';
 
   @override
-  String get piped_source_description => 'Nechcete být sledováni? Stejné jako YouTube, ale respektuje soukromí.';
+  String get piped_source_description =>
+      'Nechcete být sledováni? Stejné jako YouTube, ale respektuje soukromí.';
 
   @override
   String get jiosaavn_source_description => 'Nejlepší pro jihoasijský region.';
 
   @override
-  String get invidious_source_description => 'Podobné Piped, ale s vyšší dostupností';
+  String get invidious_source_description =>
+      'Podobné Piped, ale s vyšší dostupností';
 
   @override
   String highest_quality(Object quality) {
@@ -1008,13 +988,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get select_audio_source => 'Vyberte zdroj zvuku';
 
   @override
-  String get endless_playback_description => 'Automaticky přidávat nové skladby\nna konec fronty';
+  String get endless_playback_description =>
+      'Automaticky přidávat nové skladby\nna konec fronty';
 
   @override
   String get choose_your_region => 'Vyberte svůj region';
 
   @override
-  String get choose_your_region_description => 'To pomůže Spotube ukázat vám správný obsah\npro vaši lokalitu.';
+  String get choose_your_region_description =>
+      'To pomůže Spotube ukázat vám správný obsah\npro vaši lokalitu.';
 
   @override
   String get choose_your_language => 'Vyberte svůj jazyk';
@@ -1023,7 +1005,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get help_project_grow => 'Pomozte tomuto projektu růst';
 
   @override
-  String get help_project_grow_description => 'Spotube je open-source projekt. Můžete pomoci tomuto projektu růst tím, že přispějete do projektu, nahlásíte chyby nebo navrhnete nové funkce.';
+  String get help_project_grow_description =>
+      'Spotube je open-source projekt. Můžete pomoci tomuto projektu růst tím, že přispějete do projektu, nahlásíte chyby nebo navrhnete nové funkce.';
 
   @override
   String get contribute_on_github => 'Přispějte na GitHub';
@@ -1038,7 +1021,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get enable_connect => 'Povolit ovládání';
 
   @override
-  String get enable_connect_description => 'Ovládejte Spotube z jiného zařízení';
+  String get enable_connect_description =>
+      'Ovládejte Spotube z jiného zařízení';
 
   @override
   String get devices => 'Zařízení';
@@ -1117,7 +1101,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get choose_the_device => 'Vyberte zařízení:';
 
   @override
-  String get multiple_device_connected => 'Je připojeno více zařízení.\nVyberte zařízení, na kterém chcete provést tuto akci';
+  String get multiple_device_connected =>
+      'Je připojeno více zařízení.\nVyberte zařízení, na kterém chcete provést tuto akci';
 
   @override
   String get nothing_found => 'Nic nenalezeno';
@@ -1190,7 +1175,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => 'Poplatky za streamování (hypotetické)';
+  String get streaming_fees_hypothetical =>
+      'Poplatky za streamování (hypotetické)';
 
   @override
   String get minutes_listened => 'Poslouchané minuty';
@@ -1212,7 +1198,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Toto je vypočítáno na základě výplaty\nza stream Spotify od \$0.003 do \$0.005.\nToto je hypotetický výpočet,\nabyste měli představu o tom, kolik\nbyste zaplatili umělcům,\npokud byste poslouchali jejich píseň na Spotify.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1248,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get webview_not_found => 'Webview nebyl nalezen';
 
   @override
-  String get webview_not_found_description => 'Na vašem zařízení není nainstalováno žádné runtime prostředí Webview.\nPokud je nainstalováno, ujistěte se, že je v environment PATH\n\nPo instalaci restartujte aplikaci';
+  String get webview_not_found_description =>
+      'Na vašem zařízení není nainstalováno žádné runtime prostředí Webview.\nPokud je nainstalováno, ujistěte se, že je v environment PATH\n\nPo instalaci restartujte aplikaci';
 
   @override
   String get unsupported_platform => 'Nepodporovaná platforma';
@@ -1322,19 +1310,22 @@ class AppLocalizationsCs extends AppLocalizations {
   String get view_all => 'Zobrazit vše';
 
   @override
-  String get no_tracks_added_yet => 'Zdá se, že jste ještě nepřidali žádné skladby';
+  String get no_tracks_added_yet =>
+      'Zdá se, že jste ještě nepřidali žádné skladby';
 
   @override
   String get no_tracks => 'Zdá se, že zde nejsou žádné skladby';
 
   @override
-  String get no_tracks_listened_yet => 'Zdá se, že jste ještě nic neposlouchali';
+  String get no_tracks_listened_yet =>
+      'Zdá se, že jste ještě nic neposlouchali';
 
   @override
   String get not_following_artists => 'Nezajímáte se o žádné umělce';
 
   @override
-  String get no_favorite_albums_yet => 'Zdá se, že jste ještě nepřidali žádné alba mezi oblíbené';
+  String get no_favorite_albums_yet =>
+      'Zdá se, že jste ještě nepřidali žádné alba mezi oblíbené';
 
   @override
   String get no_logs_found => 'Žádné záznamy nenalezeny';
@@ -1358,7 +1349,8 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'V macOS/Linux/Unixových systémech nebude fungovat nastavení cesty v .zshrc/.bashrc/.bash_profile atd.\nMusíte nastavit cestu v konfiguračním souboru shellu';
+  String get youtube_engine_unix_issue_message =>
+      'V macOS/Linux/Unixových systémech nebude fungovat nastavení cesty v .zshrc/.bashrc/.bash_profile atd.\nMusíte nastavit cestu v konfiguračním souboru shellu';
 
   @override
   String get download => 'Stáhnout';
@@ -1376,7 +1368,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get edit_port => 'Upravit port';
 
   @override
-  String get port_helper_msg => 'Výchozí hodnota je -1, což znamená náhodné číslo. Pokud máte nakonfigurován firewall, doporučuje se to nastavit.';
+  String get port_helper_msg =>
+      'Výchozí hodnota je -1, což znamená náhodné číslo. Pokud máte nakonfigurován firewall, doporučuje se to nastavit.';
 
   @override
   String connect_request(Object client) {
@@ -1384,5 +1377,6 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'Připojení bylo zamítnuto. Uživatel odmítl přístup.';
+  String get connection_request_denied =>
+      'Připojení bylo zamítnuto. Uživatel odmítl přístup.';
 }

@@ -1,28 +1,30 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import 'package:spotify/spotify.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/routes.gr.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/extensions/string.dart';
 import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
-import 'package:spotube/pages/search/sections/albums.dart';
-import 'package:spotube/pages/search/sections/artists.dart';
-import 'package:spotube/pages/search/sections/playlists.dart';
-import 'package:spotube/pages/search/sections/tracks.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/pages/search/tabs/albums.dart';
+import 'package:spotube/pages/search/tabs/all.dart';
+import 'package:spotube/pages/search/tabs/artists.dart';
+import 'package:spotube/pages/search/tabs/playlists.dart';
+import 'package:spotube/pages/search/tabs/tracks.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
+import 'package:spotube/provider/metadata_plugin/search/all.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:auto_route/auto_route.dart';
+
+final searchTermStateProvider = StateProvider<String>((ref) {
+  return "";
+});
 
 @RoutePage()
 class SearchPage extends HookConsumerWidget {
@@ -32,24 +34,23 @@ class SearchPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.sizeOf(context);
-
-    final scrollController = useScrollController();
     final controller = useShadcnTextEditingController();
     final focusNode = useFocusNode();
 
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
 
     final searchTerm = ref.watch(searchTermStateProvider);
-    final searchTrack = ref.watch(searchProvider(SearchType.track));
-    final searchAlbum = ref.watch(searchProvider(SearchType.album));
-    final searchPlaylist = ref.watch(searchProvider(SearchType.playlist));
-    final searchArtist = ref.watch(searchProvider(SearchType.artist));
+    final searchChipSnapshot = ref.watch(metadataPluginSearchChipsProvider);
+    final selectedChip = useState<String?>(
+      searchChipSnapshot.asData?.value.first ?? "all",
+    );
 
-    final queries = [searchTrack, searchAlbum, searchPlaylist, searchArtist];
-
-    final isFetching = queries.every((s) => s.isLoading);
+    ref.listen(
+      metadataPluginSearchChipsProvider,
+      (previous, next) {
+        selectedChip.value = next.asData?.value.first ?? "all";
+      },
+    );
 
     useEffect(() {
       controller.text = searchTerm;
@@ -82,7 +83,7 @@ class SearchPage extends HookConsumerWidget {
             if (kTitlebarVisible)
               const TitleBar(automaticallyImplyLeading: false, height: 30)
           ],
-          child: auth.asData?.value == null
+          child: authenticated.asData?.value != true
               ? const AnonymousFallback()
               : Column(
                   children: [
@@ -91,7 +92,10 @@ class SearchPage extends HookConsumerWidget {
                       children: [
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 10,
+                            ),
                             child: ListenableBuilder(
                                 listenable: controller,
                                 builder: (context, _) {
@@ -171,75 +175,50 @@ class SearchPage extends HookConsumerWidget {
                         ),
                       ],
                     ),
+                    Row(
+                      spacing: 8,
+                      children: [
+                        const Gap(12),
+                        if (searchChipSnapshot.asData?.value != null)
+                          for (final chip in searchChipSnapshot.asData!.value)
+                            Chip(
+                              style: selectedChip.value == chip
+                                  ? ButtonVariance.primary.copyWith(
+                                      decoration: (context, states, value) {
+                                        return ButtonVariance.primary
+                                            .decoration(context, states)
+                                            .copyWithIfBoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(100),
+                                            );
+                                      },
+                                    )
+                                  : ButtonVariance.secondary.copyWith(
+                                      decoration: (context, states, value) {
+                                        return ButtonVariance.secondary
+                                            .decoration(context, states)
+                                            .copyWithIfBoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(100),
+                                            );
+                                      },
+                                    ),
+                              child: Text(chip.capitalize()),
+                              onPressed: () {
+                                selectedChip.value = chip;
+                              },
+                            ),
+                      ],
+                    ),
                     Expanded(
                       child: AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
-                        child: switch ((searchTerm.isEmpty, isFetching)) {
-                          (true, false) => Column(
-                              children: [
-                                SizedBox(
-                                  height: mediaQuery.height * 0.2,
-                                ),
-                                Undraw(
-                                  illustration: UndrawIllustration.explore,
-                                  color: theme.colorScheme.primary,
-                                  height: 200 * theme.scaling,
-                                ),
-                                const SizedBox(height: 20),
-                                Text(context.l10n.search_to_get_results)
-                                    .large(),
-                              ],
-                            ),
-                          (false, true) => Container(
-                              constraints: BoxConstraints(
-                                maxWidth: mediaQuery.lgAndUp
-                                    ? mediaQuery.width * 0.5
-                                    : mediaQuery.width,
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    context.l10n.crunching_results,
-                                    style: TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                      color: theme.colorScheme.foreground
-                                          .withValues(alpha: 0.7),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 20),
-                                  const LinearProgressIndicator(),
-                                ],
-                              ),
-                            ),
-                          _ => InterScrollbar(
-                              controller: scrollController,
-                              child: SingleChildScrollView(
-                                controller: scrollController,
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 8),
-                                  child: SafeArea(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        SearchTracksSection(),
-                                        SearchPlaylistsSection(),
-                                        Gap(20),
-                                        SearchArtistsSection(),
-                                        Gap(20),
-                                        SearchAlbumsSection(),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                        child: switch (selectedChip.value) {
+                          "tracks" => const SearchPageTracksTab(),
+                          "albums" => const SearchPageAlbumsTab(),
+                          "artists" => const SearchPageArtistsTab(),
+                          "playlists" => const SearchPagePlaylistsTab(),
+                          _ => const SearchPageAllTab(),
                         },
                       ),
                     ),

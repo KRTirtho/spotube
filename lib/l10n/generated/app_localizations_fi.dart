@@ -380,12 +380,6 @@ class AppLocalizationsFi extends AppLocalizations {
   String get account => 'Käyttäjä';
 
   @override
-  String get login_with_spotify => 'Kirjaudu Spotify-käyttäjällä';
-
-  @override
-  String get connect_with_spotify => 'Yhdistä Spotify:lla';
-
-  @override
   String get logout => 'Kirjaudu ulos';
 
   @override
@@ -413,7 +407,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get layout_mode => 'Asettelutila';
 
   @override
-  String get override_layout_settings => 'Jätä reagoiva asettelutila huomioimatta';
+  String get override_layout_settings =>
+      'Jätä reagoiva asettelutila huomioimatta';
 
   @override
   String get adaptive => 'Mukautuva';
@@ -443,7 +438,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get sync_album_color => 'Synkronoi albumin väri';
 
   @override
-  String get sync_album_color_description => 'Käyttää albumin kansitaiteen vallitsevaa väirä korostuvärinä';
+  String get sync_album_color_description =>
+      'Käyttää albumin kansitaiteen vallitsevaa väirä korostuvärinä';
 
   @override
   String get playback => 'Toisto';
@@ -461,7 +457,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get pre_download_play => 'Esilataa ja soita';
 
   @override
-  String get pre_download_play_description => 'Audion suoratoiston sijaan, lataa tavut ja soita ne (Suositeltu korkeamman kaistanleveyden käyttäjille)';
+  String get pre_download_play_description =>
+      'Audion suoratoiston sijaan, lataa tavut ja soita ne (Suositeltu korkeamman kaistanleveyden käyttäjille)';
 
   @override
   String get skip_non_music => 'Ohita ei-musiikki kohdat (SponsorBlock)';
@@ -470,7 +467,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get blacklist_description => 'Mustalistat kappaleet aja artistit';
 
   @override
-  String get wait_for_download_to_finish => 'Odota nykyisen latauksen lopetteluun';
+  String get wait_for_download_to_finish =>
+      'Odota nykyisen latauksen lopetteluun';
 
   @override
   String get desktop => 'Työpöytä';
@@ -506,7 +504,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get please_sponsor => 'Sponsoroi/Lahjoita, kiitos';
 
   @override
-  String get spotube_description => 'Spotube, kevyt, cross-platform, vapaa-kaikille spotify clientti';
+  String get spotube_description =>
+      'Spotube, kevyt, cross-platform, vapaa-kaikille spotify clientti';
 
   @override
   String get version => 'Versio';
@@ -538,21 +537,14 @@ class AppLocalizationsFi extends AppLocalizations {
   String get license => 'Lisenssi';
 
   @override
-  String get add_spotify_credentials => 'Lisää Spotify-tunnuksesi aloittaaksesi';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => 'Älä huoli, tunnuksiasi ei talleteta tai jaeta kenenkään kanssa';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'Älä huoli, tunnuksiasi ei talleteta tai jaeta kenenkään kanssa';
 
   @override
   String get know_how_to_login => 'Etkö tiedä miten tehdä tämä?';
 
   @override
   String get follow_step_by_step_guide => 'Seuraa askel askeleelta opasta';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Keksi';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -584,52 +576,29 @@ class AppLocalizationsFi extends AppLocalizations {
   String get first_go_to => 'Ensiksi, mene';
 
   @override
-  String get login_if_not_logged_in => 'ja Kirjaudu/Tee tili jos et ole kirjautunut sisään';
-
-  @override
-  String get step_2 => 'Vaihe 2';
-
-  @override
-  String get step_2_steps => '1. Kun olet kirjautunut, paina F12 tai oikeaa hiiren näppäintä > Tarkista ja avaa selaimen kehittäjä työkalut.\n2. Mene sitten \"Application\"-välilehteen (Chrome, Edge, Brave jne..) tai \"Storage\"-välilehteen (Firefox, Palemoon jne..)\n3. Mene \"Cookies\"-osastoon, sitten \"https://accounts.spotify.com\" alakohtaan.';
-
-  @override
-  String get step_3 => 'Vaihe 3';
-
-  @override
-  String get step_3_steps => 'Kopioi Keksin \"sp_dc\" arvo';
-
-  @override
-  String get success_emoji => 'Onnistuit🥳';
-
-  @override
-  String get success_message => 'Olet nyt kirjautunut sisään Spotify-käyttäjällesi. Hyvää työtä toveri!';
-
-  @override
-  String get step_4 => 'Vaihe 4';
-
-  @override
-  String get step_4_steps => 'Liitä kopioitu \"sp_dc\" arvo';
-
-  @override
   String get something_went_wrong => 'Jotain meni pieleen';
 
   @override
   String get piped_instance => 'Johdettu palvelinesiintymä';
 
   @override
-  String get piped_description => 'Johdettu palvelinesiintymä Kappale täsmäyksiin';
+  String get piped_description =>
+      'Johdettu palvelinesiintymä Kappale täsmäyksiin';
 
   @override
-  String get piped_warning => 'Jotkut niistä eivät toimi hyvin, käytä siis omalla vastuullasi';
+  String get piped_warning =>
+      'Jotkut niistä eivät toimi hyvin, käytä siis omalla vastuullasi';
 
   @override
   String get invidious_instance => 'Invidious-palvelinesiintymä';
 
   @override
-  String get invidious_description => 'Invidious-palvelinesiintymä raitojen yhteensovittamiseen';
+  String get invidious_description =>
+      'Invidious-palvelinesiintymä raitojen yhteensovittamiseen';
 
   @override
-  String get invidious_warning => 'Jotkin esiintymät eivät välttämättä toimi hyvin. Käytä omalla vastuullasi';
+  String get invidious_warning =>
+      'Jotkin esiintymät eivät välttämättä toimi hyvin. Käytä omalla vastuullasi';
 
   @override
   String get generate => 'Luo';
@@ -646,7 +615,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get skip_download_tracks => 'Ohita ladattujen laulujen lataaminen';
 
   @override
-  String get do_you_want_to_replace => 'Haluatko korvata olemassa olevan kappaleen??';
+  String get do_you_want_to_replace =>
+      'Haluatko korvata olemassa olevan kappaleen??';
 
   @override
   String get replace => 'Korvaa';
@@ -752,22 +722,28 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'Jos lataat kaikki laulut kerrällä olet selkeästi Piratoimassa ja aiheuttamassa vahinkoa musiikin luovaan yhteiskuntaan. Toivottavasti olet tietoinen tästä. Yritä aina kunnioittaa ja tukea Artistin kovaa työtä.';
+  String get download_warning =>
+      'Jos lataat kaikki laulut kerrällä olet selkeästi Piratoimassa ja aiheuttamassa vahinkoa musiikin luovaan yhteiskuntaan. Toivottavasti olet tietoinen tästä. Yritä aina kunnioittaa ja tukea Artistin kovaa työtä.';
 
   @override
-  String get download_ip_ban_warning => 'BTW, YouTube voi estää IP-Osoitteesi tavallista liiallisten latauspyyntöjen takia. IP-Osoitteen esto tarkoittaa sitä, ettet voi käyttää YouTubea (vaikka olisit kirjautunut) vähintään 2-3kk aikana kyseiseltä laitteelta. Spotube ei kanna yhtään vastuuta jos se tapahtuu.';
+  String get download_ip_ban_warning =>
+      'BTW, YouTube voi estää IP-Osoitteesi tavallista liiallisten latauspyyntöjen takia. IP-Osoitteen esto tarkoittaa sitä, ettet voi käyttää YouTubea (vaikka olisit kirjautunut) vähintään 2-3kk aikana kyseiseltä laitteelta. Spotube ei kanna yhtään vastuuta jos se tapahtuu.';
 
   @override
-  String get by_clicking_accept_terms => 'Painamalla \'hyväksy\' hyväksyt seuraaviin ehtoihin:';
+  String get by_clicking_accept_terms =>
+      'Painamalla \'hyväksy\' hyväksyt seuraaviin ehtoihin:';
 
   @override
-  String get download_agreement_1 => 'Tiedän että Piratoin musiikkia. Olen paha.';
+  String get download_agreement_1 =>
+      'Tiedän että Piratoin musiikkia. Olen paha.';
 
   @override
-  String get download_agreement_2 => 'Tuen Artisteja silloin kun pystyn, ja teen tämän vain koska minulla ei ole rahaa ostaa heidän taidetta';
+  String get download_agreement_2 =>
+      'Tuen Artisteja silloin kun pystyn, ja teen tämän vain koska minulla ei ole rahaa ostaa heidän taidetta';
 
   @override
-  String get download_agreement_3 => 'Ymmärrän että minun YouTube voi estää IP-Osoitteeni ja en pidä Spotubea tai omistajiinsa/avustajia vastuullisena mistään omista teoistsani';
+  String get download_agreement_3 =>
+      'Ymmärrän että minun YouTube voi estää IP-Osoitteeni ja en pidä Spotubea tai omistajiinsa/avustajia vastuullisena mistään omista teoistsani';
 
   @override
   String get decline => 'Hylkää';
@@ -848,7 +824,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get failed_to_encrypt => 'Salaaminen epäonnistui';
 
   @override
-  String get encryption_failed_warning => 'Spotube käyttää salausta tallentaakseen tietosi, mutta epäonnistui, joten se palaa epäturvalliseen tallennukseen\nJos käytät Linuxia, varmista että sinulla on turvallisuuspalvelu (gnome-keyring, kde-wallet, keepassxc jne) asennettu';
+  String get encryption_failed_warning =>
+      'Spotube käyttää salausta tallentaakseen tietosi, mutta epäonnistui, joten se palaa epäturvalliseen tallennukseen\nJos käytät Linuxia, varmista että sinulla on turvallisuuspalvelu (gnome-keyring, kde-wallet, keepassxc jne) asennettu';
 
   @override
   String get querying_info => 'Hankitaan tietoa...';
@@ -946,7 +923,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get friends => 'Kaverit';
 
   @override
-  String get no_lyrics_available => 'Anteeksi, emme löytäneet lyriikoita tälle laululle';
+  String get no_lyrics_available =>
+      'Anteeksi, emme löytäneet lyriikoita tälle laululle';
 
   @override
   String get start_a_radio => 'Aloita Radio';
@@ -955,7 +933,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get how_to_start_radio => 'Kuinka haluat aloittaa radion?';
 
   @override
-  String get replace_queue_question => 'Haluatko korvata nykyisen jonon vai lisätä siihen?';
+  String get replace_queue_question =>
+      'Haluatko korvata nykyisen jonon vai lisätä siihen?';
 
   @override
   String get endless_playback => 'Loputon toisto';
@@ -964,7 +943,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get delete_playlist => 'Poista soittolista';
 
   @override
-  String get delete_playlist_confirmation => 'Oletko varma että haluat poistaa tämän soittolistan?';
+  String get delete_playlist_confirmation =>
+      'Oletko varma että haluat poistaa tämän soittolistan?';
 
   @override
   String get local_tracks => 'Paikalliset kappaleet';
@@ -991,13 +971,15 @@ class AppLocalizationsFi extends AppLocalizations {
   String get youtube_source_description => 'Suositeltu ja toimii parhaiten.';
 
   @override
-  String get piped_source_description => 'Tuntuuko vapaalta? Sama kuin YouTube mutta paljon vapautta';
+  String get piped_source_description =>
+      'Tuntuuko vapaalta? Sama kuin YouTube mutta paljon vapautta';
 
   @override
   String get jiosaavn_source_description => 'Paras Etelä-Aasian alueelle.';
 
   @override
-  String get invidious_source_description => 'Samankaltainen kuin Piped, mutta korkeammalla saatavuudella';
+  String get invidious_source_description =>
+      'Samankaltainen kuin Piped, mutta korkeammalla saatavuudella';
 
   @override
   String highest_quality(Object quality) {
@@ -1008,13 +990,15 @@ class AppLocalizationsFi extends AppLocalizations {
   String get select_audio_source => 'Valitse äänilähde';
 
   @override
-  String get endless_playback_description => 'Lisää automaattisesti uusia lauluja\njonon perään';
+  String get endless_playback_description =>
+      'Lisää automaattisesti uusia lauluja\njonon perään';
 
   @override
   String get choose_your_region => 'Valitse alueesi';
 
   @override
-  String get choose_your_region_description => 'Tämä auttaa Spotube näyttämään sinulle oikeaa sisältöä\nsijaintiasi varten.';
+  String get choose_your_region_description =>
+      'Tämä auttaa Spotube näyttämään sinulle oikeaa sisältöä\nsijaintiasi varten.';
 
   @override
   String get choose_your_language => 'Valitse kielesi';
@@ -1023,7 +1007,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get help_project_grow => 'Auta tätä projektia kasvamaan';
 
   @override
-  String get help_project_grow_description => 'Spotube projekti minkä lähdekoodi on julkisesti saatavilla. Voit autta tätä projektia kasvamaan muutoksilla, ilmoittamalla bugeista, tai ehdottamalla uusia ominaisuuksia.';
+  String get help_project_grow_description =>
+      'Spotube projekti minkä lähdekoodi on julkisesti saatavilla. Voit autta tätä projektia kasvamaan muutoksilla, ilmoittamalla bugeista, tai ehdottamalla uusia ominaisuuksia.';
 
   @override
   String get contribute_on_github => 'Auta GitHub:ssa';
@@ -1117,7 +1102,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get choose_the_device => 'Valitse laite:';
 
   @override
-  String get multiple_device_connected => 'Useita laitteita on kytketty.\nValitse laite, jossa haluat toiminnon suorittaa';
+  String get multiple_device_connected =>
+      'Useita laitteita on kytketty.\nValitse laite, jossa haluat toiminnon suorittaa';
 
   @override
   String get nothing_found => 'Ei tuloksia';
@@ -1190,7 +1176,8 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => 'Suoratoiston maksut (hypoteettinen)';
+  String get streaming_fees_hypothetical =>
+      'Suoratoiston maksut (hypoteettinen)';
 
   @override
   String get minutes_listened => 'Kuunneltuja minuutteja';
@@ -1212,7 +1199,8 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Tämä on laskettu Spotifyn suoratoiston\nmaksun perusteella, joka on 0,003–0,005 dollaria.\nTämä on hypoteettinen laskelma, joka antaa käyttäjälle käsityksen\nsiitä, kuinka paljon he olisivat maksaneet artisteille,\njollei heidän kappaleensa olisi kuunneltu Spotifyssa.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1249,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get webview_not_found => 'Webview ei löydy';
 
   @override
-  String get webview_not_found_description => 'Laitteellasi ei ole asennettua Webview-ajonaikaa.\nJos se on asennettu, varmista, että se on environment PATH:ssa\n\nAsennuksen jälkeen käynnistä sovellus uudelleen';
+  String get webview_not_found_description =>
+      'Laitteellasi ei ole asennettua Webview-ajonaikaa.\nJos se on asennettu, varmista, että se on environment PATH:ssa\n\nAsennuksen jälkeen käynnistä sovellus uudelleen';
 
   @override
   String get unsupported_platform => 'Ei tuettu alusta';
@@ -1322,19 +1311,22 @@ class AppLocalizationsFi extends AppLocalizations {
   String get view_all => 'Näytä kaikki';
 
   @override
-  String get no_tracks_added_yet => 'Näyttää siltä, että et ole lisännyt vielä mitään kappaleita.';
+  String get no_tracks_added_yet =>
+      'Näyttää siltä, että et ole lisännyt vielä mitään kappaleita.';
 
   @override
   String get no_tracks => 'Näyttää siltä, että täällä ei ole kappaleita.';
 
   @override
-  String get no_tracks_listened_yet => 'Näyttää siltä, että et ole kuunnellut mitään vielä.';
+  String get no_tracks_listened_yet =>
+      'Näyttää siltä, että et ole kuunnellut mitään vielä.';
 
   @override
   String get not_following_artists => 'Et seuraa yhtään artistia.';
 
   @override
-  String get no_favorite_albums_yet => 'Näyttää siltä, että et ole lisännyt yhtään albumia suosikkeihisi.';
+  String get no_favorite_albums_yet =>
+      'Näyttää siltä, että et ole lisännyt yhtään albumia suosikkeihisi.';
 
   @override
   String get no_logs_found => 'Ei lokitietoja löydetty';
@@ -1358,7 +1350,8 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'macOS/Linux/unix-tyyppisissä käyttöjärjestelmissä polun asettaminen .zshrc/.bashrc/.bash_profile jne. ei toimi.\nSinun täytyy asettaa polku shellin asetustiedostoon.';
+  String get youtube_engine_unix_issue_message =>
+      'macOS/Linux/unix-tyyppisissä käyttöjärjestelmissä polun asettaminen .zshrc/.bashrc/.bash_profile jne. ei toimi.\nSinun täytyy asettaa polku shellin asetustiedostoon.';
 
   @override
   String get download => 'Lataa';
@@ -1376,7 +1369,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get edit_port => 'Muokkaa porttia';
 
   @override
-  String get port_helper_msg => 'Oletusarvo on -1, mikä tarkoittaa satunnaista numeroa. Jos sinulla on palomuuri määritetty, tämän asettamista suositellaan.';
+  String get port_helper_msg =>
+      'Oletusarvo on -1, mikä tarkoittaa satunnaista numeroa. Jos sinulla on palomuuri määritetty, tämän asettamista suositellaan.';
 
   @override
   String connect_request(Object client) {
@@ -1384,5 +1378,6 @@ class AppLocalizationsFi extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'Yhteys evätty. Käyttäjä eväsi pääsyn.';
+  String get connection_request_denied =>
+      'Yhteys evätty. Käyttäjä eväsi pääsyn.';
 }

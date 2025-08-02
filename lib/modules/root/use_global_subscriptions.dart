@@ -5,6 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/modules/metadata_plugins/plugin_update_available_dialog.dart';
+import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/metadata_plugin/updater/update_checker.dart';
 import 'package:spotube/provider/server/routes/connect.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/connectivity_adapter.dart';
@@ -18,6 +21,22 @@ void useGlobalSubscriptions(WidgetRef ref) {
   useEffect(() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       ServiceUtils.checkForUpdates(context, ref);
+
+      final pluginUpdate =
+          await ref.read(metadataPluginUpdateCheckerProvider.future);
+
+      if (pluginUpdate != null) {
+        final pluginConfig = await ref.read(metadataPluginsProvider.future);
+        if (context.mounted) {
+          showDialog(
+            context: context,
+            builder: (context) => MetadataPluginUpdateAvailableDialog(
+              plugin: pluginConfig.defaultPluginConfig!,
+              update: pluginUpdate,
+            ),
+          );
+        }
+      }
     });
 
     StreamSubscription? audioPlayerSubscription;

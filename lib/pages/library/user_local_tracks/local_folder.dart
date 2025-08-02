@@ -17,6 +17,7 @@ import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/string.dart';
 import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/library/local_folder/cache_export_dialog.dart';
 import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/components/expandable_search/expandable_search.dart';
@@ -24,9 +25,7 @@ import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/track_presentation/sort_tracks_dropdown.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -49,8 +48,8 @@ class LocalLibraryPage extends HookConsumerWidget {
 
   Future<void> playLocalTracks(
     WidgetRef ref,
-    List<LocalTrack> tracks, {
-    LocalTrack? currentTrack,
+    List<SpotubeLocalTrackObject> tracks, {
+    SpotubeLocalTrackObject? currentTrack,
   }) async {
     final playlist = ref.read(audioPlayerProvider);
     final playback = ref.read(audioPlayerProvider.notifier);
@@ -64,7 +63,6 @@ class LocalLibraryPage extends HookConsumerWidget {
         autoPlay: true,
       );
     } else if (isPlaylistPlaying &&
-        currentTrack.id != null &&
         currentTrack.id != playlist.activeTrack?.id) {
       await playback.jumpToTrack(currentTrack);
     }
@@ -296,7 +294,8 @@ class LocalLibraryPage extends HookConsumerWidget {
                           data: (tracks) {
                             final sortedTracks = useMemoized(() {
                               return ServiceUtils.sortTracks(
-                                  tracks[location] ?? <LocalTrack>[],
+                                  tracks[location] ??
+                                      <SpotubeLocalTrackObject>[],
                                   sortBy.value);
                             }, [sortBy.value, tracks]);
 
@@ -307,7 +306,7 @@ class LocalLibraryPage extends HookConsumerWidget {
                               return sortedTracks
                                   .map((e) => (
                                         weightedRatio(
-                                          "${e.name} - ${e.artists?.asString() ?? ""}",
+                                          "${e.name} - ${e.artists.asString()}",
                                           searchController.text,
                                         ),
                                         e,

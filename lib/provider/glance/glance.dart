@@ -5,7 +5,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -71,7 +71,7 @@ Future<void> _updateWidget() async {
   }
 }
 
-Future<void> _sendActiveTrack(Track? track) async {
+Future<void> _sendActiveTrack(SpotubeTrackObject? track) async {
   if (track == null) {
     await _saveWidgetData("activeTrack", null);
     await _updateWidget();
@@ -80,8 +80,8 @@ Future<void> _sendActiveTrack(Track? track) async {
 
   final jsonTrack = track.toJson();
 
-  final image = track.album?.images?.first;
-  final cachedImage = await DefaultCacheManager().getSingleFile(image!.url!);
+  final image = track.album?.images.first;
+  final cachedImage = await DefaultCacheManager().getSingleFile(image!.url);
   final data = {
     ...jsonTrack,
     "album": {

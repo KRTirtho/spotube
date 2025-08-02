@@ -2,19 +2,25 @@ import 'package:flutter/material.dart' as material;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/components/button/back_button.dart';
 
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/modules/artist/artist_album_list.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/modules/artist/artist_album_list.dart';
 
 import 'package:spotube/pages/artist/section/footer.dart';
 import 'package:spotube/pages/artist/section/header.dart';
 import 'package:spotube/pages/artist/section/related_artists.dart';
 import 'package:spotube/pages/artist/section/top_tracks.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/artist/albums.dart';
+import 'package:spotube/provider/metadata_plugin/artist/artist.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotube/provider/metadata_plugin/artist/related.dart';
+import 'package:spotube/provider/metadata_plugin/artist/top_tracks.dart';
+import 'package:spotube/provider/metadata_plugin/artist/wikipedia.dart';
+import 'package:spotube/provider/metadata_plugin/library/artists.dart';
 
 @RoutePage()
 class ArtistPage extends HookConsumerWidget {
@@ -29,9 +35,8 @@ class ArtistPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final scrollController = useScrollController();
-    final theme = Theme.of(context);
 
-    final artistQuery = ref.watch(artistProvider(artistId));
+    final artistQuery = ref.watch(metadataPluginArtistProvider(artistId));
 
     return SafeArea(
       bottom: false,
@@ -45,14 +50,17 @@ class ArtistPage extends HookConsumerWidget {
         floatingHeader: true,
         child: material.RefreshIndicator.adaptive(
           onRefresh: () async {
-            ref.invalidate(artistProvider(artistId));
-            ref.invalidate(relatedArtistsProvider(artistId));
-            ref.invalidate(artistAlbumsProvider(artistId));
-            ref.invalidate(artistIsFollowingProvider(artistId));
-            ref.invalidate(artistTopTracksProvider(artistId));
+            ref.invalidate(metadataPluginArtistProvider(artistId));
+            ref.invalidate(
+              metadataPluginArtistRelatedArtistsProvider(artistId),
+            );
+            ref.invalidate(metadataPluginArtistAlbumsProvider(artistId));
+            ref.invalidate(metadataPluginIsSavedArtistProvider(artistId));
+            ref.invalidate(metadataPluginArtistTopTracksProvider(artistId));
             if (artistQuery.hasValue) {
               ref.invalidate(
-                  artistWikipediaSummaryProvider(artistQuery.asData!.value));
+                artistWikipediaSummaryProvider(artistQuery.asData!.value),
+              );
             }
           },
           child: Builder(builder: (context) {
@@ -64,6 +72,7 @@ class ArtistPage extends HookConsumerWidget {
               child: CustomScrollView(
                 controller: scrollController,
                 slivers: [
+                  const SliverGap(material.kToolbarHeight),
                   SliverToBoxAdapter(
                     child: SafeArea(
                       bottom: false,
@@ -79,7 +88,7 @@ class ArtistPage extends HookConsumerWidget {
                     sliver: SliverToBoxAdapter(
                       child: Text(
                         context.l10n.fans_also_like,
-                        style: theme.typography.h4,
+                        style: context.theme.typography.h4,
                       ),
                     ),
                   ),

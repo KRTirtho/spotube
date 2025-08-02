@@ -35,6 +35,7 @@ class Sidebar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ThemeData(:colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final layoutMode =
@@ -66,13 +67,14 @@ class Sidebar extends HookConsumerWidget {
     final navigationButtons = [
       NavigationLabel(
         child: mediaQuery.lgAndUp
-            ? const DefaultTextStyle(
+            ? DefaultTextStyle(
                 style: TextStyle(
                   fontFamily: "Cookie",
                   fontSize: 30,
                   letterSpacing: 1.8,
+                  color: colorScheme.foreground,
                 ),
-                child: Text("Spotube"),
+                child: const Text("Spotube"),
               )
             : const Text(""),
       ),

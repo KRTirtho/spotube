@@ -12,10 +12,7 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/connect/connect_device.dart';
 import 'package:spotube/modules/home/sections/featured.dart';
-import 'package:spotube/modules/home/sections/feed.dart';
-import 'package:spotube/modules/home/sections/friends.dart';
-import 'package:spotube/modules/home/sections/genres/genres.dart';
-import 'package:spotube/modules/home/sections/made_for_user.dart';
+import 'package:spotube/modules/home/sections/sections.dart';
 import 'package:spotube/modules/home/sections/new_releases.dart';
 import 'package:spotube/modules/home/sections/recent.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
@@ -77,19 +74,18 @@ class HomePage extends HookConsumerWidget {
                 const SliverGap(10),
               const SliverGap(10),
               SliverList.builder(
-                itemCount: 5,
+                itemCount: 3,
                 itemBuilder: (context, index) {
                   return switch (index) {
-                    0 => const HomeGenresSection(),
-                    1 => const HomeRecentlyPlayedSection(),
-                    2 => const HomeFeaturedSection(),
-                    3 => const HomePageFriendsSection(),
+                    // 0 => const HomeGenresSection(),
+                    0 => const HomeRecentlyPlayedSection(),
+                    1 => const HomeFeaturedSection(),
+                    // 3 => const HomePageFriendsSection(),
                     _ => const HomeNewReleasesSection()
                   };
                 },
               ),
-              const HomePageFeedSection(),
-              const SliverSafeArea(sliver: HomeMadeForUserSection()),
+              const SliverSafeArea(sliver: HomePageBrowseSection()),
             ],
           ),
         ));

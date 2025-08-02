@@ -380,12 +380,6 @@ class AppLocalizationsKa extends AppLocalizations {
   String get account => 'ანგარიში';
 
   @override
-  String get login_with_spotify => 'შედით თქვენი Spotify ანგარიშით';
-
-  @override
-  String get connect_with_spotify => 'დაუკავშირდით Spotify-ს';
-
-  @override
   String get logout => 'გასვლა';
 
   @override
@@ -413,7 +407,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get layout_mode => 'განლაგების რეჟიმი';
 
   @override
-  String get override_layout_settings => 'რესფონსივ განლაგების რეჟიმის კონფიგურაციაზე გადაწერა';
+  String get override_layout_settings =>
+      'რესფონსივ განლაგების რეჟიმის კონფიგურაციაზე გადაწერა';
 
   @override
   String get adaptive => 'ადაპტირებული';
@@ -443,7 +438,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get sync_album_color => 'ალბომის ფერის სინქრონიზაცია';
 
   @override
-  String get sync_album_color_description => 'დომინანტური ალბომის ფერის აქცენტის ფერად გამოყენება';
+  String get sync_album_color_description =>
+      'დომინანტური ალბომის ფერის აქცენტის ფერად გამოყენება';
 
   @override
   String get playback => 'დაკვრა';
@@ -461,16 +457,19 @@ class AppLocalizationsKa extends AppLocalizations {
   String get pre_download_play => 'წინასწარ ჩამოტვირთვა და დაკვრა';
 
   @override
-  String get pre_download_play_description => 'აუდიოს სტრიმინგის ნაცვლად, ბაიტების ჩამოტვირთვა და დაკვრა (რეკომენდებულია უფრო მაღალი გამტარუნარიანობის მომხმარებლებისთვის)';
+  String get pre_download_play_description =>
+      'აუდიოს სტრიმინგის ნაცვლად, ბაიტების ჩამოტვირთვა და დაკვრა (რეკომენდებულია უფრო მაღალი გამტარუნარიანობის მომხმარებლებისთვის)';
 
   @override
-  String get skip_non_music => 'არა მუსიკალური ნაწილის გამოტოვება (სპონსორის ბლოკი)';
+  String get skip_non_music =>
+      'არა მუსიკალური ნაწილის გამოტოვება (სპონსორის ბლოკი)';
 
   @override
   String get blacklist_description => 'შავ სიაში მყოფი არტისტები და ტრეკები';
 
   @override
-  String get wait_for_download_to_finish => 'გთხოვთ, დაელოდოთ მიმდინარე ჩამოტვირთვის დასრულებას';
+  String get wait_for_download_to_finish =>
+      'გთხოვთ, დაელოდოთ მიმდინარე ჩამოტვირთვის დასრულებას';
 
   @override
   String get desktop => 'დესკტოპი';
@@ -506,7 +505,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get please_sponsor => 'გთხოვთ დაგვასპონსოროთ';
 
   @override
-  String get spotube_description => 'Spotube, a lightweight, cross-platform, free-for-all spotify client';
+  String get spotube_description =>
+      'Spotube, a lightweight, cross-platform, free-for-all spotify client';
 
   @override
   String get version => 'ვერსია';
@@ -538,21 +538,15 @@ class AppLocalizationsKa extends AppLocalizations {
   String get license => 'ლიცენზია';
 
   @override
-  String get add_spotify_credentials => 'დასაწყებად დაამატეთ თქვენი Spotify მონაცემები';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => 'არ ინერვიულოთ, თქვენი მონაცემები არ იქნება შეგროვებული ან გაზიარებული ვინმესთან';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'არ ინერვიულოთ, თქვენი მონაცემები არ იქნება შეგროვებული ან გაზიარებული ვინმესთან';
 
   @override
   String get know_how_to_login => 'არ იცით როგორ გააკეთოთ ეს?';
 
   @override
-  String get follow_step_by_step_guide => 'მიჰყევით ნაბიჯ-ნაბიჯ სახელმძღვანელოს';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name ქუქი';
-  }
+  String get follow_step_by_step_guide =>
+      'მიჰყევით ნაბიჯ-ნაბიჯ სახელმძღვანელოს';
 
   @override
   String cookie_name_cookie(Object name) {
@@ -584,40 +578,14 @@ class AppLocalizationsKa extends AppLocalizations {
   String get first_go_to => 'პირველი, გადადით';
 
   @override
-  String get login_if_not_logged_in => 'და შესვლა/რეგისტრაცია, თუ არ ხართ შესული';
-
-  @override
-  String get step_2 => 'ნაბიჯი 2';
-
-  @override
-  String get step_2_steps => '1. როცა შეხვალთ, დააჭირეთ F12-ს ან მაუსის მარჯვენა ღილაკს > Inspect to Open the Browser devtools.\n2. შემდეგ გახსენით \"Application\" განყოფილება (Chrome, Edge, Brave etc..) ან \"Storage\" განყოფილება (Firefox, Palemoon etc..)\n3. შედით \"Cookies\" სექციაში და შემდეგ \"https://accounts.spotify.com\" სუბსექციაში';
-
-  @override
-  String get step_3 => 'ნაბიჯი 3';
-
-  @override
-  String get step_3_steps => 'დააკოპირეთ \"sp_dc\" ქუქი-ფაილის მნიშვნელობა';
-
-  @override
-  String get success_emoji => 'წარმატება🥳';
-
-  @override
-  String get success_message => 'თქვენ წარმატებით შეხვედით თქვენი Spotify ანგარიშით.';
-
-  @override
-  String get step_4 => 'ნაბიჯი 4';
-
-  @override
-  String get step_4_steps => 'ჩასვით კოპირებული \"sp_dc\" მნიშვნელობა';
-
-  @override
   String get something_went_wrong => 'Რაღაც არასწორად წავიდა';
 
   @override
   String get piped_instance => 'Piped Server Instance';
 
   @override
-  String get piped_description => 'The Piped server instance to use for track matching';
+  String get piped_description =>
+      'The Piped server instance to use for track matching';
 
   @override
   String get piped_warning => 'ზოგიერთი მათგანმა შეიძლება კარგად არ იმუშაოს. ';
@@ -626,10 +594,12 @@ class AppLocalizationsKa extends AppLocalizations {
   String get invidious_instance => 'Invidious სერვერის ინსტანცია';
 
   @override
-  String get invidious_description => 'Invidious სერვერის ინსტანცია, რომელიც გამოიყენება ტრეკის შესატყვისად';
+  String get invidious_description =>
+      'Invidious სერვერის ინსტანცია, რომელიც გამოიყენება ტრეკის შესატყვისად';
 
   @override
-  String get invidious_warning => 'ზოგიერთი შეიძლება კარგად არ მუშაობდეს. გამოიყენეთ თქვენს პასუხისმგებლობაზე';
+  String get invidious_warning =>
+      'ზოგიერთი შეიძლება კარგად არ მუშაობდეს. გამოიყენეთ თქვენს პასუხისმგებლობაზე';
 
   @override
   String get generate => 'გააგენერირეთ';
@@ -744,7 +714,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get are_you_sure => 'Დარწმუნებული ხართ?';
 
   @override
-  String get generating_playlist => 'მიმდინარეობს თქვენი მორგებული ფლეილისტის გენერირება...';
+  String get generating_playlist =>
+      'მიმდინარეობს თქვენი მორგებული ფლეილისტის გენერირება...';
 
   @override
   String selected_count_tracks(Object count) {
@@ -752,22 +723,27 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'If you download all Tracks at bulk you\'re clearly pirating Music & causing damage to the creative society of Music. I hope you are aware of this. Always, try respecting & supporting Artist\'s hard work';
+  String get download_warning =>
+      'If you download all Tracks at bulk you\'re clearly pirating Music & causing damage to the creative society of Music. I hope you are aware of this. Always, try respecting & supporting Artist\'s hard work';
 
   @override
-  String get download_ip_ban_warning => 'BTW, your IP can get blocked on YouTube due excessive download requests than usual. IP block means you can\'t use YouTube (even if you\'re logged in) for at least 2-3 months from that IP device. And Spotube doesn\'t hold any responsibility if this ever happens';
+  String get download_ip_ban_warning =>
+      'BTW, your IP can get blocked on YouTube due excessive download requests than usual. IP block means you can\'t use YouTube (even if you\'re logged in) for at least 2-3 months from that IP device. And Spotube doesn\'t hold any responsibility if this ever happens';
 
   @override
-  String get by_clicking_accept_terms => 'By clicking \'accept\' you agree to following terms:';
+  String get by_clicking_accept_terms =>
+      'By clicking \'accept\' you agree to following terms:';
 
   @override
   String get download_agreement_1 => 'I know I\'m pirating Music. I\'m bad';
 
   @override
-  String get download_agreement_2 => 'I\'ll support the Artist wherever I can and I\'m only doing this because I don\'t have money to buy their art';
+  String get download_agreement_2 =>
+      'I\'ll support the Artist wherever I can and I\'m only doing this because I don\'t have money to buy their art';
 
   @override
-  String get download_agreement_3 => 'I\'m completely aware that my IP can get blocked on YouTube & I don\'t hold Spotube or his owners/contributors responsible for any accidents caused by my current action';
+  String get download_agreement_3 =>
+      'I\'m completely aware that my IP can get blocked on YouTube & I don\'t hold Spotube or his owners/contributors responsible for any accidents caused by my current action';
 
   @override
   String get decline => 'უარყოფა';
@@ -848,7 +824,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get failed_to_encrypt => 'დაშიფვრა ვერ მოხერხდა';
 
   @override
-  String get encryption_failed_warning => 'Spotube uses encryption to securely store your data. But failed to do so. So it\'ll fallback to insecure storage\nIf you\'re using linux, please make sure you\'ve any secret-service (gnome-keyring, kde-wallet, keepassxc etc) installed';
+  String get encryption_failed_warning =>
+      'Spotube uses encryption to securely store your data. But failed to do so. So it\'ll fallback to insecure storage\nIf you\'re using linux, please make sure you\'ve any secret-service (gnome-keyring, kde-wallet, keepassxc etc) installed';
 
   @override
   String get querying_info => 'Querying info...';
@@ -946,7 +923,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get friends => 'მეგობრები';
 
   @override
-  String get no_lyrics_available => 'უკაცრავად, ამ ტრეკისთვის ტექსტის პოვნა შეუძლებელია';
+  String get no_lyrics_available =>
+      'უკაცრავად, ამ ტრეკისთვის ტექსტის პოვნა შეუძლებელია';
 
   @override
   String get start_a_radio => 'რადიოს ჩართვა';
@@ -955,7 +933,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get how_to_start_radio => 'როგორ გნებავთ რადიოს ჩართვა?';
 
   @override
-  String get replace_queue_question => 'გნებავთ ჩაანაცვლოთ არსებული რიგი თუ დაამატოთ მასზე?';
+  String get replace_queue_question =>
+      'გნებავთ ჩაანაცვლოთ არსებული რიგი თუ დაამატოთ მასზე?';
 
   @override
   String get endless_playback => 'დაუსრულებელი დაკვრა';
@@ -964,7 +943,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get delete_playlist => 'ფლეილისტის წაშლა';
 
   @override
-  String get delete_playlist_confirmation => 'დარწმუნებული ხართ რომ გნებავთ ფლეილისტის წაშლა?';
+  String get delete_playlist_confirmation =>
+      'დარწმუნებული ხართ რომ გნებავთ ფლეილისტის წაშლა?';
 
   @override
   String get local_tracks => 'ლოკალური ტრეკები';
@@ -988,16 +968,20 @@ class AppLocalizationsKa extends AppLocalizations {
   String get get_started => 'დავიწყოთ';
 
   @override
-  String get youtube_source_description => 'რეკომენდებულია და მუშაობს საუკეთესოდ.';
+  String get youtube_source_description =>
+      'რეკომენდებულია და მუშაობს საუკეთესოდ.';
 
   @override
-  String get piped_source_description => 'თავისუფლად გრძნობთ თავს? იგივეა, რაც YouTube, მაგრამ ბევრი თავისუფალი.';
+  String get piped_source_description =>
+      'თავისუფლად გრძნობთ თავს? იგივეა, რაც YouTube, მაგრამ ბევრი თავისუფალი.';
 
   @override
-  String get jiosaavn_source_description => 'საუკეთესოა სამხრეთ აზიის რეგიონისთვის.';
+  String get jiosaavn_source_description =>
+      'საუკეთესოა სამხრეთ აზიის რეგიონისთვის.';
 
   @override
-  String get invidious_source_description => 'მსგავსია Piped-ის, მაგრამ მაღალი ხელმისაწვდომობით.';
+  String get invidious_source_description =>
+      'მსგავსია Piped-ის, მაგრამ მაღალი ხელმისაწვდომობით.';
 
   @override
   String highest_quality(Object quality) {
@@ -1008,13 +992,15 @@ class AppLocalizationsKa extends AppLocalizations {
   String get select_audio_source => 'აუდიოს წყაროს არჩევა';
 
   @override
-  String get endless_playback_description => 'ახალი სიმთერების ავტომატურად რიგის ბოლოში დამატება';
+  String get endless_playback_description =>
+      'ახალი სიმთერების ავტომატურად რიგის ბოლოში დამატება';
 
   @override
   String get choose_your_region => 'აირჩიე შენი რეგიონი';
 
   @override
-  String get choose_your_region_description => 'This will help Spotube show you the right content\nfor your location.';
+  String get choose_your_region_description =>
+      'This will help Spotube show you the right content\nfor your location.';
 
   @override
   String get choose_your_language => 'აირჩიე ენა';
@@ -1023,7 +1009,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get help_project_grow => 'დაეხმარეთ ამ პროექტს განვითარებაში';
 
   @override
-  String get help_project_grow_description => 'Spotube is an open-source project. You can help this project grow by contributing to the project, reporting bugs, or suggesting new features.';
+  String get help_project_grow_description =>
+      'Spotube is an open-source project. You can help this project grow by contributing to the project, reporting bugs, or suggesting new features.';
 
   @override
   String get contribute_on_github => 'GitHub-ზე კონტრიბუცია';
@@ -1038,7 +1025,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get enable_connect => 'დაკავშირების ჩართვა';
 
   @override
-  String get enable_connect_description => 'აკონტროლე Spotube სხვა მოწყობილობებიდან';
+  String get enable_connect_description =>
+      'აკონტროლე Spotube სხვა მოწყობილობებიდან';
 
   @override
   String get devices => 'მოწყობილობები';
@@ -1117,7 +1105,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get choose_the_device => 'აირჩიეთ მოწყობილობა:';
 
   @override
-  String get multiple_device_connected => 'დაკავშირებულია რამდენიმე მოწყობილობა.\nაირჩიეთ მოწყობილობა, რომელზეც უნდა განხორციელდეს ეს მოქმედება';
+  String get multiple_device_connected =>
+      'დაკავშირებულია რამდენიმე მოწყობილობა.\nაირჩიეთ მოწყობილობა, რომელზეც უნდა განხორციელდეს ეს მოქმედება';
 
   @override
   String get nothing_found => 'არაფერი მოიძებნა';
@@ -1190,7 +1179,8 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => '*ეს рассчитывается на основе выплат за поток от Spotify\nот \$0.003 до \$0.005. ეს ჰიპოთეტური გამოთვლა იძლევა მომხმარებელს წარმოდგენას იმაზე, რამდენად\nგადახდილი იქნებოდა არტისტებისთვის, თუ მათ მოუსმინოს Spotify-ს ტრეკებს.';
+  String get streaming_fees_hypothetical =>
+      '*ეს рассчитывается на основе выплат за поток от Spotify\nот \$0.003 до \$0.005. ეს ჰიპოთეტური გამოთვლა იძლევა მომხმარებელს წარმოდგენას იმაზე, რამდენად\nგადახდილი იქნებოდა არტისტებისთვის, თუ მათ მოუსმინოს Spotify-ს ტრეკებს.';
 
   @override
   String get minutes_listened => 'წუთები მოუსმინეს';
@@ -1212,7 +1202,8 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*ეს გამოითვლება Spotify-ის თითოეულ სტრიმზე\nგადახდის შესაბამისად, რომელიც \$0.003 დან \$0.005-მდეა. ეს არის ჰიპოთეტური\nგამოთვლა, რომელიც აჩვენებს მომხმარებელს რამდენი გადაიხდიდა\nარტისტებს, თუკი ისინი უსმენდნენ მათ სიმღერებს Spotify-ზე.';
+  String get hipotetical_calculation =>
+      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1252,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get webview_not_found => 'ვებვიუ ვერ მოიძებნა';
 
   @override
-  String get webview_not_found_description => 'თქვენს მოწყობილობაზე ვებვიუის შესრულების დრო არ არის დაყენებული.\nთუ დაყენებულია, დარწმუნდით, რომ ის environment PATH-შია\n\nდაყენების შემდეგ, გადატვირთეთ აპი';
+  String get webview_not_found_description =>
+      'თქვენს მოწყობილობაზე ვებვიუის შესრულების დრო არ არის დაყენებული.\nთუ დაყენებულია, დარწმუნდით, რომ ის environment PATH-შია\n\nდაყენების შემდეგ, გადატვირთეთ აპი';
 
   @override
   String get unsupported_platform => 'მოუხერხებელი პლატფორმა';
@@ -1322,19 +1314,22 @@ class AppLocalizationsKa extends AppLocalizations {
   String get view_all => 'ყველა ნახვა';
 
   @override
-  String get no_tracks_added_yet => 'გაჩნდება რომ ჯერ არ გაქვთ დამატებული ტრეკები';
+  String get no_tracks_added_yet =>
+      'გაჩნდება რომ ჯერ არ გაქვთ დამატებული ტრეკები';
 
   @override
   String get no_tracks => 'გავლებული არ ჩანს არ არსებობს ტრეკები';
 
   @override
-  String get no_tracks_listened_yet => 'გქონდეთ გრძნობა, რომ ჯერ არაფერი უსმენია';
+  String get no_tracks_listened_yet =>
+      'გქონდეთ გრძნობა, რომ ჯერ არაფერი უსმენია';
 
   @override
   String get not_following_artists => 'არ მიჰყვებით რომელიმე არტისტს';
 
   @override
-  String get no_favorite_albums_yet => 'გაჩნდება რომ ჯერ არ გაქვთ დამატებული ალბომები თქვენს ფავორიტებში';
+  String get no_favorite_albums_yet =>
+      'გაჩნდება რომ ჯერ არ გაქვთ დამატებული ალბომები თქვენს ფავორიტებში';
 
   @override
   String get no_logs_found => 'ჩაწერები ვერ მოიძებნა';
@@ -1358,7 +1353,8 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'macOS/Linux/Unix მსგავსი ოპერაციული სისტემებში, .zshrc/.bashrc/.bash_profile-ით პათის დაყენება ვერ იმუშავებს.\nთქვენ უნდა დააყენოთ პათი შელ ფაილში';
+  String get youtube_engine_unix_issue_message =>
+      'macOS/Linux/Unix მსგავსი ოპერაციული სისტემებში, .zshrc/.bashrc/.bash_profile-ით პათის დაყენება ვერ იმუშავებს.\nთქვენ უნდა დააყენოთ პათი შელ ფაილში';
 
   @override
   String get download => 'ჩამოტვირთვა';
@@ -1376,7 +1372,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get edit_port => 'პორტის რედაქტირება';
 
   @override
-  String get port_helper_msg => 'ნაგულისხმევი არის -1, რაც შემთხვევითი ნომრის მითითებას ნიშნავს. თუ لديك firewall настроен, рекомендуется установить это.';
+  String get port_helper_msg =>
+      'ნაგულისხმევი არის -1, რაც შემთხვევითი ნომრის მითითებას ნიშნავს. თუ لديك firewall настроен, рекомендуется установить это.';
 
   @override
   String connect_request(Object client) {
@@ -1384,5 +1381,6 @@ class AppLocalizationsKa extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'კავშირი უარყოფილია. მომხმარებელმა უარყო წვდომა.';
+  String get connection_request_denied =>
+      'კავშირი უარყოფილია. მომხმარებელმა უარყო წვდომა.';
 }
