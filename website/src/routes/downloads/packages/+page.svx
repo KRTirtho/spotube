@@ -1,0 +1,112 @@
+---
+title: CLI Packages Managers
+author: Kingkor Roy Tirtho
+---
+
+<script lang="ts">
+	import { faLinux, faWindows, faApple } from '@fortawesome/free-brands-svg-icons';
+	import Fa from 'svelte-fa';
+  // import Ads from '$lib/components/ads/ads.svelte';
+  // import { ADS_SLOTS } from '$lib';
+</script>
+
+<div class="p-4 md:ps-24">
+	<h2 class="h2">Package Managers</h2>
+
+    Spotube is available in various Package Managers supported by Platform
+    
+  <h3 class="h3 text-red-500">
+    Versions of Spotube (&lt;=v4.0.2) are ceased to work with Spotify™ API. 
+    <br />
+    So users can no longer use/download those versions. 
+    <br />
+    Please wait for the next version that will remedy this issue by not using such APIs.
+  </h3>
+
+  <p class="text-surface-500 mt-20">
+    Spotube has no affiliation with Spotify™ or any of its subsidiaries.
+  </p>
+
+<!-- 
+    ## <Fa class="inline" icon={faLinux} /> Linux
+
+### Flatpak📦
+
+Make sure [Flatpak](https://flatpak.org) is installed in your Linux device & Run the following command in the terminal:
+
+```bash
+$ flatpak install com.github.KRTirtho.Spotube
+```
+
+### Arch User Repository (AUR)♾️
+
+If you're an Arch Linux user, you can also install Spotube from AUR.
+Make sure you have `yay`/`pamac`/`paru` installed in your system. And Run the Following command in the Terminal:
+
+```bash
+$ yay -Sy spotube-bin
+```
+
+```bash
+$ pamac install spotube-bin
+```
+
+```bash
+$ paru -Sy spotube-bin
+```
+
+<Ads
+  style="display:block; text-align:center;"
+  adSlot={ADS_SLOTS.packagePageArticle}
+  adLayout="in-article"
+  adFormat="fluid"
+  fullWidthResponsive={false}
+/>
+## <Fa class="inline" icon={faApple} /> MacOS
+
+### Homebrew🍻
+
+Spotube can be installed through Homebrew. We host our own cask definition thus you'll need to add our tap first:
+
+```bash
+$ brew tap krtirtho/apps
+$ brew install --cask spotube
+```
+
+<Ads
+  style="display:block; text-align:center;"
+  adSlot={ADS_SLOTS.packagePageArticle}
+  adLayout="in-article"
+  adFormat="fluid"
+  fullWidthResponsive={false}
+/>
+
+## <Fa class="inline" icon={faWindows} color="#00A2F0" /> Windows
+
+### Chocolatey🍫
+
+Spotube is available in [community.chocolatey.org](https://community.chocolatey.org) repo. If you have chocolatey install in your system just run following command in an Elevated Command Prompt or PowerShell:
+
+```powershell
+$ choco install spotube
+```
+
+### WinGet💫
+
+Spotube is also available in the Official Windows PackageManager WinGet. Make sure you have WinGet installed in your Windows machine and run following in a Terminal:
+
+```powershell
+$ winget install --id KRTirtho.Spotube
+```
+
+### Scoop🥄
+
+Spotube is also available in [Scoop](https://scoop.sh) bucket. Make sure you have Scoop installed in your Windows machine and run following in a Terminal:
+
+```powershell
+$ scoop bucket add extras
+$ scoop install spotube
+```
+
+ -->
+</div>

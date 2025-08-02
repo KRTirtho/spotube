@@ -1,7 +1,0 @@
-@import "tailwindcss";
-
-@source '../../node_modules/@skeletonlabs/skeleton-react/dist';
-
-@import "@skeletonlabs/skeleton";
-@import "@skeletonlabs/skeleton/optional/presets";
-@import "@skeletonlabs/skeleton/themes/wintry";
