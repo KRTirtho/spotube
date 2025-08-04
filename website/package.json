@@ -10,18 +10,25 @@
   },
   "dependencies": {
     "@astrojs/react": "^4.3.0",
+    "@octokit/rest": "^22.0.0",
     "@skeletonlabs/skeleton-react": "^1.2.4",
     "@tailwindcss/vite": "^4.1.11",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "astro": "^5.12.8",
+    "date-fns": "^4.1.0",
+    "markdown-it": "^14.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-icons": "^5.5.0",
+    "sanitize-html": "^2.17.0",
     "tailwindcss": "^4.1.11",
     "usehooks-ts": "^3.1.1"
   },
   "devDependencies": {
-    "@skeletonlabs/skeleton": "^3.1.7"
+    "@skeletonlabs/skeleton": "^3.1.7",
+    "@tailwindcss/typography": "^0.5.16",
+    "@types/markdown-it": "^14.1.2",
+    "@types/sanitize-html": "^2.16.0"
   }
 }

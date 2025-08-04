@@ -1,4 +1,5 @@
 ---
+import { FaGithub } from "react-icons/fa6";
 import "../styles/global.css";
 import TopBar from "~/components/navigation/TopBar.astro";
 ---
@@ -11,10 +12,52 @@ import TopBar from "~/components/navigation/TopBar.astro";
     <link rel="icon" href="/favicon.ico" type="image/x-icon" />
     <meta name="generator" content={Astro.generator} />
     <title>Spotube</title>
+    <meta
+      name="description"
+      content="An Open Source Music Client for every platform"
+    />
+    <meta
+      name="keywords"
+      content="music, client, open source, music, streaming"
+    />
+    <meta name="author" content="KRTirtho" />
+    <meta name="robots" content="index, follow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#1DB954" />
   </head>
   <body>
-    <TopBar />
-    <slot />
+    <main class="p-2 md:p-4 min-h-[90vh]">
+      <TopBar />
+      <slot />
+    </main>
+    <footer class="w-full bg-tertiary-100-900 p-4 flex justify-between">
+      <div>
+        <h3 class="h3">Spotube</h3>
+        <p>
+          Copyright © {new Date().getFullYear()} Spotube
+        </p>
+      </div>
+      <ul>
+        <li>
+          <a href="https://github.com/KRTirtho/spotube">
+            <FaGithub className="inline mr-1" />
+            Github
+          </a>
+        </li>
+        <li>
+          <a href="https://opencollective.org/spotube">
+            <img
+              src="https://avatars0.githubusercontent.com/u/13403593?v=4"
+              alt="OpenCollective"
+              height="20"
+              width="20"
+              class="inline mr-1"
+            />
+            OpenCollective
+          </a>
+        </li>
+      </ul>
+    </footer>
   </body>
 </html>
 

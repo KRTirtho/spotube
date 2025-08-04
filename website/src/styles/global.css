@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @source '../../node_modules/@skeletonlabs/skeleton-react/dist';
 
