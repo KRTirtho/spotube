@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { LuMenu } from "react-icons/lu";
 import { useOnClickOutside } from "usehooks-ts";
-import { routes } from "~/collections/app";
+import { routes } from "~/collections/app.ts";
 
 export default function SidebarButton() {
   const ref = useRef<HTMLDivElement>(null)

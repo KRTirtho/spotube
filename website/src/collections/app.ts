@@ -9,11 +9,12 @@ import {
 	FaWindows,
 	FaRedhat,
 } from "react-icons/fa6";
-import { LuHouse, LuNewspaper, LuDownload } from "react-icons/lu";
+import { LuHouse, LuNewspaper, LuDownload, LuBook } from "react-icons/lu";
 
 export const routes: Record<string, [string, IconType|null]> = {
 	"/": ["Home", LuHouse],
 	"/blog": ["Blog", LuNewspaper],
+	"/docs/get-started/introduction": ["Docs", LuBook],
 	"/downloads": ["Downloads", LuDownload],
 	"/about": ["About", null],
 };

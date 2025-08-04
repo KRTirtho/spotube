@@ -1,0 +1,118 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+
+interface NavigationItem extends HTMLAttributes<"a"> {
+  title: string;
+  tag?: string;
+}
+
+interface NavigationGroup {
+  title: string;
+  items: NavigationItem[];
+}
+
+interface Props {
+  topGroups?: NavigationGroup[];
+  classList?: string;
+  bottomGroups?: NavigationGroup[];
+}
+const { topGroups, bottomGroups, classList } = Astro.props;
+
+const sortByOrder = (a: CollectionEntry<"docs">, b: CollectionEntry<"docs">) =>
+  a.data.order - b.data.order;
+
+async function queryCollection(startsWith: string) {
+  return (
+    await getCollection("docs", (entry) => {
+      if (!entry.id.startsWith(startsWith)) return false;
+      if (entry.id.split("/").length > 2) return false;
+      if (entry.id.endsWith("meta")) return false;
+      return true;
+    })
+  ).toSorted(sortByOrder);
+}
+
+async function queryMetaCollection(startsWith: string) {
+  return (
+    await getCollection("docs", (entry) => {
+      if (!entry.id.startsWith(startsWith)) return false;
+      if (!entry.id.endsWith("meta")) return false;
+      return true;
+    })
+  ).toSorted(sortByOrder);
+}
+
+const toNavItems = (entries: CollectionEntry<"docs">[]) =>
+  entries.map((page) => ({
+    title: page.data.title,
+    href: `/docs/${page.id}`,
+  }));
+
+// Define navigation sections
+const sections: [
+  string,
+  string,
+  (prefix: string) => Promise<CollectionEntry<"docs">[]>,
+][] = [
+  ["Get Started", "get-started/", queryCollection],
+  ["Guides", "guides/", queryCollection],
+  ["Design System", "design/", queryCollection],
+  ["Tailwind Components", "tailwind/", queryCollection],
+  ["Functional Components", "components/", queryMetaCollection],
+  ["Headless Components", "headless/", queryCollection],
+  ["Integrations", "integrations/", queryMetaCollection],
+  ["Resources", "resources/", queryCollection],
+];
+
+// Build navigation dynamically
+const navigation: NavigationGroup[] = [
+  ...(topGroups ?? []),
+  ...(await Promise.all(
+    sections.map(async ([title, prefix, queryFn]) => ({
+      title,
+      items: toNavItems(await queryFn(prefix)),
+    }))
+  )),
+  ...(bottomGroups ?? []),
+];
+---
+
+<aside class="text-sm grid gap-10" class:list={[classList]}>
+  {
+    navigation.map((group) => (
+      <nav class="flex flex-col gap-2">
+        <span class="text-sm font-bold  ml-2">{group.title}</span>
+        <ul class="flex flex-col gap-1">
+          {group.items.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                title={item.title}
+                class="flex justify-between items-center"
+              >
+                <span
+                  class="grow px-2 py-1 rounded-base"
+                  class:list={[
+                    {
+                      "preset-tonal": Astro.url.pathname === item.href,
+                      anchor: Astro.url.pathname !== item.href,
+                    },
+                  ]}
+                >
+                  {item.title}
+                </span>
+                {item.tag && (
+                  <span class="no-underline preset-tonal-primary text-xs px-1 capitalize rounded">
+                    {item.tag}
+                  </span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    ))
+  }
+</aside>

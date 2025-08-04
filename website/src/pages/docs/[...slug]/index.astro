@@ -1,0 +1,33 @@
+---
+import RootLayout from "layouts/RootLayout.astro";
+import type { GetStaticPaths } from "astro";
+import { render } from "astro:content";
+import { getCollection, getEntry } from "astro:content";
+
+export const getStaticPaths = (async () => {
+  const pages = await getCollection("docs");
+  return pages.map((page) => ({
+    params: {
+      slug: page.id,
+    },
+    props: {
+      page: page,
+    },
+  }));
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+const { Content, remarkPluginFrontmatter } = await render(page);
+
+let meta: Awaited<ReturnType<typeof getEntry>>;
+if (page.id.startsWith("components/") || page.id.startsWith("integrations/")) {
+  meta = await getEntry("docs", page.id.replace(/\/[^/]*$/, "/meta"));
+  if (meta !== undefined) {
+    Object.assign(remarkPluginFrontmatter, meta.data);
+  }
+}
+---
+
+<RootLayout>
+  <Content />
+</RootLayout>
