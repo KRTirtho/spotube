@@ -95,7 +95,12 @@ export default function ReleasesSection() {
       repo: "spotube",
 
     }).then((res) => {
-      setReleases(res.data);
+      setReleases(
+        res.data.filter((release) => {
+          // Ignore all releases that were published before March 18 2025
+          return new Date(release.published_at ?? new Date()) >= new Date("2025-03-18T00:00:00Z");
+        })
+      );
     })
 
   }, [])
