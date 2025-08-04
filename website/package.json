@@ -9,6 +9,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.3",
     "@astrojs/react": "^4.3.0",
     "@octokit/rest": "^22.0.0",
     "@skeletonlabs/skeleton-react": "^1.2.4",
