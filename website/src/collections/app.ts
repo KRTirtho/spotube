@@ -14,7 +14,7 @@ import { LuHouse, LuNewspaper, LuDownload, LuBook } from "react-icons/lu";
 export const routes: Record<string, [string, IconType|null]> = {
 	"/": ["Home", LuHouse],
 	"/blog": ["Blog", LuNewspaper],
-	"/docs/get-started/introduction": ["Docs", LuBook],
+	"/docs": ["Docs", LuBook],
 	"/downloads": ["Downloads", LuDownload],
 	"/about": ["About", null],
 };

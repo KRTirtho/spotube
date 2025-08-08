@@ -4,6 +4,7 @@ import { FaGithub } from "react-icons/fa6";
 import SidebarButton from "./sidebar-button";
 
 const pathname = Astro.url.pathname;
+console.log("pathname:", pathname);
 ---
 
 <header class="flex justify-between items-center px-4 bg-surface">
@@ -33,12 +34,14 @@ const pathname = Astro.url.pathname;
     {
       Object.entries(routes).map((route) => {
         const Icon = route[1][1];
+        const isActive =
+          route[0] === "/" ? pathname === "/" : pathname.startsWith(route[0]);
 
         return (
           <a href={route[0]}>
             <button
               type="button"
-              class={`btn flex gap-2 ${route[0] === "/downloads" ? "preset-tonal-secondary" : "preset-tonal-surface"} ${pathname.endsWith(route[0]) ? "underline" : ""}`}
+              class={`btn flex gap-2 ${route[0] === "/downloads" ? "preset-tonal-secondary" : "preset-tonal-surface"} ${isActive ? "underline" : ""}`}
             >
               {Icon && <Icon />}
               {route[1][0]}

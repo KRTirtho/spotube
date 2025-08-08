@@ -60,7 +60,10 @@ const { frontmatter, headings } = Astro.props;
       </p>
     </header>
     <!-- Content -->
-    <article class="space-y-8" data-pagefind-body>
+    <article
+      class="space-y-8 prose lg:prose-xl dark:prose-invert"
+      data-pagefind-body
+    >
       <slot />
     </article>
     <!-- Footer -->
@@ -70,16 +73,6 @@ const { frontmatter, headings } = Astro.props;
   <aside
     class="hidden xl:block self-start sticky top-[70px] h-[calc(100vh-70px)] py-4 xl:py-10 space-y-8 overflow-y-auto"
   >
-    <!-- Carbon Ads -->
-    <script
-      is:inline
-      async
-      type="text/javascript"
-      src="//cdn.carbonads.com/carbon.js?serve=CWYD627U&placement=carbonadsnet"
-      id="_carbonads_js"></script>
-    <!-- Table of Contents -->
     <TableOfContents {headings} />
-    <!-- Promot -->
-    <!-- <div class="card aspect-video flex justify-center items-center preset-tonal">(promo)</div> -->
   </aside>
 </div>
