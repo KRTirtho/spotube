@@ -1,0 +1,17 @@
+name: Deploy Web to Vercel
+on:
+  push:
+    branches: [develop, main]
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with: { flutter-version: '3.22.0' }
+      - run: flutter pub get
+      - run: flutter build web --release --dart-define=API_BASE=https://api.tunestream.io
+      - run: npm i -g vercel
+      # deploy del directorio estático generado por Flutter
+      - run: vercel deploy --prod build/web --yes --token ${{ secrets.VERCEL_TOKEN }} --name tunestream-app
+YAML < /dev/null
