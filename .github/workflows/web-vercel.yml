@@ -7,8 +7,27 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      
+      # Cache pub dependencies
+      - uses: actions/cache@v3
+        with:
+          path: ~/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('pubspec.yaml') }}
+          restore-keys: ${{ runner.os }}-pub-
+      
       - uses: subosito/flutter-action@v2
-        with: { flutter-version: '3.22.0' }
+        with: { flutter-version: '3.29.2' }
+      
+      # Create .env file for build
+      - run: |
+          echo "SPOTIFY_SECRETS=dummy_client_id:dummy_client_secret" > .env
+          echo "LASTFM_API_KEY=dummy_lastfm_key" >> .env
+          echo "LASTFM_API_SECRET=dummy_lastfm_secret" >> .env
+          echo "HIDE_DONATIONS=0" >> .env
+          echo "ENABLE_UPDATE_CHECK=1" >> .env
+          echo "RELEASE_CHANNEL=nightly" >> .env
+          echo "DISABLE_SPOTIFY_IMAGES=0" >> .env
+      
       - run: flutter pub get
       - run: flutter build web --release --dart-define=API_BASE=https://api.tunestream.io
       - run: npm i -g vercel
