@@ -29,6 +29,7 @@ jobs:
           echo "DISABLE_SPOTIFY_IMAGES=0" >> .env
       
       - run: flutter pub get
+      - run: dart run build_runner build --delete-conflicting-outputs
       - run: flutter build web --release --dart-define=API_BASE=https://api.tunestream.io
       - run: npm i -g vercel
       # deploy del directorio estático generado por Flutter
