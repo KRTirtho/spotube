@@ -1,0 +1,43 @@
+.nh
+.TH "GH-EXTENSION-UPGRADE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-extension-upgrade - Upgrade installed extensions
+
+
+.SH SYNOPSIS
+\fBgh extension upgrade {<name> | --all} [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB--all\fR
+Upgrade all extensions
+
+.TP
+\fB--dry-run\fR
+Only display upgrades
+
+.TP
+\fB--force\fR
+Force upgrade extension
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-extension(1)\fR

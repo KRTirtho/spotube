@@ -1,0 +1,122 @@
+.nh
+.TH "GH-RUN-VIEW" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-run-view - View a summary of a workflow run
+
+
+.SH SYNOPSIS
+\fBgh run view [<run-id>] [flags]\fR
+
+
+.SH DESCRIPTION
+View a summary of a workflow run.
+
+.PP
+Due to platform limitations, \fBgh\fR may not always be able to associate jobs with their
+corresponding logs when using the primary method of fetching logs in zip format.
+
+.PP
+In such cases, \fBgh\fR will attempt to fetch logs for each job individually via the API.
+This fallback is slower and more resource-intensive. If more than 25 job logs are missing,
+the operation will fail with an error.
+
+.PP
+Additionally, due to similar platform constraints, some log lines may not be
+associated with a specific step within a job. In these cases, the step name will
+appear as \fBUNKNOWN STEP\fR in the log output.
+
+
+.SH OPTIONS
+.TP
+\fB-a\fR, \fB--attempt\fR \fB<uint> (default 0)\fR
+The attempt number of the workflow run
+
+.TP
+\fB--exit-status\fR
+Exit with non-zero status if run failed
+
+.TP
+\fB-j\fR, \fB--job\fR \fB<string>\fR
+View a specific job ID from a run
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB--log\fR
+View full log for either a run or specific job
+
+.TP
+\fB--log-failed\fR
+View the log for any failed steps in a run or specific job
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB-v\fR, \fB--verbose\fR
+Show job steps
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open run in the browser
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH JSON FIELDS
+\fBattempt\fR, \fBconclusion\fR, \fBcreatedAt\fR, \fBdatabaseId\fR, \fBdisplayTitle\fR, \fBevent\fR, \fBheadBranch\fR, \fBheadSha\fR, \fBjobs\fR, \fBname\fR, \fBnumber\fR, \fBstartedAt\fR, \fBstatus\fR, \fBupdatedAt\fR, \fBurl\fR, \fBworkflowDatabaseId\fR, \fBworkflowName\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Interactively select a run to view, optionally selecting a single job
+$ gh run view
+
+# View a specific run
+$ gh run view 12345
+
+# View a specific run with specific attempt number
+$ gh run view 12345 --attempt 3
+
+# View a specific job within a run
+$ gh run view --job 456789
+
+# View the full log for a specific job
+$ gh run view --log --job 456789
+
+# Exit non-zero if a run failed
+$ gh run view 0451 --exit-status && echo "run pending or passed"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-run(1)\fR

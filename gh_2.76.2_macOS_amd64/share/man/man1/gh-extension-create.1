@@ -1,0 +1,52 @@
+.nh
+.TH "GH-EXTENSION-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-extension-create - Create a new extension
+
+
+.SH SYNOPSIS
+\fBgh extension create [<name>] [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB--precompiled\fR \fB<string>\fR
+Create a precompiled extension. Possible values: go, other
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Use interactively
+$ gh extension create
+
+# Create a script-based extension
+$ gh extension create foobar
+
+# Create a Go extension
+$ gh extension create --precompiled=go foobar
+
+# Create a non-Go precompiled extension
+$ gh extension create --precompiled=other foobar
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-extension(1)\fR

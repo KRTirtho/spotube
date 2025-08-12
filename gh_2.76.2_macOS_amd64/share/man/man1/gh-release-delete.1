@@ -1,0 +1,45 @@
+.nh
+.TH "GH-RELEASE-DELETE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-release-delete - Delete a release
+
+
+.SH SYNOPSIS
+\fBgh release delete <tag> [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB--cleanup-tag\fR
+Delete the specified tag in addition to its release
+
+.TP
+\fB-y\fR, \fB--yes\fR
+Skip the confirmation prompt
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-release(1)\fR

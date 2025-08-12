@@ -1,0 +1,45 @@
+.nh
+.TH "GH-CONFIG-SET" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-config-set - Update configuration with a value for the given key
+
+
+.SH SYNOPSIS
+\fBgh config set <key> <value> [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-h\fR, \fB--host\fR \fB<string>\fR
+Set per-host setting
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh config set editor vim
+$ gh config set editor "code --wait"
+$ gh config set git_protocol ssh --host github.com
+$ gh config set prompt disabled
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-config(1)\fR

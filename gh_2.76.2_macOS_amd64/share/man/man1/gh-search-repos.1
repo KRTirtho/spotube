@@ -1,0 +1,170 @@
+.nh
+.TH "GH-SEARCH-REPOS" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-search-repos - Search for repositories
+
+
+.SH SYNOPSIS
+\fBgh search repos [<query>] [flags]\fR
+
+
+.SH DESCRIPTION
+Search for repositories on GitHub.
+
+.PP
+The command supports constructing queries using the GitHub search syntax,
+using the parameter and qualifier flags, or a combination of the two.
+
+.PP
+GitHub search syntax is documented at:
+
+\[la]https://docs.github.com/search\-github/searching\-on\-github/searching\-for\-repositories\[ra]
+
+
+.SH OPTIONS
+.TP
+\fB--archived\fR
+Filter based on the repository archived state {true|false}
+
+.TP
+\fB--created\fR \fB<date>\fR
+Filter based on created at date
+
+.TP
+\fB--followers\fR \fB<number>\fR
+Filter based on number of followers
+
+.TP
+\fB--forks\fR \fB<number>\fR
+Filter on number of forks
+
+.TP
+\fB--good-first-issues\fR \fB<number>\fR
+Filter on number of issues with the 'good first issue' label
+
+.TP
+\fB--help-wanted-issues\fR \fB<number>\fR
+Filter on number of issues with the 'help wanted' label
+
+.TP
+\fB--include-forks\fR \fB<string>\fR
+Include forks in fetched repositories: {false|true|only}
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB--language\fR \fB<string>\fR
+Filter based on the coding language
+
+.TP
+\fB--license\fR \fB<strings>\fR
+Filter based on license type
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of repositories to fetch
+
+.TP
+\fB--match\fR \fB<strings>\fR
+Restrict search to specific field of repository: {name|description|readme}
+
+.TP
+\fB--number-topics\fR \fB<number>\fR
+Filter on number of topics
+
+.TP
+\fB--order\fR \fB<string> (default "desc")\fR
+Order of repositories returned, ignored unless '--sort' flag is specified: {asc|desc}
+
+.TP
+\fB--owner\fR \fB<strings>\fR
+Filter on owner
+
+.TP
+\fB--size\fR \fB<string>\fR
+Filter on a size range, in kilobytes
+
+.TP
+\fB--sort\fR \fB<string> (default "best-match")\fR
+Sort fetched repositories: {forks|help-wanted-issues|stars|updated}
+
+.TP
+\fB--stars\fR \fB<number>\fR
+Filter on number of stars
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB--topic\fR \fB<strings>\fR
+Filter on topic
+
+.TP
+\fB--updated\fR \fB<date>\fR
+Filter on last updated at date
+
+.TP
+\fB--visibility\fR \fB<strings>\fR
+Filter based on visibility: {public|private|internal}
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the search query in the web browser
+
+
+.SH JSON FIELDS
+\fBcreatedAt\fR, \fBdefaultBranch\fR, \fBdescription\fR, \fBforksCount\fR, \fBfullName\fR, \fBhasDownloads\fR, \fBhasIssues\fR, \fBhasPages\fR, \fBhasProjects\fR, \fBhasWiki\fR, \fBhomepage\fR, \fBid\fR, \fBisArchived\fR, \fBisDisabled\fR, \fBisFork\fR, \fBisPrivate\fR, \fBlanguage\fR, \fBlicense\fR, \fBname\fR, \fBopenIssuesCount\fR, \fBowner\fR, \fBpushedAt\fR, \fBsize\fR, \fBstargazersCount\fR, \fBupdatedAt\fR, \fBurl\fR, \fBvisibility\fR, \fBwatchersCount\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Search repositories matching set of keywords "cli" and "shell"
+$ gh search repos cli shell
+
+# Search repositories matching phrase "vim plugin"
+$ gh search repos "vim plugin"
+
+# Search repositories public repos in the microsoft organization
+$ gh search repos --owner=microsoft --visibility=public
+
+# Search repositories with a set of topics
+$ gh search repos --topic=unix,terminal
+
+# Search repositories by coding language and number of good first issues
+$ gh search repos --language=go --good-first-issues=">=10"
+
+# Search repositories without topic "linux"
+$ gh search repos -- -topic:linux
+
+# Search repositories excluding archived repositories
+$ gh search repos --archived=false
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-search(1)\fR

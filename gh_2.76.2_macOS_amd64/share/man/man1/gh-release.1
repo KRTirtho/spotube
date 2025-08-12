@@ -1,0 +1,71 @@
+.nh
+.TH "GH-RELEASE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-release - Manage releases
+
+
+.SH SYNOPSIS
+\fBgh release <command> [flags]\fR
+
+
+.SH GENERAL COMMANDS
+.TP
+\fBgh-release-create(1)\fR
+Create a new release
+
+.TP
+\fBgh-release-list(1)\fR
+List releases in a repository
+
+
+.SH TARGETED COMMANDS
+.TP
+\fBgh-release-delete(1)\fR
+Delete a release
+
+.TP
+\fBgh-release-delete-asset(1)\fR
+Delete an asset from a release
+
+.TP
+\fBgh-release-download(1)\fR
+Download release assets
+
+.TP
+\fBgh-release-edit(1)\fR
+Edit a release
+
+.TP
+\fBgh-release-upload(1)\fR
+Upload assets to a release
+
+.TP
+\fBgh-release-view(1)\fR
+View information about a release
+
+
+.SH OPTIONS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

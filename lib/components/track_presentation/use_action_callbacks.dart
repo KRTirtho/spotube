@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 

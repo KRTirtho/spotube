@@ -1,0 +1,90 @@
+.nh
+.TH "GH-WORKFLOW-RUN" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-workflow-run - Run a workflow by creating a workflow_dispatch event
+
+
+.SH SYNOPSIS
+\fBgh workflow run [<workflow-id> | <workflow-name>] [flags]\fR
+
+
+.SH DESCRIPTION
+Create a \fBworkflow_dispatch\fR event for a given workflow.
+
+.PP
+This command will trigger GitHub Actions to run a given workflow file. The given workflow file must
+support an \fBon.workflow_dispatch\fR trigger in order to be run in this way.
+
+.PP
+If the workflow file supports inputs, they can be specified in a few ways:
+.IP \(bu 2
+Interactively
+.IP \(bu 2
+Via \fB-f/--raw-field\fR or \fB-F/--field\fR flags
+.IP \(bu 2
+As JSON, via standard input
+
+
+.SH OPTIONS
+.TP
+\fB-F\fR, \fB--field\fR \fB<key=value>\fR
+Add a string parameter in key=value format, respecting @ syntax (see "gh help api").
+
+.TP
+\fB--json\fR
+Read workflow inputs as JSON via STDIN
+
+.TP
+\fB-f\fR, \fB--raw-field\fR \fB<key=value>\fR
+Add a string parameter in key=value format
+
+.TP
+\fB-r\fR, \fB--ref\fR \fB<string>\fR
+Branch or tag name which contains the version of the workflow file you'd like to run
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Have gh prompt you for what workflow you'd like to run and interactively collect inputs
+$ gh workflow run
+
+# Run the workflow file 'triage.yml' at the remote's default branch
+$ gh workflow run triage.yml
+
+# Run the workflow file 'triage.yml' at a specified ref
+$ gh workflow run triage.yml --ref my-branch
+
+# Run the workflow file 'triage.yml' with command line inputs
+$ gh workflow run triage.yml -f name=scully -f greeting=hello
+
+# Run the workflow file 'triage.yml' with JSON via standard input
+$ echo '{"name":"scully", "greeting":"hello"}' | gh workflow run triage.yml --json
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-workflow(1)\fR

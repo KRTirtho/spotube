@@ -1,0 +1,84 @@
+.nh
+.TH "GH-PR-COMMENT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-pr-comment - Add a comment to a pull request
+
+
+.SH SYNOPSIS
+\fBgh pr comment [<number> | <url> | <branch>] [flags]\fR
+
+
+.SH DESCRIPTION
+Add a comment to a GitHub pull request.
+
+.PP
+Without the body text supplied through flags, the command will interactively
+prompt for the comment text.
+
+
+.SH OPTIONS
+.TP
+\fB-b\fR, \fB--body\fR \fB<text>\fR
+The comment body text
+
+.TP
+\fB-F\fR, \fB--body-file\fR \fB<file>\fR
+Read body text from file (use "-" to read from standard input)
+
+.TP
+\fB--create-if-none\fR
+Create a new comment if no comments are found. Can be used only with --edit-last
+
+.TP
+\fB--delete-last\fR
+Delete the last comment of the current user
+
+.TP
+\fB--edit-last\fR
+Edit the last comment of the current user
+
+.TP
+\fB-e\fR, \fB--editor\fR
+Skip prompts and open the text editor to write the body in
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the web browser to write the comment
+
+.TP
+\fB--yes\fR
+Skip the delete confirmation prompt when --delete-last is provided
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh pr comment 13 --body "Hi from GitHub CLI"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-pr(1)\fR

@@ -10,7 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/form/checkbox_form_field.dart';

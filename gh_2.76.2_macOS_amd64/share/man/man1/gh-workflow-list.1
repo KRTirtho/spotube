@@ -1,0 +1,69 @@
+.nh
+.TH "GH-WORKFLOW-LIST" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-workflow-list - List workflows
+
+
+.SH SYNOPSIS
+\fBgh workflow list [flags]\fR
+
+
+.SH DESCRIPTION
+List workflow files, hiding disabled workflows by default.
+
+
+.SH OPTIONS
+.TP
+\fB-a\fR, \fB--all\fR
+Include disabled workflows
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 50)\fR
+Maximum number of workflows to fetch
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh workflow ls
+
+
+.SH JSON FIELDS
+\fBid\fR, \fBname\fR, \fBpath\fR, \fBstate\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-workflow(1)\fR

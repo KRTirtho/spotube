@@ -1,0 +1,59 @@
+.nh
+.TH "GH-PROJECT-ITEM-LIST" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-project-item-list - List the items in a project
+
+
+.SH SYNOPSIS
+\fBgh project item-list [<number>] [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB--format\fR \fB<string>\fR
+Output format: {json}
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of items to fetch
+
+.TP
+\fB--owner\fR \fB<string>\fR
+Login of the owner. Use "@me" for the current user.
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# List the items in the current users's project "1"
+$ gh project item-list 1 --owner "@me"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-project(1)\fR

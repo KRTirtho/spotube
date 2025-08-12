@@ -1,0 +1,126 @@
+.nh
+.TH "GH-PROJECT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-project - Work with GitHub Projects.
+
+
+.SH SYNOPSIS
+\fBgh project <command> [flags]\fR
+
+
+.SH DESCRIPTION
+Work with GitHub Projects.
+
+.PP
+The minimum required scope for the token is: \fBproject\fR\&.
+You can verify your token scope by running \fBgh auth status\fR and
+add the \fBproject\fR scope by running \fBgh auth refresh -s project\fR\&.
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-project-close(1)\fR
+Close a project
+
+.TP
+\fBgh-project-copy(1)\fR
+Copy a project
+
+.TP
+\fBgh-project-create(1)\fR
+Create a project
+
+.TP
+\fBgh-project-delete(1)\fR
+Delete a project
+
+.TP
+\fBgh-project-edit(1)\fR
+Edit a project
+
+.TP
+\fBgh-project-field-create(1)\fR
+Create a field in a project
+
+.TP
+\fBgh-project-field-delete(1)\fR
+Delete a field in a project
+
+.TP
+\fBgh-project-field-list(1)\fR
+List the fields in a project
+
+.TP
+\fBgh-project-item-add(1)\fR
+Add a pull request or an issue to a project
+
+.TP
+\fBgh-project-item-archive(1)\fR
+Archive an item in a project
+
+.TP
+\fBgh-project-item-create(1)\fR
+Create a draft issue item in a project
+
+.TP
+\fBgh-project-item-delete(1)\fR
+Delete an item from a project by ID
+
+.TP
+\fBgh-project-item-edit(1)\fR
+Edit an item in a project
+
+.TP
+\fBgh-project-item-list(1)\fR
+List the items in a project
+
+.TP
+\fBgh-project-link(1)\fR
+Link a project to a repository or a team
+
+.TP
+\fBgh-project-list(1)\fR
+List the projects for an owner
+
+.TP
+\fBgh-project-mark-template(1)\fR
+Mark a project as a template
+
+.TP
+\fBgh-project-unlink(1)\fR
+Unlink a project from a repository or a team
+
+.TP
+\fBgh-project-view(1)\fR
+View a project
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh project create --owner monalisa --title "Roadmap"
+$ gh project view 1 --owner cli --web
+$ gh project field-list 1 --owner cli
+$ gh project item-list 1 --owner cli
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

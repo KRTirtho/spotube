@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/track_presentation.dart';
 import 'package:spotube/pages/playlist/playlist.dart';

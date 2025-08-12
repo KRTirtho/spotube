@@ -1,0 +1,76 @@
+.nh
+.TH "GH-CODESPACE-VIEW" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-codespace-view - View details about a codespace
+
+
+.SH SYNOPSIS
+\fBgh codespace view [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-c\fR, \fB--codespace\fR \fB<string>\fR
+Name of the codespace
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+Filter codespace selection by repository name (user/repo)
+
+.TP
+\fB--repo-owner\fR \fB<string>\fR
+Filter codespace selection by repository owner (username or org)
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+
+.SH JSON FIELDS
+\fBbillableOwner\fR, \fBcreatedAt\fR, \fBdevcontainerPath\fR, \fBdisplayName\fR, \fBenvironmentId\fR, \fBgitStatus\fR, \fBidleTimeoutMinutes\fR, \fBlastUsedAt\fR, \fBlocation\fR, \fBmachineDisplayName\fR, \fBmachineName\fR, \fBname\fR, \fBowner\fR, \fBprebuild\fR, \fBrecentFolders\fR, \fBrepository\fR, \fBretentionExpiresAt\fR, \fBretentionPeriodDays\fR, \fBstate\fR, \fBvscsTarget\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Select a codespace from a list of all codespaces you own
+$ gh cs view
+
+# View the details of a specific codespace
+$ gh cs view -c codespace-name-12345
+
+# View the list of all available fields for a codespace
+$ gh cs view --json
+
+# View specific fields for a codespace
+$ gh cs view --json displayName,machineDisplayName,state
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-codespace(1)\fR

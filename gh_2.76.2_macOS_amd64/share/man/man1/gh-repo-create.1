@@ -1,0 +1,154 @@
+.nh
+.TH "GH-REPO-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-create - Create a new repository
+
+
+.SH SYNOPSIS
+\fBgh repo create [<name>] [flags]\fR
+
+
+.SH DESCRIPTION
+Create a new GitHub repository.
+
+.PP
+To create a repository interactively, use \fBgh repo create\fR with no arguments.
+
+.PP
+To create a remote repository non-interactively, supply the repository name and one of \fB--public\fR, \fB--private\fR, or \fB--internal\fR\&.
+Pass \fB--clone\fR to clone the new repository locally.
+
+.PP
+If the \fBOWNER/\fR portion of the \fBOWNER/REPO\fR name argument is omitted, it
+defaults to the name of the authenticating user.
+
+.PP
+To create a remote repository from an existing local repository, specify the source directory with \fB--source\fR\&.
+By default, the remote repository name will be the name of the source directory.
+
+.PP
+Pass \fB--push\fR to push any local commits to the new repository. If the repo is bare, this will mirror all refs.
+
+.PP
+For language or platform .gitignore templates to use with \fB--gitignore\fR, 
+\[la]https://github.com/github/gitignore\[ra]\&.
+
+.PP
+For license keywords to use with \fB--license\fR, run \fBgh repo license list\fR or visit 
+\[la]https://choosealicense.com\[ra]\&.
+
+.PP
+The repo is created with the configured repository default branch, see 
+\[la]https://docs.github.com/en/account\-and\-profile/setting\-up\-and\-managing\-your\-personal\-account\-on\-github/managing\-user\-account\-settings/managing\-the\-default\-branch\-name\-for\-your\-repositories\[ra]\&.
+
+
+.SH OPTIONS
+.TP
+\fB--add-readme\fR
+Add a README file to the new repository
+
+.TP
+\fB-c\fR, \fB--clone\fR
+Clone the new repository to the current directory
+
+.TP
+\fB-d\fR, \fB--description\fR \fB<string>\fR
+Description of the repository
+
+.TP
+\fB--disable-issues\fR
+Disable issues in the new repository
+
+.TP
+\fB--disable-wiki\fR
+Disable wiki in the new repository
+
+.TP
+\fB-g\fR, \fB--gitignore\fR \fB<string>\fR
+Specify a gitignore template for the repository
+
+.TP
+\fB-h\fR, \fB--homepage\fR \fB<URL>\fR
+Repository home page URL
+
+.TP
+\fB--include-all-branches\fR
+Include all branches from template repository
+
+.TP
+\fB--internal\fR
+Make the new repository internal
+
+.TP
+\fB-l\fR, \fB--license\fR \fB<string>\fR
+Specify an Open Source License for the repository
+
+.TP
+\fB--private\fR
+Make the new repository private
+
+.TP
+\fB--public\fR
+Make the new repository public
+
+.TP
+\fB--push\fR
+Push local commits to the new repository
+
+.TP
+\fB-r\fR, \fB--remote\fR \fB<string>\fR
+Specify remote name for the new repository
+
+.TP
+\fB-s\fR, \fB--source\fR \fB<string>\fR
+Specify path to local repository to use as source
+
+.TP
+\fB-t\fR, \fB--team\fR \fB<name>\fR
+The name of the organization team to be granted access
+
+.TP
+\fB-p\fR, \fB--template\fR \fB<repository>\fR
+Make the new repository based on a template repository
+
+
+.SH ALIASES
+gh repo new
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Create a repository interactively
+$ gh repo create
+
+# Create a new remote repository and clone it locally
+$ gh repo create my-project --public --clone
+
+# Create a new remote repository in a different organization
+$ gh repo create my-org/my-project --public
+
+# Create a remote repository from the current directory
+$ gh repo create my-project --private --source=. --remote=upstream
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-repo(1)\fR

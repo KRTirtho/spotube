@@ -1,0 +1,39 @@
+.nh
+.TH "GH-WORKFLOW-ENABLE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-workflow-enable - Enable a workflow
+
+
+.SH SYNOPSIS
+\fBgh workflow enable [<workflow-id> | <workflow-name>] [flags]\fR
+
+
+.SH DESCRIPTION
+Enable a workflow, allowing it to be run and show up when listing workflows.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-workflow(1)\fR

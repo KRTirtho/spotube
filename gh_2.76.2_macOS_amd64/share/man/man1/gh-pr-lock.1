@@ -1,0 +1,41 @@
+.nh
+.TH "GH-PR-LOCK" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-pr-lock - Lock pull request conversation
+
+
+.SH SYNOPSIS
+\fBgh pr lock {<number> | <url>} [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-r\fR, \fB--reason\fR \fB<string>\fR
+Optional reason for locking conversation (off_topic, resolved, spam, too_heated).
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-pr(1)\fR

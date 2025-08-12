@@ -1,0 +1,49 @@
+.nh
+.TH "GH-AUTH-TOKEN" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-auth-token - Print the authentication token gh uses for a hostname and account
+
+
+.SH SYNOPSIS
+\fBgh auth token [flags]\fR
+
+
+.SH DESCRIPTION
+This command outputs the authentication token for an account on a given GitHub host.
+
+.PP
+Without the \fB--hostname\fR flag, the default host is chosen.
+
+.PP
+Without the \fB--user\fR flag, the active account for the host is chosen.
+
+
+.SH OPTIONS
+.TP
+\fB-h\fR, \fB--hostname\fR \fB<string>\fR
+The hostname of the GitHub instance authenticated with
+
+.TP
+\fB-u\fR, \fB--user\fR \fB<string>\fR
+The account to output the token for
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-auth(1)\fR

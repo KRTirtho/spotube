@@ -1,0 +1,100 @@
+.nh
+.TH "GH-CACHE-LIST" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-cache-list - List GitHub Actions caches
+
+
+.SH SYNOPSIS
+\fBgh cache list [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-k\fR, \fB--key\fR \fB<string>\fR
+Filter by cache key prefix
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of caches to fetch
+
+.TP
+\fB-O\fR, \fB--order\fR \fB<string> (default "desc")\fR
+Order of caches returned: {asc|desc}
+
+.TP
+\fB-r\fR, \fB--ref\fR \fB<string>\fR
+Filter by ref, formatted as refs/heads/ or refs/pull//merge
+
+.TP
+\fB-S\fR, \fB--sort\fR \fB<string> (default "last_accessed_at")\fR
+Sort fetched caches: {created_at|last_accessed_at|size_in_bytes}
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh cache ls
+
+
+.SH JSON FIELDS
+\fBcreatedAt\fR, \fBid\fR, \fBkey\fR, \fBlastAccessedAt\fR, \fBref\fR, \fBsizeInBytes\fR, \fBversion\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# List caches for current repository
+$ gh cache list
+
+# List caches for specific repository
+$ gh cache list --repo cli/cli
+
+# List caches sorted by least recently accessed
+$ gh cache list --sort last_accessed_at --order asc
+
+# List caches that have keys matching a prefix (or that match exactly)
+$ gh cache list --key key-prefix
+
+# List caches for a specific branch, replace <branch-name> with the actual branch name
+$ gh cache list --ref refs/heads/<branch-name>
+
+# List caches for a specific pull request, replace <pr-number> with the actual pull request number
+$ gh cache list --ref refs/pull/<pr-number>/merge
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-cache(1)\fR

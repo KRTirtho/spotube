@@ -1,0 +1,96 @@
+.nh
+.TH "GH-AUTH-REFRESH" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-auth-refresh - Refresh stored authentication credentials
+
+
+.SH SYNOPSIS
+\fBgh auth refresh [flags]\fR
+
+
+.SH DESCRIPTION
+Expand or fix the permission scopes for stored credentials for active account.
+
+.PP
+The \fB--scopes\fR flag accepts a comma separated list of scopes you want
+your gh credentials to have. If no scopes are provided, the command
+maintains previously added scopes.
+
+.PP
+The \fB--remove-scopes\fR flag accepts a comma separated list of scopes you
+want to remove from your gh credentials. Scope removal is idempotent.
+The minimum set of scopes (\fBrepo\fR, \fBread:org\fR, and \fBgist\fR) cannot be removed.
+
+.PP
+The \fB--reset-scopes\fR flag resets the scopes for your gh credentials to
+the default set of scopes for your auth flow.
+
+.PP
+If you have multiple accounts in \fBgh auth status\fR and want to refresh the credentials for an
+inactive account, you will have to use \fBgh auth switch\fR to that account first before using
+this command, and then switch back when you are done.
+
+.PP
+For more information on OAuth scopes, see
+
+\[la]https://docs.github.com/en/developers/apps/building\-oauth\-apps/scopes\-for\-oauth\-apps/\[ra]\&.
+
+
+.SH OPTIONS
+.TP
+\fB-h\fR, \fB--hostname\fR \fB<string>\fR
+The GitHub host to use for authentication
+
+.TP
+\fB--insecure-storage\fR
+Save authentication credentials in plain text instead of credential store
+
+.TP
+\fB-r\fR, \fB--remove-scopes\fR \fB<strings>\fR
+Authentication scopes to remove from gh
+
+.TP
+\fB--reset-scopes\fR
+Reset authentication scopes to the default minimum set of scopes
+
+.TP
+\fB-s\fR, \fB--scopes\fR \fB<strings>\fR
+Additional authentication scopes for gh to have
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Open a browser to add write:org and read:public_key scopes
+$ gh auth refresh --scopes write:org,read:public_key
+
+# Open a browser to ensure your authentication credentials have the correct minimum scopes
+$ gh auth refresh
+
+# Open a browser to idempotently remove the delete_repo scope
+$ gh auth refresh --remove-scopes delete_repo
+
+# Open a browser to re-authenticate with the default minimum scopes
+$ gh auth refresh --reset-scopes
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-auth(1)\fR

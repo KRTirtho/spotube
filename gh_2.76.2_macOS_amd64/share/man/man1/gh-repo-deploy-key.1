@@ -1,0 +1,49 @@
+.nh
+.TH "GH-REPO-DEPLOY-KEY" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-deploy-key - Manage deploy keys in a repository
+
+
+.SH SYNOPSIS
+\fBgh repo deploy-key <command> [flags]\fR
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-repo-deploy-key-add(1)\fR
+Add a deploy key to a GitHub repository
+
+.TP
+\fBgh-repo-deploy-key-delete(1)\fR
+Delete a deploy key from a GitHub repository
+
+.TP
+\fBgh-repo-deploy-key-list(1)\fR
+List deploy keys in a GitHub repository
+
+
+.SH OPTIONS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-repo(1)\fR

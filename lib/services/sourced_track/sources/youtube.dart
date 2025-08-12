@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/youtube_engine/youtube_engine.dart';

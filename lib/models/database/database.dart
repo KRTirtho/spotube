@@ -6,7 +6,7 @@ import 'package:drift/drift.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:shadcn_flutter/shadcn_flutter.dart' show ThemeMode, Colors;
-import 'package:spotify/spotify.dart' hide Playlist;
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/models/database/database.steps.dart';
 import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';

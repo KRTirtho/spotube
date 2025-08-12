@@ -1,0 +1,82 @@
+.nh
+.TH "GH-RULESET-VIEW" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-ruleset-view - View information about a ruleset
+
+
+.SH SYNOPSIS
+\fBgh ruleset view [<ruleset-id>] [flags]\fR
+
+
+.SH DESCRIPTION
+View information about a GitHub ruleset.
+
+.PP
+If no ID is provided, an interactive prompt will be used to choose
+the ruleset to view.
+
+.PP
+Use the \fB--parents\fR flag to control whether rulesets configured at higher
+levels that also apply to the provided repository or organization should
+be returned. The default is \fBtrue\fR\&.
+
+
+.SH OPTIONS
+.TP
+\fB-o\fR, \fB--org\fR \fB<string>\fR
+Organization name if the provided ID is an organization-level ruleset
+
+.TP
+\fB-p\fR, \fB--parents\fR \fB(default true)\fR
+Whether to include rulesets configured at higher levels that also apply
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the ruleset in the browser
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Interactively choose a ruleset to view from all rulesets that apply to the current repository
+$ gh ruleset view
+
+# Interactively choose a ruleset to view from only rulesets configured in the current repository
+$ gh ruleset view --no-parents
+
+# View a ruleset configured in the current repository or any of its parents
+$ gh ruleset view 43
+
+# View a ruleset configured in a different repository or any of its parents
+$ gh ruleset view 23 --repo owner/repo
+
+# View an organization-level ruleset
+$ gh ruleset view 23 --org my-org
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-ruleset(1)\fR

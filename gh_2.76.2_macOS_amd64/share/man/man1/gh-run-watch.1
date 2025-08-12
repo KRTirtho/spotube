@@ -1,0 +1,75 @@
+.nh
+.TH "GH-RUN-WATCH" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-run-watch - Watch a run until it completes, showing its progress
+
+
+.SH SYNOPSIS
+\fBgh run watch <run-id> [flags]\fR
+
+
+.SH DESCRIPTION
+Watch a run until it completes, showing its progress.
+
+.PP
+By default, all steps are displayed. The \fB--compact\fR option can be used to only
+show the relevant/failed steps.
+
+.PP
+This command does not support authenticating via fine grained PATs
+as it is not currently possible to create a PAT with the \fBchecks:read\fR permission.
+
+
+.SH OPTIONS
+.TP
+\fB--compact\fR
+Show only relevant/failed steps
+
+.TP
+\fB--exit-status\fR
+Exit with non-zero status if run fails
+
+.TP
+\fB-i\fR, \fB--interval\fR \fB<int> (default 3)\fR
+Refresh interval in seconds
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Watch a run until it's done
+$ gh run watch
+
+# Watch a run in compact mode
+$ gh run watch --compact
+
+# Run some other command when the run is finished
+$ gh run watch && notify-send 'run is done!'
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-run(1)\fR

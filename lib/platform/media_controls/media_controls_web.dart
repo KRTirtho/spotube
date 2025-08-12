@@ -1,0 +1,1 @@
+class SystemMediaTransportControls { Future<void> init() async {} void dispose() {} }

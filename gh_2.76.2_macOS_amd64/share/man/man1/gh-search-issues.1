@@ -1,0 +1,218 @@
+.nh
+.TH "GH-SEARCH-ISSUES" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-search-issues - Search for issues
+
+
+.SH SYNOPSIS
+\fBgh search issues [<query>] [flags]\fR
+
+
+.SH DESCRIPTION
+Search for issues on GitHub.
+
+.PP
+The command supports constructing queries using the GitHub search syntax,
+using the parameter and qualifier flags, or a combination of the two.
+
+.PP
+GitHub search syntax is documented at:
+
+\[la]https://docs.github.com/search\-github/searching\-on\-github/searching\-issues\-and\-pull\-requests\[ra]
+
+
+.SH OPTIONS
+.TP
+\fB--app\fR \fB<string>\fR
+Filter by GitHub App author
+
+.TP
+\fB--archived\fR
+Filter based on the repository archived state {true|false}
+
+.TP
+\fB--assignee\fR \fB<string>\fR
+Filter by assignee
+
+.TP
+\fB--author\fR \fB<string>\fR
+Filter by author
+
+.TP
+\fB--closed\fR \fB<date>\fR
+Filter on closed at date
+
+.TP
+\fB--commenter\fR \fB<user>\fR
+Filter based on comments by user
+
+.TP
+\fB--comments\fR \fB<number>\fR
+Filter on number of comments
+
+.TP
+\fB--created\fR \fB<date>\fR
+Filter based on created at date
+
+.TP
+\fB--include-prs\fR
+Include pull requests in results
+
+.TP
+\fB--interactions\fR \fB<number>\fR
+Filter on number of reactions and comments
+
+.TP
+\fB--involves\fR \fB<user>\fR
+Filter based on involvement of user
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB--label\fR \fB<strings>\fR
+Filter on label
+
+.TP
+\fB--language\fR \fB<string>\fR
+Filter based on the coding language
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of results to fetch
+
+.TP
+\fB--locked\fR
+Filter on locked conversation status
+
+.TP
+\fB--match\fR \fB<strings>\fR
+Restrict search to specific field of issue: {title|body|comments}
+
+.TP
+\fB--mentions\fR \fB<user>\fR
+Filter based on user mentions
+
+.TP
+\fB--milestone\fR \fB<title>\fR
+Filter by milestone title
+
+.TP
+\fB--no-assignee\fR
+Filter on missing assignee
+
+.TP
+\fB--no-label\fR
+Filter on missing label
+
+.TP
+\fB--no-milestone\fR
+Filter on missing milestone
+
+.TP
+\fB--no-project\fR
+Filter on missing project
+
+.TP
+\fB--order\fR \fB<string> (default "desc")\fR
+Order of results returned, ignored unless '--sort' flag is specified: {asc|desc}
+
+.TP
+\fB--owner\fR \fB<strings>\fR
+Filter on repository owner
+
+.TP
+\fB--project\fR \fB<owner/number>\fR
+Filter on project board owner/number
+
+.TP
+\fB--reactions\fR \fB<number>\fR
+Filter on number of reactions
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<strings>\fR
+Filter on repository
+
+.TP
+\fB--sort\fR \fB<string> (default "best-match")\fR
+Sort fetched results: {comments|created|interactions|reactions|reactions-+1|reactions--1|reactions-heart|reactions-smile|reactions-tada|reactions-thinking_face|updated}
+
+.TP
+\fB--state\fR \fB<string>\fR
+Filter based on state: {open|closed}
+
+.TP
+\fB--team-mentions\fR \fB<string>\fR
+Filter based on team mentions
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB--updated\fR \fB<date>\fR
+Filter on last updated at date
+
+.TP
+\fB--visibility\fR \fB<strings>\fR
+Filter based on repository visibility: {public|private|internal}
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the search query in the web browser
+
+
+.SH JSON FIELDS
+\fBassignees\fR, \fBauthor\fR, \fBauthorAssociation\fR, \fBbody\fR, \fBclosedAt\fR, \fBcommentsCount\fR, \fBcreatedAt\fR, \fBid\fR, \fBisLocked\fR, \fBisPullRequest\fR, \fBlabels\fR, \fBnumber\fR, \fBrepository\fR, \fBstate\fR, \fBtitle\fR, \fBupdatedAt\fR, \fBurl\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Search issues matching set of keywords "readme" and "typo"
+$ gh search issues readme typo
+
+# Search issues matching phrase "broken feature"
+$ gh search issues "broken feature"
+
+# Search issues and pull requests in cli organization
+$ gh search issues --include-prs --owner=cli
+
+# Search open issues assigned to yourself
+$ gh search issues --assignee=@me --state=open
+
+# Search issues with numerous comments
+$ gh search issues --comments=">100"
+
+# Search issues without label "bug"
+$ gh search issues -- -label:bug
+
+# Search issues only from un-archived repositories (default is all repositories)
+$ gh search issues --owner github --archived=false
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-search(1)\fR

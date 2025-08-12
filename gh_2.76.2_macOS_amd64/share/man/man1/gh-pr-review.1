@@ -1,0 +1,81 @@
+.nh
+.TH "GH-PR-REVIEW" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-pr-review - Add a review to a pull request
+
+
+.SH SYNOPSIS
+\fBgh pr review [<number> | <url> | <branch>] [flags]\fR
+
+
+.SH DESCRIPTION
+Add a review to a pull request.
+
+.PP
+Without an argument, the pull request that belongs to the current branch is reviewed.
+
+
+.SH OPTIONS
+.TP
+\fB-a\fR, \fB--approve\fR
+Approve pull request
+
+.TP
+\fB-b\fR, \fB--body\fR \fB<string>\fR
+Specify the body of a review
+
+.TP
+\fB-F\fR, \fB--body-file\fR \fB<file>\fR
+Read body text from file (use "-" to read from standard input)
+
+.TP
+\fB-c\fR, \fB--comment\fR
+Comment on a pull request
+
+.TP
+\fB-r\fR, \fB--request-changes\fR
+Request changes on a pull request
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Approve the pull request of the current branch
+$ gh pr review --approve
+
+# Leave a review comment for the current branch
+$ gh pr review --comment -b "interesting"
+
+# Add a review for a specific pull request
+$ gh pr review 123
+
+# Request changes on a specific pull request
+$ gh pr review 123 -r -b "needs more ASCII art"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-pr(1)\fR

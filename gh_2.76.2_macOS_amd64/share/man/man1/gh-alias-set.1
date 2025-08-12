@@ -1,0 +1,82 @@
+.nh
+.TH "GH-ALIAS-SET" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-alias-set - Create a shortcut for a gh command
+
+
+.SH SYNOPSIS
+\fBgh alias set <alias> <expansion> [flags]\fR
+
+
+.SH DESCRIPTION
+Define a word that will expand to a full gh command when invoked.
+
+.PP
+The expansion may specify additional arguments and flags. If the expansion includes
+positional placeholders such as \fB$1\fR, extra arguments that follow the alias will be
+inserted appropriately. Otherwise, extra arguments will be appended to the expanded
+command.
+
+.PP
+Use \fB-\fR as expansion argument to read the expansion string from standard input. This
+is useful to avoid quoting issues when defining expansions.
+
+.PP
+If the expansion starts with \fB!\fR or if \fB--shell\fR was given, the expansion is a shell
+expression that will be evaluated through the \fBsh\fR interpreter when the alias is
+invoked. This allows for chaining multiple commands via piping and redirection.
+
+
+.SH OPTIONS
+.TP
+\fB--clobber\fR
+Overwrite existing aliases of the same name
+
+.TP
+\fB-s\fR, \fB--shell\fR
+Declare an alias to be passed through a shell interpreter
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Note: Command Prompt on Windows requires using double quotes for arguments
+$ gh alias set pv 'pr view'
+$ gh pv -w 123  #=> gh pr view -w 123
+
+$ gh alias set bugs 'issue list --label=bugs'
+$ gh bugs
+
+$ gh alias set homework 'issue list --assignee @me'
+$ gh homework
+
+$ gh alias set 'issue mine' 'issue list --mention @me'
+$ gh issue mine
+
+$ gh alias set epicsBy 'issue list --author="$1" --label="epic"'
+$ gh epicsBy vilmibm  #=> gh issue list --author="vilmibm" --label="epic"
+
+$ gh alias set --shell igrep 'gh issue list --label="$1" | grep "$2"'
+$ gh igrep epic foo  #=> gh issue list --label="epic" | grep "foo"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-alias(1)\fR

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/models/spotify/home_feed.dart';
 import 'package:spotube/models/spotify_friends.dart';
 import 'package:timezone/timezone.dart' as tz;

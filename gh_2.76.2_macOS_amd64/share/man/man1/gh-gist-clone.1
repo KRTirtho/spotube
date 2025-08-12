@@ -1,0 +1,41 @@
+.nh
+.TH "GH-GIST-CLONE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-gist-clone - Clone a gist locally
+
+
+.SH SYNOPSIS
+\fBgh gist clone <gist> [<directory>] [-- <gitflags>...]\fR
+
+
+.SH DESCRIPTION
+Clone a GitHub gist locally.
+
+.PP
+A gist can be supplied as argument in either of the following formats:
+- by ID, e.g. \fB5b0e0062eb8e9654adad7bb1d81cc75f\fR
+- by URL, e.g. \fBhttps://gist.github.com/OWNER/5b0e0062eb8e9654adad7bb1d81cc75f\fR
+
+.PP
+Pass additional \fBgit clone\fR flags by listing them after \fB--\fR\&.
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-gist(1)\fR

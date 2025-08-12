@@ -1,4 +1,4 @@
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 
 class TrackNotFoundError extends Error {
   final Track track;

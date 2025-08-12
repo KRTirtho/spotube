@@ -1,0 +1,59 @@
+.nh
+.TH "GH-AUTH" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-auth - Authenticate gh and git with GitHub
+
+
+.SH SYNOPSIS
+\fBgh auth <command> [flags]\fR
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-auth-login(1)\fR
+Log in to a GitHub account
+
+.TP
+\fBgh-auth-logout(1)\fR
+Log out of a GitHub account
+
+.TP
+\fBgh-auth-refresh(1)\fR
+Refresh stored authentication credentials
+
+.TP
+\fBgh-auth-setup-git(1)\fR
+Setup git with GitHub CLI
+
+.TP
+\fBgh-auth-status(1)\fR
+Display active account and authentication state on each known GitHub host
+
+.TP
+\fBgh-auth-switch(1)\fR
+Switch active GitHub account
+
+.TP
+\fBgh-auth-token(1)\fR
+Print the authentication token gh uses for a hostname and account
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

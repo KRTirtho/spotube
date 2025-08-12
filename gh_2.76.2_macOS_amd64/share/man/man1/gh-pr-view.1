@@ -1,0 +1,72 @@
+.nh
+.TH "GH-PR-VIEW" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-pr-view - View a pull request
+
+
+.SH SYNOPSIS
+\fBgh pr view [<number> | <url> | <branch>] [flags]\fR
+
+
+.SH DESCRIPTION
+Display the title, body, and other information about a pull request.
+
+.PP
+Without an argument, the pull request that belongs to the current branch
+is displayed.
+
+.PP
+With \fB--web\fR flag, open the pull request in a web browser instead.
+
+
+.SH OPTIONS
+.TP
+\fB-c\fR, \fB--comments\fR
+View pull request comments
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open a pull request in the browser
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH JSON FIELDS
+\fBadditions\fR, \fBassignees\fR, \fBauthor\fR, \fBautoMergeRequest\fR, \fBbaseRefName\fR, \fBbaseRefOid\fR, \fBbody\fR, \fBchangedFiles\fR, \fBclosed\fR, \fBclosedAt\fR, \fBclosingIssuesReferences\fR, \fBcomments\fR, \fBcommits\fR, \fBcreatedAt\fR, \fBdeletions\fR, \fBfiles\fR, \fBfullDatabaseId\fR, \fBheadRefName\fR, \fBheadRefOid\fR, \fBheadRepository\fR, \fBheadRepositoryOwner\fR, \fBid\fR, \fBisCrossRepository\fR, \fBisDraft\fR, \fBlabels\fR, \fBlatestReviews\fR, \fBmaintainerCanModify\fR, \fBmergeCommit\fR, \fBmergeStateStatus\fR, \fBmergeable\fR, \fBmergedAt\fR, \fBmergedBy\fR, \fBmilestone\fR, \fBnumber\fR, \fBpotentialMergeCommit\fR, \fBprojectCards\fR, \fBprojectItems\fR, \fBreactionGroups\fR, \fBreviewDecision\fR, \fBreviewRequests\fR, \fBreviews\fR, \fBstate\fR, \fBstatusCheckRollup\fR, \fBtitle\fR, \fBupdatedAt\fR, \fBurl\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-pr(1)\fR

@@ -1,0 +1,96 @@
+.nh
+.TH "GH-LABEL-LIST" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-label-list - List labels in a repository
+
+
+.SH SYNOPSIS
+\fBgh label list [flags]\fR
+
+
+.SH DESCRIPTION
+Display labels in a GitHub repository.
+
+.PP
+When using the \fB--search\fR flag results are sorted by best match of the query.
+This behavior cannot be configured with the \fB--order\fR or \fB--sort\fR flags.
+
+
+.SH OPTIONS
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of labels to fetch
+
+.TP
+\fB--order\fR \fB<string> (default "asc")\fR
+Order of labels returned: {asc|desc}
+
+.TP
+\fB-S\fR, \fB--search\fR \fB<string>\fR
+Search label names and descriptions
+
+.TP
+\fB--sort\fR \fB<string> (default "created")\fR
+Sort fetched labels: {created|name}
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB-w\fR, \fB--web\fR
+List labels in the web browser
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh label ls
+
+
+.SH JSON FIELDS
+\fBcolor\fR, \fBcreatedAt\fR, \fBdescription\fR, \fBid\fR, \fBisDefault\fR, \fBname\fR, \fBupdatedAt\fR, \fBurl\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Sort labels by name
+$ gh label list --sort name
+
+# Find labels with "bug" in the name or description
+$ gh label list --search bug
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-label(1)\fR

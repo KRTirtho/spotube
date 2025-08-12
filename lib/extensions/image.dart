@@ -1,4 +1,4 @@
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:collection/collection.dart';

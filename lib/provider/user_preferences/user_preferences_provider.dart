@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart' as paths;
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/database/database.dart';
@@ -12,7 +12,7 @@ import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:spotube/platform/window_manager/window_manager.dart';
 import 'package:open_file/open_file.dart';
 
 typedef UserPreferences = PreferencesTableData;

@@ -1,0 +1,72 @@
+.nh
+.TH "GH-CACHE-DELETE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-cache-delete - Delete GitHub Actions caches
+
+
+.SH SYNOPSIS
+\fBgh cache delete [<cache-id> | <cache-key> | --all] [flags]\fR
+
+
+.SH DESCRIPTION
+Delete GitHub Actions caches.
+
+.PP
+Deletion requires authorization with the \fBrepo\fR scope.
+
+
+.SH OPTIONS
+.TP
+\fB-a\fR, \fB--all\fR
+Delete all caches
+
+.TP
+\fB--succeed-on-no-caches\fR \fB<--all>\fR
+Return exit code 0 if no caches found. Must be used in conjunction with --all
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Delete a cache by id
+$ gh cache delete 1234
+
+# Delete a cache by key
+$ gh cache delete cache-key
+
+# Delete a cache by id in a specific repo
+$ gh cache delete 1234 --repo cli/cli
+
+# Delete all caches (exit code 1 on no caches)
+$ gh cache delete --all
+
+# Delete all caches (exit code 0 on no caches)
+$ gh cache delete --all --succeed-on-no-caches
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-cache(1)\fR

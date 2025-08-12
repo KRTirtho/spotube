@@ -1,0 +1,51 @@
+.nh
+.TH "GH-ATTESTATION" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-attestation - Work with artifact attestations
+
+
+.SH SYNOPSIS
+\fBgh attestation [subcommand] [flags]\fR
+
+
+.SH DESCRIPTION
+Download and verify artifact attestations.
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-attestation-download(1)\fR
+Download an artifact's attestations for offline use
+
+.TP
+\fBgh-attestation-trusted-root(1)\fR
+Output trusted_root.jsonl contents, likely for offline verification
+
+.TP
+\fBgh-attestation-verify(1)\fR
+Verify an artifact's integrity using attestations
+
+
+.SH ALIASES
+gh at
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

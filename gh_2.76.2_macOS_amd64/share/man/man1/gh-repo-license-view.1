@@ -1,0 +1,63 @@
+.nh
+.TH "GH-REPO-LICENSE-VIEW" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-license-view - View a specific repository license
+
+
+.SH SYNOPSIS
+\fBgh repo license view {<license-key> | <spdx-id>} [flags]\fR
+
+
+.SH DESCRIPTION
+View a specific repository license by license key or SPDX ID.
+
+.PP
+Run \fBgh repo license list\fR to see available commonly used licenses. For even more licenses, visit 
+\[la]https://choosealicense.com/appendix\[ra]\&.
+
+
+.SH OPTIONS
+.TP
+\fB-w\fR, \fB--web\fR
+Open https://choosealicense.com/ in the browser
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# View the MIT license from SPDX ID
+$ gh repo license view MIT
+
+# View the MIT license from license key
+$ gh repo license view mit
+
+# View the GNU AGPL-3.0 license from SPDX ID
+$ gh repo license view AGPL-3.0
+
+# View the GNU AGPL-3.0 license from license key
+$ gh repo license view agpl-3.0
+
+# Create a LICENSE.md with the MIT license
+$ gh repo license view MIT > LICENSE.md
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-repo-license(1)\fR

@@ -1,0 +1,51 @@
+.nh
+.TH "GH-CODESPACE-STOP" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-codespace-stop - Stop a running codespace
+
+
+.SH SYNOPSIS
+\fBgh codespace stop [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-c\fR, \fB--codespace\fR \fB<string>\fR
+Name of the codespace
+
+.TP
+\fB-o\fR, \fB--org\fR \fB<login>\fR
+The login handle of the organization (admin-only)
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+Filter codespace selection by repository name (user/repo)
+
+.TP
+\fB--repo-owner\fR \fB<string>\fR
+Filter codespace selection by repository owner (username or org)
+
+.TP
+\fB-u\fR, \fB--user\fR \fB<username>\fR
+The username to stop codespace for (used with --org)
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-codespace(1)\fR

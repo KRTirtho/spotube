@@ -1,0 +1,105 @@
+.nh
+.TH "GH-ATTESTATION-DOWNLOAD" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-attestation-download - Download an artifact's attestations for offline use
+
+
+.SH SYNOPSIS
+\fBgh attestation download [<file-path> | oci://<image-uri>] [--owner | --repo] [flags]\fR
+
+
+.SH DESCRIPTION
+.SS NOTE: This feature is currently in public preview, and subject to change.
+Download attestations associated with an artifact for offline use.
+
+.PP
+The command requires either:
+* a file path to an artifact, or
+* a container image URI (e.g. \fBoci://<image-uri>\fR)
+  * (note that if you provide an OCI URL, you must already be authenticated with
+its container registry)
+
+.PP
+In addition, the command requires either:
+* the \fB--repo\fR flag (e.g. --repo github/example).
+* the \fB--owner\fR flag (e.g. --owner github), or
+
+.PP
+The \fB--repo\fR flag value must match the name of the GitHub repository
+that the artifact is linked with.
+
+.PP
+The \fB--owner\fR flag value must match the name of the GitHub organization
+that the artifact's linked repository belongs to.
+
+.PP
+Any associated bundle(s) will be written to a file in the
+current directory named after the artifact's digest. For example, if the
+digest is "sha256:1234", the file will be named "sha256:1234.jsonl".
+
+.PP
+Colons are special characters on Windows and cannot be used in
+file names. To accommodate, a dash will be used to separate the algorithm
+from the digest in the attestations file name. For example, if the digest
+is "sha256:1234", the file will be named "sha256-1234.jsonl".
+
+
+.SH OPTIONS
+.TP
+\fB-d\fR, \fB--digest-alg\fR \fB<string> (default "sha256")\fR
+The algorithm used to compute a digest of the artifact: {sha256|sha512}
+
+.TP
+\fB--hostname\fR \fB<string>\fR
+Configure host to use
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of attestations to fetch
+
+.TP
+\fB-o\fR, \fB--owner\fR \fB<string>\fR
+GitHub organization to scope attestation lookup by
+
+.TP
+\fB--predicate-type\fR \fB<string>\fR
+Filter attestations by provided predicate type
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+Repository name in the format /
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Download attestations for a local artifact linked with an organization
+$ gh attestation download example.bin -o github
+
+# Download attestations for a local artifact linked with a repository
+$ gh attestation download example.bin -R github/example
+
+# Download attestations for an OCI image linked with an organization
+$ gh attestation download oci://example.com/foo/bar:latest -o github
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-attestation(1)\fR

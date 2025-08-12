@@ -1,0 +1,89 @@
+.nh
+.TH "GH-PR-CHECKS" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-pr-checks - Show CI status for a single pull request
+
+
+.SH SYNOPSIS
+\fBgh pr checks [<number> | <url> | <branch>] [flags]\fR
+
+
+.SH DESCRIPTION
+Show CI status for a single pull request.
+
+.PP
+Without an argument, the pull request that belongs to the current branch
+is selected.
+
+.PP
+When the \fB--json\fR flag is used, it includes a \fBbucket\fR field, which categorizes
+the \fBstate\fR field into \fBpass\fR, \fBfail\fR, \fBpending\fR, \fBskipping\fR, or \fBcancel\fR\&.
+
+.PP
+Additional exit codes:
+	8: Checks pending
+
+
+.SH OPTIONS
+.TP
+\fB--fail-fast\fR
+Exit watch mode on first check failure
+
+.TP
+\fB-i\fR, \fB--interval\fR \fB<--watch> (default 10)\fR
+Refresh interval in seconds when using --watch flag
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB--required\fR
+Only show checks that are required
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB--watch\fR
+Watch checks until they finish
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the web browser to show details about checks
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH JSON FIELDS
+\fBbucket\fR, \fBcompletedAt\fR, \fBdescription\fR, \fBevent\fR, \fBlink\fR, \fBname\fR, \fBstartedAt\fR, \fBstate\fR, \fBworkflow\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-pr(1)\fR

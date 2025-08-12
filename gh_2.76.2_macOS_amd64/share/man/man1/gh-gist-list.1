@@ -1,0 +1,92 @@
+.nh
+.TH "GH-GIST-LIST" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-gist-list - List your gists
+
+
+.SH SYNOPSIS
+\fBgh gist list [flags]\fR
+
+
+.SH DESCRIPTION
+List gists from your user account.
+
+.PP
+You can use a regular expression to filter the description, file names,
+or even the content of files in the gist using \fB--filter\fR\&.
+
+.PP
+For supported regular expression syntax, see 
+\[la]https://pkg.go.dev/regexp/syntax\[ra]\&.
+
+.PP
+Use \fB--include-content\fR to include content of files, noting that
+this will be slower and increase the rate limit used. Instead of printing a table,
+code will be printed with highlights similar to \fBgh search code\fR:
+
+.EX
+{{gist ID}} {{file name}}
+    {{description}}
+        {{matching lines from content}}
+.EE
+
+.PP
+No highlights or other color is printed when output is redirected.
+
+
+.SH OPTIONS
+.TP
+\fB--filter\fR \fB<expression>\fR
+Filter gists using a regular expression
+
+.TP
+\fB--include-content\fR
+Include gists' file content when filtering
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 10)\fR
+Maximum number of gists to fetch
+
+.TP
+\fB--public\fR
+Show only public gists
+
+.TP
+\fB--secret\fR
+Show only secret gists
+
+
+.SH ALIASES
+gh gist ls
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# List all secret gists from your user account
+$ gh gist list --secret
+
+# Find all gists from your user account mentioning "octo" anywhere
+$ gh gist list --filter octo --include-content
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-gist(1)\fR

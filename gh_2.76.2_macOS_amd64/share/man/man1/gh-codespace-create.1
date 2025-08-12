@@ -1,0 +1,75 @@
+.nh
+.TH "GH-CODESPACE-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-codespace-create - Create a codespace
+
+
+.SH SYNOPSIS
+\fBgh codespace create [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-b\fR, \fB--branch\fR \fB<string>\fR
+Repository branch
+
+.TP
+\fB--default-permissions\fR
+Do not prompt to accept additional permissions requested by the codespace
+
+.TP
+\fB--devcontainer-path\fR \fB<string>\fR
+Path to the devcontainer.json file to use when creating codespace
+
+.TP
+\fB-d\fR, \fB--display-name\fR \fB<string>\fR
+Display name for the codespace (48 characters or less)
+
+.TP
+\fB--idle-timeout\fR \fB<duration>\fR
+Allowed inactivity before codespace is stopped, e.g. "10m", "1h"
+
+.TP
+\fB-l\fR, \fB--location\fR \fB<string>\fR
+Location: {EastUs|SouthEastAsia|WestEurope|WestUs2} (determined automatically if not provided)
+
+.TP
+\fB-m\fR, \fB--machine\fR \fB<string>\fR
+Hardware specifications for the VM
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+Repository name with owner: user/repo
+
+.TP
+\fB--retention-period\fR \fB<duration>\fR
+Allowed time after shutting down before the codespace is automatically deleted (maximum 30 days), e.g. "1h", "72h"
+
+.TP
+\fB-s\fR, \fB--status\fR
+Show status of post-create command and dotfiles
+
+.TP
+\fB-w\fR, \fB--web\fR
+Create codespace from browser, cannot be used with --display-name, --idle-timeout, or --retention-period
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-codespace(1)\fR

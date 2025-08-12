@@ -1,0 +1,60 @@
+.nh
+.TH "GH-WORKFLOW-VIEW" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-workflow-view - View the summary of a workflow
+
+
+.SH SYNOPSIS
+\fBgh workflow view [<workflow-id> | <workflow-name> | <filename>] [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-r\fR, \fB--ref\fR \fB<string>\fR
+The branch or tag name which contains the version of the workflow file you'd like to view
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open workflow in the browser
+
+.TP
+\fB-y\fR, \fB--yaml\fR
+View the workflow yaml file
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Interactively select a workflow to view
+$ gh workflow view
+
+# View a specific workflow
+$ gh workflow view 0451
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-workflow(1)\fR

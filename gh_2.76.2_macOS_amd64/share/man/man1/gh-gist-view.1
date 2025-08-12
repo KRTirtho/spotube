@@ -1,0 +1,51 @@
+.nh
+.TH "GH-GIST-VIEW" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-gist-view - View a gist
+
+
+.SH SYNOPSIS
+\fBgh gist view [<id> | <url>] [flags]\fR
+
+
+.SH DESCRIPTION
+View the given gist or select from recent gists.
+
+
+.SH OPTIONS
+.TP
+\fB-f\fR, \fB--filename\fR \fB<string>\fR
+Display a single file from the gist
+
+.TP
+\fB--files\fR
+List file names from the gist
+
+.TP
+\fB-r\fR, \fB--raw\fR
+Print raw instead of rendered gist contents
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open gist in the browser
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-gist(1)\fR

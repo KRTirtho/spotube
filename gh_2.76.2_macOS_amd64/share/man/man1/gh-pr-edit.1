@@ -1,0 +1,129 @@
+.nh
+.TH "GH-PR-EDIT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-pr-edit - Edit a pull request
+
+
+.SH SYNOPSIS
+\fBgh pr edit [<number> | <url> | <branch>] [flags]\fR
+
+
+.SH DESCRIPTION
+Edit a pull request.
+
+.PP
+Without an argument, the pull request that belongs to the current branch
+is selected.
+
+.PP
+Editing a pull request's projects requires authorization with the \fBproject\fR scope.
+To authorize, run \fBgh auth refresh -s project\fR\&.
+
+.PP
+The \fB--add-assignee\fR and \fB--remove-assignee\fR flags both support
+the following special values:
+- \fB@me\fR: assign or unassign yourself
+- \fB@copilot\fR: assign or unassign Copilot (not supported on GitHub Enterprise Server)
+
+.PP
+The \fB--add-reviewer\fR and \fB--remove-reviewer\fR flags do not support
+these special values.
+
+
+.SH OPTIONS
+.TP
+\fB--add-assignee\fR \fB<login>\fR
+Add assigned users by their login. Use "@me" to assign yourself, or "@copilot" to assign Copilot.
+
+.TP
+\fB--add-label\fR \fB<name>\fR
+Add labels by name
+
+.TP
+\fB--add-project\fR \fB<title>\fR
+Add the pull request to projects by title
+
+.TP
+\fB--add-reviewer\fR \fB<login>\fR
+Add reviewers by their login.
+
+.TP
+\fB-B\fR, \fB--base\fR \fB<branch>\fR
+Change the base branch for this pull request
+
+.TP
+\fB-b\fR, \fB--body\fR \fB<string>\fR
+Set the new body.
+
+.TP
+\fB-F\fR, \fB--body-file\fR \fB<file>\fR
+Read body text from file (use "-" to read from standard input)
+
+.TP
+\fB-m\fR, \fB--milestone\fR \fB<name>\fR
+Edit the milestone the pull request belongs to by name
+
+.TP
+\fB--remove-assignee\fR \fB<login>\fR
+Remove assigned users by their login. Use "@me" to unassign yourself, or "@copilot" to unassign Copilot.
+
+.TP
+\fB--remove-label\fR \fB<name>\fR
+Remove labels by name
+
+.TP
+\fB--remove-milestone\fR
+Remove the milestone association from the pull request
+
+.TP
+\fB--remove-project\fR \fB<title>\fR
+Remove the pull request from projects by title
+
+.TP
+\fB--remove-reviewer\fR \fB<login>\fR
+Remove reviewers by their login.
+
+.TP
+\fB-t\fR, \fB--title\fR \fB<string>\fR
+Set the new title.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh pr edit 23 --title "I found a bug" --body "Nothing works"
+$ gh pr edit 23 --add-label "bug,help wanted" --remove-label "core"
+$ gh pr edit 23 --add-reviewer monalisa,hubot  --remove-reviewer myorg/team-name
+$ gh pr edit 23 --add-assignee "@me" --remove-assignee monalisa,hubot
+$ gh pr edit 23 --add-assignee "@copilot"
+$ gh pr edit 23 --add-project "Roadmap" --remove-project v1,v2
+$ gh pr edit 23 --milestone "Version 1"
+$ gh pr edit 23 --remove-milestone
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-pr(1)\fR

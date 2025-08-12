@@ -1,0 +1,61 @@
+.nh
+.TH "GH-STATUS" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-status - Print information about relevant issues, pull requests, and notifications across repositories
+
+
+.SH SYNOPSIS
+\fBgh status [flags]\fR
+
+
+.SH DESCRIPTION
+The status command prints information about your work on GitHub across all the repositories you're subscribed to, including:
+.IP \(bu 2
+Assigned Issues
+.IP \(bu 2
+Assigned Pull Requests
+.IP \(bu 2
+Review Requests
+.IP \(bu 2
+Mentions
+.IP \(bu 2
+Repository Activity (new issues/pull requests, comments)
+
+
+.SH OPTIONS
+.TP
+\fB-e\fR, \fB--exclude\fR \fB<strings>\fR
+Comma separated list of repos to exclude in owner/name format
+
+.TP
+\fB-o\fR, \fB--org\fR \fB<string>\fR
+Report status within an organization
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh status -e cli/cli -e cli/go-gh # Exclude multiple repositories
+$ gh status -o cli # Limit results to a single organization
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

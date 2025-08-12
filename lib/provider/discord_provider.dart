@@ -1,8 +1,7 @@
 import 'dart:async';
 
-import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';

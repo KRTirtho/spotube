@@ -1,0 +1,159 @@
+.nh
+.TH "GH-SEARCH-COMMITS" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-search-commits - Search for commits
+
+
+.SH SYNOPSIS
+\fBgh search commits [<query>] [flags]\fR
+
+
+.SH DESCRIPTION
+Search for commits on GitHub.
+
+.PP
+The command supports constructing queries using the GitHub search syntax,
+using the parameter and qualifier flags, or a combination of the two.
+
+.PP
+GitHub search syntax is documented at:
+
+\[la]https://docs.github.com/search\-github/searching\-on\-github/searching\-commits\[ra]
+
+
+.SH OPTIONS
+.TP
+\fB--author\fR \fB<string>\fR
+Filter by author
+
+.TP
+\fB--author-date\fR \fB<date>\fR
+Filter based on authored date
+
+.TP
+\fB--author-email\fR \fB<string>\fR
+Filter on author email
+
+.TP
+\fB--author-name\fR \fB<string>\fR
+Filter on author name
+
+.TP
+\fB--committer\fR \fB<string>\fR
+Filter by committer
+
+.TP
+\fB--committer-date\fR \fB<date>\fR
+Filter based on committed date
+
+.TP
+\fB--committer-email\fR \fB<string>\fR
+Filter on committer email
+
+.TP
+\fB--committer-name\fR \fB<string>\fR
+Filter on committer name
+
+.TP
+\fB--hash\fR \fB<string>\fR
+Filter by commit hash
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of commits to fetch
+
+.TP
+\fB--merge\fR
+Filter on merge commits
+
+.TP
+\fB--order\fR \fB<string> (default "desc")\fR
+Order of commits returned, ignored unless '--sort' flag is specified: {asc|desc}
+
+.TP
+\fB--owner\fR \fB<strings>\fR
+Filter on repository owner
+
+.TP
+\fB--parent\fR \fB<string>\fR
+Filter by parent hash
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<strings>\fR
+Filter on repository
+
+.TP
+\fB--sort\fR \fB<string> (default "best-match")\fR
+Sort fetched commits: {author-date|committer-date}
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB--tree\fR \fB<string>\fR
+Filter by tree hash
+
+.TP
+\fB--visibility\fR \fB<strings>\fR
+Filter based on repository visibility: {public|private|internal}
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the search query in the web browser
+
+
+.SH JSON FIELDS
+\fBauthor\fR, \fBcommit\fR, \fBcommitter\fR, \fBid\fR, \fBparents\fR, \fBrepository\fR, \fBsha\fR, \fBurl\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Search commits matching set of keywords "readme" and "typo"
+$ gh search commits readme typo
+
+# Search commits matching phrase "bug fix"
+$ gh search commits "bug fix"
+
+# Search commits committed by user "monalisa"
+$ gh search commits --committer=monalisa
+
+# Search commits authored by users with name "Jane Doe"
+$ gh search commits --author-name="Jane Doe"
+
+# Search commits matching hash "8dd03144ffdc6c0d486d6b705f9c7fba871ee7c3"
+$ gh search commits --hash=8dd03144ffdc6c0d486d6b705f9c7fba871ee7c3
+
+# Search commits authored before February 1st, 2022
+$ gh search commits --author-date="<2022-02-01"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-search(1)\fR

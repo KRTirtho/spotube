@@ -1,0 +1,42 @@
+.nh
+.TH "GH-CONFIG-GET" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-config-get - Print the value of a given configuration key
+
+
+.SH SYNOPSIS
+\fBgh config get <key> [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-h\fR, \fB--host\fR \fB<string>\fR
+Get per-host setting
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh config get git_protocol
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-config(1)\fR

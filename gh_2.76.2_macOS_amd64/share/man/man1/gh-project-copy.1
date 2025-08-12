@@ -1,0 +1,67 @@
+.nh
+.TH "GH-PROJECT-COPY" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-project-copy - Copy a project
+
+
+.SH SYNOPSIS
+\fBgh project copy [<number>] [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB--drafts\fR
+Include draft issues when copying
+
+.TP
+\fB--format\fR \fB<string>\fR
+Output format: {json}
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--source-owner\fR \fB<string>\fR
+Login of the source owner. Use "@me" for the current user.
+
+.TP
+\fB--target-owner\fR \fB<string>\fR
+Login of the target owner. Use "@me" for the current user.
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB--title\fR \fB<string>\fR
+Title for the new project
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Copy project "1" owned by monalisa to github
+$ gh project copy 1 --source-owner monalisa --target-owner github --title "a new project"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-project(1)\fR

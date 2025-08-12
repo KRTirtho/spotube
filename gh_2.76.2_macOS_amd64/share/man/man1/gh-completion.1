@@ -1,0 +1,100 @@
+.nh
+.TH "GH-COMPLETION" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-completion - Generate shell completion scripts
+
+
+.SH SYNOPSIS
+\fBgh completion -s <shell>\fR
+
+
+.SH DESCRIPTION
+Generate shell completion scripts for GitHub CLI commands.
+
+.PP
+When installing GitHub CLI through a package manager, it's possible that
+no additional shell configuration is necessary to gain completion support. For
+Homebrew, see 
+\[la]https://docs.brew.sh/Shell\-Completion\[ra]
+
+.PP
+If you need to set up completions manually, follow the instructions below. The exact
+config file locations might vary based on your system. Make sure to restart your
+shell before testing whether completions are working.
+
+.SS bash
+First, ensure that you install \fBbash-completion\fR using your package manager.
+
+.PP
+After, add this to your \fB~/.bash_profile\fR:
+
+.EX
+eval "$(gh completion -s bash)"
+.EE
+
+.SS zsh
+Generate a \fB_gh\fR completion script and put it somewhere in your \fB$fpath\fR:
+
+.EX
+gh completion -s zsh > /usr/local/share/zsh/site-functions/_gh
+.EE
+
+.PP
+Ensure that the following is present in your \fB~/.zshrc\fR:
+
+.EX
+autoload -U compinit
+compinit -i
+.EE
+
+.PP
+Zsh version 5.7 or later is recommended.
+
+.SS fish
+Generate a \fBgh.fish\fR completion script:
+
+.EX
+gh completion -s fish > ~/.config/fish/completions/gh.fish
+.EE
+
+.SS PowerShell
+Open your profile script with:
+
+.EX
+mkdir -Path (Split-Path -Parent $profile) -ErrorAction SilentlyContinue
+notepad $profile
+.EE
+
+.PP
+Add the line and save the file:
+
+.EX
+Invoke-Expression -Command $(gh completion -s powershell | Out-String)
+.EE
+
+
+.SH OPTIONS
+.TP
+\fB-s\fR, \fB--shell\fR \fB<string>\fR
+Shell type: {bash|zsh|fish|powershell}
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

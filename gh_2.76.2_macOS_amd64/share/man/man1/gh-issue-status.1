@@ -1,0 +1,53 @@
+.nh
+.TH "GH-ISSUE-STATUS" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-issue-status - Show status of relevant issues
+
+
+.SH SYNOPSIS
+\fBgh issue status [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH JSON FIELDS
+\fBassignees\fR, \fBauthor\fR, \fBbody\fR, \fBclosed\fR, \fBclosedAt\fR, \fBclosedByPullRequestsReferences\fR, \fBcomments\fR, \fBcreatedAt\fR, \fBid\fR, \fBisPinned\fR, \fBlabels\fR, \fBmilestone\fR, \fBnumber\fR, \fBprojectCards\fR, \fBprojectItems\fR, \fBreactionGroups\fR, \fBstate\fR, \fBstateReason\fR, \fBtitle\fR, \fBupdatedAt\fR, \fBurl\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-issue(1)\fR

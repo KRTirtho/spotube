@@ -1,0 +1,71 @@
+.nh
+.TH "GH-ALIAS-IMPORT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-alias-import - Import aliases from a YAML file
+
+
+.SH SYNOPSIS
+\fBgh alias import [<filename> | -] [flags]\fR
+
+
+.SH DESCRIPTION
+Import aliases from the contents of a YAML file.
+
+.PP
+Aliases should be defined as a map in YAML, where the keys represent aliases and
+the values represent the corresponding expansions. An example file should look like
+the following:
+
+.EX
+bugs: issue list --label=bug
+igrep: '!gh issue list --label="$1" | grep "$2"'
+features: |-
+    issue list
+    --label=enhancement
+.EE
+
+.PP
+Use \fB-\fR to read aliases (in YAML format) from standard input.
+
+.PP
+The output from \fBgh alias list\fR can be used to produce a YAML file
+containing your aliases, which you can use to import them from one machine to
+another. Run \fBgh help alias list\fR to learn more.
+
+
+.SH OPTIONS
+.TP
+\fB--clobber\fR
+Overwrite existing aliases of the same name
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Import aliases from a file
+$ gh alias import aliases.yml
+
+# Import aliases from standard input
+$ gh alias import -
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-alias(1)\fR

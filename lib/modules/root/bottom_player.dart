@@ -21,7 +21,7 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:spotube/platform/window_manager/window_manager.dart';
 
 class BottomPlayer extends HookConsumerWidget {
   const BottomPlayer({super.key});

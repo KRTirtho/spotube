@@ -1,0 +1,73 @@
+.nh
+.TH "GH-RELEASE-LIST" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-release-list - List releases in a repository
+
+
+.SH SYNOPSIS
+\fBgh release list [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB--exclude-drafts\fR
+Exclude draft releases
+
+.TP
+\fB--exclude-pre-releases\fR
+Exclude pre-releases
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of items to fetch
+
+.TP
+\fB-O\fR, \fB--order\fR \fB<string> (default "desc")\fR
+Order of releases returned: {asc|desc}
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh release ls
+
+
+.SH JSON FIELDS
+\fBcreatedAt\fR, \fBisDraft\fR, \fBisLatest\fR, \fBisPrerelease\fR, \fBname\fR, \fBpublishedAt\fR, \fBtagName\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-release(1)\fR

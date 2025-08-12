@@ -1,0 +1,75 @@
+.nh
+.TH "GH-REPO-SYNC" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-sync - Sync a repository
+
+
+.SH SYNOPSIS
+\fBgh repo sync [<destination-repository>] [flags]\fR
+
+
+.SH DESCRIPTION
+Sync destination repository from source repository. Syncing uses the default branch
+of the source repository to update the matching branch on the destination
+repository so they are equal. A fast forward update will be used except when the
+\fB--force\fR flag is specified, then the two branches will
+be synced using a hard reset.
+
+.PP
+Without an argument, the local repository is selected as the destination repository.
+
+.PP
+The source repository is the parent of the destination repository by default.
+This can be overridden with the \fB--source\fR flag.
+
+
+.SH OPTIONS
+.TP
+\fB-b\fR, \fB--branch\fR \fB<string>\fR
+Branch to sync (default [default branch])
+
+.TP
+\fB--force\fR
+Hard reset the branch of the destination repository to match the source repository
+
+.TP
+\fB-s\fR, \fB--source\fR \fB<string>\fR
+Source repository
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Sync local repository from remote parent
+$ gh repo sync
+
+# Sync local repository from remote parent on specific branch
+$ gh repo sync --branch v1
+
+# Sync remote fork from its parent
+$ gh repo sync owner/cli-fork
+
+# Sync remote repository from another remote repository
+$ gh repo sync owner/repo --source owner2/repo2
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-repo(1)\fR

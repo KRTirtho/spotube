@@ -1,0 +1,54 @@
+.nh
+.TH "GH-ALIAS" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-alias - Create command shortcuts
+
+
+.SH SYNOPSIS
+\fBgh alias <command> [flags]\fR
+
+
+.SH DESCRIPTION
+Aliases can be used to make shortcuts for gh commands or to compose multiple commands.
+
+.PP
+Run \fBgh help alias set\fR to learn more.
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-alias-delete(1)\fR
+Delete set aliases
+
+.TP
+\fBgh-alias-import(1)\fR
+Import aliases from a YAML file
+
+.TP
+\fBgh-alias-list(1)\fR
+List your aliases
+
+.TP
+\fBgh-alias-set(1)\fR
+Create a shortcut for a gh command
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

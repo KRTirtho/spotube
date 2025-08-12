@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-import 'package:spotify/spotify.dart' hide Offset;
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';

@@ -5,7 +5,7 @@ import 'package:dio/dio.dart' hide Response;
 import 'package:dio/dio.dart' as dio_lib;
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:metadata_god/metadata_god.dart';
+import 'package:spotube/platform/metadata/metadata.dart';
 import 'package:path/path.dart';
 import 'package:shelf/shelf.dart';
 import 'package:spotube/extensions/artist_simple.dart';

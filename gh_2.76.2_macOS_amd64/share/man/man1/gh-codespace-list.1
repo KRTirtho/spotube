@@ -1,0 +1,78 @@
+.nh
+.TH "GH-CODESPACE-LIST" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-codespace-list - List codespaces
+
+
+.SH SYNOPSIS
+\fBgh codespace list [flags]\fR
+
+
+.SH DESCRIPTION
+List codespaces of the authenticated user.
+
+.PP
+Alternatively, organization administrators may list all codespaces billed to the organization.
+
+
+.SH OPTIONS
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of codespaces to list
+
+.TP
+\fB-o\fR, \fB--org\fR \fB<login>\fR
+The login handle of the organization to list codespaces for (admin-only)
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+Repository name with owner: user/repo
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB-u\fR, \fB--user\fR \fB<username>\fR
+The username to list codespaces for (used with --org)
+
+.TP
+\fB-w\fR, \fB--web\fR
+List codespaces in the web browser, cannot be used with --user or --org
+
+
+.SH ALIASES
+gh codespace ls, gh cs ls
+
+
+.SH JSON FIELDS
+\fBcreatedAt\fR, \fBdisplayName\fR, \fBgitStatus\fR, \fBlastUsedAt\fR, \fBmachineName\fR, \fBname\fR, \fBowner\fR, \fBrepository\fR, \fBstate\fR, \fBvscsTarget\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-codespace(1)\fR

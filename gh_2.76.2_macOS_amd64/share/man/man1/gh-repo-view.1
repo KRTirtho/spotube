@@ -1,0 +1,68 @@
+.nh
+.TH "GH-REPO-VIEW" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-view - View a repository
+
+
+.SH SYNOPSIS
+\fBgh repo view [<repository>] [flags]\fR
+
+
+.SH DESCRIPTION
+Display the description and the README of a GitHub repository.
+
+.PP
+With no argument, the repository for the current directory is displayed.
+
+.PP
+With \fB--web\fR, open the repository in a web browser instead.
+
+.PP
+With \fB--branch\fR, view a specific branch of the repository.
+
+
+.SH OPTIONS
+.TP
+\fB-b\fR, \fB--branch\fR \fB<string>\fR
+View a specific branch of the repository
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open a repository in the browser
+
+
+.SH JSON FIELDS
+\fBarchivedAt\fR, \fBassignableUsers\fR, \fBcodeOfConduct\fR, \fBcontactLinks\fR, \fBcreatedAt\fR, \fBdefaultBranchRef\fR, \fBdeleteBranchOnMerge\fR, \fBdescription\fR, \fBdiskUsage\fR, \fBforkCount\fR, \fBfundingLinks\fR, \fBhasDiscussionsEnabled\fR, \fBhasIssuesEnabled\fR, \fBhasProjectsEnabled\fR, \fBhasWikiEnabled\fR, \fBhomepageUrl\fR, \fBid\fR, \fBisArchived\fR, \fBisBlankIssuesEnabled\fR, \fBisEmpty\fR, \fBisFork\fR, \fBisInOrganization\fR, \fBisMirror\fR, \fBisPrivate\fR, \fBisSecurityPolicyEnabled\fR, \fBisTemplate\fR, \fBisUserConfigurationRepository\fR, \fBissueTemplates\fR, \fBissues\fR, \fBlabels\fR, \fBlanguages\fR, \fBlatestRelease\fR, \fBlicenseInfo\fR, \fBmentionableUsers\fR, \fBmergeCommitAllowed\fR, \fBmilestones\fR, \fBmirrorUrl\fR, \fBname\fR, \fBnameWithOwner\fR, \fBopenGraphImageUrl\fR, \fBowner\fR, \fBparent\fR, \fBprimaryLanguage\fR, \fBprojects\fR, \fBprojectsV2\fR, \fBpullRequestTemplates\fR, \fBpullRequests\fR, \fBpushedAt\fR, \fBrebaseMergeAllowed\fR, \fBrepositoryTopics\fR, \fBsecurityPolicyUrl\fR, \fBsquashMergeAllowed\fR, \fBsshUrl\fR, \fBstargazerCount\fR, \fBtemplateRepository\fR, \fBupdatedAt\fR, \fBurl\fR, \fBusesCustomOpenGraphImage\fR, \fBviewerCanAdminister\fR, \fBviewerDefaultCommitEmail\fR, \fBviewerDefaultMergeMethod\fR, \fBviewerHasStarred\fR, \fBviewerPermission\fR, \fBviewerPossibleCommitEmails\fR, \fBviewerSubscription\fR, \fBvisibility\fR, \fBwatchers\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-repo(1)\fR

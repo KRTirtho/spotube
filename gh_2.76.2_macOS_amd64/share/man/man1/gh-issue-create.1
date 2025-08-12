@@ -1,0 +1,112 @@
+.nh
+.TH "GH-ISSUE-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-issue-create - Create a new issue
+
+
+.SH SYNOPSIS
+\fBgh issue create [flags]\fR
+
+
+.SH DESCRIPTION
+Create an issue on GitHub.
+
+.PP
+Adding an issue to projects requires authorization with the \fBproject\fR scope.
+To authorize, run \fBgh auth refresh -s project\fR\&.
+
+.PP
+The \fB--assignee\fR flag supports the following special values:
+- \fB@me\fR: assign yourself
+- \fB@copilot\fR: assign Copilot (not supported on GitHub Enterprise Server)
+
+
+.SH OPTIONS
+.TP
+\fB-a\fR, \fB--assignee\fR \fB<login>\fR
+Assign people by their login. Use "@me" to self-assign.
+
+.TP
+\fB-b\fR, \fB--body\fR \fB<string>\fR
+Supply a body. Will prompt for one otherwise.
+
+.TP
+\fB-F\fR, \fB--body-file\fR \fB<file>\fR
+Read body text from file (use "-" to read from standard input)
+
+.TP
+\fB-e\fR, \fB--editor\fR
+Skip prompts and open the text editor to write the title and body in. The first line is the title and the remaining text is the body.
+
+.TP
+\fB-l\fR, \fB--label\fR \fB<name>\fR
+Add labels by name
+
+.TP
+\fB-m\fR, \fB--milestone\fR \fB<name>\fR
+Add the issue to a milestone by name
+
+.TP
+\fB-p\fR, \fB--project\fR \fB<title>\fR
+Add the issue to projects by title
+
+.TP
+\fB--recover\fR \fB<string>\fR
+Recover input from a failed run of create
+
+.TP
+\fB-T\fR, \fB--template\fR \fB<name>\fR
+Template name to use as starting body text
+
+.TP
+\fB-t\fR, \fB--title\fR \fB<string>\fR
+Supply a title. Will prompt for one otherwise.
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the browser to create an issue
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh issue new
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh issue create --title "I found a bug" --body "Nothing works"
+$ gh issue create --label "bug,help wanted"
+$ gh issue create --label bug --label "help wanted"
+$ gh issue create --assignee monalisa,hubot
+$ gh issue create --assignee "@me"
+$ gh issue create --assignee "@copilot"
+$ gh issue create --project "Roadmap"
+$ gh issue create --template "Bug Report"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-issue(1)\fR

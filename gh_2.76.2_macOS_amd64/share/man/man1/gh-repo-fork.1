@@ -1,0 +1,74 @@
+.nh
+.TH "GH-REPO-FORK" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-fork - Create a fork of a repository
+
+
+.SH SYNOPSIS
+\fBgh repo fork [<repository>] [-- <gitflags>...] [flags]\fR
+
+
+.SH DESCRIPTION
+Create a fork of a repository.
+
+.PP
+With no argument, creates a fork of the current repository. Otherwise, forks
+the specified repository.
+
+.PP
+By default, the new fork is set to be your \fBorigin\fR remote and any existing
+origin remote is renamed to \fBupstream\fR\&. To alter this behavior, you can set
+a name for the new fork's remote with \fB--remote-name\fR\&.
+
+.PP
+The \fBupstream\fR remote will be set as the default remote repository.
+
+.PP
+Additional \fBgit clone\fR flags can be passed after \fB--\fR\&.
+
+
+.SH OPTIONS
+.TP
+\fB--clone\fR
+Clone the fork
+
+.TP
+\fB--default-branch-only\fR
+Only include the default branch in the fork
+
+.TP
+\fB--fork-name\fR \fB<string>\fR
+Rename the forked repository
+
+.TP
+\fB--org\fR \fB<string>\fR
+Create the fork in an organization
+
+.TP
+\fB--remote\fR
+Add a git remote for the fork
+
+.TP
+\fB--remote-name\fR \fB<string> (default "origin")\fR
+Specify the name for the new remote
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-repo(1)\fR

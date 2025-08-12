@@ -1,0 +1,82 @@
+.nh
+.TH "GH-REPO-AUTOLINK-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-autolink-create - Create a new autolink reference
+
+
+.SH SYNOPSIS
+\fBgh repo autolink create <keyPrefix> <urlTemplate> [flags]\fR
+
+
+.SH DESCRIPTION
+Create a new autolink reference for a repository.
+
+.PP
+The \fBkeyPrefix\fR argument specifies the prefix that will generate a link when it is appended by certain characters.
+
+.PP
+The \fBurlTemplate\fR argument specifies the target URL that will be generated when the keyPrefix is found, which
+must contain \fB<num>\fR variable for the reference number.
+
+.PP
+By default, autolinks are alphanumeric with \fB--numeric\fR flag used to create a numeric autolink.
+
+.PP
+The \fB<num>\fR variable behavior differs depending on whether the autolink is alphanumeric or numeric:
+.IP \(bu 2
+alphanumeric: matches \fBA-Z\fR (case insensitive), \fB0-9\fR, and \fB-\fR
+.IP \(bu 2
+numeric: matches \fB0-9\fR
+
+.PP
+If the template contains multiple instances of \fB<num>\fR, only the first will be replaced.
+
+
+.SH OPTIONS
+.TP
+\fB-n\fR, \fB--numeric\fR
+Mark autolink as numeric
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh repo autolink new
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Create an alphanumeric autolink to example.com for the key prefix "TICKET-".
+# Generates https://example.com/TICKET?query=123abc from "TICKET-123abc".
+$ gh repo autolink create TICKET- "https://example.com/TICKET?query=<num>"
+
+# Create a numeric autolink to example.com for the key prefix "STORY-".
+# Generates https://example.com/STORY?id=123 from "STORY-123".
+$ gh repo autolink create STORY- "https://example.com/STORY?id=<num>" --numeric
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-repo-autolink(1)\fR

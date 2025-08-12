@@ -1,0 +1,87 @@
+.nh
+.TH "GH-RULESET-LIST" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-ruleset-list - List rulesets for a repository or organization
+
+
+.SH SYNOPSIS
+\fBgh ruleset list [flags]\fR
+
+
+.SH DESCRIPTION
+List GitHub rulesets for a repository or organization.
+
+.PP
+If no options are provided, the current repository's rulesets are listed. You can query a different
+repository's rulesets by using the \fB--repo\fR flag. You can also use the \fB--org\fR flag to list rulesets
+configured for the provided organization.
+
+.PP
+Use the \fB--parents\fR flag to control whether rulesets configured at higher levels that also apply to the provided
+repository or organization should be returned. The default is \fBtrue\fR\&.
+
+.PP
+Your access token must have the \fBadmin:org\fR scope to use the \fB--org\fR flag, which can be granted by running \fBgh auth refresh -s admin:org\fR\&.
+
+
+.SH OPTIONS
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of rulesets to list
+
+.TP
+\fB-o\fR, \fB--org\fR \fB<string>\fR
+List organization-wide rulesets for the provided organization
+
+.TP
+\fB-p\fR, \fB--parents\fR \fB(default true)\fR
+Whether to include rulesets configured at higher levels that also apply
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the list of rulesets in the web browser
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh rs ls, gh ruleset ls
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# List rulesets in the current repository
+$ gh ruleset list
+
+# List rulesets in a different repository, including those configured at higher levels
+$ gh ruleset list --repo owner/repo --parents
+
+# List rulesets in an organization
+$ gh ruleset list --org org-name
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-ruleset(1)\fR

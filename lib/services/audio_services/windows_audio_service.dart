@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:smtc_windows/smtc_windows.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/media_controls/media_controls.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';

@@ -1,0 +1,61 @@
+.nh
+.TH "GH-LABEL" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-label - Manage labels
+
+
+.SH SYNOPSIS
+\fBgh label <command> [flags]\fR
+
+
+.SH DESCRIPTION
+Work with GitHub labels.
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-label-clone(1)\fR
+Clones labels from one repository to another
+
+.TP
+\fBgh-label-create(1)\fR
+Create a new label
+
+.TP
+\fBgh-label-delete(1)\fR
+Delete a label from a repository
+
+.TP
+\fBgh-label-edit(1)\fR
+Edit a label
+
+.TP
+\fBgh-label-list(1)\fR
+List labels in a repository
+
+
+.SH OPTIONS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

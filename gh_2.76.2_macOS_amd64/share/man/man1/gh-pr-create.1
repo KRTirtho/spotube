@@ -1,0 +1,176 @@
+.nh
+.TH "GH-PR-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-pr-create - Create a pull request
+
+
+.SH SYNOPSIS
+\fBgh pr create [flags]\fR
+
+
+.SH DESCRIPTION
+Create a pull request on GitHub.
+
+.PP
+Upon success, the URL of the created pull request will be printed.
+
+.PP
+When the current branch isn't fully pushed to a git remote, a prompt will ask where
+to push the branch and offer an option to fork the base repository. Use \fB--head\fR to
+explicitly skip any forking or pushing behavior.
+
+.PP
+\fB--head\fR supports \fB<user>:<branch>\fR syntax to select a head repo owned by \fB<user>\fR\&.
+Using an organization as the \fB<user>\fR is currently not supported.
+For more information, see 
+\[la]https://github.com/cli/cli/issues/10093\[ra]
+
+.PP
+A prompt will also ask for the title and the body of the pull request. Use \fB--title\fR and
+\fB--body\fR to skip this, or use \fB--fill\fR to autofill these values from git commits.
+It's important to notice that if the \fB--title\fR and/or \fB--body\fR are also provided
+alongside \fB--fill\fR, the values specified by \fB--title\fR and/or \fB--body\fR will
+take precedence and overwrite any autofilled content.
+
+.PP
+The base branch for the created PR can be specified using the \fB--base\fR flag. If not provided,
+the value of \fBgh-merge-base\fR git branch config will be used. If not configured, the repository's
+default branch will be used. Run \fBgit config branch.{current}.gh-merge-base {base}\fR to configure
+the current branch to use the specified merge base.
+
+.PP
+Link an issue to the pull request by referencing the issue in the body of the pull
+request. If the body text mentions \fBFixes #123\fR or \fBCloses #123\fR, the referenced issue
+will automatically get closed when the pull request gets merged.
+
+.PP
+By default, users with write access to the base repository can push new commits to the
+head branch of the pull request. Disable this with \fB--no-maintainer-edit\fR\&.
+
+.PP
+Adding a pull request to projects requires authorization with the \fBproject\fR scope.
+To authorize, run \fBgh auth refresh -s project\fR\&.
+
+
+.SH OPTIONS
+.TP
+\fB-a\fR, \fB--assignee\fR \fB<login>\fR
+Assign people by their login. Use "@me" to self-assign.
+
+.TP
+\fB-B\fR, \fB--base\fR \fB<branch>\fR
+The branch into which you want your code merged
+
+.TP
+\fB-b\fR, \fB--body\fR \fB<string>\fR
+Body for the pull request
+
+.TP
+\fB-F\fR, \fB--body-file\fR \fB<file>\fR
+Read body text from file (use "-" to read from standard input)
+
+.TP
+\fB-d\fR, \fB--draft\fR
+Mark pull request as a draft
+
+.TP
+\fB--dry-run\fR
+Print details instead of creating the PR. May still push git changes.
+
+.TP
+\fB-e\fR, \fB--editor\fR
+Skip prompts and open the text editor to write the title and body in. The first line is the title and the remaining text is the body.
+
+.TP
+\fB-f\fR, \fB--fill\fR
+Use commit info for title and body
+
+.TP
+\fB--fill-first\fR
+Use first commit info for title and body
+
+.TP
+\fB--fill-verbose\fR
+Use commits msg+body for description
+
+.TP
+\fB-H\fR, \fB--head\fR \fB<branch>\fR
+The branch that contains commits for your pull request (default [current branch])
+
+.TP
+\fB-l\fR, \fB--label\fR \fB<name>\fR
+Add labels by name
+
+.TP
+\fB-m\fR, \fB--milestone\fR \fB<name>\fR
+Add the pull request to a milestone by name
+
+.TP
+\fB--no-maintainer-edit\fR
+Disable maintainer's ability to modify pull request
+
+.TP
+\fB-p\fR, \fB--project\fR \fB<title>\fR
+Add the pull request to projects by title
+
+.TP
+\fB--recover\fR \fB<string>\fR
+Recover input from a failed run of create
+
+.TP
+\fB-r\fR, \fB--reviewer\fR \fB<handle>\fR
+Request reviews from people or teams by their handle
+
+.TP
+\fB-T\fR, \fB--template\fR \fB<file>\fR
+Template file to use as starting body text
+
+.TP
+\fB-t\fR, \fB--title\fR \fB<string>\fR
+Title for the pull request
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the web browser to create a pull request
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh pr new
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh pr create --title "The bug is fixed" --body "Everything works again"
+$ gh pr create --reviewer monalisa,hubot  --reviewer myorg/team-name
+$ gh pr create --project "Roadmap"
+$ gh pr create --base develop --head monalisa:feature
+$ gh pr create --template "pull_request_template.md"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-pr(1)\fR

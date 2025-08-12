@@ -1,0 +1,79 @@
+.nh
+.TH "GH-ATTESTATION-TRUSTED-ROOT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-attestation-trusted-root - Output trusted_root.jsonl contents, likely for offline verification
+
+
+.SH SYNOPSIS
+\fBgh attestation trusted-root [--tuf-url <url> --tuf-root <file-path>] [--verify-only] [flags]\fR
+
+
+.SH DESCRIPTION
+.SS NOTE: This feature is currently in public preview, and subject to change.
+Output contents for a trusted_root.jsonl file, likely for offline verification.
+
+.PP
+When using \fBgh attestation verify\fR, if your machine is on the internet,
+this will happen automatically. But to do offline verification, you need to
+supply a trusted root file with \fB--custom-trusted-root\fR; this command
+will help you fetch a \fBtrusted_root.jsonl\fR file for that purpose.
+
+.PP
+You can call this command without any flags to get a trusted root file covering
+the Sigstore Public Good Instance as well as GitHub's Sigstore instance.
+
+.PP
+Otherwise you can use \fB--tuf-url\fR to specify the URL of a custom TUF
+repository mirror, and \fB--tuf-root\fR should be the path to the
+\fBroot.json\fR file that you securely obtained out-of-band.
+
+.PP
+If you just want to verify the integrity of your local TUF repository, and don't
+want the contents of a trusted_root.jsonl file, use \fB--verify-only\fR\&.
+
+
+.SH OPTIONS
+.TP
+\fB--hostname\fR \fB<string>\fR
+Configure host to use
+
+.TP
+\fB--tuf-root\fR \fB<string>\fR
+Path to the TUF root.json file on disk
+
+.TP
+\fB--tuf-url\fR \fB<string>\fR
+URL to the TUF repository mirror
+
+.TP
+\fB--verify-only\fR
+Don't output trusted_root.jsonl contents
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Get a trusted_root.jsonl for both Sigstore Public Good and GitHub's instance
+$ gh attestation trusted-root
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-attestation(1)\fR

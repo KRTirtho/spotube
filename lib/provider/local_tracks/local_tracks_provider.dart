@@ -4,12 +4,12 @@ import 'dart:io';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:metadata_god/metadata_god.dart';
+import 'package:spotube/platform/metadata/metadata.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';

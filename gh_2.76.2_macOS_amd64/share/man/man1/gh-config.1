@@ -1,0 +1,65 @@
+.nh
+.TH "GH-CONFIG" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-config - Manage configuration for gh
+
+
+.SH SYNOPSIS
+\fBgh config <command> [flags]\fR
+
+
+.SH DESCRIPTION
+Display or change configuration settings for gh.
+
+.PP
+Current respected settings:
+- \fBgit_protocol\fR: the protocol to use for git clone and push operations \fB{https | ssh}\fR (default \fBhttps\fR)
+- \fBeditor\fR: the text editor program to use for authoring text
+- \fBprompt\fR: toggle interactive prompting in the terminal \fB{enabled | disabled}\fR (default \fBenabled\fR)
+- \fBprefer_editor_prompt\fR: toggle preference for editor-based interactive prompting in the terminal \fB{enabled | disabled}\fR (default \fBdisabled\fR)
+- \fBpager\fR: the terminal pager program to send standard output to
+- \fBhttp_unix_socket\fR: the path to a Unix socket through which to make an HTTP connection
+- \fBbrowser\fR: the web browser to use for opening URLs
+- \fBcolor_labels\fR: whether to display labels using their RGB hex color codes in terminals that support truecolor \fB{enabled | disabled}\fR (default \fBdisabled\fR)
+- \fBaccessible_colors\fR: whether customizable, 4-bit accessible colors should be used \fB{enabled | disabled}\fR (default \fBdisabled\fR)
+- \fBaccessible_prompter\fR: whether an accessible prompter should be used \fB{enabled | disabled}\fR (default \fBdisabled\fR)
+- \fBspinner\fR: whether to use a animated spinner as a progress indicator \fB{enabled | disabled}\fR (default \fBenabled\fR)
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-config-clear-cache(1)\fR
+Clear the cli cache
+
+.TP
+\fBgh-config-get(1)\fR
+Print the value of a given configuration key
+
+.TP
+\fBgh-config-list(1)\fR
+Print a list of configuration keys and values
+
+.TP
+\fBgh-config-set(1)\fR
+Update configuration with a value for the given key
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

@@ -2,7 +2,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';

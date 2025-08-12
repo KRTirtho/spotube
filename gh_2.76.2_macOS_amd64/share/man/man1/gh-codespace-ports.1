@@ -1,0 +1,69 @@
+.nh
+.TH "GH-CODESPACE-PORTS" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-codespace-ports - List ports in a codespace
+
+
+.SH SYNOPSIS
+\fBgh codespace ports [flags]\fR
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-codespace-ports-forward(1)\fR
+Forward ports
+
+.TP
+\fBgh-codespace-ports-visibility(1)\fR
+Change the visibility of the forwarded port
+
+
+.SH OPTIONS
+.TP
+\fB-c\fR, \fB--codespace\fR \fB<string>\fR
+Name of the codespace
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+Filter codespace selection by repository name (user/repo)
+
+.TP
+\fB--repo-owner\fR \fB<string>\fR
+Filter codespace selection by repository owner (username or org)
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+
+.SH JSON FIELDS
+\fBbrowseUrl\fR, \fBlabel\fR, \fBsourcePort\fR, \fBvisibility\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-codespace(1)\fR

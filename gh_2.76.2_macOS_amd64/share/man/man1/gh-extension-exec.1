@@ -1,0 +1,47 @@
+.nh
+.TH "GH-EXTENSION-EXEC" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-extension-exec - Execute an installed extension
+
+
+.SH SYNOPSIS
+\fBgh extension exec <name> [args] [flags]\fR
+
+
+.SH DESCRIPTION
+Execute an extension using the short name. For example, if the extension repository is
+\fBowner/gh-extension\fR, you should pass \fBextension\fR\&. You can use this command when
+the short name conflicts with a core gh command.
+
+.PP
+All arguments after the extension name will be forwarded to the executable
+of the extension.
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Execute a label extension instead of the core gh label command
+$ gh extension exec label
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-extension(1)\fR

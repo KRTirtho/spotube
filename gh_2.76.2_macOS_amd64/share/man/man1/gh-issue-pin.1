@@ -1,0 +1,56 @@
+.nh
+.TH "GH-ISSUE-PIN" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-issue-pin - Pin a issue
+
+
+.SH SYNOPSIS
+\fBgh issue pin {<number> | <url>} [flags]\fR
+
+
+.SH DESCRIPTION
+Pin an issue to a repository.
+
+.PP
+The issue can be specified by issue number or URL.
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Pin an issue to the current repository
+$ gh issue pin 23
+
+# Pin an issue by URL
+$ gh issue pin https://github.com/owner/repo/issues/23
+
+# Pin an issue to specific repository
+$ gh issue pin 23 --repo owner/repo
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-issue(1)\fR

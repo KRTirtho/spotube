@@ -1,0 +1,155 @@
+.nh
+.TH "GH-REPO-EDIT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-edit - Edit repository settings
+
+
+.SH SYNOPSIS
+\fBgh repo edit [<repository>] [flags]\fR
+
+
+.SH DESCRIPTION
+Edit repository settings.
+
+.PP
+To toggle a setting off, use the \fB--<flag>=false\fR syntax.
+
+.PP
+Changing repository visibility can have unexpected consequences including but not limited to:
+.IP \(bu 2
+Losing stars and watchers, affecting repository ranking
+.IP \(bu 2
+Detaching public forks from the network
+.IP \(bu 2
+Disabling push rulesets
+.IP \(bu 2
+Allowing access to GitHub Actions history and logs
+
+.PP
+When the \fB--visibility\fR flag is used, \fB--accept-visibility-change-consequences\fR flag is required.
+
+.PP
+For information on all the potential consequences, see 
+\[la]https://gh.io/setting\-repository\-visibility\[ra]\&.
+
+
+.SH OPTIONS
+.TP
+\fB--accept-visibility-change-consequences\fR
+Accept the consequences of changing the repository visibility
+
+.TP
+\fB--add-topic\fR \fB<strings>\fR
+Add repository topic
+
+.TP
+\fB--allow-forking\fR
+Allow forking of an organization repository
+
+.TP
+\fB--allow-update-branch\fR
+Allow a pull request head branch that is behind its base branch to be updated
+
+.TP
+\fB--default-branch\fR \fB<name>\fR
+Set the default branch name for the repository
+
+.TP
+\fB--delete-branch-on-merge\fR
+Delete head branch when pull requests are merged
+
+.TP
+\fB-d\fR, \fB--description\fR \fB<string>\fR
+Description of the repository
+
+.TP
+\fB--enable-advanced-security\fR
+Enable advanced security in the repository
+
+.TP
+\fB--enable-auto-merge\fR
+Enable auto-merge functionality
+
+.TP
+\fB--enable-discussions\fR
+Enable discussions in the repository
+
+.TP
+\fB--enable-issues\fR
+Enable issues in the repository
+
+.TP
+\fB--enable-merge-commit\fR
+Enable merging pull requests via merge commit
+
+.TP
+\fB--enable-projects\fR
+Enable projects in the repository
+
+.TP
+\fB--enable-rebase-merge\fR
+Enable merging pull requests via rebase
+
+.TP
+\fB--enable-secret-scanning\fR
+Enable secret scanning in the repository
+
+.TP
+\fB--enable-secret-scanning-push-protection\fR
+Enable secret scanning push protection in the repository. Secret scanning must be enabled first
+
+.TP
+\fB--enable-squash-merge\fR
+Enable merging pull requests via squashed commit
+
+.TP
+\fB--enable-wiki\fR
+Enable wiki in the repository
+
+.TP
+\fB-h\fR, \fB--homepage\fR \fB<URL>\fR
+Repository home page URL
+
+.TP
+\fB--remove-topic\fR \fB<strings>\fR
+Remove repository topic
+
+.TP
+\fB--template\fR
+Make the repository available as a template repository
+
+.TP
+\fB--visibility\fR \fB<string>\fR
+Change the visibility of the repository to {public,private,internal}
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Enable issues and wiki
+$ gh repo edit --enable-issues --enable-wiki
+
+# Disable projects
+$ gh repo edit --enable-projects=false
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-repo(1)\fR

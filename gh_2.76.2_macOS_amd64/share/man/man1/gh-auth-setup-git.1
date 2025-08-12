@@ -1,0 +1,65 @@
+.nh
+.TH "GH-AUTH-SETUP-GIT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-auth-setup-git - Setup git with GitHub CLI
+
+
+.SH SYNOPSIS
+\fBgh auth setup-git [flags]\fR
+
+
+.SH DESCRIPTION
+This command configures \fBgit\fR to use GitHub CLI as a credential helper.
+For more information on git credential helpers please reference:
+
+\[la]https://git\-scm.com/docs/gitcredentials\[ra]\&.
+
+.PP
+By default, GitHub CLI will be set as the credential helper for all authenticated hosts.
+If there is no authenticated hosts the command fails with an error.
+
+.PP
+Alternatively, use the \fB--hostname\fR flag to specify a single host to be configured.
+If the host is not authenticated with, the command fails with an error.
+
+
+.SH OPTIONS
+.TP
+\fB-f\fR, \fB--force\fR \fB<--hostname>\fR
+Force setup even if the host is not known. Must be used in conjunction with --hostname
+
+.TP
+\fB-h\fR, \fB--hostname\fR \fB<string>\fR
+The hostname to configure git for
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Configure git to use GitHub CLI as the credential helper for all authenticated hosts
+$ gh auth setup-git
+
+# Configure git to use GitHub CLI as the credential helper for enterprise.internal host
+$ gh auth setup-git --hostname enterprise.internal
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-auth(1)\fR

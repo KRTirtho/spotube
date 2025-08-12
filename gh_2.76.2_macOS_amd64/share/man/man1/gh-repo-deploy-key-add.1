@@ -1,0 +1,63 @@
+.nh
+.TH "GH-REPO-DEPLOY-KEY-ADD" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-deploy-key-add - Add a deploy key to a GitHub repository
+
+
+.SH SYNOPSIS
+\fBgh repo deploy-key add <key-file> [flags]\fR
+
+
+.SH DESCRIPTION
+Add a deploy key to a GitHub repository.
+
+.PP
+Note that any key added by gh will be associated with the current authentication token.
+If you de-authorize the GitHub CLI app or authentication token from your account, any
+deploy keys added by GitHub CLI will be removed as well.
+
+
+.SH OPTIONS
+.TP
+\fB-w\fR, \fB--allow-write\fR
+Allow write access for the key
+
+.TP
+\fB-t\fR, \fB--title\fR \fB<string>\fR
+Title of the new key
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Generate a passwordless SSH key and add it as a deploy key to a repository
+$ ssh-keygen -t ed25519 -C "my description" -N "" -f ~/.ssh/gh-test
+$ gh repo deploy-key add ~/.ssh/gh-test.pub
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-repo-deploy-key(1)\fR

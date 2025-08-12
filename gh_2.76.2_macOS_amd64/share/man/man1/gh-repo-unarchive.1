@@ -1,0 +1,42 @@
+.nh
+.TH "GH-REPO-UNARCHIVE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-unarchive - Unarchive a repository
+
+
+.SH SYNOPSIS
+\fBgh repo unarchive [<repository>] [flags]\fR
+
+
+.SH DESCRIPTION
+Unarchive a GitHub repository.
+
+.PP
+With no argument, unarchives the current repository.
+
+
+.SH OPTIONS
+.TP
+\fB-y\fR, \fB--yes\fR
+Skip the confirmation prompt
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-repo(1)\fR

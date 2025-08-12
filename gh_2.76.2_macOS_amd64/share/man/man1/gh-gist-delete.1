@@ -1,0 +1,56 @@
+.nh
+.TH "GH-GIST-DELETE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-gist-delete - Delete a gist
+
+
+.SH SYNOPSIS
+\fBgh gist delete {<id> | <url>} [flags]\fR
+
+
+.SH DESCRIPTION
+Delete a GitHub gist.
+
+.PP
+To delete a gist interactively, use \fBgh gist delete\fR with no arguments.
+
+.PP
+To delete a gist non-interactively, supply the gist id or url.
+
+
+.SH OPTIONS
+.TP
+\fB--yes\fR
+Confirm deletion without prompting
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Delete a gist interactively
+$ gh gist delete
+
+# Delete a gist non-interactively
+$ gh gist delete 1234
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-gist(1)\fR

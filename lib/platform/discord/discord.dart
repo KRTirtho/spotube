@@ -1,0 +1,1 @@
+export 'discord_native.dart' if (dart.library.html) 'discord_web.dart';

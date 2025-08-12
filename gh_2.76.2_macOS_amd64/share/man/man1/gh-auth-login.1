@@ -1,0 +1,118 @@
+.nh
+.TH "GH-AUTH-LOGIN" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-auth-login - Log in to a GitHub account
+
+
+.SH SYNOPSIS
+\fBgh auth login [flags]\fR
+
+
+.SH DESCRIPTION
+Authenticate with a GitHub host.
+
+.PP
+The default hostname is \fBgithub.com\fR\&. This can be overridden using the \fB--hostname\fR
+flag.
+
+.PP
+The default authentication mode is a web-based browser flow. After completion, an
+authentication token will be stored securely in the system credential store.
+If a credential store is not found or there is an issue using it gh will fallback
+to writing the token to a plain text file. See \fBgh auth status\fR for its
+stored location.
+
+.PP
+Alternatively, use \fB--with-token\fR to pass in a personal access token (classic) on standard input.
+The minimum required scopes for the token are: \fBrepo\fR, \fBread:org\fR, and \fBgist\fR\&.
+Take care when passing a fine-grained personal access token to \fB--with-token\fR
+as the inherent scoping to certain resources may cause confusing behaviour when interacting with other
+resources. Favour setting \fBGH_TOKEN\fR for fine-grained personal access token usage.
+
+.PP
+Alternatively, gh will use the authentication token found in environment variables.
+This method is most suitable for "headless" use of gh such as in automation. See
+\fBgh help environment\fR for more info.
+
+.PP
+To use gh in GitHub Actions, add \fBGH_TOKEN: ${{ github.token }}\fR to \fBenv\fR\&.
+
+.PP
+The git protocol to use for git operations on this host can be set with \fB--git-protocol\fR,
+or during the interactive prompting. Although login is for a single account on a host, setting
+the git protocol will take effect for all users on the host.
+
+.PP
+Specifying \fBssh\fR for the git protocol will detect existing SSH keys to upload,
+prompting to create and upload a new key if one is not found. This can be skipped with
+\fB--skip-ssh-key\fR flag.
+
+.PP
+For more information on OAuth scopes, see
+
+\[la]https://docs.github.com/en/developers/apps/building\-oauth\-apps/scopes\-for\-oauth\-apps/\[ra]\&.
+
+
+.SH OPTIONS
+.TP
+\fB-p\fR, \fB--git-protocol\fR \fB<string>\fR
+The protocol to use for git operations on this host: {ssh|https}
+
+.TP
+\fB-h\fR, \fB--hostname\fR \fB<string>\fR
+The hostname of the GitHub instance to authenticate with
+
+.TP
+\fB--insecure-storage\fR
+Save authentication credentials in plain text instead of credential store
+
+.TP
+\fB-s\fR, \fB--scopes\fR \fB<strings>\fR
+Additional authentication scopes to request
+
+.TP
+\fB--skip-ssh-key\fR
+Skip generate/upload SSH key prompt
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open a browser to authenticate
+
+.TP
+\fB--with-token\fR
+Read token from standard input
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Start interactive setup
+$ gh auth login
+
+# Authenticate against github.com by reading the token from a file
+$ gh auth login --with-token < mytoken.txt
+
+# Authenticate with specific host
+$ gh auth login --hostname enterprise.internal
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-auth(1)\fR

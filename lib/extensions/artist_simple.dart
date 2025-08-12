@@ -1,4 +1,4 @@
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 
 extension ArtistExtension on List<ArtistSimple> {
   String asString() {

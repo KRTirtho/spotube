@@ -1,0 +1,112 @@
+.nh
+.TH "GH-ISSUE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-issue - Manage issues
+
+
+.SH SYNOPSIS
+\fBgh issue <command> [flags]\fR
+
+
+.SH DESCRIPTION
+Work with GitHub issues.
+
+
+.SH GENERAL COMMANDS
+.TP
+\fBgh-issue-create(1)\fR
+Create a new issue
+
+.TP
+\fBgh-issue-list(1)\fR
+List issues in a repository
+
+.TP
+\fBgh-issue-status(1)\fR
+Show status of relevant issues
+
+
+.SH TARGETED COMMANDS
+.TP
+\fBgh-issue-close(1)\fR
+Close issue
+
+.TP
+\fBgh-issue-comment(1)\fR
+Add a comment to an issue
+
+.TP
+\fBgh-issue-delete(1)\fR
+Delete issue
+
+.TP
+\fBgh-issue-develop(1)\fR
+Manage linked branches for an issue
+
+.TP
+\fBgh-issue-edit(1)\fR
+Edit issues
+
+.TP
+\fBgh-issue-lock(1)\fR
+Lock issue conversation
+
+.TP
+\fBgh-issue-pin(1)\fR
+Pin a issue
+
+.TP
+\fBgh-issue-reopen(1)\fR
+Reopen issue
+
+.TP
+\fBgh-issue-transfer(1)\fR
+Transfer issue to another repository
+
+.TP
+\fBgh-issue-unlock(1)\fR
+Unlock issue conversation
+
+.TP
+\fBgh-issue-unpin(1)\fR
+Unpin a issue
+
+.TP
+\fBgh-issue-view(1)\fR
+View an issue
+
+
+.SH OPTIONS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh issue list
+$ gh issue create --label bug
+$ gh issue view 123 --web
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

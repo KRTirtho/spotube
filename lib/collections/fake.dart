@@ -1,4 +1,4 @@
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/spotify/home_feed.dart';
 import 'package:spotube/models/spotify_friends.dart';

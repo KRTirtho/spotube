@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:spotube/platform/window_manager/window_manager.dart';
 
 class CallbackWindowListener implements WindowListener {
   final VoidCallback? _onWindowClose;

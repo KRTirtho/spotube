@@ -1,0 +1,66 @@
+.nh
+.TH "GH-AUTH-SWITCH" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-auth-switch - Switch active GitHub account
+
+
+.SH SYNOPSIS
+\fBgh auth switch [flags]\fR
+
+
+.SH DESCRIPTION
+Switch the active account for a GitHub host.
+
+.PP
+This command changes the authentication configuration that will
+be used when running commands targeting the specified GitHub host.
+
+.PP
+If the specified host has two accounts, the active account will be switched
+automatically. If there are more than two accounts, disambiguation will be
+required either through the \fB--user\fR flag or an interactive prompt.
+
+.PP
+For a list of authenticated accounts you can run \fBgh auth status\fR\&.
+
+
+.SH OPTIONS
+.TP
+\fB-h\fR, \fB--hostname\fR \fB<string>\fR
+The hostname of the GitHub instance to switch account for
+
+.TP
+\fB-u\fR, \fB--user\fR \fB<string>\fR
+The account to switch to
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Select what host and account to switch to via a prompt
+$ gh auth switch
+
+# Switch the active account on a specific host to a specific user
+$ gh auth switch --hostname enterprise.internal --user monalisa
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-auth(1)\fR

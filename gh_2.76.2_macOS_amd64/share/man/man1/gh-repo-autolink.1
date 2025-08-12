@@ -1,0 +1,64 @@
+.nh
+.TH "GH-REPO-AUTOLINK" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-autolink - Manage autolink references
+
+
+.SH SYNOPSIS
+\fBgh repo autolink <command> [flags]\fR
+
+
+.SH DESCRIPTION
+Autolinks link issues, pull requests, commit messages, and release descriptions to external third-party services.
+
+.PP
+Autolinks require \fBadmin\fR role to view or manage.
+
+.PP
+For more information, see 
+\[la]https://docs.github.com/en/repositories/managing\-your\-repositorys\-settings\-and\-features/managing\-repository\-settings/configuring\-autolinks\-to\-reference\-external\-resources\[ra]
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-repo-autolink-create(1)\fR
+Create a new autolink reference
+
+.TP
+\fBgh-repo-autolink-delete(1)\fR
+Delete an autolink reference
+
+.TP
+\fBgh-repo-autolink-list(1)\fR
+List autolink references for a GitHub repository
+
+.TP
+\fBgh-repo-autolink-view(1)\fR
+View an autolink reference
+
+
+.SH OPTIONS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-repo(1)\fR

@@ -10,7 +10,7 @@ import 'package:spotube/hooks/configurators/use_window_listener.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:titlebar_buttons/titlebar_buttons.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:spotube/platform/window_manager/window_manager.dart';
 
 class WindowTitleBarButtons extends HookConsumerWidget {
   final Color? foregroundColor;

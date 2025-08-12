@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/models/current_playlist.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/database/database.dart';

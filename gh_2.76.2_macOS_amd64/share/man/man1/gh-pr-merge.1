@@ -1,0 +1,99 @@
+.nh
+.TH "GH-PR-MERGE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-pr-merge - Merge a pull request
+
+
+.SH SYNOPSIS
+\fBgh pr merge [<number> | <url> | <branch>] [flags]\fR
+
+
+.SH DESCRIPTION
+Merge a pull request on GitHub.
+
+.PP
+Without an argument, the pull request that belongs to the current branch
+is selected.
+
+.PP
+When targeting a branch that requires a merge queue, no merge strategy is required.
+If required checks have not yet passed, auto-merge will be enabled.
+If required checks have passed, the pull request will be added to the merge queue.
+To bypass a merge queue and merge directly, pass the \fB--admin\fR flag.
+
+
+.SH OPTIONS
+.TP
+\fB--admin\fR
+Use administrator privileges to merge a pull request that does not meet requirements
+
+.TP
+\fB-A\fR, \fB--author-email\fR \fB<text>\fR
+Email text for merge commit author
+
+.TP
+\fB--auto\fR
+Automatically merge only after necessary requirements are met
+
+.TP
+\fB-b\fR, \fB--body\fR \fB<text>\fR
+Body text for the merge commit
+
+.TP
+\fB-F\fR, \fB--body-file\fR \fB<file>\fR
+Read body text from file (use "-" to read from standard input)
+
+.TP
+\fB-d\fR, \fB--delete-branch\fR
+Delete the local and remote branch after merge
+
+.TP
+\fB--disable-auto\fR
+Disable auto-merge for this pull request
+
+.TP
+\fB--match-head-commit\fR \fB<SHA>\fR
+Commit SHA that the pull request head must match to allow merge
+
+.TP
+\fB-m\fR, \fB--merge\fR
+Merge the commits with the base branch
+
+.TP
+\fB-r\fR, \fB--rebase\fR
+Rebase the commits onto the base branch
+
+.TP
+\fB-s\fR, \fB--squash\fR
+Squash the commits into one commit and merge it into the base branch
+
+.TP
+\fB-t\fR, \fB--subject\fR \fB<text>\fR
+Subject text for the merge commit
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-pr(1)\fR

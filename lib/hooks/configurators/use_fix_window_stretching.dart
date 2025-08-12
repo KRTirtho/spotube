@@ -1,7 +1,7 @@
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:spotube/platform/window_manager/window_manager.dart';
 
 void useFixWindowStretching() {
   useEffect(() {

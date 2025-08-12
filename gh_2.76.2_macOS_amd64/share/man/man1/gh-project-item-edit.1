@@ -1,0 +1,108 @@
+.nh
+.TH "GH-PROJECT-ITEM-EDIT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-project-item-edit - Edit an item in a project
+
+
+.SH SYNOPSIS
+\fBgh project item-edit [flags]\fR
+
+
+.SH DESCRIPTION
+Edit either a draft issue or a project item. Both usages require the ID of the item to edit.
+
+.PP
+For non-draft issues, the ID of the project is also required, and only a single field value can be updated per invocation.
+
+.PP
+Remove project item field value using \fB--clear\fR flag.
+
+
+.SH OPTIONS
+.TP
+\fB--body\fR \fB<string>\fR
+Body of the draft issue item
+
+.TP
+\fB--clear\fR
+Remove field value
+
+.TP
+\fB--date\fR \fB<string>\fR
+Date value for the field (YYYY-MM-DD)
+
+.TP
+\fB--field-id\fR \fB<string>\fR
+ID of the field to update
+
+.TP
+\fB--format\fR \fB<string>\fR
+Output format: {json}
+
+.TP
+\fB--id\fR \fB<string>\fR
+ID of the item to edit
+
+.TP
+\fB--iteration-id\fR \fB<string>\fR
+ID of the iteration value to set on the field
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--number\fR \fB<float> (default 0)\fR
+Number value for the field
+
+.TP
+\fB--project-id\fR \fB<string>\fR
+ID of the project to which the field belongs to
+
+.TP
+\fB--single-select-option-id\fR \fB<string>\fR
+ID of the single select option value to set on the field
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB--text\fR \fB<string>\fR
+Text value for the field
+
+.TP
+\fB--title\fR \fB<string>\fR
+Title of the draft issue item
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Edit an item's text field value
+$ gh project item-edit --id <item-id> --field-id <field-id> --project-id <project-id> --text "new text"
+
+# Clear an item's field value
+$ gh project item-edit --id <item-id> --field-id <field-id> --project-id <project-id> --clear
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-project(1)\fR

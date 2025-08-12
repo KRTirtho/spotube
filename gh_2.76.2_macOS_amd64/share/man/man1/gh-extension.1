@@ -1,0 +1,88 @@
+.nh
+.TH "GH-EXTENSION" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-extension - Manage gh extensions
+
+
+.SH SYNOPSIS
+\fBgh extension [flags]\fR
+
+
+.SH DESCRIPTION
+GitHub CLI extensions are repositories that provide additional gh commands.
+
+.PP
+The name of the extension repository must start with \fBgh-\fR and it must contain an
+executable of the same name. All arguments passed to the \fBgh <extname>\fR invocation
+will be forwarded to the \fBgh-<extname>\fR executable of the extension.
+
+.PP
+An extension cannot override any of the core gh commands. If an extension name conflicts
+with a core gh command, you can use \fBgh extension exec <extname>\fR\&.
+
+.PP
+When an extension is executed, gh will check for new versions once every 24 hours and display
+an upgrade notice. See \fBgh help environment\fR for information on disabling extension notices.
+
+.PP
+For the list of available extensions, see 
+\[la]https://github.com/topics/gh\-extension\[ra]\&.
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-extension-browse(1)\fR
+Enter a UI for browsing, adding, and removing extensions
+
+.TP
+\fBgh-extension-create(1)\fR
+Create a new extension
+
+.TP
+\fBgh-extension-exec(1)\fR
+Execute an installed extension
+
+.TP
+\fBgh-extension-install(1)\fR
+Install a gh extension from a repository
+
+.TP
+\fBgh-extension-list(1)\fR
+List installed extension commands
+
+.TP
+\fBgh-extension-remove(1)\fR
+Remove an installed extension
+
+.TP
+\fBgh-extension-search(1)\fR
+Search extensions to the GitHub CLI
+
+.TP
+\fBgh-extension-upgrade(1)\fR
+Upgrade installed extensions
+
+
+.SH ALIASES
+gh extensions, gh ext
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

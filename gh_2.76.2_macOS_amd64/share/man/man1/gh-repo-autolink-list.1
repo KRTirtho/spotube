@@ -1,0 +1,68 @@
+.nh
+.TH "GH-REPO-AUTOLINK-LIST" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-autolink-list - List autolink references for a GitHub repository
+
+
+.SH SYNOPSIS
+\fBgh repo autolink list [flags]\fR
+
+
+.SH DESCRIPTION
+Gets all autolink references that are configured for a repository.
+
+.PP
+Information about autolinks is only available to repository administrators.
+
+
+.SH OPTIONS
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--json\fR \fB<fields>\fR
+Output JSON with the specified fields
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB-w\fR, \fB--web\fR
+List autolink references in the web browser
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh repo autolink ls
+
+
+.SH JSON FIELDS
+\fBid\fR, \fBisAlphanumeric\fR, \fBkeyPrefix\fR, \fBurlTemplate\fR
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-repo-autolink(1)\fR

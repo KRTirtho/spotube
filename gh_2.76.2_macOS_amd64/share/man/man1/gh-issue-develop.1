@@ -1,0 +1,86 @@
+.nh
+.TH "GH-ISSUE-DEVELOP" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-issue-develop - Manage linked branches for an issue
+
+
+.SH SYNOPSIS
+\fBgh issue develop {<number> | <url>} [flags]\fR
+
+
+.SH DESCRIPTION
+Manage linked branches for an issue.
+
+.PP
+When using the \fB--base\fR flag, the new development branch will be created from the specified
+remote branch. The new branch will be configured as the base branch for pull requests created using
+\fBgh pr create\fR\&.
+
+
+.SH OPTIONS
+.TP
+\fB-b\fR, \fB--base\fR \fB<string>\fR
+Name of the remote branch you want to make your new branch from
+
+.TP
+\fB--branch-repo\fR \fB<string>\fR
+Name or URL of the repository where you want to create your new branch
+
+.TP
+\fB-c\fR, \fB--checkout\fR
+Checkout the branch after creating it
+
+.TP
+\fB-l\fR, \fB--list\fR
+List linked branches for the issue
+
+.TP
+\fB-n\fR, \fB--name\fR \fB<string>\fR
+Name of the branch to create
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# List branches for issue 123
+$ gh issue develop --list 123
+
+# List branches for issue 123 in repo cli/cli
+$ gh issue develop --list --repo cli/cli 123
+
+# Create a branch for issue 123 based on the my-feature branch
+$ gh issue develop 123 --base my-feature
+
+# Create a branch for issue 123 and checkout it out
+$ gh issue develop 123 --checkout
+
+# Create a branch in repo monalisa/cli for issue 123 in repo cli/cli
+$ gh issue develop 123 --repo cli/cli --branch-repo monalisa/cli
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-issue(1)\fR

@@ -1,0 +1,58 @@
+.nh
+.TH "GH-VARIABLE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-variable - Manage GitHub Actions variables
+
+
+.SH SYNOPSIS
+\fBgh variable <command> [flags]\fR
+
+
+.SH DESCRIPTION
+Variables can be set at the repository, environment or organization level for use in
+GitHub Actions or Dependabot. Run \fBgh help variable set\fR to learn how to get started.
+
+
+.SH AVAILABLE COMMANDS
+.TP
+\fBgh-variable-delete(1)\fR
+Delete variables
+
+.TP
+\fBgh-variable-get(1)\fR
+Get variables
+
+.TP
+\fBgh-variable-list(1)\fR
+List variables
+
+.TP
+\fBgh-variable-set(1)\fR
+Create or update variables
+
+
+.SH OPTIONS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

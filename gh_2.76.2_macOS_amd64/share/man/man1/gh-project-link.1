@@ -1,0 +1,57 @@
+.nh
+.TH "GH-PROJECT-LINK" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-project-link - Link a project to a repository or a team
+
+
+.SH SYNOPSIS
+\fBgh project link [<number>] [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB--owner\fR \fB<string>\fR
+Login of the owner. Use "@me" for the current user.
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+The repository to be linked to this project
+
+.TP
+\fB-T\fR, \fB--team\fR \fB<string>\fR
+The team to be linked to this project
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Link monalisa's project 1 to her repository "my_repo"
+$ gh project link 1 --owner monalisa --repo my_repo
+
+# Link monalisa's organization's project 1 to her team "my_team"
+$ gh project link 1 --owner my_organization --team my_team
+
+# Link monalisa's project 1 to the repository of current directory if neither --repo nor --team is specified
+$ gh project link 1
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-project(1)\fR

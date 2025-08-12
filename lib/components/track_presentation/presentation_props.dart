@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 
 class PaginationProps {
   final bool hasNextPage;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart' as material;
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart' hide Page;
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/track_presentation.dart';

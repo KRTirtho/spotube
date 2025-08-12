@@ -1,0 +1,46 @@
+.nh
+.TH "GH-PREVIEW-PROMPTER" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-preview-prompter - Execute a test program to preview the prompter
+
+
+.SH SYNOPSIS
+\fBgh preview prompter [prompt type] [flags]\fR
+
+
+.SH DESCRIPTION
+Execute a test program to preview the prompter.
+Without an argument, all prompts will be run.
+
+.PP
+Available prompt types:
+- select
+- multi-select
+- input
+- password
+- confirm
+- auth-token
+- confirm-deletion
+- input-hostname
+- markdown-editor
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-preview(1)\fR

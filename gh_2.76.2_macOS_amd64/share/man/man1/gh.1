@@ -1,0 +1,162 @@
+.nh
+.TH "GH" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh - GitHub CLI
+
+
+.SH SYNOPSIS
+\fBgh <command> <subcommand> [flags]\fR
+
+
+.SH DESCRIPTION
+Work seamlessly with GitHub from the command line.
+
+
+.SH CORE COMMANDS
+.TP
+\fBgh-auth(1)\fR
+Authenticate gh and git with GitHub
+
+.TP
+\fBgh-browse(1)\fR
+Open repositories, issues, pull requests, and more in the browser
+
+.TP
+\fBgh-codespace(1)\fR
+Connect to and manage codespaces
+
+.TP
+\fBgh-gist(1)\fR
+Manage gists
+
+.TP
+\fBgh-issue(1)\fR
+Manage issues
+
+.TP
+\fBgh-org(1)\fR
+Manage organizations
+
+.TP
+\fBgh-pr(1)\fR
+Manage pull requests
+
+.TP
+\fBgh-project(1)\fR
+Work with GitHub Projects.
+
+.TP
+\fBgh-release(1)\fR
+Manage releases
+
+.TP
+\fBgh-repo(1)\fR
+Manage repositories
+
+
+.SH GITHUB ACTIONS COMMANDS
+.TP
+\fBgh-cache(1)\fR
+Manage GitHub Actions caches
+
+.TP
+\fBgh-run(1)\fR
+View details about workflow runs
+
+.TP
+\fBgh-workflow(1)\fR
+View details about GitHub Actions workflows
+
+
+.SH ADDITIONAL COMMANDS
+.TP
+\fBgh-alias(1)\fR
+Create command shortcuts
+
+.TP
+\fBgh-api(1)\fR
+Make an authenticated GitHub API request
+
+.TP
+\fBgh-attestation(1)\fR
+Work with artifact attestations
+
+.TP
+\fBgh-completion(1)\fR
+Generate shell completion scripts
+
+.TP
+\fBgh-config(1)\fR
+Manage configuration for gh
+
+.TP
+\fBgh-extension(1)\fR
+Manage gh extensions
+
+.TP
+\fBgh-gpg-key(1)\fR
+Manage GPG keys
+
+.TP
+\fBgh-label(1)\fR
+Manage labels
+
+.TP
+\fBgh-preview(1)\fR
+Execute previews for gh features
+
+.TP
+\fBgh-ruleset(1)\fR
+View info about repo rulesets
+
+.TP
+\fBgh-search(1)\fR
+Search for repositories, issues, and pull requests
+
+.TP
+\fBgh-secret(1)\fR
+Manage GitHub secrets
+
+.TP
+\fBgh-ssh-key(1)\fR
+Manage SSH keys
+
+.TP
+\fBgh-status(1)\fR
+Print information about relevant issues, pull requests, and notifications across repositories
+
+.TP
+\fBgh-variable(1)\fR
+Manage GitHub Actions variables
+
+
+.SH OPTIONS
+.TP
+\fB--version\fR
+Show gh version
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh issue create
+$ gh repo clone cli/cli
+$ gh pr checkout 321
+
+.EE

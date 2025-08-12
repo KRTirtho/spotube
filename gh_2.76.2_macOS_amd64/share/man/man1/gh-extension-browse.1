@@ -1,0 +1,67 @@
+.nh
+.TH "GH-EXTENSION-BROWSE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-extension-browse - Enter a UI for browsing, adding, and removing extensions
+
+
+.SH SYNOPSIS
+\fBgh extension browse [flags]\fR
+
+
+.SH DESCRIPTION
+This command will take over your terminal and run a fully interactive
+interface for browsing, adding, and removing gh extensions. A terminal
+width greater than 100 columns is recommended.
+
+.PP
+To learn how to control this interface, press \fB?\fR after running to see
+the help text.
+
+.PP
+Press \fBq\fR to quit.
+
+.PP
+Running this command with \fB--single-column\fR should make this command
+more intelligible for users who rely on assistive technology like screen
+readers or high zoom.
+
+.PP
+For a more traditional way to discover extensions, see:
+
+.EX
+gh ext search
+.EE
+
+.PP
+along with \fBgh ext install\fR, \fBgh ext remove\fR, and \fBgh repo view\fR\&.
+
+
+.SH OPTIONS
+.TP
+\fB--debug\fR
+Log to /tmp/extBrowse-*
+
+.TP
+\fB-s\fR, \fB--single-column\fR
+Render TUI with only one column of text
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-extension(1)\fR

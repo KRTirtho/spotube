@@ -5,7 +5,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:spotify/spotify.dart' hide Offset;
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/gradients.dart';
 import 'package:spotube/collections/routes.gr.dart';

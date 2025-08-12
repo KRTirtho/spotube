@@ -1,0 +1,68 @@
+.nh
+.TH "GH-LABEL-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-label-create - Create a new label
+
+
+.SH SYNOPSIS
+\fBgh label create <name> [flags]\fR
+
+
+.SH DESCRIPTION
+Create a new label on GitHub, or update an existing one with \fB--force\fR\&.
+
+.PP
+Must specify name for the label. The description and color are optional.
+If a color isn't provided, a random one will be chosen.
+
+.PP
+The label color needs to be 6 character hex value.
+
+
+.SH OPTIONS
+.TP
+\fB-c\fR, \fB--color\fR \fB<string>\fR
+Color of the label
+
+.TP
+\fB-d\fR, \fB--description\fR \fB<string>\fR
+Description of the label
+
+.TP
+\fB-f\fR, \fB--force\fR
+Update the label color and description if label already exists
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Create new bug label
+$ gh label create bug --description "Something isn't working" --color E99695
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-label(1)\fR

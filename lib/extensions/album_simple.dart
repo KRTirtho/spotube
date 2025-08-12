@@ -1,4 +1,4 @@
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 
 extension AlbumExtensions on AlbumSimple {
   Album toAlbum() {

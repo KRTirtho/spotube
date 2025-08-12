@@ -1,0 +1,120 @@
+.nh
+.TH "GH-PR" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-pr - Manage pull requests
+
+
+.SH SYNOPSIS
+\fBgh pr <command> [flags]\fR
+
+
+.SH DESCRIPTION
+Work with GitHub pull requests.
+
+
+.SH GENERAL COMMANDS
+.TP
+\fBgh-pr-create(1)\fR
+Create a pull request
+
+.TP
+\fBgh-pr-list(1)\fR
+List pull requests in a repository
+
+.TP
+\fBgh-pr-status(1)\fR
+Show status of relevant pull requests
+
+
+.SH TARGETED COMMANDS
+.TP
+\fBgh-pr-checkout(1)\fR
+Check out a pull request in git
+
+.TP
+\fBgh-pr-checks(1)\fR
+Show CI status for a single pull request
+
+.TP
+\fBgh-pr-close(1)\fR
+Close a pull request
+
+.TP
+\fBgh-pr-comment(1)\fR
+Add a comment to a pull request
+
+.TP
+\fBgh-pr-diff(1)\fR
+View changes in a pull request
+
+.TP
+\fBgh-pr-edit(1)\fR
+Edit a pull request
+
+.TP
+\fBgh-pr-lock(1)\fR
+Lock pull request conversation
+
+.TP
+\fBgh-pr-merge(1)\fR
+Merge a pull request
+
+.TP
+\fBgh-pr-ready(1)\fR
+Mark a pull request as ready for review
+
+.TP
+\fBgh-pr-reopen(1)\fR
+Reopen a pull request
+
+.TP
+\fBgh-pr-review(1)\fR
+Add a review to a pull request
+
+.TP
+\fBgh-pr-unlock(1)\fR
+Unlock pull request conversation
+
+.TP
+\fBgh-pr-update-branch(1)\fR
+Update a pull request branch
+
+.TP
+\fBgh-pr-view(1)\fR
+View a pull request
+
+
+.SH OPTIONS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh pr checkout 353
+$ gh pr create --fill
+$ gh pr view --web
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
-import 'package:spotify/spotify.dart' hide Offset;
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';

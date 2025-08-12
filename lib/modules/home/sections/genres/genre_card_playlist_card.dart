@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
-import 'package:spotify/spotify.dart' hide Image;
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';

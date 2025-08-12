@@ -1,0 +1,110 @@
+.nh
+.TH "GH-REPO" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo - Manage repositories
+
+
+.SH SYNOPSIS
+\fBgh repo <command> [flags]\fR
+
+
+.SH DESCRIPTION
+Work with GitHub repositories.
+
+
+.SH GENERAL COMMANDS
+.TP
+\fBgh-repo-create(1)\fR
+Create a new repository
+
+.TP
+\fBgh-repo-list(1)\fR
+List repositories owned by user or organization
+
+
+.SH TARGETED COMMANDS
+.TP
+\fBgh-repo-archive(1)\fR
+Archive a repository
+
+.TP
+\fBgh-repo-autolink(1)\fR
+Manage autolink references
+
+.TP
+\fBgh-repo-clone(1)\fR
+Clone a repository locally
+
+.TP
+\fBgh-repo-delete(1)\fR
+Delete a repository
+
+.TP
+\fBgh-repo-deploy-key(1)\fR
+Manage deploy keys in a repository
+
+.TP
+\fBgh-repo-edit(1)\fR
+Edit repository settings
+
+.TP
+\fBgh-repo-fork(1)\fR
+Create a fork of a repository
+
+.TP
+\fBgh-repo-gitignore(1)\fR
+List and view available repository gitignore templates
+
+.TP
+\fBgh-repo-license(1)\fR
+Explore repository licenses
+
+.TP
+\fBgh-repo-rename(1)\fR
+Rename a repository
+
+.TP
+\fBgh-repo-set-default(1)\fR
+Configure default repository for this directory
+
+.TP
+\fBgh-repo-sync(1)\fR
+Sync a repository
+
+.TP
+\fBgh-repo-unarchive(1)\fR
+Unarchive a repository
+
+.TP
+\fBgh-repo-view(1)\fR
+View a repository
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh repo create
+$ gh repo clone cli/cli
+$ gh repo view --web
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

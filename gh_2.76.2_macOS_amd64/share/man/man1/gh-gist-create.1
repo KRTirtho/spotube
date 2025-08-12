@@ -1,0 +1,85 @@
+.nh
+.TH "GH-GIST-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-gist-create - Create a new gist
+
+
+.SH SYNOPSIS
+\fBgh gist create [<filename>... | <pattern>... | -] [flags]\fR
+
+
+.SH DESCRIPTION
+Create a new GitHub gist with given contents.
+
+.PP
+Gists can be created from one or multiple files. Alternatively, pass \fB-\fR as
+filename to read from standard input.
+
+.PP
+By default, gists are secret; use \fB--public\fR to make publicly listed ones.
+
+
+.SH OPTIONS
+.TP
+\fB-d\fR, \fB--desc\fR \fB<string>\fR
+A description for this gist
+
+.TP
+\fB-f\fR, \fB--filename\fR \fB<string>\fR
+Provide a filename to be used when reading from standard input
+
+.TP
+\fB-p\fR, \fB--public\fR
+List the gist publicly (default "secret")
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the web browser with created gist
+
+
+.SH ALIASES
+gh gist new
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Publish file 'hello.py' as a public gist
+$ gh gist create --public hello.py
+
+# Create a gist with a description
+$ gh gist create hello.py -d "my Hello-World program in Python"
+
+# Create a gist containing several files
+$ gh gist create hello.py world.py cool.txt
+
+# Create a gist containing several files using patterns
+$ gh gist create *.md *.txt artifact.*
+
+# Read from standard input to create a gist
+$ gh gist create -
+
+# Create a gist from output piped from another command
+$ cat cool.txt | gh gist create
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-gist(1)\fR

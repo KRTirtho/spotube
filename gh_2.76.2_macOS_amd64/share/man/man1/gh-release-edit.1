@@ -1,0 +1,88 @@
+.nh
+.TH "GH-RELEASE-EDIT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-release-edit - Edit a release
+
+
+.SH SYNOPSIS
+\fBgh release edit <tag>\fR
+
+
+.SH OPTIONS
+.TP
+\fB--discussion-category\fR \fB<string>\fR
+Start a discussion in the specified category when publishing a draft
+
+.TP
+\fB--draft\fR
+Save the release as a draft instead of publishing it
+
+.TP
+\fB--latest\fR
+Explicitly mark the release as "Latest"
+
+.TP
+\fB-n\fR, \fB--notes\fR \fB<string>\fR
+Release notes
+
+.TP
+\fB-F\fR, \fB--notes-file\fR \fB<file>\fR
+Read release notes from file (use "-" to read from standard input)
+
+.TP
+\fB--prerelease\fR
+Mark the release as a prerelease
+
+.TP
+\fB--tag\fR \fB<string>\fR
+The name of the tag
+
+.TP
+\fB--target\fR \fB<branch>\fR
+Target branch or full commit SHA (default [main branch])
+
+.TP
+\fB-t\fR, \fB--title\fR \fB<string>\fR
+Release title
+
+.TP
+\fB--verify-tag\fR
+Abort in case the git tag doesn't already exist in the remote repository
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Publish a release that was previously a draft
+$ gh release edit v1.0 --draft=false
+
+# Update the release notes from the content of a file
+$ gh release edit v1.0 --notes-file /path/to/release_notes.md
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-release(1)\fR

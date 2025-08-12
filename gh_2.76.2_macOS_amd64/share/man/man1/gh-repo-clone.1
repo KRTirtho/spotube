@@ -1,0 +1,79 @@
+.nh
+.TH "GH-REPO-CLONE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-repo-clone - Clone a repository locally
+
+
+.SH SYNOPSIS
+\fBgh repo clone <repository> [<directory>] [-- <gitflags>...]\fR
+
+
+.SH DESCRIPTION
+Clone a GitHub repository locally. Pass additional \fBgit clone\fR flags by listing
+them after \fB--\fR\&.
+
+.PP
+If the \fBOWNER/\fR portion of the \fBOWNER/REPO\fR repository argument is omitted, it
+defaults to the name of the authenticating user.
+
+.PP
+When a protocol scheme is not provided in the repository argument, the \fBgit_protocol\fR will be
+chosen from your configuration, which can be checked via \fBgh config get git_protocol\fR\&. If the protocol
+scheme is provided, the repository will be cloned using the specified protocol.
+
+.PP
+If the repository is a fork, its parent repository will be added as an additional
+git remote called \fBupstream\fR\&. The remote name can be configured using \fB--upstream-remote-name\fR\&.
+The \fB--upstream-remote-name\fR option supports an \fB@owner\fR value which will name
+the remote after the owner of the parent repository.
+
+.PP
+If the repository is a fork, its parent repository will be set as the default remote repository.
+
+
+.SH OPTIONS
+.TP
+\fB-u\fR, \fB--upstream-remote-name\fR \fB<string> (default "upstream")\fR
+Upstream remote name when cloning a fork
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Clone a repository from a specific org
+$ gh repo clone cli/cli
+
+# Clone a repository from your own account
+$ gh repo clone myrepo
+
+# Clone a repo, overriding git protocol configuration
+$ gh repo clone https://github.com/cli/cli
+$ gh repo clone git@github.com:cli/cli.git
+
+# Clone a repository to a custom directory
+$ gh repo clone cli/cli workspace/cli
+
+# Clone a repository with additional git clone flags
+$ gh repo clone cli/cli -- --depth=1
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-repo(1)\fR

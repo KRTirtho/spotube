@@ -1,0 +1,80 @@
+.nh
+.TH "GH-RULESET-CHECK" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-ruleset-check - View rules that would apply to a given branch
+
+
+.SH SYNOPSIS
+\fBgh ruleset check [<branch>] [flags]\fR
+
+
+.SH DESCRIPTION
+View information about GitHub rules that apply to a given branch.
+
+.PP
+The provided branch name does not need to exist; rules will be displayed that would apply
+to a branch with that name. All rules are returned regardless of where they are configured.
+
+.PP
+If no branch name is provided, then the current branch will be used.
+
+.PP
+The \fB--default\fR flag can be used to view rules that apply to the default branch of the
+repository.
+
+
+.SH OPTIONS
+.TP
+\fB--default\fR
+Check rules on default branch
+
+.TP
+\fB-w\fR, \fB--web\fR
+Open the branch rules page in a web browser
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# View all rules that apply to the current branch
+$ gh ruleset check
+
+# View all rules that apply to a branch named "my-branch" in a different repository
+$ gh ruleset check my-branch --repo owner/repo
+
+# View all rules that apply to the default branch in a different repository
+$ gh ruleset check --default --repo owner/repo
+
+# View a ruleset configured in a different repository or any of its parents
+$ gh ruleset view 23 --repo owner/repo
+
+# View an organization-level ruleset
+$ gh ruleset view 23 --org my-org
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-ruleset(1)\fR

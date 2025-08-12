@@ -1,0 +1,106 @@
+.nh
+.TH "GH-BROWSE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-browse - Open repositories, issues, pull requests, and more in the browser
+
+
+.SH SYNOPSIS
+\fBgh browse [<number> | <path> | <commit-sha>] [flags]\fR
+
+
+.SH DESCRIPTION
+Transition from the terminal to the web browser to view and interact with:
+.IP \(bu 2
+Issues
+.IP \(bu 2
+Pull requests
+.IP \(bu 2
+Repository content
+.IP \(bu 2
+Repository home page
+.IP \(bu 2
+Repository settings
+
+
+.SH OPTIONS
+.TP
+\fB-b\fR, \fB--branch\fR \fB<string>\fR
+Select another branch by passing in the branch name
+
+.TP
+\fB-c\fR, \fB--commit\fR \fB<string>\fR
+Select another commit by passing in the commit SHA, default is the last commit
+
+.TP
+\fB-n\fR, \fB--no-browser\fR
+Print destination URL instead of opening the browser
+
+.TP
+\fB-p\fR, \fB--projects\fR
+Open repository projects
+
+.TP
+\fB-r\fR, \fB--releases\fR
+Open repository releases
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+.TP
+\fB-s\fR, \fB--settings\fR
+Open repository settings
+
+.TP
+\fB-w\fR, \fB--wiki\fR
+Open repository wiki
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Open the home page of the current repository
+$ gh browse
+
+# Open the script directory of the current repository
+$ gh browse script/
+
+# Open issue or pull request 217
+$ gh browse 217
+
+# Open commit page
+$ gh browse 77507cd94ccafcf568f8560cfecde965fcfa63
+
+# Open repository settings
+$ gh browse --settings
+
+# Open main.go at line 312
+$ gh browse main.go:312
+
+# Open main.go with the repository at head of bug-fix branch
+$ gh browse main.go --branch bug-fix
+
+# Open main.go with the repository at commit 775007cd
+$ gh browse main.go --commit=77507cd94ccafcf568f8560cfecde965fcfa63
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

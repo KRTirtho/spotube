@@ -1,0 +1,70 @@
+.nh
+.TH "GH-PROJECT-FIELD-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-project-field-create - Create a field in a project
+
+
+.SH SYNOPSIS
+\fBgh project field-create [<number>] [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB--data-type\fR \fB<string>\fR
+DataType of the new field.: {TEXT|SINGLE_SELECT|DATE|NUMBER}
+
+.TP
+\fB--format\fR \fB<string>\fR
+Output format: {json}
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--name\fR \fB<string>\fR
+Name of the new field
+
+.TP
+\fB--owner\fR \fB<string>\fR
+Login of the owner. Use "@me" for the current user.
+
+.TP
+\fB--single-select-options\fR \fB<strings>\fR
+Options for SINGLE_SELECT data type
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Create a field in the current user's project "1"
+$ gh project field-create 1 --owner "@me" --name "new field" --data-type "text"
+
+# Create a field with three options to select from for owner monalisa
+$ gh project field-create 1 --owner monalisa --name "new field" --data-type "SINGLE_SELECT" --single-select-options "one,two,three"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-project(1)\fR

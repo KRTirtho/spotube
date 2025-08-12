@@ -1,0 +1,87 @@
+.nh
+.TH "GH-RELEASE-DOWNLOAD" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-release-download - Download release assets
+
+
+.SH SYNOPSIS
+\fBgh release download [<tag>] [flags]\fR
+
+
+.SH DESCRIPTION
+Download assets from a GitHub release.
+
+.PP
+Without an explicit tag name argument, assets are downloaded from the
+latest release in the project. In this case, \fB--pattern\fR or \fB--archive\fR
+is required.
+
+
+.SH OPTIONS
+.TP
+\fB-A\fR, \fB--archive\fR \fB<format>\fR
+Download the source code archive in the specified format (zip or tar.gz)
+
+.TP
+\fB--clobber\fR
+Overwrite existing files of the same name
+
+.TP
+\fB-D\fR, \fB--dir\fR \fB<directory> (default ".")\fR
+The directory to download files into
+
+.TP
+\fB-O\fR, \fB--output\fR \fB<file>\fR
+The file to write a single asset to (use "-" to write to standard output)
+
+.TP
+\fB-p\fR, \fB--pattern\fR \fB<stringArray>\fR
+Download only assets that match a glob pattern
+
+.TP
+\fB--skip-existing\fR
+Skip downloading when files of the same name exist
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Download all assets from a specific release
+$ gh release download v1.2.3
+
+# Download only Debian packages for the latest release
+$ gh release download --pattern '*.deb'
+
+# Specify multiple file patterns
+$ gh release download -p '*.deb' -p '*.rpm'
+
+# Download the archive of the source code for a release
+$ gh release download v1.2.3 --archive=zip
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-release(1)\fR

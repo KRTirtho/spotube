@@ -1,0 +1,163 @@
+.nh
+.TH "GH-RELEASE-CREATE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-release-create - Create a new release
+
+
+.SH SYNOPSIS
+\fBgh release create [<tag>] [<filename>... | <pattern>...]\fR
+
+
+.SH DESCRIPTION
+Create a new GitHub Release for a repository.
+
+.PP
+A list of asset files may be given to upload to the new release. To define a
+display label for an asset, append text starting with \fB#\fR after the file name.
+
+.PP
+If a matching git tag does not yet exist, one will automatically get created
+from the latest state of the default branch.
+Use \fB--target\fR to point to a different branch or commit for the automatic tag creation.
+Use \fB--verify-tag\fR to abort the release if the tag doesn't already exist.
+To fetch the new tag locally after the release, do \fBgit fetch --tags origin\fR\&.
+
+.PP
+To create a release from an annotated git tag, first create one locally with
+git, push the tag to GitHub, then run this command.
+Use \fB--notes-from-tag\fR to automatically generate the release notes
+from the annotated git tag.
+
+.PP
+When using automatically generated release notes, a release title will also be automatically
+generated unless a title was explicitly passed. Additional release notes can be prepended to
+automatically generated notes by using the \fB--notes\fR flag.
+
+.PP
+By default, the release is created even if there are no new commits since the last release.
+This may result in the same or duplicate release which may not be desirable in some cases.
+Use \fB--fail-on-no-commits\fR to fail if no new commits are available. This flag has no
+effect if there are no existing releases or this is the very first release.
+
+
+.SH OPTIONS
+.TP
+\fB--discussion-category\fR \fB<string>\fR
+Start a discussion in the specified category
+
+.TP
+\fB-d\fR, \fB--draft\fR
+Save the release as a draft instead of publishing it
+
+.TP
+\fB--fail-on-no-commits\fR
+Fail if there are no commits since the last release (no impact on the first release)
+
+.TP
+\fB--generate-notes\fR
+Automatically generate title and notes for the release
+
+.TP
+\fB--latest\fR
+Mark this release as "Latest" (default [automatic based on date and version]). --latest=false to explicitly NOT set as latest
+
+.TP
+\fB-n\fR, \fB--notes\fR \fB<string>\fR
+Release notes
+
+.TP
+\fB-F\fR, \fB--notes-file\fR \fB<file>\fR
+Read release notes from file (use "-" to read from standard input)
+
+.TP
+\fB--notes-from-tag\fR
+Automatically generate notes from annotated tag
+
+.TP
+\fB--notes-start-tag\fR \fB<string>\fR
+Tag to use as the starting point for generating release notes
+
+.TP
+\fB-p\fR, \fB--prerelease\fR
+Mark the release as a prerelease
+
+.TP
+\fB--target\fR \fB<branch>\fR
+Target branch or full commit SHA (default [main branch])
+
+.TP
+\fB-t\fR, \fB--title\fR \fB<string>\fR
+Release title
+
+.TP
+\fB--verify-tag\fR
+Abort in case the git tag doesn't already exist in the remote repository
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH ALIASES
+gh release new
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Interactively create a release
+$ gh release create
+
+# Interactively create a release from specific tag
+$ gh release create v1.2.3
+
+# Non-interactively create a release
+$ gh release create v1.2.3 --notes "bugfix release"
+
+# Use automatically generated release notes
+$ gh release create v1.2.3 --generate-notes
+
+# Use release notes from a file
+$ gh release create v1.2.3 -F release-notes.md
+
+# Use annotated tag notes
+$ gh release create v1.2.3 --notes-from-tag
+
+# Don't mark the release as latest
+$ gh release create v1.2.3 --latest=false
+
+# Upload all tarballs in a directory as release assets
+$ gh release create v1.2.3 ./dist/*.tgz
+
+# Upload a release asset with a display label
+$ gh release create v1.2.3 '/path/to/asset.zip#My display label'
+
+# Create a release and start a discussion
+$ gh release create v1.2.3 --discussion-category "General"
+
+# Create a release only if there are new commits available since the last release
+$ gh release create v1.2.3 --fail-on-no-commits
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-release(1)\fR

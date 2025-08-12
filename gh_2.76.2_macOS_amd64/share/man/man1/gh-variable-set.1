@@ -1,0 +1,98 @@
+.nh
+.TH "GH-VARIABLE-SET" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-variable-set - Create or update variables
+
+
+.SH SYNOPSIS
+\fBgh variable set <variable-name> [flags]\fR
+
+
+.SH DESCRIPTION
+Set a value for a variable on one of the following levels:
+- repository (default): available to GitHub Actions runs or Dependabot in a repository
+- environment: available to GitHub Actions runs for a deployment environment in a repository
+- organization: available to GitHub Actions runs or Dependabot within an organization
+
+.PP
+Organization variable can optionally be restricted to only be available to
+specific repositories.
+
+
+.SH OPTIONS
+.TP
+\fB-b\fR, \fB--body\fR \fB<string>\fR
+The value for the variable (reads from standard input if not specified)
+
+.TP
+\fB-e\fR, \fB--env\fR \fB<environment>\fR
+Set deployment environment variable
+
+.TP
+\fB-f\fR, \fB--env-file\fR \fB<file>\fR
+Load variable names and values from a dotenv-formatted file
+
+.TP
+\fB-o\fR, \fB--org\fR \fB<organization>\fR
+Set organization variable
+
+.TP
+\fB-r\fR, \fB--repos\fR \fB<repositories>\fR
+List of repositories that can access an organization variable
+
+.TP
+\fB-v\fR, \fB--visibility\fR \fB<string> (default "private")\fR
+Set visibility for an organization variable: {all|private|selected}
+
+
+.SH OPTIONS INHERITED FROM PARENT COMMANDS
+.TP
+\fB-R\fR, \fB--repo\fR \fB<[HOST/]OWNER/REPO>\fR
+Select another repository using the [HOST/]OWNER/REPO format
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Add variable value for the current repository in an interactive prompt
+$ gh variable set MYVARIABLE
+
+# Read variable value from an environment variable
+$ gh variable set MYVARIABLE --body "$ENV_VALUE"
+
+# Read variable value from a file
+$ gh variable set MYVARIABLE < myfile.txt
+
+# Set variable for a deployment environment in the current repository
+$ gh variable set MYVARIABLE --env myenvironment
+
+# Set organization-level variable visible to both public and private repositories
+$ gh variable set MYVARIABLE --org myOrg --visibility all
+
+# Set organization-level variable visible to specific repositories
+$ gh variable set MYVARIABLE --org myOrg --repos repo1,repo2,repo3
+
+# Set multiple variables imported from the ".env" file
+$ gh variable set -f .env
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-variable(1)\fR

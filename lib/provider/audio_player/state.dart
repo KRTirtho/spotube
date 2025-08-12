@@ -1,5 +1,5 @@
 import 'package:media_kit/media_kit.dart' hide Track;
-import 'package:spotify/spotify.dart' hide Playlist;
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 
 class AudioPlayerState {

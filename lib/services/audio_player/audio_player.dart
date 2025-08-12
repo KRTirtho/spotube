@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
-import 'package:spotify/spotify.dart' hide Playlist;
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/models/local_track.dart';
 import 'package:spotube/services/audio_player/custom_player.dart';
 import 'dart:async';

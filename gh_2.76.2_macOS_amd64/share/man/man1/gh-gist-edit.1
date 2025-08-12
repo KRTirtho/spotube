@@ -1,0 +1,47 @@
+.nh
+.TH "GH-GIST-EDIT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-gist-edit - Edit one of your gists
+
+
+.SH SYNOPSIS
+\fBgh gist edit {<id> | <url>} [<filename>] [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-a\fR, \fB--add\fR \fB<string>\fR
+Add a new file to the gist
+
+.TP
+\fB-d\fR, \fB--desc\fR \fB<string>\fR
+New description for the gist
+
+.TP
+\fB-f\fR, \fB--filename\fR \fB<string>\fR
+Select a file to edit
+
+.TP
+\fB-r\fR, \fB--remove\fR \fB<string>\fR
+Remove a file from the gist
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-gist(1)\fR

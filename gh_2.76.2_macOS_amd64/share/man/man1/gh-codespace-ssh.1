@@ -1,0 +1,116 @@
+.nh
+.TH "GH-CODESPACE-SSH" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-codespace-ssh - SSH into a codespace
+
+
+.SH SYNOPSIS
+\fBgh codespace ssh [<flags>...] [-- <ssh-flags>...] [<command>]\fR
+
+
+.SH DESCRIPTION
+The \fBssh\fR command is used to SSH into a codespace. In its simplest form, you can
+run \fBgh cs ssh\fR, select a codespace interactively, and connect.
+
+.PP
+The \fBssh\fR command will automatically create a public/private ssh key pair in the
+\fB~/.ssh\fR directory if you do not have an existing valid key pair. When selecting the
+key pair to use, the preferred order is:
+.IP "  1." 5
+Key specified by \fB-i\fR in \fB<ssh-flags>\fR
+.IP "  2." 5
+Automatic key, if it already exists
+.IP "  3." 5
+First valid key pair in ssh config (according to \fBssh -G\fR)
+.IP "  4." 5
+Automatic key, newly created
+
+.PP
+The \fBssh\fR command also supports deeper integration with OpenSSH using a \fB--config\fR
+option that generates per-codespace ssh configuration in OpenSSH format.
+Including this configuration in your \fB~/.ssh/config\fR improves the user experience
+of tools that integrate with OpenSSH, such as Bash/Zsh completion of ssh hostnames,
+remote path completion for \fBscp/rsync/sshfs\fR, \fBgit\fR ssh remotes, and so on.
+
+.PP
+Once that is set up (see the second example below), you can ssh to codespaces as
+if they were ordinary remote hosts (using \fBssh\fR, not \fBgh cs ssh\fR).
+
+.PP
+Note that the codespace you are connecting to must have an SSH server pre-installed.
+If the docker image being used for the codespace does not have an SSH server,
+install it in your \fBDockerfile\fR or, for codespaces that use Debian-based images,
+you can add the following to your \fBdevcontainer.json\fR:
+
+.EX
+"features": {
+	"ghcr.io/devcontainers/features/sshd:1": {
+		"version": "latest"
+	}
+}
+.EE
+
+
+.SH OPTIONS
+.TP
+\fB-c\fR, \fB--codespace\fR \fB<string>\fR
+Name of the codespace
+
+.TP
+\fB--config\fR
+Write OpenSSH configuration to stdout
+
+.TP
+\fB-d\fR, \fB--debug\fR
+Log debug data to a file
+
+.TP
+\fB--debug-file\fR \fB<string>\fR
+Path of the file log to
+
+.TP
+\fB--profile\fR \fB<string>\fR
+Name of the SSH profile to use
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+Filter codespace selection by repository name (user/repo)
+
+.TP
+\fB--repo-owner\fR \fB<string>\fR
+Filter codespace selection by repository owner (username or org)
+
+.TP
+\fB--server-port\fR \fB<int> (default 0)\fR
+SSH server port number (0 => pick unused)
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+$ gh codespace ssh
+
+$ gh codespace ssh --config > ~/.ssh/codespaces
+$ printf 'Match all\\nInclude ~/.ssh/codespaces\\n' >> ~/.ssh/config
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-codespace(1)\fR

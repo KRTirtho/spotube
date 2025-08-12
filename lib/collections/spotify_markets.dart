@@ -1,6 +1,6 @@
 // Country Codes contributed by momobobe <https://github.com/momobobe>
 
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 
 final spotifyMarkets = [
   (Market.AL, "Albania (AL)"),

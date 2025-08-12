@@ -1,0 +1,71 @@
+.nh
+.TH "GH-PROJECT-EDIT" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-project-edit - Edit a project
+
+
+.SH SYNOPSIS
+\fBgh project edit [<number>] [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-d\fR, \fB--description\fR \fB<string>\fR
+New description of the project
+
+.TP
+\fB--format\fR \fB<string>\fR
+Output format: {json}
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB--owner\fR \fB<string>\fR
+Login of the owner. Use "@me" for the current user.
+
+.TP
+\fB--readme\fR \fB<string>\fR
+New readme for the project
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB--title\fR \fB<string>\fR
+New title for the project
+
+.TP
+\fB--visibility\fR \fB<string>\fR
+Change project visibility: {PUBLIC|PRIVATE}
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Edit the title of monalisa's project "1"
+$ gh project edit 1 --owner monalisa --title "New title"
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-project(1)\fR

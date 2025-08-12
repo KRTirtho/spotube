@@ -1,0 +1,74 @@
+.nh
+.TH "GH-CODESPACE-DELETE" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-codespace-delete - Delete codespaces
+
+
+.SH SYNOPSIS
+\fBgh codespace delete [flags]\fR
+
+
+.SH DESCRIPTION
+Delete codespaces based on selection criteria.
+
+.PP
+All codespaces for the authenticated user can be deleted, as well as codespaces for a
+specific repository. Alternatively, only codespaces older than N days can be deleted.
+
+.PP
+Organization administrators may delete any codespace billed to the organization.
+
+
+.SH OPTIONS
+.TP
+\fB--all\fR
+Delete all codespaces
+
+.TP
+\fB-c\fR, \fB--codespace\fR \fB<string>\fR
+Name of the codespace
+
+.TP
+\fB--days\fR \fB<N> (default 0)\fR
+Delete codespaces older than N days
+
+.TP
+\fB-f\fR, \fB--force\fR
+Skip confirmation for codespaces that contain unsaved changes
+
+.TP
+\fB-o\fR, \fB--org\fR \fB<login>\fR
+The login handle of the organization (admin-only)
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+Filter codespace selection by repository name (user/repo)
+
+.TP
+\fB--repo-owner\fR \fB<string>\fR
+Filter codespace selection by repository owner (username or org)
+
+.TP
+\fB-u\fR, \fB--user\fR \fB<username>\fR
+The username to delete codespaces for (used with --org)
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-codespace(1)\fR

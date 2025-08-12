@@ -7,7 +7,7 @@ import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/titlebar/titlebar_buttons.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
-import 'package:window_manager/window_manager.dart';
+import 'package:spotube/platform/window_manager/window_manager.dart';
 
 final kTitlebarVisible = kIsWindows || kIsLinux;
 

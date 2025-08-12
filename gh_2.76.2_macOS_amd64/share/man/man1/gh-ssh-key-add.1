@@ -1,0 +1,39 @@
+.nh
+.TH "GH-SSH-KEY-ADD" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-ssh-key-add - Add an SSH key to your GitHub account
+
+
+.SH SYNOPSIS
+\fBgh ssh-key add [<key-file>] [flags]\fR
+
+
+.SH OPTIONS
+.TP
+\fB-t\fR, \fB--title\fR \fB<string>\fR
+Title for the new key
+
+.TP
+\fB--type\fR \fB<string> (default "authentication")\fR
+Type of the ssh key: {authentication|signing}
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH SEE ALSO
+\fBgh-ssh-key(1)\fR

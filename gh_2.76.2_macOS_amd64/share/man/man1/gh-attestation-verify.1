@@ -1,0 +1,263 @@
+.nh
+.TH "GH-ATTESTATION-VERIFY" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-attestation-verify - Verify an artifact's integrity using attestations
+
+
+.SH SYNOPSIS
+\fBgh attestation verify [<file-path> | oci://<image-uri>] [--owner | --repo] [flags]\fR
+
+
+.SH DESCRIPTION
+Verify the integrity and provenance of an artifact using its associated
+cryptographically signed attestations.
+
+.SH Understanding Verification
+An attestation is a claim (i.e. a provenance statement) made by an actor
+(i.e. a GitHub Actions workflow) regarding a subject (i.e. an artifact).
+
+.PP
+In order to verify an attestation, you must provide an artifact and validate:
+* the identity of the actor that produced the attestation
+* the expected attestation predicate type (the nature of the claim)
+
+.PP
+By default, this command enforces the \fBhttps://slsa.dev/provenance/v1\fR
+predicate type. To verify other attestation predicate types use the
+\fB--predicate-type\fR flag.
+
+.PP
+The "actor identity" consists of:
+* the repository or the repository owner the artifact is linked with
+* the Actions workflow that produced the attestation (a.k.a the
+  signer workflow)
+
+.PP
+This identity is then validated against the attestation's certificate's
+SourceRepository, SourceRepositoryOwner, and SubjectAlternativeName
+(SAN) fields, among others.
+
+.PP
+It is up to you to decide how precisely you want to enforce this identity.
+
+.PP
+At a minimum, this command requires either:
+* the \fB--owner\fR flag (e.g. --owner github), or
+* the \fB--repo\fR flag (e.g. --repo github/example)
+
+.PP
+The more precisely you specify the identity, the more control you will
+have over the security guarantees offered by the verification process.
+
+.PP
+Ideally, the path of the signer workflow is also validated using the
+\fB--signer-workflow\fR or \fB--cert-identity\fR flags.
+
+.PP
+Please note: if your attestation was generated via a reusable workflow then
+that reusable workflow is the signer whose identity needs to be validated.
+In this situation, you must use either the \fB--signer-workflow\fR or
+the \fB--signer-repo\fR flag.
+
+.PP
+For more options, see the other available flags.
+
+.SH Loading Artifacts And Attestations
+To specify the artifact, this command requires:
+* a file path to an artifact, or
+* a container image URI (e.g. \fBoci://<image-uri>\fR)
+  * (note that if you provide an OCI URL, you must already be authenticated with
+its container registry)
+
+.PP
+By default, this command will attempt to fetch relevant attestations via the
+GitHub API using the values provided to \fB--owner\fR or  \fB--repo\fR\&.
+
+.PP
+To instead fetch attestations from your artifact's OCI registry, use the
+\fB--bundle-from-oci\fR flag.
+
+.PP
+For offline verification using attestations stored on disk (c.f. the download command)
+provide a path to the \fB--bundle\fR flag.
+
+.SH Additional Policy Enforcement
+Given the \fB--format=json\fR flag, upon successful verification this
+command will output a JSON array containing one entry per verified attestation.
+
+.PP
+This output can then be used for additional policy enforcement, i.e. by being
+piped into a policy engine.
+
+.PP
+Each object in the array contains two properties:
+* an \fBattestation\fR object, which contains the bundle that was verified
+* a \fBverificationResult\fR object, which is a parsed representation of the
+  contents of the bundle that was verified.
+
+.PP
+Within the \fBverificationResult\fR object you will find:
+* \fBsignature.certificate\fR, which is a parsed representation of the X.509
+  certificate embedded in the attestation,
+* \fBverifiedTimestamps\fR, an array of objects denoting when the attestation
+  was witnessed by a transparency log or a timestamp authority
+* \fBstatement\fR, which contains the \fBsubject\fR array referencing artifacts,
+  the \fBpredicateType\fR field, and the \fBpredicate\fR object which contains
+  additional, often user-controllable, metadata
+
+.PP
+IMPORTANT: please note that only the \fBsignature.certificate\fR and the
+\fBverifiedTimestamps\fR properties contain values that cannot be
+manipulated by the workflow that originated the attestation.
+
+.PP
+When dealing with attestations created within GitHub Actions, the contents of
+\fBsignature.certificate\fR are populated directly from the OpenID Connect
+token that GitHub has generated. The contents of the \fBverifiedTimestamps\fR
+array are populated from the signed timestamps originating from either a
+transparency log or a timestamp authority – and likewise cannot be forged by users.
+
+.PP
+When designing policy enforcement using this output, special care must be taken
+when examining the contents of the \fBstatement.predicate\fR property:
+should an attacker gain access to your workflow's execution context, they
+could then falsify the contents of the \fBstatement.predicate\fR\&.
+
+.PP
+To mitigate this attack vector, consider using a "trusted builder": when generating
+an artifact, have the build and attestation signing occur within a reusable workflow
+whose execution cannot be influenced by input provided through the caller workflow.
+
+.PP
+See above re: \fB--signer-workflow\fR\&.
+
+
+.SH OPTIONS
+.TP
+\fB-b\fR, \fB--bundle\fR \fB<string>\fR
+Path to bundle on disk, either a single bundle in a JSON file or a JSON lines file with multiple bundles
+
+.TP
+\fB--bundle-from-oci\fR
+When verifying an OCI image, fetch the attestation bundle from the OCI registry instead of from GitHub
+
+.TP
+\fB--cert-identity\fR \fB<string>\fR
+Enforce that the certificate's SubjectAlternativeName matches the provided value exactly
+
+.TP
+\fB-i\fR, \fB--cert-identity-regex\fR \fB<string>\fR
+Enforce that the certificate's SubjectAlternativeName matches the provided regex
+
+.TP
+\fB--cert-oidc-issuer\fR \fB<string> (default "https://token.actions.githubusercontent.com")\fR
+Enforce that the issuer of the OIDC token matches the provided value
+
+.TP
+\fB--custom-trusted-root\fR \fB<string>\fR
+Path to a trusted_root.jsonl file; likely for offline verification
+
+.TP
+\fB--deny-self-hosted-runners\fR
+Fail verification for attestations generated on self-hosted runners
+
+.TP
+\fB-d\fR, \fB--digest-alg\fR \fB<string> (default "sha256")\fR
+The algorithm used to compute a digest of the artifact: {sha256|sha512}
+
+.TP
+\fB--format\fR \fB<string>\fR
+Output format: {json}
+
+.TP
+\fB--hostname\fR \fB<string>\fR
+Configure host to use
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<expression>\fR
+Filter JSON output using a jq expression
+
+.TP
+\fB-L\fR, \fB--limit\fR \fB<int> (default 30)\fR
+Maximum number of attestations to fetch
+
+.TP
+\fB--no-public-good\fR
+Do not verify attestations signed with Sigstore public good instance
+
+.TP
+\fB-o\fR, \fB--owner\fR \fB<string>\fR
+GitHub organization to scope attestation lookup by
+
+.TP
+\fB--predicate-type\fR \fB<string> (default "https://slsa.dev/provenance/v1")\fR
+Enforce that verified attestations' predicate type matches the provided value
+
+.TP
+\fB-R\fR, \fB--repo\fR \fB<string>\fR
+Repository name in the format /
+
+.TP
+\fB--signer-digest\fR \fB<string>\fR
+Enforce that the digest associated with the signer workflow matches the provided value
+
+.TP
+\fB--signer-repo\fR \fB<string>\fR
+Enforce that the workflow that signed the attestation's repository matches the provided value (/)
+
+.TP
+\fB--signer-workflow\fR \fB<string>\fR
+Enforce that the workflow that signed the attestation matches the provided value ([host/]////)
+
+.TP
+\fB--source-digest\fR \fB<string>\fR
+Enforce that the digest associated with the source repository matches the provided value
+
+.TP
+\fB--source-ref\fR \fB<string>\fR
+Enforce that the git ref associated with the source repository matches the provided value
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# Verify an artifact linked with a repository
+$ gh attestation verify example.bin --repo github/example
+
+# Verify an artifact linked with an organization
+$ gh attestation verify example.bin --owner github
+
+# Verify an artifact and output the full verification result
+$ gh attestation verify example.bin --owner github --format json
+
+# Verify an OCI image using attestations stored on disk
+$ gh attestation verify oci://<image-uri> --owner github --bundle sha256:foo.jsonl
+
+# Verify an artifact signed with a reusable workflow
+$ gh attestation verify example.bin --owner github --signer-repo actions/example
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh-attestation(1)\fR

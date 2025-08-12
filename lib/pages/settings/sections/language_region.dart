@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/platform/spotify/spotify.dart';
 import 'package:spotube/collections/language_codes.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';

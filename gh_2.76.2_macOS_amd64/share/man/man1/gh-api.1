@@ -1,0 +1,241 @@
+.nh
+.TH "GH-API" "1" "Jul 2025" "GitHub CLI 2.76.2" "GitHub CLI manual"
+
+.SH NAME
+gh-api - Make an authenticated GitHub API request
+
+
+.SH SYNOPSIS
+\fBgh api <endpoint> [flags]\fR
+
+
+.SH DESCRIPTION
+Makes an authenticated HTTP request to the GitHub API and prints the response.
+
+.PP
+The endpoint argument should either be a path of a GitHub API v3 endpoint, or
+\fBgraphql\fR to access the GitHub API v4.
+
+.PP
+Placeholder values \fB{owner}\fR, \fB{repo}\fR, and \fB{branch}\fR in the endpoint
+argument will get replaced with values from the repository of the current
+directory or the repository specified in the \fBGH_REPO\fR environment variable.
+Note that in some shells, for example PowerShell, you may need to enclose
+any value that contains \fB{...}\fR in quotes to prevent the shell from
+applying special meaning to curly braces.
+
+.PP
+The \fB-p/--preview\fR flag enables opting into previews, which are feature-flagged,
+experimental API endpoints or behaviors. The API expects opt-in via the \fBAccept\fR
+header with format \fBapplication/vnd.github.<preview-name>-preview+json\fR and this
+command facilitates that via \fB--preview <preview-name>\fR\&. To send a request for
+the corsair and scarlet witch previews, you could use \fB-p corsair,scarlet-witch\fR
+or \fB--preview corsair --preview scarlet-witch\fR\&.
+
+.PP
+The default HTTP request method is \fBGET\fR normally and \fBPOST\fR if any parameters
+were added. Override the method with \fB--method\fR\&.
+
+.PP
+Pass one or more \fB-f/--raw-field\fR values in \fBkey=value\fR format to add static string
+parameters to the request payload. To add non-string or placeholder-determined values, see
+\fB-F/--field\fR below. Note that adding request parameters will automatically switch the
+request method to \fBPOST\fR\&. To send the parameters as a \fBGET\fR query string instead, use
+\fB--method GET\fR\&.
+
+.PP
+The \fB-F/--field\fR flag has magic type conversion based on the format of the value:
+.IP \(bu 2
+literal values \fBtrue\fR, \fBfalse\fR, \fBnull\fR, and integer numbers get converted to
+appropriate JSON types;
+.IP \(bu 2
+placeholder values \fB{owner}\fR, \fB{repo}\fR, and \fB{branch}\fR get populated with values
+from the repository of the current directory;
+.IP \(bu 2
+if the value starts with \fB@\fR, the rest of the value is interpreted as a
+filename to read the value from. Pass \fB-\fR to read from standard input.
+
+.PP
+For GraphQL requests, all fields other than \fBquery\fR and \fBoperationName\fR are
+interpreted as GraphQL variables.
+
+.PP
+To pass nested parameters in the request payload, use \fBkey[subkey]=value\fR syntax when
+declaring fields. To pass nested values as arrays, declare multiple fields with the
+syntax \fBkey[]=value1\fR, \fBkey[]=value2\fR\&. To pass an empty array, use \fBkey[]\fR without a
+value.
+
+.PP
+To pass pre-constructed JSON or payloads in other formats, a request body may be read
+from file specified by \fB--input\fR\&. Use \fB-\fR to read from standard input. When passing the
+request body this way, any parameters specified via field flags are added to the query
+string of the endpoint URL.
+
+.PP
+In \fB--paginate\fR mode, all pages of results will sequentially be requested until
+there are no more pages of results. For GraphQL requests, this requires that the
+original query accepts an \fB$endCursor: String\fR variable and that it fetches the
+\fBpageInfo{ hasNextPage, endCursor }\fR set of fields from a collection. Each page is a separate
+JSON array or object. Pass \fB--slurp\fR to wrap all pages of JSON arrays or objects
+into an outer JSON array.
+
+
+.SH OPTIONS
+.TP
+\fB--cache\fR \fB<duration>\fR
+Cache the response, e.g. "3600s", "60m", "1h"
+
+.TP
+\fB-F\fR, \fB--field\fR \fB<key=value>\fR
+Add a typed parameter in key=value format
+
+.TP
+\fB-H\fR, \fB--header\fR \fB<key:value>\fR
+Add a HTTP request header in key:value format
+
+.TP
+\fB--hostname\fR \fB<string>\fR
+The GitHub hostname for the request (default "github.com")
+
+.TP
+\fB-i\fR, \fB--include\fR
+Include HTTP response status line and headers in the output
+
+.TP
+\fB--input\fR \fB<file>\fR
+The file to use as body for the HTTP request (use "-" to read from standard input)
+
+.TP
+\fB-q\fR, \fB--jq\fR \fB<string>\fR
+Query to select values from the response using jq syntax
+
+.TP
+\fB-X\fR, \fB--method\fR \fB<string> (default "GET")\fR
+The HTTP method for the request
+
+.TP
+\fB--paginate\fR
+Make additional HTTP requests to fetch all pages of results
+
+.TP
+\fB-p\fR, \fB--preview\fR \fB<strings>\fR
+Opt into GitHub API previews (names should omit '-preview')
+
+.TP
+\fB-f\fR, \fB--raw-field\fR \fB<key=value>\fR
+Add a string parameter in key=value format
+
+.TP
+\fB--silent\fR
+Do not print the response body
+
+.TP
+\fB--slurp\fR
+Use with "--paginate" to return an array of all pages of either JSON arrays or objects
+
+.TP
+\fB-t\fR, \fB--template\fR \fB<string>\fR
+Format JSON output using a Go template; see "gh help formatting"
+
+.TP
+\fB--verbose\fR
+Include full HTTP request and response in the output
+
+
+.SH EXIT CODES
+0: Successful execution
+
+.PP
+1: Error
+
+.PP
+2: Command canceled
+
+.PP
+4: Authentication required
+
+.PP
+NOTE: Specific commands may have additional exit codes. Refer to the command's help for more information.
+
+
+.SH EXAMPLE
+.EX
+# List releases in the current repository
+$ gh api repos/{owner}/{repo}/releases
+
+# Post an issue comment
+$ gh api repos/{owner}/{repo}/issues/123/comments -f body='Hi from CLI'
+
+# Post nested parameter read from a file
+$ gh api gists -F 'files[myfile.txt][content]=@myfile.txt'
+
+# Add parameters to a GET request
+$ gh api -X GET search/issues -f q='repo:cli/cli is:open remote'
+
+# Set a custom HTTP header
+$ gh api -H 'Accept: application/vnd.github.v3.raw+json' ...
+
+# Opt into GitHub API previews
+$ gh api --preview baptiste,nebula ...
+
+# Print only specific fields from the response
+$ gh api repos/{owner}/{repo}/issues --jq '.[].title'
+
+# Use a template for the output
+$ gh api repos/{owner}/{repo}/issues --template \\
+  '{{range .}}{{.title}} ({{.labels | pluck "name" | join ", " | color "yellow"}}){{"\\n"}}{{end}}'
+
+# Update allowed values of the "environment" custom property in a deeply nested array
+$ gh api -X PATCH /orgs/{org}/properties/schema \\
+   -F 'properties[][property_name]=environment' \\
+   -F 'properties[][default_value]=production' \\
+   -F 'properties[][allowed_values][]=staging' \\
+   -F 'properties[][allowed_values][]=production'
+
+# List releases with GraphQL
+$ gh api graphql -F owner='{owner}' -F name='{repo}' -f query='
+  query($name: String!, $owner: String!) {
+    repository(owner: $owner, name: $name) {
+      releases(last: 3) {
+        nodes { tagName }
+      }
+    }
+  }
+\&'
+
+# List all repositories for a user
+$ gh api graphql --paginate -f query='
+  query($endCursor: String) {
+    viewer {
+      repositories(first: 100, after: $endCursor) {
+        nodes { nameWithOwner }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+\&'
+
+# Get the percentage of forks for the current user
+$ gh api graphql --paginate --slurp -f query='
+  query($endCursor: String) {
+    viewer {
+      repositories(first: 100, after: $endCursor) {
+        nodes { isFork }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+\&' | jq 'def count(e): reduce e as $_ (0;.+1);
+[.[].data.viewer.repositories.nodes[]] as $r | count(select($r[].isFork))/count($r[])'
+
+.EE
+
+
+.SH SEE ALSO
+\fBgh(1)\fR

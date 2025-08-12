@@ -11,7 +11,6 @@
 import 'package:auto_route/auto_route.dart' as _i43;
 import 'package:flutter/material.dart' as _i44;
 import 'package:shadcn_flutter/shadcn_flutter.dart' as _i46;
-import 'package:spotify/spotify.dart' as _i45;
 import 'package:spotube/models/spotify/recommendation_seeds.dart' as _i47;
 import 'package:spotube/pages/album/album.dart' as _i2;
 import 'package:spotube/pages/artist/artist.dart' as _i3;
@@ -59,6 +58,7 @@ import 'package:spotube/pages/stats/playlists/playlists.dart' as _i33;
 import 'package:spotube/pages/stats/stats.dart' as _i32;
 import 'package:spotube/pages/stats/streams/streams.dart' as _i35;
 import 'package:spotube/pages/track/track.dart' as _i36;
+import 'package:spotube/platform/spotify/spotify.dart' as _i45;
 
 /// generated route for
 /// [_i1.AboutSpotubePage]
