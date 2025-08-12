@@ -33,4 +33,3 @@ jobs:
       - run: npm i -g vercel
       # deploy del directorio estático generado por Flutter
       - run: vercel deploy --prod build/web --yes --token ${{ secrets.VERCEL_TOKEN }} --name tunestream-app
-YAML < /dev/null
