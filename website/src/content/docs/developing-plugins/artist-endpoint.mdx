@@ -1,0 +1,56 @@
+---
+layout: "layouts/DocLayout.astro"
+title: The ArtistEndpoint
+description: ""
+order: 7
+---
+
+The ArtistEndpoint is used to fetch artist information and do artist-related actions. In the `src/segments/artist.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class ArtistEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  fun getArtist(id: string) {
+    // TODO: Implement method
+  }
+
+  fun related(id: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun topTracks(id: string, {limit: int, offset: int}) {
+    // TODO: Implement method
+  }
+
+  fun albums(id: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun save(artistIds: List) {
+    // TODO: Implement method
+  }
+
+  fun unsave(artistIds: List) {
+    // TODO: Implement method
+  }
+}
+```
+
+| Method        | Description                                                                            | Returns                                                                                                                      |
+| ------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `getArtist()` | Fetches artist information by ID.                                                      | [`SpotubeFullArtistObject`][SpotubeFullArtistObject]                                                                         |
+| `related()`   | Fetches related artists based on the specified artist ID. Accepts optional pagination. | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullArtistObject`][SpotubeFullArtistObject] |
+| `topTracks()` | Fetches top tracks of the specified artist. Accepts optional pagination.               | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullTrackObject`][SpotubeFullTrackObject]   |
+| `albums()`    | Fetches albums of the specified artist. Accepts optional pagination.                   | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]   |
+| `save()`      | Saves the specified artists. Accepts a list of artist IDs.                             | `void`                                                                                                                       |
+| `unsave()`    | Removes the specified artists from saved artists. Accepts a list of artist IDs.        | `void`                                                                                                                       |
+
+{/* Urls */}
+[SpotubePaginationResponseObject]: /models/spotube-pagination-response-object
+[SpotubeFullAlbumObject]: /models/spotube-full-album-object
+[SpotubeFullArtistObject]: /models/spotube-full-artist-object
+[SpotubeFullTrackObject]: /models/spotube-full-track-object

@@ -1,0 +1,83 @@
+---
+layout: "layouts/DocLayout.astro"
+title: The UserEndpoint
+description: ""
+order: 4
+---
+
+The UserEndpoint is used to fetch user information and manage user-related actions.
+In the `src/segments/user.ht` file you can find all the required method definitions. These are the necessary
+methods Spotube calls in its lifecycle.
+
+> Most of these methods should be just a mapping to an API call with minimum latency. Avoid calling plugin APIs like WebView or Forms
+> in these methods. User interactions should be avoided here generally.
+
+```hetu_script
+class UserEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  fun me() {
+    // TODO: Implement method
+  }
+
+  fun savedTracks({ offset: int, limit: int }) {
+    // TODO: Implement method
+  }
+
+  fun savedPlaylists({ offset: int, limit: int }) {
+    // TODO: Implement method
+  }
+
+  fun savedAlbums({ offset: int, limit: int }) {
+    // TODO: Implement method
+  }
+
+  fun savedArtists({ offset: int, limit: int }) {
+    // TODO: Implement method
+  }
+
+  fun isSavedPlaylist(playlistId: string) { // Future<bool>
+    // TODO: Implement method
+  }
+
+  fun isSavedTracks(trackIds: List) { // Future<List<bool>>
+    // TODO: Implement method
+  }
+
+  fun isSavedAlbums(albumIds: List) { // Future<List<bool>>
+    // TODO: Implement method
+  }
+
+  fun isSavedArtists(artistIds: List) { // Future<List<bool>>
+    // TODO: Implement method
+  }
+}
+```
+
+These methods are pretty self-explanatory. You need to implement them to fetch user information from your service.
+
+| Method              | Description                                                              | Returns                                                                                                                          |
+| ------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `me()`              | Fetches the current user's information.                                  | [`SpotubeUserObject`][SpotubeUserObject]                                                                                         |
+| `savedTracks()`     | Fetches the user's saved tracks with pagination support.                 | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullTrackObject`][SpotubeFullTrackObject]       |
+| `savedPlaylists()`  | Fetches the user's saved playlists with pagination support.              | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullPlaylistObject`][SpotubeFullPlaylistObject] |
+| `savedAlbums()`     | Fetches the user's saved albums with pagination support.                 | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]       |
+| `savedArtists()`    | Fetches the user's saved artists with pagination support.                | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullArtistObject`][SpotubeFullArtistObject]     |
+| `isSavedPlaylist()` | Checks if a playlist is saved by the user. Returns a `Future<bool>`.     | `bool`                                                                                                                           |
+| `isSavedTracks()`   | Checks if tracks are saved by the user. Returns a `Future<List<bool>>`.  | `List<bool>` (each boolean corresponds to a track ID)                                                                            |
+| `isSavedAlbums()`   | Checks if albums are saved by the user. Returns a `Future<List<bool>>`.  | `List<bool>` (each boolean corresponds to an album ID)                                                                           |
+| `isSavedArtists()`  | Checks if artists are saved by the user. Returns a `Future<List<bool>>`. | `List<bool>` (each boolean corresponds to an artist ID)                                                                          |
+
+> Note: The `isSavedTracks`, `isSavedAlbums`, and `isSavedArtists` methods accept a list of IDs and return a list of booleans
+> indicating whether each item is saved by the user. The order of the booleans in the list corresponds to the order of the IDs
+> in the input list.
+
+{/* Links */}
+[SpotubeUserObject]: /models/spotube-user-object
+[SpotubePaginationResponseObject]: /models/spotube-pagination-response-object
+[SpotubeFullTrackObject]: /models/spotube-full-track-object
+[SpotubeFullPlaylistObject]: /models/spotube-full-playlist-object
+[SpotubeFullAlbumObject]: /models/spotube-full-album-object
+[SpotubeFullArtistObject]: /models/spotube-full-artist-object

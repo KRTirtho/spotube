@@ -1,0 +1,43 @@
+---
+layout: "layouts/DocLayout.astro"
+title: The TrackEndpoint
+description: ""
+order: 5
+---
+
+The TrackEndpoint is used to fetch track information and do track-related actions. In the `src/segments/track.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class TrackEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  fun getTrack(id: string) {
+    // TODO: Implement method
+  }
+
+  fun save(trackIds: List) { // List<String>
+    // TODO: Implement method
+  }
+
+  fun unsave(trackIds: List) { // List<String>
+    // TODO: Implement method
+  }
+
+  fun radio(id: string) {
+    // TODO: Implement method
+  }
+}
+```
+
+| Method       | Description                                                                          | Returns                                                  |
+| ------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `getTrack()` | Fetches track information by ID.                                                     | [SpotubeFullTrackObject][SpotubeFullTrackObject]         |
+| `save()`     | Saves the specified tracks. Accepts a list of track IDs.                             | void                                                     |
+| `unsave()`   | Removes the specified tracks from saved tracks. Accepts a list of track IDs.         | void                                                     |
+| `radio()`    | Fetches related tracks based on specified tracks. Try to return a List of 50 tracks. | [List\<SpotubeFullTrackObject\>][SpotubeFullTrackObject] |
+
+{/* Urls */}
+[SpotubeFullTrackObject]: /models/spotube-full-track-object

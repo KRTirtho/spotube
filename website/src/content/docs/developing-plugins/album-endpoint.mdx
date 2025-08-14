@@ -1,0 +1,48 @@
+---
+layout: "layouts/DocLayout.astro"
+title: The AlbumEndpoint
+description: ""
+order: 6
+---
+
+The AlbumEndpoint is used to fetch album information and do album-related actions. In the `src/segments/album.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class AlbumEndpoint {
+  construct (this.client)
+
+  fun getAlbum(id: string) {
+    // TODO: Implement method
+  }
+
+  fun tracks(id: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun releases({offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun save(albumIds: List) { // List<String>
+    // TODO: Implement method
+  }
+
+  fun unsave(albumIds: List) { // List<String>
+    // TODO: Implement method
+  }
+}
+```
+
+| Method       | Description                                                                              | Returns                                                                                                                    |
+| ------------ | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `getAlbum()` | Fetches album information by ID.                                                         | [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]                                                                         |
+| `tracks()`   | Fetches tracks of the specified album. Accepts an ID and optional pagination parameters. | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullTrackObject`][SpotubeFullTrackObject] |
+| `releases()` | Fetches new album releases user followed artists or globally                             | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject] |
+| `save()`     | Saves the specified albums. Accepts a list of album IDs.                                 | `void`                                                                                                                     |
+| `unsave()`   | Removes the specified albums from saved albums. Accepts a list of album IDs.             | `void`                                                                                                                     |
+
+{/* Urls */}
+[SpotubePaginationResponseObject]: /models/spotube-pagination-response-object
+[SpotubeFullAlbumObject]: /models/spotube-full-album-object
+[SpotubeFullTrackObject]: /models/spotube-full-track-object
