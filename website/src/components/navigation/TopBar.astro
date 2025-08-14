@@ -4,10 +4,11 @@ import { FaGithub } from "react-icons/fa6";
 import SidebarButton from "./sidebar-button";
 
 const pathname = Astro.url.pathname;
-console.log("pathname:", pathname);
 ---
 
-<header class="flex justify-between items-center px-4 bg-surface">
+<header
+  class="flex justify-between items-center p-4 top-0 fixed w-full z-10 backdrop-blur-md backdrop-saturate-150"
+>
   <div class="flex items-center justify-between w-full">
     <div class="flex items-center gap-2">
       <SidebarButton client:only />

@@ -1,0 +1,103 @@
+---
+layout: "layouts/DocLayout.astro"
+title: LocalStorage
+description: Documentation for the LocalStorage API for spotube plugins
+order: 2
+---
+
+The `LocalStorage` API is a plain text key/value holding persistent storage for spotube plugins. It's similar to the `localStorage` API in web browsers.
+The API is a 1:1 port of [shared_preferences][shared_preferences] package from [pub.dev](https://pub.dev) (Flutter package registry)
+
+The only difference is that the `LocalStorage` API is 100% asynchronous. So every method returns a `Future`
+
+## Usage
+
+#### Get values
+
+Retrieve stored information by key:
+
+```hetu_script
+import "module:spotube_plugin" as spotube
+
+var LocalStorage = spotube.LocalStorage
+
+// Get a string value by key
+LocalStorage.getString("key").then((value) {
+    print("Value for 'key': $value")
+})
+
+// Get an integer value by key
+LocalStorage.getInt("key").then((value) {
+    print("Value for 'key': $value")
+})
+
+// Get a double value by key
+LocalStorage.getDouble("key").then((value) {
+    print("Value for 'key': $value")
+})
+
+// Get a boolean value by key
+LocalStorage.getBool("key").then((value) {
+    print("Value for 'key': $value")
+})
+
+// Get a list of strings by key
+LocalStorage.getStringList("key").then((value) {
+    for (var item in value) {
+        print("Item in list: $item")
+    }
+})
+```
+
+#### Set values
+
+To set or store data in the local storage, you can use the following methods:
+
+```hetu_script
+// Set a string value by key
+LocalStorage.setString("key", "value")
+
+// Set an integer value by key
+LocalStorage.setInt("key", 42)
+
+// Set a double value by key
+LocalStorage.setDouble("key", 3.14)
+
+// Set a boolean value by key
+LocalStorage.setBool("key", true)
+
+// Set a list of strings by key
+LocalStorage.setStringList("key", ["item1", "item2", "item3"])
+```
+
+#### Key operations
+
+To remove a value from the local storage, you can use the `remove` method:
+
+```hetu_script
+// Remove a value by key
+LocalStorage.remove("key")
+```
+
+To clear all values from the local storage, you can use the `clear` method:
+
+```hetu_script
+// Clear all values from local storage
+LocalStorage.clear()
+```
+
+To check if a key exists in the local storage, you can use the `containsKey` method:
+
+```hetu_script
+// Check if a key exists
+LocalStorage.containsKey("key").then((exists) {
+    if (exists) {
+        print("Key 'key' exists in local storage")
+    } else {
+        print("Key 'key' does not exist in local storage")
+    }
+})
+```
+
+{/* Links */}
+[shared_preferences]: https://pub.dev/packages/shared_preferences
