@@ -45,5 +45,8 @@ export default defineConfig({
   redirects: {
     "/docs": "/docs/get-started/introduction",
     "/docs/get-started": "/docs/get-started/introduction",
+    "/docs/developing-plugins": "/docs/developing-plugins/introduction",
+    "/docs/plugin-apis": "/docs/plugin-apis/webview",
+    "/docs/reference": "/docs/reference/models",
   },
 });
