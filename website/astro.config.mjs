@@ -5,6 +5,7 @@ import react from "@astrojs/react";
 import mdx from "@astrojs/mdx";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import pagefind from "astro-pagefind";
 
 // https://astro.build/config
 export default defineConfig({
@@ -40,7 +41,7 @@ export default defineConfig({
       ],
     ],
   },
-  integrations: [react(), mdx()],
+  integrations: [react(), mdx(), pagefind()],
   redirects: {
     "/docs": "/docs/get-started/introduction",
     "/docs/get-started": "/docs/get-started/introduction",

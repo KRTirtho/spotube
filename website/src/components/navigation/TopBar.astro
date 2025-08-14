@@ -2,6 +2,7 @@
 import { routes } from "~/collections/app";
 import { FaGithub } from "react-icons/fa6";
 import SidebarButton from "./sidebar-button";
+import Search from "astro-pagefind/components/Search";
 
 const pathname = Astro.url.pathname;
 ---
@@ -19,6 +20,16 @@ const pathname = Astro.url.pathname;
         </a>
       </h2>
     </div>
+
+    <Search
+      id="search"
+      className="pagefind-ui"
+      uiOptions={{
+        showImages: false,
+        showSubResults: true,
+      }}
+    />
+
     <a
       class="mw-2 md:me-4"
       href="https://github.com/KRTirtho/spotube?referrer=spotube.krtirtho.dev"

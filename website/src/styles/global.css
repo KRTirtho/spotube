@@ -7,6 +7,15 @@
 @import "@skeletonlabs/skeleton/optional/presets";
 @import "@skeletonlabs/skeleton/themes/wintry";
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  scroll-margin-top: 80px;
+}
+
 .prose code::before,
 .prose code::after {
   content: none !important;
@@ -18,4 +27,58 @@
 
 .prose a code {
   @apply text-primary-500 underline decoration-primary-500;
+}
+
+/* Astro PageFind */
+.pagefind-ui {
+  --pagefind-ui-scale: 0.75;
+  --pagefind-ui-primary: var(--color-primary-500);
+  --pagefind-ui-text: var(--color-surface-900-100);
+  --pagefind-ui-border: var(--color-surface-300-700);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: 0.5rem;
+
+  width: 50%;
+}
+
+.pagefind-ui .pagefind-ui__drawer:not(.pagefind-ui__hidden) {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-top: 0px;
+  z-index: 9999;
+  padding: 0 2em 1em;
+  overflow-y: auto;
+  box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.2),
+    0 2px 2px 0 rgba(0, 0, 0, 0.1);
+  border-bottom-right-radius: var(--pagefind-ui-border-radius);
+  border-bottom-left-radius: var(--pagefind-ui-border-radius);
+
+  @apply bg-gray-50 dark:bg-surface-900;
+}
+
+.pagefind-ui .pagefind-ui__result-link {
+  color: var(--pagefind-ui-primary);
+}
+
+.pagefind-ui .pagefind-ui__result-excerpt {
+  @apply font-normal text-surface-900-100;
+}
+
+.pagefind-ui .pagefind-ui__search-input {
+  background-color: var(--color-white) !important;
+}
+
+.pagefind-ui .pagefind-ui__search-clear {
+  background: var(--color-white) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pagefind-ui .pagefind-ui__search-input {
+    background-color: var(--color-surface-900) !important;
+  }
+
+  .pagefind-ui .pagefind-ui__search-clear {
+    background: var(--color-surface-900) !important;
+  }
 }
