@@ -6,3 +6,16 @@
 @import "@skeletonlabs/skeleton";
 @import "@skeletonlabs/skeleton/optional/presets";
 @import "@skeletonlabs/skeleton/themes/wintry";
+
+.prose code::before,
+.prose code::after {
+  content: none !important;
+}
+
+.prose code:not(pre code) {
+  @apply bg-surface-100-900 px-1 py-0.5 rounded-sm;
+}
+
+.prose a code {
+  @apply text-primary-500 underline decoration-primary-500;
+}

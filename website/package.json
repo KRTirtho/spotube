@@ -22,7 +22,10 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-icons": "^5.5.0",
+    "rehype-autolink-headings": "^7.1.0",
+    "rehype-slug": "^6.0.0",
     "sanitize-html": "^2.17.0",
+    "shiki": "^3.9.2",
     "tailwindcss": "^4.1.11",
     "usehooks-ts": "^3.1.1"
   },
