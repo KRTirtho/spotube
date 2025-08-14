@@ -1,0 +1,59 @@
+---
+layout: "layouts/DocLayout.astro"
+title: The SearchEndpoint
+description: ""
+order: 9
+---
+
+The SearchEndpoint is used to fetch search playlist, tracks, album and artists. In the `src/segments/search.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class SearchEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  get chips -> List { // Set<string>
+    // can be tracks, playlists, artists, albums and all
+    return ["all", "tracks", "albums", "artists", "playlists"]
+  }
+
+  fun all(query: string) {
+    // TODO: Implement method
+  }
+
+  fun albums(query: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun artists(query: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun tracks(query: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun playlists(query: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+}
+```
+
+| Method        | Description                         | Returns                                                                                                                          |
+| ------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `chips`       | Returns the available search chips. | `List<string>`                                                                                                                   |
+| `all()`       | Searches for all types of content.  | [`SpotubeSearchResponseObject`][SpotubeSearchResponseObject]                                                                     |
+| `albums()`    | Searches only for albums.           | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]       |
+| `artists()`   | Searches only for artists.          | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullArtistObject`][SpotubeFullArtistObject]     |
+| `tracks()`    | Searches only for tracks.           | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullTrackObject`][SpotubeFullTrackObject]       |
+| `playlists()` | Searches only for playlists.        | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullPlaylistObject`][SpotubeFullPlaylistObject] |
+
+{/* Urls */}
+[SpotubePaginationResponseObject]: /models/spotube-pagination-response-object
+[SpotubeSearchResponseObject]: /models/spotube-search-response-object
+[SpotubeFullPlaylistObject]: /models/spotube-full-playlist-object
+[SpotubeFullTrackObject]: /models/spotube-full-track-object
+[SpotubeFullArtistObject]: /models/spotube-full-artist-object
+[SpotubeFullAlbumObject]: /models/spotube-full-album-object

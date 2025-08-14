@@ -1,0 +1,48 @@
+---
+layout: "layouts/DocLayout.astro"
+title: The BrowseEndpoint
+description: ""
+order: 10
+---
+
+The BrowseEndpoint is used to fetch recommendations and catalogs of playlists, albums and artists. In the `src/segments/browse.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class BrowseEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  fun sections({offset: int, limit: int}) {
+   // TODO: Implement method
+  }
+
+  fun sectionItems(id: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+}
+```
+
+| Method           | Description                              | Returns                                                                                                                                        |
+| ---------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sections()`     | Returns the sections of the home page.   | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeBrowseSectionObject`][SpotubeBrowseSectionObject] of `Object` |
+| `sectionItems()` | Returns the items of a specific section. | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of `Object`                                                               |
+
+> In `sectionItems()` The `id` it takes comes from `sections()`. It is basically used in an expanded screen to show the browse section items with pagination.
+>
+> For sections returned by `sections()` if `browseMore` is `true` that's when `sectionItems()` is used to fetch the items of that section.
+
+By the way, the `Object` can be any of the following types:
+
+- [`SpotubeFullPlaylistObject`][SpotubeFullPlaylistObject]
+- [`SpotubeFullArtistObject`][SpotubeFullArtistObject]
+- [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]
+
+{/* Urls */}
+[SpotubePaginationResponseObject]: /models/spotube-pagination-response-object
+[SpotubeBrowseSectionObject]: /models/spotube-browse-section-object
+[SpotubeFullPlaylistObject]: /models/spotube-full-playlist-object
+[SpotubeFullTrackObject]: /models/spotube-full-track-object
+[SpotubeFullArtistObject]: /models/spotube-full-artist-object
+[SpotubeFullAlbumObject]: /models/spotube-full-album-object
