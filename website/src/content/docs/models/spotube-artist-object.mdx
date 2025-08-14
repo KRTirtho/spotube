@@ -1,0 +1,33 @@
+---
+layout: "layouts/DocLayout.astro"
+title: Artist
+description: Different types of artist objects used in Spotube.
+order: 2
+---
+
+### SpotubeSimpleArtistObject
+
+Following is the structure of the `SpotubeArtistObject`:
+
+| Property    | Type                                                         |
+| ----------- | ------------------------------------------------------------ |
+| id          | `string`                                                     |
+| name        | `string`                                                     |
+| externalUri | `string`                                                     |
+| images      | List of [`SpotubeImageObject`][SpotubeImageObject] or `null` |
+
+### SpotubeFullArtistObject
+
+Following is the structure of the `SpotubeFullArtistObject`:
+
+| Property    | Type                                                  |
+| ----------- | ----------------------------------------------------- |
+| id          | `string`                                              |
+| name        | `string`                                              |
+| externalUri | `string`                                              |
+| images      | List of [`SpotubeImageObject`][SpotubeImageObject] or |
+| followers   | `number`                                              |
+| genres      | List of `string` or `null`                            |
+
+{/* Urls */}
+[SpotubeImageObject]: /docs/models/spotube-image-object

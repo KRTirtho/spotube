@@ -1,0 +1,18 @@
+---
+layout: "layouts/DocLayout.astro"
+title: Pagination Response
+description: ""
+order: 8
+---
+
+`SpotubePaginationResponseObject` is generic model. The `items` property can contain any type of `Object` in it.
+
+This is the structure of `SpotubePaginationResponseObject`:
+
+| Property   | Type                                            |
+| ---------- | ----------------------------------------------- |
+| limit      | `number`                                        |
+| nextOffset | `number` or `null`                              |
+| total      | `number`                                        |
+| hasMore    | `boolean`                                       |
+| items      | List of generic type `T` which extends `Object` |

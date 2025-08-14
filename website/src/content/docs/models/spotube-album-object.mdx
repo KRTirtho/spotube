@@ -1,0 +1,42 @@
+---
+layout: "layouts/DocLayout.astro"
+title: Album
+description: Different types of album objects used in Spotube.
+order: 3
+---
+
+### SpotubeSimpleAlbumObject
+
+Following is the structure of the `SpotubeAlbumObject`:
+
+| Property    | Type                                                             |
+| ----------- | ---------------------------------------------------------------- |
+| id          | `string`                                                         |
+| name        | `string`                                                         |
+| externalUri | `string`                                                         |
+| images      | List of [`SpotubeImageObject`][SpotubeImageObject]               |
+| albumType   | `album`, `single` or `compilation`                               |
+| artists     | List of [`SpotubeSimpleArtistObject`][SpotubeSimpleArtistObject] |
+| releaseDate | `string` (YYYY-MM-DD format) or `null`                           |
+
+{/* Urls */}
+
+### SpotubeFullAlbumObject
+
+Following is the structure of the `SpotubeFullAlbumObject`:
+
+| Property    | Type                                                             |
+| ----------- | ---------------------------------------------------------------- |
+| id          | `string`                                                         |
+| name        | `string`                                                         |
+| externalUri | `string`                                                         |
+| images      | List of [`SpotubeImageObject`][SpotubeImageObject]               |
+| albumType   | `album`, `single` or `compilation`                               |
+| artists     | List of [`SpotubeSimpleArtistObject`][SpotubeSimpleArtistObject] |
+| releaseDate | `string` (YYYY-MM-DD format)                                     |
+| totalTracks | `number`                                                         |
+| recordLabel | `string` or `null`                                               |
+
+{/* Urls */}
+[SpotubeImageObject]: /docs/models/spotube-image-object
+[SpotubeSimpleArtistObject]: /docs/models/spotube-artist-objects#spotubesimpleartistobject
