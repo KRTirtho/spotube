@@ -22,8 +22,32 @@ const otherDownloads: [string, string, IconType][] = [
     <br /><br />
     <h5 class="h5">Spotube is available for every platform</h5>
     <br />
-
-    <DownloadItems links={extendedDownloadLinks} />
+    <!-- WARNING! -->
+    <h3 class="h3 text-red-500" data-svelte-h="svelte-1l4b696">
+      Versions of Spotube (&lt;=v4.0.2) are ceased to work with Spotify™ API.
+      <br />
+      So users can no longer use/download those versions.
+      <br />
+      Please wait for the next version that will remedy this issue by not using such
+      APIs.
+    </h3>
+    <p class="text-surface-500 mt-5" data-svelte-h="svelte-1nkw9cu">
+      Spotube has no affiliation with Spotify™ or any of its subsidiaries.
+    </p>
+    <br />
+    <br />
+    <!-- <DownloadItems links={extendedDownloadLinks} /> -->
+    <h6 class="h6 mb-5" data-svelte-h="svelte-1ws2638">
+      The new Spotube v5 is still under beta. Please use the Nightly version
+      until stable release.
+    </h6>
+    <!-- WARNING! -->
+    <div class="flex">
+      <a href="/downloads/nightly" class="flex gap-2 btn btn-lg preset-filled">
+        <LuDownload />
+        Download Nightly
+      </a>
+    </div>
     <br />
 
     <br />
