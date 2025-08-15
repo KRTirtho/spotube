@@ -1,0 +1,83 @@
+---
+layout: "layouts/DocLayout.astro"
+title: Create your first plugin
+description: ""
+order: 1
+---
+
+If you are comfortable with Dart, Flutter and Hetu Script, you can start developing your first plugin.
+This guide will help you initialize a plugin project and write your first plugin.
+
+## Initializing a plugin project
+
+[spotube-plugin-template][spotube-plugin-template] is a template repository for Spotube plugins. It's a starting point
+with everything you need to get started with plugin development. You should use it to create your own plugin.
+
+Simply clone or click "Use this template" button on the GitHub repository page to create a new repository.
+
+```bash
+$ git clone https://github.com/KRTirtho/spotube-plugin-template.git
+$ cd spotube-plugin-template
+```
+
+## Understanding plugins.json
+
+After cloning the repository, you will find a file named `plugins.json` in the root directory.
+This file is crucial for Spotube to recognize your plugin. It looks like this:
+
+```json
+{
+  "type": "metadata",
+  "version": "1.0.0",
+  "name": "Alphanumeric plugin name with hyphens or underscore",
+  "author": "Your Name",
+  "description": "A brief description of the plugin's functionality.",
+  "entryPoint": "plugin class name",
+  "apis": ["webview", "localstorage", "timezone"],
+  "abilities": ["authentication", "scrobbling"],
+  "repository": "https://github.com/KRTirtho/spotube-plugin-template",
+  "pluginApiVersion": "1.0.0"
+}
+```
+
+| Property           | Description                                                                                                                                                                 |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `type`             | The type of the plugin, which is always `metadata` for Spotube plugins.                                                                                                     |
+| `version`          | The version of the plugin, following [semantic versioning][semantic-version] (e.g., `1.0.0`).                                                                               |
+| `name`             | The name of the plugin                                                                                                                                                      |
+| `author`           | The name of the plugin author.                                                                                                                                              |
+| `description`      | A brief description of the plugin's functionality.                                                                                                                          |
+| `entryPoint`       | The name of the class that serves as the entry point for the plugin.                                                                                                        |
+| `apis`             | An array of APIs that the plugin uses. This is used to determine which APIs are available to the plugin. Following APIs are available "webview", "localstorage", "timezone" |
+| `abilities`        | An array of abilities that the plugin has. This is used to determine which abilities the plugin has. Following abilities can be listed: "authentication", "scrobbling"      |
+| `repository`       | The URL of the plugin's repository. This is used to display the plugin's repository in the plugin manager.                                                                  |
+| `pluginApiVersion` | The version of the plugin API that the plugin uses. This is used to determine if the plugin is compatible with the current version of Spotube.                              |
+
+Change the values in the `plugins.json` file to match your plugin's information.
+
+## Running the `example` app
+
+There's an `example` folder that contains a simple Flutter app that utilizes all the methods
+Spotube would call on your plugin. You can run this app to test your plugin's functionality.
+
+But first you need too compile the plugin to bytecode. You can simply do this using:
+
+```shell
+$ make
+```
+
+Make sure you've `make` command installed on your system and also must have the [hetu_script_dev_tools][hetu_script_dev_tools] package globally installed.
+After compiling the plugin, you can run the example app like any other Flutter app.
+
+```shell
+$ cd example
+$ flutter run
+```
+
+> Most of the buttons, will not work as they not yet implemented. You've to implement the methods in your plugin source code.
+> We will cover how to implement the methods in the next section.
+
+{/* Links */}
+[spotube-plugin-template]: https://github.com/KRTirtho/spotube-plugin-template
+[semantic-version]: https://semver.org/
+[hetu_script_dev_tools]: https://pub.dev/packages/hetu_script_dev_tools
