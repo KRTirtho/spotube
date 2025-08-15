@@ -12,7 +12,7 @@ const {
   adSlot,
   adFormat,
   fullWidthResponsive = true,
-  style,
+  style = "display:block",
   adLayout,
   adLayoutKey,
 } = Astro.props;
@@ -22,7 +22,7 @@ const AD_CLIENT = "ca-pub-6419300932495863";
 
 <ins
   class="adsbygoogle"
-  {style}
+  style={style}
   data-ad-layout={adLayout}
   data-ad-client={AD_CLIENT}
   data-ad-slot={adSlot}
