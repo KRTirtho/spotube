@@ -1,6 +1,7 @@
 ---
 import { LuBug, LuSparkles, LuTriangleAlert } from "react-icons/lu";
-import { extendedNightlyDownloadLinks } from "~/collections/app";
+import { ADS_SLOTS, extendedNightlyDownloadLinks } from "~/collections/app";
+import Ads from "~/components/ads/Ads.astro";
 import RootLayout from "~/layouts/RootLayout.astro";
 import DownloadItems from "~/modules/downloads/download-item.astro";
 ---
@@ -41,7 +42,7 @@ import DownloadItems from "~/modules/downloads/download-item.astro";
     <DownloadItems links={extendedNightlyDownloadLinks} />
 
     <br />
-    <!-- <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" /> -->
+    <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
     <br />
   </section>
 </RootLayout>

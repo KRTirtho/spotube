@@ -13,7 +13,7 @@ export default function SidebarButton() {
 
   return <>
     <div className={
-      `fixed h-screen w-72 bg-surface-100 dark:bg-surface-900 top-0 left-0 bg-surface z-50 transition-all duration-300 ${isOpen ? "" : "-translate-x-full opacity-0"}`
+      `fixed h-screen w-72 bg-primary-50-950 top-0 left-0 bg-surface z-50 transition-all duration-300 ${isOpen ? "" : "-translate-x-full opacity-0"}`
     }
       ref={ref}
     >
@@ -34,7 +34,7 @@ export default function SidebarButton() {
       }
     </div>
     <button
-      className="btn btn-icon md:hidden"
+      className="p-2 md:hidden"
       onClick={() => {
         setIsOpen(!isOpen);
       }}

@@ -1,6 +1,8 @@
 import { FaLinux, FaWindows, FaApple } from 'react-icons/fa6';
 import RootLayout from 'layouts/RootLayout.astro';
 import MarkdownLayout from 'layouts/MarkdownLayout.astro';
+import Ads from 'components/ads/Ads.astro';
+import { ADS_SLOTS } from 'collections/app';
 
 <RootLayout>
   <MarkdownLayout>
@@ -25,13 +27,13 @@ import MarkdownLayout from 'layouts/MarkdownLayout.astro';
       ```bash
       $ paru -Sy spotube-bin
       ```
-      {/* <Ads
+      <Ads
         style="display:block; text-align:center;"
         adSlot={ADS_SLOTS.packagePageArticle}
         adLayout="in-article"
         adFormat="fluid"
         fullWidthResponsive={false}
-      /> */}
+      />
       ## <FaApple className="inline" /> MacOS
       ### Homebrew🍻
       Spotube can be installed through Homebrew. We host our own cask definition thus you'll need to add our tap first:
@@ -39,13 +41,13 @@ import MarkdownLayout from 'layouts/MarkdownLayout.astro';
       $ brew tap krtirtho/apps
       $ brew install --cask spotube
       ```
-      {/* <Ads
+      <Ads
         style="display:block; text-align:center;"
         adSlot={ADS_SLOTS.packagePageArticle}
         adLayout="in-article"
         adFormat="fluid"
         fullWidthResponsive={false}
-      /> */}
+      />
       ## <FaWindows className="inline" color="#00A2F0" /> Windows
       ### Chocolatey🍫
       Spotube is available in [community.chocolatey.org](https://community.chocolatey.org) repo. If you have chocolatey install in your system just run following command in an Elevated Command Prompt or PowerShell:

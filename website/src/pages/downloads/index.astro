@@ -1,7 +1,8 @@
 ---
 import type { IconType } from "react-icons";
 import { LuDownload, LuHistory, LuPackage, LuSparkles } from "react-icons/lu";
-import { extendedDownloadLinks } from "~/collections/app";
+import { ADS_SLOTS, extendedDownloadLinks } from "~/collections/app";
+import Ads from "~/components/ads/Ads.astro";
 import RootLayout from "~/layouts/RootLayout.astro";
 import DownloadItems from "~/modules/downloads/download-item.astro";
 
@@ -26,7 +27,7 @@ const otherDownloads: [string, string, IconType][] = [
     <br />
 
     <br />
-    <!-- <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" /> -->
+    <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
     <br />
 
     <h2 class="h2">Other Downloads</h2>
@@ -48,6 +49,6 @@ const otherDownloads: [string, string, IconType][] = [
       }
     </div>
     <br />
-    <!-- <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" /> -->
+    <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
   </section>
 </RootLayout>

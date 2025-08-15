@@ -3,17 +3,27 @@ import { routes } from "~/collections/app";
 import { FaGithub } from "react-icons/fa6";
 import SidebarButton from "./sidebar-button";
 import Search from "astro-pagefind/components/Search";
+import { Drawer } from "../drawer/drawer";
+import DocSideBar from "./DocSideBar.astro";
 
 const pathname = Astro.url.pathname;
 ---
 
 <header
-  class="flex justify-between items-center p-4 top-0 fixed w-full z-10 backdrop-blur-md"
+  class="flex justify-between items-center py-2 md:p-4 top-0 fixed w-full z-10 backdrop-blur-md"
 >
   <div class="flex items-center justify-between w-full">
     <div class="flex items-center gap-2">
-      <SidebarButton client:only />
-      <h2 class="text-3xl">
+      {
+        pathname.startsWith("/docs") ? (
+          <Drawer client:only className="md:hidden">
+            <DocSideBar />
+          </Drawer>
+        ) : (
+          <SidebarButton client:only />
+        )
+      }
+      <h2 class="text-xl md:text-3xl">
         <a href="/" class="flex gap-2 items-center">
           <img src="/images/spotube-logo.png" width="40px" alt="Spotube Logo" />
           Spotube
@@ -31,7 +41,7 @@ const pathname = Astro.url.pathname;
     />
 
     <a
-      class="mw-2 md:me-4"
+      class="mw-2 me-4"
       href="https://github.com/KRTirtho/spotube?referrer=spotube.krtirtho.dev"
       target="_blank"
     >

@@ -56,6 +56,7 @@ h6 {
   --pagefind-ui-border-radius: 0.5rem;
 
   width: 50%;
+  @apply hidden md:block;
 }
 
 .pagefind-ui .pagefind-ui__drawer:not(.pagefind-ui__hidden) {
