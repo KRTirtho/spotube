@@ -14,7 +14,7 @@ const pathname = Astro.url.pathname;
     <div class="flex items-center gap-2">
       {
         pathname.startsWith("/docs") ? (
-          <div class="h-10 w-10" />
+          <div class="h-10 w-10 md:hidden" />
         ) : (
           <SidebarButton client:only />
         )
