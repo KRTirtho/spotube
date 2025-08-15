@@ -3,6 +3,8 @@ import RootLayout from "layouts/RootLayout.astro";
 import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
 import { getCollection, getEntry } from "astro:content";
+import DocSideBar from "~/components/navigation/DocSideBar.astro";
+import Drawer from "~/components/drawer/Drawer.astro";
 
 export const getStaticPaths = (async () => {
   const pages = await getCollection("docs");
@@ -29,5 +31,8 @@ if (page.id.startsWith("components/") || page.id.startsWith("integrations/")) {
 ---
 
 <RootLayout>
+  <Drawer class="fixed top-3 left-2 z-50 md:hidden">
+    <DocSideBar />
+  </Drawer>
   <Content />
 </RootLayout>
