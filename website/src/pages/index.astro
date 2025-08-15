@@ -1,7 +1,7 @@
 ---
 import { FaAndroid, FaApple, FaLinux, FaWindows } from "react-icons/fa6";
 import RootLayout from "../layouts/RootLayout.astro";
-import { LuHeart } from "react-icons/lu";
+import { LuDownload, LuHeart } from "react-icons/lu";
 import { Supporters } from "~/modules/root/supporters";
 ---
 
@@ -37,14 +37,23 @@ import { Supporters } from "~/modules/root/supporters";
               alt="HackerNews"
             />
           </a>
-          <!-- <a href="https://flathub.org/apps/com.github.KRTirtho.Spotube" target="_blank">
-					<img
-						width="160"
-						alt="Download on Flathub"
-						src="https://flathub.org/api/badge?locale=en"
-					/>
-				</a> -->
+          <a
+            href="https://flathub.org/apps/com.github.KRTirtho.Spotube"
+            target="_blank"
+          >
+            <img
+              width="160"
+              alt="Download on Flathub"
+              src="https://flathub.org/api/badge?locale=en"
+            />
+          </a>
         </div>
+      </div>
+      <div class="flex justify-center">
+        <a href="/downloads" class="flex gap-2 btn btn-lg preset-filled">
+          <LuDownload />
+          Download
+        </a>
       </div>
     </div>
 

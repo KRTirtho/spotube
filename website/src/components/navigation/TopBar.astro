@@ -8,7 +8,7 @@ const pathname = Astro.url.pathname;
 ---
 
 <header
-  class="flex justify-between items-center p-4 top-0 fixed w-full z-10 backdrop-blur-md backdrop-saturate-150"
+  class="flex justify-between items-center p-4 top-0 fixed w-full z-10 backdrop-blur-md"
 >
   <div class="flex items-center justify-between w-full">
     <div class="flex items-center gap-2">
@@ -42,7 +42,7 @@ const pathname = Astro.url.pathname;
     </a>
   </div>
 
-  <nav class="hidden md:flex gap-3 items-center">
+  <nav class="hidden md:flex gap-3 items-center pr-2">
     {
       Object.entries(routes).map((route) => {
         const Icon = route[1][1];
@@ -53,7 +53,7 @@ const pathname = Astro.url.pathname;
           <a href={route[0]}>
             <button
               type="button"
-              class={`btn flex gap-2 ${route[0] === "/downloads" ? "preset-tonal-secondary" : "preset-tonal-surface"} ${isActive ? "underline" : ""}`}
+              class={`btn flex gap-2 ${route[0] === "/downloads" ? "preset-filled-primary-300-700" : "preset-filled-secondary-100-900"} ${isActive ? "underline" : ""}`}
             >
               {Icon && <Icon />}
               {route[1][0]}
