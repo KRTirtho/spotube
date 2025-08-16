@@ -670,10 +670,10 @@ packages:
     dependency: transitive
     description:
       name: ffi
-      sha256: "16ed7b077ef01ad6170a3d0c57caa4a112a38d7a2ed5602e0aca9ca6f3d98da6"
+      sha256: "289279317b4b16eb2bb7e271abccd4bf84ec9bdcbe999e278a94b804f5630418"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.3"
+    version: "2.1.4"
   file:
     dependency: transitive
     description:
@@ -795,10 +795,11 @@ packages:
   flutter_discord_rpc:
     dependency: "direct main"
     description:
-      name: flutter_discord_rpc
-      sha256: "9363a803863d56fd89c0a21639c70b126245fcbafaeb0a3d091e7ac06951d03f"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/flutter_discord_rpc"
+      ref: HEAD
+      resolved-ref: "4896f78d32eab4d2508e914ad80a9537f035e407"
+      url: "https://github.com/KRTirtho/frb_plugins.git"
+    source: git
     version: "1.0.0"
   flutter_displaymode:
     dependency: "direct main"
@@ -983,10 +984,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_rust_bridge
-      sha256: "0ad5079de35d317650fec59b26cb4d0c116ebc2ce703a29f9367513b8a91c287"
+      sha256: "37ef40bc6f863652e865f0b2563ea07f0d3c58d8efad803cc01933a4b2ee067e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.0"
+    version: "2.11.1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -1638,10 +1639,11 @@ packages:
   metadata_god:
     dependency: "direct main"
     description:
-      name: metadata_god
-      sha256: "025d8149059f62f44108ab9d74ebd77aa8f0af98b238f3f25121a4711ee3e5d0"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/metadata_god"
+      ref: HEAD
+      resolved-ref: "4896f78d32eab4d2508e914ad80a9537f035e407"
+      url: "https://github.com/KRTirtho/frb_plugins.git"
+    source: git
     version: "1.0.0"
   mime:
     dependency: "direct main"
@@ -2260,10 +2262,11 @@ packages:
   smtc_windows:
     dependency: "direct main"
     description:
-      name: smtc_windows
-      sha256: "80f7c10867da485ffdf87f842bf27e6763589933c18c11af5dc1cd1e158c3154"
-      url: "https://pub.dev"
-    source: hosted
+      path: "packages/smtc_windows"
+      ref: HEAD
+      resolved-ref: "4896f78d32eab4d2508e914ad80a9537f035e407"
+      url: "https://github.com/KRTirtho/frb_plugins.git"
+    source: git
     version: "1.0.0"
   source_gen:
     dependency: transitive

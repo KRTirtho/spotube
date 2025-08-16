@@ -74,6 +74,7 @@ class TrackTile extends HookConsumerWidget {
 
     final isSelected = isPlaying || isLoading.value;
 
+    print('track.album.images: ${track.album.images}');
     final imageProvider = useMemoized(
       () => UniversalImage.imageProvider(
         (track.album.images).smallest(ImagePlaceholder.albumArt),

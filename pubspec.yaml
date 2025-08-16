@@ -52,7 +52,10 @@ dependencies:
       url: https://github.com/KRTirtho/flutter_broadcasts.git
       ref: 63931dfe06733d4fb7452e9981e1f0b23414d97a
   flutter_cache_manager: ^3.3.0
-  flutter_discord_rpc: ^1.0.0
+  flutter_discord_rpc:
+    git:
+      url: https://github.com/KRTirtho/frb_plugins.git
+      path: packages/flutter_discord_rpc
   flutter_displaymode: ^0.6.0
   flutter_feather_icons: ^2.0.0+1
   flutter_form_builder: ^9.6.0
@@ -87,7 +90,10 @@ dependencies:
   lrc: ^1.0.2
   media_kit: ^1.1.10+1
   media_kit_libs_audio: ^1.0.4
-  metadata_god: ^1.0.0
+  metadata_god:
+    git:
+      url: https://github.com/KRTirtho/frb_plugins.git
+      path: packages/metadata_god
   mime: ^2.0.0
   open_file: ^3.5.10
   package_info_plus: ^6.0.0
@@ -111,7 +117,10 @@ dependencies:
   skeletonizer: ^2.1.0+1
   sliding_up_panel: ^2.0.0+1
   sliver_tools: ^0.2.12
-  smtc_windows: ^1.0.0
+  smtc_windows:
+    git:
+      url: https://github.com/KRTirtho/frb_plugins.git
+      path: packages/smtc_windows
   sqlite3: ^2.4.3
   sqlite3_flutter_libs: ^0.5.23
   stroke_text: ^0.0.2

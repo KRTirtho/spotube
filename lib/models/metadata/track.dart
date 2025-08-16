@@ -60,6 +60,14 @@ class SpotubeTrackObject with _$SpotubeTrackObject {
         ],
         releaseDate:
             metadata?.year != null ? "${metadata!.year}-01-01" : "1970-01-01",
+        images: [
+          if (art != null)
+            SpotubeImageObject(
+              url: art,
+              width: 300,
+              height: 300,
+            ),
+        ],
       ),
       durationMs: metadata?.durationMs?.toInt() ?? 0,
       path: file.path,

@@ -39,8 +39,9 @@ class TrackSourceQuery with _$TrackSourceQuery {
   /// Parses [SpotubeMedia]'s [uri] property to create a [TrackSourceQuery].
   factory TrackSourceQuery.parseUri(String url) {
     final uri = Uri.parse(url);
+    final isLocal = uri.queryParameters.isEmpty;
     return TrackSourceQuery(
-      id: uri.pathSegments.last,
+      id: isLocal ? uri.path : uri.pathSegments.last,
       title: uri.queryParameters['title'] ?? '',
       artists: uri.queryParameters['artists']?.split(',') ?? [],
       album: uri.queryParameters['album'] ?? '',
