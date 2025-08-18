@@ -795,12 +795,11 @@ packages:
   flutter_discord_rpc:
     dependency: "direct main"
     description:
-      path: "packages/flutter_discord_rpc"
-      ref: HEAD
-      resolved-ref: "4896f78d32eab4d2508e914ad80a9537f035e407"
-      url: "https://github.com/KRTirtho/frb_plugins.git"
-    source: git
-    version: "1.0.0"
+      name: flutter_discord_rpc
+      sha256: "7ee12a3ff928e85e5e0a60c7c23417a2f1f4e604e4983fc0789ff6562fb15f2b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   flutter_displaymode:
     dependency: "direct main"
     description:
@@ -1639,12 +1638,11 @@ packages:
   metadata_god:
     dependency: "direct main"
     description:
-      path: "packages/metadata_god"
-      ref: HEAD
-      resolved-ref: "4896f78d32eab4d2508e914ad80a9537f035e407"
-      url: "https://github.com/KRTirtho/frb_plugins.git"
-    source: git
-    version: "1.0.0"
+      name: metadata_god
+      sha256: "2b19b7e88cf5ab7016fe8d1f868bb35a193aaef06fd96cfc7de4ec3eacc16eb0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   mime:
     dependency: "direct main"
     description:
@@ -2262,12 +2260,11 @@ packages:
   smtc_windows:
     dependency: "direct main"
     description:
-      path: "packages/smtc_windows"
-      ref: HEAD
-      resolved-ref: "4896f78d32eab4d2508e914ad80a9537f035e407"
-      url: "https://github.com/KRTirtho/frb_plugins.git"
-    source: git
-    version: "1.0.0"
+      name: smtc_windows
+      sha256: dee279b0ddf663c4c729a88bca4e57fb4861aa1b3d01e230bdbf1277b8bfe664
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   source_gen:
     dependency: transitive
     description:
