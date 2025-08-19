@@ -27,7 +27,6 @@ dependencies:
   desktop_webview_window:
     git:
       path: packages/desktop_webview_window
-      ref: feat/cookies
       url: https://github.com/KRTirtho/flutter-plugins.git
   device_info_plus: ^11.1.1
   dio: ^5.4.3+1

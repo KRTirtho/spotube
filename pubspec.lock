@@ -515,8 +515,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/desktop_webview_window"
-      ref: "feat/cookies"
-      resolved-ref: f20e433d4a948515b35089d40069f7dd9bced9e4
+      ref: HEAD
+      resolved-ref: f261ff20e310d05713249b21c199a9fe17a3de6f
       url: "https://github.com/KRTirtho/flutter-plugins.git"
     source: git
     version: "0.2.4"
@@ -762,6 +762,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.1"
+  fk_user_agent:
+    dependency: transitive
+    description:
+      path: "."
+      ref: master
+      resolved-ref: "922f9f9eafd8b501da83dca67d56b2887fa8f916"
+      url: "https://github.com/TiffApps/fk_user_agent.git"
+    source: git
+    version: "2.1.1"
   fluentui_system_icons:
     dependency: "direct main"
     description:
@@ -1217,7 +1226,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: c4895250ee45a59c88770f97abebc9e9bbb62259
+      resolved-ref: "52cd25a12c1af6a8819963d222026539e8537586"
       url: "https://github.com/KRTirtho/hetu_spotube_plugin.git"
     source: git
     version: "0.0.1"
@@ -2011,6 +2020,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.2.2"
+  random_user_agents:
+    dependency: transitive
+    description:
+      name: random_user_agents
+      sha256: "19facde509a2482dababb454faf2aceff797a6ae08e80f91268c0c8a7420f03b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.15"
   recase:
     dependency: transitive
     description:
