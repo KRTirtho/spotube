@@ -31,16 +31,12 @@ class SettingsAccountSection extends HookConsumerWidget {
         ),
         if (scrobbler.asData?.value == null)
           ListTile(
-            leading: const Icon(SpotubeIcons.lastFm),
-            title: Text(context.l10n.login_with_lastfm),
-            subtitle: Text(context.l10n.scrobble_to_lastfm),
-            trailing: Button.secondary(
-              leading: const Icon(SpotubeIcons.lastFm),
-              onPressed: () {
-                context.navigateTo(const LastFMLoginRoute());
-              },
-              child: Text(context.l10n.connect),
-            ),
+            leading: const Icon(SpotubeIcons.music),
+            title: const Text("Audio scrobblers"),
+            onTap: () {
+              context.pushRoute(const SettingsScrobblingRoute());
+            },
+            trailing: const Icon(SpotubeIcons.angleRight),
           )
         else
           ListTile(
