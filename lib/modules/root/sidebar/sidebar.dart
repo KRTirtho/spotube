@@ -80,6 +80,9 @@ class Sidebar extends HookConsumerWidget {
       ),
       for (final tile in sidebarTileList)
         NavigationButton(
+          style: router.currentPath.startsWith(tile.pathPrefix)
+              ? const ButtonStyle.secondary()
+              : null,
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           child: Tooltip(
             tooltip: TooltipContainer(child: Text(tile.title)).call,
@@ -94,6 +97,9 @@ class Sidebar extends HookConsumerWidget {
         NavigationLabel(child: Text(context.l10n.library)),
       for (final tile in sidebarLibraryTileList)
         NavigationButton(
+          style: router.currentPath.startsWith(tile.pathPrefix)
+              ? const ButtonStyle.secondary()
+              : null,
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           onPressed: () {
             context.navigateTo(tile.route);

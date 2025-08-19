@@ -20,7 +20,7 @@ import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:spotube/services/metadata/endpoints/error.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 enum TrackOptionValue {
@@ -97,9 +97,7 @@ class TrackOptionsActions {
     final metadataPlugin = await ref.read(metadataPluginProvider.future);
 
     if (metadataPlugin == null) {
-      throw MetadataPluginException.noDefaultPlugin(
-        "No default metadata plugin set",
-      );
+      throw MetadataPluginException.noDefaultPlugin();
     }
 
     final tracks = await metadataPlugin.track.radio(track.id);

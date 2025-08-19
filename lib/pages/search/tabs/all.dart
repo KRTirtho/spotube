@@ -1,5 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/modules/search/loading.dart';
 import 'package:spotube/pages/search/search.dart';
@@ -18,6 +19,15 @@ class SearchPageAllTab extends HookConsumerWidget {
     final searchTerm = ref.watch(searchTermStateProvider);
     final searchSnapshot =
         ref.watch(metadataPluginSearchAllProvider(searchTerm));
+
+    if (searchSnapshot.hasError) {
+      return ErrorBox(
+        error: searchSnapshot.error!,
+        onRetry: () {
+          ref.invalidate(metadataPluginSearchAllProvider(searchTerm));
+        },
+      );
+    }
 
     return SearchPlaceholder(
       snapshot: searchSnapshot,

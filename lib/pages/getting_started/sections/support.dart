@@ -104,15 +104,15 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Button.secondary(
-                  leading: const Icon(SpotubeIcons.anonymous),
+                Button.primary(
+                  leading: const Icon(SpotubeIcons.extensions),
                   onPressed: () async {
                     await KVStoreService.setDoneGettingStarted(true);
                     if (context.mounted) {
-                      context.navigateTo(const HomeRoute());
+                      context.pushRoute(const SettingsMetadataProviderRoute());
                     }
                   },
-                  child: Text(context.l10n.browse_anonymously),
+                  child: const Text("Install a Metadata Provider"),
                 ),
               ],
             ),

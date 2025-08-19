@@ -4,6 +4,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/components/dialogs/prompt_dialog.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
@@ -30,6 +31,15 @@ class SearchPageTracksTab extends HookConsumerWidget {
 
     final playlist = ref.watch(audioPlayerProvider);
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
+
+    if (searchTracksSnapshot.hasError) {
+      return ErrorBox(
+        error: searchTracksSnapshot.error!,
+        onRetry: () {
+          ref.invalidate(metadataPluginSearchTracksProvider(searchTerm));
+        },
+      );
+    }
 
     return SearchPlaceholder(
       snapshot: searchTracksSnapshot,

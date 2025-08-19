@@ -6,7 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:spotube/services/metadata/endpoints/error.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 
 extension PaginationExtension<T> on AsyncValue<T> {
@@ -20,8 +20,7 @@ mixin MetadataPluginMixin<K>
     final plugin = await ref.read(metadataPluginProvider.future);
 
     if (plugin == null) {
-      throw MetadataPluginException.noDefaultPlugin(
-          "Metadata plugin is not set");
+      throw MetadataPluginException.noDefaultPlugin();
     }
 
     return plugin;

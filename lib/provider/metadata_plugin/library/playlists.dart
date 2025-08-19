@@ -4,7 +4,7 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
 import 'package:spotube/provider/metadata_plugin/utils/paginated.dart';
-import 'package:spotube/services/metadata/endpoints/error.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 
 class MetadataPluginSavedPlaylistsNotifier
     extends PaginatedAsyncNotifier<SpotubeSimplePlaylistObject> {
@@ -111,9 +111,7 @@ final metadataPluginIsSavedPlaylistProvider =
     final plugin = await ref.watch(metadataPluginProvider.future);
 
     if (plugin == null) {
-      throw MetadataPluginException.noDefaultPlugin(
-        "Failed to get metadata plugin",
-      );
+      throw MetadataPluginException.noDefaultPlugin();
     }
 
     final follows = await plugin.user.isSavedPlaylist(id);

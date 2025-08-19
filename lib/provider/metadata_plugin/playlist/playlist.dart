@@ -4,7 +4,7 @@ import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/provider/metadata_plugin/core/user.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
-import 'package:spotube/services/metadata/endpoints/error.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 
 class MetadataPluginPlaylistNotifier
@@ -13,9 +13,7 @@ class MetadataPluginPlaylistNotifier
     final metadataPlugin = await ref.read(metadataPluginProvider.future);
 
     if (metadataPlugin == null) {
-      throw MetadataPluginException.noDefaultPlugin(
-        "Metadata plugin is not set",
-      );
+      throw MetadataPluginException.noDefaultPlugin();
     }
 
     return metadataPlugin;

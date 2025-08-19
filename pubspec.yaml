@@ -216,6 +216,7 @@ flutter:
     - packages/flutter_undraw/assets/undraw/empty.svg
     - packages/flutter_undraw/assets/undraw/no_data.svg
     - packages/flutter_undraw/assets/undraw/process.svg
+    - packages/flutter_undraw/assets/undraw/stars.svg
     # hetu script bytecode
     - packages/hetu_std/assets/bytecode/std.out
     - packages/hetu_otp_util/assets/bytecode/otp_util.out
@@ -232,6 +233,20 @@ flutter:
         - asset: assets/fonts/Cookie-Regular.ttf
           style: normal
           weight: 500
+    - family: Ubuntu Mono
+      fonts:
+        - asset: assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf
+          style: normal
+          weight: 400
+        - asset: assets/fonts/Ubuntu_Mono/UbuntuMono-Bold.ttf
+          style: normal
+          weight: 700
+        - asset: assets/fonts/Ubuntu_Mono/UbuntuMono-Italic.ttf
+          style: italic
+          weight: 400
+        - asset: assets/fonts/Ubuntu_Mono/UbuntuMono-BoldItalic.ttf
+          style: italic
+          weight: 700
 
 flutter_gen:
   output: lib/collections
