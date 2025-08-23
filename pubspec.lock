@@ -1235,7 +1235,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "7e9032c054c547f7900c9c9fe4b76e29c8ac1cd1"
+      resolved-ref: "577ad115dce0514afc53e2b3ab7b96bcd88d3be3"
       url: "https://github.com/hetu-community/hetu_std.git"
     source: git
     version: "1.0.0"
@@ -2121,10 +2121,10 @@ packages:
     dependency: "direct main"
     description:
       name: shadcn_flutter
-      sha256: "979a86e203eb1fb139e8b5c84b49b17b28808804cbff189b43052d56ba6854b5"
+      sha256: "4a4dff36252101f344c77fd659d791c52c808cfe3ab68deea4ea949d942d9e5b"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.37"
+    version: "0.0.39"
   shared_preferences:
     dependency: "direct main"
     description:
