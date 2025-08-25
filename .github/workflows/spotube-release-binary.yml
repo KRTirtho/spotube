@@ -56,7 +56,7 @@ jobs:
             files: |
               dist/Spotube-windows-x86_64.nupkg
               dist/Spotube-windows-x86_64-setup.exe
-          - os: macos-latest
+          - os: macos-14
             platform: ios
             arch: all
             files: |
