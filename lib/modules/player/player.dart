@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
@@ -115,7 +115,7 @@ class PlayerView extends HookConsumerWidget {
                 trailing: [
                   if (currentActiveTrackSource is YoutubeSourcedTrack)
                     TextButton(
-                      leading: Assets.logos.songlinkTransparent.image(
+                      leading: Assets.images.logos.songlinkTransparent.image(
                         width: 20,
                         height: 20,
                         color: theme.colorScheme.foreground,
@@ -178,7 +178,7 @@ class PlayerView extends HookConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: UniversalImage(
                         path: albumArt,
-                        placeholder: Assets.albumPlaceholder.path,
+                        placeholder: Assets.images.albumPlaceholder.path,
                         fit: BoxFit.cover,
                       ),
                     ),

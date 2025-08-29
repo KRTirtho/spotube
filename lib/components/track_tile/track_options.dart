@@ -254,7 +254,7 @@ class TrackOptions extends HookConsumerWidget {
                 playlistId,
               );
             },
-            leading: Assets.logos.songlinkTransparent.image(
+            leading: Assets.images.logos.songlinkTransparent.image(
               width: 22,
               height: 22,
               color: colorScheme.foreground.withValues(alpha: 0.5),

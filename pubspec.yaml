@@ -199,11 +199,10 @@ flutter:
   generate: true
   uses-material-design: true
   assets:
-    - assets/
-    - assets/tutorial/
-    - assets/logos/
-    - assets/backgrounds/
-    - assets/patterns/
+    - assets/images/
+    - assets/images/logos/
+    - assets/branding/spotube-logo.png
+    - assets/branding/spotube-logo-light.png
     - LICENSE
     - packages/flutter_undraw/assets/undraw/access_denied.svg
     - packages/flutter_undraw/assets/undraw/fixing_bugs.svg

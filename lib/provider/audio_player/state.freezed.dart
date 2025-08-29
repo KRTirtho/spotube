@@ -27,12 +27,8 @@ mixin _$AudioPlayerState {
   int get currentIndex => throw _privateConstructorUsedError;
   List<SpotubeTrackObject> get tracks => throw _privateConstructorUsedError;
 
-  /// Serializes this AudioPlayerState to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of AudioPlayerState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $AudioPlayerStateCopyWith<AudioPlayerState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -62,8 +58,6 @@ class _$AudioPlayerStateCopyWithImpl<$Res, $Val extends AudioPlayerState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of AudioPlayerState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -128,8 +122,6 @@ class __$$AudioPlayerStateImplCopyWithImpl<$Res>
       $Res Function(_$AudioPlayerStateImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of AudioPlayerState
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -234,7 +226,7 @@ class _$AudioPlayerStateImpl extends _AudioPlayerState {
             const DeepCollectionEquality().equals(other._tracks, _tracks));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -245,9 +237,7 @@ class _$AudioPlayerStateImpl extends _AudioPlayerState {
       currentIndex,
       const DeepCollectionEquality().hash(_tracks));
 
-  /// Create a copy of AudioPlayerState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$AudioPlayerStateImplCopyWith<_$AudioPlayerStateImpl> get copyWith =>
@@ -287,11 +277,8 @@ abstract class _AudioPlayerState extends AudioPlayerState {
   int get currentIndex;
   @override
   List<SpotubeTrackObject> get tracks;
-
-  /// Create a copy of AudioPlayerState
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$AudioPlayerStateImplCopyWith<_$AudioPlayerStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

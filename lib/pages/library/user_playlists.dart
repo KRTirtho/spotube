@@ -50,7 +50,7 @@ class UserPlaylistsPage extends HookConsumerWidget {
               owner: me.asData!.value!,
               images: [
                   SpotubeImageObject(
-                    url: Assets.likedTracks.path,
+                    url: Assets.images.likedTracks.path,
                     width: 300,
                     height: 300,
                   )

@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -47,8 +45,8 @@ class HomePage extends HookConsumerWidget {
                   floating: true,
                   title: Image.asset(
                     theme.brightness == Brightness.dark
-                        ? Assets.spotubeLogoPng.path
-                        : Assets.spotubeLogoLight.path,
+                        ? Assets.branding.spotubeLogo.path
+                        : Assets.branding.spotubeLogoLight.path,
                     height: 45,
                     width: 45,
                     color: theme.colorScheme.background,

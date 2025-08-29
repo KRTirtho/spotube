@@ -36,7 +36,7 @@ final sourceInfoToIconMap = {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(90),
       image: DecorationImage(
-        image: Assets.jiosaavn.provider(),
+        image: Assets.images.logos.jiosaavn.provider(),
         fit: BoxFit.cover,
       ),
     ),
@@ -48,7 +48,7 @@ final sourceInfoToIconMap = {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(90),
       image: DecorationImage(
-        image: Assets.invidious.provider(),
+        image: Assets.images.logos.invidious.provider(),
         fit: BoxFit.cover,
       ),
     ),

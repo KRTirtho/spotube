@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/track_presentation.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -30,7 +31,7 @@ class LikedPlaylistPage extends HookConsumerWidget {
       child: TrackPresentation(
         options: TrackPresentationOptions(
           collection: playlist,
-          image: "assets/liked-tracks.jpg",
+          image: Assets.images.likedTracks.path,
           pagination: PaginationProps(
             hasNextPage: false,
             isLoading: likedTracks.isLoading,

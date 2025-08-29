@@ -38,7 +38,7 @@ That means, in the upcoming new versions, you will no longer be able to login wi
 > Spotube has no affiliation with Spotify™ or any of its subsidiaries.
 
 <div align="center">
-  <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
+  <img width="600" src="assets/branding/spotube_banner.png" alt="Spotube Logo">
 
 An open source, cross-platform music client<br />
 utilizing selected music provider API and YouTube®, Piped.video or JioSaavn as an audio source

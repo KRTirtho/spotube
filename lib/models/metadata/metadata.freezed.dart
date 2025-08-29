@@ -33,12 +33,8 @@ mixin _$SpotubeFullAlbumObject {
   String? get recordLabel => throw _privateConstructorUsedError;
   List<String>? get genres => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeFullAlbumObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeFullAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeFullAlbumObjectCopyWith<SpotubeFullAlbumObject> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -73,8 +69,6 @@ class _$SpotubeFullAlbumObjectCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeFullAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -166,8 +160,6 @@ class __$$SpotubeFullAlbumObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeFullAlbumObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeFullAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -316,7 +308,7 @@ class _$SpotubeFullAlbumObjectImpl implements _SpotubeFullAlbumObject {
             const DeepCollectionEquality().equals(other._genres, _genres));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -331,9 +323,7 @@ class _$SpotubeFullAlbumObjectImpl implements _SpotubeFullAlbumObject {
       recordLabel,
       const DeepCollectionEquality().hash(_genres));
 
-  /// Create a copy of SpotubeFullAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeFullAlbumObjectImplCopyWith<_$SpotubeFullAlbumObjectImpl>
@@ -384,11 +374,8 @@ abstract class _SpotubeFullAlbumObject implements SpotubeFullAlbumObject {
   String? get recordLabel;
   @override
   List<String>? get genres;
-
-  /// Create a copy of SpotubeFullAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeFullAlbumObjectImplCopyWith<_$SpotubeFullAlbumObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -409,12 +396,8 @@ mixin _$SpotubeSimpleAlbumObject {
   SpotubeAlbumType get albumType => throw _privateConstructorUsedError;
   String? get releaseDate => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeSimpleAlbumObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeSimpleAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeSimpleAlbumObjectCopyWith<SpotubeSimpleAlbumObject> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -446,8 +429,6 @@ class _$SpotubeSimpleAlbumObjectCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeSimpleAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -521,8 +502,6 @@ class __$$SpotubeSimpleAlbumObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeSimpleAlbumObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeSimpleAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -634,7 +613,7 @@ class _$SpotubeSimpleAlbumObjectImpl implements _SpotubeSimpleAlbumObject {
                 other.releaseDate == releaseDate));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -646,9 +625,7 @@ class _$SpotubeSimpleAlbumObjectImpl implements _SpotubeSimpleAlbumObject {
       albumType,
       releaseDate);
 
-  /// Create a copy of SpotubeSimpleAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeSimpleAlbumObjectImplCopyWith<_$SpotubeSimpleAlbumObjectImpl>
@@ -690,11 +667,8 @@ abstract class _SpotubeSimpleAlbumObject implements SpotubeSimpleAlbumObject {
   SpotubeAlbumType get albumType;
   @override
   String? get releaseDate;
-
-  /// Create a copy of SpotubeSimpleAlbumObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeSimpleAlbumObjectImplCopyWith<_$SpotubeSimpleAlbumObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -713,12 +687,8 @@ mixin _$SpotubeFullArtistObject {
   List<String>? get genres => throw _privateConstructorUsedError;
   int? get followers => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeFullArtistObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeFullArtistObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeFullArtistObjectCopyWith<SpotubeFullArtistObject> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -749,8 +719,6 @@ class _$SpotubeFullArtistObjectCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeFullArtistObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -818,8 +786,6 @@ class __$$SpotubeFullArtistObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeFullArtistObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeFullArtistObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -923,7 +889,7 @@ class _$SpotubeFullArtistObjectImpl implements _SpotubeFullArtistObject {
                 other.followers == followers));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -934,9 +900,7 @@ class _$SpotubeFullArtistObjectImpl implements _SpotubeFullArtistObject {
       const DeepCollectionEquality().hash(_genres),
       followers);
 
-  /// Create a copy of SpotubeFullArtistObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeFullArtistObjectImplCopyWith<_$SpotubeFullArtistObjectImpl>
@@ -975,11 +939,8 @@ abstract class _SpotubeFullArtistObject implements SpotubeFullArtistObject {
   List<String>? get genres;
   @override
   int? get followers;
-
-  /// Create a copy of SpotubeFullArtistObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeFullArtistObjectImplCopyWith<_$SpotubeFullArtistObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -996,12 +957,8 @@ mixin _$SpotubeSimpleArtistObject {
   String get externalUri => throw _privateConstructorUsedError;
   List<SpotubeImageObject>? get images => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeSimpleArtistObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeSimpleArtistObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeSimpleArtistObjectCopyWith<SpotubeSimpleArtistObject> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1030,8 +987,6 @@ class _$SpotubeSimpleArtistObjectCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeSimpleArtistObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1087,8 +1042,6 @@ class __$$SpotubeSimpleArtistObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeSimpleArtistObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeSimpleArtistObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1164,14 +1117,12 @@ class _$SpotubeSimpleArtistObjectImpl implements _SpotubeSimpleArtistObject {
             const DeepCollectionEquality().equals(other._images, _images));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, externalUri,
       const DeepCollectionEquality().hash(_images));
 
-  /// Create a copy of SpotubeSimpleArtistObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeSimpleArtistObjectImplCopyWith<_$SpotubeSimpleArtistObjectImpl>
@@ -1205,11 +1156,8 @@ abstract class _SpotubeSimpleArtistObject implements SpotubeSimpleArtistObject {
   String get externalUri;
   @override
   List<SpotubeImageObject>? get images;
-
-  /// Create a copy of SpotubeSimpleArtistObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeSimpleArtistObjectImplCopyWith<_$SpotubeSimpleArtistObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1227,13 +1175,9 @@ mixin _$SpotubeBrowseSectionObject<T> {
   bool get browseMore => throw _privateConstructorUsedError;
   List<T> get items => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeBrowseSectionObject to a JSON map.
   Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
       throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeBrowseSectionObjectCopyWith<T, SpotubeBrowseSectionObject<T>>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1265,8 +1209,6 @@ class _$SpotubeBrowseSectionObjectCopyWithImpl<T, $Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1328,8 +1270,6 @@ class __$$SpotubeBrowseSectionObjectImplCopyWithImpl<T, $Res>
       $Res Function(_$SpotubeBrowseSectionObjectImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1415,14 +1355,12 @@ class _$SpotubeBrowseSectionObjectImpl<T>
             const DeepCollectionEquality().equals(other._items, _items));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, title, externalUri,
       browseMore, const DeepCollectionEquality().hash(_items));
 
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeBrowseSectionObjectImplCopyWith<T,
@@ -1459,11 +1397,8 @@ abstract class _SpotubeBrowseSectionObject<T>
   bool get browseMore;
   @override
   List<T> get items;
-
-  /// Create a copy of SpotubeBrowseSectionObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeBrowseSectionObjectImplCopyWith<T,
           _$SpotubeBrowseSectionObjectImpl<T>>
       get copyWith => throw _privateConstructorUsedError;
@@ -1551,13 +1486,8 @@ mixin _$MetadataFormFieldObject {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
-
-  /// Serializes this MetadataFormFieldObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of MetadataFormFieldObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $MetadataFormFieldObjectCopyWith<MetadataFormFieldObject> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1582,8 +1512,6 @@ class _$MetadataFormFieldObjectCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of MetadataFormFieldObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1627,8 +1555,6 @@ class __$$MetadataFormFieldInputObjectImplCopyWithImpl<$Res>
       $Res Function(_$MetadataFormFieldInputObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of MetadataFormFieldObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1729,14 +1655,12 @@ class _$MetadataFormFieldInputObjectImpl
             (identical(other.regex, regex) || other.regex == regex));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, objectType, id, variant,
       placeholder, defaultValue, required, regex);
 
-  /// Create a copy of MetadataFormFieldObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$MetadataFormFieldInputObjectImplCopyWith<
@@ -1862,11 +1786,8 @@ abstract class MetadataFormFieldInputObject implements MetadataFormFieldObject {
   String? get defaultValue;
   bool? get required;
   String? get regex;
-
-  /// Create a copy of MetadataFormFieldObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$MetadataFormFieldInputObjectImplCopyWith<
           _$MetadataFormFieldInputObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -1894,8 +1815,6 @@ class __$$MetadataFormFieldTextObjectImplCopyWithImpl<$Res>
       $Res Function(_$MetadataFormFieldTextObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of MetadataFormFieldObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1945,13 +1864,11 @@ class _$MetadataFormFieldTextObjectImpl implements MetadataFormFieldTextObject {
             (identical(other.text, text) || other.text == text));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, objectType, text);
 
-  /// Create a copy of MetadataFormFieldObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$MetadataFormFieldTextObjectImplCopyWith<_$MetadataFormFieldTextObjectImpl>
@@ -2063,11 +1980,8 @@ abstract class MetadataFormFieldTextObject implements MetadataFormFieldObject {
   @override
   String get objectType;
   String get text;
-
-  /// Create a copy of MetadataFormFieldObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$MetadataFormFieldTextObjectImplCopyWith<_$MetadataFormFieldTextObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2082,12 +1996,8 @@ mixin _$SpotubeImageObject {
   int? get width => throw _privateConstructorUsedError;
   int? get height => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeImageObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeImageObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeImageObjectCopyWith<SpotubeImageObject> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -2111,8 +2021,6 @@ class _$SpotubeImageObjectCopyWithImpl<$Res, $Val extends SpotubeImageObject>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeImageObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2156,8 +2064,6 @@ class __$$SpotubeImageObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeImageObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeImageObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2212,13 +2118,11 @@ class _$SpotubeImageObjectImpl implements _SpotubeImageObject {
             (identical(other.height, height) || other.height == height));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, url, width, height);
 
-  /// Create a copy of SpotubeImageObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeImageObjectImplCopyWith<_$SpotubeImageObjectImpl> get copyWith =>
@@ -2248,11 +2152,8 @@ abstract class _SpotubeImageObject implements SpotubeImageObject {
   int? get width;
   @override
   int? get height;
-
-  /// Create a copy of SpotubeImageObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeImageObjectImplCopyWith<_$SpotubeImageObjectImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -2270,13 +2171,9 @@ mixin _$SpotubePaginationResponseObject<T> {
   bool get hasMore => throw _privateConstructorUsedError;
   List<T> get items => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubePaginationResponseObject to a JSON map.
   Map<String, dynamic> toJson(Object? Function(T) toJsonT) =>
       throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubePaginationResponseObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubePaginationResponseObjectCopyWith<T,
           SpotubePaginationResponseObject<T>>
       get copyWith => throw _privateConstructorUsedError;
@@ -2305,8 +2202,6 @@ class _$SpotubePaginationResponseObjectCopyWithImpl<T, $Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubePaginationResponseObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2364,8 +2259,6 @@ class __$$SpotubePaginationResponseObjectImplCopyWithImpl<T, $Res>
       $Res Function(_$SpotubePaginationResponseObjectImpl<T>) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubePaginationResponseObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2450,14 +2343,12 @@ class _$SpotubePaginationResponseObjectImpl<T>
             const DeepCollectionEquality().equals(other._items, _items));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, limit, nextOffset, total,
       hasMore, const DeepCollectionEquality().hash(_items));
 
-  /// Create a copy of SpotubePaginationResponseObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubePaginationResponseObjectImplCopyWith<T,
@@ -2494,11 +2385,8 @@ abstract class _SpotubePaginationResponseObject<T>
   bool get hasMore;
   @override
   List<T> get items;
-
-  /// Create a copy of SpotubePaginationResponseObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubePaginationResponseObjectImplCopyWith<T,
           _$SpotubePaginationResponseObjectImpl<T>>
       get copyWith => throw _privateConstructorUsedError;
@@ -2522,12 +2410,8 @@ mixin _$SpotubeFullPlaylistObject {
   bool get collaborative => throw _privateConstructorUsedError;
   bool get public => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeFullPlaylistObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeFullPlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeFullPlaylistObjectCopyWith<SpotubeFullPlaylistObject> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -2563,8 +2447,6 @@ class _$SpotubeFullPlaylistObjectCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeFullPlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2618,8 +2500,6 @@ class _$SpotubeFullPlaylistObjectCopyWithImpl<$Res,
     ) as $Val);
   }
 
-  /// Create a copy of SpotubeFullPlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SpotubeUserObjectCopyWith<$Res> get owner {
@@ -2663,8 +2543,6 @@ class __$$SpotubeFullPlaylistObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeFullPlaylistObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeFullPlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2798,7 +2676,7 @@ class _$SpotubeFullPlaylistObjectImpl implements _SpotubeFullPlaylistObject {
             (identical(other.public, public) || other.public == public));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -2812,9 +2690,7 @@ class _$SpotubeFullPlaylistObjectImpl implements _SpotubeFullPlaylistObject {
       collaborative,
       public);
 
-  /// Create a copy of SpotubeFullPlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeFullPlaylistObjectImplCopyWith<_$SpotubeFullPlaylistObjectImpl>
@@ -2862,11 +2738,8 @@ abstract class _SpotubeFullPlaylistObject implements SpotubeFullPlaylistObject {
   bool get collaborative;
   @override
   bool get public;
-
-  /// Create a copy of SpotubeFullPlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeFullPlaylistObjectImplCopyWith<_$SpotubeFullPlaylistObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2885,12 +2758,8 @@ mixin _$SpotubeSimplePlaylistObject {
   SpotubeUserObject get owner => throw _privateConstructorUsedError;
   List<SpotubeImageObject> get images => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeSimplePlaylistObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeSimplePlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeSimplePlaylistObjectCopyWith<SpotubeSimplePlaylistObject>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2925,8 +2794,6 @@ class _$SpotubeSimplePlaylistObjectCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeSimplePlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2965,8 +2832,6 @@ class _$SpotubeSimplePlaylistObjectCopyWithImpl<$Res,
     ) as $Val);
   }
 
-  /// Create a copy of SpotubeSimplePlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SpotubeUserObjectCopyWith<$Res> get owner {
@@ -3007,8 +2872,6 @@ class __$$SpotubeSimplePlaylistObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeSimplePlaylistObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeSimplePlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -3104,14 +2967,12 @@ class _$SpotubeSimplePlaylistObjectImpl
             const DeepCollectionEquality().equals(other._images, _images));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, description,
       externalUri, owner, const DeepCollectionEquality().hash(_images));
 
-  /// Create a copy of SpotubeSimplePlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeSimplePlaylistObjectImplCopyWith<_$SpotubeSimplePlaylistObjectImpl>
@@ -3152,11 +3013,8 @@ abstract class _SpotubeSimplePlaylistObject
   SpotubeUserObject get owner;
   @override
   List<SpotubeImageObject> get images;
-
-  /// Create a copy of SpotubeSimplePlaylistObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeSimplePlaylistObjectImplCopyWith<_$SpotubeSimplePlaylistObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -3176,12 +3034,8 @@ mixin _$SpotubeSearchResponseObject {
       throw _privateConstructorUsedError;
   List<SpotubeFullTrackObject> get tracks => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeSearchResponseObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeSearchResponseObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeSearchResponseObjectCopyWith<SpotubeSearchResponseObject>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -3212,8 +3066,6 @@ class _$SpotubeSearchResponseObjectCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeSearchResponseObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -3269,8 +3121,6 @@ class __$$SpotubeSearchResponseObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeSearchResponseObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeSearchResponseObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -3367,7 +3217,7 @@ class _$SpotubeSearchResponseObjectImpl
             const DeepCollectionEquality().equals(other._tracks, _tracks));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -3376,9 +3226,7 @@ class _$SpotubeSearchResponseObjectImpl
       const DeepCollectionEquality().hash(_playlists),
       const DeepCollectionEquality().hash(_tracks));
 
-  /// Create a copy of SpotubeSearchResponseObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeSearchResponseObjectImplCopyWith<_$SpotubeSearchResponseObjectImpl>
@@ -3413,11 +3261,8 @@ abstract class _SpotubeSearchResponseObject
   List<SpotubeSimplePlaylistObject> get playlists;
   @override
   List<SpotubeFullTrackObject> get tracks;
-
-  /// Create a copy of SpotubeSearchResponseObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeSearchResponseObjectImplCopyWith<_$SpotubeSearchResponseObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -3533,13 +3378,8 @@ mixin _$SpotubeTrackObject {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
-
-  /// Serializes this SpotubeTrackObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeTrackObjectCopyWith<SpotubeTrackObject> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -3571,8 +3411,6 @@ class _$SpotubeTrackObjectCopyWithImpl<$Res, $Val extends SpotubeTrackObject>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -3611,8 +3449,6 @@ class _$SpotubeTrackObjectCopyWithImpl<$Res, $Val extends SpotubeTrackObject>
     ) as $Val);
   }
 
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SpotubeSimpleAlbumObjectCopyWith<$Res> get album {
@@ -3654,8 +3490,6 @@ class __$$SpotubeLocalTrackObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeLocalTrackObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -3764,14 +3598,12 @@ class _$SpotubeLocalTrackObjectImpl implements SpotubeLocalTrackObject {
             (identical(other.path, path) || other.path == path));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name, externalUri,
       const DeepCollectionEquality().hash(_artists), album, durationMs, path);
 
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeLocalTrackObjectImplCopyWith<_$SpotubeLocalTrackObjectImpl>
@@ -3925,11 +3757,8 @@ abstract class SpotubeLocalTrackObject implements SpotubeTrackObject {
   @override
   int get durationMs;
   String get path;
-
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeLocalTrackObjectImplCopyWith<_$SpotubeLocalTrackObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -3966,8 +3795,6 @@ class __$$SpotubeFullTrackObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeFullTrackObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -4086,7 +3913,7 @@ class _$SpotubeFullTrackObjectImpl implements SpotubeFullTrackObject {
                 other.explicit == explicit));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -4099,9 +3926,7 @@ class _$SpotubeFullTrackObjectImpl implements SpotubeFullTrackObject {
       isrc,
       explicit);
 
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeFullTrackObjectImplCopyWith<_$SpotubeFullTrackObjectImpl>
@@ -4260,11 +4085,8 @@ abstract class SpotubeFullTrackObject implements SpotubeTrackObject {
   int get durationMs;
   String get isrc;
   bool get explicit;
-
-  /// Create a copy of SpotubeTrackObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeFullTrackObjectImplCopyWith<_$SpotubeFullTrackObjectImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -4280,12 +4102,8 @@ mixin _$SpotubeUserObject {
   List<SpotubeImageObject> get images => throw _privateConstructorUsedError;
   String get externalUri => throw _privateConstructorUsedError;
 
-  /// Serializes this SpotubeUserObject to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SpotubeUserObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $SpotubeUserObjectCopyWith<SpotubeUserObject> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -4313,8 +4131,6 @@ class _$SpotubeUserObjectCopyWithImpl<$Res, $Val extends SpotubeUserObject>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of SpotubeUserObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -4367,8 +4183,6 @@ class __$$SpotubeUserObjectImplCopyWithImpl<$Res>
       $Res Function(_$SpotubeUserObjectImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of SpotubeUserObject
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -4444,14 +4258,12 @@ class _$SpotubeUserObjectImpl implements _SpotubeUserObject {
                 other.externalUri == externalUri));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, name,
       const DeepCollectionEquality().hash(_images), externalUri);
 
-  /// Create a copy of SpotubeUserObject
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$SpotubeUserObjectImplCopyWith<_$SpotubeUserObjectImpl> get copyWith =>
@@ -4484,11 +4296,8 @@ abstract class _SpotubeUserObject implements SpotubeUserObject {
   List<SpotubeImageObject> get images;
   @override
   String get externalUri;
-
-  /// Create a copy of SpotubeUserObject
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$SpotubeUserObjectImplCopyWith<_$SpotubeUserObjectImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -4510,12 +4319,8 @@ mixin _$PluginConfiguration {
   List<PluginAbilities> get abilities => throw _privateConstructorUsedError;
   String? get repository => throw _privateConstructorUsedError;
 
-  /// Serializes this PluginConfiguration to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of PluginConfiguration
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $PluginConfigurationCopyWith<PluginConfiguration> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -4549,8 +4354,6 @@ class _$PluginConfigurationCopyWithImpl<$Res, $Val extends PluginConfiguration>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of PluginConfiguration
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -4639,8 +4442,6 @@ class __$$PluginConfigurationImplCopyWithImpl<$Res>
       $Res Function(_$PluginConfigurationImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of PluginConfiguration
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -4783,7 +4584,7 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
                 other.repository == repository));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -4798,9 +4599,7 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
       const DeepCollectionEquality().hash(_abilities),
       repository);
 
-  /// Create a copy of PluginConfiguration
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$PluginConfigurationImplCopyWith<_$PluginConfigurationImpl> get copyWith =>
@@ -4852,11 +4651,8 @@ abstract class _PluginConfiguration extends PluginConfiguration {
   List<PluginAbilities> get abilities;
   @override
   String? get repository;
-
-  /// Create a copy of PluginConfiguration
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$PluginConfigurationImplCopyWith<_$PluginConfigurationImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -4872,12 +4668,8 @@ mixin _$PluginUpdateAvailable {
   String get version => throw _privateConstructorUsedError;
   String? get changelog => throw _privateConstructorUsedError;
 
-  /// Serializes this PluginUpdateAvailable to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of PluginUpdateAvailable
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $PluginUpdateAvailableCopyWith<PluginUpdateAvailable> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -4902,8 +4694,6 @@ class _$PluginUpdateAvailableCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of PluginUpdateAvailable
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -4949,8 +4739,6 @@ class __$$PluginUpdateAvailableImplCopyWithImpl<$Res>
       $Res Function(_$PluginUpdateAvailableImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of PluginUpdateAvailable
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -5008,13 +4796,11 @@ class _$PluginUpdateAvailableImpl implements _PluginUpdateAvailable {
                 other.changelog == changelog));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, downloadUrl, version, changelog);
 
-  /// Create a copy of PluginUpdateAvailable
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$PluginUpdateAvailableImplCopyWith<_$PluginUpdateAvailableImpl>
@@ -5044,11 +4830,8 @@ abstract class _PluginUpdateAvailable implements PluginUpdateAvailable {
   String get version;
   @override
   String? get changelog;
-
-  /// Create a copy of PluginUpdateAvailable
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$PluginUpdateAvailableImplCopyWith<_$PluginUpdateAvailableImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -5065,12 +4848,8 @@ mixin _$MetadataPluginRepository {
   String get description => throw _privateConstructorUsedError;
   String get repoUrl => throw _privateConstructorUsedError;
 
-  /// Serializes this MetadataPluginRepository to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of MetadataPluginRepository
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $MetadataPluginRepositoryCopyWith<MetadataPluginRepository> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -5095,8 +4874,6 @@ class _$MetadataPluginRepositoryCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of MetadataPluginRepository
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -5148,8 +4925,6 @@ class __$$MetadataPluginRepositoryImplCopyWithImpl<$Res>
       $Res Function(_$MetadataPluginRepositoryImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of MetadataPluginRepository
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -5217,14 +4992,12 @@ class _$MetadataPluginRepositoryImpl implements _MetadataPluginRepository {
             (identical(other.repoUrl, repoUrl) || other.repoUrl == repoUrl));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode =>
       Object.hash(runtimeType, name, owner, description, repoUrl);
 
-  /// Create a copy of MetadataPluginRepository
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$MetadataPluginRepositoryImplCopyWith<_$MetadataPluginRepositoryImpl>
@@ -5257,11 +5030,8 @@ abstract class _MetadataPluginRepository implements MetadataPluginRepository {
   String get description;
   @override
   String get repoUrl;
-
-  /// Create a copy of MetadataPluginRepository
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$MetadataPluginRepositoryImplCopyWith<_$MetadataPluginRepositoryImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
