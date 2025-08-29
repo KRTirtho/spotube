@@ -26,7 +26,8 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
 
     return Card(
       child: Basic(
-        title: Text(pluginRepo.name),
+        title: Text(
+            "${pluginRepo.owner == "KRTirtho" ? "" : "${pluginRepo.owner}/"}${pluginRepo.name}"),
         subtitle: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
