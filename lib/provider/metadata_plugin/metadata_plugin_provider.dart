@@ -15,7 +15,6 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:uuid/uuid.dart';
 import 'package:archive/archive.dart';
 import 'package:pub_semver/pub_semver.dart';
 
@@ -133,6 +132,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
       if (!await pluginExtractionDir.exists() ||
           !await pluginJsonFile.exists() ||
           !await pluginBinaryFile.exists()) {
+        // Delete the plugin entry from DB if the plugin files are not there.
+        await database.metadataPluginsTable.deleteOne(plugin);
         continue;
       }
 
@@ -290,12 +291,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     final pluginDir = await _getPluginRootDir();
     await pluginDir.create(recursive: true);
 
-    final tempPluginName = "${const Uuid().v4()}.smplug";
-    final pluginFile = File(join(pluginDir.path, tempPluginName));
-
-    final pluginRes = await globalDio.download(
+    final pluginRes = await globalDio.get(
       pluginDownloadUrl,
-      pluginFile.path,
       options: Options(
         responseType: ResponseType.bytes,
         followRedirects: true,
@@ -307,7 +304,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
       throw MetadataPluginException.pluginDownloadFailed();
     }
 
-    return await extractPluginArchive(await pluginFile.readAsBytes());
+    return await extractPluginArchive(pluginRes.data);
   }
 
   bool validatePluginApiCompatibility(PluginConfiguration plugin) {
