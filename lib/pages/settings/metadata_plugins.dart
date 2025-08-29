@@ -16,6 +16,7 @@ import 'package:spotube/provider/metadata_plugin/core/repositories.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -82,28 +83,66 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                         ),
                       ),
                     ),
-                    Tooltip(
-                      tooltip: const TooltipContainer(
-                        child: Text("Download and install plugin from url"),
-                      ).call,
-                      child: IconButton.secondary(
-                        icon: const Icon(SpotubeIcons.download),
-                        onPressed: () async {
-                          if (formKey.currentState?.saveAndValidate() ??
-                              false) {
-                            final url = formKey.currentState
-                                ?.fields["plugin_url"]?.value as String;
+                    HookBuilder(builder: (context) {
+                      final isLoading = useState(false);
 
-                            if (url.isNotEmpty) {
-                              final pluginConfig = await pluginsNotifier
-                                  .downloadAndCachePlugin(url);
+                      return Tooltip(
+                        tooltip: const TooltipContainer(
+                          child: Text("Download and install plugin from url"),
+                        ).call,
+                        child: IconButton.secondary(
+                          icon: isLoading.value
+                              ? const SizedBox.square(
+                                  dimension: 22,
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Icon(SpotubeIcons.download),
+                          enabled: !isLoading.value,
+                          onPressed: () async {
+                            try {
+                              if (formKey.currentState?.saveAndValidate() ??
+                                  false) {
+                                final url = formKey.currentState
+                                    ?.fields["plugin_url"]?.value as String;
 
-                              await pluginsNotifier.addPlugin(pluginConfig);
+                                if (url.isNotEmpty) {
+                                  isLoading.value = true;
+                                  final pluginConfig = await pluginsNotifier
+                                      .downloadAndCachePlugin(url);
+
+                                  await pluginsNotifier.addPlugin(pluginConfig);
+
+                                  formKey.currentState?.fields["plugin_url"]
+                                      ?.reset();
+                                }
+                              }
+                            } catch (e, stackTrace) {
+                              AppLogger.reportError(e, stackTrace);
+                              if (context.mounted) {
+                                showToast(
+                                  showDuration: const Duration(seconds: 5),
+                                  context: context,
+                                  builder: (context, overlay) {
+                                    return SurfaceCard(
+                                      child: Basic(
+                                        leading: const Icon(
+                                          SpotubeIcons.error,
+                                          color: Colors.red,
+                                        ),
+                                        title: Text("Failed to add plugin: $e"),
+                                      ),
+                                    );
+                                  },
+                                );
+                              }
+                            } finally {
+                              isLoading.value = false;
                             }
-                          }
-                        },
-                      ),
-                    ),
+                          },
+                        ),
+                      );
+                    }),
                     Tooltip(
                       tooltip: const TooltipContainer(
                         child: Text("Upload plugin from file"),
