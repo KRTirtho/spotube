@@ -163,6 +163,15 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
               .nonNulls
               .toList();
 
+          if (tracks.length != state.tracks.length) {
+            AppLogger.log.w("Mismatch in tracks after reordering/shuffling.");
+            final missingTracks =
+                state.tracks.where((track) => !tracks.contains(track)).toList();
+            AppLogger.log.w(
+              "Missing tracks: ${missingTracks.map((e) => e.id).join(", ")}",
+            );
+          }
+
           state = state.copyWith(
             tracks: tracks,
             currentIndex: playlist.index,

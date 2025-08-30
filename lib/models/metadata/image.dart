@@ -42,6 +42,17 @@ extension SpotubeImageExtensions on List<SpotubeImageObject>? {
         : placeholderUrlMap[placeholder]!;
   }
 
+  Uri asUri({
+    int index = 1,
+    required ImagePlaceholder placeholder,
+  }) {
+    final url = asUrlString(placeholder: placeholder, index: index);
+    if (url.startsWith("http")) {
+      return Uri.parse(url);
+    }
+    return Uri.file(url);
+  }
+
   String smallest(ImagePlaceholder placeholder) {
     final sortedImage = this?.sorted((a, b) {
       final widthComparison = (a.width ?? 0).compareTo(b.width ?? 0);

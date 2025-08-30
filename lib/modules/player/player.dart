@@ -25,7 +25,6 @@ import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
-import 'package:spotube/utils/platform.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -100,8 +99,6 @@ class PlayerView extends HookConsumerWidget {
           backgroundColor: Colors.transparent,
           headers: [
             SafeArea(
-              minimum:
-                  kIsMobile ? const EdgeInsets.only(top: 80) : EdgeInsets.zero,
               bottom: false,
               child: TitleBar(
                 surfaceOpacity: 0,

@@ -83,7 +83,9 @@ Future<void> _sendActiveTrack(SpotubeTrackObject? track) async {
   final image = track.album.images.firstOrNull;
   final cachedImage = image == null
       ? null
-      : await DefaultCacheManager().getSingleFile(image.url);
+      : image.url.startsWith("http")
+          ? (await DefaultCacheManager().getSingleFile(image.url)).path
+          : image.url;
   final data = {
     ...jsonTrack,
     "album": {
@@ -92,7 +94,7 @@ Future<void> _sendActiveTrack(SpotubeTrackObject? track) async {
         if (cachedImage != null && image != null)
           {
             ...image.toJson(),
-            "path": cachedImage.path,
+            "path": cachedImage,
           }
       ]
     }
