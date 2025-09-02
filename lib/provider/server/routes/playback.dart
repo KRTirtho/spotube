@@ -215,15 +215,11 @@ class ServerPlaybackRoutes {
           ? activeSourcedTrack?.source
           : await ref.read(
               trackSourcesProvider(
-                TrackSourceQuery.parseUri(request.url.toString()),
+                //! Use [Request.requestedUri] as it contains full https url.
+                //! [Request.url] will exclude and starts relatively. (streams/<trackId>... basically)
+                TrackSourceQuery.parseUri(request.requestedUri.toString()),
               ).future,
             );
-
-      // This will be automatically updated by the notifier.
-      // if (playlist.activeTrack?.id == sourcedTrack?.query.id &&
-      //     sourcedTrack != null) {
-      //   ref.read(activeTrackSourcesProvider.notifier).update(sourcedTrack);
-      // }
 
       final (bytes: audioBytes, response: res) =
           await streamTrack(sourcedTrack!, request.headers);

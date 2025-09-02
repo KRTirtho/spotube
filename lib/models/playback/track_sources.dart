@@ -39,6 +39,8 @@ class TrackSourceQuery with _$TrackSourceQuery {
 
   /// Parses [SpotubeMedia]'s [uri] property to create a [TrackSourceQuery].
   factory TrackSourceQuery.parseUri(String url) {
+    AppLogger.log.d("TrackSourceQuery parse $url");
+
     final isLocal = !url.startsWith("http");
 
     if (isLocal) {

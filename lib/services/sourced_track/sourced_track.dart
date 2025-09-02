@@ -84,6 +84,8 @@ abstract class SourcedTrack extends BasicSourcedTrack {
       onlyCleanArtist: true,
     ).trim();
 
+    assert(title.trim().isNotEmpty, "Title should not be empty");
+
     return "$title - ${track.artists.join(", ")}";
   }
 

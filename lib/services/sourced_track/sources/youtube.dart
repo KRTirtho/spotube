@@ -201,7 +201,10 @@ class YoutubeSourcedTrack extends SourcedTrack {
       final searchedVideos =
           await ref.read(youtubeEngineProvider).searchVideos(isrc.toString());
       if (searchedVideos.isNotEmpty) {
-        isrcResults.addAll(searchedVideos
+        AppLogger.log
+            .d("${track.title} ISRC $isrc Total ${searchedVideos.length}");
+
+        final filteredMatches = searchedVideos
             .map<YoutubeVideoInfo>(YoutubeVideoInfo.fromVideo)
             .map((YoutubeVideoInfo videoInfo) {
               final ytWords = videoInfo.title
@@ -225,8 +228,16 @@ class YoutubeSourcedTrack extends SourcedTrack {
               }
               return null;
             })
-            .whereType<YoutubeVideoInfo>()
-            .toList());
+            .nonNulls
+            .toList();
+
+        for (final match in filteredMatches) {
+          AppLogger.log.d(
+            "ISRC MATCH: ${match.id} ${match.title} by ${match.channelName} ${match.duration}",
+          );
+        }
+
+        isrcResults.addAll(filteredMatches);
       }
     }
     return isrcResults;
@@ -247,7 +258,14 @@ class YoutubeSourcedTrack extends SourcedTrack {
       videoResults.addAll(isrcResults);
 
       if (isrcResults.isEmpty) {
+        AppLogger.log.w("No ISRC results found, falling back to SongLink");
+
         final links = await SongLinkService.links(query.id);
+
+        for (final link in links) {
+          AppLogger.log.d("SongLink ${query.id} ${link.platform} ${link.url}");
+        }
+
         final ytLink = links.firstWhereOrNull(
           (link) => link.platform == "youtube",
         );
@@ -262,6 +280,8 @@ class YoutubeSourcedTrack extends SourcedTrack {
             // Ignore this error and continue with the search
             AppLogger.reportError(e, stack);
           }
+        } else {
+          AppLogger.log.w("No YouTube link found in SongLink results");
         }
       }
     }
