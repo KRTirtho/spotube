@@ -61,13 +61,20 @@ class ServerPlaybackRoutes {
     );
     final trackPartialCacheFile = File("${trackCacheFile.path}.part");
 
+    String? url = track.url;
+
+    url ??= await ref
+        .read(trackSourcesProvider(track.query).notifier)
+        .swapWithNextSibling()
+        .then((track) => track.url!);
+
     var options = Options(
       headers: {
         ...headers,
         "user-agent": _randomUserAgent,
         "Cache-Control": "max-age=3600",
         "Connection": "keep-alive",
-        "host": Uri.parse(track.url).host,
+        "host": Uri.parse(url!).host,
       },
       responseType: ResponseType.bytes,
       validateStatus: (status) => status! < 400,
@@ -75,7 +82,7 @@ class ServerPlaybackRoutes {
 
     final headersRes = await Future<dio_lib.Response?>.value(
       dio.head(
-        track.url,
+        url,
         options: options,
       ),
     ).catchError((_) async => null);
@@ -95,7 +102,7 @@ class ServerPlaybackRoutes {
             "accept-ranges": ["bytes"],
             "content-range": ["bytes 0-$cachedFileLength/$cachedFileLength"],
           }),
-          requestOptions: RequestOptions(path: track.url),
+          requestOptions: RequestOptions(path: url),
         ),
         bytes: bytes,
       );
@@ -118,7 +125,7 @@ class ServerPlaybackRoutes {
 
     final res = await dio
         .get<Uint8List>(
-      track.url,
+      url,
       options: options.copyWith(headers: {
         ...?options.headers,
         "user-agent": _randomUserAgent,
@@ -136,7 +143,7 @@ class ServerPlaybackRoutes {
       // }
 
       return await dio.get<Uint8List>(
-        sourcedTrack.url,
+        sourcedTrack.url!,
         options: options.copyWith(headers: {
           ...?options.headers,
           "user-agent": _randomUserAgent,

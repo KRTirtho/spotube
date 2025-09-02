@@ -204,6 +204,8 @@ class YoutubeSourcedTrack extends SourcedTrack {
         AppLogger.log
             .d("${track.title} ISRC $isrc Total ${searchedVideos.length}");
 
+        final stringBuffer = StringBuffer();
+
         final filteredMatches = searchedVideos
             .map<YoutubeVideoInfo>(YoutubeVideoInfo.fromVideo)
             .map((YoutubeVideoInfo videoInfo) {
@@ -224,6 +226,10 @@ class YoutubeSourcedTrack extends SourcedTrack {
                           .abs()
                           .inMilliseconds <=
                       3000) {
+                stringBuffer.writeln(
+                  "ISRC MATCH: ${videoInfo.id} ${videoInfo.title} by ${videoInfo.channelName} ${videoInfo.duration}",
+                );
+
                 return videoInfo;
               }
               return null;
@@ -231,11 +237,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
             .nonNulls
             .toList();
 
-        for (final match in filteredMatches) {
-          AppLogger.log.d(
-            "ISRC MATCH: ${match.id} ${match.title} by ${match.channelName} ${match.duration}",
-          );
-        }
+        AppLogger.log.d(stringBuffer.toString());
 
         isrcResults.addAll(filteredMatches);
       }
@@ -262,9 +264,16 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
         final links = await SongLinkService.links(query.id);
 
-        for (final link in links) {
-          AppLogger.log.d("SongLink ${query.id} ${link.platform} ${link.url}");
-        }
+        final stringBuffer = links.fold(
+          StringBuffer(),
+          (previousValue, element) {
+            previousValue.writeln(
+                "SongLink ${query.id} ${element.platform} ${element.url}");
+            return previousValue;
+          },
+        );
+
+        AppLogger.log.d(stringBuffer.toString());
 
         final ytLink = links.firstWhereOrNull(
           (link) => link.platform == "youtube",

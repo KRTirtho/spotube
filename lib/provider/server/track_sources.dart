@@ -34,6 +34,12 @@ class TrackSourcesNotifier
       return await prev.swapWithSibling(sibling) ?? prev;
     });
   }
+
+  Future<SourcedTrack> swapWithNextSibling() async {
+    return await update((prev) async {
+      return await prev.swapWithSibling(prev.siblings.first) as SourcedTrack;
+    });
+  }
 }
 
 final trackSourcesProvider = AsyncNotifierProviderFamily<TrackSourcesNotifier,

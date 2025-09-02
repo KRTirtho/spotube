@@ -130,7 +130,7 @@ class DownloadManagerProvider extends ChangeNotifier {
               download.status.value == DownloadStatus.queued,
         )
         .map((e) => e.request.url)
-        .contains(sourcedTrack.getUrlOfCodec(downloadCodec));
+        .contains(sourcedTrack.getUrlOfCodec(downloadCodec)!);
   }
 
   /// For singular downloads
@@ -152,7 +152,9 @@ class DownloadManagerProvider extends ChangeNotifier {
 
     if (sourcedTrack.codec == downloadCodec) {
       final downloadTask = await dl.addDownload(
-          sourcedTrack.getUrlOfCodec(downloadCodec), savePath);
+        sourcedTrack.getUrlOfCodec(downloadCodec)!,
+        savePath,
+      );
       if (downloadTask != null) {
         $history.add(sourcedTrack);
       }
@@ -169,7 +171,7 @@ class DownloadManagerProvider extends ChangeNotifier {
         return d;
       });
       final downloadTask = await dl.addDownload(
-        sourcedTrack.getUrlOfCodec(downloadCodec),
+        sourcedTrack.getUrlOfCodec(downloadCodec)!,
         savePath,
       );
       if (downloadTask != null) {
@@ -202,18 +204,18 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   Future<void> removeFromQueue(SpotubeFullTrackObject track) async {
     final sourcedTrack = await mapToSourcedTrack(track);
-    await dl.removeDownload(sourcedTrack.getUrlOfCodec(downloadCodec));
+    await dl.removeDownload(sourcedTrack.getUrlOfCodec(downloadCodec)!);
     $history.remove(sourcedTrack);
   }
 
   Future<void> pause(SpotubeFullTrackObject track) async {
     final sourcedTrack = await mapToSourcedTrack(track);
-    return dl.pauseDownload(sourcedTrack.getUrlOfCodec(downloadCodec));
+    return dl.pauseDownload(sourcedTrack.getUrlOfCodec(downloadCodec)!);
   }
 
   Future<void> resume(SpotubeFullTrackObject track) async {
     final sourcedTrack = await mapToSourcedTrack(track);
-    return dl.resumeDownload(sourcedTrack.getUrlOfCodec(downloadCodec));
+    return dl.resumeDownload(sourcedTrack.getUrlOfCodec(downloadCodec)!);
   }
 
   Future<void> retry(SpotubeFullTrackObject track) {
@@ -222,7 +224,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   void cancel(SpotubeFullTrackObject track) async {
     final sourcedTrack = await mapToSourcedTrack(track);
-    return dl.cancelDownload(sourcedTrack.getUrlOfCodec(downloadCodec));
+    return dl.cancelDownload(sourcedTrack.getUrlOfCodec(downloadCodec)!);
   }
 
   void cancelAll() {
@@ -256,7 +258,7 @@ class DownloadManagerProvider extends ChangeNotifier {
     if (sourcedTrack == null) {
       return null;
     }
-    return dl.getDownload(sourcedTrack.getUrlOfCodec(downloadCodec))?.status;
+    return dl.getDownload(sourcedTrack.getUrlOfCodec(downloadCodec)!)?.status;
   }
 
   ValueNotifier<double>? getProgressNotifier(SpotubeFullTrackObject track) {
@@ -266,7 +268,7 @@ class DownloadManagerProvider extends ChangeNotifier {
     if (sourcedTrack == null) {
       return null;
     }
-    return dl.getDownload(sourcedTrack.getUrlOfCodec(downloadCodec))?.progress;
+    return dl.getDownload(sourcedTrack.getUrlOfCodec(downloadCodec)!)?.progress;
   }
 }
 

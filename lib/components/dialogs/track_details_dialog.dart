@@ -60,8 +60,8 @@ class TrackDetailsDialog extends HookConsumerWidget {
             context.l10n.channel: Text(sourceInfo.artists),
             if (sourcedTrack.asData?.value.url != null)
               context.l10n.streamUrl: Hyperlink(
-                sourcedTrack.asData!.value.url,
-                sourcedTrack.asData!.value.url,
+                sourcedTrack.asData!.value.url ?? "",
+                sourcedTrack.asData!.value.url ?? "",
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
               ),

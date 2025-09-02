@@ -1,6 +1,7 @@
 import 'dart:isolate';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/youtube_engine/youtube_engine.dart';
@@ -60,6 +61,7 @@ class IsolatedYoutubeExplode {
   static void _isolateEntry(SendPort mainSendPort) {
     final receivePort = ReceivePort();
     final youtubeExplode = YoutubeExplode();
+    final stopWatch = kDebugMode ? Stopwatch() : null;
 
     /// Send the main port to the main isolate
     mainSendPort.send(receivePort.sendPort);
@@ -68,6 +70,19 @@ class IsolatedYoutubeExplode {
       final SendPort replyPort = message[0];
       final String methodName = message[1];
       final List<dynamic> arguments = message[2];
+
+      if (stopWatch != null) {
+        if (stopWatch.isRunning) {
+          stopWatch.stop();
+          final symbol = stopWatch.elapsedMilliseconds < 1000 ? "⚠️" : "⏱️";
+          debugPrint(
+            "$symbol YoutubeExplode operation gap ${stopWatch.elapsedMilliseconds} ms",
+          );
+          stopWatch.reset();
+        } else {
+          stopWatch.start();
+        }
+      }
 
       // Run the requested method on YoutubeExplode
       var result = switch (methodName) {
@@ -156,6 +171,7 @@ class YouTubeExplodeEngine implements YouTubeEngine {
     );
 
     final accessibleStreams = <AudioOnlyStreamInfo>[];
+    final stringBuffer = StringBuffer();
 
     for (final stream in streamManifest.audioOnly) {
       // Call dio head request to check if the stream is accessible
@@ -169,7 +185,7 @@ class YouTubeExplodeEngine implements YouTubeEngine {
         ),
       );
 
-      AppLogger.log.d(
+      stringBuffer.writeln(
         "Stream $videoId Status ${response.statusCode} Codec ${stream.audioCodec} "
         "Bitrate ${stream.bitrate} Container ${stream.container}",
       );
@@ -198,6 +214,8 @@ class YouTubeExplodeEngine implements YouTubeEngine {
         );
       }
     }
+
+    AppLogger.log.d(stringBuffer.toString());
 
     return StreamManifest(accessibleStreams);
   }

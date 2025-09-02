@@ -141,7 +141,7 @@ abstract class SourcedTrack extends BasicSourcedTrack {
   }
 
   Future<SourcedTrack> refreshStream();
-  String get url {
+  String? get url {
     final preferences = ref.read(userPreferencesProvider);
 
     final codec = preferences.audioSource == AudioSource.jiosaavn
@@ -157,7 +157,7 @@ abstract class SourcedTrack extends BasicSourcedTrack {
   ///
   /// If no sources match the codec, it will return the first or last source
   /// based on the user's audio quality preference.
-  String getUrlOfCodec(SourceCodecs codec) {
+  String? getUrlOfCodec(SourceCodecs codec) {
     final preferences = ref.read(userPreferencesProvider);
 
     final exactMatch = sources.firstWhereOrNull(
@@ -191,8 +191,8 @@ abstract class SourcedTrack extends BasicSourcedTrack {
     });
 
     return preferences.audioQuality != SourceQualities.low
-        ? fallbackSource.first.url
-        : fallbackSource.last.url;
+        ? fallbackSource.firstOrNull?.url
+        : fallbackSource.lastOrNull?.url;
   }
 
   SourceCodecs get codec {
