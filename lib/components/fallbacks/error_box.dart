@@ -4,6 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/extensions/context.dart';
 
 class ErrorBox extends StatelessWidget {
   final Object error;
@@ -27,10 +28,10 @@ class ErrorBox extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             spacing: 12,
             children: [
-              const Basic(
-                leading: Icon(SpotubeIcons.error),
+              Basic(
+                leading: const Icon(SpotubeIcons.error),
                 contentSpacing: 8,
-                title: Text("An error occurred"),
+                title: Text(context.l10n.an_error_occurred),
               ),
               Card(
                 padding: const EdgeInsets.all(8.0),
@@ -70,7 +71,7 @@ class ErrorBox extends StatelessWidget {
                                 spacing: 8,
                                 children: [
                                   const Icon(SpotubeIcons.logs),
-                                  const Text("Logs"),
+                                  Text(context.l10n.logs),
                                   const Spacer(),
                                   IconButton.ghost(
                                     icon: const Icon(SpotubeIcons.close),
@@ -86,7 +87,7 @@ class ErrorBox extends StatelessWidget {
                                     leading: copied.value
                                         ? const Icon(SpotubeIcons.done)
                                         : const Icon(SpotubeIcons.clipboard),
-                                    child: const Text("Copy to clipboard"),
+                                    child: Text(context.l10n.copy_to_clipboard),
                                     onPressed: () {
                                       Clipboard.setData(
                                         ClipboardData(text: error.toString()),
@@ -118,13 +119,13 @@ class ErrorBox extends StatelessWidget {
                         },
                       );
                     },
-                    child: const Text("View logs"),
+                    child: Text(context.l10n.view_logs),
                   ),
                   if (onRetry != null)
                     Button.text(
                       leading: const Icon(SpotubeIcons.refresh),
                       onPressed: onRetry,
-                      child: const Text("Retry"),
+                      child: Text(context.l10n.retry),
                     ),
                 ],
               ),

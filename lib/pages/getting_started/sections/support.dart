@@ -112,7 +112,7 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
                       context.pushRoute(const SettingsMetadataProviderRoute());
                     }
                   },
-                  child: const Text("Install a Metadata Provider"),
+                  child: Text(context.l10n.install_a_metadata_provider),
                 ),
               ],
             ),

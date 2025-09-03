@@ -37,8 +37,7 @@ class HomePageBrowseSection extends HookConsumerWidget {
               spacing: 8,
               children: [
                 const CircularProgressIndicator(),
-                const Text("Building your timeline based on your listenings...")
-                    .muted,
+                Text(context.l10n.building_your_timeline).muted,
               ],
             ),
             const Gap(16),

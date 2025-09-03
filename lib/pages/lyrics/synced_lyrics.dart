@@ -236,18 +236,17 @@ class SyncedLyrics extends HookConsumerWidget {
                     text: TextSpan(
                       style: bodyTextTheme,
                       children: [
-                        const TextSpan(
-                          text:
-                              "Synced lyrics are not available for this song. Please use the",
+                        TextSpan(
+                          text: context.l10n.synced_lyrics_not_available,
                         ),
                         TextSpan(
-                          text: " Plain Lyrics ",
+                          text: " ${context.l10n.plain_lyrics} ",
                           style: typography.large.copyWith(
                             color: palette.bodyTextColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const TextSpan(text: "tab instead."),
+                        TextSpan(text: context.l10n.tab_instead),
                       ],
                     ),
                   ),

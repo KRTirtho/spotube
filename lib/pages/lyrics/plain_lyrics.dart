@@ -118,7 +118,7 @@ class PlainLyrics extends HookConsumerWidget {
                           ),
                           child: SelectableText(
                             lyrics == null && playlist.activeTrack == null
-                                ? "No Track being played currently"
+                                ? context.l10n.no_tracks_playing
                                 : lyrics ?? "",
                             textAlign: TextAlign.center,
                           ),

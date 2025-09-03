@@ -9,6 +9,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/form/text_form_field.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/metadata_plugins/installed_plugin.dart';
 import 'package:spotube/modules/metadata_plugins/plugin_repository.dart';
@@ -56,9 +57,9 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
     return SafeArea(
       bottom: false,
       child: Scaffold(
-        headers: const [
+        headers: [
           TitleBar(
-            title: Text("Metadata provider plugin"),
+            title: Text(context.l10n.metadata_provider_plugins),
           )
         ],
         child: Padding(
@@ -76,10 +77,8 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                           name: "plugin_url",
                           validator: FormBuilderValidators.url(
                               protocols: ["http", "https"]),
-                          placeholder: const Text(
-                            "Paste download url or GitHub/Codeberg repo url"
-                            "or direct link to .smplug file",
-                          ),
+                          placeholder:
+                              Text(context.l10n.paste_plugin_download_url),
                         ),
                       ),
                     ),
@@ -87,8 +86,9 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                       final isLoading = useState(false);
 
                       return Tooltip(
-                        tooltip: const TooltipContainer(
-                          child: Text("Download and install plugin from url"),
+                        tooltip: TooltipContainer(
+                          child: Text(context
+                              .l10n.download_and_install_plugin_from_url),
                         ).call,
                         child: IconButton.secondary(
                           icon: isLoading.value
@@ -130,7 +130,11 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                                           SpotubeIcons.error,
                                           color: Colors.red,
                                         ),
-                                        title: Text("Failed to add plugin: $e"),
+                                        title: Text(
+                                          context.l10n
+                                              .failed_to_add_plugin_error(
+                                                  e.toString()),
+                                        ),
                                       ),
                                     );
                                   },
@@ -144,8 +148,8 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                       );
                     }),
                     Tooltip(
-                      tooltip: const TooltipContainer(
-                        child: Text("Upload plugin from file"),
+                      tooltip: TooltipContainer(
+                        child: Text(context.l10n.upload_plugin_from_file),
                       ).call,
                       child: IconButton.primary(
                         icon: const Icon(SpotubeIcons.upload),
@@ -177,7 +181,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                   child: Row(
                     children: [
                       const Gap(8),
-                      const Text("Installed").h4,
+                      Text(context.l10n.installed).h4,
                       const Gap(8),
                       const Expanded(child: Divider()),
                       const Gap(8),
@@ -203,7 +207,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                 child: Row(
                   children: [
                     const Gap(8),
-                    const Text("Available plugins").h4,
+                    Text(context.l10n.available_plugins).h4,
                     const Gap(8),
                     const Expanded(child: Divider()),
                     const Gap(8),
@@ -256,21 +260,16 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                               spacing: 8,
                               children: [
                                 const Icon(SpotubeIcons.warning, size: 16),
-                                const Text(
-                                  "Disclaimer",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                Text(
+                                  context.l10n.disclaimer,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold),
                                 ).bold,
                               ],
                             ),
-                            const Text(
-                              "The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\n"
-                              "Please use them at your own risk. For any bugs/issues, please report them to the plugin repository."
-                              "\n\n"
-                              "If any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, "
-                              "please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. "
-                              "Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We're not curating them, "
-                              "so we cannot take any action on them.\n\n",
-                            ).muted.xSmall,
+                            Text(context.l10n.third_party_plugin_dmca_notice)
+                                .muted
+                                .xSmall,
                           ],
                         ),
                       ),

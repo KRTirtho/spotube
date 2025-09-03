@@ -3,6 +3,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/markdown/markdown.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/metadata_plugins/plugin_update_available_dialog.dart';
 import 'package:spotube/provider/metadata_plugin/core/auth.dart';
@@ -84,15 +85,15 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                         runSpacing: 8,
                         children: [
                           if (isOfficial)
-                            const PrimaryBadge(
-                              leading: Icon(SpotubeIcons.done),
-                              child: Text("Official"),
+                            PrimaryBadge(
+                              leading: const Icon(SpotubeIcons.done),
+                              child: Text(context.l10n.official),
                             )
                           else ...[
-                            Text("Author: ${plugin.author}"),
-                            const DestructiveBadge(
-                              leading: Icon(SpotubeIcons.warning),
-                              child: Text("Third-party"),
+                            Text(context.l10n.author_name(plugin.author)),
+                            DestructiveBadge(
+                              leading: const Icon(SpotubeIcons.warning),
+                              child: Text(context.l10n.third_party),
                             )
                           ],
                           SecondaryBadge(
@@ -131,11 +132,11 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                 spacing: 12,
                 children: [
                   if (requiresAuth && !isAuthenticated)
-                    const Row(
+                    Row(
                       spacing: 8,
                       children: [
-                        Icon(SpotubeIcons.warning, color: Colors.yellow),
-                        Text("Plugin requires authentication"),
+                        const Icon(SpotubeIcons.warning, color: Colors.yellow),
+                        Text(context.l10n.plugin_requires_authentication),
                       ],
                     ),
                   if (hasUpdate)
@@ -143,7 +144,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                       width: double.infinity,
                       child: Basic(
                         leading: const Icon(SpotubeIcons.update),
-                        title: const Text("Update available"),
+                        title: Text(context.l10n.update_available),
                         subtitle: Text(
                           updateAvailable!.asData!.value!.version,
                         ),
@@ -158,19 +159,17 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                               ),
                             );
                           },
-                          child: const Text("Update"),
+                          child: Text(context.l10n.update),
                         ),
                       ),
                     ),
                   if (supportsScrobbling)
-                    const SizedBox(
+                    SizedBox(
                       width: double.infinity,
                       child: Basic(
-                        leading: Icon(SpotubeIcons.info),
-                        title: Text("Supports scrobbling"),
-                        subtitle: Text(
-                          "This plugin scrobbles your music to generate your listening history.",
-                        ),
+                        leading: const Icon(SpotubeIcons.info),
+                        title: Text(context.l10n.supports_scrobbling),
+                        subtitle: Text(context.l10n.plugin_scrobbling_info),
                       ),
                     )
                 ],
@@ -184,9 +183,11 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                 onPressed: () async {
                   await pluginsNotifier.setDefaultPlugin(plugin);
                 },
-                child: isDefault
-                    ? const Text("Default")
-                    : const Text("Set default"),
+                child: Text(
+                  isDefault
+                      ? context.l10n.default_plugin
+                      : context.l10n.set_default,
+                ),
               ),
               if (isDefault)
                 Consumer(builder: (context, ref, _) {
@@ -226,13 +227,14 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                       },
                     ),
                     leading: const Icon(SpotubeIcons.heartFilled),
-                    child: const Text("Support"),
+                    child: Text(context.l10n.support),
                     onPressed: () {
                       showDialog(
                         context: context,
                         builder: (context) {
                           return AlertDialog(
-                            title: const Text("Support plugin development"),
+                            title:
+                                Text(context.l10n.support_plugin_development),
                             content: ConstrainedBox(
                               constraints: BoxConstraints(
                                 maxHeight: mediaQuery.height * 0.8,
@@ -252,7 +254,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                                 onPressed: () {
                                   Navigator.of(context).pop();
                                 },
-                                child: const Text("Close"),
+                                child: Text(context.l10n.close),
                               ),
                             ],
                           );
@@ -268,7 +270,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                     await metadataPlugin.asData?.value?.auth.authenticate();
                   },
                   leading: const Icon(SpotubeIcons.login),
-                  child: const Text("Login"),
+                  child: Text(context.l10n.login),
                 )
               else if (isDefault && requiresAuth && isAuthenticated)
                 Button.destructive(
@@ -276,7 +278,7 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                     await metadataPlugin.asData?.value?.auth.logout();
                   },
                   leading: const Icon(SpotubeIcons.logout),
-                  child: const Text("Logout"),
+                  child: Text(context.l10n.logout),
                 )
             ],
           )

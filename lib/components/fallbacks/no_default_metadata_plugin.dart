@@ -5,6 +5,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/extensions/context.dart';
 
 class NoDefaultMetadataPlugin extends StatelessWidget {
   const NoDefaultMetadataPlugin({super.key});
@@ -23,13 +24,13 @@ class NoDefaultMetadataPlugin extends StatelessWidget {
             color: context.theme.colorScheme.primary,
           ),
           AutoSizeText(
-            "You've no default metadata provider set",
+            context.l10n.no_default_metadata_provider_selected,
             style: context.theme.typography.h4,
             maxLines: 1,
           ),
           Button.primary(
             leading: const Icon(SpotubeIcons.extensions),
-            child: const Text("Manage metadata providers"),
+            child: Text(context.l10n.manage_metadata_providers),
             onPressed: () {
               context.pushRoute(const SettingsMetadataProviderRoute());
             },

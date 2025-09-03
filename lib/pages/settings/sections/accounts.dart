@@ -21,9 +21,8 @@ class SettingsAccountSection extends HookConsumerWidget {
       children: [
         ListTile(
           leading: const Icon(SpotubeIcons.extensions),
-          title: const Text("Metadata provider plugins"),
-          subtitle: const Text(
-              "Configure your own playlist/album/artist/feed metadata provider"),
+          title: Text(context.l10n.metadata_provider_plugins),
+          subtitle: Text(context.l10n.configure_your_own_metadata_plugin),
           onTap: () {
             context.pushRoute(const SettingsMetadataProviderRoute());
           },
@@ -32,7 +31,7 @@ class SettingsAccountSection extends HookConsumerWidget {
         if (scrobbler.asData?.value == null)
           ListTile(
             leading: const Icon(SpotubeIcons.music),
-            title: const Text("Audio scrobblers"),
+            title: Text(context.l10n.audio_scrobblers),
             onTap: () {
               context.pushRoute(const SettingsScrobblingRoute());
             },

@@ -1386,4 +1386,161 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'Bağlantı reddedildi. Kullanıcı erişimi reddetti.';
+
+  @override
+  String get an_error_occurred => 'An error occurred';
+
+  @override
+  String get copy_to_clipboard => 'Copy to clipboard';
+
+  @override
+  String get view_logs => 'View logs';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'You\'ve no default metadata provider set';
+
+  @override
+  String get manage_metadata_providers => 'Manage metadata providers';
+
+  @override
+  String get open_link_in_browser => 'Open Link in Browser?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Do you want to open the following link';
+
+  @override
+  String get unsafe_url_warning =>
+      'It can be unsafe to open links from untrusted sources. Be cautious!\nYou can also copy the link to your clipboard.';
+
+  @override
+  String get copy_link => 'Copy Link';
+
+  @override
+  String get building_your_timeline =>
+      'Building your timeline based on your listenings...';
+
+  @override
+  String get official => 'Official';
+
+  @override
+  String author_name(Object author) {
+    return 'Author: $author';
+  }
+
+  @override
+  String get third_party => 'Third-party';
+
+  @override
+  String get plugin_requires_authentication => 'Plugin requires authentication';
+
+  @override
+  String get update_available => 'Update available';
+
+  @override
+  String get supports_scrobbling => 'Supports scrobbling';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'This plugin scrobbles your music to generate your listening history.';
+
+  @override
+  String get default_plugin => 'Default';
+
+  @override
+  String get set_default => 'Set default';
+
+  @override
+  String get support => 'Support';
+
+  @override
+  String get support_plugin_development => 'Support plugin development';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- Can access **$name** API';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Do you want to install this plugin?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'This plugin is from a third-party repository. Please ensure you trust the source before installing.';
+
+  @override
+  String get author => 'Author';
+
+  @override
+  String get this_plugin_can_do_following => 'This plugin can do following';
+
+  @override
+  String get install => 'Install';
+
+  @override
+  String get install_a_metadata_provider => 'Install a Metadata Provider';
+
+  @override
+  String get no_tracks_playing => 'No Track being played currently';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Synced lyrics are not available for this song. Please use the';
+
+  @override
+  String get plain_lyrics => 'Plain Lyrics';
+
+  @override
+  String get tab_instead => 'tab instead.';
+
+  @override
+  String get disclaimer => 'Disclaimer';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\nPlease use them at your own risk. For any bugs/issues, please report them to the plugin repository.\n\nIf any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We\'re not curating them, so we cannot take any action on them.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'Input doesn\'t match the required format';
+
+  @override
+  String get metadata_provider_plugins => 'Metadata Provider Plugins';
+
+  @override
+  String get paste_plugin_download_url =>
+      'Paste download url or GitHub/Codeberg repo url or direct link to .smplug file';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'Download and install plugin from url';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Failed to add plugin: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'Upload plugin from file';
+
+  @override
+  String get installed => 'Installed';
+
+  @override
+  String get available_plugins => 'Available plugins';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'Configure your own playlist/album/artist/feed metadata provider';
+
+  @override
+  String get audio_scrobblers => 'Audio Scrobblers';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }
