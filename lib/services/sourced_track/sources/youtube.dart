@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/database/database.dart';
@@ -6,6 +7,7 @@ import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_engine/youtube_engine.dart';
+import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/song_link/song_link.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -389,14 +391,32 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
   @override
   Future<SourcedTrack> refreshStream() async {
-    final manifest =
-        await ref.read(youtubeEngineProvider).getStreamManifest(info.id);
+    List<TrackSource> validStreams = [];
+
+    for (final source in sources) {
+      final res = await globalDio.head(
+        source.url,
+        options:
+            Options(validateStatus: (status) => status != null && status < 500),
+      );
+
+      if (res.statusCode! < 400) {
+        validStreams.add(source);
+      }
+    }
+
+    if (validStreams.isEmpty) {
+      final manifest =
+          await ref.read(youtubeEngineProvider).getStreamManifest(info.id);
+
+      validStreams = toTrackSources(manifest);
+    }
 
     final sourcedTrack = YoutubeSourcedTrack(
       ref: ref,
       siblings: siblings,
       source: source,
-      sources: toTrackSources(manifest),
+      sources: validStreams,
       info: info,
       query: query,
     );

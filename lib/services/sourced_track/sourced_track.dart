@@ -179,7 +179,7 @@ abstract class SourcedTrack extends BasicSourcedTrack {
     }).toList();
 
     if (sameCodecSources.isNotEmpty) {
-      return preferences.audioQuality != SourceQualities.low
+      return preferences.audioQuality > SourceQualities.low
           ? sameCodecSources.first.url
           : sameCodecSources.last.url;
     }
@@ -190,7 +190,7 @@ abstract class SourcedTrack extends BasicSourcedTrack {
       return aDiff != bDiff ? aDiff - bDiff : a.quality.index - b.quality.index;
     });
 
-    return preferences.audioQuality != SourceQualities.low
+    return preferences.audioQuality > SourceQualities.low
         ? fallbackSource.firstOrNull?.url
         : fallbackSource.lastOrNull?.url;
   }

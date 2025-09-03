@@ -9,9 +9,20 @@ enum SourceCodecs {
 }
 
 enum SourceQualities {
-  high,
-  medium,
-  low,
+  high(2),
+  medium(1),
+  low(0);
+
+  final int priority;
+  const SourceQualities(this.priority);
+
+  bool operator <(SourceQualities other) {
+    return priority < other.priority;
+  }
+
+  operator >(SourceQualities other) {
+    return priority > other.priority;
+  }
 }
 
 typedef SiblingType<T extends TrackSourceInfo> = ({

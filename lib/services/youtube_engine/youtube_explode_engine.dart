@@ -1,9 +1,6 @@
 import 'dart:isolate';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:spotube/services/dio/dio.dart';
-import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/youtube_engine/youtube_engine.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -170,54 +167,31 @@ class YouTubeExplodeEngine implements YouTubeEngine {
       ],
     );
 
-    final accessibleStreams = <AudioOnlyStreamInfo>[];
-    final stringBuffer = StringBuffer();
+    final audioStreams = streamManifest.audioOnly.where(
+      (stream) => stream.bitrate.bitsPerSecond >= 40960,
+    );
 
-    for (final stream in streamManifest.audioOnly) {
-      // Call dio head request to check if the stream is accessible
-      final response = await globalDio.headUri(
-        stream.url,
-        options: Options(
-          followRedirects: true,
-          validateStatus: (status) {
-            return status != null && status < 500;
+    return StreamManifest(
+      audioStreams.map(
+        (stream) => AudioOnlyStreamInfo(
+          stream.videoId,
+          stream.tag,
+          stream.url,
+          stream.container,
+          stream.size,
+          stream.bitrate,
+          stream.audioCodec,
+          switch (stream.bitrate.bitsPerSecond) {
+            > 130 * 1024 => "high",
+            > 64 * 1024 => "medium",
+            _ => "low",
           },
+          stream.fragments,
+          stream.codec,
+          stream.audioTrack,
         ),
-      );
-
-      stringBuffer.writeln(
-        "Stream $videoId Status ${response.statusCode} Codec ${stream.audioCodec} "
-        "Bitrate ${stream.bitrate} Container ${stream.container}",
-      );
-
-      if (response.statusCode != null &&
-          response.statusCode! >= 200 &&
-          response.statusCode! < 400) {
-        accessibleStreams.add(
-          AudioOnlyStreamInfo(
-            stream.videoId,
-            stream.tag,
-            stream.url,
-            stream.container,
-            stream.size,
-            stream.bitrate,
-            stream.audioCodec,
-            switch (stream.bitrate.bitsPerSecond) {
-              > 130 * 1024 => "high",
-              > 64 * 1024 => "medium",
-              _ => "low",
-            },
-            stream.fragments,
-            stream.codec,
-            stream.audioTrack,
-          ),
-        );
-      }
-    }
-
-    AppLogger.log.d(stringBuffer.toString());
-
-    return StreamManifest(accessibleStreams);
+      ),
+    );
   }
 
   @override
