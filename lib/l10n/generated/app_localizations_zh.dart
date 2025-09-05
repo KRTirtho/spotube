@@ -1179,7 +1179,7 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*这是根据在线音乐流媒体平台每流平均支付0.003美元至0.005美元计算得出的。这是一个假设性的计算，旨在让用户了解如果他们在不同的音乐流媒体平台上收听歌曲，他们将需要向艺人支付多少费用。';
 
   @override
   String count_mins(Object minutes) {
@@ -1356,158 +1356,147 @@ class AppLocalizationsZh extends AppLocalizations {
   String get connection_request_denied => '连接被拒绝。用户拒绝访问。';
 
   @override
-  String get an_error_occurred => 'An error occurred';
+  String get an_error_occurred => '发生错误';
 
   @override
-  String get copy_to_clipboard => 'Copy to clipboard';
+  String get copy_to_clipboard => '复制到剪贴板';
 
   @override
-  String get view_logs => 'View logs';
+  String get view_logs => '查看日志';
 
   @override
-  String get retry => 'Retry';
+  String get retry => '重试';
 
   @override
-  String get no_default_metadata_provider_selected =>
-      'You\'ve no default metadata provider set';
+  String get no_default_metadata_provider_selected => '您未设置默认元数据提供者';
 
   @override
-  String get manage_metadata_providers => 'Manage metadata providers';
+  String get manage_metadata_providers => '管理元数据提供者';
 
   @override
-  String get open_link_in_browser => 'Open Link in Browser?';
+  String get open_link_in_browser => '在浏览器中打开链接？';
 
   @override
-  String get do_you_want_to_open_the_following_link =>
-      'Do you want to open the following link';
+  String get do_you_want_to_open_the_following_link => '您想打开以下链接吗';
 
   @override
-  String get unsafe_url_warning =>
-      'It can be unsafe to open links from untrusted sources. Be cautious!\nYou can also copy the link to your clipboard.';
+  String get unsafe_url_warning => '从不受信任的来源打开链接可能不安全。请谨慎！\n您也可以将链接复制到剪贴板。';
 
   @override
-  String get copy_link => 'Copy Link';
+  String get copy_link => '复制链接';
 
   @override
-  String get building_your_timeline =>
-      'Building your timeline based on your listenings...';
+  String get building_your_timeline => '正在根据您的收听记录构建您的时间线...';
 
   @override
-  String get official => 'Official';
+  String get official => '官方';
 
   @override
   String author_name(Object author) {
-    return 'Author: $author';
+    return '作者：$author';
   }
 
   @override
-  String get third_party => 'Third-party';
+  String get third_party => '第三方';
 
   @override
-  String get plugin_requires_authentication => 'Plugin requires authentication';
+  String get plugin_requires_authentication => '插件需要身份验证';
 
   @override
-  String get update_available => 'Update available';
+  String get update_available => '有可用更新';
 
   @override
-  String get supports_scrobbling => 'Supports scrobbling';
+  String get supports_scrobbling => '支持 Scrobbling';
 
   @override
-  String get plugin_scrobbling_info =>
-      'This plugin scrobbles your music to generate your listening history.';
+  String get plugin_scrobbling_info => '此插件会 scrobble 您的音乐以生成您的收听历史记录。';
 
   @override
-  String get default_plugin => 'Default';
+  String get default_plugin => '默认';
 
   @override
-  String get set_default => 'Set default';
+  String get set_default => '设为默认';
 
   @override
-  String get support => 'Support';
+  String get support => '支持';
 
   @override
-  String get support_plugin_development => 'Support plugin development';
+  String get support_plugin_development => '支持插件开发';
 
   @override
   String can_access_name_api(Object name) {
-    return '- Can access **$name** API';
+    return '- 可以访问 **$name** API';
   }
 
   @override
-  String get do_you_want_to_install_this_plugin =>
-      'Do you want to install this plugin?';
+  String get do_you_want_to_install_this_plugin => '您想安装此插件吗？';
 
   @override
-  String get third_party_plugin_warning =>
-      'This plugin is from a third-party repository. Please ensure you trust the source before installing.';
+  String get third_party_plugin_warning => '此插件来自第三方存储库。请在安装前确保您信任此来源。';
 
   @override
-  String get author => 'Author';
+  String get author => '作者';
 
   @override
-  String get this_plugin_can_do_following => 'This plugin can do following';
+  String get this_plugin_can_do_following => '此插件可以执行以下操作';
 
   @override
-  String get install => 'Install';
+  String get install => '安装';
 
   @override
-  String get install_a_metadata_provider => 'Install a Metadata Provider';
+  String get install_a_metadata_provider => '安装元数据提供者';
 
   @override
-  String get no_tracks_playing => 'No Track being played currently';
+  String get no_tracks_playing => '当前没有播放任何曲目';
 
   @override
-  String get synced_lyrics_not_available =>
-      'Synced lyrics are not available for this song. Please use the';
+  String get synced_lyrics_not_available => '此歌曲的同步歌词不可用。请使用';
 
   @override
-  String get plain_lyrics => 'Plain Lyrics';
+  String get plain_lyrics => '纯歌词';
 
   @override
-  String get tab_instead => 'tab instead.';
+  String get tab_instead => '选项卡。';
 
   @override
-  String get disclaimer => 'Disclaimer';
+  String get disclaimer => '免责声明';
 
   @override
   String get third_party_plugin_dmca_notice =>
-      'The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\nPlease use them at your own risk. For any bugs/issues, please report them to the plugin repository.\n\nIf any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We\'re not curating them, so we cannot take any action on them.\n\n';
+      'Spotube 团队对任何“第三方”插件不承担任何责任（包括法律责任）。\n请自行承担风险使用。对于任何错误/问题，请向插件存储库报告。\n\n如果任何“第三方”插件违反了任何服务/法律实体的服务条款/DMCA，请要求该“第三方”插件作者或托管平台（例如 GitHub/Codeberg）采取行动。上面列出的（标记为“第三方”）都是公共/社区维护的插件。我们不对此类插件进行管理，因此无法对其采取任何行动。\n\n';
 
   @override
-  String get input_does_not_match_format =>
-      'Input doesn\'t match the required format';
+  String get input_does_not_match_format => '输入与所需格式不匹配';
 
   @override
-  String get metadata_provider_plugins => 'Metadata Provider Plugins';
+  String get metadata_provider_plugins => '元数据提供者插件';
 
   @override
   String get paste_plugin_download_url =>
-      'Paste download url or GitHub/Codeberg repo url or direct link to .smplug file';
+      '粘贴下载 URL、GitHub/Codeberg 存储库 URL 或 .smplug 文件的直接链接';
 
   @override
-  String get download_and_install_plugin_from_url =>
-      'Download and install plugin from url';
+  String get download_and_install_plugin_from_url => '从 URL 下载并安装插件';
 
   @override
   String failed_to_add_plugin_error(Object error) {
-    return 'Failed to add plugin: $error';
+    return '添加插件失败：$error';
   }
 
   @override
-  String get upload_plugin_from_file => 'Upload plugin from file';
+  String get upload_plugin_from_file => '从文件上传插件';
 
   @override
-  String get installed => 'Installed';
+  String get installed => '已安装';
 
   @override
-  String get available_plugins => 'Available plugins';
+  String get available_plugins => '可用插件';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Configure your own playlist/album/artist/feed metadata provider';
+  String get configure_your_own_metadata_plugin => '配置您自己的播放列表/专辑/艺人/订阅元数据提供者';
 
   @override
-  String get audio_scrobblers => 'Audio Scrobblers';
+  String get audio_scrobblers => '音频 Scrobblers';
 
   @override
   String get scrobbling => 'Scrobbling';

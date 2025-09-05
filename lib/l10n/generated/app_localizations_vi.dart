@@ -1208,7 +1208,7 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Điều này được tính toán dựa trên khoản thanh toán trung bình mỗi luồng của nền tảng phát nhạc trực tuyến là \$0,003 đến \$0,005. Đây là một phép tính giả định để cung cấp cho người dùng cái nhìn sâu sắc về số tiền họ đã trả cho các nghệ sĩ nếu họ nghe bài hát của họ trên các nền tảng phát nhạc trực tuyến khác nhau.';
 
   @override
   String count_mins(Object minutes) {
@@ -1389,158 +1389,160 @@ class AppLocalizationsVi extends AppLocalizations {
       'Kết nối bị từ chối. Người dùng đã từ chối quyền truy cập.';
 
   @override
-  String get an_error_occurred => 'An error occurred';
+  String get an_error_occurred => 'Đã xảy ra lỗi';
 
   @override
-  String get copy_to_clipboard => 'Copy to clipboard';
+  String get copy_to_clipboard => 'Sao chép vào khay nhớ tạm';
 
   @override
-  String get view_logs => 'View logs';
+  String get view_logs => 'Xem nhật ký';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Thử lại';
 
   @override
   String get no_default_metadata_provider_selected =>
-      'You\'ve no default metadata provider set';
+      'Bạn chưa đặt nhà cung cấp siêu dữ liệu mặc định nào';
 
   @override
-  String get manage_metadata_providers => 'Manage metadata providers';
+  String get manage_metadata_providers => 'Quản lý nhà cung cấp siêu dữ liệu';
 
   @override
-  String get open_link_in_browser => 'Open Link in Browser?';
+  String get open_link_in_browser => 'Mở liên kết trong Trình duyệt?';
 
   @override
   String get do_you_want_to_open_the_following_link =>
-      'Do you want to open the following link';
+      'Bạn có muốn mở liên kết sau không';
 
   @override
   String get unsafe_url_warning =>
-      'It can be unsafe to open links from untrusted sources. Be cautious!\nYou can also copy the link to your clipboard.';
+      'Việc mở các liên kết từ các nguồn không đáng tin cậy có thể không an toàn. Hãy thận trọng!\nBạn cũng có thể sao chép liên kết vào khay nhớ tạm của mình.';
 
   @override
-  String get copy_link => 'Copy Link';
+  String get copy_link => 'Sao chép liên kết';
 
   @override
   String get building_your_timeline =>
-      'Building your timeline based on your listenings...';
+      'Đang xây dựng dòng thời gian của bạn dựa trên những gì bạn đã nghe...';
 
   @override
-  String get official => 'Official';
+  String get official => 'Chính thức';
 
   @override
   String author_name(Object author) {
-    return 'Author: $author';
+    return 'Tác giả: $author';
   }
 
   @override
-  String get third_party => 'Third-party';
+  String get third_party => 'Bên thứ ba';
 
   @override
-  String get plugin_requires_authentication => 'Plugin requires authentication';
+  String get plugin_requires_authentication => 'Plugin yêu cầu xác thực';
 
   @override
-  String get update_available => 'Update available';
+  String get update_available => 'Có bản cập nhật';
 
   @override
-  String get supports_scrobbling => 'Supports scrobbling';
+  String get supports_scrobbling => 'Hỗ trợ scrobbling';
 
   @override
   String get plugin_scrobbling_info =>
-      'This plugin scrobbles your music to generate your listening history.';
+      'Plugin này scrobble nhạc của bạn để tạo lịch sử nghe của bạn.';
 
   @override
-  String get default_plugin => 'Default';
+  String get default_plugin => 'Mặc định';
 
   @override
-  String get set_default => 'Set default';
+  String get set_default => 'Đặt làm mặc định';
 
   @override
-  String get support => 'Support';
+  String get support => 'Hỗ trợ';
 
   @override
-  String get support_plugin_development => 'Support plugin development';
+  String get support_plugin_development => 'Hỗ trợ phát triển plugin';
 
   @override
   String can_access_name_api(Object name) {
-    return '- Can access **$name** API';
+    return '- Có thể truy cập API **$name**';
   }
 
   @override
   String get do_you_want_to_install_this_plugin =>
-      'Do you want to install this plugin?';
+      'Bạn có muốn cài đặt plugin này không?';
 
   @override
   String get third_party_plugin_warning =>
-      'This plugin is from a third-party repository. Please ensure you trust the source before installing.';
+      'Plugin này đến từ một kho lưu trữ của bên thứ ba. Vui lòng đảm bảo rằng bạn tin tưởng nguồn trước khi cài đặt.';
 
   @override
-  String get author => 'Author';
+  String get author => 'Tác giả';
 
   @override
-  String get this_plugin_can_do_following => 'This plugin can do following';
+  String get this_plugin_can_do_following =>
+      'Plugin này có thể làm những việc sau';
 
   @override
-  String get install => 'Install';
+  String get install => 'Cài đặt';
 
   @override
-  String get install_a_metadata_provider => 'Install a Metadata Provider';
+  String get install_a_metadata_provider =>
+      'Cài đặt một Nhà cung cấp siêu dữ liệu';
 
   @override
-  String get no_tracks_playing => 'No Track being played currently';
+  String get no_tracks_playing => 'Hiện không có bản nhạc nào đang phát';
 
   @override
   String get synced_lyrics_not_available =>
-      'Synced lyrics are not available for this song. Please use the';
+      'Lời bài hát được đồng bộ hóa không có sẵn cho bài hát này. Vui lòng sử dụng';
 
   @override
-  String get plain_lyrics => 'Plain Lyrics';
+  String get plain_lyrics => 'Lời bài hát thuần túy';
 
   @override
-  String get tab_instead => 'tab instead.';
+  String get tab_instead => 'thay thế.';
 
   @override
-  String get disclaimer => 'Disclaimer';
+  String get disclaimer => 'Miễn trừ trách nhiệm';
 
   @override
   String get third_party_plugin_dmca_notice =>
-      'The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\nPlease use them at your own risk. For any bugs/issues, please report them to the plugin repository.\n\nIf any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We\'re not curating them, so we cannot take any action on them.\n\n';
+      'Nhóm Spotube không chịu bất kỳ trách nhiệm nào (bao gồm cả pháp lý) đối với bất kỳ plugin \"Bên thứ ba\" nào.\nVui lòng sử dụng chúng với rủi ro của riêng bạn. Đối với bất kỳ lỗi/vấn đề nào, vui lòng báo cáo chúng cho kho lưu trữ plugin.\n\nNếu bất kỳ plugin \"Bên thứ ba\" nào vi phạm ToS/DMCA của bất kỳ dịch vụ/thực thể pháp lý nào, vui lòng yêu cầu tác giả plugin \"Bên thứ ba\" hoặc nền tảng lưu trữ, ví dụ: GitHub/Codeberg, thực hiện hành động. Tất cả các plugin được liệt kê ở trên (được gắn nhãn \"Bên thứ ba\") đều là các plugin công cộng/do cộng đồng duy trì. Chúng tôi không quản lý chúng, vì vậy chúng tôi không thể thực hiện bất kỳ hành động nào đối với chúng.\n\n';
 
   @override
   String get input_does_not_match_format =>
-      'Input doesn\'t match the required format';
+      'Đầu vào không khớp với định dạng yêu cầu';
 
   @override
-  String get metadata_provider_plugins => 'Metadata Provider Plugins';
+  String get metadata_provider_plugins => 'Plugin Nhà cung cấp siêu dữ liệu';
 
   @override
   String get paste_plugin_download_url =>
-      'Paste download url or GitHub/Codeberg repo url or direct link to .smplug file';
+      'Dán url tải xuống hoặc url kho lưu trữ GitHub/Codeberg hoặc liên kết trực tiếp đến tệp .smplug';
 
   @override
   String get download_and_install_plugin_from_url =>
-      'Download and install plugin from url';
+      'Tải xuống và cài đặt plugin từ url';
 
   @override
   String failed_to_add_plugin_error(Object error) {
-    return 'Failed to add plugin: $error';
+    return 'Không thể thêm plugin: $error';
   }
 
   @override
-  String get upload_plugin_from_file => 'Upload plugin from file';
+  String get upload_plugin_from_file => 'Tải lên plugin từ tệp';
 
   @override
-  String get installed => 'Installed';
+  String get installed => 'Đã cài đặt';
 
   @override
-  String get available_plugins => 'Available plugins';
+  String get available_plugins => 'Các plugin có sẵn';
 
   @override
   String get configure_your_own_metadata_plugin =>
-      'Configure your own playlist/album/artist/feed metadata provider';
+      'Cấu hình nhà cung cấp siêu dữ liệu danh sách phát/album/nghệ sĩ/nguồn cấp dữ liệu của riêng bạn';
 
   @override
-  String get audio_scrobblers => 'Audio Scrobblers';
+  String get audio_scrobblers => 'Bộ scrobbler âm thanh';
 
   @override
   String get scrobbling => 'Scrobbling';

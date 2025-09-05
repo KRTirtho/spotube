@@ -1210,7 +1210,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Diese Berechnung basiert auf der durchschnittlichen Auszahlung pro Stream (0,003 USD bis 0,005 USD) auf Online-Musik-Streaming-Plattformen. Sie ist hypothetisch und soll dem Nutzer veranschaulichen, wie viel er den Künstlern bezahlt hätte, wenn er ihren Song auf verschiedenen Streaming-Plattformen gehört hätte.';
 
   @override
   String count_mins(Object minutes) {
@@ -1393,158 +1393,160 @@ class AppLocalizationsDe extends AppLocalizations {
       'Verbindung abgelehnt. Benutzer hat den Zugriff verweigert.';
 
   @override
-  String get an_error_occurred => 'An error occurred';
+  String get an_error_occurred => 'Ein Fehler ist aufgetreten';
 
   @override
-  String get copy_to_clipboard => 'Copy to clipboard';
+  String get copy_to_clipboard => 'In die Zwischenablage kopieren';
 
   @override
-  String get view_logs => 'View logs';
+  String get view_logs => 'Protokolle anzeigen';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'Erneut versuchen';
 
   @override
   String get no_default_metadata_provider_selected =>
-      'You\'ve no default metadata provider set';
+      'Sie haben keinen Standard-Metadatenanbieter festgelegt';
 
   @override
-  String get manage_metadata_providers => 'Manage metadata providers';
+  String get manage_metadata_providers => 'Metadatenanbieter verwalten';
 
   @override
-  String get open_link_in_browser => 'Open Link in Browser?';
+  String get open_link_in_browser => 'Link im Browser öffnen?';
 
   @override
   String get do_you_want_to_open_the_following_link =>
-      'Do you want to open the following link';
+      'Möchten Sie folgenden Link öffnen?';
 
   @override
   String get unsafe_url_warning =>
-      'It can be unsafe to open links from untrusted sources. Be cautious!\nYou can also copy the link to your clipboard.';
+      'Das Öffnen von Links aus nicht vertrauenswürdigen Quellen kann unsicher sein. Seien Sie vorsichtig!\nSie können den Link auch in Ihre Zwischenablage kopieren.';
 
   @override
-  String get copy_link => 'Copy Link';
+  String get copy_link => 'Link kopieren';
 
   @override
   String get building_your_timeline =>
-      'Building your timeline based on your listenings...';
+      'Ihr Zeitverlauf wird basierend auf Ihren Hördaten erstellt…';
 
   @override
-  String get official => 'Official';
+  String get official => 'Offiziell';
 
   @override
   String author_name(Object author) {
-    return 'Author: $author';
+    return 'Autor: $author';
   }
 
   @override
-  String get third_party => 'Third-party';
+  String get third_party => 'Drittanbieter';
 
   @override
-  String get plugin_requires_authentication => 'Plugin requires authentication';
+  String get plugin_requires_authentication =>
+      'Plugin erfordert Authentifizierung';
 
   @override
-  String get update_available => 'Update available';
+  String get update_available => 'Update verfügbar';
 
   @override
-  String get supports_scrobbling => 'Supports scrobbling';
+  String get supports_scrobbling => 'Unterstützt Scrobbling';
 
   @override
   String get plugin_scrobbling_info =>
-      'This plugin scrobbles your music to generate your listening history.';
+      'Dieses Plugin scrobbelt Ihre Musik, um Ihre Hörhistorie zu erstellen.';
 
   @override
-  String get default_plugin => 'Default';
+  String get default_plugin => 'Standard';
 
   @override
-  String get set_default => 'Set default';
+  String get set_default => 'Als Standard festlegen';
 
   @override
-  String get support => 'Support';
+  String get support => 'Unterstützung';
 
   @override
-  String get support_plugin_development => 'Support plugin development';
+  String get support_plugin_development => 'Plugin-Entwicklung unterstützen';
 
   @override
   String can_access_name_api(Object name) {
-    return '- Can access **$name** API';
+    return '- Kann auf **$name**-API zugreifen';
   }
 
   @override
   String get do_you_want_to_install_this_plugin =>
-      'Do you want to install this plugin?';
+      'Möchten Sie dieses Plugin installieren?';
 
   @override
   String get third_party_plugin_warning =>
-      'This plugin is from a third-party repository. Please ensure you trust the source before installing.';
+      'Dieses Plugin stammt aus einem Drittanbieter-Repository. Bitte stellen Sie sicher, dass Sie der Quelle vertrauen, bevor Sie es installieren.';
 
   @override
-  String get author => 'Author';
+  String get author => 'Autor';
 
   @override
-  String get this_plugin_can_do_following => 'This plugin can do following';
+  String get this_plugin_can_do_following => 'Dieses Plugin kann Folgendes:';
 
   @override
-  String get install => 'Install';
+  String get install => 'Installieren';
 
   @override
-  String get install_a_metadata_provider => 'Install a Metadata Provider';
+  String get install_a_metadata_provider =>
+      'Einen Metadatenanbieter installieren';
 
   @override
-  String get no_tracks_playing => 'No Track being played currently';
+  String get no_tracks_playing => 'Derzeit wird kein Titel abgespielt';
 
   @override
   String get synced_lyrics_not_available =>
-      'Synced lyrics are not available for this song. Please use the';
+      'Synchronisierte Liedtexte sind für dieses Lied nicht verfügbar. Bitte verwenden Sie stattdessen';
 
   @override
-  String get plain_lyrics => 'Plain Lyrics';
+  String get plain_lyrics => 'Einfache Liedtexte';
 
   @override
-  String get tab_instead => 'tab instead.';
+  String get tab_instead => 'stattdessen die Tab-Taste verwenden.';
 
   @override
-  String get disclaimer => 'Disclaimer';
+  String get disclaimer => 'Haftungsausschluss';
 
   @override
   String get third_party_plugin_dmca_notice =>
-      'The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\nPlease use them at your own risk. For any bugs/issues, please report them to the plugin repository.\n\nIf any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We\'re not curating them, so we cannot take any action on them.\n\n';
+      'Das Spotube-Team übernimmt keine Verantwortung (auch nicht rechtlicher Art) für Plugins \"Drittanbieter\". Nutzen Sie diese auf eigenes Risiko. Für Fehler/Probleme melden Sie sich bitte beim Plugin-Repository.\n\nWenn ein Plugin \"Drittanbieter\" gegen die ToS/DMCA eines Dienstes bzw. gesetzlicher Vorschriften verstößt, wenden Sie sich bitte an den Plugin-Autor oder die Hosting-Plattform (z. B. GitHub/Codeberg), um Maßnahmen zu ergreifen. Die genannten Plugins (mit \"Drittanbieter\"-Kennzeichnung) werden öffentlich und gemeinschaftlich gepflegt. Wir kuratieren sie nicht und können keine Maßnahmen ergreifen.\n\n';
 
   @override
   String get input_does_not_match_format =>
-      'Input doesn\'t match the required format';
+      'Eingabe entspricht nicht dem geforderten Format';
 
   @override
-  String get metadata_provider_plugins => 'Metadata Provider Plugins';
+  String get metadata_provider_plugins => 'Plugins für Metadatenanbieter';
 
   @override
   String get paste_plugin_download_url =>
-      'Paste download url or GitHub/Codeberg repo url or direct link to .smplug file';
+      'Download-URL, GitHub/Codeberg-Repo-URL oder direkten Link zur .smplug-Datei einfügen';
 
   @override
   String get download_and_install_plugin_from_url =>
-      'Download and install plugin from url';
+      'Plugin per URL herunterladen und installieren';
 
   @override
   String failed_to_add_plugin_error(Object error) {
-    return 'Failed to add plugin: $error';
+    return 'Plugin konnte nicht hinzugefügt werden: $error';
   }
 
   @override
-  String get upload_plugin_from_file => 'Upload plugin from file';
+  String get upload_plugin_from_file => 'Plugin per Datei hochladen';
 
   @override
-  String get installed => 'Installed';
+  String get installed => 'Installiert';
 
   @override
-  String get available_plugins => 'Available plugins';
+  String get available_plugins => 'Verfügbare Plugins';
 
   @override
   String get configure_your_own_metadata_plugin =>
-      'Configure your own playlist/album/artist/feed metadata provider';
+      'Eigenen Anbieter für Playlist-/Album-/Künstler-/Feed-Metadaten konfigurieren';
 
   @override
-  String get audio_scrobblers => 'Audio Scrobblers';
+  String get audio_scrobblers => 'Audio-Scrobbler';
 
   @override
   String get scrobbling => 'Scrobbling';

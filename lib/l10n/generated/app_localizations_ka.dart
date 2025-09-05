@@ -1203,7 +1203,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*ეს გამოითვლება ონლაინ მუსიკალური სტრიმინგის პლატფორმების საშუალო ანაზღაურების საფუძველზე, რომელიც შეადგენს \$0.003-დან \$0.005-მდე. ეს არის ჰიპოთეტური გაანგარიშება, რომელიც მომხმარებელს აძლევს წარმოდგენას, თუ რამდენს გადაუხდიდნენ ისინი არტისტებს, თუ მათ სიმღერებს მოუსმენდნენ სხვადასხვა მუსიკალურ სტრიმინგ პლატფორმაზე.';
 
   @override
   String count_mins(Object minutes) {
@@ -1385,159 +1385,164 @@ class AppLocalizationsKa extends AppLocalizations {
       'კავშირი უარყოფილია. მომხმარებელმა უარყო წვდომა.';
 
   @override
-  String get an_error_occurred => 'An error occurred';
+  String get an_error_occurred => 'მოხდა შეცდომა';
 
   @override
-  String get copy_to_clipboard => 'Copy to clipboard';
+  String get copy_to_clipboard => 'კოპირება ბუფერში';
 
   @override
-  String get view_logs => 'View logs';
+  String get view_logs => 'იხილეთ ჟურნალები';
 
   @override
-  String get retry => 'Retry';
+  String get retry => 'ხელახლა ცდა';
 
   @override
   String get no_default_metadata_provider_selected =>
-      'You\'ve no default metadata provider set';
+      'თქვენ არ გაქვთ დაყენებული ნაგულისხმევი მეტამონაცემების პროვაიდერი';
 
   @override
-  String get manage_metadata_providers => 'Manage metadata providers';
+  String get manage_metadata_providers =>
+      'მეტამონაცემების პროვაიდერების მართვა';
 
   @override
-  String get open_link_in_browser => 'Open Link in Browser?';
+  String get open_link_in_browser => 'ბმულის გახსნა ბრაუზერში?';
 
   @override
   String get do_you_want_to_open_the_following_link =>
-      'Do you want to open the following link';
+      'გსურთ გახსნათ შემდეგი ბმული';
 
   @override
   String get unsafe_url_warning =>
-      'It can be unsafe to open links from untrusted sources. Be cautious!\nYou can also copy the link to your clipboard.';
+      'შეიძლება სახიფათო იყოს ბმულების გახსნა უნდობელი წყაროებიდან. იყავით ფრთხილად!\nასევე შეგიძლიათ დააკოპიროთ ბმული თქვენს ბუფერში.';
 
   @override
-  String get copy_link => 'Copy Link';
+  String get copy_link => 'ბმულის კოპირება';
 
   @override
   String get building_your_timeline =>
-      'Building your timeline based on your listenings...';
+      'თქვენი დროის ხაზის აგება თქვენი მოსმენების საფუძველზე...';
 
   @override
-  String get official => 'Official';
+  String get official => 'ოფიციალური';
 
   @override
   String author_name(Object author) {
-    return 'Author: $author';
+    return 'ავტორი: $author';
   }
 
   @override
-  String get third_party => 'Third-party';
+  String get third_party => 'მესამე მხარის';
 
   @override
-  String get plugin_requires_authentication => 'Plugin requires authentication';
+  String get plugin_requires_authentication =>
+      'პლაგინი საჭიროებს ავთენტიფიკაციას';
 
   @override
-  String get update_available => 'Update available';
+  String get update_available => 'განახლება ხელმისაწვდომია';
 
   @override
-  String get supports_scrobbling => 'Supports scrobbling';
+  String get supports_scrobbling => 'მხარს უჭერს სქრობლინგს';
 
   @override
   String get plugin_scrobbling_info =>
-      'This plugin scrobbles your music to generate your listening history.';
+      'ეს პლაგინი აწარმოებს თქვენი მუსიკის სქრობლინგს, რათა შექმნას თქვენი მოსმენის ისტორია.';
 
   @override
-  String get default_plugin => 'Default';
+  String get default_plugin => 'ნაგულისხმევი';
 
   @override
-  String get set_default => 'Set default';
+  String get set_default => 'ნაგულისხმევად დაყენება';
 
   @override
-  String get support => 'Support';
+  String get support => 'მხარდაჭერა';
 
   @override
-  String get support_plugin_development => 'Support plugin development';
+  String get support_plugin_development => 'პლაგინის განვითარების მხარდაჭერა';
 
   @override
   String can_access_name_api(Object name) {
-    return '- Can access **$name** API';
+    return '- შეუძლია წვდომა **$name** API-ზე';
   }
 
   @override
   String get do_you_want_to_install_this_plugin =>
-      'Do you want to install this plugin?';
+      'გსურთ ამ პლაგინის დაყენება?';
 
   @override
   String get third_party_plugin_warning =>
-      'This plugin is from a third-party repository. Please ensure you trust the source before installing.';
+      'ეს პლაგინი არის მესამე მხარის საცავიდან. გთხოვთ, დარწმუნდეთ, რომ ენდობით წყაროს დაყენებამდე.';
 
   @override
-  String get author => 'Author';
+  String get author => 'ავტორი';
 
   @override
-  String get this_plugin_can_do_following => 'This plugin can do following';
+  String get this_plugin_can_do_following =>
+      'ამ პლაგინს შეუძლია შემდეგის გაკეთება';
 
   @override
-  String get install => 'Install';
+  String get install => 'დაყენება';
 
   @override
-  String get install_a_metadata_provider => 'Install a Metadata Provider';
+  String get install_a_metadata_provider =>
+      'დააყენეთ მეტამონაცემების პროვაიდერი';
 
   @override
-  String get no_tracks_playing => 'No Track being played currently';
+  String get no_tracks_playing => 'ამჟამად არ უკრავს არცერთი ტრეკი';
 
   @override
   String get synced_lyrics_not_available =>
-      'Synced lyrics are not available for this song. Please use the';
+      'ამ სიმღერისთვის სინქრონიზებული ტექსტები არ არის ხელმისაწვდომი. გთხოვთ, გამოიყენოთ';
 
   @override
-  String get plain_lyrics => 'Plain Lyrics';
+  String get plain_lyrics => 'მარტივი ტექსტები';
 
   @override
-  String get tab_instead => 'tab instead.';
+  String get tab_instead => 'ჩანართი, სანაცვლოდ.';
 
   @override
-  String get disclaimer => 'Disclaimer';
+  String get disclaimer => 'პასუხისმგებლობის უარყოფა';
 
   @override
   String get third_party_plugin_dmca_notice =>
-      'The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\nPlease use them at your own risk. For any bugs/issues, please report them to the plugin repository.\n\nIf any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We\'re not curating them, so we cannot take any action on them.\n\n';
+      'Spotube-ის გუნდი არ იღებს პასუხისმგებლობას (მათ შორის, იურიდიულს) არცერთ \"მესამე მხარის\" პლაგინზე.\nგთხოვთ, გამოიყენოთ ისინი თქვენი რისკის ქვეშ. ნებისმიერი ხარვეზის/პრობლემის შესახებ შეატყობინეთ პლაგინის საცავს.\n\nთუ რომელიმე \"მესამე მხარის\" პლაგინი არღვევს რაიმე სერვისის/იურიდიული პირის ToS/DMCA-ს, გთხოვთ, სთხოვეთ \"მესამე მხარის\" პლაგინის ავტორს ან ჰოსტინგის პლატფორმას, მაგალითად GitHub/Codeberg, მიიღოს ზომები. ზემოთ ჩამოთვლილი (\"მესამე მხარის\" ეტიკეტის მქონე) ყველა არის საჯარო/საზოგადოების მიერ შენარჩუნებული პლაგინები. ჩვენ მათ არ ვაკონტროლებთ, ამიტომ არ შეგვიძლია მათზე რაიმე ზომების მიღება.\n\n';
 
   @override
   String get input_does_not_match_format =>
-      'Input doesn\'t match the required format';
+      'შეყვანა არ ემთხვევა საჭირო ფორმატს';
 
   @override
-  String get metadata_provider_plugins => 'Metadata Provider Plugins';
+  String get metadata_provider_plugins =>
+      'მეტამონაცემების პროვაიდერების პლაგინები';
 
   @override
   String get paste_plugin_download_url =>
-      'Paste download url or GitHub/Codeberg repo url or direct link to .smplug file';
+      'ჩასვით ჩამოტვირთვის url ან GitHub/Codeberg-ის რეპოს url ან პირდაპირი ბმული .smplug ფაილზე';
 
   @override
   String get download_and_install_plugin_from_url =>
-      'Download and install plugin from url';
+      'პლაგინის ჩამოტვირთვა და დაყენება url-დან';
 
   @override
   String failed_to_add_plugin_error(Object error) {
-    return 'Failed to add plugin: $error';
+    return 'პლაგინის დამატება ვერ მოხერხდა: $error';
   }
 
   @override
-  String get upload_plugin_from_file => 'Upload plugin from file';
+  String get upload_plugin_from_file => 'პლაგინის ატვირთვა ფაილიდან';
 
   @override
-  String get installed => 'Installed';
+  String get installed => 'დაინსტალირებული';
 
   @override
-  String get available_plugins => 'Available plugins';
+  String get available_plugins => 'ხელმისაწვდომი პლაგინები';
 
   @override
   String get configure_your_own_metadata_plugin =>
-      'Configure your own playlist/album/artist/feed metadata provider';
+      'დააყენეთ თქვენი საკუთარი პლეილისტის/ალბომის/არტისტის/ფიდის მეტამონაცემების პროვაიდერი';
 
   @override
-  String get audio_scrobblers => 'Audio Scrobblers';
+  String get audio_scrobblers => 'აუდიო სქრობლერები';
 
   @override
-  String get scrobbling => 'Scrobbling';
+  String get scrobbling => 'სქრობლინგი';
 }

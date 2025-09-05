@@ -1185,7 +1185,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*이것은 온라인 음악 스트리밍 플랫폼의 스트림당 평균 지불액인 \$0.003에서 \$0.005를 기준으로 계산됩니다. 이것은 사용자가 다른 음악 스트리밍 플랫폼에서 노래를 들었다면 아티스트에게 얼마를 지불했을지에 대한 통찰력을 제공하기 위한 가상 계산입니다.';
 
   @override
   String count_mins(Object minutes) {
@@ -1363,159 +1363,152 @@ class AppLocalizationsKo extends AppLocalizations {
   String get connection_request_denied => '연결이 거부되었습니다. 사용자가 액세스를 거부했습니다.';
 
   @override
-  String get an_error_occurred => 'An error occurred';
+  String get an_error_occurred => '오류가 발생했습니다';
 
   @override
-  String get copy_to_clipboard => 'Copy to clipboard';
+  String get copy_to_clipboard => '클립보드에 복사';
 
   @override
-  String get view_logs => 'View logs';
+  String get view_logs => '로그 보기';
 
   @override
-  String get retry => 'Retry';
+  String get retry => '다시 시도';
 
   @override
   String get no_default_metadata_provider_selected =>
-      'You\'ve no default metadata provider set';
+      '기본 메타데이터 제공자가 설정되지 않았습니다';
 
   @override
-  String get manage_metadata_providers => 'Manage metadata providers';
+  String get manage_metadata_providers => '메타데이터 제공자 관리';
 
   @override
-  String get open_link_in_browser => 'Open Link in Browser?';
+  String get open_link_in_browser => '브라우저에서 링크를 여시겠습니까?';
 
   @override
-  String get do_you_want_to_open_the_following_link =>
-      'Do you want to open the following link';
+  String get do_you_want_to_open_the_following_link => '다음 링크를 여시겠습니까';
 
   @override
   String get unsafe_url_warning =>
-      'It can be unsafe to open links from untrusted sources. Be cautious!\nYou can also copy the link to your clipboard.';
+      '신뢰할 수 없는 출처의 링크를 여는 것은 안전하지 않을 수 있습니다. 주의하세요!\n링크를 클립보드에 복사할 수도 있습니다.';
 
   @override
-  String get copy_link => 'Copy Link';
+  String get copy_link => '링크 복사';
 
   @override
-  String get building_your_timeline =>
-      'Building your timeline based on your listenings...';
+  String get building_your_timeline => '청취 기록을 기반으로 타임라인을 구축하고 있습니다...';
 
   @override
-  String get official => 'Official';
+  String get official => '공식';
 
   @override
   String author_name(Object author) {
-    return 'Author: $author';
+    return '저자: $author';
   }
 
   @override
-  String get third_party => 'Third-party';
+  String get third_party => '타사';
 
   @override
-  String get plugin_requires_authentication => 'Plugin requires authentication';
+  String get plugin_requires_authentication => '플러그인에 인증이 필요합니다';
 
   @override
-  String get update_available => 'Update available';
+  String get update_available => '업데이트 사용 가능';
 
   @override
-  String get supports_scrobbling => 'Supports scrobbling';
+  String get supports_scrobbling => '스크로블링 지원';
 
   @override
-  String get plugin_scrobbling_info =>
-      'This plugin scrobbles your music to generate your listening history.';
+  String get plugin_scrobbling_info => '이 플러그인은 음악을 스크로블하여 청취 기록을 생성합니다.';
 
   @override
-  String get default_plugin => 'Default';
+  String get default_plugin => '기본';
 
   @override
-  String get set_default => 'Set default';
+  String get set_default => '기본값으로 설정';
 
   @override
-  String get support => 'Support';
+  String get support => '지원';
 
   @override
-  String get support_plugin_development => 'Support plugin development';
+  String get support_plugin_development => '플러그인 개발 지원';
 
   @override
   String can_access_name_api(Object name) {
-    return '- Can access **$name** API';
+    return '- **$name** API에 액세스할 수 있습니다';
   }
 
   @override
-  String get do_you_want_to_install_this_plugin =>
-      'Do you want to install this plugin?';
+  String get do_you_want_to_install_this_plugin => '이 플러그인을 설치하시겠습니까?';
 
   @override
   String get third_party_plugin_warning =>
-      'This plugin is from a third-party repository. Please ensure you trust the source before installing.';
+      '이 플러그인은 타사 리포지토리에서 제공됩니다. 설치하기 전에 출처를 신뢰하는지 확인하세요.';
 
   @override
-  String get author => 'Author';
+  String get author => '저자';
 
   @override
-  String get this_plugin_can_do_following => 'This plugin can do following';
+  String get this_plugin_can_do_following => '이 플러그인은 다음을 수행할 수 있습니다';
 
   @override
-  String get install => 'Install';
+  String get install => '설치';
 
   @override
-  String get install_a_metadata_provider => 'Install a Metadata Provider';
+  String get install_a_metadata_provider => '메타데이터 제공자 설치';
 
   @override
-  String get no_tracks_playing => 'No Track being played currently';
+  String get no_tracks_playing => '현재 재생 중인 트랙이 없습니다';
 
   @override
-  String get synced_lyrics_not_available =>
-      'Synced lyrics are not available for this song. Please use the';
+  String get synced_lyrics_not_available => '이 노래에 대한 동기화된 가사를 사용할 수 없습니다. 대신';
 
   @override
-  String get plain_lyrics => 'Plain Lyrics';
+  String get plain_lyrics => '일반 가사';
 
   @override
-  String get tab_instead => 'tab instead.';
+  String get tab_instead => '탭을 사용하세요.';
 
   @override
-  String get disclaimer => 'Disclaimer';
+  String get disclaimer => '면책 조항';
 
   @override
   String get third_party_plugin_dmca_notice =>
-      'The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\nPlease use them at your own risk. For any bugs/issues, please report them to the plugin repository.\n\nIf any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We\'re not curating them, so we cannot take any action on them.\n\n';
+      'Spotube 팀은 어떠한 \"타사\" 플러그인에 대해서도 (법적 포함) 어떠한 책임도 지지 않습니다.\n사용자 자신의 책임하에 사용하시기 바랍니다. 버그/문제에 대해서는 플러그인 리포지토리에 보고해 주세요.\n\n만약 \"타사\" 플러그인이 서비스/법인의 ToS/DMCA를 위반하는 경우, \"타사\" 플러그인 저자 또는 호스팅 플랫폼(예: GitHub/Codeberg)에 조치를 취하도록 요청해 주세요. 위에 나열된 (\"타사\"로 표시된) 플러그인은 모두 공개/커뮤니티에서 유지 관리하는 플러그인입니다. 저희는 이를 큐레이션하지 않으므로 어떠한 조치도 취할 수 없습니다.\n\n';
 
   @override
-  String get input_does_not_match_format =>
-      'Input doesn\'t match the required format';
+  String get input_does_not_match_format => '입력이 필요한 형식과 일치하지 않습니다';
 
   @override
-  String get metadata_provider_plugins => 'Metadata Provider Plugins';
+  String get metadata_provider_plugins => '메타데이터 제공자 플러그인';
 
   @override
   String get paste_plugin_download_url =>
-      'Paste download url or GitHub/Codeberg repo url or direct link to .smplug file';
+      '다운로드 URL, GitHub/Codeberg 리포지토리 URL 또는 .smplug 파일에 대한 직접 링크를 붙여넣으세요';
 
   @override
-  String get download_and_install_plugin_from_url =>
-      'Download and install plugin from url';
+  String get download_and_install_plugin_from_url => 'URL에서 플러그인 다운로드 및 설치';
 
   @override
   String failed_to_add_plugin_error(Object error) {
-    return 'Failed to add plugin: $error';
+    return '플러그인 추가 실패: $error';
   }
 
   @override
-  String get upload_plugin_from_file => 'Upload plugin from file';
+  String get upload_plugin_from_file => '파일에서 플러그인 업로드';
 
   @override
-  String get installed => 'Installed';
+  String get installed => '설치됨';
 
   @override
-  String get available_plugins => 'Available plugins';
+  String get available_plugins => '사용 가능한 플러그인';
 
   @override
   String get configure_your_own_metadata_plugin =>
-      'Configure your own playlist/album/artist/feed metadata provider';
+      '자신만의 플레이리스트/앨범/아티스트/피드 메타데이터 제공자 구성';
 
   @override
-  String get audio_scrobblers => 'Audio Scrobblers';
+  String get audio_scrobblers => '오디오 스크로블러';
 
   @override
-  String get scrobbling => 'Scrobbling';
+  String get scrobbling => '스크로블링';
 }
