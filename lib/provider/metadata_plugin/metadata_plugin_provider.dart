@@ -348,7 +348,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         entryPoint: plugin.entryPoint,
         apis: plugin.apis.map((e) => e.name).toList(),
         abilities: plugin.abilities.map((e) => e.name).toList(),
-        pluginApiVersion: plugin.pluginApiVersion,
+        pluginApiVersion: Value(plugin.pluginApiVersion),
         repository: Value(plugin.repository),
       ),
     );
