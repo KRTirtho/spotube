@@ -16,12 +16,16 @@ class $AssetsBrandingGen {
   AssetGenImage get spotubeLogoLight =>
       const AssetGenImage('assets/branding/spotube-logo-light.png');
 
+  /// File path: assets/branding/spotube-logo.ico
+  String get spotubeLogoIco => 'assets/branding/spotube-logo.ico';
+
   /// File path: assets/branding/spotube-logo.png
-  AssetGenImage get spotubeLogo =>
+  AssetGenImage get spotubeLogoPng =>
       const AssetGenImage('assets/branding/spotube-logo.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [spotubeLogoLight, spotubeLogo];
+  List<dynamic> get values =>
+      [spotubeLogoLight, spotubeLogoIco, spotubeLogoPng];
 }
 
 class $AssetsImagesGen {

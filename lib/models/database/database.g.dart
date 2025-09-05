@@ -3889,7 +3889,9 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
   @override
   late final GeneratedColumn<String> pluginApiVersion = GeneratedColumn<String>(
       'plugin_api_version', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('1.0.0'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -3969,8 +3971,6 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
           _pluginApiVersionMeta,
           pluginApiVersion.isAcceptableOrUnknown(
               data['plugin_api_version']!, _pluginApiVersionMeta));
-    } else if (isInserting) {
-      context.missing(_pluginApiVersionMeta);
     }
     return context;
   }
@@ -4245,15 +4245,14 @@ class MetadataPluginsTableCompanion
     required List<String> abilities,
     this.selected = const Value.absent(),
     this.repository = const Value.absent(),
-    required String pluginApiVersion,
+    this.pluginApiVersion = const Value.absent(),
   })  : name = Value(name),
         description = Value(description),
         version = Value(version),
         author = Value(author),
         entryPoint = Value(entryPoint),
         apis = Value(apis),
-        abilities = Value(abilities),
-        pluginApiVersion = Value(pluginApiVersion);
+        abilities = Value(abilities);
   static Insertable<MetadataPluginsTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
@@ -6365,7 +6364,7 @@ typedef $$MetadataPluginsTableTableCreateCompanionBuilder
   required List<String> abilities,
   Value<bool> selected,
   Value<String?> repository,
-  required String pluginApiVersion,
+  Value<String> pluginApiVersion,
 });
 typedef $$MetadataPluginsTableTableUpdateCompanionBuilder
     = MetadataPluginsTableCompanion Function({
@@ -6583,7 +6582,7 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             required List<String> abilities,
             Value<bool> selected = const Value.absent(),
             Value<String?> repository = const Value.absent(),
-            required String pluginApiVersion,
+            Value<String> pluginApiVersion = const Value.absent(),
           }) =>
               MetadataPluginsTableCompanion.insert(
             id: id,
