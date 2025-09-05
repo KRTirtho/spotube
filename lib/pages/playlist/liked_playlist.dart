@@ -51,6 +51,7 @@ class LikedPlaylistPage extends HookConsumerWidget {
           title: playlist.name,
           description: playlist.description,
           tracks: tracks,
+          error: likedTracks.error,
           routePath: '/playlist/${playlist.id}',
           isLiked: false,
           shareUrl: null,

@@ -14,6 +14,7 @@ import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 class HorizontalPlaybuttonCardView<T> extends HookWidget {
   final Widget title;
   final List<T> items;
+  final Widget? error;
   final VoidCallback onFetchMore;
   final bool isLoadingNextPage;
   final bool hasNextPage;
@@ -26,6 +27,7 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
     required this.onFetchMore,
     required this.isLoadingNextPage,
     this.titleTrailing,
+    this.error,
     super.key,
   }) : assert(
           items.every(
@@ -64,54 +66,57 @@ class HorizontalPlaybuttonCardView<T> extends HookWidget {
               if (titleTrailing != null) titleTrailing!,
             ],
           ),
-          SizedBox(
-            height: isArtist ? 250 : 225,
-            child: NotificationListener(
-              // disable multiple scrollbar to use this
-              onNotification: (notification) => true,
-              child: ScrollConfiguration(
-                behavior: ScrollConfiguration.of(context).copyWith(
-                  dragDevices: PointerDeviceKind.values.toSet(),
-                ),
-                child: items.isEmpty
-                    ? ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5,
-                        itemBuilder: (context, index) {
-                          return AlbumCard(FakeData.albumSimple);
-                        },
-                      )
-                    : InfiniteList(
-                        scrollController: scrollController,
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        itemCount: items.length,
-                        onFetchData: onFetchMore,
-                        loadingBuilder: (context) => Skeletonizer(
-                              enabled: true,
-                              child: isArtist
-                                  ? ArtistCard(FakeData.artist)
-                                  : AlbumCard(FakeData.albumSimple),
-                            ),
-                        isLoading: isLoadingNextPage,
-                        hasReachedMax: !hasNextPage,
-                        separatorBuilder: (context, index) => Gap(12 * scale),
-                        itemBuilder: (context, index) {
-                          final item = items[index];
+          if (error != null)
+            error!
+          else
+            SizedBox(
+              height: isArtist ? 250 : 225,
+              child: NotificationListener(
+                // disable multiple scrollbar to use this
+                onNotification: (notification) => true,
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context).copyWith(
+                    dragDevices: PointerDeviceKind.values.toSet(),
+                  ),
+                  child: items.isEmpty
+                      ? ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            return AlbumCard(FakeData.albumSimple);
+                          },
+                        )
+                      : InfiniteList(
+                          scrollController: scrollController,
+                          scrollDirection: Axis.horizontal,
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          itemCount: items.length,
+                          onFetchData: onFetchMore,
+                          loadingBuilder: (context) => Skeletonizer(
+                                enabled: true,
+                                child: isArtist
+                                    ? ArtistCard(FakeData.artist)
+                                    : AlbumCard(FakeData.albumSimple),
+                              ),
+                          isLoading: isLoadingNextPage,
+                          hasReachedMax: !hasNextPage,
+                          separatorBuilder: (context, index) => Gap(12 * scale),
+                          itemBuilder: (context, index) {
+                            final item = items[index];
 
-                          return switch (item) {
-                            SpotubeSimplePlaylistObject() =>
-                              PlaylistCard(item as SpotubeSimplePlaylistObject),
-                            SpotubeSimpleAlbumObject() =>
-                              AlbumCard(item as SpotubeSimpleAlbumObject),
-                            SpotubeFullArtistObject() =>
-                              ArtistCard(item as SpotubeFullArtistObject),
-                            _ => const SizedBox.shrink(),
-                          };
-                        }),
+                            return switch (item) {
+                              SpotubeSimplePlaylistObject() => PlaylistCard(
+                                  item as SpotubeSimplePlaylistObject),
+                              SpotubeSimpleAlbumObject() =>
+                                AlbumCard(item as SpotubeSimpleAlbumObject),
+                              SpotubeFullArtistObject() =>
+                                ArtistCard(item as SpotubeFullArtistObject),
+                              _ => const SizedBox.shrink(),
+                            };
+                          }),
+                ),
               ),
             ),
-          ),
         ],
       ),
     );

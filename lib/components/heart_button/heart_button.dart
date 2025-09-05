@@ -38,6 +38,7 @@ class HeartButton extends HookConsumerWidget {
       child: IconButton(
         variance: variance,
         size: size,
+        enabled: onPressed != null,
         icon: AnimatedSwitcher(
           switchInCurve: Curves.fastOutSlowIn,
           switchOutCurve: Curves.fastOutSlowIn,
@@ -74,7 +75,8 @@ class TrackHeartButton extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final savedTracks = ref.watch(metadataPluginSavedTracksProvider);
     final me = ref.watch(metadataPluginUserProvider);
-    final (:isLiked, :toggleTrackLike) = useTrackToggleLike(track, ref);
+    final (:isLiked, :isLoading, :toggleTrackLike) =
+        useTrackToggleLike(track, ref);
 
     if (me.isLoading) {
       return const CircularProgressIndicator();
@@ -85,11 +87,11 @@ class TrackHeartButton extends HookConsumerWidget {
           ? context.l10n.remove_from_favorites
           : context.l10n.save_as_favorite,
       isLiked: isLiked,
-      onPressed: savedTracks.asData?.value != null
-          ? () {
+      onPressed: savedTracks.asData?.value == null || isLoading
+          ? null
+          : () {
               toggleTrackLike(track);
-            }
-          : null,
+            },
     );
   }
 }

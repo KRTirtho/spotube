@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/playlist.dart';
 import 'package:spotube/provider/metadata_plugin/utils/paginated.dart';
@@ -21,7 +22,8 @@ class MetadataPluginSavedPlaylistsNotifier
 
   @override
   build() async {
-    ref.watch(metadataPluginProvider);
+    await ref.watch(metadataPluginAuthenticatedProvider.future);
+
     final playlists = await fetch(0, 20);
 
     return playlists;
@@ -42,25 +44,43 @@ class MetadataPluginSavedPlaylistsNotifier
   }
 
   Future<void> addFavorite(SpotubeSimplePlaylistObject playlist) async {
-    await update((state) async {
-      (await metadataPlugin).playlist.save(playlist.id);
-      return state.copyWith(
-        items: [...state.items, playlist],
-      );
-    });
+    if (state.value == null) return;
 
-    ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
+    final oldState = state.value;
+
+    state = AsyncData(
+      state.value!.copyWith(
+        items: [
+          playlist,
+          ...state.value!.items,
+        ],
+      ),
+    );
+
+    try {
+      await (await metadataPlugin).playlist.save(playlist.id);
+    } catch (e) {
+      state = AsyncData(oldState!);
+      rethrow;
+    }
   }
 
   Future<void> removeFavorite(SpotubeSimplePlaylistObject playlist) async {
-    await update((state) async {
-      (await metadataPlugin).playlist.unsave(playlist.id);
-      return state.copyWith(
-        items: state.items.where((e) => (e).id != playlist.id).toList(),
-      );
-    });
+    if (state.value == null) return;
 
-    ref.invalidate(metadataPluginIsSavedPlaylistProvider(playlist.id));
+    final oldState = state.value;
+    state = AsyncData(
+      state.value!.copyWith(
+        items: state.value!.items.where((e) => (e).id != playlist.id).toList(),
+      ),
+    );
+
+    try {
+      await (await metadataPlugin).playlist.unsave(playlist.id);
+    } catch (e) {
+      state = AsyncData(oldState!);
+      rethrow;
+    }
   }
 
   Future<void> delete(String playlistId) async {
@@ -114,8 +134,16 @@ final metadataPluginIsSavedPlaylistProvider =
       throw MetadataPluginException.noDefaultPlugin();
     }
 
-    final follows = await plugin.user.isSavedPlaylist(id);
+    final savedPlaylists =
+        await ref.watch(metadataPluginSavedPlaylistsProvider.future);
 
-    return follows;
+    final savedPlaylistsNotifier =
+        ref.read(metadataPluginSavedPlaylistsProvider.notifier);
+
+    final allSavedPlaylists = savedPlaylists.hasMore
+        ? await savedPlaylistsNotifier.fetchAll()
+        : savedPlaylists.items;
+
+    return allSavedPlaylists.any((element) => element.id == id);
   },
 );
