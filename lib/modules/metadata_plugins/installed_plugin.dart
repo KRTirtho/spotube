@@ -103,6 +103,14 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                               launchUrl(repoUrl);
                             },
                           ),
+                          SecondaryBadge(
+                            child: Padding(
+                              padding: const EdgeInsets.all(1),
+                              child: Text(
+                                "${context.l10n.version}: ${plugin.version}",
+                              ),
+                            ),
+                          ),
                         ],
                       )
                   ],
