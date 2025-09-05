@@ -525,7 +525,7 @@ class PreferencesTable extends Table
       GeneratedColumn<String>('accent_color_scheme', aliasedName, false,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          defaultValue: const Constant("Blue:0xFF2196F3"));
+          defaultValue: const Constant("Orange:0xFFf97315"));
   late final GeneratedColumn<String> layoutMode = GeneratedColumn<String>(
       'layout_mode', aliasedName, false,
       type: DriftSqlType.string,
@@ -577,6 +577,11 @@ class PreferencesTable extends Table
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: Constant(AudioSource.youtube.name));
+  late final GeneratedColumn<String> youtubeClientEngine =
+      GeneratedColumn<String>('youtube_client_engine', aliasedName, false,
+          type: DriftSqlType.string,
+          requiredDuringInsert: false,
+          defaultValue: Constant(YoutubeClientEngine.youtubeExplode.name));
   late final GeneratedColumn<String> streamMusicCodec = GeneratedColumn<String>(
       'stream_music_codec', aliasedName, false,
       type: DriftSqlType.string,
@@ -608,6 +613,18 @@ class PreferencesTable extends Table
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("enable_connect" IN (0, 1))'),
       defaultValue: const Constant(false));
+  late final GeneratedColumn<int> connectPort = GeneratedColumn<int>(
+      'connect_port', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(-1));
+  late final GeneratedColumn<bool> cacheMusic = GeneratedColumn<bool>(
+      'cache_music', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("cache_music" IN (0, 1))'),
+      defaultValue: const Constant(true));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -631,11 +648,14 @@ class PreferencesTable extends Table
         invidiousInstance,
         themeMode,
         audioSource,
+        youtubeClientEngine,
         streamMusicCodec,
         downloadMusicCodec,
         discordPresence,
         endlessPlayback,
-        enableConnect
+        enableConnect,
+        connectPort,
+        cacheMusic
       ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -691,6 +711,9 @@ class PreferencesTable extends Table
           .read(DriftSqlType.string, data['${effectivePrefix}theme_mode'])!,
       audioSource: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}audio_source'])!,
+      youtubeClientEngine: attachedDatabase.typeMapping.read(
+          DriftSqlType.string,
+          data['${effectivePrefix}youtube_client_engine'])!,
       streamMusicCodec: attachedDatabase.typeMapping.read(
           DriftSqlType.string, data['${effectivePrefix}stream_music_codec'])!,
       downloadMusicCodec: attachedDatabase.typeMapping.read(
@@ -701,6 +724,10 @@ class PreferencesTable extends Table
           .read(DriftSqlType.bool, data['${effectivePrefix}endless_playback'])!,
       enableConnect: attachedDatabase.typeMapping
           .read(DriftSqlType.bool, data['${effectivePrefix}enable_connect'])!,
+      connectPort: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}connect_port'])!,
+      cacheMusic: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}cache_music'])!,
     );
   }
 
@@ -733,11 +760,14 @@ class PreferencesTableData extends DataClass
   final String invidiousInstance;
   final String themeMode;
   final String audioSource;
+  final String youtubeClientEngine;
   final String streamMusicCodec;
   final String downloadMusicCodec;
   final bool discordPresence;
   final bool endlessPlayback;
   final bool enableConnect;
+  final int connectPort;
+  final bool cacheMusic;
   const PreferencesTableData(
       {required this.id,
       required this.audioQuality,
@@ -760,11 +790,14 @@ class PreferencesTableData extends DataClass
       required this.invidiousInstance,
       required this.themeMode,
       required this.audioSource,
+      required this.youtubeClientEngine,
       required this.streamMusicCodec,
       required this.downloadMusicCodec,
       required this.discordPresence,
       required this.endlessPlayback,
-      required this.enableConnect});
+      required this.enableConnect,
+      required this.connectPort,
+      required this.cacheMusic});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -789,11 +822,14 @@ class PreferencesTableData extends DataClass
     map['invidious_instance'] = Variable<String>(invidiousInstance);
     map['theme_mode'] = Variable<String>(themeMode);
     map['audio_source'] = Variable<String>(audioSource);
+    map['youtube_client_engine'] = Variable<String>(youtubeClientEngine);
     map['stream_music_codec'] = Variable<String>(streamMusicCodec);
     map['download_music_codec'] = Variable<String>(downloadMusicCodec);
     map['discord_presence'] = Variable<bool>(discordPresence);
     map['endless_playback'] = Variable<bool>(endlessPlayback);
     map['enable_connect'] = Variable<bool>(enableConnect);
+    map['connect_port'] = Variable<int>(connectPort);
+    map['cache_music'] = Variable<bool>(cacheMusic);
     return map;
   }
 
@@ -820,11 +856,14 @@ class PreferencesTableData extends DataClass
       invidiousInstance: Value(invidiousInstance),
       themeMode: Value(themeMode),
       audioSource: Value(audioSource),
+      youtubeClientEngine: Value(youtubeClientEngine),
       streamMusicCodec: Value(streamMusicCodec),
       downloadMusicCodec: Value(downloadMusicCodec),
       discordPresence: Value(discordPresence),
       endlessPlayback: Value(endlessPlayback),
       enableConnect: Value(enableConnect),
+      connectPort: Value(connectPort),
+      cacheMusic: Value(cacheMusic),
     );
   }
 
@@ -854,12 +893,16 @@ class PreferencesTableData extends DataClass
       invidiousInstance: serializer.fromJson<String>(json['invidiousInstance']),
       themeMode: serializer.fromJson<String>(json['themeMode']),
       audioSource: serializer.fromJson<String>(json['audioSource']),
+      youtubeClientEngine:
+          serializer.fromJson<String>(json['youtubeClientEngine']),
       streamMusicCodec: serializer.fromJson<String>(json['streamMusicCodec']),
       downloadMusicCodec:
           serializer.fromJson<String>(json['downloadMusicCodec']),
       discordPresence: serializer.fromJson<bool>(json['discordPresence']),
       endlessPlayback: serializer.fromJson<bool>(json['endlessPlayback']),
       enableConnect: serializer.fromJson<bool>(json['enableConnect']),
+      connectPort: serializer.fromJson<int>(json['connectPort']),
+      cacheMusic: serializer.fromJson<bool>(json['cacheMusic']),
     );
   }
   @override
@@ -887,11 +930,14 @@ class PreferencesTableData extends DataClass
       'invidiousInstance': serializer.toJson<String>(invidiousInstance),
       'themeMode': serializer.toJson<String>(themeMode),
       'audioSource': serializer.toJson<String>(audioSource),
+      'youtubeClientEngine': serializer.toJson<String>(youtubeClientEngine),
       'streamMusicCodec': serializer.toJson<String>(streamMusicCodec),
       'downloadMusicCodec': serializer.toJson<String>(downloadMusicCodec),
       'discordPresence': serializer.toJson<bool>(discordPresence),
       'endlessPlayback': serializer.toJson<bool>(endlessPlayback),
       'enableConnect': serializer.toJson<bool>(enableConnect),
+      'connectPort': serializer.toJson<int>(connectPort),
+      'cacheMusic': serializer.toJson<bool>(cacheMusic),
     };
   }
 
@@ -917,11 +963,14 @@ class PreferencesTableData extends DataClass
           String? invidiousInstance,
           String? themeMode,
           String? audioSource,
+          String? youtubeClientEngine,
           String? streamMusicCodec,
           String? downloadMusicCodec,
           bool? discordPresence,
           bool? endlessPlayback,
-          bool? enableConnect}) =>
+          bool? enableConnect,
+          int? connectPort,
+          bool? cacheMusic}) =>
       PreferencesTableData(
         id: id ?? this.id,
         audioQuality: audioQuality ?? this.audioQuality,
@@ -944,11 +993,14 @@ class PreferencesTableData extends DataClass
         invidiousInstance: invidiousInstance ?? this.invidiousInstance,
         themeMode: themeMode ?? this.themeMode,
         audioSource: audioSource ?? this.audioSource,
+        youtubeClientEngine: youtubeClientEngine ?? this.youtubeClientEngine,
         streamMusicCodec: streamMusicCodec ?? this.streamMusicCodec,
         downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
         discordPresence: discordPresence ?? this.discordPresence,
         endlessPlayback: endlessPlayback ?? this.endlessPlayback,
         enableConnect: enableConnect ?? this.enableConnect,
+        connectPort: connectPort ?? this.connectPort,
+        cacheMusic: cacheMusic ?? this.cacheMusic,
       );
   PreferencesTableData copyWithCompanion(PreferencesTableCompanion data) {
     return PreferencesTableData(
@@ -1003,6 +1055,9 @@ class PreferencesTableData extends DataClass
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
       audioSource:
           data.audioSource.present ? data.audioSource.value : this.audioSource,
+      youtubeClientEngine: data.youtubeClientEngine.present
+          ? data.youtubeClientEngine.value
+          : this.youtubeClientEngine,
       streamMusicCodec: data.streamMusicCodec.present
           ? data.streamMusicCodec.value
           : this.streamMusicCodec,
@@ -1018,6 +1073,10 @@ class PreferencesTableData extends DataClass
       enableConnect: data.enableConnect.present
           ? data.enableConnect.value
           : this.enableConnect,
+      connectPort:
+          data.connectPort.present ? data.connectPort.value : this.connectPort,
+      cacheMusic:
+          data.cacheMusic.present ? data.cacheMusic.value : this.cacheMusic,
     );
   }
 
@@ -1045,11 +1104,14 @@ class PreferencesTableData extends DataClass
           ..write('invidiousInstance: $invidiousInstance, ')
           ..write('themeMode: $themeMode, ')
           ..write('audioSource: $audioSource, ')
+          ..write('youtubeClientEngine: $youtubeClientEngine, ')
           ..write('streamMusicCodec: $streamMusicCodec, ')
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
           ..write('discordPresence: $discordPresence, ')
           ..write('endlessPlayback: $endlessPlayback, ')
-          ..write('enableConnect: $enableConnect')
+          ..write('enableConnect: $enableConnect, ')
+          ..write('connectPort: $connectPort, ')
+          ..write('cacheMusic: $cacheMusic')
           ..write(')'))
         .toString();
   }
@@ -1077,11 +1139,14 @@ class PreferencesTableData extends DataClass
         invidiousInstance,
         themeMode,
         audioSource,
+        youtubeClientEngine,
         streamMusicCodec,
         downloadMusicCodec,
         discordPresence,
         endlessPlayback,
-        enableConnect
+        enableConnect,
+        connectPort,
+        cacheMusic
       ]);
   @override
   bool operator ==(Object other) =>
@@ -1108,11 +1173,14 @@ class PreferencesTableData extends DataClass
           other.invidiousInstance == this.invidiousInstance &&
           other.themeMode == this.themeMode &&
           other.audioSource == this.audioSource &&
+          other.youtubeClientEngine == this.youtubeClientEngine &&
           other.streamMusicCodec == this.streamMusicCodec &&
           other.downloadMusicCodec == this.downloadMusicCodec &&
           other.discordPresence == this.discordPresence &&
           other.endlessPlayback == this.endlessPlayback &&
-          other.enableConnect == this.enableConnect);
+          other.enableConnect == this.enableConnect &&
+          other.connectPort == this.connectPort &&
+          other.cacheMusic == this.cacheMusic);
 }
 
 class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
@@ -1137,11 +1205,14 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<String> invidiousInstance;
   final Value<String> themeMode;
   final Value<String> audioSource;
+  final Value<String> youtubeClientEngine;
   final Value<String> streamMusicCodec;
   final Value<String> downloadMusicCodec;
   final Value<bool> discordPresence;
   final Value<bool> endlessPlayback;
   final Value<bool> enableConnect;
+  final Value<int> connectPort;
+  final Value<bool> cacheMusic;
   const PreferencesTableCompanion({
     this.id = const Value.absent(),
     this.audioQuality = const Value.absent(),
@@ -1164,11 +1235,14 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.invidiousInstance = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.audioSource = const Value.absent(),
+    this.youtubeClientEngine = const Value.absent(),
     this.streamMusicCodec = const Value.absent(),
     this.downloadMusicCodec = const Value.absent(),
     this.discordPresence = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
     this.enableConnect = const Value.absent(),
+    this.connectPort = const Value.absent(),
+    this.cacheMusic = const Value.absent(),
   });
   PreferencesTableCompanion.insert({
     this.id = const Value.absent(),
@@ -1192,11 +1266,14 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.invidiousInstance = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.audioSource = const Value.absent(),
+    this.youtubeClientEngine = const Value.absent(),
     this.streamMusicCodec = const Value.absent(),
     this.downloadMusicCodec = const Value.absent(),
     this.discordPresence = const Value.absent(),
     this.endlessPlayback = const Value.absent(),
     this.enableConnect = const Value.absent(),
+    this.connectPort = const Value.absent(),
+    this.cacheMusic = const Value.absent(),
   });
   static Insertable<PreferencesTableData> custom({
     Expression<int>? id,
@@ -1220,11 +1297,14 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<String>? invidiousInstance,
     Expression<String>? themeMode,
     Expression<String>? audioSource,
+    Expression<String>? youtubeClientEngine,
     Expression<String>? streamMusicCodec,
     Expression<String>? downloadMusicCodec,
     Expression<bool>? discordPresence,
     Expression<bool>? endlessPlayback,
     Expression<bool>? enableConnect,
+    Expression<int>? connectPort,
+    Expression<bool>? cacheMusic,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1250,12 +1330,16 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       if (invidiousInstance != null) 'invidious_instance': invidiousInstance,
       if (themeMode != null) 'theme_mode': themeMode,
       if (audioSource != null) 'audio_source': audioSource,
+      if (youtubeClientEngine != null)
+        'youtube_client_engine': youtubeClientEngine,
       if (streamMusicCodec != null) 'stream_music_codec': streamMusicCodec,
       if (downloadMusicCodec != null)
         'download_music_codec': downloadMusicCodec,
       if (discordPresence != null) 'discord_presence': discordPresence,
       if (endlessPlayback != null) 'endless_playback': endlessPlayback,
       if (enableConnect != null) 'enable_connect': enableConnect,
+      if (connectPort != null) 'connect_port': connectPort,
+      if (cacheMusic != null) 'cache_music': cacheMusic,
     });
   }
 
@@ -1281,11 +1365,14 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       Value<String>? invidiousInstance,
       Value<String>? themeMode,
       Value<String>? audioSource,
+      Value<String>? youtubeClientEngine,
       Value<String>? streamMusicCodec,
       Value<String>? downloadMusicCodec,
       Value<bool>? discordPresence,
       Value<bool>? endlessPlayback,
-      Value<bool>? enableConnect}) {
+      Value<bool>? enableConnect,
+      Value<int>? connectPort,
+      Value<bool>? cacheMusic}) {
     return PreferencesTableCompanion(
       id: id ?? this.id,
       audioQuality: audioQuality ?? this.audioQuality,
@@ -1308,11 +1395,14 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       invidiousInstance: invidiousInstance ?? this.invidiousInstance,
       themeMode: themeMode ?? this.themeMode,
       audioSource: audioSource ?? this.audioSource,
+      youtubeClientEngine: youtubeClientEngine ?? this.youtubeClientEngine,
       streamMusicCodec: streamMusicCodec ?? this.streamMusicCodec,
       downloadMusicCodec: downloadMusicCodec ?? this.downloadMusicCodec,
       discordPresence: discordPresence ?? this.discordPresence,
       endlessPlayback: endlessPlayback ?? this.endlessPlayback,
       enableConnect: enableConnect ?? this.enableConnect,
+      connectPort: connectPort ?? this.connectPort,
+      cacheMusic: cacheMusic ?? this.cacheMusic,
     );
   }
 
@@ -1383,6 +1473,10 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     if (audioSource.present) {
       map['audio_source'] = Variable<String>(audioSource.value);
     }
+    if (youtubeClientEngine.present) {
+      map['youtube_client_engine'] =
+          Variable<String>(youtubeClientEngine.value);
+    }
     if (streamMusicCodec.present) {
       map['stream_music_codec'] = Variable<String>(streamMusicCodec.value);
     }
@@ -1397,6 +1491,12 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     }
     if (enableConnect.present) {
       map['enable_connect'] = Variable<bool>(enableConnect.value);
+    }
+    if (connectPort.present) {
+      map['connect_port'] = Variable<int>(connectPort.value);
+    }
+    if (cacheMusic.present) {
+      map['cache_music'] = Variable<bool>(cacheMusic.value);
     }
     return map;
   }
@@ -1425,11 +1525,14 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('invidiousInstance: $invidiousInstance, ')
           ..write('themeMode: $themeMode, ')
           ..write('audioSource: $audioSource, ')
+          ..write('youtubeClientEngine: $youtubeClientEngine, ')
           ..write('streamMusicCodec: $streamMusicCodec, ')
           ..write('downloadMusicCodec: $downloadMusicCodec, ')
           ..write('discordPresence: $discordPresence, ')
           ..write('endlessPlayback: $endlessPlayback, ')
-          ..write('enableConnect: $enableConnect')
+          ..write('enableConnect: $enableConnect, ')
+          ..write('connectPort: $connectPort, ')
+          ..write('cacheMusic: $cacheMusic')
           ..write(')'))
         .toString();
   }
@@ -2196,9 +2299,19 @@ class AudioPlayerStateTable extends Table
   late final GeneratedColumn<String> collections = GeneratedColumn<String>(
       'collections', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> tracks = GeneratedColumn<String>(
+      'tracks', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("[]"));
+  late final GeneratedColumn<int> currentIndex = GeneratedColumn<int>(
+      'current_index', aliasedName, false,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultValue: const Constant(0));
   @override
   List<GeneratedColumn> get $columns =>
-      [id, playing, loopMode, shuffled, collections];
+      [id, playing, loopMode, shuffled, collections, tracks, currentIndex];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -2221,6 +2334,10 @@ class AudioPlayerStateTable extends Table
           .read(DriftSqlType.bool, data['${effectivePrefix}shuffled'])!,
       collections: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}collections'])!,
+      tracks: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}tracks'])!,
+      currentIndex: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}current_index'])!,
     );
   }
 
@@ -2237,12 +2354,16 @@ class AudioPlayerStateTableData extends DataClass
   final String loopMode;
   final bool shuffled;
   final String collections;
+  final String tracks;
+  final int currentIndex;
   const AudioPlayerStateTableData(
       {required this.id,
       required this.playing,
       required this.loopMode,
       required this.shuffled,
-      required this.collections});
+      required this.collections,
+      required this.tracks,
+      required this.currentIndex});
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
@@ -2251,6 +2372,8 @@ class AudioPlayerStateTableData extends DataClass
     map['loop_mode'] = Variable<String>(loopMode);
     map['shuffled'] = Variable<bool>(shuffled);
     map['collections'] = Variable<String>(collections);
+    map['tracks'] = Variable<String>(tracks);
+    map['current_index'] = Variable<int>(currentIndex);
     return map;
   }
 
@@ -2261,6 +2384,8 @@ class AudioPlayerStateTableData extends DataClass
       loopMode: Value(loopMode),
       shuffled: Value(shuffled),
       collections: Value(collections),
+      tracks: Value(tracks),
+      currentIndex: Value(currentIndex),
     );
   }
 
@@ -2273,6 +2398,8 @@ class AudioPlayerStateTableData extends DataClass
       loopMode: serializer.fromJson<String>(json['loopMode']),
       shuffled: serializer.fromJson<bool>(json['shuffled']),
       collections: serializer.fromJson<String>(json['collections']),
+      tracks: serializer.fromJson<String>(json['tracks']),
+      currentIndex: serializer.fromJson<int>(json['currentIndex']),
     );
   }
   @override
@@ -2284,6 +2411,8 @@ class AudioPlayerStateTableData extends DataClass
       'loopMode': serializer.toJson<String>(loopMode),
       'shuffled': serializer.toJson<bool>(shuffled),
       'collections': serializer.toJson<String>(collections),
+      'tracks': serializer.toJson<String>(tracks),
+      'currentIndex': serializer.toJson<int>(currentIndex),
     };
   }
 
@@ -2292,13 +2421,17 @@ class AudioPlayerStateTableData extends DataClass
           bool? playing,
           String? loopMode,
           bool? shuffled,
-          String? collections}) =>
+          String? collections,
+          String? tracks,
+          int? currentIndex}) =>
       AudioPlayerStateTableData(
         id: id ?? this.id,
         playing: playing ?? this.playing,
         loopMode: loopMode ?? this.loopMode,
         shuffled: shuffled ?? this.shuffled,
         collections: collections ?? this.collections,
+        tracks: tracks ?? this.tracks,
+        currentIndex: currentIndex ?? this.currentIndex,
       );
   AudioPlayerStateTableData copyWithCompanion(
       AudioPlayerStateTableCompanion data) {
@@ -2309,6 +2442,10 @@ class AudioPlayerStateTableData extends DataClass
       shuffled: data.shuffled.present ? data.shuffled.value : this.shuffled,
       collections:
           data.collections.present ? data.collections.value : this.collections,
+      tracks: data.tracks.present ? data.tracks.value : this.tracks,
+      currentIndex: data.currentIndex.present
+          ? data.currentIndex.value
+          : this.currentIndex,
     );
   }
 
@@ -2319,13 +2456,16 @@ class AudioPlayerStateTableData extends DataClass
           ..write('playing: $playing, ')
           ..write('loopMode: $loopMode, ')
           ..write('shuffled: $shuffled, ')
-          ..write('collections: $collections')
+          ..write('collections: $collections, ')
+          ..write('tracks: $tracks, ')
+          ..write('currentIndex: $currentIndex')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, playing, loopMode, shuffled, collections);
+  int get hashCode => Object.hash(
+      id, playing, loopMode, shuffled, collections, tracks, currentIndex);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2334,7 +2474,9 @@ class AudioPlayerStateTableData extends DataClass
           other.playing == this.playing &&
           other.loopMode == this.loopMode &&
           other.shuffled == this.shuffled &&
-          other.collections == this.collections);
+          other.collections == this.collections &&
+          other.tracks == this.tracks &&
+          other.currentIndex == this.currentIndex);
 }
 
 class AudioPlayerStateTableCompanion
@@ -2344,12 +2486,16 @@ class AudioPlayerStateTableCompanion
   final Value<String> loopMode;
   final Value<bool> shuffled;
   final Value<String> collections;
+  final Value<String> tracks;
+  final Value<int> currentIndex;
   const AudioPlayerStateTableCompanion({
     this.id = const Value.absent(),
     this.playing = const Value.absent(),
     this.loopMode = const Value.absent(),
     this.shuffled = const Value.absent(),
     this.collections = const Value.absent(),
+    this.tracks = const Value.absent(),
+    this.currentIndex = const Value.absent(),
   });
   AudioPlayerStateTableCompanion.insert({
     this.id = const Value.absent(),
@@ -2357,6 +2503,8 @@ class AudioPlayerStateTableCompanion
     required String loopMode,
     required bool shuffled,
     required String collections,
+    this.tracks = const Value.absent(),
+    this.currentIndex = const Value.absent(),
   })  : playing = Value(playing),
         loopMode = Value(loopMode),
         shuffled = Value(shuffled),
@@ -2367,6 +2515,8 @@ class AudioPlayerStateTableCompanion
     Expression<String>? loopMode,
     Expression<bool>? shuffled,
     Expression<String>? collections,
+    Expression<String>? tracks,
+    Expression<int>? currentIndex,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -2374,6 +2524,8 @@ class AudioPlayerStateTableCompanion
       if (loopMode != null) 'loop_mode': loopMode,
       if (shuffled != null) 'shuffled': shuffled,
       if (collections != null) 'collections': collections,
+      if (tracks != null) 'tracks': tracks,
+      if (currentIndex != null) 'current_index': currentIndex,
     });
   }
 
@@ -2382,13 +2534,17 @@ class AudioPlayerStateTableCompanion
       Value<bool>? playing,
       Value<String>? loopMode,
       Value<bool>? shuffled,
-      Value<String>? collections}) {
+      Value<String>? collections,
+      Value<String>? tracks,
+      Value<int>? currentIndex}) {
     return AudioPlayerStateTableCompanion(
       id: id ?? this.id,
       playing: playing ?? this.playing,
       loopMode: loopMode ?? this.loopMode,
       shuffled: shuffled ?? this.shuffled,
       collections: collections ?? this.collections,
+      tracks: tracks ?? this.tracks,
+      currentIndex: currentIndex ?? this.currentIndex,
     );
   }
 
@@ -2410,6 +2566,12 @@ class AudioPlayerStateTableCompanion
     if (collections.present) {
       map['collections'] = Variable<String>(collections.value);
     }
+    if (tracks.present) {
+      map['tracks'] = Variable<String>(tracks.value);
+    }
+    if (currentIndex.present) {
+      map['current_index'] = Variable<int>(currentIndex.value);
+    }
     return map;
   }
 
@@ -2420,464 +2582,9 @@ class AudioPlayerStateTableCompanion
           ..write('playing: $playing, ')
           ..write('loopMode: $loopMode, ')
           ..write('shuffled: $shuffled, ')
-          ..write('collections: $collections')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class PlaylistTable extends Table
-    with TableInfo<PlaylistTable, PlaylistTableData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  PlaylistTable(this.attachedDatabase, [this._alias]);
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  late final GeneratedColumn<int> audioPlayerStateId = GeneratedColumn<int>(
-      'audio_player_state_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints: GeneratedColumn.constraintIsAlways(
-          'REFERENCES audio_player_state_table (id)'));
-  late final GeneratedColumn<int> index = GeneratedColumn<int>(
-      'index', aliasedName, false,
-      type: DriftSqlType.int, requiredDuringInsert: true);
-  @override
-  List<GeneratedColumn> get $columns => [id, audioPlayerStateId, index];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'playlist_table';
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  PlaylistTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PlaylistTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      audioPlayerStateId: attachedDatabase.typeMapping.read(
-          DriftSqlType.int, data['${effectivePrefix}audio_player_state_id'])!,
-      index: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}index'])!,
-    );
-  }
-
-  @override
-  PlaylistTable createAlias(String alias) {
-    return PlaylistTable(attachedDatabase, alias);
-  }
-}
-
-class PlaylistTableData extends DataClass
-    implements Insertable<PlaylistTableData> {
-  final int id;
-  final int audioPlayerStateId;
-  final int index;
-  const PlaylistTableData(
-      {required this.id,
-      required this.audioPlayerStateId,
-      required this.index});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['audio_player_state_id'] = Variable<int>(audioPlayerStateId);
-    map['index'] = Variable<int>(index);
-    return map;
-  }
-
-  PlaylistTableCompanion toCompanion(bool nullToAbsent) {
-    return PlaylistTableCompanion(
-      id: Value(id),
-      audioPlayerStateId: Value(audioPlayerStateId),
-      index: Value(index),
-    );
-  }
-
-  factory PlaylistTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PlaylistTableData(
-      id: serializer.fromJson<int>(json['id']),
-      audioPlayerStateId: serializer.fromJson<int>(json['audioPlayerStateId']),
-      index: serializer.fromJson<int>(json['index']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'audioPlayerStateId': serializer.toJson<int>(audioPlayerStateId),
-      'index': serializer.toJson<int>(index),
-    };
-  }
-
-  PlaylistTableData copyWith({int? id, int? audioPlayerStateId, int? index}) =>
-      PlaylistTableData(
-        id: id ?? this.id,
-        audioPlayerStateId: audioPlayerStateId ?? this.audioPlayerStateId,
-        index: index ?? this.index,
-      );
-  PlaylistTableData copyWithCompanion(PlaylistTableCompanion data) {
-    return PlaylistTableData(
-      id: data.id.present ? data.id.value : this.id,
-      audioPlayerStateId: data.audioPlayerStateId.present
-          ? data.audioPlayerStateId.value
-          : this.audioPlayerStateId,
-      index: data.index.present ? data.index.value : this.index,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlaylistTableData(')
-          ..write('id: $id, ')
-          ..write('audioPlayerStateId: $audioPlayerStateId, ')
-          ..write('index: $index')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, audioPlayerStateId, index);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PlaylistTableData &&
-          other.id == this.id &&
-          other.audioPlayerStateId == this.audioPlayerStateId &&
-          other.index == this.index);
-}
-
-class PlaylistTableCompanion extends UpdateCompanion<PlaylistTableData> {
-  final Value<int> id;
-  final Value<int> audioPlayerStateId;
-  final Value<int> index;
-  const PlaylistTableCompanion({
-    this.id = const Value.absent(),
-    this.audioPlayerStateId = const Value.absent(),
-    this.index = const Value.absent(),
-  });
-  PlaylistTableCompanion.insert({
-    this.id = const Value.absent(),
-    required int audioPlayerStateId,
-    required int index,
-  })  : audioPlayerStateId = Value(audioPlayerStateId),
-        index = Value(index);
-  static Insertable<PlaylistTableData> custom({
-    Expression<int>? id,
-    Expression<int>? audioPlayerStateId,
-    Expression<int>? index,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (audioPlayerStateId != null)
-        'audio_player_state_id': audioPlayerStateId,
-      if (index != null) 'index': index,
-    });
-  }
-
-  PlaylistTableCompanion copyWith(
-      {Value<int>? id, Value<int>? audioPlayerStateId, Value<int>? index}) {
-    return PlaylistTableCompanion(
-      id: id ?? this.id,
-      audioPlayerStateId: audioPlayerStateId ?? this.audioPlayerStateId,
-      index: index ?? this.index,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (audioPlayerStateId.present) {
-      map['audio_player_state_id'] = Variable<int>(audioPlayerStateId.value);
-    }
-    if (index.present) {
-      map['index'] = Variable<int>(index.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlaylistTableCompanion(')
-          ..write('id: $id, ')
-          ..write('audioPlayerStateId: $audioPlayerStateId, ')
-          ..write('index: $index')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class PlaylistMediaTable extends Table
-    with TableInfo<PlaylistMediaTable, PlaylistMediaTableData> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  PlaylistMediaTable(this.attachedDatabase, [this._alias]);
-  late final GeneratedColumn<int> id = GeneratedColumn<int>(
-      'id', aliasedName, false,
-      hasAutoIncrement: true,
-      type: DriftSqlType.int,
-      requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  late final GeneratedColumn<int> playlistId = GeneratedColumn<int>(
-      'playlist_id', aliasedName, false,
-      type: DriftSqlType.int,
-      requiredDuringInsert: true,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('REFERENCES playlist_table (id)'));
-  late final GeneratedColumn<String> uri = GeneratedColumn<String>(
-      'uri', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
-  late final GeneratedColumn<String> extras = GeneratedColumn<String>(
-      'extras', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  late final GeneratedColumn<String> httpHeaders = GeneratedColumn<String>(
-      'http_headers', aliasedName, true,
-      type: DriftSqlType.string, requiredDuringInsert: false);
-  @override
-  List<GeneratedColumn> get $columns =>
-      [id, playlistId, uri, extras, httpHeaders];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'playlist_media_table';
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  PlaylistMediaTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return PlaylistMediaTableData(
-      id: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
-      playlistId: attachedDatabase.typeMapping
-          .read(DriftSqlType.int, data['${effectivePrefix}playlist_id'])!,
-      uri: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}uri'])!,
-      extras: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}extras']),
-      httpHeaders: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}http_headers']),
-    );
-  }
-
-  @override
-  PlaylistMediaTable createAlias(String alias) {
-    return PlaylistMediaTable(attachedDatabase, alias);
-  }
-}
-
-class PlaylistMediaTableData extends DataClass
-    implements Insertable<PlaylistMediaTableData> {
-  final int id;
-  final int playlistId;
-  final String uri;
-  final String? extras;
-  final String? httpHeaders;
-  const PlaylistMediaTableData(
-      {required this.id,
-      required this.playlistId,
-      required this.uri,
-      this.extras,
-      this.httpHeaders});
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['playlist_id'] = Variable<int>(playlistId);
-    map['uri'] = Variable<String>(uri);
-    if (!nullToAbsent || extras != null) {
-      map['extras'] = Variable<String>(extras);
-    }
-    if (!nullToAbsent || httpHeaders != null) {
-      map['http_headers'] = Variable<String>(httpHeaders);
-    }
-    return map;
-  }
-
-  PlaylistMediaTableCompanion toCompanion(bool nullToAbsent) {
-    return PlaylistMediaTableCompanion(
-      id: Value(id),
-      playlistId: Value(playlistId),
-      uri: Value(uri),
-      extras:
-          extras == null && nullToAbsent ? const Value.absent() : Value(extras),
-      httpHeaders: httpHeaders == null && nullToAbsent
-          ? const Value.absent()
-          : Value(httpHeaders),
-    );
-  }
-
-  factory PlaylistMediaTableData.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return PlaylistMediaTableData(
-      id: serializer.fromJson<int>(json['id']),
-      playlistId: serializer.fromJson<int>(json['playlistId']),
-      uri: serializer.fromJson<String>(json['uri']),
-      extras: serializer.fromJson<String?>(json['extras']),
-      httpHeaders: serializer.fromJson<String?>(json['httpHeaders']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'playlistId': serializer.toJson<int>(playlistId),
-      'uri': serializer.toJson<String>(uri),
-      'extras': serializer.toJson<String?>(extras),
-      'httpHeaders': serializer.toJson<String?>(httpHeaders),
-    };
-  }
-
-  PlaylistMediaTableData copyWith(
-          {int? id,
-          int? playlistId,
-          String? uri,
-          Value<String?> extras = const Value.absent(),
-          Value<String?> httpHeaders = const Value.absent()}) =>
-      PlaylistMediaTableData(
-        id: id ?? this.id,
-        playlistId: playlistId ?? this.playlistId,
-        uri: uri ?? this.uri,
-        extras: extras.present ? extras.value : this.extras,
-        httpHeaders: httpHeaders.present ? httpHeaders.value : this.httpHeaders,
-      );
-  PlaylistMediaTableData copyWithCompanion(PlaylistMediaTableCompanion data) {
-    return PlaylistMediaTableData(
-      id: data.id.present ? data.id.value : this.id,
-      playlistId:
-          data.playlistId.present ? data.playlistId.value : this.playlistId,
-      uri: data.uri.present ? data.uri.value : this.uri,
-      extras: data.extras.present ? data.extras.value : this.extras,
-      httpHeaders:
-          data.httpHeaders.present ? data.httpHeaders.value : this.httpHeaders,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlaylistMediaTableData(')
-          ..write('id: $id, ')
-          ..write('playlistId: $playlistId, ')
-          ..write('uri: $uri, ')
-          ..write('extras: $extras, ')
-          ..write('httpHeaders: $httpHeaders')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(id, playlistId, uri, extras, httpHeaders);
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PlaylistMediaTableData &&
-          other.id == this.id &&
-          other.playlistId == this.playlistId &&
-          other.uri == this.uri &&
-          other.extras == this.extras &&
-          other.httpHeaders == this.httpHeaders);
-}
-
-class PlaylistMediaTableCompanion
-    extends UpdateCompanion<PlaylistMediaTableData> {
-  final Value<int> id;
-  final Value<int> playlistId;
-  final Value<String> uri;
-  final Value<String?> extras;
-  final Value<String?> httpHeaders;
-  const PlaylistMediaTableCompanion({
-    this.id = const Value.absent(),
-    this.playlistId = const Value.absent(),
-    this.uri = const Value.absent(),
-    this.extras = const Value.absent(),
-    this.httpHeaders = const Value.absent(),
-  });
-  PlaylistMediaTableCompanion.insert({
-    this.id = const Value.absent(),
-    required int playlistId,
-    required String uri,
-    this.extras = const Value.absent(),
-    this.httpHeaders = const Value.absent(),
-  })  : playlistId = Value(playlistId),
-        uri = Value(uri);
-  static Insertable<PlaylistMediaTableData> custom({
-    Expression<int>? id,
-    Expression<int>? playlistId,
-    Expression<String>? uri,
-    Expression<String>? extras,
-    Expression<String>? httpHeaders,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (playlistId != null) 'playlist_id': playlistId,
-      if (uri != null) 'uri': uri,
-      if (extras != null) 'extras': extras,
-      if (httpHeaders != null) 'http_headers': httpHeaders,
-    });
-  }
-
-  PlaylistMediaTableCompanion copyWith(
-      {Value<int>? id,
-      Value<int>? playlistId,
-      Value<String>? uri,
-      Value<String?>? extras,
-      Value<String?>? httpHeaders}) {
-    return PlaylistMediaTableCompanion(
-      id: id ?? this.id,
-      playlistId: playlistId ?? this.playlistId,
-      uri: uri ?? this.uri,
-      extras: extras ?? this.extras,
-      httpHeaders: httpHeaders ?? this.httpHeaders,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (playlistId.present) {
-      map['playlist_id'] = Variable<int>(playlistId.value);
-    }
-    if (uri.present) {
-      map['uri'] = Variable<String>(uri.value);
-    }
-    if (extras.present) {
-      map['extras'] = Variable<String>(extras.value);
-    }
-    if (httpHeaders.present) {
-      map['http_headers'] = Variable<String>(httpHeaders.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('PlaylistMediaTableCompanion(')
-          ..write('id: $id, ')
-          ..write('playlistId: $playlistId, ')
-          ..write('uri: $uri, ')
-          ..write('extras: $extras, ')
-          ..write('httpHeaders: $httpHeaders')
+          ..write('collections: $collections, ')
+          ..write('tracks: $tracks, ')
+          ..write('currentIndex: $currentIndex')
           ..write(')'))
         .toString();
   }
@@ -3319,8 +3026,457 @@ class LyricsTableCompanion extends UpdateCompanion<LyricsTableData> {
   }
 }
 
-class DatabaseAtV2 extends GeneratedDatabase {
-  DatabaseAtV2(QueryExecutor e) : super(e);
+class MetadataPluginsTable extends Table
+    with TableInfo<MetadataPluginsTable, MetadataPluginsTableData> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  MetadataPluginsTable(this.attachedDatabase, [this._alias]);
+  late final GeneratedColumn<int> id = GeneratedColumn<int>(
+      'id', aliasedName, false,
+      hasAutoIncrement: true,
+      type: DriftSqlType.int,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+      'name', aliasedName, false,
+      additionalChecks:
+          GeneratedColumn.checkTextLength(minTextLength: 1, maxTextLength: 50),
+      type: DriftSqlType.string,
+      requiredDuringInsert: true);
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+      'description', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> version = GeneratedColumn<String>(
+      'version', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> author = GeneratedColumn<String>(
+      'author', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> entryPoint = GeneratedColumn<String>(
+      'entry_point', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> apis = GeneratedColumn<String>(
+      'apis', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<String> abilities = GeneratedColumn<String>(
+      'abilities', aliasedName, false,
+      type: DriftSqlType.string, requiredDuringInsert: true);
+  late final GeneratedColumn<bool> selected = GeneratedColumn<bool>(
+      'selected', aliasedName, false,
+      type: DriftSqlType.bool,
+      requiredDuringInsert: false,
+      defaultConstraints:
+          GeneratedColumn.constraintIsAlways('CHECK ("selected" IN (0, 1))'),
+      defaultValue: const Constant(false));
+  late final GeneratedColumn<String> repository = GeneratedColumn<String>(
+      'repository', aliasedName, true,
+      type: DriftSqlType.string, requiredDuringInsert: false);
+  late final GeneratedColumn<String> pluginApiVersion = GeneratedColumn<String>(
+      'plugin_api_version', aliasedName, false,
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant('1.0.0'));
+  @override
+  List<GeneratedColumn> get $columns => [
+        id,
+        name,
+        description,
+        version,
+        author,
+        entryPoint,
+        apis,
+        abilities,
+        selected,
+        repository,
+        pluginApiVersion
+      ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'metadata_plugins_table';
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  MetadataPluginsTableData map(Map<String, dynamic> data,
+      {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return MetadataPluginsTableData(
+      id: attachedDatabase.typeMapping
+          .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
+      name: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}name'])!,
+      description: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}description'])!,
+      version: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}version'])!,
+      author: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}author'])!,
+      entryPoint: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}entry_point'])!,
+      apis: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}apis'])!,
+      abilities: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}abilities'])!,
+      selected: attachedDatabase.typeMapping
+          .read(DriftSqlType.bool, data['${effectivePrefix}selected'])!,
+      repository: attachedDatabase.typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}repository']),
+      pluginApiVersion: attachedDatabase.typeMapping.read(
+          DriftSqlType.string, data['${effectivePrefix}plugin_api_version'])!,
+    );
+  }
+
+  @override
+  MetadataPluginsTable createAlias(String alias) {
+    return MetadataPluginsTable(attachedDatabase, alias);
+  }
+}
+
+class MetadataPluginsTableData extends DataClass
+    implements Insertable<MetadataPluginsTableData> {
+  final int id;
+  final String name;
+  final String description;
+  final String version;
+  final String author;
+  final String entryPoint;
+  final String apis;
+  final String abilities;
+  final bool selected;
+  final String? repository;
+  final String pluginApiVersion;
+  const MetadataPluginsTableData(
+      {required this.id,
+      required this.name,
+      required this.description,
+      required this.version,
+      required this.author,
+      required this.entryPoint,
+      required this.apis,
+      required this.abilities,
+      required this.selected,
+      this.repository,
+      required this.pluginApiVersion});
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<int>(id);
+    map['name'] = Variable<String>(name);
+    map['description'] = Variable<String>(description);
+    map['version'] = Variable<String>(version);
+    map['author'] = Variable<String>(author);
+    map['entry_point'] = Variable<String>(entryPoint);
+    map['apis'] = Variable<String>(apis);
+    map['abilities'] = Variable<String>(abilities);
+    map['selected'] = Variable<bool>(selected);
+    if (!nullToAbsent || repository != null) {
+      map['repository'] = Variable<String>(repository);
+    }
+    map['plugin_api_version'] = Variable<String>(pluginApiVersion);
+    return map;
+  }
+
+  MetadataPluginsTableCompanion toCompanion(bool nullToAbsent) {
+    return MetadataPluginsTableCompanion(
+      id: Value(id),
+      name: Value(name),
+      description: Value(description),
+      version: Value(version),
+      author: Value(author),
+      entryPoint: Value(entryPoint),
+      apis: Value(apis),
+      abilities: Value(abilities),
+      selected: Value(selected),
+      repository: repository == null && nullToAbsent
+          ? const Value.absent()
+          : Value(repository),
+      pluginApiVersion: Value(pluginApiVersion),
+    );
+  }
+
+  factory MetadataPluginsTableData.fromJson(Map<String, dynamic> json,
+      {ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return MetadataPluginsTableData(
+      id: serializer.fromJson<int>(json['id']),
+      name: serializer.fromJson<String>(json['name']),
+      description: serializer.fromJson<String>(json['description']),
+      version: serializer.fromJson<String>(json['version']),
+      author: serializer.fromJson<String>(json['author']),
+      entryPoint: serializer.fromJson<String>(json['entryPoint']),
+      apis: serializer.fromJson<String>(json['apis']),
+      abilities: serializer.fromJson<String>(json['abilities']),
+      selected: serializer.fromJson<bool>(json['selected']),
+      repository: serializer.fromJson<String?>(json['repository']),
+      pluginApiVersion: serializer.fromJson<String>(json['pluginApiVersion']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<int>(id),
+      'name': serializer.toJson<String>(name),
+      'description': serializer.toJson<String>(description),
+      'version': serializer.toJson<String>(version),
+      'author': serializer.toJson<String>(author),
+      'entryPoint': serializer.toJson<String>(entryPoint),
+      'apis': serializer.toJson<String>(apis),
+      'abilities': serializer.toJson<String>(abilities),
+      'selected': serializer.toJson<bool>(selected),
+      'repository': serializer.toJson<String?>(repository),
+      'pluginApiVersion': serializer.toJson<String>(pluginApiVersion),
+    };
+  }
+
+  MetadataPluginsTableData copyWith(
+          {int? id,
+          String? name,
+          String? description,
+          String? version,
+          String? author,
+          String? entryPoint,
+          String? apis,
+          String? abilities,
+          bool? selected,
+          Value<String?> repository = const Value.absent(),
+          String? pluginApiVersion}) =>
+      MetadataPluginsTableData(
+        id: id ?? this.id,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        version: version ?? this.version,
+        author: author ?? this.author,
+        entryPoint: entryPoint ?? this.entryPoint,
+        apis: apis ?? this.apis,
+        abilities: abilities ?? this.abilities,
+        selected: selected ?? this.selected,
+        repository: repository.present ? repository.value : this.repository,
+        pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
+      );
+  MetadataPluginsTableData copyWithCompanion(
+      MetadataPluginsTableCompanion data) {
+    return MetadataPluginsTableData(
+      id: data.id.present ? data.id.value : this.id,
+      name: data.name.present ? data.name.value : this.name,
+      description:
+          data.description.present ? data.description.value : this.description,
+      version: data.version.present ? data.version.value : this.version,
+      author: data.author.present ? data.author.value : this.author,
+      entryPoint:
+          data.entryPoint.present ? data.entryPoint.value : this.entryPoint,
+      apis: data.apis.present ? data.apis.value : this.apis,
+      abilities: data.abilities.present ? data.abilities.value : this.abilities,
+      selected: data.selected.present ? data.selected.value : this.selected,
+      repository:
+          data.repository.present ? data.repository.value : this.repository,
+      pluginApiVersion: data.pluginApiVersion.present
+          ? data.pluginApiVersion.value
+          : this.pluginApiVersion,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MetadataPluginsTableData(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('version: $version, ')
+          ..write('author: $author, ')
+          ..write('entryPoint: $entryPoint, ')
+          ..write('apis: $apis, ')
+          ..write('abilities: $abilities, ')
+          ..write('selected: $selected, ')
+          ..write('repository: $repository, ')
+          ..write('pluginApiVersion: $pluginApiVersion')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, name, description, version, author,
+      entryPoint, apis, abilities, selected, repository, pluginApiVersion);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MetadataPluginsTableData &&
+          other.id == this.id &&
+          other.name == this.name &&
+          other.description == this.description &&
+          other.version == this.version &&
+          other.author == this.author &&
+          other.entryPoint == this.entryPoint &&
+          other.apis == this.apis &&
+          other.abilities == this.abilities &&
+          other.selected == this.selected &&
+          other.repository == this.repository &&
+          other.pluginApiVersion == this.pluginApiVersion);
+}
+
+class MetadataPluginsTableCompanion
+    extends UpdateCompanion<MetadataPluginsTableData> {
+  final Value<int> id;
+  final Value<String> name;
+  final Value<String> description;
+  final Value<String> version;
+  final Value<String> author;
+  final Value<String> entryPoint;
+  final Value<String> apis;
+  final Value<String> abilities;
+  final Value<bool> selected;
+  final Value<String?> repository;
+  final Value<String> pluginApiVersion;
+  const MetadataPluginsTableCompanion({
+    this.id = const Value.absent(),
+    this.name = const Value.absent(),
+    this.description = const Value.absent(),
+    this.version = const Value.absent(),
+    this.author = const Value.absent(),
+    this.entryPoint = const Value.absent(),
+    this.apis = const Value.absent(),
+    this.abilities = const Value.absent(),
+    this.selected = const Value.absent(),
+    this.repository = const Value.absent(),
+    this.pluginApiVersion = const Value.absent(),
+  });
+  MetadataPluginsTableCompanion.insert({
+    this.id = const Value.absent(),
+    required String name,
+    required String description,
+    required String version,
+    required String author,
+    required String entryPoint,
+    required String apis,
+    required String abilities,
+    this.selected = const Value.absent(),
+    this.repository = const Value.absent(),
+    this.pluginApiVersion = const Value.absent(),
+  })  : name = Value(name),
+        description = Value(description),
+        version = Value(version),
+        author = Value(author),
+        entryPoint = Value(entryPoint),
+        apis = Value(apis),
+        abilities = Value(abilities);
+  static Insertable<MetadataPluginsTableData> custom({
+    Expression<int>? id,
+    Expression<String>? name,
+    Expression<String>? description,
+    Expression<String>? version,
+    Expression<String>? author,
+    Expression<String>? entryPoint,
+    Expression<String>? apis,
+    Expression<String>? abilities,
+    Expression<bool>? selected,
+    Expression<String>? repository,
+    Expression<String>? pluginApiVersion,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (name != null) 'name': name,
+      if (description != null) 'description': description,
+      if (version != null) 'version': version,
+      if (author != null) 'author': author,
+      if (entryPoint != null) 'entry_point': entryPoint,
+      if (apis != null) 'apis': apis,
+      if (abilities != null) 'abilities': abilities,
+      if (selected != null) 'selected': selected,
+      if (repository != null) 'repository': repository,
+      if (pluginApiVersion != null) 'plugin_api_version': pluginApiVersion,
+    });
+  }
+
+  MetadataPluginsTableCompanion copyWith(
+      {Value<int>? id,
+      Value<String>? name,
+      Value<String>? description,
+      Value<String>? version,
+      Value<String>? author,
+      Value<String>? entryPoint,
+      Value<String>? apis,
+      Value<String>? abilities,
+      Value<bool>? selected,
+      Value<String?>? repository,
+      Value<String>? pluginApiVersion}) {
+    return MetadataPluginsTableCompanion(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      version: version ?? this.version,
+      author: author ?? this.author,
+      entryPoint: entryPoint ?? this.entryPoint,
+      apis: apis ?? this.apis,
+      abilities: abilities ?? this.abilities,
+      selected: selected ?? this.selected,
+      repository: repository ?? this.repository,
+      pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<int>(id.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<String>(version.value);
+    }
+    if (author.present) {
+      map['author'] = Variable<String>(author.value);
+    }
+    if (entryPoint.present) {
+      map['entry_point'] = Variable<String>(entryPoint.value);
+    }
+    if (apis.present) {
+      map['apis'] = Variable<String>(apis.value);
+    }
+    if (abilities.present) {
+      map['abilities'] = Variable<String>(abilities.value);
+    }
+    if (selected.present) {
+      map['selected'] = Variable<bool>(selected.value);
+    }
+    if (repository.present) {
+      map['repository'] = Variable<String>(repository.value);
+    }
+    if (pluginApiVersion.present) {
+      map['plugin_api_version'] = Variable<String>(pluginApiVersion.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('MetadataPluginsTableCompanion(')
+          ..write('id: $id, ')
+          ..write('name: $name, ')
+          ..write('description: $description, ')
+          ..write('version: $version, ')
+          ..write('author: $author, ')
+          ..write('entryPoint: $entryPoint, ')
+          ..write('apis: $apis, ')
+          ..write('abilities: $abilities, ')
+          ..write('selected: $selected, ')
+          ..write('repository: $repository, ')
+          ..write('pluginApiVersion: $pluginApiVersion')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class DatabaseAtV8 extends GeneratedDatabase {
+  DatabaseAtV8(QueryExecutor e) : super(e);
   late final AuthenticationTable authenticationTable =
       AuthenticationTable(this);
   late final BlacklistTable blacklistTable = BlacklistTable(this);
@@ -3330,10 +3486,10 @@ class DatabaseAtV2 extends GeneratedDatabase {
   late final SourceMatchTable sourceMatchTable = SourceMatchTable(this);
   late final AudioPlayerStateTable audioPlayerStateTable =
       AudioPlayerStateTable(this);
-  late final PlaylistTable playlistTable = PlaylistTable(this);
-  late final PlaylistMediaTable playlistMediaTable = PlaylistMediaTable(this);
   late final HistoryTable historyTable = HistoryTable(this);
   late final LyricsTable lyricsTable = LyricsTable(this);
+  late final MetadataPluginsTable metadataPluginsTable =
+      MetadataPluginsTable(this);
   late final Index uniqueBlacklist = Index('unique_blacklist',
       'CREATE UNIQUE INDEX unique_blacklist ON blacklist_table (element_type, element_id)');
   late final Index uniqTrackMatch = Index('uniq_track_match',
@@ -3350,13 +3506,12 @@ class DatabaseAtV2 extends GeneratedDatabase {
         skipSegmentTable,
         sourceMatchTable,
         audioPlayerStateTable,
-        playlistTable,
-        playlistMediaTable,
         historyTable,
         lyricsTable,
+        metadataPluginsTable,
         uniqueBlacklist,
         uniqTrackMatch
       ];
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 8;
 }
