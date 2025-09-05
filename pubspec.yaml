@@ -203,6 +203,7 @@ flutter:
     - assets/images/logos/
     - assets/branding/spotube-logo.png
     - assets/branding/spotube-logo-light.png
+    - assets/branding/spotube-logo.ico
     - LICENSE
     - packages/flutter_undraw/assets/undraw/access_denied.svg
     - packages/flutter_undraw/assets/undraw/fixing_bugs.svg

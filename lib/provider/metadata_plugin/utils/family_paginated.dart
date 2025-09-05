@@ -27,7 +27,7 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
       final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
       state = AsyncData(newState.copyWith(items: <K>[...oldItems, ...items]));
-    } finally {
+    } catch (e) {
       state = AsyncData(oldState!);
     }
   }
@@ -78,7 +78,7 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
           ...newState.items.cast<K>(),
         ]),
       );
-    } finally {
+    } catch (e) {
       state = AsyncData(oldState!);
     }
   }

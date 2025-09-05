@@ -28,7 +28,7 @@ mixin PaginatedAsyncNotifierMixin<K>
       final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
       state = AsyncData(newState.copyWith(items: <K>[...oldItems, ...items]));
-    } finally {
+    } catch (e) {
       state = AsyncData(oldState!);
     }
   }
