@@ -14,18 +14,23 @@ mixin PaginatedAsyncNotifierMixin<K>
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
 
-    state = AsyncLoadingNext(state.asData!.value);
+    final oldState = state.value;
+    try {
+      state = AsyncLoadingNext(state.asData!.value);
 
-    final newState = await fetch(
-      state.value!.nextOffset!,
-      state.value!.limit,
-    );
+      final newState = await fetch(
+        state.value!.nextOffset!,
+        state.value!.limit,
+      );
 
-    final oldItems =
-        state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
-    final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+      final oldItems =
+          state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+      final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
-    state = AsyncData(newState.copyWith(items: <K>[...oldItems, ...items]));
+      state = AsyncData(newState.copyWith(items: <K>[...oldItems, ...items]));
+    } finally {
+      state = AsyncData(oldState!);
+    }
   }
 
   Future<List<K>> fetchAll() async {

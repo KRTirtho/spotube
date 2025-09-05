@@ -12,18 +12,24 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
 
-    state = AsyncLoadingNext(state.asData!.value);
+    final oldState = state.value;
 
-    final newState = await fetch(
-      state.value!.nextOffset!,
-      state.value!.limit,
-    );
+    try {
+      state = AsyncLoadingNext(state.asData!.value);
 
-    final oldItems =
-        state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
-    final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+      final newState = await fetch(
+        state.value!.nextOffset!,
+        state.value!.limit,
+      );
 
-    state = AsyncData(newState.copyWith(items: <K>[...oldItems, ...items]));
+      final oldItems =
+          state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+      final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+
+      state = AsyncData(newState.copyWith(items: <K>[...oldItems, ...items]));
+    } finally {
+      state = AsyncData(oldState!);
+    }
   }
 
   Future<List<K>> fetchAll() async {
@@ -56,21 +62,25 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
 
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
+    final oldState = state.value;
 
-    state = AsyncLoadingNext(state.asData!.value);
+    try {
+      state = AsyncLoadingNext(state.value!);
 
-    state = await AsyncValue.guard(
-      () async {
-        final newState = await fetch(
-          state.value!.nextOffset!,
-          state.value!.limit,
-        );
-        return newState.copyWith(items: [
+      final newState = await fetch(
+        state.value!.nextOffset!,
+        state.value!.limit,
+      );
+
+      state = AsyncData(
+        newState.copyWith(items: [
           ...state.value!.items.cast<K>(),
           ...newState.items.cast<K>(),
-        ]);
-      },
-    );
+        ]),
+      );
+    } finally {
+      state = AsyncData(oldState!);
+    }
   }
 
   Future<List<K>> fetchAll() async {
