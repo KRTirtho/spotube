@@ -393,6 +393,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
   Future<SourcedTrack> refreshStream() async {
     List<TrackSource> validStreams = [];
 
+    final stringBuffer = StringBuffer();
     for (final source in sources) {
       final res = await globalDio.head(
         source.url,
@@ -400,10 +401,16 @@ class YoutubeSourcedTrack extends SourcedTrack {
             Options(validateStatus: (status) => status != null && status < 500),
       );
 
+      stringBuffer.writeln(
+        "[${query.id}] ${res.statusCode} ${source.quality} ${source.codec} ${source.bitrate}",
+      );
+
       if (res.statusCode! < 400) {
         validStreams.add(source);
       }
     }
+
+    AppLogger.log.d(stringBuffer.toString());
 
     if (validStreams.isEmpty) {
       final manifest =

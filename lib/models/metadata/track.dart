@@ -101,7 +101,9 @@ extension ToMetadataSpotubeFullTrackObject on SpotubeFullTrackObject {
       albumArtist: artists.map((a) => a.name).join(", "),
       year: album.releaseDate == null
           ? 1970
-          : DateTime.parse(album.releaseDate!).year,
+          : DateTime.tryParse(album.releaseDate!)?.year ??
+              int.tryParse(album.releaseDate!) ??
+              1970,
       durationMs: durationMs.toDouble(),
       fileSize: BigInt.from(fileLength),
       picture: imageBytes != null
