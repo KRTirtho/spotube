@@ -99,7 +99,7 @@ class UserAlbumsPage extends HookConsumerWidget {
                         features: const [
                           InputFeature.leading(Icon(SpotubeIcons.filter))
                         ],
-                        placeholder: Text(context.l10n.filter_artist),
+                        placeholder: Text(context.l10n.filter_albums),
                       ),
                     ),
                   ),
@@ -121,7 +121,7 @@ class UserAlbumsPage extends HookConsumerWidget {
                             color: Theme.of(context).colorScheme.primary,
                           ),
                           Text(
-                            context.l10n.not_following_artists,
+                            context.l10n.no_favorite_albums_yet,
                             textAlign: TextAlign.center,
                           ).muted().small()
                         ],
