@@ -53,3 +53,6 @@ dmg:
 		then rm dist/Spotube-macos-universal.dmg;\
 		fi &&\
 		appdmg appdmg.json dist/Spotube-macos-universal.dmg
+
+changelog:
+	git-cliff --unreleased
