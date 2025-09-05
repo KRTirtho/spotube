@@ -117,6 +117,24 @@ class ServerPlaybackRoutes {
       return dio.head(url, options: options);
     });
 
+    // Redirect to m3u8 link directly as it handles range requests internally
+    if (contentLengthRes?.headers.value("content-type") ==
+        "application/vnd.apple.mpegurl") {
+      return (
+        response: dio_lib.Response<Uint8List>(
+          statusCode: 301,
+          statusMessage: "M3U8 Redirect",
+          headers: Headers.fromMap({
+            "location": [url],
+            "content-type": ["application/vnd.apple.mpegurl"],
+          }),
+          requestOptions: RequestOptions(path: request.requestedUri.toString()),
+          isRedirect: true,
+        ),
+        bytes: null,
+      );
+    }
+
     final contentLength = contentLengthRes?.headers.value("content-length");
 
     /// Forcing partial content range as mpv sometimes greedily wants

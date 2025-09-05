@@ -2881,8 +2881,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: e2d82305fab18566408d6f8758361017d1640c3d
-      resolved-ref: e2d82305fab18566408d6f8758361017d1640c3d
+      ref: "4e5310e14af74bdbb51e2a4766e66d6c6a2562a8"
+      resolved-ref: "4e5310e14af74bdbb51e2a4766e66d6c6a2562a8"
       url: "https://github.com/KRTirtho/yt_dlp_dart.git"
     source: git
     version: "1.0.0"
