@@ -56,7 +56,7 @@ dependencies:
   flutter_feather_icons: ^2.0.0+1
   flutter_form_builder: ^9.6.0
   flutter_hooks: ^0.20.5
-  flutter_inappwebview: ^6.1.3
+  flutter_inappwebview: ^6.1.5
   flutter_localizations:
     sdk: flutter
   flutter_native_splash: ^2.4.6
