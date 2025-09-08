@@ -50,7 +50,7 @@ class L10n {
     const Locale('ta', 'IN'),
     const Locale('tr', 'TR'),
     const Locale('zh', 'CN'),
-    const Locale('tw', 'TW'),
+    const Locale('zh', 'TW'),
     const Locale('vi', 'VN'),
     const Locale('eu', 'ES'),
   ];

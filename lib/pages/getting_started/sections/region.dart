@@ -21,8 +21,10 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
   }
 
   bool filterLocale(Locale locale, String query) {
-    final language =
-        LanguageLocals.getDisplayLanguage(locale.languageCode).toString();
+    final language = LanguageLocals.getDisplayLanguage(
+      locale.languageCode,
+      locale.countryCode,
+    ).toString();
 
     return language.toLowerCase().contains(query.toLowerCase());
   }
@@ -124,8 +126,9 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                               ? Text(context.l10n.system_default)
                               : Text(
                                   LanguageLocals.getDisplayLanguage(
-                                          value.languageCode)
-                                      .toString(),
+                                    value.languageCode,
+                                    value.countryCode,
+                                  ).toString(),
                                 ),
                       popup: SelectPopup.builder(
                         searchPlaceholder: Text(context.l10n.search),
@@ -161,6 +164,7 @@ class GettingStartedPageLanguageRegionSection extends HookConsumerWidget {
                                 child: Text(
                                   LanguageLocals.getDisplayLanguage(
                                     locale.languageCode,
+                                    locale.countryCode,
                                   ).toString(),
                                 ),
                               );
