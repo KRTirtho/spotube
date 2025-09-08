@@ -220,6 +220,9 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                     !pluginReposSnapshot.isLoadingNextPage,
                 itemCount: pluginRepos.length,
                 onFetchData: pluginReposNotifier.fetchMore,
+                separatorBuilder: (context, index) {
+                  return const Gap(12);
+                },
                 loadingBuilder: (context) {
                   return Skeletonizer(
                     enabled: true,
