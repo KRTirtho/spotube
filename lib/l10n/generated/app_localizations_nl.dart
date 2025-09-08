@@ -39,7 +39,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get featured => 'Aanbevolen';
 
   @override
-  String get new_releases => 'Nieuwe uitgaves';
+  String get new_releases => 'Nieuwe uitgaven';
 
   @override
   String get songs => 'Liedjes';
@@ -139,7 +139,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get sort_album => 'Sorteren op album';
 
   @override
-  String get sort_duration => 'Sorteer op Duur';
+  String get sort_duration => 'Sorteren op lengte';
 
   @override
   String get sort_tracks => 'Nummers sorteren';
@@ -150,7 +150,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get cancel_all => 'Alle annuleren';
+  String get cancel_all => 'Alles annuleren';
 
   @override
   String get filter_artist => 'Artiesten filteren…';
@@ -164,10 +164,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get add_artist_to_blacklist => 'Artiest toevoegen aan zwarte lijst';
 
   @override
-  String get top_tracks => 'Topsporen';
+  String get top_tracks => 'Topnummers';
 
   @override
-  String get fans_also_like => 'Liefhebbers willen ook';
+  String get fans_also_like => 'Fans luisteren ook';
 
   @override
   String get loading => 'Laden…';
@@ -312,10 +312,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get slide_to_seek => 'Schuiven om vooruit of achteruit te zoeken';
 
   @override
-  String get shuffle_playlist => 'Afspeellijst schuifelen';
+  String get shuffle_playlist => 'Afspeellijst willekeurig';
 
   @override
-  String get unshuffle_playlist => 'Afspeellijst onschuifelen';
+  String get unshuffle_playlist => 'Afspeellijst op volgorde';
 
   @override
   String get previous_track => 'Vorige nummer';
@@ -342,7 +342,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get queue => 'Wachtrij';
 
   @override
-  String get alternative_track_sources => 'Alternatieve nummerbronnen';
+  String get alternative_track_sources => 'Alternatieve bronnen voor nummers';
 
   @override
   String get download_track => 'Nummer downloaden';
@@ -776,10 +776,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get stop => 'Stoppen';
 
   @override
-  String get sort_newest => 'Sorteren op nieuwste toegevoegd';
+  String get sort_newest => 'Sorteren op recent toegevoegd';
 
   @override
-  String get sort_oldest => 'Sorteren op oudste toegevoegd';
+  String get sort_oldest => 'Sorteren op langst toegevoegd';
 
   @override
   String get sleep_timer => 'Slaaptimer';
@@ -815,7 +815,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get search_mode => 'Zoekmodus';
 
   @override
-  String get audio_source => 'Audiobron';
+  String get audio_source => 'Audio Source';
 
   @override
   String get ok => 'Oké';
@@ -927,57 +927,56 @@ class AppLocalizationsNl extends AppLocalizations {
       'Sorry, geen teksten gevonden voor dit nummer';
 
   @override
-  String get start_a_radio => 'Start een Radio';
+  String get start_a_radio => 'Een radio starten';
 
   @override
-  String get how_to_start_radio => 'Hoe wilt u de radio starten?';
+  String get how_to_start_radio => 'Hoe wil je de radio starten?';
 
   @override
   String get replace_queue_question =>
-      'Wilt u de huidige wachtrij vervangen of eraan toevoegen?';
+      'Wil je de huidige wachtrij vervangen of eraan toevoegen?';
 
   @override
-  String get endless_playback => 'Eindeloze Afspelen';
+  String get endless_playback => 'Oneindig afspelen';
 
   @override
-  String get delete_playlist => 'Verwijder Afspeellijst';
+  String get delete_playlist => 'Afspeellijst verwijderen';
 
   @override
   String get delete_playlist_confirmation =>
-      'Weet u zeker dat u deze afspeellijst wilt verwijderen?';
+      'Weet je zeker dat je deze afspeellijst wilt verwijderen?';
 
   @override
-  String get local_tracks => 'Lokale Nummers';
+  String get local_tracks => 'Lokale nummers';
 
   @override
   String get local_tab => 'Lokaal';
 
   @override
-  String get song_link => 'Nummer Link';
+  String get song_link => 'Song-link';
 
   @override
-  String get skip_this_nonsense => 'Sla deze onzin over';
+  String get skip_this_nonsense => 'Deze onzin overslaan';
 
   @override
-  String get freedom_of_music => '“Vrijheid van Muziek”';
+  String get freedom_of_music => '“Vrijheid van muziek”';
 
   @override
-  String get freedom_of_music_palm =>
-      '“Vrijheid van Muziek in de palm van je hand”';
+  String get freedom_of_music_palm => '“Vrijheid van muziek in je hand”';
 
   @override
   String get get_started => 'Laten we beginnen';
 
   @override
-  String get youtube_source_description => 'Aanbevolen en werkt het beste.';
+  String get youtube_source_description => 'Aangeraden en werkt het best.';
 
   @override
   String get piped_source_description =>
-      'Voel je vrij? Hetzelfde als YouTube maar veel gratis.';
+      'Voel je je vrij? Net als YouTube, maar meer vrij.';
 
   @override
   String get jiosaavn_source_description =>
-      'Het beste voor de Zuid-Aziatische regio.';
+      'Het beste voor de regio Zuid-Azië.';
 
   @override
   String get invidious_source_description =>
@@ -985,41 +984,41 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String highest_quality(Object quality) {
-    return 'Hoogste Kwaliteit: $quality';
+    return 'Hoogste kwaliteit: $quality';
   }
 
   @override
-  String get select_audio_source => 'Selecteer Audiobron';
+  String get select_audio_source => 'Audiobron kiezen';
 
   @override
   String get endless_playback_description =>
-      'Voeg automatisch nieuwe nummers toe aan het einde van de wachtrij';
+      'Nieuwe nummers automatisch achteraan de wachtrij toevoegen';
 
   @override
-  String get choose_your_region => 'Kies uw regio';
+  String get choose_your_region => 'Kies je regio';
 
   @override
   String get choose_your_region_description =>
-      'Dit zal Spotube helpen om de juiste inhoud voor uw locatie te tonen.';
+      'Dit helpt Spotube om de juiste inhoud\nvoor jouw locatie te tonen.';
 
   @override
-  String get choose_your_language => 'Kies uw taal';
+  String get choose_your_language => 'Kies je taal';
 
   @override
-  String get help_project_grow => 'Help dit project groeien';
+  String get help_project_grow => 'Help dit project met groeien';
 
   @override
   String get help_project_grow_description =>
-      'Spotube is een open-source project. U kunt dit project helpen groeien door bij te dragen aan het project, bugs te melden of nieuwe functies voor te stellen.';
+      'Spotube is een open-source project. Je kunt dit project helpen groeien door eraan bij te dragen, problemen te melden of nieuwe functies voor te stellen.';
 
   @override
-  String get contribute_on_github => 'Bijdragen op GitHub';
+  String get contribute_on_github => 'Bijdragen on GitHub';
 
   @override
-  String get donate_on_open_collective => 'Doneren op Open Collective';
+  String get donate_on_open_collective => 'Doneren on Open Collective';
 
   @override
-  String get browse_anonymously => 'Anoniem Bladeren';
+  String get browse_anonymously => 'Anoniem browsen';
 
   @override
   String get enable_connect => 'Verbinding inschakelen';

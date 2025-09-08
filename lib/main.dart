@@ -217,7 +217,7 @@ class Spotube extends HookConsumerWidget {
         iconTheme: const IconThemeProperties(),
         colorScheme:
             colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.light) ??
-                LegacyColorSchemes.lightOrange(),
+                LegacyColorSchemes.lightSlate(),
         surfaceOpacity: .8,
         surfaceBlur: 10,
       ),
@@ -226,7 +226,7 @@ class Spotube extends HookConsumerWidget {
         iconTheme: const IconThemeProperties(),
         colorScheme:
             colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.dark) ??
-                LegacyColorSchemes.darkOrange(),
+                LegacyColorSchemes.darkSlate(),
         surfaceOpacity: .8,
         surfaceBlur: 10,
       ),

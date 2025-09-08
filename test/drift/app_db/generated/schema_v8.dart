@@ -525,7 +525,7 @@ class PreferencesTable extends Table
       GeneratedColumn<String>('accent_color_scheme', aliasedName, false,
           type: DriftSqlType.string,
           requiredDuringInsert: false,
-          defaultValue: const Constant("Orange:0xFFf97315"));
+          defaultValue: const Constant("Slate:0xff64748b"));
   late final GeneratedColumn<String> layoutMode = GeneratedColumn<String>(
       'layout_mode', aliasedName, false,
       type: DriftSqlType.string,

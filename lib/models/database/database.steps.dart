@@ -1407,7 +1407,7 @@ final class Schema5 extends i0.VersionedSchema {
 i1.GeneratedColumn<String> _column_55(String aliasedName) =>
     i1.GeneratedColumn<String>('accent_color_scheme', aliasedName, false,
         type: i1.DriftSqlType.string,
-        defaultValue: const Constant("Orange:0xFFf97315"));
+        defaultValue: const Constant("Slate:0xff64748b"));
 
 final class Schema6 extends i0.VersionedSchema {
   Schema6({required super.database}) : super(version: 6);

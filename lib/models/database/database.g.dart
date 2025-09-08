@@ -666,7 +666,7 @@ class $PreferencesTableTable extends PreferencesTable
               'accent_color_scheme', aliasedName, false,
               type: DriftSqlType.string,
               requiredDuringInsert: false,
-              defaultValue: const Constant("Orange:0xFFf97315"))
+              defaultValue: const Constant("Slate:0xff64748b"))
           .withConverter<SpotubeColor>(
               $PreferencesTableTable.$converteraccentColorScheme);
   static const VerificationMeta _layoutModeMeta =

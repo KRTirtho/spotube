@@ -41,7 +41,7 @@
   "sort_z_a": "Sorteren op Z-A",
   "sort_artist": "Sorteren op artiest",
   "sort_album": "Sorteren op album",
-  "sort_duration": "Sorteren op lengte", 
+  "sort_duration": "Sorteren op lengte",
   "sort_tracks": "Nummers sorteren",
   "currently_downloading": "Momenteel aan het downloaden ({tracks_length})",
   "cancel_all": "Alles annuleren",
@@ -287,7 +287,7 @@
   "genres": "Genres",
   "explore_genres": "Genres verkennen",
   "friends": "Vrienden",
-  "no_lyrics_available": "Sorry, geen teksten gevonden voor dit nummer"
+  "no_lyrics_available": "Sorry, geen teksten gevonden voor dit nummer",
   "start_a_radio": "Een radio starten",
   "how_to_start_radio": "Hoe wil je de radio starten?",
   "replace_queue_question": "Wil je de huidige wachtrij vervangen of eraan toevoegen?",

@@ -79,7 +79,7 @@ class PreferencesTable extends Table {
   TextColumn get closeBehavior => textEnum<CloseBehavior>()
       .withDefault(Constant(CloseBehavior.close.name))();
   TextColumn get accentColorScheme => text()
-      .withDefault(const Constant("Orange:0xFFf97315"))
+      .withDefault(const Constant("Slate:0xff64748b"))
       .map(const SpotubeColorConverter())();
   TextColumn get layoutMode =>
       textEnum<LayoutMode>().withDefault(Constant(LayoutMode.adaptive.name))();
@@ -131,7 +131,7 @@ class PreferencesTable extends Table {
       systemTitleBar: false,
       skipNonMusic: false,
       closeBehavior: CloseBehavior.close,
-      accentColorScheme: SpotubeColor(Colors.orange.value, name: "Orange"),
+      accentColorScheme: SpotubeColor(Colors.slate.value, name: "Slate"),
       layoutMode: LayoutMode.adaptive,
       locale: const Locale("system", "system"),
       market: Market.US,
