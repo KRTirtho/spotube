@@ -356,7 +356,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get clear_all => 'Garbitu dena';
 
   @override
-  String get show_hide_ui_on_hover => 'Erakutsi/Ezkutatu interfazea kurtsorea pasatzean';
+  String get show_hide_ui_on_hover =>
+      'Erakutsi/Ezkutatu interfazea kurtsorea pasatzean';
 
   @override
   String get always_on_top => 'Beti ikusgai';
@@ -378,12 +379,6 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get account => 'Kontua';
-
-  @override
-  String get login_with_spotify => 'Hasi saioa zure Spotify kontuarekin';
-
-  @override
-  String get connect_with_spotify => 'Spotify-rekin konektatu';
 
   @override
   String get logout => 'Itxi saioa';
@@ -413,7 +408,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get layout_mode => 'Diseinua';
 
   @override
-  String get override_layout_settings => 'Responsive diseinuaren ezarpenak ezeztatu';
+  String get override_layout_settings =>
+      'Responsive diseinuaren ezarpenak ezeztatu';
 
   @override
   String get adaptive => 'Moldagarria';
@@ -443,7 +439,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get sync_album_color => 'Sinkronizatu albumaren kolorea';
 
   @override
-  String get sync_album_color_description => 'Albumaren artearen kolore nagusia erabili azentu kolore bezala';
+  String get sync_album_color_description =>
+      'Albumaren artearen kolore nagusia erabili azentu kolore bezala';
 
   @override
   String get playback => 'Erreprodukzioa';
@@ -461,16 +458,19 @@ class AppLocalizationsEu extends AppLocalizations {
   String get pre_download_play => 'Aurre-deskargatu eta erreproduzitu';
 
   @override
-  String get pre_download_play_description => 'Streaming egin beharrean, byte-ak deskargatu eta erreproduzitu (banda-zabalera handia duten erabiltzaileentzat gomendagarria)';
+  String get pre_download_play_description =>
+      'Streaming egin beharrean, byte-ak deskargatu eta erreproduzitu (banda-zabalera handia duten erabiltzaileentzat gomendagarria)';
 
   @override
-  String get skip_non_music => 'Musika ez diren segmentuak baztertu (SponsorBlock)';
+  String get skip_non_music =>
+      'Musika ez diren segmentuak baztertu (SponsorBlock)';
 
   @override
   String get blacklist_description => 'Zerrenda beltzeko abesti eta artistak';
 
   @override
-  String get wait_for_download_to_finish => 'Mesedez, itxaron uneko deskarga bukatu arte';
+  String get wait_for_download_to_finish =>
+      'Mesedez, itxaron uneko deskarga bukatu arte';
 
   @override
   String get desktop => 'Mahaigaina';
@@ -506,7 +506,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get please_sponsor => 'Mesedez, babestu/diruz lagundu';
 
   @override
-  String get spotube_description => 'Spotube, arina, plataforma-anitza eta doakoa den Spotify-ren bezeroa';
+  String get spotube_description =>
+      'Spotube, arina, plataforma-anitza eta doakoa den Spotify-ren bezeroa';
 
   @override
   String get version => 'Bertsioa';
@@ -538,21 +539,14 @@ class AppLocalizationsEu extends AppLocalizations {
   String get license => 'Lizentzia';
 
   @override
-  String get add_spotify_credentials => 'Gehitu zure Spotify kredentzialak hasi ahal izateko';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => 'Ez arduratu, zure kredentzialak ez ditugu bilduko edo inorekin elkarbanatuko';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'Ez arduratu, zure kredentzialak ez ditugu bilduko edo inorekin elkarbanatuko';
 
   @override
   String get know_how_to_login => 'Ez dakizu nola egin?';
 
   @override
   String get follow_step_by_step_guide => 'Jarraitu pausoz-pausoko gida';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify-ren $name cookiea';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -584,52 +578,29 @@ class AppLocalizationsEu extends AppLocalizations {
   String get first_go_to => 'Hasteko, joan hona';
 
   @override
-  String get login_if_not_logged_in => 'eta hasi saioa/sortu kontua lehendik ez baduzu eginda';
-
-  @override
-  String get step_2 => '2. pausua';
-
-  @override
-  String get step_2_steps => '1. Saioa hasita duzularik, sakatu F12 edo saguaren eskuineko botoia klikatu > Ikuskatu nabigatzaileko garapen tresnak irekitzeko.\n2. Joan \"Aplikazio\" (Chrome, Edge, Brave, etab.) edo \"Biltegiratzea\" (Firefox, Palemoon, etab.)\n3. Joan \"Cookieak\" atalera eta gero \"https://accounts.spotify.com\" azpiatalera';
-
-  @override
-  String get step_3 => '3. pausua';
-
-  @override
-  String get step_3_steps => 'Kopiatu \"sp_dc\" cookiearen balioa';
-
-  @override
-  String get success_emoji => 'Eginda! 🥳';
-
-  @override
-  String get success_message => 'Ongi hasi duzu zure Spotify kontua. Lan bikaina, lagun!';
-
-  @override
-  String get step_4 => '4. pausua';
-
-  @override
-  String get step_4_steps => 'Itsatsi \"sp_dc\"-tik kopiatutako balioa';
-
-  @override
   String get something_went_wrong => 'Zerbaitek huts egin du';
 
   @override
   String get piped_instance => 'Piped zerbitzariaren instantzia';
 
   @override
-  String get piped_description => 'Kanten koizidentzietan erabiltzeko Piped zerbitzariaren instantzia';
+  String get piped_description =>
+      'Kanten koizidentzietan erabiltzeko Piped zerbitzariaren instantzia';
 
   @override
-  String get piped_warning => 'Batzuk agian ez dute ongi funtzionatuko, zure ardurapean erabili';
+  String get piped_warning =>
+      'Batzuk agian ez dute ongi funtzionatuko, zure ardurapean erabili';
 
   @override
   String get invidious_instance => 'Invidious zerbitzari instantzia';
 
   @override
-  String get invidious_description => 'Invidious zerbitzari instantzia, pistak bat egiteko';
+  String get invidious_description =>
+      'Invidious zerbitzari instantzia, pistak bat egiteko';
 
   @override
-  String get invidious_warning => 'Instantzia batzuek ez dute ondo funtzionatuko. Zure erantzukizunpean erabili';
+  String get invidious_warning =>
+      'Instantzia batzuek ez dute ondo funtzionatuko. Zure erantzukizunpean erabili';
 
   @override
   String get generate => 'Sortu';
@@ -640,10 +611,12 @@ class AppLocalizationsEu extends AppLocalizations {
   }
 
   @override
-  String get replace_downloaded_tracks => 'Ordezkatu deskargatutako kanta guztiak';
+  String get replace_downloaded_tracks =>
+      'Ordezkatu deskargatutako kanta guztiak';
 
   @override
-  String get skip_download_tracks => 'Deskargatutako kanta guztien deskarga baztertu';
+  String get skip_download_tracks =>
+      'Deskargatutako kanta guztien deskarga baztertu';
 
   @override
   String get do_you_want_to_replace => 'Dagoen kanta ordezkatu nahi duzu??';
@@ -744,7 +717,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get are_you_sure => 'Ziur zaude?';
 
   @override
-  String get generating_playlist => 'Zure pertsonalizatutako zerrenda sortzen...';
+  String get generating_playlist =>
+      'Zure pertsonalizatutako zerrenda sortzen...';
 
   @override
   String selected_count_tracks(Object count) {
@@ -752,22 +726,28 @@ class AppLocalizationsEu extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'Abesti guztiak aldi berean deskargatuz gero, argi dago musika pirateatzen ari zarela eta musikaren gizarte sortzaileari kalte egiten diozula. Honen jakitun izan eta artisten lan gogorra errespetatu eta babestea espero dut';
+  String get download_warning =>
+      'Abesti guztiak aldi berean deskargatuz gero, argi dago musika pirateatzen ari zarela eta musikaren gizarte sortzaileari kalte egiten diozula. Honen jakitun izan eta artisten lan gogorra errespetatu eta babestea espero dut';
 
   @override
-  String get download_ip_ban_warning => 'Bidenabar, baliteke zure IPa YouTuben blokeatzea deskarga eskera gehiegi egiten badituzu. IPa blokeatzeak esan nahi du ezin izango duzula YouTube erabili (nahiz eta saioa hasia izan) gutxienez 2-3 hilabetez IP helbide horretatik. Eta Spotube ez da erantzule izango hori gertatzen bazaizu';
+  String get download_ip_ban_warning =>
+      'Bidenabar, baliteke zure IPa YouTuben blokeatzea deskarga eskera gehiegi egiten badituzu. IPa blokeatzeak esan nahi du ezin izango duzula YouTube erabili (nahiz eta saioa hasia izan) gutxienez 2-3 hilabetez IP helbide horretatik. Eta Spotube ez da erantzule izango hori gertatzen bazaizu';
 
   @override
-  String get by_clicking_accept_terms => '\'Onartu\' klikatzean, ondorengo baldintzak onartzen dituzu:';
+  String get by_clicking_accept_terms =>
+      '\'Onartu\' klikatzean, ondorengo baldintzak onartzen dituzu:';
 
   @override
-  String get download_agreement_1 => 'Badakit musika pirateatzen ari naizela. Gaiztoa naiz';
+  String get download_agreement_1 =>
+      'Badakit musika pirateatzen ari naizela. Gaiztoa naiz';
 
   @override
-  String get download_agreement_2 => 'Ahal dudanean lagunduko diot artistari baina oraingoz ez dut bere artea erosteko dirurik';
+  String get download_agreement_2 =>
+      'Ahal dudanean lagunduko diot artistari baina oraingoz ez dut bere artea erosteko dirurik';
 
   @override
-  String get download_agreement_3 => 'Erabat jakitun naiz YouTubek nire IPa blokea dezakeela eta ez diot Spotube-ri edo bere jabe/laguntzaileei erantzukizunik eskatuko nire oraingo jokaerak ekar ditzakeen arazoengatik';
+  String get download_agreement_3 =>
+      'Erabat jakitun naiz YouTubek nire IPa blokea dezakeela eta ez diot Spotube-ri edo bere jabe/laguntzaileei erantzukizunik eskatuko nire oraingo jokaerak ekar ditzakeen arazoengatik';
 
   @override
   String get decline => 'Baztertu';
@@ -848,7 +828,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get failed_to_encrypt => 'Errorea zifratzean';
 
   @override
-  String get encryption_failed_warning => 'Spotube-ek zifratzea darabil datuak modu seguruan biltegiratzeko. Baina huts egin du. Hori dela eta, biltegiratzea ez da segurua izango\nLinux erabiltzen ari bazara, ziurtatu edozein sekretu-zerbitzu (gnome-keyring, kde-wallet, keepassxc etab.) instalatuta duzula';
+  String get encryption_failed_warning =>
+      'Spotube-ek zifratzea darabil datuak modu seguruan biltegiratzeko. Baina huts egin du. Hori dela eta, biltegiratzea ez da segurua izango\nLinux erabiltzen ari bazara, ziurtatu edozein sekretu-zerbitzu (gnome-keyring, kde-wallet, keepassxc etab.) instalatuta duzula';
 
   @override
   String get querying_info => 'Informazioa egiaztatzen...';
@@ -946,7 +927,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get friends => 'Lagunak';
 
   @override
-  String get no_lyrics_available => 'Sentitzen dugu, ezin dira kanta honen hitzak aurkitu';
+  String get no_lyrics_available =>
+      'Sentitzen dugu, ezin dira kanta honen hitzak aurkitu';
 
   @override
   String get start_a_radio => 'Hasi Irrati bat';
@@ -955,7 +937,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get how_to_start_radio => 'Nola hasi nahi duzu irratia?';
 
   @override
-  String get replace_queue_question => 'Uneko zerrenda ordezkatu nahi duzu edo bertan gehitu?';
+  String get replace_queue_question =>
+      'Uneko zerrenda ordezkatu nahi duzu edo bertan gehitu?';
 
   @override
   String get endless_playback => 'Amaigabeko erreprodukzioa';
@@ -964,7 +947,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get delete_playlist => 'Ezabatu zerrenda';
 
   @override
-  String get delete_playlist_confirmation => 'Ziur zaude zerrenda ezabatu nahi duzula?';
+  String get delete_playlist_confirmation =>
+      'Ziur zaude zerrenda ezabatu nahi duzula?';
 
   @override
   String get local_tracks => 'Kanta lokalak';
@@ -991,13 +975,16 @@ class AppLocalizationsEu extends AppLocalizations {
   String get youtube_source_description => 'Gomendatua eta hobekien dabilena.';
 
   @override
-  String get piped_source_description => 'Aske zara? YouTube bezala, baino askeago.';
+  String get piped_source_description =>
+      'Aske zara? YouTube bezala, baino askeago.';
 
   @override
-  String get jiosaavn_source_description => 'Asia hegoaldeko herrialdeetarako hoberena.';
+  String get jiosaavn_source_description =>
+      'Asia hegoaldeko herrialdeetarako hoberena.';
 
   @override
-  String get invidious_source_description => 'Piped-en antzekoa, baina eskuragarritasun handiagoarekin';
+  String get invidious_source_description =>
+      'Piped-en antzekoa, baina eskuragarritasun handiagoarekin';
 
   @override
   String highest_quality(Object quality) {
@@ -1008,13 +995,15 @@ class AppLocalizationsEu extends AppLocalizations {
   String get select_audio_source => 'Aukeratu Audio Iturria';
 
   @override
-  String get endless_playback_description => 'Gehitu automatikoki kanta berriak\n ilararen bukaeran';
+  String get endless_playback_description =>
+      'Gehitu automatikoki kanta berriak\n ilararen bukaeran';
 
   @override
   String get choose_your_region => 'Aukeratu zure herrialdea';
 
   @override
-  String get choose_your_region_description => 'Honekin Spotube-k zure kokalerakuari dagokion edukia\neskeiniko dizu.';
+  String get choose_your_region_description =>
+      'Honekin Spotube-k zure kokalerakuari dagokion edukia\neskeiniko dizu.';
 
   @override
   String get choose_your_language => 'Aukeratu zure hizkuntza';
@@ -1023,7 +1012,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get help_project_grow => 'Lagundu proiektu honi hazten';
 
   @override
-  String get help_project_grow_description => 'Spotube kode irekiko proiektu bat da. Proiektu hau hazten lagundu dezakezu, erroreak jakinaraziz edo ezaugarri berriak proposatuz.';
+  String get help_project_grow_description =>
+      'Spotube kode irekiko proiektu bat da. Proiektu hau hazten lagundu dezakezu, erroreak jakinaraziz edo ezaugarri berriak proposatuz.';
 
   @override
   String get contribute_on_github => 'GitHub-en lagundu';
@@ -1038,7 +1028,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get enable_connect => 'Gaitu konexioa';
 
   @override
-  String get enable_connect_description => 'Kontrolatu Spotube beste gailu batzuetatik';
+  String get enable_connect_description =>
+      'Kontrolatu Spotube beste gailu batzuetatik';
 
   @override
   String get devices => 'Gailuak';
@@ -1117,7 +1108,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get choose_the_device => 'Aukeratu gailua:';
 
   @override
-  String get multiple_device_connected => 'Hainbat gailu daude konektatuta.\nAukeratu zein gailutan aplikatu nahi duzun ekintza hau';
+  String get multiple_device_connected =>
+      'Hainbat gailu daude konektatuta.\nAukeratu zein gailutan aplikatu nahi duzun ekintza hau';
 
   @override
   String get nothing_found => 'Ezer ez da aurkitu';
@@ -1190,7 +1182,8 @@ class AppLocalizationsEu extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => 'Streaming ordainketa (hipotetikoa)';
+  String get streaming_fees_hypothetical =>
+      'Streaming ordainketa (hipotetikoa)';
 
   @override
   String get minutes_listened => 'Entzundako minutuak';
@@ -1212,7 +1205,8 @@ class AppLocalizationsEu extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Sportify-k stream bakoitzeko duen \$0.003 eta \$0.005\nordainsarian oinarritua da. Kalkulu hipotetiko bat,\nkanta hauek Spotify-n entzun bazenitu,\nberaiek artistari zenbat ordaiduko lioketen jakin dezazun.';
+  String get hipotetical_calculation =>
+      '*Kalkulu hau online musika-streaming plataformetako batez besteko irteerako ordainari (0,003–0,005 USD) oinarrituta dago. Hipotetikoa da eta erabiltzaileari ideia bat ematen laguntzen dio artista nork zenbat kobratu zuen jakiteko, bere abestia plataform desberdinetan entzungo balu.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1255,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get webview_not_found => 'Ez da Webview aurkitu';
 
   @override
-  String get webview_not_found_description => 'Ez dago Webview abiarazte denbora-instalaziorik zure gailuan.\nInstalatuta badago, ziurtatu environment PATH-an dagoela\n\nInstalatu ondoren, berrabiarazi aplikazioa';
+  String get webview_not_found_description =>
+      'Ez dago Webview abiarazte denbora-instalaziorik zure gailuan.\nInstalatuta badago, ziurtatu environment PATH-an dagoela\n\nInstalatu ondoren, berrabiarazi aplikazioa';
 
   @override
   String get unsupported_platform => 'Plataforma ez onartua';
@@ -1293,7 +1288,8 @@ class AppLocalizationsEu extends AppLocalizations {
   }
 
   @override
-  String get export_cache_confirmation => 'Fitxategi hauek esportatu nahi al dituzu';
+  String get export_cache_confirmation =>
+      'Fitxategi hauek esportatu nahi al dituzu';
 
   @override
   String exported_n_out_of_m_files(Object files, Object filesExported) {
@@ -1322,19 +1318,22 @@ class AppLocalizationsEu extends AppLocalizations {
   String get view_all => 'Ikusi guztia';
 
   @override
-  String get no_tracks_added_yet => 'Dirudienez, oraindik ez duzu abestirik gehitu.';
+  String get no_tracks_added_yet =>
+      'Dirudienez, oraindik ez duzu abestirik gehitu.';
 
   @override
   String get no_tracks => 'Ez dirudi hemen abestirik dagoenik.';
 
   @override
-  String get no_tracks_listened_yet => 'Dirudienez, oraindik ez duzu ezer entzun.';
+  String get no_tracks_listened_yet =>
+      'Dirudienez, oraindik ez duzu ezer entzun.';
 
   @override
   String get not_following_artists => 'Ez zaude artisten atzetik.';
 
   @override
-  String get no_favorite_albums_yet => 'Dirudienez, oraindik ez duzu albumik gehitu zure gogokoen artean.';
+  String get no_favorite_albums_yet =>
+      'Dirudienez, oraindik ez duzu albumik gehitu zure gogokoen artean.';
 
   @override
   String get no_logs_found => 'Ez dira log-ak aurkitu';
@@ -1358,7 +1357,8 @@ class AppLocalizationsEu extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'macOS/Linux/Unix bezalako sistemetan, .zshrc/.bashrc/.bash_profile bezalako fitxategietan bidearen ezarpenak ez dira funtzionatuko.\nBidearen ezarpena shell konfigurazio fitxategian egin behar duzu.';
+  String get youtube_engine_unix_issue_message =>
+      'macOS/Linux/Unix bezalako sistemetan, .zshrc/.bashrc/.bash_profile bezalako fitxategietan bidearen ezarpenak ez dira funtzionatuko.\nBidearen ezarpena shell konfigurazio fitxategian egin behar duzu.';
 
   @override
   String get download => 'Deskargatu';
@@ -1376,7 +1376,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get edit_port => 'Editatu portua';
 
   @override
-  String get port_helper_msg => 'Lehenetsitako balioa -1 da, zenbaki aleatorioa adierazten duena. Su firewall konfiguratu baduzu, gomendatzen da hau ezartzea.';
+  String get port_helper_msg =>
+      'Lehenetsitako balioa -1 da, zenbaki aleatorioa adierazten duena. Su firewall konfiguratu baduzu, gomendatzen da hau ezartzea.';
 
   @override
   String connect_request(Object client) {
@@ -1384,5 +1385,167 @@ class AppLocalizationsEu extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'Konektatzea ukatu da. Erabiltzaileak sarbidea ukatu du.';
+  String get connection_request_denied =>
+      'Konektatzea ukatu da. Erabiltzaileak sarbidea ukatu du.';
+
+  @override
+  String get an_error_occurred => 'Errore bat gertatu da';
+
+  @override
+  String get copy_to_clipboard => 'Hiztegiraino kopiatzea';
+
+  @override
+  String get view_logs => 'Erregistroak ikusi';
+
+  @override
+  String get retry => 'Berriro saiatu';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'Ezarri ez duzu metadaten hornitzaile lehenetsirik';
+
+  @override
+  String get manage_metadata_providers => 'Metadaten hornitzaileak kudeatu';
+
+  @override
+  String get open_link_in_browser => 'Esteka nabigatzailean irekiko duzu?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Hurrengo esteka irekiko duzu?';
+
+  @override
+  String get unsafe_url_warning =>
+      'Iturri seguru gabeko estekak irekiz gero, ez da seguru suerta daiteke. Arduratu zaitez!\nEsteka ere hiztegirainokoan kopiatu dezakezu.';
+
+  @override
+  String get copy_link => 'Esteka kopiatu';
+
+  @override
+  String get building_your_timeline =>
+      'Zure entzuteen arabera zure kronologia eraikitzen…';
+
+  @override
+  String get official => 'Ofiziala';
+
+  @override
+  String author_name(Object author) {
+    return 'Egilea: $author';
+  }
+
+  @override
+  String get third_party => 'Hirugarrena';
+
+  @override
+  String get plugin_requires_authentication =>
+      'Pluginak autentifikazioa eskatzen du';
+
+  @override
+  String get update_available => 'Eguneratze bat dago eskuragarri';
+
+  @override
+  String get supports_scrobbling => 'Scrobbling-a onartzen du';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Plugin honek zure musika scrobbled egiten du zure entzuteen historia sortzeko.';
+
+  @override
+  String get default_plugin => 'Lehenetsia';
+
+  @override
+  String get set_default => 'Lehenetsi gisa ezarri';
+
+  @override
+  String get support => 'Laguntza';
+
+  @override
+  String get support_plugin_development => 'Pluginaren garapena lagundu';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- **$name** API-ra sar daiteke';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Plugin hau instalatu nahiko zenuke?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Plugin hau hirugarrenen biltegi batetik dator. Instalatu aurretik iturriari konfiantza behar diozu.';
+
+  @override
+  String get author => 'Egilea';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'Plugin honek honako hau egin dezake:';
+
+  @override
+  String get install => 'Instalatu';
+
+  @override
+  String get install_a_metadata_provider =>
+      'Metadaten hornitzaile bat instalatu';
+
+  @override
+  String get no_tracks_playing =>
+      'Une honetan ez dago abestirik erreproduzitzen';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Abestiarentzako letra sinkronizatua ez dago erabilgarri. Mesedez, erabili';
+
+  @override
+  String get plain_lyrics => 'Letra arrunta';
+
+  @override
+  String get tab_instead => 'horren ordez, Tab teklatxaza erabili.';
+
+  @override
+  String get disclaimer => 'Aldez aurreko oharra';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Spotube taldea ezin da arduratu (“hirugarrenen”) plugin-en>gatik (barne legala). Erabili zure arriskuarekin. Erroreak/ arazoak dituzu, jakinarazi pluginaren biltegiari.\n\nPlugin batek edozein zerbitzu/legalki entitate baten ToS/DMCA hautsi baditu, eska iezaiozu pluginaren egileari edo hosting plataformari (adibidez GitHub/Codeberg) neurriak har ditzaten. “Hirugarrena” etiketatutako plugin guztiak komunitate publikoaren bidez mantentzen dira; ez ditugu kuratoriatu, beraz ezin dugu inplikatu.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'Sarrera ezin da beharrezko formatutik desberdina izan';
+
+  @override
+  String get metadata_provider_plugins => 'Metadaten hornitzailearen pluginak';
+
+  @override
+  String get paste_plugin_download_url =>
+      'Kopiatu deskarga-URLa, GitHub/Codeberg biltegi-URLa edo .smplug fitxategiaren esteka zuzena';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'Download eta instalatu plugin-a URL batetik';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Plugin gehitu ezin izan da: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'Plugin fitxategi batetik igo';
+
+  @override
+  String get installed => 'Instalatuta';
+
+  @override
+  String get available_plugins => 'Eskaintzen diren pluginak';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'Konfiguratu zureko playlists-/album-/artista-/feed-metadaten hornitzailea';
+
+  @override
+  String get audio_scrobblers => 'Audio scrobbler-ak';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

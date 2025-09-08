@@ -57,10 +57,6 @@
 
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
-
-        <data
-          android:host="open.spotify.com"
-          android:scheme="https" />
       </intent-filter>
 
       <intent-filter>
@@ -74,8 +70,6 @@
 
         <category android:name="android.intent.category.DEFAULT" />
         <category android:name="android.intent.category.BROWSABLE" />
-        <!-- Accepts URIs that begin with "spotify:// -->
-        <data android:scheme="spotify" />
         <data android:scheme="spotube" />
       </intent-filter>
 

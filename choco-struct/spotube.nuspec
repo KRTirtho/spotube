@@ -15,7 +15,7 @@ enclosed in quotation marks, you should use an editor that supports UTF-8, not t
     <authors>Kingkor Roy Tirtho</authors>
     <projectUrl>https://spotube.krtirtho.dev</projectUrl>
     <iconUrl>
-      https://rawcdn.githack.com/KRTirtho/spotube/7edb0bb834eb18c05551e30a891720a6abf53dbe/assets/spotube-logo.png</iconUrl>
+      https://rawcdn.githack.com/KRTirtho/spotube/7edb0bb834eb18c05551e30a891720a6abf53dbe/assets/branding/spotube-logo.png</iconUrl>
     <copyright>2022 Spotube</copyright>
     <!-- If there is a license Url available, it is required for the community feed -->
     <licenseUrl>https://github.com/KRTirtho/spotube/blob/master/LICENSE</licenseUrl>

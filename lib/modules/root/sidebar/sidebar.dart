@@ -26,7 +26,7 @@ class Sidebar extends HookConsumerWidget {
         color: Colors.black,
         borderRadius: BorderRadius.circular(50),
       ),
-      child: Assets.spotubeLogoPng.image(
+      child: Assets.branding.spotubeLogoPng.image(
         height: 50,
         cacheHeight: (100 * MediaQuery.devicePixelRatioOf(context)).toInt(),
       ),
@@ -35,6 +35,7 @@ class Sidebar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ThemeData(:colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final layoutMode =
@@ -66,18 +67,22 @@ class Sidebar extends HookConsumerWidget {
     final navigationButtons = [
       NavigationLabel(
         child: mediaQuery.lgAndUp
-            ? const DefaultTextStyle(
+            ? DefaultTextStyle(
                 style: TextStyle(
                   fontFamily: "Cookie",
                   fontSize: 30,
                   letterSpacing: 1.8,
+                  color: colorScheme.foreground,
                 ),
-                child: Text("Spotube"),
+                child: const Text("Spotube"),
               )
             : const Text(""),
       ),
       for (final tile in sidebarTileList)
         NavigationButton(
+          style: router.currentPath.startsWith(tile.pathPrefix)
+              ? const ButtonStyle.secondary()
+              : null,
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           child: Tooltip(
             tooltip: TooltipContainer(child: Text(tile.title)).call,
@@ -92,6 +97,9 @@ class Sidebar extends HookConsumerWidget {
         NavigationLabel(child: Text(context.l10n.library)),
       for (final tile in sidebarLibraryTileList)
         NavigationButton(
+          style: router.currentPath.startsWith(tile.pathPrefix)
+              ? const ButtonStyle.secondary()
+              : null,
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           onPressed: () {
             context.navigateTo(tile.route);

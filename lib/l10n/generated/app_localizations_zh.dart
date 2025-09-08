@@ -380,12 +380,6 @@ class AppLocalizationsZh extends AppLocalizations {
   String get account => '账户';
 
   @override
-  String get login_with_spotify => '使用 Spotify 登录';
-
-  @override
-  String get connect_with_spotify => '与 Spotify 账户连接';
-
-  @override
   String get logout => '退出';
 
   @override
@@ -538,21 +532,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get license => '许可证';
 
   @override
-  String get add_spotify_credentials => '添加你的 Spotify 登录信息以开始使用';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => '不用担心，软件不会收集或分享任何个人数据给第三方';
+  String get credentials_will_not_be_shared_disclaimer =>
+      '不用担心，软件不会收集或分享任何个人数据给第三方';
 
   @override
   String get know_how_to_login => '不知道该怎么做？';
 
   @override
   String get follow_step_by_step_guide => '请按照以下指南进行';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookie';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -582,33 +569,6 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get first_go_to => '首先，前往';
-
-  @override
-  String get login_if_not_logged_in => '如果尚未登录，请登录或者注册一个账户';
-
-  @override
-  String get step_2 => '步骤 2';
-
-  @override
-  String get step_2_steps => '1. 一旦你已经完成登录, 按 F12 键或者鼠标右击网页空白区域 > 选择“检查”以打开浏览器开发者工具（DevTools）\n2. 然后选择 \"应用（Application）\" 标签页（Chrome, Edge, Brave 等基于 Chromium 的浏览器） 或 \"存储（Storage）\" 标签页 （Firefox, Palemoon 等基于 Firefox 的浏览器））\n3. 选择 \"Cookies\" 栏目然后选择 \"https://accounts.spotify.com\" 子栏目';
-
-  @override
-  String get step_3 => '步骤 3';
-
-  @override
-  String get step_3_steps => '复制\"sp_dc\" Cookie的值';
-
-  @override
-  String get success_emoji => '成功🥳';
-
-  @override
-  String get success_message => '你已经成功使用 Spotify 登录。干得漂亮！';
-
-  @override
-  String get step_4 => '步骤 4';
-
-  @override
-  String get step_4_steps => '粘贴复制的\"sp_dc\"值';
 
   @override
   String get something_went_wrong => '某些地方出现了问题';
@@ -752,10 +712,12 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get download_warning => '如果你大量下载这些歌曲，你显然在侵犯音乐的版权并对音乐创作社区造成了伤害。我希望你能意识到这一点。永远要尊重并支持艺术家们的辛勤工作';
+  String get download_warning =>
+      '如果你大量下载这些歌曲，你显然在侵犯音乐的版权并对音乐创作社区造成了伤害。我希望你能意识到这一点。永远要尊重并支持艺术家们的辛勤工作';
 
   @override
-  String get download_ip_ban_warning => '小心，如果出现超出正常的下载请求那你的 IP 可能会被 YouTube 封禁，这意味着你的设备将在长达 2-3 个月的时间内无法使用该 IP 访问 YouTube（即使你没登录）。Spotube 对此不承担任何责任';
+  String get download_ip_ban_warning =>
+      '小心，如果出现超出正常的下载请求那你的 IP 可能会被 YouTube 封禁，这意味着你的设备将在长达 2-3 个月的时间内无法使用该 IP 访问 YouTube（即使你没登录）。Spotube 对此不承担任何责任';
 
   @override
   String get by_clicking_accept_terms => '点击 \'同意\' 代表着你同意以下的条款';
@@ -767,7 +729,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get download_agreement_2 => '我将尽可能支持艺术家的工作。我现在之所以做不到是因为缺乏资金来购买正版';
 
   @override
-  String get download_agreement_3 => '我完全了解我的 IP 存在被 YouTube的风险。我同意 Spotube 的所有者与贡献者们无须对我目前的行为所导致的任何后果负责';
+  String get download_agreement_3 =>
+      '我完全了解我的 IP 存在被 YouTube的风险。我同意 Spotube 的所有者与贡献者们无须对我目前的行为所导致的任何后果负责';
 
   @override
   String get decline => '拒绝';
@@ -848,7 +811,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get failed_to_encrypt => '加密失败';
 
   @override
-  String get encryption_failed_warning => 'Spotube使用加密来安全地存储您的数据。但是失败了。因此，它将回退到不安全的存储\n如果您使用Linux，请确保已安装gnome-keyring、kde-wallet和keepassxc等秘密服务';
+  String get encryption_failed_warning =>
+      'Spotube使用加密来安全地存储您的数据。但是失败了。因此，它将回退到不安全的存储\n如果您使用Linux，请确保已安装gnome-keyring、kde-wallet和keepassxc等秘密服务';
 
   @override
   String get querying_info => '正在查询信息...';
@@ -1023,7 +987,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get help_project_grow => '帮助这个项目成长';
 
   @override
-  String get help_project_grow_description => 'Spotube是一个开源项目。您可以通过为项目做出贡献、报告错误或建议新功能来帮助该项目成长。';
+  String get help_project_grow_description =>
+      'Spotube是一个开源项目。您可以通过为项目做出贡献、报告错误或建议新功能来帮助该项目成长。';
 
   @override
   String get contribute_on_github => '在GitHub上做出贡献';
@@ -1190,7 +1155,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => '*基于 Spotify 每次播放的支付金额\n从 \$0.003 到 \$0.005 计算。这是一个假设性的\n计算，旨在让用户了解如果他们在 Spotify 上收听\n这些歌曲，可能会付给艺术家的金额。';
+  String get streaming_fees_hypothetical =>
+      '*基于 Spotify 每次播放的支付金额\n从 \$0.003 到 \$0.005 计算。这是一个假设性的\n计算，旨在让用户了解如果他们在 Spotify 上收听\n这些歌曲，可能会付给艺术家的金额。';
 
   @override
   String get minutes_listened => '听的分钟数';
@@ -1212,7 +1178,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*根据 Spotify 每次流媒体的支付金额\n\$0.003 到 \$0.005 进行计算。这是一个假设性的\n计算，用于给用户了解他们如果在 Spotify 上\n收听歌曲会支付给艺术家的金额。';
+  String get hipotetical_calculation =>
+      '*这是根据在线音乐流媒体平台每流平均支付0.003美元至0.005美元计算得出的。这是一个假设性的计算，旨在让用户了解如果他们在不同的音乐流媒体平台上收听歌曲，他们将需要向艺人支付多少费用。';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1228,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get webview_not_found => '未找到 Webview';
 
   @override
-  String get webview_not_found_description => '您的设备中未安装 Webview 运行时。\n如果已安装，请确保它在 environment PATH 中\n\n安装后，重新启动应用程序';
+  String get webview_not_found_description =>
+      '您的设备中未安装 Webview 运行时。\n如果已安装，请确保它在 environment PATH 中\n\n安装后，重新启动应用程序';
 
   @override
   String get unsupported_platform => '不支持的平台';
@@ -1358,7 +1326,8 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => '在 macOS/Linux/Unix 类操作系统中，在 .zshrc/.bashrc/.bash_profile 等文件中设置路径无效。\n您需要在 shell 配置文件中设置路径';
+  String get youtube_engine_unix_issue_message =>
+      '在 macOS/Linux/Unix 类操作系统中，在 .zshrc/.bashrc/.bash_profile 等文件中设置路径无效。\n您需要在 shell 配置文件中设置路径';
 
   @override
   String get download => '下载';
@@ -1385,4 +1354,150 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get connection_request_denied => '连接被拒绝。用户拒绝访问。';
+
+  @override
+  String get an_error_occurred => '发生错误';
+
+  @override
+  String get copy_to_clipboard => '复制到剪贴板';
+
+  @override
+  String get view_logs => '查看日志';
+
+  @override
+  String get retry => '重试';
+
+  @override
+  String get no_default_metadata_provider_selected => '您未设置默认元数据提供者';
+
+  @override
+  String get manage_metadata_providers => '管理元数据提供者';
+
+  @override
+  String get open_link_in_browser => '在浏览器中打开链接？';
+
+  @override
+  String get do_you_want_to_open_the_following_link => '您想打开以下链接吗';
+
+  @override
+  String get unsafe_url_warning => '从不受信任的来源打开链接可能不安全。请谨慎！\n您也可以将链接复制到剪贴板。';
+
+  @override
+  String get copy_link => '复制链接';
+
+  @override
+  String get building_your_timeline => '正在根据您的收听记录构建您的时间线...';
+
+  @override
+  String get official => '官方';
+
+  @override
+  String author_name(Object author) {
+    return '作者：$author';
+  }
+
+  @override
+  String get third_party => '第三方';
+
+  @override
+  String get plugin_requires_authentication => '插件需要身份验证';
+
+  @override
+  String get update_available => '有可用更新';
+
+  @override
+  String get supports_scrobbling => '支持 Scrobbling';
+
+  @override
+  String get plugin_scrobbling_info => '此插件会 scrobble 您的音乐以生成您的收听历史记录。';
+
+  @override
+  String get default_plugin => '默认';
+
+  @override
+  String get set_default => '设为默认';
+
+  @override
+  String get support => '支持';
+
+  @override
+  String get support_plugin_development => '支持插件开发';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- 可以访问 **$name** API';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin => '您想安装此插件吗？';
+
+  @override
+  String get third_party_plugin_warning => '此插件来自第三方存储库。请在安装前确保您信任此来源。';
+
+  @override
+  String get author => '作者';
+
+  @override
+  String get this_plugin_can_do_following => '此插件可以执行以下操作';
+
+  @override
+  String get install => '安装';
+
+  @override
+  String get install_a_metadata_provider => '安装元数据提供者';
+
+  @override
+  String get no_tracks_playing => '当前没有播放任何曲目';
+
+  @override
+  String get synced_lyrics_not_available => '此歌曲的同步歌词不可用。请使用';
+
+  @override
+  String get plain_lyrics => '纯歌词';
+
+  @override
+  String get tab_instead => '选项卡。';
+
+  @override
+  String get disclaimer => '免责声明';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Spotube 团队对任何“第三方”插件不承担任何责任（包括法律责任）。\n请自行承担风险使用。对于任何错误/问题，请向插件存储库报告。\n\n如果任何“第三方”插件违反了任何服务/法律实体的服务条款/DMCA，请要求该“第三方”插件作者或托管平台（例如 GitHub/Codeberg）采取行动。上面列出的（标记为“第三方”）都是公共/社区维护的插件。我们不对此类插件进行管理，因此无法对其采取任何行动。\n\n';
+
+  @override
+  String get input_does_not_match_format => '输入与所需格式不匹配';
+
+  @override
+  String get metadata_provider_plugins => '元数据提供者插件';
+
+  @override
+  String get paste_plugin_download_url =>
+      '粘贴下载 URL、GitHub/Codeberg 存储库 URL 或 .smplug 文件的直接链接';
+
+  @override
+  String get download_and_install_plugin_from_url => '从 URL 下载并安装插件';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return '添加插件失败：$error';
+  }
+
+  @override
+  String get upload_plugin_from_file => '从文件上传插件';
+
+  @override
+  String get installed => '已安装';
+
+  @override
+  String get available_plugins => '可用插件';
+
+  @override
+  String get configure_your_own_metadata_plugin => '配置您自己的播放列表/专辑/艺人/订阅元数据提供者';
+
+  @override
+  String get audio_scrobblers => '音频 Scrobblers';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

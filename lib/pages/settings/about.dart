@@ -45,7 +45,7 @@ class AboutSpotubePage extends HookConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
             child: Column(
               children: [
-                Assets.spotubeLogoPng.image(
+                Assets.branding.spotubeLogoPng.image(
                   height: 200,
                   width: 200,
                 ),
