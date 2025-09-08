@@ -1,145 +1,102 @@
-import 'dart:async';
-import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/settings/section_card_with_heading.dart';
-import 'package:spotube/components/shared/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/button/back_button.dart';
+import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/logger.dart';
+import 'package:spotube/provider/logs/logs_provider.dart';
+import 'package:spotube/services/logger/logger.dart';
+import 'package:auto_route/auto_route.dart';
 
-class LogsPage extends HookWidget {
-  const LogsPage({Key? key}) : super(key: key);
+@RoutePage()
+class LogsPage extends HookConsumerWidget {
+  static const name = "logs";
 
-  List<({DateTime? date, String body})> parseLogs(String raw) {
-    return raw
-        .split(
-          "======================================================================",
-        )
-        .map(
-          (line) {
-            DateTime? date;
-            line = line
-                .replaceAll(
-                  "============================== CATCHER LOG ==============================",
-                  "",
-                )
-                .split("\n")
-                .map((l) {
-                  if (l.startsWith("Crash occurred on")) {
-                    date = DateTime.parse(
-                      l.split("Crash occurred on")[1].trim(),
-                    );
-                    return "";
-                  }
-                  return l;
-                })
-                .where((l) => l.replaceAll("\n", "").trim().isNotEmpty)
-                .join("\n");
-
-            return (
-              date: date,
-              body: line,
-            );
-          },
-        )
-        .where((e) => e.date != null && e.body.isNotEmpty)
-        .toList()
-      ..sort((a, b) => b.date!.compareTo(a.date!));
-  }
+  const LogsPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final controller = useScrollController();
-    final logs = useState<List<({DateTime? date, String body})>>([]);
-    final rawLogs = useRef<String>("");
-    final path = useRef<File?>(null);
 
-    useEffect(() {
-      final timer = Timer.periodic(const Duration(seconds: 5), (t) async {
-        path.value ??= await getLogsPath();
-        final raw = await path.value!.readAsString();
-        final hasChanged = rawLogs.value != raw;
-        rawLogs.value = raw;
-        if (hasChanged) logs.value = parseLogs(rawLogs.value);
-      });
-
-      return () {
-        timer.cancel();
-      };
-    }, []);
+    final logsQuery = ref.watch(logsProvider);
 
     return Scaffold(
-      appBar: PageWindowTitleBar(
-        title: Text(context.l10n.logs),
-        leading: const BackButton(),
-        actions: [
-          IconButton(
-            icon: const Icon(SpotubeIcons.clipboard),
-            iconSize: 16,
-            onPressed: () async {
-              await Clipboard.setData(ClipboardData(text: rawLogs.value));
-              if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(context.l10n.copied_to_clipboard("")),
-                  ),
-                );
-              }
-            },
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: InterScrollbar(
-          controller: controller,
-          child: ListView.builder(
-            controller: controller,
-            itemCount: logs.value.length,
-            itemBuilder: (context, index) {
-              final log = logs.value[index];
-              return Stack(
-                children: [
-                  SectionCardWithHeading(
-                    heading: log.date.toString(),
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: SelectableText(log.body),
-                      ),
-                    ],
-                  ),
-                  Positioned(
-                    right: 10,
-                    top: 0,
-                    child: IconButton(
-                      icon: const Icon(SpotubeIcons.clipboard),
-                      onPressed: () async {
-                        await Clipboard.setData(
-                          ClipboardData(text: log.body),
+      headers: [
+        SafeArea(
+          bottom: false,
+          child: TitleBar(
+            title: Text(context.l10n.logs),
+            leading: const [BackButton()],
+            trailing: [
+              IconButton.ghost(
+                icon: const Icon(SpotubeIcons.clipboard, size: 16),
+                onPressed: () async {
+                  final logsSnapshot = await ref.read(logsProvider.future);
+
+                  await Clipboard.setData(ClipboardData(text: logsSnapshot));
+                  if (context.mounted) {
+                    showToast(
+                      context: context,
+                      location: ToastLocation.topRight,
+                      builder: (context, overlay) {
+                        return SurfaceCard(
+                          child: Basic(
+                            title: Text(context.l10n.copied_to_clipboard("")),
+                          ),
                         );
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                context.l10n.copied_to_clipboard(
-                                  log.date.toString(),
-                                ),
-                              ),
-                            ),
-                          );
-                        }
                       },
-                    ),
-                  ),
-                ],
-              );
-            },
+                    );
+                  }
+                },
+              ),
+              IconButton.ghost(
+                icon: const Icon(
+                  SpotubeIcons.trash,
+                  size: 16,
+                ),
+                onPressed: () async {
+                  ref.invalidate(logsProvider);
+
+                  final logsFile = await AppLogger.getLogsPath();
+
+                  await logsFile.writeAsString("");
+                },
+              )
+            ],
           ),
-        ),
-      ),
+        )
+      ],
+      child: switch (logsQuery) {
+        AsyncData(:final value) => InterScrollbar(
+            controller: controller,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(8.0),
+              controller: controller,
+              child: Card(child: SelectableText(value)),
+            ),
+          ),
+        AsyncError(:final error) => switch (error) {
+            StateError() => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Undraw(
+                    illustration: UndrawIllustration.noData,
+                    height: 200 * context.theme.scaling,
+                    width: 200 * context.theme.scaling,
+                    color: context.theme.colorScheme.primary,
+                  ),
+                  Text(context.l10n.no_logs_found).muted().small(),
+                ],
+              ),
+            _ => Center(child: Text(error.toString())),
+          },
+        _ => const Center(child: CircularProgressIndicator()),
+      },
     );
   }
 }

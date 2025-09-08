@@ -1,20 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:catcher_2/catcher_2.dart';
+import 'package:spotube/extensions/track.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/extensions/artist_simple.dart';
+import 'package:spotube/extensions/image.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/download_manager/download_manager.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:spotube/utils/service_utils.dart';
 
 class DownloadManagerProvider extends ChangeNotifier {
   DownloadManagerProvider({required this.ref})
@@ -22,66 +24,57 @@ class DownloadManagerProvider extends ChangeNotifier {
         $backHistory = <Track>{},
         dl = DownloadManager() {
     dl.statusStream.listen((event) async {
-      final (:request, :status) = event;
+      try {
+        final (:request, :status) = event;
 
-      final track = $history.firstWhereOrNull(
-        (element) => element.getUrlOfCodec(downloadCodec) == request.url,
-      );
-      if (track == null) return;
+        final track = $history.firstWhereOrNull(
+          (element) => element.getUrlOfCodec(downloadCodec) == request.url,
+        );
+        if (track == null) return;
 
-      final savePath = getTrackFileUrl(track);
-      // related to onFileExists
-      final oldFile = File("$savePath.old");
+        final savePath = getTrackFileUrl(track);
+        // related to onFileExists
+        final oldFile = File("$savePath.old");
 
-      // if download failed and old file exists, rename it back
-      if ((status == DownloadStatus.failed ||
-              status == DownloadStatus.canceled) &&
-          await oldFile.exists()) {
-        await oldFile.rename(savePath);
+        // if download failed and old file exists, rename it back
+        if ((status == DownloadStatus.failed ||
+                status == DownloadStatus.canceled) &&
+            await oldFile.exists()) {
+          await oldFile.rename(savePath);
+        }
+        if (status != DownloadStatus.completed ||
+            //? WebA audiotagging is not supported yet
+            //? Although in future by converting weba to opus & then tagging it
+            //? is possible using vorbis comments
+            downloadCodec == SourceCodecs.weba) {
+          return;
+        }
+
+        final file = File(request.path);
+
+        if (await oldFile.exists()) {
+          await oldFile.delete();
+        }
+
+        final imageBytes = await ServiceUtils.downloadImage(
+          (track.album?.images).asUrlString(
+            placeholder: ImagePlaceholder.albumArt,
+            index: 1,
+          ),
+        );
+
+        final metadata = track.toMetadata(
+          fileLength: await file.length(),
+          imageBytes: imageBytes,
+        );
+
+        await MetadataGod.writeMetadata(
+          file: file.path,
+          metadata: metadata,
+        );
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
-      if (status != DownloadStatus.completed ||
-          //? WebA audiotagging is not supported yet
-          //? Although in future by converting weba to opus & then tagging it
-          //? is possible using vorbis comments
-          downloadCodec == SourceCodecs.weba) return;
-
-      final file = File(request.path);
-
-      if (await oldFile.exists()) {
-        await oldFile.delete();
-      }
-
-      final imageBytes = await downloadImage(
-        TypeConversionUtils.image_X_UrlString(track.album?.images,
-            placeholder: ImagePlaceholder.albumArt, index: 1),
-      );
-
-      final metadata = Metadata(
-        title: track.name,
-        artist: track.artists?.map((a) => a.name).join(", "),
-        album: track.album?.name,
-        albumArtist: track.artists?.map((a) => a.name).join(", "),
-        year: track.album?.releaseDate != null
-            ? int.tryParse(track.album!.releaseDate!.split("-").first) ?? 1969
-            : 1969,
-        trackNumber: track.trackNumber,
-        discNumber: track.discNumber,
-        durationMs: track.durationMs?.toDouble() ?? 0.0,
-        fileSize: await file.length(),
-        trackTotal: track.album?.tracks?.length ?? 0,
-        picture: imageBytes != null
-            ? Picture(
-                data: imageBytes,
-                // Spotify images are always JPEGs
-                mimeType: 'image/jpeg',
-              )
-            : null,
-      );
-
-      await MetadataGod.writeMetadata(
-        file: file.path,
-        metadata: metadata,
-      );
     });
   }
 
@@ -109,32 +102,9 @@ class DownloadManagerProvider extends ChangeNotifier {
   final Set<Track> $backHistory;
   final DownloadManager dl;
 
-  /// Spotify Images are always JPEGs
-  Future<Uint8List?> downloadImage(
-    String imageUrl,
-  ) async {
-    try {
-      final fileStream = DefaultCacheManager().getImageFile(imageUrl);
-
-      final bytes = List<int>.empty(growable: true);
-
-      await for (final data in fileStream) {
-        if (data is FileInfo) {
-          bytes.addAll(data.file.readAsBytesSync());
-          break;
-        }
-      }
-
-      return Uint8List.fromList(bytes);
-    } catch (e, stackTrace) {
-      Catcher2.reportCheckedError(e, stackTrace);
-      return null;
-    }
-  }
-
   String getTrackFileUrl(Track track) {
     final name =
-        "${track.name} - ${TypeConversionUtils.artists_X_String(track.artists ?? <Artist>[])}.${downloadCodec.name}";
+        "${track.name} - ${track.artists?.asString() ?? ""}.${downloadCodec.name}";
     return join(downloadDirectory, PrimitiveUtils.toSafeFileName(name));
   }
 
@@ -213,7 +183,7 @@ class DownloadManagerProvider extends ChangeNotifier {
           );
         }
       } catch (e) {
-        Catcher2.reportCheckedError(e, StackTrace.current);
+        AppLogger.reportError(e, StackTrace.current);
         continue;
       }
     }

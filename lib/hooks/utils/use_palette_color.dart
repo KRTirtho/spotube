@@ -1,12 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
+import 'package:spotube/components/image/universal_image.dart';
 
 final _paletteColorState = StateProvider<PaletteColor>(
   (ref) {
-    return PaletteColor(Colors.grey[300]!, 0);
+    return PaletteColor(Colors.gray[300], 0);
   },
 );
 
@@ -14,7 +15,6 @@ PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
   final context = useContext();
   final theme = Theme.of(context);
   final paletteColor = ref.watch(_paletteColorState);
-  final mounted = useIsMounted();
 
   useEffect(() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -25,7 +25,7 @@ PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
           width: 50,
         ),
       );
-      if (!mounted()) return;
+      if (!context.mounted) return;
       final color = theme.brightness == Brightness.light
           ? palette.lightMutedColor ?? palette.lightVibrantColor
           : palette.darkMutedColor ?? palette.darkVibrantColor;
@@ -41,7 +41,7 @@ PaletteColor usePaletteColor(String imageUrl, WidgetRef ref) {
 
 PaletteGenerator usePaletteGenerator(String imageUrl) {
   final palette = useState(PaletteGenerator.fromColors([]));
-  final mounted = useIsMounted();
+  final context = useContext();
 
   useEffect(() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
@@ -52,7 +52,7 @@ PaletteGenerator usePaletteGenerator(String imageUrl) {
           width: 50,
         ),
       );
-      if (!mounted()) return;
+      if (!context.mounted) return;
 
       palette.value = newPalette;
     });

@@ -2,9 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:spotube/models/logger.dart';
-
-final logger = getLogger("ChunkedDownload");
 
 /// Downloading by spiting as file in chunks
 extension ChunkDownload on Dio {
@@ -69,11 +66,7 @@ extension ChunkDownload on Dio {
       }
       await raf.close();
 
-      logger.d("Downloaded file path: ${headFile.path}");
-
       headFile = await headFile.rename(savePath);
-
-      logger.d("Renamed file path: ${headFile.path}");
     }
 
     final firstResponse = await downloadChunk(

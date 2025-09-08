@@ -1,13 +1,18 @@
+import 'package:lrc/lrc.dart';
+
 class SubtitleSimple {
   Uri uri;
   String name;
   List<LyricSlice> lyrics;
   int rating;
+  String provider;
+
   SubtitleSimple({
     required this.uri,
     required this.name,
     required this.lyrics,
     required this.rating,
+    required this.provider,
   });
 
   factory SubtitleSimple.fromJson(Map<String, dynamic> json) {
@@ -18,6 +23,7 @@ class SubtitleSimple {
           .map((e) => LyricSlice.fromJson(e as Map<String, dynamic>))
           .toList(),
       rating: json["rating"] as int,
+      provider: json["provider"] as String? ?? "unknown",
     );
   }
 
@@ -27,6 +33,7 @@ class SubtitleSimple {
       "name": name,
       "lyrics": lyrics.map((e) => e.toJson()).toList(),
       "rating": rating,
+      "provider": provider,
     };
   }
 }
@@ -36,6 +43,13 @@ class LyricSlice {
   String text;
 
   LyricSlice({required this.time, required this.text});
+
+  factory LyricSlice.fromLrcLine(LrcLine line) {
+    return LyricSlice(
+      time: line.timestamp,
+      text: line.lyrics.trim(),
+    );
+  }
 
   factory LyricSlice.fromJson(Map<String, dynamic> json) {
     return LyricSlice(

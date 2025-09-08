@@ -7,6 +7,7 @@ import slugPlugin from 'rehype-slug';
 import autolinkHeadings from 'rehype-autolink-headings';
 import relativeImages from 'mdsvex-relative-images';
 import remarkGfm from 'remark-gfm';
+import rehypeAutoAds from 'rehype-auto-ads';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -37,6 +38,27 @@ const config = {
 					autolinkHeadings,
 					{
 						behavior: 'wrap'
+					}
+				],
+				[
+					rehypeAutoAds,
+					{
+						adCode: `
+              <br/>
+              <ins class="adsbygoogle"
+                style="display:block; text-align:center;"
+                data-ad-layout="in-article"
+                data-ad-format="fluid"
+                data-ad-client="ca-pub-6419300932495863"
+                data-ad-slot="6788673194"
+              ></ins>
+              <br/>
+              <script>
+                (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            `,
+            paragraphInterval: 2,
+            maxAds: 5,
 					}
 				]
 			]

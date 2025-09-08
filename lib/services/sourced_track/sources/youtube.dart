@@ -1,8 +1,11 @@
 import 'package:collection/collection.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/models/source_match.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/provider/database/database.dart';
+import 'package:spotube/provider/youtube_engine/youtube_engine.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/song_link/song_link.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
@@ -13,7 +16,6 @@ import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-final youtubeClient = YoutubeExplode();
 final officialMusicRegex = RegExp(
   r"official\s(video|audio|music\svideo|lyric\svideo|visualizer)",
   caseSensitive: false,
@@ -45,7 +47,35 @@ class YoutubeSourcedTrack extends SourcedTrack {
     required Track track,
     required Ref ref,
   }) async {
-    final cachedSource = await SourceMatch.box.get(track.id);
+    // Indicates the track is requesting a stream refresh
+    if (track is YoutubeSourcedTrack) {
+      final manifest = await ref
+          .read(youtubeEngineProvider)
+          .getStreamManifest(track.sourceInfo.id);
+
+      final sourcedTrack = YoutubeSourcedTrack(
+        ref: ref,
+        siblings: track.siblings,
+        source: toSourceMap(manifest),
+        sourceInfo: track.sourceInfo,
+        track: track,
+      );
+
+      AppLogger.log.i("Refreshing ${track.name}: ${sourcedTrack.url}");
+
+      return sourcedTrack;
+    }
+
+    final database = ref.read(databaseProvider);
+    final cachedSource = await (database.select(database.sourceMatchTable)
+          ..where((s) => s.trackId.equals(track.id!))
+          ..limit(1)
+          ..orderBy([
+            (s) =>
+                OrderingTerm(expression: s.createdAt, mode: OrderingMode.desc),
+          ]))
+        .get()
+        .then((s) => s.firstOrNull);
 
     if (cachedSource == null || cachedSource.sourceType != SourceType.youtube) {
       final siblings = await fetchSiblings(ref: ref, track: track);
@@ -53,15 +83,13 @@ class YoutubeSourcedTrack extends SourcedTrack {
         throw TrackNotFoundError(track);
       }
 
-      await SourceMatch.box.put(
-        track.id!,
-        SourceMatch(
-          id: track.id!,
-          sourceType: SourceType.youtube,
-          createdAt: DateTime.now(),
-          sourceId: siblings.first.info.id,
-        ),
-      );
+      await database.into(database.sourceMatchTable).insert(
+            SourceMatchTableCompanion.insert(
+              trackId: track.id!,
+              sourceId: siblings.first.info.id,
+              sourceType: const Value(SourceType.youtube),
+            ),
+          );
 
       return YoutubeSourcedTrack(
         ref: ref,
@@ -71,16 +99,11 @@ class YoutubeSourcedTrack extends SourcedTrack {
         track: track,
       );
     }
-    final item = await youtubeClient.videos.get(cachedSource.sourceId);
-    final manifest = await youtubeClient.videos.streamsClient
-        .getManifest(
-          cachedSource.sourceId,
-        )
-        .timeout(
-          const Duration(seconds: 5),
-          onTimeout: () => throw ClientException("Timeout"),
-        );
-    return YoutubeSourcedTrack(
+    final (item, manifest) = await ref
+        .read(youtubeEngineProvider)
+        .getVideoWithStreamInfo(cachedSource.sourceId);
+
+    final sourcedTrack = YoutubeSourcedTrack(
       ref: ref,
       siblings: [],
       source: toSourceMap(manifest),
@@ -96,6 +119,10 @@ class YoutubeSourcedTrack extends SourcedTrack {
       ),
       track: track,
     );
+
+    AppLogger.log.i("${track.name}: ${sourcedTrack.url}");
+
+    return sourcedTrack;
   }
 
   static SourceMap toSourceMap(StreamManifest manifest) {
@@ -128,14 +155,13 @@ class YoutubeSourcedTrack extends SourcedTrack {
   static Future<SiblingType> toSiblingType(
     int index,
     YoutubeVideoInfo item,
+    dynamic ref,
   ) async {
+    assert(ref is WidgetRef || ref is Ref, "Invalid ref type");
     SourceMap? sourceMap;
     if (index == 0) {
       final manifest =
-          await youtubeClient.videos.streamsClient.getManifest(item.id).timeout(
-                const Duration(seconds: 5),
-                onTimeout: () => throw ClientException("Timeout"),
-              );
+          await ref.read(youtubeEngineProvider).getStreamManifest(item.id);
       sourceMap = toSourceMap(manifest);
     }
 
@@ -158,11 +184,8 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
   static List<YoutubeVideoInfo> rankResults(
       List<YoutubeVideoInfo> results, Track track) {
-    final artists = (track.artists ?? [])
-        .map((ar) => ar.name)
-        .toList()
-        .whereNotNull()
-        .toList();
+    final artists =
+        (track.artists ?? []).map((ar) => ar.name).toList().nonNulls.toList();
 
     return results
         .sorted((a, b) => b.views.compareTo(a.views))
@@ -213,43 +236,105 @@ class YoutubeSourcedTrack extends SourcedTrack {
         .toList();
   }
 
+  static Future<List<YoutubeVideoInfo>> fetchFromIsrc({
+    required Track track,
+    required Ref ref,
+  }) async {
+    final isrcResults = <YoutubeVideoInfo>[];
+    final isrc = track.externalIds?.isrc;
+    if (isrc != null && isrc.isNotEmpty) {
+      final searchedVideos =
+          await ref.read(youtubeEngineProvider).searchVideos(isrc.toString());
+      if (searchedVideos.isNotEmpty) {
+        isrcResults.addAll(searchedVideos
+            .map<YoutubeVideoInfo>(YoutubeVideoInfo.fromVideo)
+            .map((YoutubeVideoInfo videoInfo) {
+              final ytWords = videoInfo.title
+                  .toLowerCase()
+                  .replaceAll(RegExp(r'[^\p{L}\p{N}\p{Z}]+', unicode: true), '')
+                  .split(RegExp(r'\p{Z}+', unicode: true))
+                  .where((item) => item.isNotEmpty);
+              final spWords = track.name!
+                  .toLowerCase()
+                  .replaceAll(RegExp(r'[^\p{L}\p{N}\p{Z}]+', unicode: true), '')
+                  .split(RegExp(r'\p{Z}+', unicode: true))
+                  .where((item) => item.isNotEmpty);
+              // Single word and duration match with 3 second tolerance
+              if (ytWords.any((word) => spWords.contains(word)) &&
+                  (videoInfo.duration - track.duration!)
+                      .abs().inMilliseconds <= 3000) {
+                return videoInfo;
+              }
+              return null;
+            })
+            .whereType<YoutubeVideoInfo>()
+            .toList());
+      }
+    }
+    return isrcResults;
+  }
+
   static Future<List<SiblingType>> fetchSiblings({
     required Track track,
     required Ref ref,
   }) async {
-    final links = await SongLinkService.links(track.id!);
-    final ytLink = links.firstWhereOrNull((link) => link.platform == "youtube");
+    final videoResults = <YoutubeVideoInfo>[];
 
-    if (ytLink?.url != null) {
-      return [
-        await toSiblingType(
-          0,
-          YoutubeVideoInfo.fromVideo(
-            await youtubeClient.videos.get(ytLink!.url!),
-          ),
-        )
-      ];
+    if (track is! SourcedTrack) {
+      final isrcResults = await fetchFromIsrc(
+        track: track,
+        ref: ref,
+      );
+
+      videoResults.addAll(isrcResults);
+
+      if (isrcResults.isEmpty) {
+        final links = await SongLinkService.links(track.id!);
+        final ytLink = links.firstWhereOrNull(
+          (link) => link.platform == "youtube",
+        );
+        if (ytLink?.url != null) {
+          try {
+            videoResults.add(
+              YoutubeVideoInfo.fromVideo(await ref
+                  .read(youtubeEngineProvider)
+                  .getVideo(Uri.parse(ytLink!.url!).queryParameters["v"]!)),
+            );
+          } on VideoUnplayableException catch (e, stack) {
+            // Ignore this error and continue with the search
+            AppLogger.reportError(e, stack);
+          }
+        }
+      }
     }
 
     final query = SourcedTrack.getSearchTerm(track);
 
-    final searchResults = await youtubeClient.search.search(
-      "$query - Topic",
-      filter: TypeFilters.video,
-    );
+    final searchResults =
+        await ref.read(youtubeEngineProvider).searchVideos(query);
 
     if (ServiceUtils.onlyContainsEnglish(query)) {
-      return await Future.wait(searchResults
-          .map(YoutubeVideoInfo.fromVideo)
-          .mapIndexed(toSiblingType));
+      videoResults
+          .addAll(searchResults.map(YoutubeVideoInfo.fromVideo).toList());
+    } else {
+      videoResults.addAll(rankResults(
+        searchResults.map(YoutubeVideoInfo.fromVideo).toList(),
+        track,
+      ));
     }
 
-    final rankedSiblings = rankResults(
-      searchResults.map(YoutubeVideoInfo.fromVideo).toList(),
-      track,
-    );
-
-    return await Future.wait(rankedSiblings.mapIndexed(toSiblingType));
+    final seenIds = <String>{};
+    int index = 0;
+    return await Future.wait(
+      videoResults.map((videoResult) async {
+        // Deduplicate results
+        if (!seenIds.contains(videoResult.id)) {
+          seenIds.add(videoResult.id);
+          return await toSiblingType(index++, videoResult, ref);
+        }
+        return null;
+      }),
+    ).then((s) => s.whereType<SiblingType>().toList());
   }
 
   @override
@@ -267,22 +352,23 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
       ..insert(0, sourceInfo);
 
-    final manifest = await youtubeClient.videos.streamsClient
-        .getManifest(newSourceInfo.id)
-        .timeout(
-          const Duration(seconds: 5),
-          onTimeout: () => throw ClientException("Timeout"),
-        );
+    final manifest = await ref
+        .read(youtubeEngineProvider)
+        .getStreamManifest(newSourceInfo.id);
 
-    await SourceMatch.box.put(
-      id!,
-      SourceMatch(
-        id: id!,
-        sourceType: SourceType.jiosaavn,
-        createdAt: DateTime.now(),
-        sourceId: newSourceInfo.id,
-      ),
-    );
+    final database = ref.read(databaseProvider);
+
+    await database.into(database.sourceMatchTable).insert(
+          SourceMatchTableCompanion.insert(
+            trackId: id!,
+            sourceId: newSourceInfo.id,
+            sourceType: const Value(SourceType.youtube),
+            // Because we're sorting by createdAt in the query
+            // we have to update it to indicate priority
+            createdAt: Value(DateTime.now()),
+          ),
+          mode: InsertMode.replace,
+        );
 
     return YoutubeSourcedTrack(
       ref: ref,

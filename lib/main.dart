@@ -1,202 +1,166 @@
-import 'package:catcher_2/catcher_2.dart';
-import 'package:dart_discord_rpc/dart_discord_rpc.dart';
-import 'package:device_preview/device_preview.dart';
-import 'package:fl_query/fl_query.dart';
+import 'dart:async';
+import 'dart:ui';
+
+import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter/services.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:hive/hive.dart';
+
+import 'package:home_widget/home_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:local_notifier/local_notifier.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:metadata_god/metadata_god.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smtc_windows/smtc_windows.dart';
+import 'package:spotube/collections/env.dart';
 import 'package:spotube/collections/initializers.dart';
-import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/intents.dart';
+import 'package:spotube/collections/routes.dart';
 import 'package:spotube/hooks/configurators/use_close_behavior.dart';
 import 'package:spotube/hooks/configurators/use_deep_linking.dart';
 import 'package:spotube/hooks/configurators/use_disable_battery_optimizations.dart';
+import 'package:spotube/hooks/configurators/use_fix_window_stretching.dart';
 import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
+import 'package:spotube/hooks/configurators/use_has_touch.dart';
+import 'package:spotube/models/database/database.dart';
+import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
+import 'package:spotube/provider/audio_player/audio_player_streams.dart';
+import 'package:spotube/provider/database/database.dart';
+import 'package:spotube/provider/glance/glance.dart';
+import 'package:spotube/provider/server/bonsoir.dart';
+import 'package:spotube/provider/server/server.dart';
+import 'package:spotube/provider/tray_manager/tray_manager.dart';
 import 'package:spotube/l10n/l10n.dart';
-import 'package:spotube/models/logger.dart';
-import 'package:spotube/models/skip_segment.dart';
-import 'package:spotube/models/source_match.dart';
-import 'package:spotube/provider/palette_provider.dart';
+import 'package:spotube/provider/connect/clients.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/cli/cli.dart';
-import 'package:spotube/services/connectivity_adapter.dart';
+import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
-import 'package:spotube/themes/theme.dart';
-import 'package:spotube/utils/persisted_state_notifier.dart';
-import 'package:system_theme/system_theme.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:spotube/hooks/configurators/use_init_sys_tray.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:spotube/services/logger/logger.dart';
+import 'package:spotube/services/wm_tools/wm_tools.dart';
+import 'package:spotube/utils/migrations/sandbox.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:window_manager/window_manager.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:yt_dlp_dart/yt_dlp_dart.dart';
+import 'package:flutter_new_pipe_extractor/flutter_new_pipe_extractor.dart';
 
 Future<void> main(List<String> rawArgs) async {
+  if (rawArgs.contains("web_view_title_bar")) {
+    WidgetsFlutterBinding.ensureInitialized();
+    if (runWebViewTitleBarWidget(rawArgs)) {
+      return;
+    }
+  }
   final arguments = await startCLI(rawArgs);
+  AppLogger.initialize(arguments["verbose"]);
 
-  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  AppLogger.runZoned(() async {
+    final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  await registerWindowsScheme("spotify");
+    await registerWindowsScheme("spotify");
 
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+    tz.initializeTimeZones();
 
-  MediaKit.ensureInitialized();
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  // force High Refresh Rate on some Android devices (like One Plus)
-  if (DesktopTools.platform.isAndroid) {
-    await FlutterDisplayMode.setHighRefreshRate();
-  }
+    MediaKit.ensureInitialized();
 
-  if (DesktopTools.platform.isDesktop) {
-    await DesktopTools.window.setPreventClose(true);
-  }
+    await migrateMacOsFromSandboxToNoSandbox();
 
-  await SystemTheme.accentColor.load();
+    // force High Refresh Rate on some Android devices (like One Plus)
+    if (kIsAndroid) {
+      await FlutterDisplayMode.setHighRefreshRate();
+      await NewPipeExtractor.init();
+    }
 
-  if (!kIsWeb) {
-    MetadataGod.initialize();
-  }
+    if (!kIsWeb) {
+      MetadataGod.initialize();
+    }
 
-  if (DesktopTools.platform.isWindows || DesktopTools.platform.isLinux) {
-    DiscordRPC.initialize();
-  }
+    await KVStoreService.initialize();
 
-  await KVStoreService.initialize();
+    if (kIsDesktop) {
+      await windowManager.setPreventClose(true);
+      await YtDlp.instance
+          .setBinaryLocation(
+            KVStoreService.getYoutubeEnginePath(YoutubeClientEngine.ytDlp) ??
+                "yt-dlp${kIsWindows ? '.exe' : ''}",
+          )
+          .catchError((e, stack) => null);
+      await FlutterDiscordRPC.initialize(Env.discordAppId);
+    }
 
-  final hiveCacheDir =
-      kIsWeb ? null : (await getApplicationSupportDirectory()).path;
+    if (kIsWindows) {
+      await SMTCWindows.initialize();
+    }
 
-  await QueryClient.initialize(
-    cachePrefix: "oss.krtirtho.spotube",
-    cacheDir: hiveCacheDir,
-    connectivity: FlQueryInternetConnectionCheckerAdapter(),
-  );
+    await EncryptedKvStoreService.initialize();
 
-  Hive.registerAdapter(SkipSegmentAdapter());
+    final database = AppDatabase();
 
-  Hive.registerAdapter(SourceMatchAdapter());
-  Hive.registerAdapter(SourceTypeAdapter());
+    if (kIsDesktop) {
+      await localNotifier.setup(appName: "Spotube");
+      await WindowManagerTools.initialize();
+    }
 
-  // Cache versioning entities with Adapter
-  SourceMatch.version = 'v1';
-  SkipSegment.version = 'v1';
+    if (kIsIOS) {
+      HomeWidget.setAppGroupId("group.spotube_home_player_widget");
+    }
 
-  await Hive.openLazyBox<SourceMatch>(
-    SourceMatch.boxName,
-    path: hiveCacheDir,
-  );
-  await Hive.openLazyBox(
-    SkipSegment.boxName,
-    path: hiveCacheDir,
-  );
-  await PersistedStateNotifier.initializeBoxes(
-    path: hiveCacheDir,
-  );
-
-  await DesktopTools.ensureInitialized(
-    DesktopWindowOptions(
-      hideTitleBar: true,
-      title: "Spotube",
-      backgroundColor: Colors.transparent,
-      minimumSize: const Size(300, 700),
-    ),
-  );
-
-  Catcher2(
-    enableLogger: arguments["verbose"],
-    debugConfig: Catcher2Options(
-      SilentReportMode(),
-      [
-        ConsoleHandler(
-          enableDeviceParameters: false,
-          enableApplicationParameters: false,
-        ),
-        if (!kIsWeb) FileHandler(await getLogsPath(), printLogs: false),
-      ],
-    ),
-    releaseConfig: Catcher2Options(
-      SilentReportMode(),
-      [
-        if (arguments["verbose"] ?? false) ConsoleHandler(),
-        if (!kIsWeb)
-          FileHandler(
-            await getLogsPath(),
-            printLogs: false,
-          ),
-      ],
-    ),
-    runAppFunction: () {
-      runApp(
-        DevicePreview(
-          availableLocales: L10n.all,
-          enabled: false,
-          data: const DevicePreviewData(
-            isEnabled: false,
-            orientation: Orientation.portrait,
-          ),
-          builder: (context) {
-            return ProviderScope(
-              child: QueryClientProvider(
-                staleDuration: const Duration(minutes: 30),
-                child: const Spotube(),
-              ),
-            );
-          },
-        ),
-      );
-    },
-  );
+    runApp(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWith((ref) => database),
+        ],
+        observers: const [
+          AppLoggerProviderObserver(),
+        ],
+        child: const Spotube(),
+      ),
+    );
+  });
 }
 
-class Spotube extends StatefulHookConsumerWidget {
-  const Spotube({Key? key}) : super(key: key);
+class Spotube extends HookConsumerWidget {
+  const Spotube({super.key});
 
   @override
-  SpotubeState createState() => SpotubeState();
-
-  static SpotubeState of(BuildContext context) =>
-      context.findAncestorStateOfType<SpotubeState>()!;
-}
-
-class SpotubeState extends ConsumerState<Spotube> {
-  final logger = getLogger(Spotube);
-  SharedPreferences? localStorage;
-
-  @override
-  void initState() {
-    super.initState();
-    SharedPreferences.getInstance().then(((value) => localStorage = value));
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final themeMode =
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
+    final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
     final accentMaterialColor =
         ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
-    final isAmoledTheme =
-        ref.watch(userPreferencesProvider.select((s) => s.amoledDarkTheme));
-    final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
-    final paletteColor =
-        ref.watch(paletteProvider.select((s) => s?.dominantColor?.color));
-    final router = ref.watch(routerProvider);
+    final router = useMemoized(() => AppRouter(ref), []);
+    final hasTouchSupport = useHasTouch();
 
+    ref.listen(audioPlayerStreamListenersProvider, (_, __) {});
+    ref.listen(bonsoirProvider, (_, __) {});
+    ref.listen(connectClientsProvider, (_, __) {});
+    ref.listen(serverProvider, (_, __) {});
+    ref.listen(trayManagerProvider, (_, __) {});
+
+    useFixWindowStretching();
     useDisableBatteryOptimizations();
-    useInitSysTray(ref);
-    useDeepLinking(ref);
+    useDeepLinking(ref, router);
     useCloseBehavior(ref);
     useGetStoragePermissions(ref);
 
     useEffect(() {
       FlutterNativeSplash.remove();
+
+      if (kIsMobile) {
+        HomeWidget.registerInteractivityCallback(glanceBackgroundCallback);
+      }
+
       return () {
         /// For enabling hot reload for audio player
         if (!kDebugMode) return;
@@ -204,20 +168,7 @@ class SpotubeState extends ConsumerState<Spotube> {
       };
     }, []);
 
-    final lightTheme = useMemoized(
-      () => theme(paletteColor ?? accentMaterialColor, Brightness.light, false),
-      [paletteColor, accentMaterialColor],
-    );
-    final darkTheme = useMemoized(
-      () => theme(
-        paletteColor ?? accentMaterialColor,
-        Brightness.dark,
-        isAmoledTheme,
-      ),
-      [paletteColor, accentMaterialColor, isAmoledTheme],
-    );
-
-    return MaterialApp.router(
+    return ShadcnApp.router(
       supportedLocales: L10n.all,
       locale: locale.languageCode == "system" ? null : locale,
       localizationsDelegates: const [
@@ -226,20 +177,66 @@ class SpotubeState extends ConsumerState<Spotube> {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      routerConfig: router,
+      routerConfig: router.config(),
       debugShowCheckedModeBanner: false,
       title: 'Spotube',
       builder: (context, child) {
-        return DevicePreview.appBuilder(
-          context,
-          DesktopTools.platform.isDesktop
-              ? DragToResizeArea(child: child!)
-              : child,
+        child = ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: hasTouchSupport
+                ? {
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.stylus,
+                    PointerDeviceKind.invertedStylus,
+                  }
+                : null,
+          ),
+          child: child!,
         );
+
+        if (kIsLinux) {
+          child = DragToResizeArea(
+            resizeEdgeSize: 2.5,
+            child: child,
+          );
+        }
+
+        return child;
       },
+      scaling: const AdaptiveScaling(1),
+      theme: ThemeData(
+        radius: .5,
+        iconTheme: const IconThemeProperties(),
+        colorScheme:
+            colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.light) ??
+                ColorSchemes.lightOrange(),
+        surfaceOpacity: .8,
+        surfaceBlur: 10,
+      ),
+      darkTheme: ThemeData(
+        radius: .5,
+        iconTheme: const IconThemeProperties(),
+        colorScheme:
+            colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.dark) ??
+                ColorSchemes.darkOrange(),
+        surfaceOpacity: .8,
+        surfaceBlur: 10,
+      ),
+      materialTheme: material.ThemeData(
+        brightness: switch (themeMode) {
+          ThemeMode.system => MediaQuery.platformBrightnessOf(context),
+          ThemeMode.light => Brightness.light,
+          ThemeMode.dark => Brightness.dark,
+        },
+        splashFactory: material.NoSplash.splashFactory,
+        appBarTheme: const material.AppBarTheme(
+          surfaceTintColor: Colors.transparent,
+          scrolledUnderElevation: 0,
+          shadowColor: Colors.transparent,
+          elevation: 0,
+        ),
+      ),
       themeMode: themeMode,
-      theme: lightTheme,
-      darkTheme: darkTheme,
       shortcuts: {
         ...WidgetsApp.defaultShortcuts.map((key, value) {
           return MapEntry(
@@ -254,22 +251,42 @@ class SpotubeState extends ConsumerState<Spotube> {
           LogicalKeyboardKey.digit1,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.browse),
+        ): HomeTabIntent(router, tab: HomeTabs.browse),
         LogicalKeySet(
           LogicalKeyboardKey.digit2,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.search),
+        ): HomeTabIntent(router, tab: HomeTabs.search),
         LogicalKeySet(
           LogicalKeyboardKey.digit3,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.library),
+        ): HomeTabIntent(router, tab: HomeTabs.lyrics),
         LogicalKeySet(
           LogicalKeyboardKey.digit4,
           LogicalKeyboardKey.control,
           LogicalKeyboardKey.shift,
-        ): HomeTabIntent(ref, tab: HomeTabs.lyrics),
+        ): HomeTabIntent(router, tab: HomeTabs.userPlaylists),
+        LogicalKeySet(
+          LogicalKeyboardKey.digit5,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
+        ): HomeTabIntent(router, tab: HomeTabs.userArtists),
+        LogicalKeySet(
+          LogicalKeyboardKey.digit6,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
+        ): HomeTabIntent(router, tab: HomeTabs.userAlbums),
+        LogicalKeySet(
+          LogicalKeyboardKey.digit7,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
+        ): HomeTabIntent(router, tab: HomeTabs.userLocalLibrary),
+        LogicalKeySet(
+          LogicalKeyboardKey.digit8,
+          LogicalKeyboardKey.control,
+          LogicalKeyboardKey.shift,
+        ): HomeTabIntent(router, tab: HomeTabs.userDownloads),
         LogicalKeySet(
           LogicalKeyboardKey.keyW,
           LogicalKeyboardKey.control,

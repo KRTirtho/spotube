@@ -6,8 +6,7 @@ part of 'song_link.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$SongLinkImpl _$$SongLinkImplFromJson(Map<String, dynamic> json) =>
-    _$SongLinkImpl(
+_$SongLinkImpl _$$SongLinkImplFromJson(Map json) => _$SongLinkImpl(
       displayName: json['displayName'] as String,
       linkId: json['linkId'] as String,
       platform: json['platform'] as String,

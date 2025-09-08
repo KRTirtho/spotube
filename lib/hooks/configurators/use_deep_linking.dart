@@ -1,25 +1,22 @@
 import 'dart:async';
 
 import 'package:app_links/app_links.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.dart';
-import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/collections/routes.gr.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:flutter_sharing_intent/flutter_sharing_intent.dart';
 import 'package:flutter_sharing_intent/model/sharing_file.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
+import 'package:spotube/services/logger/logger.dart';
+import 'package:spotube/utils/platform.dart';
 
 final appLinks = AppLinks();
-final linkStream = appLinks.allStringLinkStream.asBroadcastStream();
+final linkStream = appLinks.stringLinkStream.asBroadcastStream();
 
-void useDeepLinking(WidgetRef ref) {
+void useDeepLinking(WidgetRef ref, AppRouter router) {
   // single instance no worries
   final spotify = ref.watch(spotifyProvider);
-  final queryClient = useQueryClient();
-
-  final router = ref.watch(routerProvider);
 
   useEffect(() {
     void uriListener(List<SharedFile> files) async {
@@ -30,30 +27,25 @@ void useDeepLinking(WidgetRef ref) {
 
         switch (url.pathSegments.first) {
           case "album":
-            router.push(
-              "/album/${url.pathSegments.last}",
-              extra: await queryClient.fetchQuery<Album, dynamic>(
-                "album/${url.pathSegments.last}",
-                () => spotify.albums.get(url.pathSegments.last),
-              ),
+            final album = await spotify.invoke((api) {
+              return api.albums.get(url.pathSegments.last);
+            });
+            router.navigate(
+              AlbumRoute(id: album.id!, album: album),
             );
             break;
           case "artist":
-            router.push("/artist/${url.pathSegments.last}");
+            router.navigate(ArtistRoute(artistId: url.pathSegments.last));
             break;
           case "playlist":
-            router.push(
-              "/playlist/${url.pathSegments.last}",
-              extra: await queryClient.fetchQuery<Playlist, dynamic>(
-                "playlist/${url.pathSegments.last}",
-                () => spotify.playlists.get(url.pathSegments.last),
-              ),
-            );
+            final playlist = await spotify.invoke((api) {
+              return api.playlists.get(url.pathSegments.last);
+            });
+            router
+                .navigate(PlaylistRoute(id: playlist.id!, playlist: playlist));
             break;
           case "track":
-            router.push(
-              "/track/${url.pathSegments.last}",
-            );
+            router.navigate(TrackRoute(trackId: url.pathSegments.last));
             break;
           default:
             break;
@@ -63,7 +55,7 @@ void useDeepLinking(WidgetRef ref) {
 
     StreamSubscription? mediaStream;
 
-    if (DesktopTools.platform.isMobile) {
+    if (kIsMobile) {
       FlutterSharingIntent.instance.getInitialSharing().then(uriListener);
 
       mediaStream =
@@ -71,36 +63,38 @@ void useDeepLinking(WidgetRef ref) {
     }
 
     final subscription = linkStream.listen((uri) async {
-      final startSegment = uri.split(":").take(2).join(":");
-      final endSegment = uri.split(":").last;
+      try {
+        final startSegment = uri.split(":").take(2).join(":");
+        final endSegment = uri.split(":").last;
 
-      switch (startSegment) {
-        case "spotify:album":
-          await router.push(
-            "/album/$endSegment",
-            extra: await queryClient.fetchQuery<Album, dynamic>(
-              "album/$endSegment",
-              () => spotify.albums.get(endSegment),
-            ),
-          );
-          break;
-        case "spotify:artist":
-          await router.push("/artist/$endSegment");
-          break;
-        case "spotify:track":
-          await router.push("/track/$endSegment");
-          break;
-        case "spotify:playlist":
-          await router.push(
-            "/playlist/$endSegment",
-            extra: await queryClient.fetchQuery<Playlist, dynamic>(
-              "playlist/$endSegment",
-              () => spotify.playlists.get(endSegment),
-            ),
-          );
-          break;
-        default:
-          break;
+        switch (startSegment) {
+          case "spotify:album":
+            final album = await spotify.invoke((api) {
+              return api.albums.get(endSegment);
+            });
+            await router.navigate(
+              AlbumRoute(id: album.id!, album: album),
+            );
+            break;
+          case "spotify:artist":
+            await router.navigate(ArtistRoute(artistId: endSegment));
+            break;
+          case "spotify:track":
+            await router.navigate(TrackRoute(trackId: endSegment));
+            break;
+          case "spotify:playlist":
+            final playlist = await spotify.invoke((api) {
+              return api.playlists.get(endSegment);
+            });
+            await router.navigate(
+              PlaylistRoute(id: playlist.id!, playlist: playlist),
+            );
+            break;
+          default:
+            break;
+        }
+      } catch (e, stack) {
+        AppLogger.reportError(e, stack);
       }
     });
 
@@ -108,5 +102,5 @@ void useDeepLinking(WidgetRef ref) {
       mediaStream?.cancel();
       subscription.cancel();
     };
-  }, [spotify, queryClient]);
+  }, [spotify]);
 }

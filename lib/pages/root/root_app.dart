@@ -1,209 +1,61 @@
-import 'dart:async';
-
-import 'package:fl_query/fl_query.dart';
-import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_desktop_tools/flutter_desktop_tools.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/player/player_queue.dart';
-import 'package:spotube/components/shared/dialogs/replace_downloaded_dialog.dart';
-import 'package:spotube/components/root/bottom_player.dart';
-import 'package:spotube/components/root/sidebar.dart';
-import 'package:spotube/components/root/spotube_navigation_bar.dart';
-import 'package:spotube/extensions/context.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/hooks/configurators/use_check_yt_dlp_installed.dart';
+import 'package:spotube/modules/root/bottom_player.dart';
+import 'package:spotube/modules/root/sidebar/sidebar.dart';
+import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
-import 'package:spotube/hooks/configurators/use_update_checker.dart';
-import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/utils/persisted_state_notifier.dart';
+import 'package:spotube/modules/root/use_downloader_dialogs.dart';
+import 'package:spotube/modules/root/use_global_subscriptions.dart';
+import 'package:spotube/provider/glance/glance.dart';
 
-const rootPaths = {
-  "/": 0,
-  "/search": 1,
-  "/library": 2,
-  "/lyrics": 3,
-};
-
-class RootApp extends HookConsumerWidget {
-  final Widget child;
-  const RootApp({
-    required this.child,
-    Key? key,
-  }) : super(key: key);
+@RoutePage()
+class RootAppPage extends HookConsumerWidget {
+  const RootAppPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
-    final isMounted = useIsMounted();
-    final showingDialogCompleter = useRef(Completer()..complete());
-    final downloader = ref.watch(downloadManagerProvider);
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final theme = Theme.of(context);
-    final location = GoRouterState.of(context).matchedLocation;
+    final backgroundColor = Theme.of(context).colorScheme.background;
+    final brightness = Theme.of(context).brightness;
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        final sharedPreferences = await SharedPreferences.getInstance();
+    ref.listen(glanceProvider, (_, __) {});
 
-        if (sharedPreferences.getBool(kIsUsingEncryption) == false &&
-            context.mounted) {
-          await PersistedStateNotifier.showNoEncryptionDialog(context);
-        }
-      });
-
-      final subscription =
-          QueryClient.connectivity.onConnectivityChanged.listen((status) {
-        if (status) {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  Icon(
-                    SpotubeIcons.wifi,
-                    color: theme.colorScheme.onPrimary,
-                  ),
-                  const SizedBox(width: 10),
-                  Text(context.l10n.connection_restored),
-                ],
-              ),
-              backgroundColor: theme.colorScheme.primary,
-              showCloseIcon: true,
-              width: 350,
-            ),
-          );
-        } else {
-          scaffoldMessenger.showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  Icon(
-                    SpotubeIcons.noWifi,
-                    color: theme.colorScheme.onError,
-                  ),
-                  const SizedBox(width: 10),
-                  Text(context.l10n.you_are_offline),
-                ],
-              ),
-              backgroundColor: theme.colorScheme.error,
-              showCloseIcon: true,
-              width: 300,
-            ),
-          );
-        }
-      });
-
-      return () {
-        subscription.cancel();
-      };
-    }, []);
-
-    useEffect(() {
-      downloader.onFileExists = (track) async {
-        if (!isMounted()) return false;
-
-        if (!showingDialogCompleter.value.isCompleted) {
-          await showingDialogCompleter.value.future;
-        }
-
-        final replaceAll = ref.read(replaceDownloadedFileState);
-
-        if (replaceAll != null) return replaceAll;
-
-        showingDialogCompleter.value = Completer();
-
-        if (context.mounted) {
-          final result = await showDialog<bool>(
-                context: context,
-                builder: (context) => ReplaceDownloadedDialog(
-                  track: track,
-                ),
-              ) ??
-              false;
-
-          showingDialogCompleter.value.complete();
-          return result;
-        }
-
-        // it'll never reach here as root_app is always mounted
-        return false;
-      };
-      return null;
-    }, [downloader]);
-
-    // checks for latest version of the application
-    useUpdateChecker(ref);
-
+    useGlobalSubscriptions(ref);
+    useDownloaderDialogs(ref);
     useEndlessPlayback(ref);
-
-    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    useCheckYtDlpInstalled(ref);
 
     useEffect(() {
       SystemChrome.setSystemUIOverlayStyle(
         SystemUiOverlayStyle(
           statusBarColor: backgroundColor, // status bar color
-          statusBarIconBrightness: backgroundColor.computeLuminance() > 0.179
-              ? Brightness.dark
-              : Brightness.light,
+          statusBarIconBrightness: brightness == Brightness.dark
+              ? Brightness.light
+              : Brightness.dark,
         ),
       );
       return null;
-    }, [backgroundColor]);
+    }, [backgroundColor, brightness]);
 
-    void onSelectIndexChanged(int d) {
-      final invertedRouteMap =
-          rootPaths.map((key, value) => MapEntry(value, key));
-
-      if (context.mounted) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          GoRouter.of(context).go(invertedRouteMap[d]!);
-        });
-      }
-    }
-
-    return WillPopScope(
-      onWillPop: () async {
-        if (rootPaths[location] != 0) {
-          onSelectIndexChanged(0);
-          return false;
-        }
-        return true;
-      },
-      child: Scaffold(
-        body: Sidebar(
-          selectedIndex: rootPaths[location],
-          onSelectedIndexChanged: onSelectIndexChanged,
-          child: child,
-        ),
-        extendBody: true,
-        drawerScrimColor: Colors.transparent,
-        endDrawer: DesktopTools.platform.isDesktop
-            ? Container(
-                constraints: const BoxConstraints(maxWidth: 800),
-                decoration: BoxDecoration(
-                  boxShadow: theme.brightness == Brightness.light
-                      ? null
-                      : kElevationToShadow[8],
-                ),
-                margin: const EdgeInsets.only(
-                  top: 40,
-                  bottom: 100,
-                ),
-                child: const PlayerQueue(floating: true),
-              )
-            : null,
-        bottomNavigationBar: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+    final scaffold = MediaQuery.removeViewInsets(
+      context: context,
+      removeBottom: true,
+      child: const SafeArea(
+        top: false,
+        child: Scaffold(
+          footers: [
             BottomPlayer(),
-            SpotubeNavigationBar(
-              selectedIndex: rootPaths[location],
-              onSelectedIndexChanged: onSelectIndexChanged,
-            ),
+            SpotubeNavigationBar(),
           ],
+          floatingFooter: true,
+          child: Sidebar(child: AutoRouter()),
         ),
       ),
     );
+
+    return scaffold;
   }
 }

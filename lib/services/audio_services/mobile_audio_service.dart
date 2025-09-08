@@ -1,19 +1,24 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/audio_player/loop_mode.dart';
+import 'package:media_kit/media_kit.dart' hide Track;
+import 'package:spotube/services/audio_player/playback_state.dart';
+import 'package:spotube/services/logger/logger.dart';
+import 'package:spotube/utils/platform.dart';
 
 class MobileAudioService extends BaseAudioHandler {
   AudioSession? session;
-  final ProxyPlaylistNotifier playlistNotifier;
+  final AudioPlayerNotifier audioPlayerNotifier;
 
-  ProxyPlaylist get playlist => playlistNotifier.state;
+  // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+  AudioPlayerState get playlist => audioPlayerNotifier.state;
 
-  MobileAudioService(this.playlistNotifier) {
+  MobileAudioService(this.audioPlayerNotifier) {
     AudioSession.instance.then((s) {
       session = s;
       session?.configure(const AudioSessionConfiguration.music());
@@ -55,6 +60,9 @@ class MobileAudioService extends BaseAudioHandler {
       });
     });
     audioPlayer.playerStateStream.listen((state) async {
+      if (state == AudioPlaybackState.playing) {
+        await session?.setActive(true);
+      }
       playbackState.add(await _transformEvent());
     });
 
@@ -90,57 +98,69 @@ class MobileAudioService extends BaseAudioHandler {
   @override
   Future<void> setRepeatMode(AudioServiceRepeatMode repeatMode) async {
     super.setRepeatMode(repeatMode);
-    audioPlayer.setLoopMode(
-      PlaybackLoopMode.fromAudioServiceRepeatMode(repeatMode),
-    );
+    audioPlayer.setLoopMode(switch (repeatMode) {
+      AudioServiceRepeatMode.all ||
+      AudioServiceRepeatMode.group =>
+        PlaylistMode.loop,
+      AudioServiceRepeatMode.one => PlaylistMode.single,
+      _ => PlaylistMode.none,
+    });
   }
 
   @override
   Future<void> stop() async {
-    await playlistNotifier.stop();
+    await audioPlayerNotifier.stop();
   }
 
   @override
   Future<void> skipToNext() async {
-    await playlistNotifier.next();
+    await audioPlayer.skipToNext();
     await super.skipToNext();
   }
 
   @override
   Future<void> skipToPrevious() async {
-    await playlistNotifier.previous();
+    await audioPlayer.skipToPrevious();
     await super.skipToPrevious();
   }
 
   @override
   Future<void> onTaskRemoved() async {
-    await playlistNotifier.stop();
-    return super.onTaskRemoved();
+    await audioPlayer.pause();
+    if (kIsAndroid) exit(0);
   }
 
   Future<PlaybackState> _transformEvent() async {
-    final position = (await audioPlayer.position) ?? Duration.zero;
-    return PlaybackState(
-      controls: [
-        MediaControl.skipToPrevious,
-        audioPlayer.isPlaying ? MediaControl.pause : MediaControl.play,
-        MediaControl.skipToNext,
-        MediaControl.stop,
-      ],
-      systemActions: {
-        MediaAction.seek,
-      },
-      androidCompactActionIndices: const [0, 1, 2],
-      playing: audioPlayer.isPlaying,
-      updatePosition: position,
-      bufferedPosition: await audioPlayer.bufferedPosition ?? Duration.zero,
-      shuffleMode: await audioPlayer.isShuffled == true
-          ? AudioServiceShuffleMode.all
-          : AudioServiceShuffleMode.none,
-      repeatMode: (await audioPlayer.loopMode).toAudioServiceRepeatMode(),
-      processingState: playlist.isFetching == true
-          ? AudioProcessingState.loading
-          : AudioProcessingState.ready,
-    );
+    try {
+      return PlaybackState(
+        controls: [
+          MediaControl.skipToPrevious,
+          audioPlayer.isPlaying ? MediaControl.pause : MediaControl.play,
+          MediaControl.skipToNext,
+          MediaControl.stop,
+        ],
+        systemActions: {
+          MediaAction.seek,
+        },
+        androidCompactActionIndices: const [0, 1, 2],
+        playing: audioPlayer.isPlaying,
+        updatePosition: audioPlayer.position,
+        bufferedPosition: audioPlayer.bufferedPosition,
+        shuffleMode: audioPlayer.isShuffled == true
+            ? AudioServiceShuffleMode.all
+            : AudioServiceShuffleMode.none,
+        repeatMode: switch (audioPlayer.loopMode) {
+          PlaylistMode.loop => AudioServiceRepeatMode.all,
+          PlaylistMode.single => AudioServiceRepeatMode.one,
+          _ => AudioServiceRepeatMode.none,
+        },
+        processingState: audioPlayer.isBuffering
+            ? AudioProcessingState.loading
+            : AudioProcessingState.ready,
+      );
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack);
+      rethrow;
+    }
   }
 }

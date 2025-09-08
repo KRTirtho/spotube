@@ -1,8 +1,8 @@
-Open source Spotify client that doesn't require Premium nor uses Electron! Available for both desktop & mobile!
+Open source music client that doesn't require Premium nor uses Electron! Available for both desktop & mobile!
 
 
 Features:
-* No ads, thanks to the use of public & free Spotify and YT Music APIs¹
+* No ads, thanks to the use of public & free music metadata providers and YT Music APIs¹
 * Downloadable tracks
 * Cross-platform support
 * Small size & less data usage

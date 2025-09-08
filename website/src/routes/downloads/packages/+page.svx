@@ -6,13 +6,28 @@ author: Kingkor Roy Tirtho
 <script lang="ts">
 	import { faLinux, faWindows, faApple } from '@fortawesome/free-brands-svg-icons';
 	import Fa from 'svelte-fa';
+  // import Ads from '$lib/components/ads/ads.svelte';
+  // import { ADS_SLOTS } from '$lib';
 </script>
 
 <div class="p-4 md:ps-24">
 	<h2 class="h2">Package Managers</h2>
 
     Spotube is available in various Package Managers supported by Platform
+    
+  <h3 class="h3 text-red-500">
+    Versions of Spotube (&lt;=v4.0.2) are ceased to work with Spotify™ API. 
+    <br />
+    So users can no longer use/download those versions. 
+    <br />
+    Please wait for the next version that will remedy this issue by not using such APIs.
+  </h3>
 
+  <p class="text-surface-500 mt-20">
+    Spotube has no affiliation with Spotify™ or any of its subsidiaries.
+  </p>
+
+<!-- 
     ## <Fa class="inline" icon={faLinux} /> Linux
 
 ### Flatpak📦
@@ -40,6 +55,13 @@ $ pamac install spotube-bin
 $ paru -Sy spotube-bin
 ```
 
+<Ads
+  style="display:block; text-align:center;"
+  adSlot={ADS_SLOTS.packagePageArticle}
+  adLayout="in-article"
+  adFormat="fluid"
+  fullWidthResponsive={false}
+/>
 ## <Fa class="inline" icon={faApple} /> MacOS
 
 ### Homebrew🍻
@@ -50,6 +72,14 @@ Spotube can be installed through Homebrew. We host our own cask definition thus 
 $ brew tap krtirtho/apps
 $ brew install --cask spotube
 ```
+
+<Ads
+  style="display:block; text-align:center;"
+  adSlot={ADS_SLOTS.packagePageArticle}
+  adLayout="in-article"
+  adFormat="fluid"
+  fullWidthResponsive={false}
+/>
 
 ## <Fa class="inline" icon={faWindows} color="#00A2F0" /> Windows
 
@@ -78,4 +108,5 @@ $ scoop bucket add extras
 $ scoop install spotube
 ```
 
+ -->
 </div>

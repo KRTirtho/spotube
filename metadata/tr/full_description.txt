@@ -1,0 +1,14 @@
+Premium gerektirmeyen ve Electron kullanmayan açık kaynaklı müzik istemcisi! Hem masaüstü hem de mobil için kullanılabilir!
+
+
+Özellikler:
+* Herkese açık ve ücretsiz müzik meta veri sağlayıcısı ve YT Music API'lerinin kullanımı sayesinde reklam yok¹
+* İndirilebilir parçalar
+* Çapraz platform desteği
+* Küçük boyut ve daha az veri kullanımı
+* Anonim/misafir girişi
+* Zaman senkronize şarkı sözleri
+* Telemetri, tanılama veya kullanıcı verisi toplama yok
+* Yerel performans
+* Açık kaynak yazılım
+* Oynatma kontrolü sunucu üzerinde değil, yerel olarak yapılır

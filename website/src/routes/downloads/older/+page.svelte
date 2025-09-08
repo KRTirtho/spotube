@@ -84,6 +84,17 @@
 		<History />
 	</div>
 	<br /><br />
+	<h3 class="h3 text-red-500">
+		Versions of Spotube (&lt;=v4.0.2) are ceased to work with Spotify™ API. 
+		<br />
+		So users can no longer use/download those versions. 
+		<br />
+		Please wait for the next version that will remedy this issue by not using such APIs.
+	</h3>
+
+	<p class="text-surface-500 mt-20">
+		Spotube has no affiliation with Spotify™ or any of its subsidiaries.
+	</p>
 	<Accordion>
 		<div class="flex flex-col gap-5">
 			{#each data.releases as release}
@@ -102,7 +113,7 @@
 							</h5>
 							<div class="flex flex-wrap gap-4">
 								{#each assets as asset}
-									<a href={release.assets_url}>
+									<a href={asset.browser_download_url}>
 										<button class="btn variant-glass-primary rounded p-0 flex flex-col gap-2">
 											<span class="bg-primary-500 rounded-t p-3 w-full">
 												<Fa class="inline" icon={getIcon(asset.browser_download_url)} />

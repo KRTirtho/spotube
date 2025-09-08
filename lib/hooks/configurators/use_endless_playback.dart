@@ -1,47 +1,35 @@
-import 'package:catcher_2/catcher_2.dart';
-import 'package:fl_query_hooks/fl_query_hooks.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotify/spotify.dart';
-import 'package:spotube/provider/authentication_provider.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
-import 'package:spotube/services/queries/search.dart';
 
 void useEndlessPlayback(WidgetRef ref) {
-  final auth = ref.watch(AuthenticationNotifier.provider);
-  final playback = ref.watch(ProxyPlaylistNotifier.notifier);
-  final playlist = ref.watch(ProxyPlaylistNotifier.provider);
+  final auth = ref.watch(authenticationProvider);
+  final playback = ref.watch(audioPlayerProvider.notifier);
+  final playlist = ref.watch(audioPlayerProvider.select((s) => s.playlist));
   final spotify = ref.watch(spotifyProvider);
   final endlessPlayback =
       ref.watch(userPreferencesProvider.select((s) => s.endlessPlayback));
 
-  final queryClient = useQueryClient();
-
   useEffect(
     () {
-      if (!endlessPlayback || auth == null) return null;
+      if (!endlessPlayback || auth.asData?.value == null) return null;
 
       void listener(int index) async {
         try {
-          final playlist = ref.read(ProxyPlaylistNotifier.provider);
+          final playlist = ref.read(audioPlayerProvider);
           if (index != playlist.tracks.length - 1) return;
 
           final track = playlist.tracks.last;
 
           final query = "${track.name} Radio";
-          final pages = await queryClient.fetchInfiniteQueryJob<List<Page>,
-                  dynamic, int, SearchParams>(
-                job: SearchQueries.queryJob(query),
-                args: (
-                  spotify: spotify,
-                  searchType: SearchType.playlist,
-                  query: query
-                ),
-              ) ??
-              [];
+          final pages = await spotify.invoke((api) =>
+              api.search.get(query, types: [SearchType.playlist]).first());
 
           final radios = pages
               .expand((e) => e.items?.toList() ?? <PlaylistSimple>[])
@@ -62,28 +50,28 @@ void useEndlessPlayback(WidgetRef ref) {
             orElse: () => radios.first,
           );
 
-          final tracks =
-              await spotify.playlists.getTracksByPlaylistId(radio.id!).all();
+          final tracks = await spotify.invoke(
+              (api) => api.playlists.getTracksByPlaylistId(radio.id!).all());
 
           await playback.addTracks(
             tracks.toList()
               ..removeWhere((e) {
-                final playlist = ref.read(ProxyPlaylistNotifier.provider);
+                final playlist = ref.read(audioPlayerProvider);
                 final isDuplicate = playlist.tracks.any((t) => t.id == e.id);
                 return e.id == track.id || isDuplicate;
               }),
           );
         } catch (e, stack) {
-          Catcher2.reportCheckedError(e, stack);
+          AppLogger.reportError(e, stack);
         }
       }
 
       // Sometimes user can change settings for which the currentIndexChanged
       // might not be called. So we need to check if the current track is the
       // last track and if it is then we need to call the listener manually.
-      if (playlist.active == playlist.tracks.length - 1 &&
+      if (playlist.index == playlist.medias.length - 1 &&
           audioPlayer.isPlaying) {
-        listener(playlist.active!);
+        listener(playlist.index);
       }
 
       final subscription =
@@ -94,8 +82,7 @@ void useEndlessPlayback(WidgetRef ref) {
     [
       spotify,
       playback,
-      queryClient,
-      playlist.tracks,
+      playlist.medias,
       endlessPlayback,
       auth,
     ],

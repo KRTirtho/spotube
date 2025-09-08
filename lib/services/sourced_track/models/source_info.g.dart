@@ -6,13 +6,13 @@ part of 'source_info.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-SourceInfo _$SourceInfoFromJson(Map<String, dynamic> json) => SourceInfo(
+SourceInfo _$SourceInfoFromJson(Map json) => SourceInfo(
       id: json['id'] as String,
       title: json['title'] as String,
       artist: json['artist'] as String,
       thumbnail: json['thumbnail'] as String,
       pageUrl: json['pageUrl'] as String,
-      duration: Duration(microseconds: json['duration'] as int),
+      duration: Duration(microseconds: (json['duration'] as num).toInt()),
       artistUrl: json['artistUrl'] as String,
       album: json['album'] as String?,
     );

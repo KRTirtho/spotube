@@ -1,73 +1,60 @@
-import 'package:fl_query_hooks/fl_query_hooks.dart';
-import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/library/playlist_generate/simple_track_tile.dart';
-import 'package:spotube/components/playlist/playlist_create_dialog.dart';
-import 'package:spotube/components/shared/dialogs/playlist_add_track_dialog.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/button/back_button.dart';
+import 'package:spotube/modules/library/playlist_generate/simple_track_tile.dart';
+import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
+import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/proxy_playlist/proxy_playlist_provider.dart';
-import 'package:spotube/services/queries/playlist.dart';
-import 'package:spotube/services/queries/queries.dart';
+import 'package:spotube/models/spotify/recommendation_seeds.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 
-typedef PlaylistGenerateResultRouteState = ({
-  ({List<String> tracks, List<String> artists, List<String> genres})? seeds,
-  RecommendationParameters? parameters,
-  int limit,
-  Market? market,
-});
-
+@RoutePage()
 class PlaylistGenerateResultPage extends HookConsumerWidget {
-  final PlaylistGenerateResultRouteState state;
+  static const name = "playlist_generate_result";
+
+  final GeneratePlaylistProviderInput state;
 
   const PlaylistGenerateResultPage({
-    Key? key,
+    super.key,
     required this.state,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, ref) {
-    final router = GoRouter.of(context);
-    final scaffoldMessenger = ScaffoldMessenger.of(context);
-    final playlistNotifier = ref.watch(ProxyPlaylistNotifier.notifier);
-    final (:seeds, :parameters, :limit, :market) = state;
+    final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
 
-    final queryClient = useQueryClient();
-    final generatedPlaylist = useQueries.playlist.generate(
-      ref,
-      seeds: seeds,
-      parameters: parameters,
-      limit: limit,
-      market: market,
-    );
+    final generatedPlaylist = ref.watch(generatePlaylistProvider(state));
 
     final selectedTracks = useState<List<String>>(
-      generatedPlaylist.data?.map((e) => e.id!).toList() ?? [],
+      generatedPlaylist.asData?.value.map((e) => e.id!).toList() ?? [],
     );
 
     useEffect(() {
-      if (generatedPlaylist.data != null) {
+      if (generatedPlaylist.asData?.value != null) {
         selectedTracks.value =
-            generatedPlaylist.data!.map((e) => e.id!).toList();
+            generatedPlaylist.asData!.value.map((e) => e.id!).toList();
       }
       return null;
-    }, [generatedPlaylist.data]);
+    }, [generatedPlaylist.asData?.value]);
 
-    final isAllTrackSelected =
-        selectedTracks.value.length == (generatedPlaylist.data?.length ?? 0);
+    final isAllTrackSelected = selectedTracks.value.length ==
+        (generatedPlaylist.asData?.value.length ?? 0);
 
-    return WillPopScope(
-      onWillPop: () async {
-        queryClient.cache.removeQuery(generatedPlaylist);
-        return true;
-      },
+    return SafeArea(
+      bottom: false,
       child: Scaffold(
-        appBar: const PageWindowTitleBar(leading: BackButton()),
-        body: generatedPlaylist.isLoading
+        headers: const [
+          TitleBar(leading: [BackButton()])
+        ],
+        child: generatedPlaylist.isLoading
             ? Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -92,49 +79,54 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                       ),
                       shrinkWrap: true,
                       children: [
-                        FilledButton.tonalIcon(
-                          icon: const Icon(SpotubeIcons.play),
-                          label: Text(context.l10n.play),
+                        Button.primary(
+                          leading: const Icon(SpotubeIcons.play),
                           onPressed: selectedTracks.value.isEmpty
                               ? null
                               : () async {
                                   await playlistNotifier.load(
-                                    generatedPlaylist.data!.where(
-                                      (e) =>
-                                          selectedTracks.value.contains(e.id!),
-                                    ),
+                                    generatedPlaylist.asData!.value
+                                        .where(
+                                          (e) => selectedTracks.value
+                                              .contains(e.id!),
+                                        )
+                                        .toList(),
                                     autoPlay: true,
                                   );
                                 },
+                          child: Text(context.l10n.play),
                         ),
-                        FilledButton.tonalIcon(
-                          icon: const Icon(SpotubeIcons.queueAdd),
-                          label: Text(context.l10n.add_to_queue),
+                        Button.primary(
+                          leading: const Icon(SpotubeIcons.queueAdd),
                           onPressed: selectedTracks.value.isEmpty
                               ? null
                               : () async {
                                   await playlistNotifier.addTracks(
-                                    generatedPlaylist.data!.where(
+                                    generatedPlaylist.asData!.value.where(
                                       (e) =>
                                           selectedTracks.value.contains(e.id!),
                                     ),
                                   );
                                   if (context.mounted) {
-                                    scaffoldMessenger.showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          context.l10n.add_count_to_queue(
-                                            selectedTracks.value.length,
+                                    showToast(
+                                      context: context,
+                                      location: ToastLocation.topRight,
+                                      builder: (context, overlay) {
+                                        return SurfaceCard(
+                                          child: Text(
+                                            context.l10n.add_count_to_queue(
+                                              selectedTracks.value.length,
+                                            ),
                                           ),
-                                        ),
-                                      ),
+                                        );
+                                      },
                                     );
                                   }
                                 },
+                          child: Text(context.l10n.add_to_queue),
                         ),
-                        FilledButton.tonalIcon(
-                          icon: const Icon(SpotubeIcons.addFilled),
-                          label: Text(context.l10n.create_a_playlist),
+                        Button.primary(
+                          leading: const Icon(SpotubeIcons.addFilled),
                           onPressed: selectedTracks.value.isEmpty
                               ? null
                               : () async {
@@ -145,17 +137,19 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                                     ),
                                   );
 
-                                  if (playlist != null) {
-                                    router.go(
-                                      '/playlist/${playlist.id}',
-                                      extra: playlist,
+                                  if (playlist != null && context.mounted) {
+                                    context.navigateTo(
+                                      PlaylistRoute(
+                                        id: playlist.id!,
+                                        playlist: playlist,
+                                      ),
                                     );
                                   }
                                 },
+                          child: Text(context.l10n.create_a_playlist),
                         ),
-                        FilledButton.tonalIcon(
-                          icon: const Icon(SpotubeIcons.playlistAdd),
-                          label: Text(context.l10n.add_to_playlist),
+                        Button.primary(
+                          leading: const Icon(SpotubeIcons.playlistAdd),
                           onPressed: selectedTracks.value.isEmpty
                               ? null
                               : () async {
@@ -166,7 +160,8 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                                       openFromPlaylist: null,
                                       tracks: selectedTracks.value
                                           .map(
-                                            (e) => generatedPlaylist.data!
+                                            (e) => generatedPlaylist
+                                                .asData!.value
                                                 .firstWhere(
                                               (element) => element.id == e,
                                             ),
@@ -176,22 +171,27 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                                   );
 
                                   if (context.mounted && hasAdded == true) {
-                                    scaffoldMessenger.showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                          context.l10n.add_count_to_playlist(
-                                            selectedTracks.value.length,
+                                    showToast(
+                                      context: context,
+                                      location: ToastLocation.topRight,
+                                      builder: (context, overlay) {
+                                        return SurfaceCard(
+                                          child: Text(
+                                            context.l10n.add_count_to_playlist(
+                                              selectedTracks.value.length,
+                                            ),
                                           ),
-                                        ),
-                                      ),
+                                        );
+                                      },
                                     );
                                   }
                                 },
+                          child: Text(context.l10n.add_to_playlist),
                         )
                       ],
                     ),
                     const SizedBox(height: 16),
-                    if (generatedPlaylist.data != null)
+                    if (generatedPlaylist.asData?.value != null)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -200,19 +200,20 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                               selectedTracks.value.length,
                             ),
                           ),
-                          ElevatedButton.icon(
+                          Button.secondary(
                             onPressed: () {
                               if (isAllTrackSelected) {
                                 selectedTracks.value = [];
                               } else {
-                                selectedTracks.value = generatedPlaylist.data
-                                        ?.map((e) => e.id!)
+                                selectedTracks.value = generatedPlaylist
+                                        .asData?.value
+                                        .map((e) => e.id!)
                                         .toList() ??
                                     [];
                               }
                             },
-                            icon: const Icon(SpotubeIcons.selectionCheck),
-                            label: Text(
+                            leading: const Icon(SpotubeIcons.selectionCheck),
+                            child: Text(
                               isAllTrackSelected
                                   ? context.l10n.deselect_all
                                   : context.l10n.select_all,
@@ -221,32 +222,45 @@ class PlaylistGenerateResultPage extends HookConsumerWidget {
                         ],
                       ),
                     const SizedBox(height: 8),
-                    Card(
-                      margin: const EdgeInsets.all(0),
-                      child: SafeArea(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            for (final track in generatedPlaylist.data ?? [])
-                              CheckboxListTile(
-                                value: selectedTracks.value.contains(track.id),
-                                onChanged: (value) {
-                                  if (value == true) {
-                                    selectedTracks.value.add(track.id!);
-                                  } else {
-                                    selectedTracks.value.remove(track.id);
-                                  }
-                                  selectedTracks.value =
-                                      selectedTracks.value.toList();
-                                },
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                contentPadding: EdgeInsets.zero,
-                                dense: true,
-                                title: SimpleTrackTile(track: track),
-                              )
-                          ],
-                        ),
+                    SafeArea(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          for (final track
+                              in generatedPlaylist.asData?.value ?? [])
+                            Row(
+                              spacing: 5,
+                              children: [
+                                Checkbox(
+                                  state: selectedTracks.value.contains(track.id)
+                                      ? CheckboxState.checked
+                                      : CheckboxState.unchecked,
+                                  onChanged: (value) {
+                                    if (value == CheckboxState.checked) {
+                                      selectedTracks.value.add(track.id!);
+                                    } else {
+                                      selectedTracks.value.remove(track.id);
+                                    }
+                                    selectedTracks.value =
+                                        selectedTracks.value.toList();
+                                  },
+                                ),
+                                Expanded(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      selectedTracks.value.contains(track.id)
+                                          ? selectedTracks.value
+                                              .remove(track.id)
+                                          : selectedTracks.value.add(track.id!);
+                                      selectedTracks.value =
+                                          selectedTracks.value.toList();
+                                    },
+                                    child: SimpleTrackTile(track: track),
+                                  ),
+                                ),
+                              ],
+                            )
+                        ],
                       ),
                     ),
                   ],

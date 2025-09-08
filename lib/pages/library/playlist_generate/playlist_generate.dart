@@ -1,43 +1,50 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotify/spotify.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotify_markets.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/library/playlist_generate/multi_select_field.dart';
-import 'package:spotube/components/library/playlist_generate/recommendation_attribute_dials.dart';
-import 'package:spotube/components/library/playlist_generate/recommendation_attribute_fields.dart';
-import 'package:spotube/components/library/playlist_generate/seeds_multi_autocomplete.dart';
-import 'package:spotube/components/library/playlist_generate/simple_track_tile.dart';
-import 'package:spotube/components/shared/image/universal_image.dart';
-import 'package:spotube/components/shared/page_window_title_bar.dart';
+import 'package:spotube/components/button/back_button.dart';
+import 'package:spotube/components/ui/button_tile.dart';
+
+import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_dials.dart';
+import 'package:spotube/modules/library/playlist_generate/recommendation_attribute_fields.dart';
+import 'package:spotube/modules/library/playlist_generate/seeds_multi_autocomplete.dart';
+import 'package:spotube/modules/library/playlist_generate/simple_track_tile.dart';
+import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/library/playlist_generate/playlist_generate_result.dart';
-import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/extensions/image.dart';
+import 'package:spotube/models/spotify/recommendation_seeds.dart';
+import 'package:spotube/provider/spotify/spotify.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/services/queries/queries.dart';
-import 'package:spotube/utils/type_conversion_utils.dart';
+import 'package:auto_route/auto_route.dart';
 
 const RecommendationAttribute zeroValues = (min: 0, target: 0, max: 0);
 
+@RoutePage()
 class PlaylistGeneratorPage extends HookConsumerWidget {
-  const PlaylistGeneratorPage({Key? key}) : super(key: key);
+  static const name = "playlist_generator";
+
+  const PlaylistGeneratorPage({super.key});
 
   @override
   Widget build(BuildContext context, ref) {
     final spotify = ref.watch(spotifyProvider);
 
     final theme = Theme.of(context);
-    final textTheme = theme.textTheme;
+    final typography = theme.typography;
     final preferences = ref.watch(userPreferencesProvider);
 
-    final genresCollection = useQueries.category.genreSeeds(ref);
+    final genresCollection = ref.watch(categoryGenresProvider);
 
     final limit = useValueNotifier<int>(10);
-    final market = useValueNotifier<Market>(preferences.recommendationMarket);
+    final market = useValueNotifier<Market>(preferences.market);
 
     final genres = useState<List<String>>([]);
     final artists = useState<List<Artist>>([]);
@@ -50,60 +57,45 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
         5 - genres.value.length - artists.value.length - tracks.value.length;
 
     // Dial (int 0-1) attributes
-    final acousticness = useState<RecommendationAttribute>(zeroValues);
-    final danceability = useState<RecommendationAttribute>(zeroValues);
-    final energy = useState<RecommendationAttribute>(zeroValues);
-    final instrumentalness = useState<RecommendationAttribute>(zeroValues);
-    final key = useState<RecommendationAttribute>(zeroValues);
-    final liveness = useState<RecommendationAttribute>(zeroValues);
-    final loudness = useState<RecommendationAttribute>(zeroValues);
-    final popularity = useState<RecommendationAttribute>(zeroValues);
-    final speechiness = useState<RecommendationAttribute>(zeroValues);
-    final valence = useState<RecommendationAttribute>(zeroValues);
-
-    // Field editable attributes
-    final tempo = useState<RecommendationAttribute>(zeroValues);
-    final durationMs = useState<RecommendationAttribute>(zeroValues);
-    final mode = useState<RecommendationAttribute>(zeroValues);
-    final timeSignature = useState<RecommendationAttribute>(zeroValues);
+    final min = useState<RecommendationSeeds>(RecommendationSeeds());
+    final max = useState<RecommendationSeeds>(RecommendationSeeds());
+    final target = useState<RecommendationSeeds>(RecommendationSeeds());
 
     final artistAutoComplete = SeedsMultiAutocomplete<Artist>(
       seeds: artists,
       enabled: enabled,
-      inputDecoration: InputDecoration(
-        labelText: context.l10n.artists,
-        labelStyle: textTheme.titleMedium,
-        helperText: context.l10n.select_up_to_count_type(
-          leftSeedCount,
-          context.l10n.artists,
-        ),
-      ),
-      fetchSeeds: (textEditingValue) => spotify.search
-          .get(
-            textEditingValue.text,
-            types: [SearchType.artist],
-          )
-          .first(6)
-          .then(
-            (v) => List.castFrom<dynamic, Artist>(
-              v.expand((e) => e.items ?? []).toList(),
+      label: Text(context.l10n.artists),
+      placeholder: Text(context.l10n.select_up_to_count_type(
+        leftSeedCount,
+        context.l10n.artists,
+      )),
+      fetchSeeds: (textEditingValue) => spotify.invoke(
+        (api) => api.search
+            .get(
+              textEditingValue.text,
+              types: [SearchType.artist],
             )
-                .where(
-                  (element) =>
-                      artists.value.none((artist) => element.id == artist.id),
-                )
-                .toList(),
-          ),
-      autocompleteOptionBuilder: (option, onSelected) => ListTile(
-        leading: CircleAvatar(
-          backgroundImage: UniversalImage.imageProvider(
-            TypeConversionUtils.image_X_UrlString(
-              option.images,
+            .first(6)
+            .then(
+              (v) => List.castFrom<dynamic, Artist>(
+                v.expand((e) => e.items ?? []).toList(),
+              )
+                  .where(
+                    (element) =>
+                        artists.value.none((artist) => element.id == artist.id),
+                  )
+                  .toList(),
+            ),
+      ),
+      autocompleteOptionBuilder: (option, onSelected) => ButtonTile(
+        leading: Avatar(
+          initials: "O",
+          provider: UniversalImage.imageProvider(
+            option.images.asUrlString(
               placeholder: ImagePlaceholder.artist,
             ),
           ),
         ),
-        horizontalTitleGap: 20,
         title: Text(option.name!),
         subtitle: option.genres?.isNotEmpty != true
             ? null
@@ -113,35 +105,36 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                 children: option.genres!.mapIndexed(
                   (index, genre) {
                     return Chip(
-                      label: Text(genre),
-                      labelStyle: textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.secondary,
-                        fontWeight: FontWeight.w600,
-                      ),
-                      side: BorderSide.none,
-                      backgroundColor: theme.colorScheme.secondaryContainer,
+                      style: ButtonVariance.secondary,
+                      child: Text(genre),
                     );
                   },
                 ).toList(),
               ),
-        onTap: () => onSelected(option),
+        onPressed: () => onSelected(option),
+        style: ButtonVariance.ghost,
       ),
       displayStringForOption: (option) => option.name!,
-      selectedSeedBuilder: (artist) => Chip(
-        avatar: CircleAvatar(
-          backgroundImage: UniversalImage.imageProvider(
-            TypeConversionUtils.image_X_UrlString(
-              artist.images,
+      selectedSeedBuilder: (artist) => OutlineBadge(
+        leading: Avatar(
+          initials: artist.name!.substring(0, 1),
+          size: 30,
+          provider: UniversalImage.imageProvider(
+            artist.images.asUrlString(
               placeholder: ImagePlaceholder.artist,
             ),
           ),
         ),
-        label: Text(artist.name!),
-        onDeleted: () {
-          artists.value = [
-            ...artists.value..removeWhere((element) => element.id == artist.id)
-          ];
-        },
+        trailing: IconButton.ghost(
+          icon: const Icon(SpotubeIcons.close),
+          onPressed: () {
+            artists.value = [
+              ...artists.value
+                ..removeWhere((element) => element.id == artist.id)
+            ];
+          },
+        ),
+        child: Text(artist.name!),
       ),
     );
 
@@ -149,47 +142,46 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       seeds: tracks,
       enabled: enabled,
       selectedItemDisplayType: SelectedItemDisplayType.list,
-      inputDecoration: InputDecoration(
-        labelText: context.l10n.tracks,
-        labelStyle: textTheme.titleMedium,
-        helperText: context.l10n.select_up_to_count_type(
-          leftSeedCount,
-          context.l10n.tracks,
-        ),
-      ),
-      fetchSeeds: (textEditingValue) => spotify.search
-          .get(
-            textEditingValue.text,
-            types: [SearchType.track],
-          )
-          .first(6)
-          .then(
-            (v) => List.castFrom<dynamic, Track>(
-              v.expand((e) => e.items ?? []).toList(),
+      label: Text(context.l10n.tracks),
+      placeholder: Text(context.l10n.select_up_to_count_type(
+        leftSeedCount,
+        context.l10n.tracks,
+      )),
+      fetchSeeds: (textEditingValue) => spotify.invoke(
+        (api) => api.search
+            .get(
+              textEditingValue.text,
+              types: [SearchType.track],
             )
-                .where(
-                  (element) =>
-                      tracks.value.none((track) => element.id == track.id),
-                )
-                .toList(),
-          ),
-      autocompleteOptionBuilder: (option, onSelected) => ListTile(
-        leading: CircleAvatar(
-          backgroundImage: UniversalImage.imageProvider(
-            TypeConversionUtils.image_X_UrlString(
-              option.album?.images,
+            .first(6)
+            .then(
+              (v) => List.castFrom<dynamic, Track>(
+                v.expand((e) => e.items ?? []).toList(),
+              )
+                  .where(
+                    (element) =>
+                        tracks.value.none((track) => element.id == track.id),
+                  )
+                  .toList(),
+            ),
+      ),
+      autocompleteOptionBuilder: (option, onSelected) => ButtonTile(
+        leading: Avatar(
+          initials: option.name!.substring(0, 1),
+          provider: UniversalImage.imageProvider(
+            (option.album?.images).asUrlString(
               placeholder: ImagePlaceholder.artist,
             ),
           ),
         ),
-        horizontalTitleGap: 20,
         title: Text(option.name!),
         subtitle: Text(
           option.artists?.map((e) => e.name).join(", ") ??
               option.album?.name ??
               "",
         ),
-        onTap: () => onSelected(option),
+        onPressed: () => onSelected(option),
+        style: ButtonVariance.ghost,
       ),
       displayStringForOption: (option) => option.name!,
       selectedSeedBuilder: (option) => SimpleTrackTile(
@@ -202,63 +194,110 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
       ),
     );
 
-    final genreSelector = MultiSelectField<String>(
-      options: genresCollection.data ?? [],
-      selectedOptions: genres.value,
-      getValueForOption: (option) => option,
-      onSelected: (value) {
-        genres.value = value;
+    final genreSelector = MultiSelect<String>(
+      value: genres.value,
+      onChanged: (value) {
+        if (!enabled) return;
+        genres.value = value?.toList() ?? [];
       },
-      dialogTitle: Text(context.l10n.select_genres),
-      label: Text(context.l10n.add_genres),
-      helperText: context.l10n.select_up_to_count_type(
-        leftSeedCount,
-        context.l10n.genre,
+      itemBuilder: (context, item) => Text(item),
+      popoverAlignment: Alignment.bottomCenter,
+      popupConstraints: BoxConstraints(
+        maxHeight: MediaQuery.sizeOf(context).height * .8,
       ),
-      enabled: enabled,
+      placeholder: Text(
+        context.l10n.select_up_to_count_type(
+          leftSeedCount,
+          context.l10n.genre,
+        ),
+      ),
+      popup: SelectPopup.builder(
+        searchPlaceholder: Text(context.l10n.select_genres),
+        builder: (context, searchQuery) {
+          final filteredGenres = searchQuery?.isNotEmpty != true
+              ? genresCollection.asData?.value ?? []
+              : genresCollection.asData?.value
+                      .where(
+                        (item) => item
+                            .toLowerCase()
+                            .contains(searchQuery!.toLowerCase()),
+                      )
+                      .toList() ??
+                  [];
+
+          return SelectItemBuilder(
+            childCount: filteredGenres.length,
+            builder: (context, index) {
+              final option = filteredGenres[index];
+
+              return SelectItemButton(
+                value: option,
+                child: Text(option),
+              );
+            },
+          );
+        },
+      ).call,
     );
+
     final countrySelector = ValueListenableBuilder(
       valueListenable: market,
       builder: (context, value, _) {
-        return DropdownButtonFormField<Market>(
-          decoration: InputDecoration(
-            labelText: context.l10n.country,
-            labelStyle: textTheme.titleMedium,
-          ),
-          isExpanded: true,
-          items: spotifyMarkets
-              .map(
-                (country) => DropdownMenuItem(
-                  value: country.$1,
-                  child: Text(country.$2),
-                ),
-              )
-              .toList(),
+        return Select<Market>(
+          placeholder: Text(context.l10n.country),
           value: market.value,
           onChanged: (value) {
             market.value = value!;
           },
+          popupConstraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * .8,
+          ),
+          popoverAlignment: Alignment.bottomCenter,
+          itemBuilder: (context, value) => Text(value.name),
+          popup: SelectPopup.builder(
+            searchPlaceholder: Text(context.l10n.search),
+            builder: (context, searchQuery) {
+              final filteredMarkets = searchQuery == null || searchQuery.isEmpty
+                  ? spotifyMarkets
+                  : spotifyMarkets
+                      .where(
+                        (item) => item.$1.name
+                            .toLowerCase()
+                            .contains(searchQuery.toLowerCase()),
+                      )
+                      .toList();
+
+              return SelectItemBuilder(
+                childCount: filteredMarkets.length,
+                builder: (context, index) {
+                  return SelectItemButton(
+                    value: filteredMarkets[index].$1,
+                    child: Text(filteredMarkets[index].$2),
+                  );
+                },
+              );
+            },
+          ).call,
         );
       },
     );
 
     final controller = useScrollController();
 
-    return Scaffold(
-      appBar: PageWindowTitleBar(
-        leading: const BackButton(),
-        title: Text(context.l10n.generate_playlist),
-        centerTitle: true,
-      ),
-      body: Scrollbar(
-        controller: controller,
-        child: Center(
-          child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: Breakpoints.lg),
-            child: SliderTheme(
-              data: const SliderThemeData(
-                overlayShape: RoundSliderOverlayShape(),
-              ),
+    return SafeArea(
+      bottom: false,
+      child: Scaffold(
+        headers: [
+          TitleBar(
+            leading: const [BackButton()],
+            title: Text(context.l10n.generate),
+          )
+        ],
+        child: Scrollbar(
+          controller: controller,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: Breakpoints.lg),
               child: SafeArea(
                 child: LayoutBuilder(builder: (context, constrains) {
                   return ScrollConfiguration(
@@ -276,35 +315,36 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                               children: [
                                 Text(
                                   context.l10n.number_of_tracks_generate,
-                                  style: textTheme.titleMedium,
+                                  style: typography.semiBold,
                                 ),
                                 Row(
+                                  spacing: 5,
                                   children: [
                                     Container(
                                       width: 40,
                                       height: 40,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color: theme.colorScheme.primary,
+                                        color: theme.colorScheme.primary
+                                            .withAlpha(25),
                                         shape: BoxShape.circle,
                                       ),
                                       child: Text(
                                         value.round().toString(),
-                                        style: textTheme.bodyLarge?.copyWith(
-                                          color: theme
-                                              .colorScheme.primaryContainer,
+                                        style: typography.large.copyWith(
+                                          color: theme.colorScheme.primary,
                                         ),
                                       ),
                                     ),
                                     Expanded(
                                       child: Slider(
-                                        value: value.toDouble(),
+                                        value: SliderValue.single(
+                                            value.toDouble()),
                                         min: 10,
                                         max: 100,
                                         divisions: 9,
-                                        label: value.round().toString(),
                                         onChanged: (value) {
-                                          limit.value = value.round();
+                                          limit.value = value.value.round();
                                         },
                                       ),
                                     )
@@ -355,88 +395,213 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                         const SizedBox(height: 16),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.acousticness),
-                          values: acousticness.value,
+                          values: (
+                            target: target.value.acousticness?.toDouble() ?? 0,
+                            min: min.value.acousticness?.toDouble() ?? 0,
+                            max: max.value.acousticness?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            acousticness.value = value;
+                            target.value = target.value.copyWith(
+                              acousticness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              acousticness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              acousticness: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.danceability),
-                          values: danceability.value,
+                          values: (
+                            target: target.value.danceability?.toDouble() ?? 0,
+                            min: min.value.danceability?.toDouble() ?? 0,
+                            max: max.value.danceability?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            danceability.value = value;
+                            target.value = target.value.copyWith(
+                              danceability: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              danceability: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              danceability: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.energy),
-                          values: energy.value,
+                          values: (
+                            target: target.value.energy?.toDouble() ?? 0,
+                            min: min.value.energy?.toDouble() ?? 0,
+                            max: max.value.energy?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            energy.value = value;
+                            target.value = target.value.copyWith(
+                              energy: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              energy: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              energy: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.instrumentalness),
-                          values: instrumentalness.value,
+                          values: (
+                            target:
+                                target.value.instrumentalness?.toDouble() ?? 0,
+                            min: min.value.instrumentalness?.toDouble() ?? 0,
+                            max: max.value.instrumentalness?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            instrumentalness.value = value;
+                            target.value = target.value.copyWith(
+                              instrumentalness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              instrumentalness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              instrumentalness: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.liveness),
-                          values: liveness.value,
+                          values: (
+                            target: target.value.liveness?.toDouble() ?? 0,
+                            min: min.value.liveness?.toDouble() ?? 0,
+                            max: max.value.liveness?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            liveness.value = value;
+                            target.value = target.value.copyWith(
+                              liveness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              liveness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              liveness: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.loudness),
-                          values: loudness.value,
+                          values: (
+                            target: target.value.loudness?.toDouble() ?? 0,
+                            min: min.value.loudness?.toDouble() ?? 0,
+                            max: max.value.loudness?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            loudness.value = value;
+                            target.value = target.value.copyWith(
+                              loudness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              loudness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              loudness: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.speechiness),
-                          values: speechiness.value,
+                          values: (
+                            target: target.value.speechiness?.toDouble() ?? 0,
+                            min: min.value.speechiness?.toDouble() ?? 0,
+                            max: max.value.speechiness?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            speechiness.value = value;
+                            target.value = target.value.copyWith(
+                              speechiness: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              speechiness: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              speechiness: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.valence),
-                          values: valence.value,
+                          values: (
+                            target: target.value.valence?.toDouble() ?? 0,
+                            min: min.value.valence?.toDouble() ?? 0,
+                            max: max.value.valence?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            valence.value = value;
+                            target.value = target.value.copyWith(
+                              valence: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              valence: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              valence: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.popularity),
-                          values: popularity.value,
                           base: 100,
+                          values: (
+                            target: target.value.popularity?.toDouble() ?? 0,
+                            min: min.value.popularity?.toDouble() ?? 0,
+                            max: max.value.popularity?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            popularity.value = value;
+                            target.value = target.value.copyWith(
+                              popularity: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              popularity: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              popularity: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeDials(
                           title: Text(context.l10n.key),
-                          values: key.value,
                           base: 11,
+                          values: (
+                            target: target.value.key?.toDouble() ?? 0,
+                            min: min.value.key?.toDouble() ?? 0,
+                            max: max.value.key?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            key.value = value;
+                            target.value = target.value.copyWith(
+                              key: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              key: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              key: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeFields(
                           title: Text(context.l10n.duration),
                           values: (
-                            max: durationMs.value.max / 1000,
-                            target: durationMs.value.target / 1000,
-                            min: durationMs.value.min / 1000,
+                            max: (max.value.durationMs ?? 0) / 1000,
+                            target: (target.value.durationMs ?? 0) / 1000,
+                            min: (min.value.durationMs ?? 0) / 1000,
                           ),
                           onChanged: (value) {
-                            durationMs.value = (
-                              max: value.max * 1000,
-                              target: value.target * 1000,
-                              min: value.min * 1000,
+                            target.value = target.value.copyWith(
+                              durationMs: (value.target * 1000).toInt(),
+                            );
+                            min.value = min.value.copyWith(
+                              durationMs: (value.min * 1000).toInt(),
+                            );
+                            max.value = max.value.copyWith(
+                              durationMs: (value.max * 1000).toInt(),
                             );
                           },
                           presets: {
@@ -451,69 +616,92 @@ class PlaylistGeneratorPage extends HookConsumerWidget {
                         ),
                         RecommendationAttributeFields(
                           title: Text(context.l10n.tempo),
-                          values: tempo.value,
+                          values: (
+                            max: max.value.tempo?.toDouble() ?? 0,
+                            target: target.value.tempo?.toDouble() ?? 0,
+                            min: min.value.tempo?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            tempo.value = value;
+                            target.value = target.value.copyWith(
+                              tempo: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              tempo: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              tempo: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeFields(
                           title: Text(context.l10n.mode),
-                          values: mode.value,
+                          values: (
+                            max: max.value.mode?.toDouble() ?? 0,
+                            target: target.value.mode?.toDouble() ?? 0,
+                            min: min.value.mode?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            mode.value = value;
+                            target.value = target.value.copyWith(
+                              mode: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              mode: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              mode: value.max,
+                            );
                           },
                         ),
                         RecommendationAttributeFields(
                           title: Text(context.l10n.time_signature),
-                          values: timeSignature.value,
+                          values: (
+                            max: max.value.timeSignature?.toDouble() ?? 0,
+                            target: target.value.timeSignature?.toDouble() ?? 0,
+                            min: min.value.timeSignature?.toDouble() ?? 0,
+                          ),
                           onChanged: (value) {
-                            timeSignature.value = value;
+                            target.value = target.value.copyWith(
+                              timeSignature: value.target,
+                            );
+                            min.value = min.value.copyWith(
+                              timeSignature: value.min,
+                            );
+                            max.value = max.value.copyWith(
+                              timeSignature: value.max,
+                            );
                           },
                         ),
-                        const SizedBox(height: 20),
-                        FilledButton.icon(
-                          icon: const Icon(SpotubeIcons.magic),
-                          label: Text(context.l10n.generate_playlist),
-                          onPressed: artists.value.isEmpty &&
-                                  tracks.value.isEmpty &&
-                                  genres.value.isEmpty
-                              ? null
-                              : () {
-                                  final PlaylistGenerateResultRouteState
-                                      routeState = (
-                                    seeds: (
-                                      artists: artists.value
+                        const Gap(20),
+                        Center(
+                          child: Button.primary(
+                            leading: const Icon(SpotubeIcons.magic),
+                            onPressed: artists.value.isEmpty &&
+                                    tracks.value.isEmpty &&
+                                    genres.value.isEmpty
+                                ? null
+                                : () {
+                                    final routeState =
+                                        GeneratePlaylistProviderInput(
+                                      seedArtists: artists.value
                                           .map((a) => a.id!)
                                           .toList(),
-                                      tracks: tracks.value
+                                      seedTracks: tracks.value
                                           .map((t) => t.id!)
                                           .toList(),
-                                      genres: genres.value
-                                    ),
-                                    market: market.value,
-                                    limit: limit.value,
-                                    parameters: (
-                                      acousticness: acousticness.value,
-                                      danceability: danceability.value,
-                                      energy: energy.value,
-                                      instrumentalness: instrumentalness.value,
-                                      liveness: liveness.value,
-                                      loudness: loudness.value,
-                                      speechiness: speechiness.value,
-                                      valence: valence.value,
-                                      popularity: popularity.value,
-                                      key: key.value,
-                                      duration_ms: durationMs.value,
-                                      tempo: tempo.value,
-                                      mode: mode.value,
-                                      time_signature: timeSignature.value,
-                                    )
-                                  );
-                                  GoRouter.of(context).push(
-                                    "/library/generate/result",
-                                    extra: routeState,
-                                  );
-                                },
+                                      seedGenres: genres.value,
+                                      limit: limit.value,
+                                      max: max.value,
+                                      min: min.value,
+                                      target: target.value,
+                                    );
+                                    context.navigateTo(
+                                      PlaylistGenerateResultRoute(
+                                        state: routeState,
+                                      ),
+                                    );
+                                  },
+                            child: Text(context.l10n.generate),
+                          ),
                         ),
                       ],
                     ),
