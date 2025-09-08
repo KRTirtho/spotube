@@ -18,6 +18,10 @@ Btw it's not just another Electron app 😉
 
 ---
 
+![Spotube Desktop](assets/branding/spotube-screenshot.png)
+
+![Spotube Mobile](assets/branding/mobile-screenshots/combined.jpg)
+
 </div>
 
 ## 🌃 Features

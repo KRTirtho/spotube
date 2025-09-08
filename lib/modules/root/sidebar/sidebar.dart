@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -19,19 +18,6 @@ class Sidebar extends HookConsumerWidget {
     required this.child,
     super.key,
   });
-
-  static Widget brandLogo(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Assets.branding.spotubeLogoPng.image(
-        height: 50,
-        cacheHeight: (100 * MediaQuery.devicePixelRatioOf(context)).toInt(),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
