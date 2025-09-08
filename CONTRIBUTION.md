@@ -138,7 +138,7 @@ Do the following:
 - Create a `.env` in root of the project following the `.env.example` template
 - Now run the following to bootstrap the project
   ```bash
-  fvm flutter pub get && fvm dart run build_runner build --delete-conflicting-outputs --enable-experiment=records,patterns
+  fvm flutter pub get && fvm dart run build_runner build --delete-conflicting-outputs
   ```
 - Finally run these following commands in the root of the project to start the Spotube Locally
   ```bash
