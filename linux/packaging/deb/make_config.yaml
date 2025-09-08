@@ -15,7 +15,7 @@ dependencies:
   - gir1.2-appindicator3-0.1 | gir1.2-ayatanaappindicator3-0.1
   - libsecret-1-0
   - libnotify-bin
-  - libjsoncpp25
+  - libjsoncpp1 | libjsoncpp25 | libjsoncpp26
   - libmpv1 | libmpv2
   - xdg-user-dirs
   - avahi-daemon
