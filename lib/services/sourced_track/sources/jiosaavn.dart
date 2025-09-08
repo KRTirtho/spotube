@@ -216,7 +216,7 @@ class JioSaavnSourcedTrack extends SourcedTrack {
       ref: ref,
       siblings: newSiblings,
       sources: source!,
-      info: info,
+      info: newSourceInfo,
       query: query,
       source: AudioSource.jiosaavn,
     );

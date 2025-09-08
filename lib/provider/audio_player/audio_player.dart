@@ -421,6 +421,20 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     );
   }
 
+  Future<void> swapActiveSource() async {
+    if (state.tracks.isEmpty || state.activeTrack is! SpotubeFullTrackObject) {
+      return;
+    }
+
+    final currentIndex = state.currentIndex;
+    final currentTrack = state.activeTrack as SpotubeFullTrackObject;
+    final swappedMedia = SpotubeMedia(currentTrack);
+
+    await audioPlayer.addTrackAt(swappedMedia, currentIndex + 1);
+    await audioPlayer.skipToNext();
+    await audioPlayer.removeTrack(currentIndex);
+  }
+
   Future<void> jumpToTrack(SpotubeTrackObject track) async {
     final index =
         state.tracks.toList().indexWhere((element) => element.id == track.id);

@@ -120,6 +120,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     dynamic ref,
   ) async {
     assert(ref is WidgetRef || ref is Ref, "Invalid ref type");
+
     List<TrackSource>? sourceMap;
     if (index == 0) {
       final manifest =
@@ -338,6 +339,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final newSourceInfo = isStepSibling
         ? sibling
         : siblings.firstWhere((s) => s.id == sibling.id);
+
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
       ..insert(0, info);
 
@@ -364,7 +366,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
       source: source,
       siblings: newSiblings,
       sources: toTrackSources(manifest),
-      info: info,
+      info: newSourceInfo,
       query: query,
     );
   }
