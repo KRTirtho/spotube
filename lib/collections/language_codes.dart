@@ -137,6 +137,10 @@ abstract class LanguageLocals {
       name: "Simplified Chinese",
       nativeName: "简体中文",
     ),
+    "zh_TW": const ISOLanguageName(
+      name: "Traditional Chinese",
+      nativeName: "繁體中文（台灣）",
+    ),
     // "cv": const ISOLanguageName(
     //   name: "Chuvash",
     //   nativeName: "чӑваш чӗлхи",
