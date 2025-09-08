@@ -8,7 +8,7 @@ import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/playlists.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 import 'package:auto_route/auto_route.dart';
 

@@ -105,7 +105,6 @@ abstract class SpotubeIcons {
   static const file = FeatherIcons.file;
   static const stream = Icons.stream_rounded;
   static const lastFm = SimpleIcons.lastdotfm;
-  static const spotify = SimpleIcons.spotify;
   static const eye = FeatherIcons.eye;
   static const noEye = FeatherIcons.eyeOff;
   static const normalize = FeatherIcons.barChart2;
@@ -135,4 +134,9 @@ abstract class SpotubeIcons {
   static const list = FeatherIcons.list;
   static const device = FeatherIcons.smartphone;
   static const engine = FeatherIcons.server;
+  static const extensions = FeatherIcons.package;
+  static const message = FeatherIcons.send;
+  static const upload = FeatherIcons.uploadCloud;
+  static const plugin = Icons.extension_outlined;
+  static const warning = FeatherIcons.alertTriangle;
 }

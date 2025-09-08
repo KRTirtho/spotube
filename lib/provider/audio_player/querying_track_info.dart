@@ -1,24 +1,25 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/server/sourced_track.dart';
-import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/provider/server/track_sources.dart';
 
 final queryingTrackInfoProvider = Provider<bool>((ref) {
-  final media = audioPlayer.playlist.index == -1 ||
-          audioPlayer.playlist.medias.isEmpty
-      ? null
-      : audioPlayer.playlist.medias.elementAtOrNull(audioPlayer.playlist.index);
-  final audioPlayerActiveTrack =
-      media == null ? null : SpotubeMedia.fromMedia(media);
+  final audioPlayer = ref.watch(audioPlayerProvider);
 
-  final activeMedia = ref.watch(audioPlayerProvider.select(
-        (s) => s.activeMedia == null
-            ? null
-            : SpotubeMedia.fromMedia(s.activeMedia!),
-      )) ??
-      audioPlayerActiveTrack;
+  if (audioPlayer.activeTrack == null) {
+    return false;
+  }
 
-  if (activeMedia == null) return false;
+  if (audioPlayer.activeTrack is! SpotubeFullTrackObject) {
+    return false;
+  }
 
-  return ref.watch(sourcedTrackProvider(activeMedia)).isLoading;
+  return ref
+      .watch(trackSourcesProvider(
+        TrackSourceQuery.fromTrack(
+          audioPlayer.activeTrack! as SpotubeFullTrackObject,
+        ),
+      ))
+      .isLoading;
 });

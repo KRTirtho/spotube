@@ -8,7 +8,7 @@ import 'package:spotube/extensions/context.dart';
 
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/tracks.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 import 'package:auto_route/auto_route.dart';
 
@@ -52,8 +52,13 @@ class StatsMinutesPage extends HookConsumerWidget {
               return StatsTrackItem(
                 track: track.track,
                 info: Text(
-                  context.l10n.count_mins(compactNumberFormatter
-                      .format(track.count * track.track.duration!.inMinutes)),
+                  context.l10n.count_mins(
+                    compactNumberFormatter.format(
+                      track.count *
+                          Duration(milliseconds: track.track.durationMs)
+                              .inMinutes,
+                    ),
+                  ),
                 ),
               );
             },

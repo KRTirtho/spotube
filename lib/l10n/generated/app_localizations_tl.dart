@@ -79,7 +79,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get liked_tracks => 'Mga Nagustuhang Track';
 
   @override
-  String get liked_tracks_description => 'Lahat ng mga track na iyong nagustuhan';
+  String get liked_tracks_description =>
+      'Lahat ng mga track na iyong nagustuhan';
 
   @override
   String get playlist => 'Playlist';
@@ -342,7 +343,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get queue => 'Pila';
 
   @override
-  String get alternative_track_sources => 'Alternatibong mga pinagmulan ng track';
+  String get alternative_track_sources =>
+      'Alternatibong mga pinagmulan ng track';
 
   @override
   String get download_track => 'I-download ang track';
@@ -380,12 +382,6 @@ class AppLocalizationsTl extends AppLocalizations {
   String get account => 'Account';
 
   @override
-  String get login_with_spotify => 'Mag-login gamit ang iyong Spotify account';
-
-  @override
-  String get connect_with_spotify => 'Kumonekta sa Spotify';
-
-  @override
   String get logout => 'Mag-logout';
 
   @override
@@ -413,7 +409,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get layout_mode => 'Mode ng Layout';
 
   @override
-  String get override_layout_settings => 'I-override ang mga setting ng responsive layout mode';
+  String get override_layout_settings =>
+      'I-override ang mga setting ng responsive layout mode';
 
   @override
   String get adaptive => 'Umaangkop';
@@ -443,7 +440,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get sync_album_color => 'I-sync ang kulay ng album';
 
   @override
-  String get sync_album_color_description => 'Ginagamit ang pangunahing kulay ng album art bilang kulay ng accent';
+  String get sync_album_color_description =>
+      'Ginagamit ang pangunahing kulay ng album art bilang kulay ng accent';
 
   @override
   String get playback => 'Playback';
@@ -461,16 +459,19 @@ class AppLocalizationsTl extends AppLocalizations {
   String get pre_download_play => 'Mag-pre-download at i-play';
 
   @override
-  String get pre_download_play_description => 'Sa halip na mag-stream ng audio, mag-download ng bytes at i-play sa halip (Inirerekomenda para sa mga gumagamit ng mataas na bandwidth)';
+  String get pre_download_play_description =>
+      'Sa halip na mag-stream ng audio, mag-download ng bytes at i-play sa halip (Inirerekomenda para sa mga gumagamit ng mataas na bandwidth)';
 
   @override
-  String get skip_non_music => 'Laktawan ang mga segment na hindi musika (SponsorBlock)';
+  String get skip_non_music =>
+      'Laktawan ang mga segment na hindi musika (SponsorBlock)';
 
   @override
   String get blacklist_description => 'Mga track at artista na nasa blacklist';
 
   @override
-  String get wait_for_download_to_finish => 'Mangyaring maghintay para matapos ang kasalukuyang pag-download';
+  String get wait_for_download_to_finish =>
+      'Mangyaring maghintay para matapos ang kasalukuyang pag-download';
 
   @override
   String get desktop => 'Desktop';
@@ -506,7 +507,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get please_sponsor => 'Mangyaring Mag-sponsor/Mag-donate';
 
   @override
-  String get spotube_description => 'Spotube, isang magaan, cross-platform, libreng-para-sa-lahat na spotify client';
+  String get spotube_description =>
+      'Spotube, isang magaan, cross-platform, libreng-para-sa-lahat na spotify client';
 
   @override
   String get version => 'Bersyon';
@@ -538,21 +540,14 @@ class AppLocalizationsTl extends AppLocalizations {
   String get license => 'Lisensya';
 
   @override
-  String get add_spotify_credentials => 'Idagdag ang iyong mga kredensyal sa spotify para makapagsimula';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => 'Huwag mag-alala, ang alinman sa iyong mga kredensyal ay hindi kokolektahin o ibabahagi sa sinuman';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'Huwag mag-alala, ang alinman sa iyong mga kredensyal ay hindi kokolektahin o ibabahagi sa sinuman';
 
   @override
   String get know_how_to_login => 'Hindi mo alam kung paano gawin ito?';
 
   @override
   String get follow_step_by_step_guide => 'Sundin ang Hakbang-hakbang na gabay';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name Cookie';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -584,52 +579,29 @@ class AppLocalizationsTl extends AppLocalizations {
   String get first_go_to => 'Una, Pumunta sa';
 
   @override
-  String get login_if_not_logged_in => 'at Mag-login/Mag-signup kung hindi ka naka-log in';
-
-  @override
-  String get step_2 => 'Hakbang 2';
-
-  @override
-  String get step_2_steps => '1. Kapag naka-log in ka na, pindutin ang F12 o i-right click ang Mouse > Inspect para Buksan ang Browser devtools.\n2. Pagkatapos ay pumunta sa \"Application\" Tab (Chrome, Edge, Brave atbp..) o \"Storage\" Tab (Firefox, Palemoon atbp..)\n3. Pumunta sa \"Cookies\" na seksyon at pagkatapos sa \"https://accounts.spotify.com\" na subseksyon';
-
-  @override
-  String get step_3 => 'Hakbang 3';
-
-  @override
-  String get step_3_steps => 'Kopyahin ang halaga ng \"sp_dc\" Cookie';
-
-  @override
-  String get success_emoji => 'Tagumpay🥳';
-
-  @override
-  String get success_message => 'Ngayon ay matagumpay kang Naka-log in gamit ang iyong Spotify account. Magaling, kaibigan!';
-
-  @override
-  String get step_4 => 'Hakbang 4';
-
-  @override
-  String get step_4_steps => 'I-paste ang na-kopyang halaga ng \"sp_dc\"';
-
-  @override
   String get something_went_wrong => 'May nangyaring mali';
 
   @override
   String get piped_instance => 'Instance ng Piped Server';
 
   @override
-  String get piped_description => 'Ang instance ng Piped server na gagamitin para sa pagtutugma ng track';
+  String get piped_description =>
+      'Ang instance ng Piped server na gagamitin para sa pagtutugma ng track';
 
   @override
-  String get piped_warning => 'Maaaring hindi gumagana nang mabuti ang ilan sa mga ito. Kaya gamitin sa sarili mong peligro';
+  String get piped_warning =>
+      'Maaaring hindi gumagana nang mabuti ang ilan sa mga ito. Kaya gamitin sa sarili mong peligro';
 
   @override
   String get invidious_instance => 'Instance ng Invidious Server';
 
   @override
-  String get invidious_description => 'Ang instance ng Invidious server na gagamitin para sa pagtutugma ng track';
+  String get invidious_description =>
+      'Ang instance ng Invidious server na gagamitin para sa pagtutugma ng track';
 
   @override
-  String get invidious_warning => 'Maaaring hindi gumagana nang mabuti ang ilan sa mga ito. Kaya gamitin sa sarili mong peligro';
+  String get invidious_warning =>
+      'Maaaring hindi gumagana nang mabuti ang ilan sa mga ito. Kaya gamitin sa sarili mong peligro';
 
   @override
   String get generate => 'Gumawa';
@@ -640,13 +612,16 @@ class AppLocalizationsTl extends AppLocalizations {
   }
 
   @override
-  String get replace_downloaded_tracks => 'Palitan ang lahat ng na-download na mga track';
+  String get replace_downloaded_tracks =>
+      'Palitan ang lahat ng na-download na mga track';
 
   @override
-  String get skip_download_tracks => 'Laktawan ang pag-download ng lahat ng na-download na mga track';
+  String get skip_download_tracks =>
+      'Laktawan ang pag-download ng lahat ng na-download na mga track';
 
   @override
-  String get do_you_want_to_replace => 'Gusto mo bang palitan ang umiiral na track??';
+  String get do_you_want_to_replace =>
+      'Gusto mo bang palitan ang umiiral na track??';
 
   @override
   String get replace => 'Palitan';
@@ -752,22 +727,28 @@ class AppLocalizationsTl extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'Kung nag-download ka ng lahat ng Track sa maramihan, malinaw na nagpa-pirate ka ng Musika at nagsasanhi ng pinsala sa creative society ng Musika. Sana ay alam mo ito. Palaging, subukang igalang at suportahan ang masipag na paggawa ng Artist';
+  String get download_warning =>
+      'Kung nag-download ka ng lahat ng Track sa maramihan, malinaw na nagpa-pirate ka ng Musika at nagsasanhi ng pinsala sa creative society ng Musika. Sana ay alam mo ito. Palaging, subukang igalang at suportahan ang masipag na paggawa ng Artist';
 
   @override
-  String get download_ip_ban_warning => 'Sa nga pala, ang iyong IP ay maaaring ma-block sa YouTube dahil sa sobrang mga kahilingan sa pag-download kaysa sa karaniwan. Ang IP block ay nangangahulugang hindi mo magagamit ang YouTube (kahit na naka-log in ka) sa loob ng hindi bababa sa 2-3 buwan mula sa device na may IP na iyon. At hindi pinanghahawakan ng Spotube ang anumang responsibilidad kung mangyayari ito';
+  String get download_ip_ban_warning =>
+      'Sa nga pala, ang iyong IP ay maaaring ma-block sa YouTube dahil sa sobrang mga kahilingan sa pag-download kaysa sa karaniwan. Ang IP block ay nangangahulugang hindi mo magagamit ang YouTube (kahit na naka-log in ka) sa loob ng hindi bababa sa 2-3 buwan mula sa device na may IP na iyon. At hindi pinanghahawakan ng Spotube ang anumang responsibilidad kung mangyayari ito';
 
   @override
-  String get by_clicking_accept_terms => 'Sa pamamagitan ng pag-click sa \'tanggapin\', sumasang-ayon ka sa mga sumusunod na tuntunin:';
+  String get by_clicking_accept_terms =>
+      'Sa pamamagitan ng pag-click sa \'tanggapin\', sumasang-ayon ka sa mga sumusunod na tuntunin:';
 
   @override
-  String get download_agreement_1 => 'Alam kong nagpa-pirate ako ng Musika. Masama ako';
+  String get download_agreement_1 =>
+      'Alam kong nagpa-pirate ako ng Musika. Masama ako';
 
   @override
-  String get download_agreement_2 => 'Susuportahan ko ang Artist saan man ako maaari at ginagawa ko lang ito dahil wala akong pera para bumili ng kanilang sining';
+  String get download_agreement_2 =>
+      'Susuportahan ko ang Artist saan man ako maaari at ginagawa ko lang ito dahil wala akong pera para bumili ng kanilang sining';
 
   @override
-  String get download_agreement_3 => 'Lubos kong nauunawaan na ang aking IP ay maaaring ma-block sa YouTube at hindi ko pinanghahawakan ang Spotube o ang kanyang mga may-ari/nag-ambag na responsable para sa anumang aksidente na sanhi ng aking kasalukuyang aksyon';
+  String get download_agreement_3 =>
+      'Lubos kong nauunawaan na ang aking IP ay maaaring ma-block sa YouTube at hindi ko pinanghahawakan ang Spotube o ang kanyang mga may-ari/nag-ambag na responsable para sa anumang aksidente na sanhi ng aking kasalukuyang aksyon';
 
   @override
   String get decline => 'Tanggihan';
@@ -848,7 +829,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get failed_to_encrypt => 'Nabigong i-encrypt';
 
   @override
-  String get encryption_failed_warning => 'Gumagamit ng encryption ang Spotube para ligtas na i-store ang iyong data. Ngunit nabigo. Kaya babalik ito sa hindi secure na storage\nKung gumagamit ka ng linux, mangyaring tiyakin na mayroon kang anumang secret-service na naka-install (gnome-keyring, kde-wallet, keepassxc atbp)';
+  String get encryption_failed_warning =>
+      'Gumagamit ng encryption ang Spotube para ligtas na i-store ang iyong data. Ngunit nabigo. Kaya babalik ito sa hindi secure na storage\nKung gumagamit ka ng linux, mangyaring tiyakin na mayroon kang anumang secret-service na naka-install (gnome-keyring, kde-wallet, keepassxc atbp)';
 
   @override
   String get querying_info => 'Kinukuha ang impormasyon...';
@@ -865,7 +847,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get you_are_offline => 'Kasalukuyan kang offline';
 
   @override
-  String get connection_restored => 'Naibalik na ang iyong koneksyon sa internet';
+  String get connection_restored =>
+      'Naibalik na ang iyong koneksyon sa internet';
 
   @override
   String get use_system_title_bar => 'Gamitin ang title bar ng system';
@@ -922,7 +905,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get login => 'Mag-login';
 
   @override
-  String get login_with_your_lastfm => 'Mag-login gamit ang iyong Last.fm account';
+  String get login_with_your_lastfm =>
+      'Mag-login gamit ang iyong Last.fm account';
 
   @override
   String get scrobble_to_lastfm => 'I-scrobble sa Last.fm';
@@ -946,7 +930,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get friends => 'Mga Kaibigan';
 
   @override
-  String get no_lyrics_available => 'Paumanhin, hindi mahanap ang lyrics para sa track na ito';
+  String get no_lyrics_available =>
+      'Paumanhin, hindi mahanap ang lyrics para sa track na ito';
 
   @override
   String get start_a_radio => 'Magsimula ng Radio';
@@ -955,7 +940,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get how_to_start_radio => 'Paano mo gustong simulan ang radio?';
 
   @override
-  String get replace_queue_question => 'Gusto mo bang palitan ang kasalukuyang pila o idagdag dito?';
+  String get replace_queue_question =>
+      'Gusto mo bang palitan ang kasalukuyang pila o idagdag dito?';
 
   @override
   String get endless_playback => 'Walang Hanggang Playback';
@@ -964,7 +950,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get delete_playlist => 'Burahin ang Playlist';
 
   @override
-  String get delete_playlist_confirmation => 'Sigurado ka bang gusto mong burahin ang playlist na ito?';
+  String get delete_playlist_confirmation =>
+      'Sigurado ka bang gusto mong burahin ang playlist na ito?';
 
   @override
   String get local_tracks => 'Mga Lokal na Track';
@@ -988,16 +975,20 @@ class AppLocalizationsTl extends AppLocalizations {
   String get get_started => 'Magsimula na tayo';
 
   @override
-  String get youtube_source_description => 'Inirerekomenda at pinakamahusay na gumagana.';
+  String get youtube_source_description =>
+      'Inirerekomenda at pinakamahusay na gumagana.';
 
   @override
-  String get piped_source_description => 'Gusto ng kalayaan? Kapareho ng YouTube ngunit mas malaya.';
+  String get piped_source_description =>
+      'Gusto ng kalayaan? Kapareho ng YouTube ngunit mas malaya.';
 
   @override
-  String get jiosaavn_source_description => 'Pinakamahusay para sa rehiyon ng South Asia.';
+  String get jiosaavn_source_description =>
+      'Pinakamahusay para sa rehiyon ng South Asia.';
 
   @override
-  String get invidious_source_description => 'Katulad ng Piped ngunit may mas mataas na availability.';
+  String get invidious_source_description =>
+      'Katulad ng Piped ngunit may mas mataas na availability.';
 
   @override
   String highest_quality(Object quality) {
@@ -1008,13 +999,15 @@ class AppLocalizationsTl extends AppLocalizations {
   String get select_audio_source => 'Pumili ng Pinagmulan ng Audio';
 
   @override
-  String get endless_playback_description => 'Awtomatikong magdagdag ng mga bagong kanta\nsa dulo ng pila';
+  String get endless_playback_description =>
+      'Awtomatikong magdagdag ng mga bagong kanta\nsa dulo ng pila';
 
   @override
   String get choose_your_region => 'Piliin ang iyong rehiyon';
 
   @override
-  String get choose_your_region_description => 'Ito ay tutulong sa Spotube na ipakita sa iyo ang tamang content\npara sa iyong lokasyon.';
+  String get choose_your_region_description =>
+      'Ito ay tutulong sa Spotube na ipakita sa iyo ang tamang content\npara sa iyong lokasyon.';
 
   @override
   String get choose_your_language => 'Piliin ang iyong wika';
@@ -1023,7 +1016,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get help_project_grow => 'Tulungan ang proyektong ito na lumago';
 
   @override
-  String get help_project_grow_description => 'Ang Spotube ay isang open-source na proyekto. Maaari mong tulungan ang proyektong ito na lumago sa pamamagitan ng pag-contribute sa proyekto, pag-ulat ng mga bug, o pagmungkahi ng mga bagong feature.';
+  String get help_project_grow_description =>
+      'Ang Spotube ay isang open-source na proyekto. Maaari mong tulungan ang proyektong ito na lumago sa pamamagitan ng pag-contribute sa proyekto, pag-ulat ng mga bug, o pagmungkahi ng mga bagong feature.';
 
   @override
   String get contribute_on_github => 'Mag-contribute sa GitHub';
@@ -1038,7 +1032,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get enable_connect => 'I-enable ang Connect';
 
   @override
-  String get enable_connect_description => 'Kontrolin ang Spotube mula sa ibang mga device';
+  String get enable_connect_description =>
+      'Kontrolin ang Spotube mula sa ibang mga device';
 
   @override
   String get devices => 'Mga Device';
@@ -1117,7 +1112,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get choose_the_device => 'Piliin ang device:';
 
   @override
-  String get multiple_device_connected => 'Mayroong maraming device na nakakonekta.\nPiliin ang device kung saan mo gustong maganap ang aksyon na ito';
+  String get multiple_device_connected =>
+      'Mayroong maraming device na nakakonekta.\nPiliin ang device kung saan mo gustong maganap ang aksyon na ito';
 
   @override
   String get nothing_found => 'Walang nahanap';
@@ -1190,7 +1186,8 @@ class AppLocalizationsTl extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical => 'Mga bayarin sa streaming (hypothetical)';
+  String get streaming_fees_hypothetical =>
+      'Mga bayarin sa streaming (hypothetical)';
 
   @override
   String get minutes_listened => 'Mga minutong pinapakinggan';
@@ -1212,7 +1209,8 @@ class AppLocalizationsTl extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*Ito ay kinalkula batay sa bawat stream\nna bayad ng Spotify na \$0.003 hanggang \$0.005. Ito ay isang hypothetical\nna pagkalkula para bigyan ang user ng ideya kung magkano\nang kanilang ibabayad sa mga artista kung sila ay nakikinig\nng kanilang kanta sa Spotify.';
+  String get hipotetical_calculation =>
+      '*Ito ay kinakalkula batay sa average na payout ng online music streaming platform na \$0.003 hanggang \$0.005 kada stream. Ito ay isang hypothetical na kalkulasyon upang bigyan ang user ng insight kung magkano ang babayaran nila sa mga artist kung sakaling makinig sila ng kanilang kanta sa iba\'t ibang music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1259,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get webview_not_found => 'Hindi nahanap ang Webview';
 
   @override
-  String get webview_not_found_description => 'Walang webview runtime na naka-install sa iyong device.\nKung naka-install ito, siguraduhing nasa Environment PATH\n\nPagkatapos mag-install, i-restart ang app';
+  String get webview_not_found_description =>
+      'Walang webview runtime na naka-install sa iyong device.\nKung naka-install ito, siguraduhing nasa Environment PATH\n\nPagkatapos mag-install, i-restart ang app';
 
   @override
   String get unsupported_platform => 'Hindi suportadong platform';
@@ -1293,7 +1292,8 @@ class AppLocalizationsTl extends AppLocalizations {
   }
 
   @override
-  String get export_cache_confirmation => 'Gusto mo bang i-export ang mga file na ito sa';
+  String get export_cache_confirmation =>
+      'Gusto mo bang i-export ang mga file na ito sa';
 
   @override
   String exported_n_out_of_m_files(Object files, Object filesExported) {
@@ -1322,7 +1322,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get view_all => 'Tingnan lahat';
 
   @override
-  String get no_tracks_added_yet => 'Mukhang wala ka pang idinaragdag na mga track';
+  String get no_tracks_added_yet =>
+      'Mukhang wala ka pang idinaragdag na mga track';
 
   @override
   String get no_tracks => 'Mukhang walang mga track dito';
@@ -1331,10 +1332,12 @@ class AppLocalizationsTl extends AppLocalizations {
   String get no_tracks_listened_yet => 'Mukhang wala ka pang pinakikinggan';
 
   @override
-  String get not_following_artists => 'Hindi ka sumusunod sa anumang mga artista';
+  String get not_following_artists =>
+      'Hindi ka sumusunod sa anumang mga artista';
 
   @override
-  String get no_favorite_albums_yet => 'Mukhang wala ka pang idinagdag na anumang mga album sa iyong mga paborito';
+  String get no_favorite_albums_yet =>
+      'Mukhang wala ka pang idinagdag na anumang mga album sa iyong mga paborito';
 
   @override
   String get no_logs_found => 'Walang nahanap na mga log';
@@ -1358,7 +1361,8 @@ class AppLocalizationsTl extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'Sa macOS/Linux/unix tulad ng OS, ang pag-set ng path sa .zshrc/.bashrc/.bash_profile atbp. ay hindi gagana.\nKailangan mong i-set ang path sa configuration file ng shell';
+  String get youtube_engine_unix_issue_message =>
+      'Sa macOS/Linux/unix tulad ng OS, ang pag-set ng path sa .zshrc/.bashrc/.bash_profile atbp. ay hindi gagana.\nKailangan mong i-set ang path sa configuration file ng shell';
 
   @override
   String get download => 'I-download';
@@ -1376,7 +1380,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get edit_port => 'I-edit ang port';
 
   @override
-  String get port_helper_msg => 'Ang default ay -1 na nagpapahiwatig ng random na numero. Kung na-configure mo ang firewall, inirerekomenda na itakda ito.';
+  String get port_helper_msg =>
+      'Ang default ay -1 na nagpapahiwatig ng random na numero. Kung na-configure mo ang firewall, inirerekomenda na itakda ito.';
 
   @override
   String connect_request(Object client) {
@@ -1384,5 +1389,166 @@ class AppLocalizationsTl extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'Tanggihan ang koneksyon. Tinanggihan ng gumagamit ang pag-access.';
+  String get connection_request_denied =>
+      'Tanggihan ang koneksyon. Tinanggihan ng gumagamit ang pag-access.';
+
+  @override
+  String get an_error_occurred => 'May naganap na error';
+
+  @override
+  String get copy_to_clipboard => 'Kopyahin sa clipboard';
+
+  @override
+  String get view_logs => 'Tingnan ang mga log';
+
+  @override
+  String get retry => 'Subukang muli';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'Wala kang nakatakdang default na metadata provider';
+
+  @override
+  String get manage_metadata_providers =>
+      'Pamahalaan ang mga metadata provider';
+
+  @override
+  String get open_link_in_browser => 'Buksan ang Link sa Browser?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Gusto mo bang buksan ang sumusunod na link';
+
+  @override
+  String get unsafe_url_warning =>
+      'Maaaring hindi ligtas ang pagbukas ng mga link mula sa hindi pinagkakatiwalaang pinagmulan. Mag-ingat!\nMaaari mo ring kopyahin ang link sa iyong clipboard.';
+
+  @override
+  String get copy_link => 'Kopyahin ang Link';
+
+  @override
+  String get building_your_timeline =>
+      'Binubuo ang iyong timeline batay sa iyong mga pinakinggan...';
+
+  @override
+  String get official => 'Opisyal';
+
+  @override
+  String author_name(Object author) {
+    return 'May-akda: $author';
+  }
+
+  @override
+  String get third_party => 'Third-party';
+
+  @override
+  String get plugin_requires_authentication =>
+      'Nangangailangan ng authentication ang plugin';
+
+  @override
+  String get update_available => 'May available na update';
+
+  @override
+  String get supports_scrobbling => 'Sinusuportahan ang scrobbling';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Sinis-scrobble ng plugin na ito ang iyong musika upang mabuo ang iyong kasaysayan ng pakikinig.';
+
+  @override
+  String get default_plugin => 'Default';
+
+  @override
+  String get set_default => 'Itakda bilang default';
+
+  @override
+  String get support => 'Suporta';
+
+  @override
+  String get support_plugin_development => 'Suportahan ang pagbuo ng plugin';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- Maaaring i-access ang **$name** API';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Gusto mo bang i-install ang plugin na ito?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Ang plugin na ito ay mula sa third-party na repository. Mangyaring tiyakin na pinagkakatiwalaan mo ang pinagmulan bago mag-install.';
+
+  @override
+  String get author => 'May-akda';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'Maaaring gawin ng plugin na ito ang sumusunod';
+
+  @override
+  String get install => 'I-install';
+
+  @override
+  String get install_a_metadata_provider => 'Mag-install ng Metadata Provider';
+
+  @override
+  String get no_tracks_playing => 'Walang Track na kasalukuyang tumutugtog';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Hindi available ang mga naka-sync na lyrics para sa kantang ito. Mangyaring gamitin ang';
+
+  @override
+  String get plain_lyrics => 'Simpleng Lyrics';
+
+  @override
+  String get tab_instead => 'na tab sa halip.';
+
+  @override
+  String get disclaimer => 'Disclaimer';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Ang Spotube team ay walang hawak na anumang responsibilidad (kabilang ang legal) para sa anumang \"Third-party\" plugins.\nMangyaring gamitin ang mga ito sa iyong sariling peligro. Para sa anumang mga bug/isyu, mangyaring iulat ang mga ito sa repository ng plugin.\n\nKung ang anumang \"Third-party\" plugin ay lumalabag sa ToS/DMCA ng anumang serbisyo/legal na entity, mangyaring hilingin sa \"Third-party\" plugin author o sa hosting platform e.g. GitHub/Codeberg na gumawa ng aksyon. Ang nakalista sa itaas (\"Third-party\" na may label) ay lahat ng pampubliko/komunidad na pinananatiling mga plugin. Hindi namin sila kinukurusado, kaya hindi kami makakagawa ng anumang aksyon sa kanila.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'Ang input ay hindi tumutugma sa kinakailangang format';
+
+  @override
+  String get metadata_provider_plugins => 'Mga Plugin ng Metadata Provider';
+
+  @override
+  String get paste_plugin_download_url =>
+      'I-paste ang download url o GitHub/Codeberg repo url o direktang link sa .smplug file';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'I-download at i-install ang plugin mula sa url';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Nabigo ang pagdagdag ng plugin: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'I-upload ang plugin mula sa file';
+
+  @override
+  String get installed => 'Naka-install';
+
+  @override
+  String get available_plugins => 'Mga available na plugin';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'I-configure ang iyong sariling playlist/album/artist/feed metadata provider';
+
+  @override
+  String get audio_scrobblers => 'Mga Audio Scrobbler';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

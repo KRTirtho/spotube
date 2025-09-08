@@ -9,14 +9,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
+import 'package:spotube/components/fallbacks/no_default_metadata_plugin.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
+import 'package:spotube/provider/metadata_plugin/library/albums.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 
 @RoutePage()
 class UserAlbumsPage extends HookConsumerWidget {
@@ -25,9 +28,10 @@ class UserAlbumsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final auth = ref.watch(authenticationProvider);
-    final albumsQuery = ref.watch(favoriteAlbumsProvider);
-    final albumsQueryNotifier = ref.watch(favoriteAlbumsProvider.notifier);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
+    final albumsQuery = ref.watch(metadataPluginSavedAlbumsProvider);
+    final albumsQueryNotifier =
+        ref.watch(metadataPluginSavedAlbumsProvider.notifier);
 
     final controller = useScrollController();
 
@@ -39,7 +43,7 @@ class UserAlbumsPage extends HookConsumerWidget {
       }
       return albumsQuery.asData?.value.items
               .map((e) => (
-                    weightedRatio(e.name!, searchText.value),
+                    weightedRatio(e.name, searchText.value),
                     e,
                   ))
               .sorted((a, b) => b.$1.compareTo(a.$1))
@@ -49,8 +53,25 @@ class UserAlbumsPage extends HookConsumerWidget {
           [];
     }, [albumsQuery.asData?.value, searchText.value]);
 
-    if (auth.asData?.value == null) {
+    if (albumsQuery.error
+        case MetadataPluginException(
+          errorCode: MetadataPluginErrorCode.noDefaultPlugin,
+          message: _,
+        )) {
+      return const Center(child: NoDefaultMetadataPlugin());
+    }
+
+    if (authenticated.asData?.value != true) {
       return const AnonymousFallback();
+    }
+
+    if (albumsQuery.hasError) {
+      return ErrorBox(
+        error: albumsQuery.error!,
+        onRetry: () {
+          ref.invalidate(metadataPluginSavedAlbumsProvider);
+        },
+      );
     }
 
     return SafeArea(
@@ -58,7 +79,7 @@ class UserAlbumsPage extends HookConsumerWidget {
       child: Scaffold(
         child: material.RefreshIndicator.adaptive(
           onRefresh: () async {
-            ref.invalidate(favoriteAlbumsProvider);
+            ref.invalidate(metadataPluginSavedAlbumsProvider);
           },
           child: InterScrollbar(
             controller: controller,
@@ -78,7 +99,7 @@ class UserAlbumsPage extends HookConsumerWidget {
                         features: const [
                           InputFeature.leading(Icon(SpotubeIcons.filter))
                         ],
-                        placeholder: Text(context.l10n.filter_artist),
+                        placeholder: Text(context.l10n.filter_albums),
                       ),
                     ),
                   ),
@@ -100,7 +121,7 @@ class UserAlbumsPage extends HookConsumerWidget {
                             color: Theme.of(context).colorScheme.primary,
                           ),
                           Text(
-                            context.l10n.not_following_artists,
+                            context.l10n.no_favorite_albums_yet,
                             textAlign: TextAlign.center,
                           ).muted().small()
                         ],

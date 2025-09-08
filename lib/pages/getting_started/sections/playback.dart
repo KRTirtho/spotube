@@ -19,9 +19,10 @@ final audioSourceToIconMap = {
   AudioSource.piped: const Icon(SpotubeIcons.piped, size: 20),
   AudioSource.invidious: ClipRRect(
     borderRadius: BorderRadius.circular(26),
-    child: Assets.invidious.image(width: 26, height: 26),
+    child: Assets.images.logos.invidious.image(width: 26, height: 26),
   ),
-  AudioSource.jiosaavn: Assets.jiosaavn.image(width: 20, height: 20),
+  AudioSource.jiosaavn:
+      Assets.images.logos.jiosaavn.image(width: 20, height: 20),
 };
 
 class GettingStartedPagePlaybackSection extends HookConsumerWidget {

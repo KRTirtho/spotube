@@ -14,7 +14,7 @@ class TextFormBuilderField extends StatelessWidget {
   // final AlignmentGeometry? placeholderAlignment;
   // final AlignmentGeometry? leadingAlignment;
   // final AlignmentGeometry? trailingAlignment;
-  final bool border;
+  final Border? border;
   final List<InputFeature> features;
   final EdgeInsetsGeometry? padding;
   final ValueChanged<String>? onSubmitted;
@@ -61,7 +61,7 @@ class TextFormBuilderField extends StatelessWidget {
     this.minLines,
     this.filled = false,
     this.placeholder,
-    this.border = true,
+    this.border,
     this.padding,
     this.onSubmitted,
     this.onEditingComplete,
