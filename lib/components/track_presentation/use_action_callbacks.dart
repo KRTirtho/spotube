@@ -13,6 +13,7 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/connect/connect.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 typedef UseActionCallbacks = ({
   bool isActive,
@@ -82,6 +83,9 @@ UseActionCallbacks useActionCallbacks(WidgetRef ref) {
           allTracks.sublist(initialTracks.length),
         );
       }
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack);
+      rethrow;
     } finally {
       isLoading.value = false;
     }
@@ -134,6 +138,9 @@ UseActionCallbacks useActionCallbacks(WidgetRef ref) {
           allTracks.sublist(initialTracks.length),
         );
       }
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack);
+      rethrow;
     } finally {
       if (context.mounted) {
         isLoading.value = false;

@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 abstract class FamilyPaginatedAsyncNotifier<K, A>
     extends FamilyAsyncNotifier<SpotubePaginationResponseObject<K>, A>
@@ -27,7 +29,8 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
       final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
       state = AsyncData(newState.copyWith(items: <K>[...oldItems, ...items]));
-    } catch (e) {
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack);
       state = AsyncData(oldState!);
     }
   }
@@ -38,17 +41,32 @@ abstract class FamilyPaginatedAsyncNotifier<K, A>
 
     bool hasMore = true;
     while (hasMore) {
-      await update((state) async {
-        final newState = await fetch(
-          state.nextOffset!,
-          state.limit,
-        );
+      final newState = await fetch(
+        state.value!.nextOffset!,
+        max(state.value!.limit, 100),
+      )
+          .catchError(
+            (e) => fetch(state.value!.nextOffset!, max(state.value!.limit, 50)),
+          )
+          .catchError(
+            (e) => fetch(state.value!.nextOffset!, state.value!.limit),
+          )
+          .catchError(
+        (e) async {
+          await Future.delayed(const Duration(milliseconds: 500));
+          return fetch(state.value!.nextOffset!, state.value!.limit);
+        },
+      );
 
-        hasMore = newState.hasMore;
-        final oldItems = state.items.isEmpty ? <K>[] : state.items.cast<K>();
-        final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
-        return newState.copyWith(items: <K>[...oldItems, ...items]);
-      });
+      hasMore = newState.hasMore;
+
+      final oldItems =
+          state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+      final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+
+      state = AsyncData(
+        newState.copyWith(items: [...oldItems, ...items]),
+      );
     }
 
     return state.value!.items.cast<K>();
@@ -78,7 +96,8 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
           ...newState.items.cast<K>(),
         ]),
       );
-    } catch (e) {
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack);
       state = AsyncData(oldState!);
     }
   }
@@ -89,18 +108,32 @@ abstract class AutoDisposeFamilyPaginatedAsyncNotifier<K, A>
 
     bool hasMore = true;
     while (hasMore) {
-      await update((state) async {
-        final newState = await fetch(
-          state.nextOffset!,
-          state.limit,
-        );
+      final newState = await fetch(
+        state.value!.nextOffset!,
+        max(state.value!.limit, 100),
+      )
+          .catchError(
+            (e) => fetch(state.value!.nextOffset!, max(state.value!.limit, 50)),
+          )
+          .catchError(
+            (e) => fetch(state.value!.nextOffset!, state.value!.limit),
+          )
+          .catchError(
+        (e) async {
+          await Future.delayed(const Duration(milliseconds: 500));
+          return fetch(state.value!.nextOffset!, state.value!.limit);
+        },
+      );
 
-        hasMore = newState.hasMore;
-        return newState.copyWith(items: [
-          ...state.items.cast<K>(),
-          ...newState.items.cast<K>(),
-        ]);
-      });
+      hasMore = newState.hasMore;
+
+      final oldItems =
+          state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+      final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+
+      state = AsyncData(
+        newState.copyWith(items: [...oldItems, ...items]),
+      );
     }
 
     return state.value!.items.cast<K>();
