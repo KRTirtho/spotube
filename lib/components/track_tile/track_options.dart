@@ -18,12 +18,15 @@ class TrackOptions extends HookConsumerWidget {
   final bool userPlaylist;
   final String? playlistId;
   final Widget? icon;
+  final VoidCallback? onTapItem;
+
   const TrackOptions({
     super.key,
     required this.track,
     this.userPlaylist = false,
     this.playlistId,
     this.icon,
+    this.onTapItem,
   }) : assert(
           track is SpotubeFullTrackObject || track is SpotubeLocalTrackObject,
           "Track must be a SpotubeFullTrackObject, SpotubeLocalTrackObject",
@@ -60,6 +63,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.delete,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: const Icon(SpotubeIcons.trash),
             title: Text(context.l10n.delete),
@@ -73,6 +77,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.album,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: const Icon(SpotubeIcons.album),
             title: Column(
@@ -96,6 +101,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.addToQueue,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: const Icon(SpotubeIcons.queueAdd),
             title: Text(context.l10n.add_to_queue),
@@ -108,6 +114,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.playNext,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: const Icon(SpotubeIcons.lightning),
             title: Text(context.l10n.play_next),
@@ -121,6 +128,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.removeFromQueue,
                 playlistId,
               );
+              onTapItem?.call();
             },
             enabled: !isActiveTrack,
             leading: const Icon(SpotubeIcons.queueRemove),
@@ -135,6 +143,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.favorite,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: isLiked
                 ? const Icon(
@@ -157,6 +166,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.startRadio,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: const Icon(SpotubeIcons.radio),
             title: Text(context.l10n.start_a_radio),
@@ -169,6 +179,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.addToPlaylist,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: const Icon(SpotubeIcons.playlistAdd),
             title: Text(context.l10n.add_to_playlist),
@@ -183,6 +194,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.removeFromPlaylist,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: const Icon(SpotubeIcons.removeFilled),
             title: Text(context.l10n.remove_from_playlist),
@@ -196,6 +208,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.download,
                 playlistId,
               );
+              onTapItem?.call();
             },
             enabled: !isInDownloadQueue,
             leading: isInDownloadQueue
@@ -217,6 +230,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.blacklist,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: Icon(
               SpotubeIcons.playlistRemove,
@@ -240,6 +254,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.share,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: const Icon(SpotubeIcons.share),
             title: Text(context.l10n.share),
@@ -253,6 +268,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.songlink,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: Assets.images.logos.songlinkTransparent.image(
               width: 22,
@@ -270,6 +286,7 @@ class TrackOptions extends HookConsumerWidget {
                 TrackOptionValue.details,
                 playlistId,
               );
+              onTapItem?.call();
             },
             leading: const Icon(SpotubeIcons.info),
             title: Text(context.l10n.details),

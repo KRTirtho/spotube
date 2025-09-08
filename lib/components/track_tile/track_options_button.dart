@@ -42,6 +42,9 @@ class TrackOptionsButton extends HookConsumerWidget {
               track: track,
               playlistId: playlistId,
               userPlaylist: userPlaylist,
+              onTapItem: () {
+                closeOverlay(context);
+              },
             ),
           ),
         );
@@ -133,6 +136,9 @@ class TrackOptionsButton extends HookConsumerWidget {
                       track: track,
                       userPlaylist: userPlaylist,
                       playlistId: playlistId,
+                      onTapItem: () {
+                        closeDrawer(context);
+                      },
                     ),
                   ],
                 ),
