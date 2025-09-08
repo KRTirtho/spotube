@@ -21,7 +21,6 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
@@ -40,7 +39,6 @@ class PlayerView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
     final sourcedCurrentTrack = ref.watch(activeTrackSourcesProvider);
     final currentActiveTrack =
         ref.watch(audioPlayerProvider.select((s) => s.activeTrack));
@@ -105,13 +103,15 @@ class PlayerView extends HookConsumerWidget {
                 surfaceBlur: 0,
                 leading: [
                   IconButton.ghost(
-                    icon: const Icon(SpotubeIcons.angleDown, size: 18),
+                    size: const ButtonSize(1.2),
+                    icon: const Icon(SpotubeIcons.angleDown),
                     onPressed: panelController.close,
                   )
                 ],
                 trailing: [
                   if (currentActiveTrackSource is YoutubeSourcedTrack)
                     TextButton(
+                      size: const ButtonSize(1.2),
                       leading: Assets.images.logos.songlinkTransparent.image(
                         width: 20,
                         height: 20,
@@ -131,7 +131,8 @@ class PlayerView extends HookConsumerWidget {
                         child: Text(context.l10n.details),
                       ).call,
                       child: IconButton.ghost(
-                        icon: const Icon(SpotubeIcons.info, size: 18),
+                        size: const ButtonSize(1.2),
+                        icon: const Icon(SpotubeIcons.info),
                         onPressed: currentActiveTrackSource == null
                             ? null
                             : () {
@@ -239,18 +240,16 @@ class PlayerView extends HookConsumerWidget {
                           },
                         ),
                       ),
-                      if (authenticated.asData?.value == true)
-                        const SizedBox(width: 10),
-                      if (authenticated.asData?.value == true)
-                        Expanded(
-                          child: OutlineButton(
-                            leading: const Icon(SpotubeIcons.music),
-                            child: Text(context.l10n.lyrics),
-                            onPressed: () {
-                              context.pushRoute(const PlayerLyricsRoute());
-                            },
-                          ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: OutlineButton(
+                          leading: const Icon(SpotubeIcons.music),
+                          child: Text(context.l10n.lyrics),
+                          onPressed: () {
+                            context.pushRoute(const PlayerLyricsRoute());
+                          },
                         ),
+                      ),
                       const SizedBox(width: 10),
                     ],
                   ),

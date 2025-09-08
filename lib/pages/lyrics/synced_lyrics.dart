@@ -18,8 +18,6 @@ import 'package:spotube/provider/lyrics/synced.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 
-import 'package:stroke_text/stroke_text.dart';
-
 class SyncedLyrics extends HookConsumerWidget {
   final PaletteColor palette;
   final bool? isModal;
@@ -160,6 +158,9 @@ class SyncedLyrics extends HookConsumerWidget {
                               child: AnimatedDefaultTextStyle(
                                 duration: const Duration(milliseconds: 250),
                                 style: TextStyle(
+                                  color: isActive
+                                      ? theme.colorScheme.foreground
+                                      : theme.colorScheme.mutedForeground,
                                   fontWeight: isActive
                                       ? FontWeight.w500
                                       : FontWeight.normal,
@@ -181,25 +182,7 @@ class SyncedLyrics extends HookConsumerWidget {
                                       }
                                       audioPlayer.seek(time);
                                     },
-                                    child: Builder(builder: (context) {
-                                      return StrokeText(
-                                        text: lyricSlice.text,
-                                        textStyle:
-                                            DefaultTextStyle.of(context).style,
-                                        textColor: switch ((
-                                          isActive,
-                                          isModal == true
-                                        )) {
-                                          (true, _) => Colors.white,
-                                          (_, true) =>
-                                            theme.colorScheme.mutedForeground,
-                                          (_, _) => palette.bodyTextColor,
-                                        },
-                                        strokeColor: isActive
-                                            ? Colors.black
-                                            : Colors.transparent,
-                                      );
-                                    }),
+                                    child: Text(lyricSlice.text),
                                   ),
                                 ),
                               ),
