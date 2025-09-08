@@ -3,7 +3,7 @@ description: Open source extensible music streaming platform and app, based on B
 
 publish_to: "none"
 
-version: 4.0.2+41
+version: 5.0.0+42
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
