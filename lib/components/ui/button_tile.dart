@@ -9,7 +9,7 @@ class ButtonTile extends StatelessWidget {
   final VoidCallback? onPressed;
   final VoidCallback? onLongPress;
   final bool selected;
-  final ButtonVariance style;
+  final AbstractButtonStyle style;
   final EdgeInsets? padding;
 
   const ButtonTile({

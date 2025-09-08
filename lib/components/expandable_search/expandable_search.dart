@@ -40,7 +40,9 @@ class ExpandableSearchField extends StatelessWidget {
                 focusNode: searchFocus,
                 controller: searchController,
                 placeholder: Text(context.l10n.search_tracks),
-                leading: const Icon(SpotubeIcons.search),
+                features: const [
+                  InputFeature.leading(Icon(SpotubeIcons.search))
+                ],
               ),
             ),
           ),

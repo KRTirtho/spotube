@@ -1,104 +1,60 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
-import 'package:spotify/spotify.dart' hide Playlist;
-import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
-class AudioPlayerState {
-  final bool playing;
-  final PlaylistMode loopMode;
-  final bool shuffled;
-  final Playlist playlist;
+part 'state.freezed.dart';
+part 'state.g.dart';
 
-  final List<Track> tracks;
-  final List<String> collections;
+@freezed
+class AudioPlayerState with _$AudioPlayerState {
+  const AudioPlayerState._();
 
-  AudioPlayerState({
-    required this.playing,
-    required this.loopMode,
-    required this.shuffled,
-    required this.playlist,
-    required this.collections,
-    List<Track>? tracks,
-  }) : tracks = tracks ??
-            playlist.medias
-                .map((media) => SpotubeMedia.fromMedia(media).track)
-                .toList();
+  factory AudioPlayerState._inner({
+    required bool playing,
+    required PlaylistMode loopMode,
+    required bool shuffled,
+    required List<String> collections,
+    @Default(0) int currentIndex,
+    @Default([]) List<SpotubeTrackObject> tracks,
+  }) = _AudioPlayerState;
 
-  factory AudioPlayerState.fromJson(Map<String, dynamic> json) {
-    return AudioPlayerState(
-      playing: json['playing'],
-      loopMode: PlaylistMode.values.firstWhere(
-        (e) => e.name == json['loopMode'],
-        orElse: () => audioPlayer.loopMode,
-      ),
-      shuffled: json['shuffled'],
-      playlist: Playlist(
-        json['playlist']['medias']
-            .map(
-              (media) => SpotubeMedia.fromMedia(Media(
-                media['uri'],
-                extras: media['extras'],
-                httpHeaders: media['httpHeaders'],
-              )),
-            )
-            .cast<Media>()
-            .toList(),
-        index: json['playlist']['index'],
-      ),
-      collections: List<String>.from(json['collections']),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'playing': playing,
-      'loopMode': loopMode.name,
-      'shuffled': shuffled,
-      'playlist': {
-        'medias': playlist.medias
-            .map((media) => {
-                  'uri': media.uri,
-                  'extras': media.extras,
-                  'httpHeaders': media.httpHeaders,
-                })
-            .toList(),
-        'index': playlist.index,
-      },
-      'collections': collections,
-    };
-  }
-
-  AudioPlayerState copyWith({
-    bool? playing,
-    PlaylistMode? loopMode,
-    bool? shuffled,
-    Playlist? playlist,
-    List<String>? collections,
+  factory AudioPlayerState({
+    required bool playing,
+    required PlaylistMode loopMode,
+    required bool shuffled,
+    required List<String> collections,
+    int currentIndex = 0,
+    List<SpotubeTrackObject> tracks = const [],
   }) {
-    return AudioPlayerState(
-      playing: playing ?? this.playing,
-      loopMode: loopMode ?? this.loopMode,
-      shuffled: shuffled ?? this.shuffled,
-      playlist: playlist ?? this.playlist,
-      collections: collections ?? this.collections,
-      tracks: playlist == null ? tracks : null,
+    assert(
+      tracks.every((track) =>
+          track is SpotubeFullTrackObject || track is SpotubeLocalTrackObject),
+      'All tracks must be either SpotubeFullTrackObject or SpotubeLocalTrackObject',
+    );
+
+    return AudioPlayerState._inner(
+      playing: playing,
+      loopMode: loopMode,
+      shuffled: shuffled,
+      currentIndex: currentIndex,
+      tracks: tracks,
+      collections: collections,
     );
   }
 
-  Track? get activeTrack {
-    if (playlist.index == -1) return null;
-    return tracks.elementAtOrNull(playlist.index);
+  factory AudioPlayerState.fromJson(Map<String, dynamic> json) =>
+      _$AudioPlayerStateFromJson(json);
+
+  SpotubeTrackObject? get activeTrack {
+    if (currentIndex < 0 || currentIndex >= tracks.length) return null;
+    return tracks[currentIndex];
   }
 
-  Media? get activeMedia {
-    if (playlist.index == -1 || playlist.medias.isEmpty) return null;
-    return playlist.medias.elementAt(playlist.index);
-  }
-
-  bool containsTrack(Track track) {
+  bool containsTrack(SpotubeTrackObject track) {
     return tracks.any((t) => t.id == track.id);
   }
 
-  bool containsTracks(List<Track> tracks) {
+  bool containsTracks(List<SpotubeTrackObject> tracks) {
     return tracks.every(containsTrack);
   }
 

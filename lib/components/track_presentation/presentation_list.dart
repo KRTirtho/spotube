@@ -1,10 +1,12 @@
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/presentation_state.dart';
 import 'package:spotube/components/track_presentation/use_track_tile_play_callback.dart';
@@ -29,6 +31,19 @@ class PresentationListSection extends HookConsumerWidget {
     final onTileTap = useTrackTilePlayCallback(ref);
 
     if (state.presentationTracks.isEmpty && !options.pagination.isLoading) {
+      if (options.error != null) {
+        return SliverToBoxAdapter(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ErrorBox(
+                error: options.error!,
+                onRetry: options.pagination.onRefresh,
+              ),
+            ),
+          ),
+        );
+      }
       return SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -80,9 +95,12 @@ class PresentationListSection extends HookConsumerWidget {
           ),
         ),
       ),
-      itemBuilder: (context, index) {
+      itemBuilder: (context, index) => HookBuilder(builder: (context) {
         final track = state.presentationTracks[index];
-        final isSelected = state.selectedTracks.any((e) => e.id == track.id);
+        final isSelected = useMemoized(
+          () => state.selectedTracks.any((e) => e.id == track.id),
+          [track.id, state.selectedTracks],
+        );
         return TrackTile(
           userPlaylist: isUserPlaylist,
           playlistId: options.collectionId,
@@ -105,7 +123,7 @@ class PresentationListSection extends HookConsumerWidget {
             HapticFeedback.selectionClick();
           },
         );
-      },
+      }),
     );
   }
 }

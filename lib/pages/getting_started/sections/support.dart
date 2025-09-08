@@ -6,7 +6,6 @@ import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/mobile_login/hooks/login_callback.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -15,8 +14,6 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final onLogin = useLoginCallback(ref);
-
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -107,40 +104,15 @@ class GettingStartedScreenSupportSection extends HookConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Button.secondary(
-                  leading: const Icon(SpotubeIcons.anonymous),
+                Button.primary(
+                  leading: const Icon(SpotubeIcons.extensions),
                   onPressed: () async {
                     await KVStoreService.setDoneGettingStarted(true);
                     if (context.mounted) {
-                      context.navigateTo(const HomeRoute());
+                      context.pushRoute(const SettingsMetadataProviderRoute());
                     }
                   },
-                  child: Text(context.l10n.browse_anonymously),
-                ),
-                const Gap(16),
-                Button.primary(
-                  leading: const Icon(SpotubeIcons.spotify),
-                  style: ButtonVariance.primary.copyWith(
-                    decoration: (context, states, value) {
-                      if (states.isNotEmpty) {
-                        return ButtonVariance.primary
-                            .decoration(context, states);
-                      }
-
-                      return BoxDecoration(
-                        color: const Color(0xff1db954),
-                        borderRadius: BorderRadius.circular(8),
-                      );
-                    },
-                  ),
-                  onPressed: () async {
-                    await KVStoreService.setDoneGettingStarted(true);
-                    await onLogin();
-                  },
-                  child: Text(
-                    context.l10n.connect_with_spotify,
-                    style: const TextStyle(color: Colors.white),
-                  ),
+                  child: Text(context.l10n.install_a_metadata_provider),
                 ),
               ],
             ),

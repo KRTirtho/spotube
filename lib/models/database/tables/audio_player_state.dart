@@ -6,22 +6,29 @@ class AudioPlayerStateTable extends Table {
   TextColumn get loopMode => textEnum<PlaylistMode>()();
   BoolColumn get shuffled => boolean()();
   TextColumn get collections => text().map(const StringListConverter())();
+  TextColumn get tracks => text()
+      .map(const SpotubeTrackObjectListConverter())
+      .withDefault(const Constant("[]"))();
+  IntColumn get currentIndex => integer().withDefault(const Constant(0))();
 }
 
-class PlaylistTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get audioPlayerStateId =>
-      integer().references(AudioPlayerStateTable, #id)();
-  IntColumn get index => integer()();
-}
+class SpotubeTrackObjectListConverter
+    extends TypeConverter<List<SpotubeTrackObject>, String> {
+  const SpotubeTrackObjectListConverter();
 
-class PlaylistMediaTable extends Table {
-  IntColumn get id => integer().autoIncrement()();
-  IntColumn get playlistId => integer().references(PlaylistTable, #id)();
+  @override
+  List<SpotubeTrackObject> fromSql(String fromDb) {
+    final raw = (jsonDecode(fromDb) as List).cast<Map>();
 
-  TextColumn get uri => text()();
-  TextColumn get extras =>
-      text().nullable().map(const MapTypeConverter<String, dynamic>())();
-  TextColumn get httpHeaders =>
-      text().nullable().map(const MapTypeConverter<String, String>())();
+    return raw
+        .map((e) => SpotubeTrackObject.fromJson(e.cast<String, dynamic>()))
+        .toList();
+  }
+
+  @override
+  String toSql(List<SpotubeTrackObject> value) {
+    return jsonEncode(
+      value.map((e) => e.toJson()).toList(),
+    );
+  }
 }

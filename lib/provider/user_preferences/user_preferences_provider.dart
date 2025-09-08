@@ -4,8 +4,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart' as paths;
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/market.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -90,9 +90,9 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   Future<void> reset() async {
     final db = ref.read(databaseProvider);
 
-    final query = db.update(db.preferencesTable)..where((t) => t.id.equals(0));
+    final query = db.update(db.preferencesTable);
 
-    await query.replace(PreferencesTableCompanion.insert());
+    await query.replace(PreferencesTableCompanion.insert(id: const Value(0)));
   }
 
   static Future<String> getMusicCacheDir() async {
@@ -238,6 +238,14 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setEnableConnect(bool enable) {
     setData(PreferencesTableCompanion(enableConnect: Value(enable)));
+  }
+
+  void setConnectPort(int port) {
+    assert(
+      port >= -1 && port <= 65535,
+      "Port must be between -1 and 65535, got $port",
+    );
+    setData(PreferencesTableCompanion(connectPort: Value(port)));
   }
 
   void setCacheMusic(bool cache) {

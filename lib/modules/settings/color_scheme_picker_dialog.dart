@@ -21,7 +21,7 @@ class SpotubeColor extends Color {
 
   @override
   String toString() {
-    return "$name:$value";
+    return "$name:${toARGB32()}";
   }
 }
 
@@ -41,18 +41,18 @@ final Set<SpotubeColor> colorsMap = {
 };
 
 final colorSchemeMap = {
-  "slate": ColorSchemes.slate,
-  "gray": ColorSchemes.gray,
-  "zinc": ColorSchemes.zinc,
-  "neutral": ColorSchemes.neutral,
-  "stone": ColorSchemes.stone,
-  "red": ColorSchemes.red,
-  "orange": ColorSchemes.orange,
-  "yellow": ColorSchemes.yellow,
-  "green": ColorSchemes.green,
-  "blue": ColorSchemes.blue,
-  "violet": ColorSchemes.violet,
-  "rose": ColorSchemes.rose,
+  "slate": LegacyColorSchemes.slate,
+  "gray": LegacyColorSchemes.gray,
+  "zinc": LegacyColorSchemes.zinc,
+  "neutral": LegacyColorSchemes.neutral,
+  "stone": LegacyColorSchemes.stone,
+  "red": LegacyColorSchemes.red,
+  "orange": LegacyColorSchemes.orange,
+  "yellow": LegacyColorSchemes.yellow,
+  "green": LegacyColorSchemes.green,
+  "blue": LegacyColorSchemes.blue,
+  "violet": LegacyColorSchemes.violet,
+  "rose": LegacyColorSchemes.rose,
 };
 
 class ColorSchemePickerDialog extends HookConsumerWidget {

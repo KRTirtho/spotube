@@ -18,6 +18,17 @@
       ]
     },
     {
+      "name": "spotube (mobile-skia)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "args": [
+        "--flavor",
+        "dev",
+        "--no-enable-impeller"
+      ]
+    },
+    {
       "name": "spotube (profile)",
       "type": "dart",
       "request": "launch",

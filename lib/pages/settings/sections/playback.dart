@@ -4,19 +4,16 @@ import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' show ListTile;
-import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:form_builder_validators/form_builder_validators.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:piped_client/piped_client.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/form/text_form_field.dart';
-import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/modules/settings/playback/edit_connect_port_dialog.dart';
+import 'package:spotube/modules/settings/playback/edit_instance_url_dialog.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
 import 'package:spotube/extensions/context.dart';
@@ -106,7 +103,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                       Tooltip(
                         tooltip: TooltipContainer(
                           child: Text(context.l10n.add_custom_url),
-                        ),
+                        ).call,
                         child: IconButton.outline(
                           icon: const Icon(SpotubeIcons.edit),
                           size: ButtonSize.small,
@@ -114,67 +111,12 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                             showDialog(
                               context: context,
                               barrierColor: Colors.black.withValues(alpha: 0.5),
-                              builder: (context) => HookBuilder(
-                                builder: (context) {
-                                  final controller =
-                                      useShadcnTextEditingController(
-                                    text: preferences.pipedInstance,
-                                  );
-                                  final formKey = useMemoized(
-                                      () => GlobalKey<FormBuilderState>(), []);
-
-                                  return Alert(
-                                    title:
-                                        Text(context.l10n.piped_instance).h4(),
-                                    content: FormBuilder(
-                                      key: formKey,
-                                      child: Column(
-                                        children: [
-                                          const Gap(10),
-                                          TextFormBuilderField(
-                                            name: "url",
-                                            controller: controller,
-                                            placeholder: Text(
-                                                context.l10n.piped_instance),
-                                            validator:
-                                                FormBuilderValidators.url(),
-                                          ),
-                                          const Gap(10),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Button.secondary(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child:
-                                                      Text(context.l10n.cancel),
-                                                ),
-                                              ),
-                                              const Gap(10),
-                                              Expanded(
-                                                child: Button.primary(
-                                                  onPressed: () {
-                                                    if (!formKey.currentState!
-                                                        .saveAndValidate()) {
-                                                      return;
-                                                    }
-                                                    preferencesNotifier
-                                                        .setPipedInstance(
-                                                      controller.text,
-                                                    );
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child:
-                                                      Text(context.l10n.save),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
+                              builder: (context) =>
+                                  SettingsPlaybackEditInstanceUrlDialog(
+                                title: context.l10n.piped_instance,
+                                initialValue: preferences.pipedInstance,
+                                onSave: (value) {
+                                  preferencesNotifier.setPipedInstance(value);
                                 },
                               ),
                             );
@@ -261,7 +203,7 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                       Tooltip(
                         tooltip: TooltipContainer(
                           child: Text(context.l10n.add_custom_url),
-                        ),
+                        ).call,
                         child: IconButton.outline(
                           icon: const Icon(SpotubeIcons.edit),
                           size: ButtonSize.small,
@@ -269,67 +211,13 @@ class SettingsPlaybackSection extends HookConsumerWidget {
                             showDialog(
                               context: context,
                               barrierColor: Colors.black.withValues(alpha: 0.5),
-                              builder: (context) => HookBuilder(
-                                builder: (context) {
-                                  final controller =
-                                      useShadcnTextEditingController(
-                                    text: preferences.invidiousInstance,
-                                  );
-                                  final formKey = useMemoized(
-                                      () => GlobalKey<FormBuilderState>(), []);
-
-                                  return Alert(
-                                    title: Text(context.l10n.invidious_instance)
-                                        .h4(),
-                                    content: FormBuilder(
-                                      key: formKey,
-                                      child: Column(
-                                        children: [
-                                          const Gap(10),
-                                          TextFormBuilderField(
-                                            name: "url",
-                                            controller: controller,
-                                            placeholder: Text(context
-                                                .l10n.invidious_instance),
-                                            validator:
-                                                FormBuilderValidators.url(),
-                                          ),
-                                          const Gap(10),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: Button.secondary(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child:
-                                                      Text(context.l10n.cancel),
-                                                ),
-                                              ),
-                                              const Gap(10),
-                                              Expanded(
-                                                child: Button.primary(
-                                                  onPressed: () {
-                                                    if (!formKey.currentState!
-                                                        .saveAndValidate()) {
-                                                      return;
-                                                    }
-                                                    preferencesNotifier
-                                                        .setInvidiousInstance(
-                                                      controller.text,
-                                                    );
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child:
-                                                      Text(context.l10n.save),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  );
+                              builder: (context) =>
+                                  SettingsPlaybackEditInstanceUrlDialog(
+                                title: context.l10n.invidious_instance,
+                                initialValue: preferences.invidiousInstance,
+                                onSave: (value) {
+                                  preferencesNotifier
+                                      .setInvidiousInstance(value);
                                 },
                               ),
                             );
@@ -561,9 +449,32 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           title: Text(context.l10n.enable_connect),
           subtitle: Text(context.l10n.enable_connect_description),
           leading: const Icon(SpotubeIcons.connect),
-          trailing: Switch(
-            value: preferences.enableConnect,
-            onChanged: preferencesNotifier.setEnableConnect,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            spacing: 10,
+            children: [
+              Tooltip(
+                tooltip: TooltipContainer(
+                  child: Text(context.l10n.edit_port),
+                ).call,
+                child: IconButton.outline(
+                  icon: const Icon(SpotubeIcons.edit),
+                  size: ButtonSize.small,
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      barrierColor: Colors.black.withValues(alpha: 0.5),
+                      builder: (context) =>
+                          const SettingsPlaybackEditConnectPortDialog(),
+                    );
+                  },
+                ),
+              ),
+              Switch(
+                value: preferences.enableConnect,
+                onChanged: preferencesNotifier.setEnableConnect,
+              ),
+            ],
           ),
         ),
       ],

@@ -1,5 +1,4 @@
-import 'package:spotube/services/sourced_track/models/source_info.dart';
-import 'package:spotube/services/sourced_track/models/source_map.dart';
+import 'package:spotube/models/playback/track_sources.dart';
 
 enum SourceCodecs {
   m4a._("M4a (Best for downloaded music)"),
@@ -10,9 +9,23 @@ enum SourceCodecs {
 }
 
 enum SourceQualities {
-  high,
-  medium,
-  low,
+  high(2),
+  medium(1),
+  low(0);
+
+  final int priority;
+  const SourceQualities(this.priority);
+
+  bool operator <(SourceQualities other) {
+    return priority < other.priority;
+  }
+
+  operator >(SourceQualities other) {
+    return priority > other.priority;
+  }
 }
 
-typedef SiblingType<T extends SourceInfo> = ({T info, SourceMap? source});
+typedef SiblingType<T extends TrackSourceInfo> = ({
+  T info,
+  List<TrackSource>? source
+});

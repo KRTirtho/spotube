@@ -1,0 +1,47 @@
+---
+interface PageHeadings {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: PageHeadings[];
+}
+
+const { headings } = Astro.props;
+
+function setDepthClass(depth: number) {
+  if (depth === 3) return "ml-4";
+  if (depth === 4) return "ml-6";
+  if (depth === 5) return "ml-8";
+  if (depth === 6) return "ml-10";
+  return;
+}
+---
+
+{
+  headings.length > 0 && (
+    <nav class="text-sm space-y-2">
+      <div class="font-bold">On This Page</div>
+      <ul class="space-y-2">
+        <li>
+          <a href={`#_top`} class="anchor block">
+            Overview
+          </a>
+        </li>
+        {headings.map((heading: PageHeadings) => (
+          <li>
+            <a
+              href={`#${heading.slug}`}
+              class="anchor block"
+              class:list={`${setDepthClass(heading.depth)}`}
+            >
+              {heading.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}

@@ -1,47 +1,27 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 import 'package:spotube/services/sourced_track/enums.dart';
-import 'package:spotube/services/sourced_track/models/source_info.dart';
-import 'package:spotube/services/sourced_track/models/source_map.dart';
 import 'package:spotube/services/sourced_track/sources/invidious.dart';
 import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
 import 'package:spotube/services/sourced_track/sources/piped.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 import 'package:spotube/utils/service_utils.dart';
 
-abstract class SourcedTrack extends Track {
-  final SourceMap source;
-  final List<SourceInfo> siblings;
-  final SourceInfo sourceInfo;
+abstract class SourcedTrack extends BasicSourcedTrack {
   final Ref ref;
 
   SourcedTrack({
     required this.ref,
-    required this.source,
-    required this.siblings,
-    required this.sourceInfo,
-    required Track track,
-  }) {
-    id = track.id;
-    name = track.name;
-    artists = track.artists;
-    album = track.album;
-    durationMs = track.durationMs;
-    discNumber = track.discNumber;
-    explicit = track.explicit;
-    externalIds = track.externalIds;
-    href = track.href;
-    isPlayable = track.isPlayable;
-    linkedFrom = track.linkedFrom;
-    popularity = track.popularity;
-    previewUrl = track.previewUrl;
-    trackNumber = track.trackNumber;
-    type = track.type;
-    uri = track.uri;
-  }
+    required super.info,
+    required super.query,
+    required super.source,
+    required super.siblings,
+    required super.sources,
+  });
 
   static SourcedTrack fromJson(
     Map<String, dynamic> json, {
@@ -49,111 +29,119 @@ abstract class SourcedTrack extends Track {
   }) {
     final preferences = ref.read(userPreferencesProvider);
 
-    final sourceInfo = SourceInfo.fromJson(json);
-    final source = SourceMap.fromJson(json);
-    final track = Track.fromJson(json);
+    final info = TrackSourceInfo.fromJson(json["info"]);
+    final query = TrackSourceQuery.fromJson(json["query"]);
+    final source = AudioSource.values.firstWhereOrNull(
+          (source) => source.name == json["source"],
+        ) ??
+        preferences.audioSource;
     final siblings = (json["siblings"] as List)
-        .map((sibling) => SourceInfo.fromJson(sibling))
-        .toList()
-        .cast<SourceInfo>();
+        .map((s) => TrackSourceInfo.fromJson(s))
+        .toList();
+    final sources =
+        (json["sources"] as List).map((s) => TrackSource.fromJson(s)).toList();
 
     return switch (preferences.audioSource) {
       AudioSource.youtube => YoutubeSourcedTrack(
           ref: ref,
           source: source,
           siblings: siblings,
-          sourceInfo: sourceInfo,
-          track: track,
+          info: info,
+          query: query,
+          sources: sources,
         ),
       AudioSource.piped => PipedSourcedTrack(
           ref: ref,
           source: source,
           siblings: siblings,
-          sourceInfo: sourceInfo,
-          track: track,
+          info: info,
+          query: query,
+          sources: sources,
         ),
       AudioSource.jiosaavn => JioSaavnSourcedTrack(
           ref: ref,
           source: source,
           siblings: siblings,
-          sourceInfo: sourceInfo,
-          track: track,
+          info: info,
+          query: query,
+          sources: sources,
         ),
       AudioSource.invidious => InvidiousSourcedTrack(
           ref: ref,
           source: source,
           siblings: siblings,
-          sourceInfo: sourceInfo,
-          track: track,
+          info: info,
+          query: query,
+          sources: sources,
         ),
     };
   }
 
-  static String getSearchTerm(Track track) {
-    final artists =
-        (track.artists ?? []).map((ar) => ar.name).toList().nonNulls.toList();
-
+  static String getSearchTerm(TrackSourceQuery track) {
     final title = ServiceUtils.getTitle(
-      track.name!,
-      artists: artists,
+      track.title,
+      artists: track.artists,
       onlyCleanArtist: true,
     ).trim();
 
-    return "$title - ${artists.join(", ")}";
+    assert(title.trim().isNotEmpty, "Title should not be empty");
+
+    return "$title - ${track.artists.join(", ")}";
   }
 
-  static Future<SourcedTrack> fetchFromTrack({
-    required Track track,
+  static Future<SourcedTrack> fetchFromQuery({
+    required TrackSourceQuery query,
     required Ref ref,
   }) async {
     final preferences = ref.read(userPreferencesProvider);
     try {
       return switch (preferences.audioSource) {
         AudioSource.youtube =>
-          await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref),
+          await YoutubeSourcedTrack.fetchFromTrack(query: query, ref: ref),
         AudioSource.piped =>
-          await PipedSourcedTrack.fetchFromTrack(track: track, ref: ref),
+          await PipedSourcedTrack.fetchFromTrack(query: query, ref: ref),
         AudioSource.invidious =>
-          await InvidiousSourcedTrack.fetchFromTrack(track: track, ref: ref),
+          await InvidiousSourcedTrack.fetchFromTrack(query: query, ref: ref),
         AudioSource.jiosaavn =>
-          await JioSaavnSourcedTrack.fetchFromTrack(track: track, ref: ref),
+          await JioSaavnSourcedTrack.fetchFromTrack(query: query, ref: ref),
       };
     } catch (e) {
       if (preferences.audioSource == AudioSource.youtube) {
         rethrow;
       }
 
-      return await YoutubeSourcedTrack.fetchFromTrack(track: track, ref: ref);
+      return await YoutubeSourcedTrack.fetchFromTrack(query: query, ref: ref);
     }
   }
 
   static Future<List<SiblingType>> fetchSiblings({
-    required Track track,
+    required TrackSourceQuery query,
     required Ref ref,
   }) {
     final preferences = ref.read(userPreferencesProvider);
 
     return switch (preferences.audioSource) {
       AudioSource.piped =>
-        PipedSourcedTrack.fetchSiblings(track: track, ref: ref),
+        PipedSourcedTrack.fetchSiblings(query: query, ref: ref),
       AudioSource.youtube =>
-        YoutubeSourcedTrack.fetchSiblings(track: track, ref: ref),
+        YoutubeSourcedTrack.fetchSiblings(query: query, ref: ref),
       AudioSource.jiosaavn =>
-        JioSaavnSourcedTrack.fetchSiblings(track: track, ref: ref),
+        JioSaavnSourcedTrack.fetchSiblings(query: query, ref: ref),
       AudioSource.invidious =>
-        InvidiousSourcedTrack.fetchSiblings(track: track, ref: ref),
+        InvidiousSourcedTrack.fetchSiblings(query: query, ref: ref),
     };
   }
 
   Future<SourcedTrack> copyWithSibling();
 
-  Future<SourcedTrack?> swapWithSibling(SourceInfo sibling);
+  Future<SourcedTrack?> swapWithSibling(TrackSourceInfo sibling);
 
   Future<SourcedTrack?> swapWithSiblingOfIndex(int index) {
     return swapWithSibling(siblings[index]);
   }
 
-  String get url {
+  Future<SourcedTrack> refreshStream();
+  String? get url {
     final preferences = ref.read(userPreferencesProvider);
 
     final codec = preferences.audioSource == AudioSource.jiosaavn
@@ -163,13 +151,48 @@ abstract class SourcedTrack extends Track {
     return getUrlOfCodec(codec);
   }
 
-  String getUrlOfCodec(SourceCodecs codec) {
+  /// Returns the URL of the track based on the codec and quality preferences.
+  /// If an exact match is not found, it will return the closest match based on
+  /// the user's audio quality preference.
+  ///
+  /// If no sources match the codec, it will return the first or last source
+  /// based on the user's audio quality preference.
+  String? getUrlOfCodec(SourceCodecs codec) {
     final preferences = ref.read(userPreferencesProvider);
 
-    return source[codec]?[preferences.audioQuality] ??
-        // this will ensure playback doesn't break
-        source[codec == SourceCodecs.m4a ? SourceCodecs.weba : SourceCodecs.m4a]
-            [preferences.audioQuality];
+    final exactMatch = sources.firstWhereOrNull(
+      (source) =>
+          source.codec == codec && source.quality == preferences.audioQuality,
+    );
+
+    if (exactMatch != null) {
+      return exactMatch.url;
+    }
+
+    final sameCodecSources = sources
+        .where((source) => source.codec == codec)
+        .toList()
+        .sorted((a, b) {
+      final aDiff = (a.quality.index - preferences.audioQuality.index).abs();
+      final bDiff = (b.quality.index - preferences.audioQuality.index).abs();
+      return aDiff != bDiff ? aDiff - bDiff : a.quality.index - b.quality.index;
+    }).toList();
+
+    if (sameCodecSources.isNotEmpty) {
+      return preferences.audioQuality > SourceQualities.low
+          ? sameCodecSources.first.url
+          : sameCodecSources.last.url;
+    }
+
+    final fallbackSource = sources.sorted((a, b) {
+      final aDiff = (a.quality.index - preferences.audioQuality.index).abs();
+      final bDiff = (b.quality.index - preferences.audioQuality.index).abs();
+      return aDiff != bDiff ? aDiff - bDiff : a.quality.index - b.quality.index;
+    });
+
+    return preferences.audioQuality > SourceQualities.low
+        ? fallbackSource.firstOrNull?.url
+        : fallbackSource.lastOrNull?.url;
   }
 
   SourceCodecs get codec {
@@ -178,5 +201,13 @@ abstract class SourcedTrack extends Track {
     return preferences.audioSource == AudioSource.jiosaavn
         ? SourceCodecs.m4a
         : preferences.streamMusicCodec;
+  }
+
+  TrackSource get activeTrackSource {
+    final audioQuality = ref.read(userPreferencesProvider).audioQuality;
+    return sources.firstWhereOrNull(
+          (source) => source.codec == codec && source.quality == audioQuality,
+        ) ??
+        sources.first;
   }
 }

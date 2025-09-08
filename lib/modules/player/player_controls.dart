@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/collections/intents.dart';
@@ -89,7 +89,7 @@ class PlayerControls extends HookConsumerWidget {
                         Tooltip(
                           tooltip: TooltipContainer(
                             child: Text(context.l10n.slide_to_seek),
-                          ),
+                          ).call,
                           child: SizedBox(
                             width: mediaQuery.xlAndUp ? 600 : 500,
                             child: Slider(
@@ -147,7 +147,7 @@ class PlayerControls extends HookConsumerWidget {
                               ? context.l10n.unshuffle_playlist
                               : context.l10n.shuffle_playlist,
                         ),
-                      ),
+                      ).call,
                       child: IconButton(
                         icon: Icon(
                           SpotubeIcons.shuffle,
@@ -170,7 +170,7 @@ class PlayerControls extends HookConsumerWidget {
                   }),
                   Tooltip(
                     tooltip: TooltipContainer(
-                        child: Text(context.l10n.previous_track)),
+                        child: Text(context.l10n.previous_track)).call,
                     child: IconButton.ghost(
                       enabled: !isFetchingActiveTrack,
                       icon: const Icon(SpotubeIcons.skipBack),
@@ -184,7 +184,7 @@ class PlayerControls extends HookConsumerWidget {
                             ? context.l10n.pause_playback
                             : context.l10n.resume_playback,
                       ),
-                    ),
+                    ).call,
                     child: IconButton.primary(
                       shape: ButtonShape.circle,
                       icon: isFetchingActiveTrack
@@ -206,7 +206,7 @@ class PlayerControls extends HookConsumerWidget {
                   ),
                   Tooltip(
                     tooltip:
-                        TooltipContainer(child: Text(context.l10n.next_track)),
+                        TooltipContainer(child: Text(context.l10n.next_track)).call,
                     child: IconButton.ghost(
                       icon: const Icon(SpotubeIcons.skipForward),
                       onPressed:
@@ -226,7 +226,7 @@ class PlayerControls extends HookConsumerWidget {
                                   ? context.l10n.repeat_playlist
                                   : "",
                         ),
-                      ),
+                      ).call,
                       child: IconButton(
                         icon: Icon(
                           loopMode == PlaylistMode.single

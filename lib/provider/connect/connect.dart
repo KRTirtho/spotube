@@ -1,11 +1,15 @@
 import 'dart:convert';
 
 import 'package:media_kit/media_kit.dart' hide Track;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.dart';
+import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/extensions/context.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/models/connect/connect.dart';
 
 import 'package:spotube/provider/connect/clients.dart';
@@ -37,7 +41,8 @@ final queueProvider = StateProvider<AudioPlayerState>(
     playing: audioPlayer.isPlaying,
     loopMode: audioPlayer.loopMode,
     shuffled: audioPlayer.isShuffled,
-    playlist: audioPlayer.playlist,
+    tracks: [],
+    currentIndex: 0,
     collections: [],
   ),
 );
@@ -46,15 +51,17 @@ final volumeProvider = StateProvider<double>(
   (ref) => 1.0,
 );
 
-class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
+typedef ConnectState = ({WebSocketChannel channel, Stream stream});
+
+class ConnectNotifier extends AsyncNotifier<ConnectState?> {
   @override
   build() async {
     try {
-      final connectClients = ref.watch(connectClientsProvider);
+      final connectClients = await ref.watch(connectClientsProvider.future);
 
-      if (connectClients.asData?.value.resolvedService == null) return null;
+      if (connectClients.resolvedService == null) return null;
 
-      final service = connectClients.asData!.value.resolvedService!;
+      final service = connectClients.resolvedService!;
 
       AppLogger.log.t(
         '♾️ Connecting to ${service.name}: ws://${service.host}:${service.port}/ws',
@@ -70,7 +77,9 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
         '✅ Connected to ${service.name}: ws://${service.host}:${service.port}/ws',
       );
 
-      final subscription = channel.stream.listen(
+      final stream = channel.stream.asBroadcastStream();
+
+      final subscription = stream.listen(
         (message) {
           final event =
               WebSocketEvent.fromJson(jsonDecode(message), (data) => data);
@@ -102,6 +111,38 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
           event.onVolume((event) {
             ref.read(volumeProvider.notifier).state = event.data;
           });
+
+          event.onError((event) {
+            if (event.data == "Connection denied") {
+              ref.read(connectClientsProvider.notifier).clearResolvedService();
+
+              if (rootNavigatorKey.currentContext?.mounted == true) {
+                final theme = Theme.of(rootNavigatorKey.currentContext!);
+
+                showToast(
+                  context: rootNavigatorKey.currentContext!,
+                  location: ToastLocation.topRight,
+                  dismissible: true,
+                  builder: (context, overlay) {
+                    return SurfaceCard(
+                      fillColor: theme.colorScheme.destructive,
+                      filled: true,
+                      child: Basic(
+                        leading: const Icon(SpotubeIcons.error),
+                        title: Text(
+                          context.l10n.connection_request_denied,
+                          style: theme.typography.normal.copyWith(
+                            color: theme.colorScheme.destructiveForeground,
+                          ),
+                        ),
+                        leadingAlignment: Alignment.center,
+                      ),
+                    );
+                  },
+                );
+              }
+            }
+          });
         },
         onError: (error) {
           AppLogger.reportError(error, StackTrace.current);
@@ -113,7 +154,7 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
         channel.sink.close(status.goingAway);
       });
 
-      return channel;
+      return (channel: channel, stream: stream);
     } catch (e, stack) {
       AppLogger.reportError(e, stack);
       rethrow;
@@ -122,7 +163,7 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
 
   Future<void> emit(Object message) async {
     if (state.value == null) return;
-    state.value?.sink.add(
+    state.value?.channel.sink.add(
       message is String ? message : (message as dynamic).toJson(),
     );
   }
@@ -167,7 +208,7 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
     emit(WebSocketLoopEvent(value));
   }
 
-  Future<void> addTrack(Track data) async {
+  Future<void> addTrack(SpotubeFullTrackObject data) async {
     emit(WebSocketAddTrackEvent(data));
   }
 
@@ -184,7 +225,6 @@ class ConnectNotifier extends AsyncNotifier<WebSocketChannel?> {
   }
 }
 
-final connectProvider =
-    AsyncNotifierProvider<ConnectNotifier, WebSocketChannel?>(
+final connectProvider = AsyncNotifierProvider<ConnectNotifier, ConnectState?>(
   () => ConnectNotifier(),
 );

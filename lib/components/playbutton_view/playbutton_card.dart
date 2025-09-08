@@ -151,7 +151,7 @@ class PlaybuttonCard extends StatelessWidget {
           ],
         ),
         title: Tooltip(
-          tooltip: TooltipContainer(child: Text(title)),
+          tooltip: TooltipContainer(child: Text(title)).call,
           child: Text(
             title,
             maxLines: 1,

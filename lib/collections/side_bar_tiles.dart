@@ -38,7 +38,7 @@ List<SideBarTiles> getSidebarTileList(AppLocalizations l10n) => [
       SideBarTiles(
         id: "lyrics",
         pathPrefix: "/lyrics",
-        route: LyricsRoute(),
+        route: const LyricsRoute(),
         icon: SpotubeIcons.music,
         title: l10n.lyrics,
       ),

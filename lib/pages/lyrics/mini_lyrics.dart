@@ -2,7 +2,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
@@ -59,7 +59,7 @@ class MiniLyricsPage extends HookConsumerWidget {
               areaActive.value = false;
             },
       child: Scaffold(
-        backgroundColor: theme.colorScheme.background.withOpacity(0.4),
+        backgroundColor: theme.colorScheme.background.withValues(alpha: 0.4),
         headers: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -89,7 +89,8 @@ class MiniLyricsPage extends HookConsumerWidget {
                     const Spacer(),
                     Tooltip(
                       tooltip:
-                          TooltipContainer(child: Text(context.l10n.lyrics)),
+                          TooltipContainer(child: Text(context.l10n.lyrics))
+                              .call,
                       child: IconButton(
                         variance: showLyrics.value
                             ? ButtonVariance.secondary
@@ -115,7 +116,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                     Tooltip(
                       tooltip: TooltipContainer(
                         child: Text(context.l10n.show_hide_ui_on_hover),
-                      ),
+                      ).call,
                       child: IconButton(
                         variance: hoverMode.value
                             ? ButtonVariance.secondary
@@ -136,7 +137,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                           return Tooltip(
                             tooltip: TooltipContainer(
                               child: Text(context.l10n.always_on_top),
-                            ),
+                            ).call,
                             child: IconButton(
                               variance: snapshot.data == true
                                   ? ButtonVariance.secondary
@@ -199,7 +200,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                   Tooltip(
                     tooltip: TooltipContainer(
                       child: Text(context.l10n.queue),
-                    ),
+                    ).call,
                     child: IconButton.ghost(
                       icon: const Icon(SpotubeIcons.queue),
                       onPressed: playlistQueue.activeTrack != null
@@ -245,7 +246,8 @@ class MiniLyricsPage extends HookConsumerWidget {
                   const Flexible(child: PlayerControls(compact: true)),
                   Tooltip(
                     tooltip: TooltipContainer(
-                        child: Text(context.l10n.exit_mini_player)),
+                            child: Text(context.l10n.exit_mini_player))
+                        .call,
                     child: IconButton.ghost(
                       icon: const Icon(SpotubeIcons.maximize),
                       onPressed: () async {
@@ -268,7 +270,7 @@ class MiniLyricsPage extends HookConsumerWidget {
                               const Duration(milliseconds: 200));
                         } finally {
                           if (context.mounted) {
-                            context.navigateTo(LyricsRoute());
+                            context.navigateTo(const LyricsRoute());
                           }
                         }
                       },

@@ -1,18 +1,18 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
-import 'package:spotify/spotify.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
+import 'package:spotube/provider/metadata_plugin/core/user.dart';
 
 class PlaylistAddTrackDialog extends HookConsumerWidget {
   /// The id of the playlist this dialog was opened from
   final String? openFromPlaylist;
-  final List<Track> tracks;
+  final List<SpotubeTrackObject> tracks;
   const PlaylistAddTrackDialog({
     required this.tracks,
     required this.openFromPlaylist,
@@ -22,24 +22,23 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final typography = Theme.of(context).typography;
-    final userPlaylists = ref.watch(favoritePlaylistsProvider);
+    final userPlaylists = ref.watch(metadataPluginSavedPlaylistsProvider);
     final favoritePlaylistsNotifier =
-        ref.watch(favoritePlaylistsProvider.notifier);
+        ref.watch(metadataPluginSavedPlaylistsProvider.notifier);
 
-    final me = ref.watch(meProvider);
+    final me = ref.watch(metadataPluginUserProvider);
 
     final filteredPlaylists = useMemoized(
       () =>
           userPlaylists.asData?.value.items
               .where(
                 (playlist) =>
-                    playlist.owner?.id != null &&
-                    playlist.owner!.id == me.asData?.value.id &&
+                    playlist.owner.id == me.asData?.value?.id &&
                     playlist.id != openFromPlaylist,
               )
               .toList() ??
           [],
-      [userPlaylists.asData?.value, me.asData?.value.id, openFromPlaylist],
+      [userPlaylists.asData?.value, me.asData?.value?.id, openFromPlaylist],
     );
 
     final playlistsCheck = useState(<String, bool>{});
@@ -60,7 +59,7 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
         selectedPlaylists.map(
           (playlistId) => favoritePlaylistsNotifier.addTracks(
             playlistId,
-            tracks.map((e) => e.id!).toList(),
+            tracks.map((e) => e.id).toList(),
           ),
         ),
       ).then((_) => context.mounted ? Navigator.pop(context, true) : null);
@@ -109,8 +108,7 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
                         },
                       ),
                       leading: Avatar(
-                        initials:
-                            Avatar.getInitials(playlist.name ?? "Playlist"),
+                        initials: Avatar.getInitials(playlist.name),
                         provider: UniversalImage.imageProvider(
                           playlist.images.asUrlString(
                             placeholder: ImagePlaceholder.collection,
@@ -124,20 +122,20 @@ class PlaylistAddTrackDialog extends HookConsumerWidget {
                         onChanged: (val) {
                           playlistsCheck.value = {
                             ...playlistsCheck.value,
-                            playlist.id!: val == CheckboxState.checked,
+                            playlist.id: val == CheckboxState.checked,
                           };
                         },
                       ),
                       onPressed: () {
                         playlistsCheck.value = {
                           ...playlistsCheck.value,
-                          playlist.id!:
+                          playlist.id:
                               !(playlistsCheck.value[playlist.id] ?? false),
                         };
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 8.0),
-                        child: Text(playlist.name!),
+                        child: Text(playlist.name),
                       ),
                     );
                   },

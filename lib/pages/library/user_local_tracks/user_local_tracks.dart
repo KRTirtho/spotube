@@ -4,6 +4,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/library/local_folder/local_folder_item.dart';
@@ -85,10 +86,10 @@ class UserLocalLibraryPage extends HookConsumerWidget {
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
                         maxCrossAxisExtent: 200,
                         mainAxisExtent: constrains.isXs
-                            ? 210
+                            ? 230 * context.theme.scaling
                             : constrains.mdAndDown
-                                ? 280
-                                : 250,
+                                ? 280 * context.theme.scaling
+                                : 250 * context.theme.scaling,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
                       ),

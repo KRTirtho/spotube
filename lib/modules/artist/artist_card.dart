@@ -4,16 +4,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
 import 'package:spotube/provider/blacklist_provider.dart';
 
 class ArtistCard extends HookConsumerWidget {
-  final Artist artist;
+  final SpotubeFullArtistObject artist;
   const ArtistCard(this.artist, {super.key});
 
   @override
@@ -36,18 +35,18 @@ class ArtistCard extends HookConsumerWidget {
       width: 180,
       child: Button.card(
         onPressed: () {
-          context.navigateTo(ArtistRoute(artistId: artist.id!));
+          context.navigateTo(ArtistRoute(artistId: artist.id));
         },
         child: Column(
           children: [
             Avatar(
-              initials: artist.name!.trim()[0].toUpperCase(),
+              initials: artist.name.trim()[0].toUpperCase(),
               provider: backgroundImage,
               size: 130,
             ),
             const Gap(10),
             AutoSizeText(
-              artist.name!,
+              artist.name,
               maxLines: 2,
               textAlign: TextAlign.center,
               overflow: TextOverflow.ellipsis,

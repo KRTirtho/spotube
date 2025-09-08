@@ -20,18 +20,22 @@ class Sidebar extends HookConsumerWidget {
     super.key,
   });
 
-  static Widget brandLogo() {
+  static Widget brandLogo(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: BorderRadius.circular(50),
       ),
-      child: Assets.spotubeLogoPng.image(height: 50),
+      child: Assets.branding.spotubeLogoPng.image(
+        height: 50,
+        cacheHeight: (100 * MediaQuery.devicePixelRatioOf(context)).toInt(),
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ThemeData(:colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final layoutMode =
@@ -62,13 +66,26 @@ class Sidebar extends HookConsumerWidget {
 
     final navigationButtons = [
       NavigationLabel(
-        child: mediaQuery.lgAndUp ? const Text("Spotube") : const Text(""),
+        child: mediaQuery.lgAndUp
+            ? DefaultTextStyle(
+                style: TextStyle(
+                  fontFamily: "Cookie",
+                  fontSize: 30,
+                  letterSpacing: 1.8,
+                  color: colorScheme.foreground,
+                ),
+                child: const Text("Spotube"),
+              )
+            : const Text(""),
       ),
       for (final tile in sidebarTileList)
         NavigationButton(
+          style: router.currentPath.startsWith(tile.pathPrefix)
+              ? const ButtonStyle.secondary()
+              : null,
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           child: Tooltip(
-            tooltip: TooltipContainer(child: Text(tile.title)),
+            tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
           onPressed: () {
@@ -80,12 +97,15 @@ class Sidebar extends HookConsumerWidget {
         NavigationLabel(child: Text(context.l10n.library)),
       for (final tile in sidebarLibraryTileList)
         NavigationButton(
+          style: router.currentPath.startsWith(tile.pathPrefix)
+              ? const ButtonStyle.secondary()
+              : null,
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           onPressed: () {
             context.navigateTo(tile.route);
           },
           child: Tooltip(
-            tooltip: TooltipContainer(child: Text(tile.title)),
+            tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
         ),
