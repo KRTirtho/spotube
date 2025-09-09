@@ -122,7 +122,8 @@ class CustomPlayer extends Player {
 
   Future<void> insert(int index, Media media) async {
     await add(media);
-    await move(state.playlist.medias.length, index);
+    await Future.delayed(const Duration(milliseconds: 100));
+    await move(state.playlist.medias.length - 1, index);
   }
 
   Future<void> setAudioNormalization(bool normalize) async {
