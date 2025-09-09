@@ -84,8 +84,14 @@ dependencies:
   logger: ^2.0.2
   logging: ^1.3.0
   lrc: ^1.0.2
-  media_kit: ^1.1.10+1
-  media_kit_libs_audio: ^1.0.4
+  media_kit:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: media_kit
+  media_kit_libs_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/universal/media_kit_libs_audio
   metadata_god: ^1.1.0
   mime: ^2.0.0
   open_file: ^3.5.10
@@ -194,6 +200,26 @@ dependency_overrides:
       ref: patch-2
       path: flutter_secure_storage_linux
   flutter_secure_storage_platform_interface: 2.0.0
+  media_kit_libs_android_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/android/media_kit_libs_android_audio
+  media_kit_libs_ios_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/ios/media_kit_libs_ios_audio
+  media_kit_libs_macos_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/macos/media_kit_libs_macos_audio
+  media_kit_libs_windows_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/windows/media_kit_libs_windows_audio
+  media_kit_libs_linux:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/linux/media_kit_libs_linux
 
 flutter:
   generate: true

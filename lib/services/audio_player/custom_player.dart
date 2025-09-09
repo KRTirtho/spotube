@@ -12,19 +12,15 @@ import 'package:spotube/utils/platform.dart';
 /// This class adds a state stream to the [Player] class.
 class CustomPlayer extends Player {
   final StreamController<AudioPlaybackState> _playerStateStream;
-  final StreamController<bool> _shuffleStream;
 
   late final List<StreamSubscription> _subscriptions;
 
-  bool _shuffled;
   int _androidAudioSessionId = 0;
   String _packageName = "";
   AndroidAudioManager? _androidAudioManager;
 
   CustomPlayer({super.configuration})
-      : _playerStateStream = StreamController.broadcast(),
-        _shuffleStream = StreamController.broadcast(),
-        _shuffled = false {
+      : _playerStateStream = StreamController.broadcast() {
     nativePlayer.setProperty("network-timeout", "120");
 
     _subscriptions = [
@@ -86,10 +82,10 @@ class CustomPlayer extends Player {
     }
   }
 
-  bool get shuffled => _shuffled;
+  bool get shuffled => state.shuffle;
 
   Stream<AudioPlaybackState> get playerStateStream => _playerStateStream.stream;
-  Stream<bool> get shuffleStream => _shuffleStream.stream;
+  Stream<bool> get shuffleStream => stream.shuffle;
   Stream<int> get indexChangeStream {
     int oldIndex = state.playlist.index;
     return stream.playlist.map((event) => event.index).where((newIndex) {
@@ -103,22 +99,14 @@ class CustomPlayer extends Player {
 
   @override
   Future<void> setShuffle(bool shuffle) async {
-    _shuffled = shuffle;
     await super.setShuffle(shuffle);
-    _shuffleStream.add(shuffle);
-    await Future.delayed(const Duration(milliseconds: 100));
-    if (shuffle) {
-      await move(state.playlist.index, 0);
-    }
   }
 
   @override
   Future<void> stop() async {
     await super.stop();
 
-    _shuffled = false;
     _playerStateStream.add(AudioPlaybackState.stopped);
-    _shuffleStream.add(false);
   }
 
   @override

@@ -1570,58 +1570,65 @@ packages:
   media_kit:
     dependency: "direct main"
     description:
-      name: media_kit
-      sha256: "48c10c3785df5d88f0eef970743f8c99b2e5da2b34b9d8f9876e598f62d9e776"
-      url: "https://pub.dev"
-    source: hosted
+      path: media_kit
+      ref: HEAD
+      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      url: "https://github.com/media-kit/media-kit"
+    source: git
     version: "1.2.0"
   media_kit_libs_android_audio:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: media_kit_libs_android_audio
-      sha256: d0923d251c1232880e755b44555ce31b9e7068a29f05e01ed2fb510956bba851
-      url: "https://pub.dev"
-    source: hosted
+      path: "libs/android/media_kit_libs_android_audio"
+      ref: HEAD
+      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      url: "https://github.com/media-kit/media-kit"
+    source: git
     version: "1.3.7"
   media_kit_libs_audio:
     dependency: "direct main"
     description:
-      name: media_kit_libs_audio
-      sha256: f5ea1eb414c4ee4994f36de36c7ce11577a249e058e907e7eb6e656513bccbfb
-      url: "https://pub.dev"
-    source: hosted
+      path: "libs/universal/media_kit_libs_audio"
+      ref: HEAD
+      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      url: "https://github.com/media-kit/media-kit"
+    source: git
     version: "1.0.6"
   media_kit_libs_ios_audio:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: media_kit_libs_ios_audio
-      sha256: "78ccf04e27d6b4ba00a355578ccb39b772f00d48269a6ac3db076edf2d51934f"
-      url: "https://pub.dev"
-    source: hosted
+      path: "libs/ios/media_kit_libs_ios_audio"
+      ref: HEAD
+      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      url: "https://github.com/media-kit/media-kit"
+    source: git
     version: "1.1.4"
   media_kit_libs_linux:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: media_kit_libs_linux
-      sha256: "2b473399a49ec94452c4d4ae51cfc0f6585074398d74216092bf3d54aac37ecf"
-      url: "https://pub.dev"
-    source: hosted
+      path: "libs/linux/media_kit_libs_linux"
+      ref: HEAD
+      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      url: "https://github.com/media-kit/media-kit"
+    source: git
     version: "1.2.1"
   media_kit_libs_macos_audio:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: media_kit_libs_macos_audio
-      sha256: "3be21844df98f286de32808592835073cdef2c1a10078bac135da790badca950"
-      url: "https://pub.dev"
-    source: hosted
+      path: "libs/macos/media_kit_libs_macos_audio"
+      ref: HEAD
+      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      url: "https://github.com/media-kit/media-kit"
+    source: git
     version: "1.1.4"
   media_kit_libs_windows_audio:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      name: media_kit_libs_windows_audio
-      sha256: c2fd558cc87b9d89a801141fcdffe02e338a3b21a41a18fbd63d5b221a1b8e53
-      url: "https://pub.dev"
-    source: hosted
+      path: "libs/windows/media_kit_libs_windows_audio"
+      ref: HEAD
+      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      url: "https://github.com/media-kit/media-kit"
+    source: git
     version: "1.0.9"
   menu_base:
     dependency: transitive
