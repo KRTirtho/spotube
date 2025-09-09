@@ -13,7 +13,6 @@ import 'package:spotube/l10n/l10n.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 final localWithName = L10n.all.map((e) {
-  print(e);
   final isoCodeName =
       LanguageLocals.getDisplayLanguage(e.languageCode, e.countryCode);
   return (
