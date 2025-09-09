@@ -70,6 +70,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
     final preferences = ref.watch(userPreferencesProvider);
     final youtubeEngine = ref.watch(youtubeEngineProvider);
 
+    final isLoading = useState(false);
     final isSearching = useState(false);
     final searchMode = useState(preferences.searchMode);
     final activeTrackSources = ref.watch(activeTrackSourcesProvider);
@@ -195,27 +196,40 @@ class SiblingTracksSheet extends HookConsumerWidget {
               ),
             ],
           ),
-          enabled: !isFetchingActiveTrack,
+          enabled: !isFetchingActiveTrack && !isLoading.value,
           selected: !isFetchingActiveTrack &&
               sourceInfo.id == activeTrackSource?.info.id,
           onPressed: () async {
             if (!isFetchingActiveTrack &&
                 sourceInfo.id != activeTrackSource?.info.id) {
-              await activeTrackNotifier?.swapWithSibling(sourceInfo);
-              await ref.read(audioPlayerProvider.notifier).swapActiveSource();
+              try {
+                isLoading.value = true;
+                await activeTrackNotifier?.swapWithSibling(sourceInfo);
+                await ref.read(audioPlayerProvider.notifier).swapActiveSource();
 
-              if (context.mounted) {
-                if (MediaQuery.sizeOf(context).mdAndUp) {
-                  closeOverlay(context);
-                } else {
-                  closeDrawer(context);
+                if (context.mounted) {
+                  if (MediaQuery.sizeOf(context).mdAndUp) {
+                    closeOverlay(context);
+                  } else {
+                    closeDrawer(context);
+                  }
+                }
+              } finally {
+                if (context.mounted) {
+                  isLoading.value = false;
                 }
               }
             }
           },
         );
       },
-      [activeTrackSource, activeTrackNotifier, siblings],
+      [
+        activeTrackSource,
+        activeTrackNotifier,
+        siblings,
+        isFetchingActiveTrack,
+        isLoading.value,
+      ],
     );
 
     final scale = context.theme.scaling;
@@ -293,6 +307,15 @@ class SiblingTracksSheet extends HookConsumerWidget {
               ],
             ),
           ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: isLoading.value
+                ? const SizedBox(
+                    width: double.infinity,
+                    child: LinearProgressIndicator(),
+                  )
+                : const SizedBox.shrink(),
+          ),
           Expanded(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
@@ -307,7 +330,9 @@ class SiblingTracksSheet extends HookConsumerWidget {
                       itemCount: siblings.length,
                       separatorBuilder: (context, index) => const Gap(8),
                       itemBuilder: (context, index) => itemBuilder(
-                          siblings[index], activeTrackSource!.source),
+                        siblings[index],
+                        activeTrackSource!.source,
+                      ),
                     ),
                   true => FutureBuilder(
                       future: searchRequest,
