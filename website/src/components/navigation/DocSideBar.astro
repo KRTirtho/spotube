@@ -1,0 +1,53 @@
+---
+import { getNavigationCollection } from "~/utils/get-collection";
+
+interface Props {
+  classList?: string[];
+}
+
+const { classList } = Astro.props;
+
+const navigation = await getNavigationCollection();
+
+const pathname = Astro.url.pathname.endsWith("/")
+  ? Astro.url.pathname.slice(0, -1)
+  : Astro.url.pathname;
+---
+
+<aside class="text-sm grid gap-10" class:list={[classList]}>
+  {
+    navigation.map((group) => (
+      <nav class="flex flex-col gap-2">
+        <span class="text-sm font-bold  ml-2">{group.title}</span>
+        <ul class="flex flex-col gap-1">
+          {group.items.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                title={item.title}
+                class="flex justify-between items-center"
+              >
+                <span
+                  class="grow px-2 py-1 rounded-base"
+                  class:list={[
+                    {
+                      "preset-tonal": pathname === item.href,
+                      anchor: pathname !== item.href,
+                    },
+                  ]}
+                >
+                  {item.title}
+                </span>
+                {item.tag && (
+                  <span class="no-underline preset-tonal-primary text-xs px-1 capitalize rounded">
+                    {item.tag}
+                  </span>
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    ))
+  }
+</aside>

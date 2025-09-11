@@ -1,5 +1,68 @@
 # Changelog
 
+## [5.0.0](https://github.com/KRTirtho/spotube/compare/v4.0.2...v5.0.0) (2025-09-08)
+
+### Features
+
+- Add ISRC track search for YouTube ([#2594](https://github.com/KRTirtho/spotube/issues/2594))
+- Add new icons #2676 by @alexio-dev ([#2678](https://github.com/KRTirtho/spotube/issues/2678))
+- Add connect confirmation dialog
+- Add metadata api service and models
+- **metadata-plugin**: Add pagination support, feed and playlist CRUD endpoints
+- **metadata-plugin**: Add local storage api
+- Add webview, totp and setInterval apis for plugins
+- Enhance local storage and webview APIs with improved error handling and resource management
+- **metadata_plugin**: Add logout method
+- Update plugin configuration with more fields
+- Implement metadata plugins based on hetu
+- Update models to match hetu_spotube_plugin signature
+- Add user endpoint calls in metadata and paginated async notifiers
+- Add playlist endpoint and providers
+- Add albums metadata endpoint and provider
+- Add artist and album providers
+- Add track endpoint for metadata service
+- Remove green corp names formally
+- **metadata**: Add plugin form
+- Add support for entity specific search
+- Enhance image handling
+- Add support for automatic plugin repository from github and codeberg
+- Use isolate for youtube_explode engine
+- Add repository and plugin API version fields to metadata plugins
+- Update new pipe version
+- **metadata**: Add plugin update checker and dialog for available updates
+- Optimize track options and related artists
+- Add plugin scrobbling support and support button
+- Add ErrorBox and NoDefaultMetadataPlugin components
+
+### Bug Fixes
+
+- Calling /track/:streamId endpoint causes active sourced track to be anything
+- **mobile**: Dialogs in bottom sheet are not opening
+- Default accent color is orange but it shows blue in settings
+- Artist images are not loading up
+- CVE: Remote path traversal through websocket when devices are on same network
+- Endless playback not working
+- **android**: NewPipe invalid search content filters
+- Make YoutubeExplode engine faster
+- Create and delete playlist not working
+- Local track not working and images of local not showing up
+- Local playback not working for tracks with special # (hashtag) characters
+- Inaccessible streaming url causing rapid skips
+- **yt**: Fallback to different search result if all streaming url is inaccessible
+- **playback**: Skip network requests if cached file already exists
+- Yt-dlp playback not working and add partial support for HLS streaming
+- Windows webview2 environment permission issue
+- **playback**: Play not fetching full playlist if playlist is too long
+- **track_options**: Tapping on option doesn't close the menu
+- **playback**: Alternative track sources switch not working
+- **ui**: Lyrics white text in white background and small player buttons
+
+### Translation
+
+- Add Traditional Chinese translation ([#2762](https://github.com/KRTirtho/spotube/issues/2762))
+- Fix Japanese translations ([#2732](https://github.com/KRTirtho/spotube/issues/2732))
+- Correction of the dutch language ([#1306](https://github.com/KRTirtho/spotube/issues/1306))
+
 ## [4.0.2](https://github.com/krtirtho/spotube/compare/v4.0.1...v4.0.2) (2025-03-16)
 
 ### Bug Fixes

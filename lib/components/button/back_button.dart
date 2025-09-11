@@ -13,7 +13,7 @@ class BackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton.ghost(
-      size: const ButtonSize(.9),
+      size: const ButtonSize(1.2),
       icon: Icon(icon, color: color),
       onPressed: () => Navigator.of(context).pop(),
     );

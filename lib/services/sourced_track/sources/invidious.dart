@@ -1,14 +1,12 @@
 import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/exceptions.dart';
-import 'package:spotube/services/sourced_track/models/source_info.dart';
-import 'package:spotube/services/sourced_track/models/source_map.dart';
 import 'package:spotube/services/sourced_track/models/video_info.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:invidious/invidious.dart';
@@ -24,51 +22,24 @@ final invidiousProvider = Provider<InvidiousClient>(
   },
 );
 
-class InvidiousSourceInfo extends SourceInfo {
-  InvidiousSourceInfo({
-    required super.id,
-    required super.title,
-    required super.artist,
-    required super.thumbnail,
-    required super.pageUrl,
-    required super.duration,
-    required super.artistUrl,
-    required super.album,
-  });
-}
-
 class InvidiousSourcedTrack extends SourcedTrack {
   InvidiousSourcedTrack({
     required super.ref,
     required super.source,
     required super.siblings,
-    required super.sourceInfo,
-    required super.track,
+    required super.info,
+    required super.query,
+    required super.sources,
   });
 
   static Future<SourcedTrack> fetchFromTrack({
-    required Track track,
+    required TrackSourceQuery query,
     required Ref ref,
   }) async {
-    // Indicates a stream url refresh
-    if (track is InvidiousSourcedTrack) {
-      final manifest = await ref
-          .read(invidiousProvider)
-          .videos
-          .get(track.sourceInfo.id, local: true);
-
-      return InvidiousSourcedTrack(
-        ref: ref,
-        siblings: track.siblings,
-        source: toSourceMap(manifest),
-        sourceInfo: track.sourceInfo,
-        track: track,
-      );
-    }
-
+    final audioSource = ref.read(userPreferencesProvider).audioSource;
     final database = ref.read(databaseProvider);
     final cachedSource = await (database.select(database.sourceMatchTable)
-          ..where((s) => s.trackId.equals(track.id!))
+          ..where((s) => s.trackId.equals(query.id))
           ..limit(1)
           ..orderBy([
             (s) =>
@@ -78,14 +49,14 @@ class InvidiousSourcedTrack extends SourcedTrack {
     final invidiousClient = ref.read(invidiousProvider);
 
     if (cachedSource == null) {
-      final siblings = await fetchSiblings(ref: ref, track: track);
+      final siblings = await fetchSiblings(ref: ref, query: query);
       if (siblings.isEmpty) {
-        throw TrackNotFoundError(track);
+        throw TrackNotFoundError(query);
       }
 
       await database.into(database.sourceMatchTable).insert(
             SourceMatchTableCompanion.insert(
-              trackId: track.id!,
+              trackId: query.id,
               sourceId: siblings.first.info.id,
               sourceType: const Value(SourceType.youtube),
             ),
@@ -94,9 +65,10 @@ class InvidiousSourcedTrack extends SourcedTrack {
       return InvidiousSourcedTrack(
         ref: ref,
         siblings: siblings.map((s) => s.info).skip(1).toList(),
-        source: siblings.first.source as SourceMap,
-        sourceInfo: siblings.first.info,
-        track: track,
+        sources: siblings.first.source as List<TrackSource>,
+        info: siblings.first.info,
+        query: query,
+        source: audioSource,
       );
     } else {
       final manifest =
@@ -105,44 +77,36 @@ class InvidiousSourcedTrack extends SourcedTrack {
       return InvidiousSourcedTrack(
         ref: ref,
         siblings: [],
-        source: toSourceMap(manifest),
-        sourceInfo: InvidiousSourceInfo(
+        sources: toSources(manifest),
+        info: TrackSourceInfo(
           id: manifest.videoId,
-          artist: manifest.author,
-          artistUrl: manifest.authorUrl,
+          artists: manifest.author,
           pageUrl: "https://www.youtube.com/watch?v=${manifest.videoId}",
           thumbnail: manifest.videoThumbnails.first.url,
           title: manifest.title,
-          duration: Duration(seconds: manifest.lengthSeconds),
-          album: null,
+          durationMs: Duration(seconds: manifest.lengthSeconds).inMilliseconds,
         ),
-        track: track,
+        query: query,
+        source: audioSource,
       );
     }
   }
 
-  static SourceMap toSourceMap(InvidiousVideoResponse manifest) {
-    final m4a = manifest.adaptiveFormats
-        .where((audio) => audio.type.contains("audio/mp4"))
-        .sorted((a, b) => int.parse(a.bitrate).compareTo(int.parse(b.bitrate)));
-
-    final weba = manifest.adaptiveFormats
-        .where((audio) => audio.type.contains("audio/webm"))
-        .sorted((a, b) => int.parse(a.bitrate).compareTo(int.parse(b.bitrate)));
-
-    return SourceMap(
-      m4a: SourceQualityMap(
-        high: m4a.first.url.toString(),
-        medium: (m4a.elementAtOrNull(m4a.length ~/ 2) ?? m4a[1]).url.toString(),
-        low: m4a.last.url.toString(),
-      ),
-      weba: SourceQualityMap(
-        high: weba.first.url.toString(),
-        medium:
-            (weba.elementAtOrNull(weba.length ~/ 2) ?? weba[1]).url.toString(),
-        low: weba.last.url.toString(),
-      ),
-    );
+  static List<TrackSource> toSources(InvidiousVideoResponse manifest) {
+    return manifest.adaptiveFormats.map((stream) {
+      return TrackSource(
+        url: stream.url.toString(),
+        quality: switch (stream.qualityLabel) {
+          "high" => SourceQualities.high,
+          "medium" => SourceQualities.medium,
+          _ => SourceQualities.low,
+        },
+        codec: stream.type.contains("audio/webm")
+            ? SourceCodecs.weba
+            : SourceCodecs.m4a,
+        bitrate: stream.bitrate,
+      );
+    }).toList();
   }
 
   static Future<SiblingType> toSiblingType(
@@ -150,22 +114,20 @@ class InvidiousSourcedTrack extends SourcedTrack {
     YoutubeVideoInfo item,
     InvidiousClient invidiousClient,
   ) async {
-    SourceMap? sourceMap;
+    List<TrackSource>? sourceMap;
     if (index == 0) {
       final manifest = await invidiousClient.videos.get(item.id, local: true);
-      sourceMap = toSourceMap(manifest);
+      sourceMap = toSources(manifest);
     }
 
     final SiblingType sibling = (
-      info: InvidiousSourceInfo(
+      info: TrackSourceInfo(
         id: item.id,
-        artist: item.channelName,
-        artistUrl: "https://www.youtube.com/${item.channelId}",
+        artists: item.channelName,
         pageUrl: "https://www.youtube.com/watch?v=${item.id}",
         thumbnail: item.thumbnailUrl,
         title: item.title,
-        duration: item.duration,
-        album: null,
+        durationMs: item.duration.inMilliseconds,
       ),
       source: sourceMap,
     );
@@ -174,20 +136,20 @@ class InvidiousSourcedTrack extends SourcedTrack {
   }
 
   static Future<List<SiblingType>> fetchSiblings({
-    required Track track,
+    required TrackSourceQuery query,
     required Ref ref,
   }) async {
     final invidiousClient = ref.read(invidiousProvider);
     final preference = ref.read(userPreferencesProvider);
 
-    final query = SourcedTrack.getSearchTerm(track);
+    final searchQuery = SourcedTrack.getSearchTerm(query);
 
     final searchResults = await invidiousClient.search.list(
-      query,
+      searchQuery,
       type: InvidiousSearchType.video,
     );
 
-    if (ServiceUtils.onlyContainsEnglish(query)) {
+    if (ServiceUtils.onlyContainsEnglish(searchQuery)) {
       return await Future.wait(
         searchResults
             .whereType<InvidiousSearchResponseVideo>()
@@ -211,7 +173,7 @@ class InvidiousSourcedTrack extends SourcedTrack {
             ),
           )
           .toList(),
-      track,
+      query,
     );
 
     return await Future.wait(
@@ -224,23 +186,24 @@ class InvidiousSourcedTrack extends SourcedTrack {
     if (siblings.isNotEmpty) {
       return this;
     }
-    final fetchedSiblings = await fetchSiblings(ref: ref, track: this);
+    final fetchedSiblings = await fetchSiblings(ref: ref, query: query);
 
     return InvidiousSourcedTrack(
       ref: ref,
       siblings: fetchedSiblings
-          .where((s) => s.info.id != sourceInfo.id)
+          .where((s) => s.info.id != info.id)
           .map((s) => s.info)
           .toList(),
       source: source,
-      sourceInfo: sourceInfo,
-      track: this,
+      info: info,
+      query: query,
+      sources: sources,
     );
   }
 
   @override
-  Future<SourcedTrack?> swapWithSibling(SourceInfo sibling) async {
-    if (sibling.id == sourceInfo.id) {
+  Future<SourcedTrack?> swapWithSibling(TrackSourceInfo sibling) async {
+    if (sibling.id == info.id) {
       return null;
     }
 
@@ -251,7 +214,7 @@ class InvidiousSourcedTrack extends SourcedTrack {
         ? sibling
         : siblings.firstWhere((s) => s.id == sibling.id);
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
-      ..insert(0, sourceInfo);
+      ..insert(0, info);
 
     final pipedClient = ref.read(invidiousProvider);
 
@@ -261,7 +224,7 @@ class InvidiousSourcedTrack extends SourcedTrack {
     final database = ref.read(databaseProvider);
     await database.into(database.sourceMatchTable).insert(
           SourceMatchTableCompanion.insert(
-            trackId: id!,
+            trackId: query.id,
             sourceId: newSourceInfo.id,
             sourceType: const Value(SourceType.youtube),
             // Because we're sorting by createdAt in the query
@@ -274,9 +237,25 @@ class InvidiousSourcedTrack extends SourcedTrack {
     return InvidiousSourcedTrack(
       ref: ref,
       siblings: newSiblings,
-      source: toSourceMap(manifest),
-      sourceInfo: newSourceInfo,
-      track: this,
+      sources: toSources(manifest),
+      info: newSourceInfo,
+      query: query,
+      source: source,
+    );
+  }
+
+  @override
+  Future<SourcedTrack> refreshStream() async {
+    final manifest =
+        await ref.read(invidiousProvider).videos.get(info.id, local: true);
+
+    return InvidiousSourcedTrack(
+      ref: ref,
+      siblings: siblings,
+      sources: toSources(manifest),
+      info: info,
+      query: query,
+      source: source,
     );
   }
 }

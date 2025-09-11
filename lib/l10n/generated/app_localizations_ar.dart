@@ -380,12 +380,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get account => 'حساب';
 
   @override
-  String get login_with_spotify => 'تسجيل الدخول بواسطة حساب Spotify';
-
-  @override
-  String get connect_with_spotify => 'توصيل بـSpotify';
-
-  @override
   String get logout => 'تسجيل الخروج';
 
   @override
@@ -413,7 +407,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get layout_mode => 'وضع التخطيط';
 
   @override
-  String get override_layout_settings => 'تجاوز إعدادات وضع التخطيط سريع الاستجابة';
+  String get override_layout_settings =>
+      'تجاوز إعدادات وضع التخطيط سريع الاستجابة';
 
   @override
   String get adaptive => 'متكيف';
@@ -443,7 +438,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get sync_album_color => 'مزامنة لون الألبوم';
 
   @override
-  String get sync_album_color_description => 'يستخدم اللون السائد لصورة الألبوم باعتباره لون التمييز';
+  String get sync_album_color_description =>
+      'يستخدم اللون السائد لصورة الألبوم باعتباره لون التمييز';
 
   @override
   String get playback => 'التشغيل';
@@ -461,16 +457,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get pre_download_play => 'التحميل المسبق والتشغيل';
 
   @override
-  String get pre_download_play_description => 'بدلاً من دفق الصوت، قم بتنزيل وحدات البايت وتشغيلها بدلاً من ذلك (موصى به لمستخدمي Bandwidth)';
+  String get pre_download_play_description =>
+      'بدلاً من دفق الصوت، قم بتنزيل وحدات البايت وتشغيلها بدلاً من ذلك (موصى به لمستخدمي Bandwidth)';
 
   @override
   String get skip_non_music => 'تخطي المقاطع غير الموسيقية (SponsorBlock)';
 
   @override
-  String get blacklist_description => 'المقطوعات والفنانون المدرجون في القائمة السوداء';
+  String get blacklist_description =>
+      'المقطوعات والفنانون المدرجون في القائمة السوداء';
 
   @override
-  String get wait_for_download_to_finish => 'يرجى الانتظار حتى انتهاء التنزيل الحالي';
+  String get wait_for_download_to_finish =>
+      'يرجى الانتظار حتى انتهاء التنزيل الحالي';
 
   @override
   String get desktop => 'سطح المكتب';
@@ -506,7 +505,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get please_sponsor => 'يرجى دعم/التبرع';
 
   @override
-  String get spotube_description => 'Spotube، عميل Spotify خفيف الوزن ومتعدد المنصات ومجاني للجميع';
+  String get spotube_description =>
+      'Spotube، عميل Spotify خفيف الوزن ومتعدد المنصات ومجاني للجميع';
 
   @override
   String get version => 'إصدار';
@@ -538,21 +538,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get license => 'الترخيص';
 
   @override
-  String get add_spotify_credentials => 'أضف بيانات Spotify الخاصة بك للبدء';
-
-  @override
-  String get credentials_will_not_be_shared_disclaimer => 'لا تقلق، لن يتم جمع أي من بيانات الخاصة بك أو مشاركتها مع أي شخص';
+  String get credentials_will_not_be_shared_disclaimer =>
+      'لا تقلق، لن يتم جمع أي من بيانات الخاصة بك أو مشاركتها مع أي شخص';
 
   @override
   String get know_how_to_login => 'لا تعرف كيف تفعل هذا؟';
 
   @override
   String get follow_step_by_step_guide => 'اتبع الدليل خطوة بخطوة';
-
-  @override
-  String spotify_cookie(Object name) {
-    return 'Spotify $name كوكيز';
-  }
 
   @override
   String cookie_name_cookie(Object name) {
@@ -584,52 +577,29 @@ class AppLocalizationsAr extends AppLocalizations {
   String get first_go_to => 'أولا، اذهب إلى';
 
   @override
-  String get login_if_not_logged_in => 'وتسجيل الدخول/الاشتراك إذا لم تقم بتسجيل الدخول';
-
-  @override
-  String get step_2 => 'الخطوة 2';
-
-  @override
-  String get step_2_steps => '1. بمجرد تسجيل الدخول، اضغط على F12 أو انقر بزر الماوس الأيمن > فحص لفتح أدوات تطوير المتصفح.\n2. ثم انتقل إلى علامة التبويب \"التطبيقات\" (Chrome وEdge وBrave وما إلى ذلك.) أو علامة التبويب \"التخزين\" (Firefox وPalemoon وما إلى ذلك..)\n3. انتقل إلى قسم \"ملفات تعريف الارتباط\" ثم القسم الفرعي \"https://accounts.spotify.com\"';
-
-  @override
-  String get step_3 => 'الخطوة 3';
-
-  @override
-  String get step_3_steps => 'انسخ قيمة الكوكي \"sp_dc\"';
-
-  @override
-  String get success_emoji => 'نجاح 🥳';
-
-  @override
-  String get success_message => 'لقد قمت الآن بتسجيل الدخول بنجاح باستخدام حساب Spotify الخاص بك. عمل جيد يا صديقي!';
-
-  @override
-  String get step_4 => 'الخطوة 4';
-
-  @override
-  String get step_4_steps => 'الصق قيمة \"sp_dc\" المنسوخة';
-
-  @override
   String get something_went_wrong => 'هناك خطأ ما';
 
   @override
   String get piped_instance => 'مثيل خادم Piped';
 
   @override
-  String get piped_description => 'مثيل خادم Piped الذي سيتم استخدامه لمطابقة المقطوعة';
+  String get piped_description =>
+      'مثيل خادم Piped الذي سيتم استخدامه لمطابقة المقطوعة';
 
   @override
-  String get piped_warning => 'البعض منهم قد لا يعمل بشكل جيد. لذلك استخدمه على مسؤوليتك';
+  String get piped_warning =>
+      'البعض منهم قد لا يعمل بشكل جيد. لذلك استخدمه على مسؤوليتك';
 
   @override
   String get invidious_instance => 'مثيل خادم Invidious';
 
   @override
-  String get invidious_description => 'مثيل خادم Invidious المستخدم لمطابقة المسارات';
+  String get invidious_description =>
+      'مثيل خادم Invidious المستخدم لمطابقة المسارات';
 
   @override
-  String get invidious_warning => 'قد لا تعمل بعض الخوادم بشكل جيد. استخدمها على مسؤوليتك الخاصة';
+  String get invidious_warning =>
+      'قد لا تعمل بعض الخوادم بشكل جيد. استخدمها على مسؤوليتك الخاصة';
 
   @override
   String get generate => 'إنشاء';
@@ -640,10 +610,12 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get replace_downloaded_tracks => 'استبدل جميع المقطوعات التي تم تنزيلها';
+  String get replace_downloaded_tracks =>
+      'استبدل جميع المقطوعات التي تم تنزيلها';
 
   @override
-  String get skip_download_tracks => 'تخطي تنزيل كافة المقطوعات التي تم تنزيلها';
+  String get skip_download_tracks =>
+      'تخطي تنزيل كافة المقطوعات التي تم تنزيلها';
 
   @override
   String get do_you_want_to_replace => 'هل تريد استبدال المقطوعة الحالية؟';
@@ -669,7 +641,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get country => 'دولة';
 
   @override
-  String get number_of_tracks_generate => 'عدد المسارات المقطوعات المراد توليدها';
+  String get number_of_tracks_generate =>
+      'عدد المسارات المقطوعات المراد توليدها';
 
   @override
   String get acousticness => 'صوتية';
@@ -752,22 +725,27 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get download_warning => 'إذا قمت بتنزيل جميع المقاطع الصوتية بكميات كبيرة، فمن الواضح أنك تقوم بقرصنة الموسيقى وتسبب الضرر للمجتمع الإبداعي للموسيقى. أتمنى أن تكون على علم بهذا. حاول دائمًا احترام ودعم العمل الجاد للفنان';
+  String get download_warning =>
+      'إذا قمت بتنزيل جميع المقاطع الصوتية بكميات كبيرة، فمن الواضح أنك تقوم بقرصنة الموسيقى وتسبب الضرر للمجتمع الإبداعي للموسيقى. أتمنى أن تكون على علم بهذا. حاول دائمًا احترام ودعم العمل الجاد للفنان';
 
   @override
-  String get download_ip_ban_warning => 'بالمناسبة، يمكن أن يتم حظر عنوان IP الخاص بك على YouTube بسبب طلبات التنزيل الزائدة عن المعتاد. يعني حظر IP أنه لا يمكنك استخدام YouTube (حتى إذا قمت بتسجيل الدخول) لمدة تتراوح بين شهرين إلى ثلاثة أشهر على الأقل من جهاز IP هذا. ولا يتحمل Spotube أي مسؤولية إذا حدث هذا على الإطلاق';
+  String get download_ip_ban_warning =>
+      'بالمناسبة، يمكن أن يتم حظر عنوان IP الخاص بك على YouTube بسبب طلبات التنزيل الزائدة عن المعتاد. يعني حظر IP أنه لا يمكنك استخدام YouTube (حتى إذا قمت بتسجيل الدخول) لمدة تتراوح بين شهرين إلى ثلاثة أشهر على الأقل من جهاز IP هذا. ولا يتحمل Spotube أي مسؤولية إذا حدث هذا على الإطلاق';
 
   @override
-  String get by_clicking_accept_terms => 'بالنقر على \"قبول\"، فإنك توافق على الشروط التالية:';
+  String get by_clicking_accept_terms =>
+      'بالنقر على \"قبول\"، فإنك توافق على الشروط التالية:';
 
   @override
   String get download_agreement_1 => 'أعلم أنني أقوم بقرصنة الموسيقى. انا سيئ';
 
   @override
-  String get download_agreement_2 => 'سأدعم الفنان أينما أستطيع، وأنا أفعل هذا فقط لأنني لا أملك المال لشراء أعمالهم الفنية';
+  String get download_agreement_2 =>
+      'سأدعم الفنان أينما أستطيع، وأنا أفعل هذا فقط لأنني لا أملك المال لشراء أعمالهم الفنية';
 
   @override
-  String get download_agreement_3 => 'أدرك تمامًا أنه يمكن حظر عنوان IP الخاص بي على YouTube ولا أحمل Spotube أو مالكيه/مساهميه المسؤولية عن أي حوادث ناجمة عن الإجراء الحالي الخاص بي';
+  String get download_agreement_3 =>
+      'أدرك تمامًا أنه يمكن حظر عنوان IP الخاص بي على YouTube ولا أحمل Spotube أو مالكيه/مساهميه المسؤولية عن أي حوادث ناجمة عن الإجراء الحالي الخاص بي';
 
   @override
   String get decline => 'رفض';
@@ -848,7 +826,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get failed_to_encrypt => 'فشل في التشفير';
 
   @override
-  String get encryption_failed_warning => 'يستخدم Spotube التشفير لتخزين بياناتك بشكل آمن. لكنها فشلت في القيام بذلك. لذلك سيعود الأمر إلى التخزين غير الآمن\nإذا كنت تستخدم Linux، فيرجى التأكد من تثبيت أي خدمة سرية (gnome-keyring، kde-wallet، keepassxc، إلخ)';
+  String get encryption_failed_warning =>
+      'يستخدم Spotube التشفير لتخزين بياناتك بشكل آمن. لكنها فشلت في القيام بذلك. لذلك سيعود الأمر إلى التخزين غير الآمن\nإذا كنت تستخدم Linux، فيرجى التأكد من تثبيت أي خدمة سرية (gnome-keyring، kde-wallet، keepassxc، إلخ)';
 
   @override
   String get querying_info => 'جارٍ الاستعلام عن معلومات...';
@@ -922,7 +901,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get login => 'تسجيل الدخول';
 
   @override
-  String get login_with_your_lastfm => 'تسجيل الدخول باستخدام حساب Last.fm الخاص بك';
+  String get login_with_your_lastfm =>
+      'تسجيل الدخول باستخدام حساب Last.fm الخاص بك';
 
   @override
   String get scrobble_to_lastfm => 'تسجيل الاستماع على Last.fm';
@@ -946,7 +926,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get friends => 'أصدقاء';
 
   @override
-  String get no_lyrics_available => 'عذرًا، تعذر العثور على كلمات الأغنية لهذه العنصر';
+  String get no_lyrics_available =>
+      'عذرًا، تعذر العثور على كلمات الأغنية لهذه العنصر';
 
   @override
   String get start_a_radio => 'بدء راديو';
@@ -955,7 +936,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get how_to_start_radio => 'كيف تريد بدء الراديو؟';
 
   @override
-  String get replace_queue_question => 'هل تريد استبدال قائمة التشغيل الحالية أم إضافة إليها؟';
+  String get replace_queue_question =>
+      'هل تريد استبدال قائمة التشغيل الحالية أم إضافة إليها؟';
 
   @override
   String get endless_playback => 'تشغيل بلا نهاية';
@@ -964,7 +946,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get delete_playlist => 'حذف قائمة التشغيل';
 
   @override
-  String get delete_playlist_confirmation => 'هل أنت متأكد أنك تريد حذف هذه قائمة التشغيل؟';
+  String get delete_playlist_confirmation =>
+      'هل أنت متأكد أنك تريد حذف هذه قائمة التشغيل؟';
 
   @override
   String get local_tracks => 'المسارات المحلية';
@@ -991,7 +974,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get youtube_source_description => 'موصى به ويعمل بشكل أفضل.';
 
   @override
-  String get piped_source_description => 'تشعر بالحرية؟ نفس يوتيوب ولكن أكثر حرية.';
+  String get piped_source_description =>
+      'تشعر بالحرية؟ نفس يوتيوب ولكن أكثر حرية.';
 
   @override
   String get jiosaavn_source_description => 'الأفضل لمنطقة جنوب آسيا.';
@@ -1008,13 +992,15 @@ class AppLocalizationsAr extends AppLocalizations {
   String get select_audio_source => 'اختر مصدر الصوت';
 
   @override
-  String get endless_playback_description => 'إلحاق الأغاني الجديدة تلقائيًا\nإلى نهاية قائمة التشغيل';
+  String get endless_playback_description =>
+      'إلحاق الأغاني الجديدة تلقائيًا\nإلى نهاية قائمة التشغيل';
 
   @override
   String get choose_your_region => 'اختر منطقتك';
 
   @override
-  String get choose_your_region_description => 'سيساعدك هذا في عرض المحتوى المناسب\nلموقعك.';
+  String get choose_your_region_description =>
+      'سيساعدك هذا في عرض المحتوى المناسب\nلموقعك.';
 
   @override
   String get choose_your_language => 'اختر لغتك';
@@ -1023,7 +1009,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get help_project_grow => 'ساعد في نمو هذا المشروع';
 
   @override
-  String get help_project_grow_description => 'Spotube هو مشروع مفتوح المصدر. يمكنك مساعدة هذا المشروع في النمو عن طريق المساهمة في المشروع، أو الإبلاغ عن الأخطاء، أو اقتراح ميزات جديدة.';
+  String get help_project_grow_description =>
+      'Spotube هو مشروع مفتوح المصدر. يمكنك مساعدة هذا المشروع في النمو عن طريق المساهمة في المشروع، أو الإبلاغ عن الأخطاء، أو اقتراح ميزات جديدة.';
 
   @override
   String get contribute_on_github => 'المساهمة على GitHub';
@@ -1038,7 +1025,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enable_connect => 'تمكين الاتصال';
 
   @override
-  String get enable_connect_description => 'التحكم في Spotube من الأجهزة الأخرى';
+  String get enable_connect_description =>
+      'التحكم في Spotube من الأجهزة الأخرى';
 
   @override
   String get devices => 'الأجهزة';
@@ -1117,7 +1105,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get choose_the_device => 'اختر الجهاز:';
 
   @override
-  String get multiple_device_connected => 'تم توصيل أجهزة متعددة.\nاختر الجهاز الذي تريد إجراء هذه العملية عليه';
+  String get multiple_device_connected =>
+      'تم توصيل أجهزة متعددة.\nاختر الجهاز الذي تريد إجراء هذه العملية عليه';
 
   @override
   String get nothing_found => 'لم يتم العثور على شيء';
@@ -1212,7 +1201,8 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get spotify_hipotetical_calculation => '*هذا محسوب بناءً على الدفع لكل بث من سبوتيفاي\nبقيمة 0.003 إلى 0.005 دولار. هذا حساب افتراضي\nلإعطاء المستخدم فكرة عن المبلغ الذي\nكان سيدفعه للفنانين إذا كانوا قد استمعوا\nإلى أغنيتهم على سبوتيفاي.';
+  String get hipotetical_calculation =>
+      '*تمّ الحساب بمعدّل دفعة تتراوح بين 0.003–0.005 دولار أمريكي لكل تشغيل على منصات الموسيقى عبر الإنترنت. هذا حساب افتراضي لتوضيح للمستخدم مقدار ما كان سيدفعه للفنانين لو استمع إلى أغنيتهم على منصات مختلفة.';
 
   @override
   String count_mins(Object minutes) {
@@ -1261,7 +1251,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get webview_not_found => 'لم يتم العثور على Webview';
 
   @override
-  String get webview_not_found_description => 'لم يتم تثبيت بيئة تشغيل Webview على جهازك.\nإذا كانت مثبتة، تأكد من وجودها في environment PATH\n\nبعد التثبيت، أعد تشغيل التطبيق';
+  String get webview_not_found_description =>
+      'لم يتم تثبيت بيئة تشغيل Webview على جهازك.\nإذا كانت مثبتة، تأكد من وجودها في environment PATH\n\nبعد التثبيت، أعد تشغيل التطبيق';
 
   @override
   String get unsupported_platform => 'المنصة غير مدعومة';
@@ -1334,7 +1325,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get not_following_artists => 'أنت لا تتابع أي فنانين';
 
   @override
-  String get no_favorite_albums_yet => 'يبدو أنك لم تضف أي ألبومات إلى المفضلة بعد';
+  String get no_favorite_albums_yet =>
+      'يبدو أنك لم تضف أي ألبومات إلى المفضلة بعد';
 
   @override
   String get no_logs_found => 'لم يتم العثور على سجلات';
@@ -1358,7 +1350,8 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get youtube_engine_unix_issue_message => 'في أنظمة macOS/Linux/Unix مثل الأنظمة، لن يعمل تعيين المسار في .zshrc/.bashrc/.bash_profile وما إلى ذلك.\nيجب تعيين المسار في ملف تكوين الصدفة';
+  String get youtube_engine_unix_issue_message =>
+      'في أنظمة macOS/Linux/Unix مثل الأنظمة، لن يعمل تعيين المسار في .zshrc/.bashrc/.bash_profile وما إلى ذلك.\nيجب تعيين المسار في ملف تكوين الصدفة';
 
   @override
   String get download => 'تنزيل';
@@ -1376,7 +1369,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get edit_port => 'تعديل المنفذ';
 
   @override
-  String get port_helper_msg => 'القيمة الافتراضية هي -1 والتي تشير إلى رقم عشوائي. إذا كان لديك جدار ناري مُعد، يُوصى بتعيين هذا.';
+  String get port_helper_msg =>
+      'القيمة الافتراضية هي -1 والتي تشير إلى رقم عشوائي. إذا كان لديك جدار ناري مُعد، يُوصى بتعيين هذا.';
 
   @override
   String connect_request(Object client) {
@@ -1384,5 +1378,163 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get connection_request_denied => 'تم رفض الاتصال. المستخدم رفض الوصول.';
+  String get connection_request_denied =>
+      'تم رفض الاتصال. المستخدم رفض الوصول.';
+
+  @override
+  String get an_error_occurred => 'حدث خطأ';
+
+  @override
+  String get copy_to_clipboard => 'نسخ إلى الحافظة';
+
+  @override
+  String get view_logs => 'عرض السجلات';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'لم تقُم بتعيين مزود بيانات افتراضي';
+
+  @override
+  String get manage_metadata_providers => 'إدارة مزوّدي البيانات';
+
+  @override
+  String get open_link_in_browser => 'فتح الرابط في المتصفح؟';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'هل ترغب في فتح الرابط التالي؟';
+
+  @override
+  String get unsafe_url_warning =>
+      'قد يكون فتح الروابط من مصادر غير موثوقة غير آمن. تحرّ الحذر!\nيمكنك أيضًا نسخ الرابط إلى الحافظة.';
+
+  @override
+  String get copy_link => 'نسخ الرابط';
+
+  @override
+  String get building_your_timeline =>
+      'جاري بناء المخطط الزمني استنادًا إلى استماعاتك...';
+
+  @override
+  String get official => 'رسمي';
+
+  @override
+  String author_name(Object author) {
+    return 'المؤلّف: $author';
+  }
+
+  @override
+  String get third_party => 'طرف ثالث';
+
+  @override
+  String get plugin_requires_authentication => 'تتطلّب الإضافة تسجيل الدخول';
+
+  @override
+  String get update_available => 'تحديث متوفر';
+
+  @override
+  String get supports_scrobbling => 'يدعم التتبع (scrobbling)';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'تقوم هذه الإضافة بتتبع مقاطعك الموسيقية لإنشاء سجل الاستماع الخاص بك.';
+
+  @override
+  String get default_plugin => 'الافتراضي';
+
+  @override
+  String get set_default => 'تعيين كافتراضي';
+
+  @override
+  String get support => 'الدعم';
+
+  @override
+  String get support_plugin_development => 'دعم تطوير الإضافات';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- يمكن الوصول إلى واجهة برمجة التطبيقات **$name**';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'هل ترغب في تثبيت هذه الإضافة؟';
+
+  @override
+  String get third_party_plugin_warning =>
+      'هذه الإضافة من مستودع طرف ثالث. تأكد من موثوقية المصدر قبل التثبيت.';
+
+  @override
+  String get author => 'المؤلف';
+
+  @override
+  String get this_plugin_can_do_following => 'يمكن لهذه الإضافة القيام بما يلي';
+
+  @override
+  String get install => 'تثبيت';
+
+  @override
+  String get install_a_metadata_provider => 'تثبيت مزوّد بيانات';
+
+  @override
+  String get no_tracks_playing => 'لا توجد مقاطع تعمل حاليًا';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'الكلمات المتزامنة غير متوفرة لهذه الأغنية. يُرجى استخدام';
+
+  @override
+  String get plain_lyrics => 'الكلمات العادية';
+
+  @override
+  String get tab_instead => 'بدلاً من ذلك، استخدم التبويب.';
+
+  @override
+  String get disclaimer => 'إخلاء المسؤولية';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'لا تتحمّل فريق Spotube أي مسؤولية (بما في ذلك القانونية) عن أي من الإضافات “لطرف ثالث”.\nاستخدمها على مسؤوليتك الخاصّة. لأيّة أخطاء/مشكلات، يُرجى الإبلاغ عنها في مستودع الإضافة.\n\nإذا كانت أي إضافة “لطرف ثالث” تنتهك شروط الخدمة أو قانون DMCA الخاص بأي خدمة أو كيان قانوني، فيُرجى طلب اتخاذ إجراء من مؤلف الإضافة أو منصة الاستضافة مثل GitHub/Codeberg. الإضافات المدرجة كـ “لطرف ثالث” هي مفعّلة ومُدارة من المجتمع، وليس لدينا صلاحية إدارتها أو التدخل فيها.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'المدخل لا يتوافق مع التنسيق المطلوب';
+
+  @override
+  String get metadata_provider_plugins => 'إضافات مزود البيانات';
+
+  @override
+  String get paste_plugin_download_url =>
+      'الصق رابط التنزيل أو GitHub/Codeberg أو رابط مباشر لملف .smplug';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'تنزيل وتثبيت الإضافة من رابط';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'فشل في إضافة الإضافة: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'رفع الإضافة من ملف';
+
+  @override
+  String get installed => 'تم التثبيت';
+
+  @override
+  String get available_plugins => 'الإضافات المتوفّرة';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'تهيئة مزوّد بيانات للقائمة/الألبوم/الفنان/المصدر خاص بك';
+
+  @override
+  String get audio_scrobblers => 'أجهزة تتبع الصوت';
+
+  @override
+  String get scrobbling => 'التتبع';
 }

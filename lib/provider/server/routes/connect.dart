@@ -6,10 +6,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf_web_socket/shelf_web_socket.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
@@ -161,19 +161,19 @@ class ServerConnectRoutes {
 
                 event.onLoad((event) async {
                   await audioPlayerNotifier.load(
-                    event.data.tracks,
+                    event.data.tracks.cast<SpotubeFullTrackObject>().toList(),
                     autoPlay: true,
                     initialIndex: event.data.initialIndex ?? 0,
                   );
 
                   if (event.data.collectionId == null) return;
                   audioPlayerNotifier.addCollection(event.data.collectionId!);
-                  if (event.data.collection is AlbumSimple) {
-                    historyNotifier
-                        .addAlbums([event.data.collection as AlbumSimple]);
+                  if (event.data.collection is SpotubeSimpleAlbumObject) {
+                    historyNotifier.addAlbums(
+                        [event.data.collection as SpotubeSimpleAlbumObject]);
                   } else {
                     historyNotifier.addPlaylists(
-                        [event.data.collection as PlaylistSimple]);
+                        [event.data.collection as SpotubeSimplePlaylistObject]);
                   }
                 });
 
@@ -186,7 +186,7 @@ class ServerConnectRoutes {
                 });
 
                 event.onStop((event) async {
-                  await audioPlayer.stop();
+                  await ref.read(audioPlayerProvider.notifier).stop();
                 });
 
                 event.onNext((event) async {

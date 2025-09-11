@@ -4,14 +4,16 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:drift/drift.dart';
+import 'package:drift/remote.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart' show ThemeMode, Colors;
-import 'package:spotify/spotify.dart' hide Playlist;
 import 'package:spotube/models/database/database.steps.dart';
 import 'package:spotube/models/lyrics.dart';
+import 'package:spotube/models/metadata/market.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -35,12 +37,14 @@ part 'tables/source_match.dart';
 part 'tables/audio_player_state.dart';
 part 'tables/history.dart';
 part 'tables/lyrics.dart';
+part 'tables/metadata_plugins.dart';
 
 part 'typeconverters/color.dart';
 part 'typeconverters/locale.dart';
 part 'typeconverters/string_list.dart';
 part 'typeconverters/encrypted_text.dart';
 part 'typeconverters/map.dart';
+part 'typeconverters/map_list.dart';
 part 'typeconverters/subtitle.dart';
 
 @DriftDatabase(
@@ -52,17 +56,16 @@ part 'typeconverters/subtitle.dart';
     SkipSegmentTable,
     SourceMatchTable,
     AudioPlayerStateTable,
-    PlaylistTable,
-    PlaylistMediaTable,
     HistoryTable,
     LyricsTable,
+    MetadataPluginsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration {
@@ -99,7 +102,7 @@ class AppDatabase extends _$AppDatabase {
           );
           await customStatement(
             "ALTER TABLE $tableName "
-            "ADD COLUMN $columnName TEXT NOT NULL DEFAULT 'Orange:0xFFf97315'",
+            "ADD COLUMN $columnName TEXT NOT NULL DEFAULT 'Slate:0xff64748b'",
           );
           await customStatement(
             "UPDATE $tableName "
@@ -111,15 +114,90 @@ class AppDatabase extends _$AppDatabase {
           );
           await customStatement(
             "UPDATE $tableName "
-            "SET $columnName = 'Orange:0xFFf97315' WHERE $columnName = 'Blue:0xFF2196F3'",
+            "SET $columnName = 'Slate:0xff64748b' WHERE $columnName = 'Blue:0xFF2196F3'",
           );
         },
         from5To6: (m, schema) async {
-          // Add new column to preferences table
+          try {
+            await m.addColumn(
+              schema.preferencesTable,
+              schema.preferencesTable.connectPort,
+            );
+          } on DriftRemoteException catch (e) {
+            // If the column already exists, ignore the error
+            if (e.remoteCause !=
+                'duplicate column name: ${schema.preferencesTable.connectPort.name}') {
+              rethrow;
+            }
+          }
+        },
+        from6To7: (m, schema) async {
+          await m.createTable(schema.metadataPluginsTable);
           await m.addColumn(
-            schema.preferencesTable,
-            schema.preferencesTable.connectPort,
+            schema.audioPlayerStateTable,
+            schema.audioPlayerStateTable.currentIndex,
           );
+          await m.addColumn(
+            schema.audioPlayerStateTable,
+            schema.audioPlayerStateTable.tracks,
+          );
+        },
+        from7To8: (m, schema) async {
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.entryPoint,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.apis,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.abilities,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.repository,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.pluginApiVersion,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
         },
       ),
     );

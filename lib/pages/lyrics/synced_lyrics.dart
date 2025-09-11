@@ -5,20 +5,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/lyrics/zoom_controls.dart';
 import 'package:spotube/components/shimmers/shimmer_lyrics.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
 import 'package:spotube/modules/lyrics/use_synced_lyrics.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/lyrics/synced.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
-
-import 'package:stroke_text/stroke_text.dart';
 
 class SyncedLyrics extends HookConsumerWidget {
   final PaletteColor palette;
@@ -117,7 +115,7 @@ class SyncedLyrics extends HookConsumerWidget {
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(40),
                   child: Text(
-                    playlist.activeTrack?.artists?.asString() ?? "",
+                    playlist.activeTrack?.artists.asString() ?? "",
                     style:
                         mediaQuery.mdAndUp ? typography.h4 : typography.x2Large,
                   ),
@@ -160,6 +158,9 @@ class SyncedLyrics extends HookConsumerWidget {
                               child: AnimatedDefaultTextStyle(
                                 duration: const Duration(milliseconds: 250),
                                 style: TextStyle(
+                                  color: isActive
+                                      ? theme.colorScheme.foreground
+                                      : theme.colorScheme.mutedForeground,
                                   fontWeight: isActive
                                       ? FontWeight.w500
                                       : FontWeight.normal,
@@ -181,25 +182,7 @@ class SyncedLyrics extends HookConsumerWidget {
                                       }
                                       audioPlayer.seek(time);
                                     },
-                                    child: Builder(builder: (context) {
-                                      return StrokeText(
-                                        text: lyricSlice.text,
-                                        textStyle:
-                                            DefaultTextStyle.of(context).style,
-                                        textColor: switch ((
-                                          isActive,
-                                          isModal == true
-                                        )) {
-                                          (true, _) => Colors.white,
-                                          (_, true) =>
-                                            theme.colorScheme.mutedForeground,
-                                          (_, _) => palette.bodyTextColor,
-                                        },
-                                        strokeColor: isActive
-                                            ? Colors.black
-                                            : Colors.transparent,
-                                      );
-                                    }),
+                                    child: Text(lyricSlice.text),
                                   ),
                                 ),
                               ),
@@ -236,18 +219,17 @@ class SyncedLyrics extends HookConsumerWidget {
                     text: TextSpan(
                       style: bodyTextTheme,
                       children: [
-                        const TextSpan(
-                          text:
-                              "Synced lyrics are not available for this song. Please use the",
+                        TextSpan(
+                          text: context.l10n.synced_lyrics_not_available,
                         ),
                         TextSpan(
-                          text: " Plain Lyrics ",
+                          text: " ${context.l10n.plain_lyrics} ",
                           style: typography.large.copyWith(
                             color: palette.bodyTextColor,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const TextSpan(text: "tab instead."),
+                        TextSpan(text: context.l10n.tab_instead),
                       ],
                     ),
                   ),

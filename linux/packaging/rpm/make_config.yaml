@@ -1,4 +1,4 @@
-icon: assets/spotube-logo.png
+icon: assets/branding/spotube-logo.png
 summary: Lightweight cross-platform music client
 group: Applications/Multimedia
 vendor: Kingkor Roy Tirtho
@@ -32,6 +32,5 @@ categories:
   - Music
 
 startup_notify: true
-
-supported_mime_type:
-  - x-scheme-handler/spotify
+# supported_mime_type:
+#   - x-scheme-handler/spotify

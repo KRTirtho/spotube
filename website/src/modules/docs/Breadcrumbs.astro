@@ -1,0 +1,32 @@
+---
+const breadcrumbs = Astro.url.pathname
+  .split("/")
+  .filter((crumb) => Boolean(crumb) && crumb !== "docs");
+---
+
+<ol class="text-xs flex gap-2">
+  {
+    breadcrumbs.map((crumb, i) => (
+      <>
+        <li
+          class="capitalize"
+          class:list={{ "opacity-60": i !== breadcrumbs.length - 1 }}
+        >
+          {i > 0 &&
+          i !== breadcrumbs.length - 1 &&
+          breadcrumbs[0] !== "components" ? (
+            <a
+              href={`/docs/${breadcrumbs[0]}/${crumb}`}
+              class="hover:underline"
+            >
+              {crumb.replace("-", " ")}
+            </a>
+          ) : (
+            crumb.replace("-", " ")
+          )}
+        </li>
+        {i !== breadcrumbs.length - 1 && <li class="opacity-60">&rsaquo;</li>}
+      </>
+    ))
+  }
+</ol>

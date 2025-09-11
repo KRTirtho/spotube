@@ -2,20 +2,19 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/services/download_manager/download_status.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class DownloadItem extends HookConsumerWidget {
-  final Track track;
+  final SpotubeFullTrackObject track;
   const DownloadItem({
     super.key,
     required this.track,
@@ -29,7 +28,7 @@ class DownloadItem extends HookConsumerWidget {
 
     useEffect(() {
       if (track is! SourcedTrack) return null;
-      final notifier = downloadManager.getStatusNotifier(track as SourcedTrack);
+      final notifier = downloadManager.getStatusNotifier(track);
 
       taskStatus.value = notifier?.value;
 
@@ -56,18 +55,18 @@ class DownloadItem extends HookConsumerWidget {
           child: UniversalImage(
             height: 40,
             width: 40,
-            path: (track.album?.images).asUrlString(
+            path: track.album.images.asUrlString(
               placeholder: ImagePlaceholder.albumArt,
             ),
           ),
         ),
       ),
-      title: Text(track.name ?? ''),
+      title: Text(track.name),
       subtitle: ArtistLink(
-        artists: track.artists ?? <Artist>[],
+        artists: track.artists,
         mainAxisAlignment: WrapAlignment.start,
         onOverflowArtistClick: () {
-          context.navigateTo(TrackRoute(trackId: track.id!));
+          context.navigateTo(TrackRoute(trackId: track.id));
         },
       ),
       trailing: isQueryingSourceInfo
@@ -75,8 +74,7 @@ class DownloadItem extends HookConsumerWidget {
           : switch (taskStatus.value!) {
               DownloadStatus.downloading => HookBuilder(builder: (context) {
                   final taskProgress = useListenable(useMemoized(
-                    () => downloadManager
-                        .getProgressNotifier(track as SourcedTrack),
+                    () => downloadManager.getProgressNotifier(track),
                     [track],
                   ));
                   return Row(
@@ -88,13 +86,13 @@ class DownloadItem extends HookConsumerWidget {
                       IconButton.ghost(
                           icon: const Icon(SpotubeIcons.pause),
                           onPressed: () {
-                            downloadManager.pause(track as SourcedTrack);
+                            downloadManager.pause(track);
                           }),
                       const SizedBox(width: 10),
                       IconButton.ghost(
                           icon: const Icon(SpotubeIcons.close),
                           onPressed: () {
-                            downloadManager.cancel(track as SourcedTrack);
+                            downloadManager.cancel(track);
                           }),
                     ],
                   );
@@ -105,13 +103,13 @@ class DownloadItem extends HookConsumerWidget {
                     IconButton.ghost(
                         icon: const Icon(SpotubeIcons.play),
                         onPressed: () {
-                          downloadManager.resume(track as SourcedTrack);
+                          downloadManager.resume(track);
                         }),
                     const SizedBox(width: 10),
                     IconButton.ghost(
                         icon: const Icon(SpotubeIcons.close),
                         onPressed: () {
-                          downloadManager.cancel(track as SourcedTrack);
+                          downloadManager.cancel(track);
                         })
                   ],
                 ),
@@ -127,7 +125,7 @@ class DownloadItem extends HookConsumerWidget {
                       IconButton.ghost(
                         icon: const Icon(SpotubeIcons.refresh),
                         onPressed: () {
-                          downloadManager.retry(track as SourcedTrack);
+                          downloadManager.retry(track);
                         },
                       ),
                     ],
@@ -138,7 +136,7 @@ class DownloadItem extends HookConsumerWidget {
               DownloadStatus.queued => IconButton.ghost(
                   icon: const Icon(SpotubeIcons.close),
                   onPressed: () {
-                    downloadManager.removeFromQueue(track as SourcedTrack);
+                    downloadManager.removeFromQueue(track);
                   }),
             },
     );

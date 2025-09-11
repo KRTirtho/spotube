@@ -2,19 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
   <dict>
-    <key>CFBundleURLTypes</key>
-    <array>
-      <dict>
-        <key>CFBundleURLName</key>
-        <!-- abstract name for this URL type (you can leave it blank) -->
-        <string>Spotify</string>
-        <key>CFBundleURLSchemes</key>
-        <array>
-          <!-- your schemes -->
-          <string>spotify</string>
-        </array>
-      </dict>
-    </array>
+    <!-- <key>CFBundleURLTypes</key> -->
+    <!-- <array> -->
+    <!-- <dict> -->
+    <!-- <key>CFBundleURLName</key> -->
+    <!-- abstract name for this URL type (you can leave it blank) -->
+    <!-- <string>Spotify</string> -->
+    <!-- <key>CFBundleURLSchemes</key> -->
+    <!-- <array> -->
+    <!-- your schemes -->
+    <!-- <string>spotify</string> -->
+    <!-- </array> -->
+    <!-- </dict> -->
+    <!-- </array> -->
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleExecutable</key>

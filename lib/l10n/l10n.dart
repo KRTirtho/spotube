@@ -14,6 +14,7 @@
 /// watchakorn-18k@github => Thai
 /// llama3, vishnumur777@github => Tamil
 /// Microsoft Copilot, Tutislav@github => Czech
+/// 510208@github => Traditional Chinese
 
 library l10n;
 
@@ -49,6 +50,7 @@ class L10n {
     const Locale('ta', 'IN'),
     const Locale('tr', 'TR'),
     const Locale('zh', 'CN'),
+    const Locale('zh', 'TW'),
     const Locale('vi', 'VN'),
     const Locale('eu', 'ES'),
   ];

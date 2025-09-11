@@ -8,7 +8,7 @@ import 'package:spotube/modules/stats/common/album_item.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/albums.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class TopAlbums extends HookConsumerWidget {

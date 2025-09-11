@@ -5,7 +5,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
-import 'package:spotify/spotify.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/server/server.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -71,7 +71,7 @@ Future<void> _updateWidget() async {
   }
 }
 
-Future<void> _sendActiveTrack(Track? track) async {
+Future<void> _sendActiveTrack(SpotubeTrackObject? track) async {
   if (track == null) {
     await _saveWidgetData("activeTrack", null);
     await _updateWidget();
@@ -80,17 +80,22 @@ Future<void> _sendActiveTrack(Track? track) async {
 
   final jsonTrack = track.toJson();
 
-  final image = track.album?.images?.first;
-  final cachedImage = await DefaultCacheManager().getSingleFile(image!.url!);
+  final image = track.album.images.firstOrNull;
+  final cachedImage = image == null
+      ? null
+      : image.url.startsWith("http")
+          ? (await DefaultCacheManager().getSingleFile(image.url)).path
+          : image.url;
   final data = {
     ...jsonTrack,
     "album": {
       ...jsonTrack["album"],
       "images": [
-        {
-          ...image.toJson(),
-          "path": cachedImage.path,
-        }
+        if (cachedImage != null && image != null)
+          {
+            ...image.toJson(),
+            "path": cachedImage,
+          }
       ]
     }
   };

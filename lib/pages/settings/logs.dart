@@ -71,32 +71,34 @@ class LogsPage extends HookConsumerWidget {
           ),
         )
       ],
-      child: switch (logsQuery) {
-        AsyncData(:final value) => InterScrollbar(
-            controller: controller,
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(8.0),
+      child: SafeArea(
+        child: switch (logsQuery) {
+          AsyncData(:final value) => InterScrollbar(
               controller: controller,
-              child: Card(child: SelectableText(value)),
-            ),
-          ),
-        AsyncError(:final error) => switch (error) {
-            StateError() => Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Undraw(
-                    illustration: UndrawIllustration.noData,
-                    height: 200 * context.theme.scaling,
-                    width: 200 * context.theme.scaling,
-                    color: context.theme.colorScheme.primary,
-                  ),
-                  Text(context.l10n.no_logs_found).muted().small(),
-                ],
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(8.0),
+                controller: controller,
+                child: Card(child: SelectableText(value)),
               ),
-            _ => Center(child: Text(error.toString())),
-          },
-        _ => const Center(child: CircularProgressIndicator()),
-      },
+            ),
+          AsyncError(:final error) => switch (error) {
+              StateError() => Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Undraw(
+                      illustration: UndrawIllustration.noData,
+                      height: 200 * context.theme.scaling,
+                      width: 200 * context.theme.scaling,
+                      color: context.theme.colorScheme.primary,
+                    ),
+                    Text(context.l10n.no_logs_found).muted().small(),
+                  ],
+                ),
+              _ => Center(child: Text(error.toString())),
+            },
+          _ => const Center(child: CircularProgressIndicator()),
+        },
+      ),
     );
   }
 }
