@@ -1,5 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
+import 'package:file_selector/file_selector.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -154,20 +156,35 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                       child: IconButton.primary(
                         icon: const Icon(SpotubeIcons.upload),
                         onPressed: () async {
-                          final result = await FilePicker.platform.pickFiles(
-                            type: kIsAndroid ? FileType.any : FileType.custom,
-                            allowedExtensions: kIsAndroid ? [] : ["smplug"],
-                            withData: true,
-                          );
+                          Uint8List bytes;
 
-                          if (result == null) return;
+                          if (kIsFlatpak) {
+                            final result = await openFile(
+                              acceptedTypeGroups: [
+                                const XTypeGroup(
+                                  label: 'Spotube Metadata Plugin',
+                                  extensions: ['smplug'],
+                                ),
+                              ],
+                            );
+                            if (result == null) return;
+                            bytes = await result.readAsBytes();
+                          } else {
+                            final result = await FilePicker.platform.pickFiles(
+                              type: kIsAndroid ? FileType.any : FileType.custom,
+                              allowedExtensions: kIsAndroid ? [] : ["smplug"],
+                              withData: true,
+                            );
 
-                          final file = result.files.first;
+                            if (result == null) return;
 
-                          if (file.bytes == null) return;
+                            final file = result.files.first;
+                            if (file.bytes == null) return;
+                            bytes = file.bytes!;
+                          }
 
-                          final pluginConfig = await pluginsNotifier
-                              .extractPluginArchive(file.bytes!);
+                          final pluginConfig =
+                              await pluginsNotifier.extractPluginArchive(bytes);
                           await pluginsNotifier.addPlugin(pluginConfig);
                         },
                       ),

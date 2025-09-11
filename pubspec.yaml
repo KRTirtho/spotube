@@ -41,7 +41,7 @@ dependencies:
   duration: ^3.0.12
   encrypt: ^5.0.3
   envied: ^1.0.0
-  file_picker: 8.1.4
+  file_picker: 10.3.3
   file_selector: ^1.0.3
   fluentui_system_icons: ^1.1.234
   flutter:
