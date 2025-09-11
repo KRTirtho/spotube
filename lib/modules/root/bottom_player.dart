@@ -40,7 +40,7 @@ class BottomPlayer extends HookConsumerWidget {
               index: (playlist.activeTrack?.album.images.length ?? 1) - 1,
               placeholder: ImagePlaceholder.albumArt,
             )
-          : Assets.albumPlaceholder.path,
+          : Assets.images.albumPlaceholder.path,
       [playlist.activeTrack?.album.images],
     );
 

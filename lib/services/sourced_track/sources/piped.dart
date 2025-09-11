@@ -269,7 +269,7 @@ class PipedSourcedTrack extends SourcedTrack {
       ref: ref,
       siblings: newSiblings,
       sources: toSources(manifest),
-      info: info,
+      info: newSourceInfo,
       query: query,
       source: source,
     );

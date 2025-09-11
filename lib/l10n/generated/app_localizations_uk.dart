@@ -1205,7 +1205,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Це розраховано на основі середньої виплати за стрім онлайн-платформ для потокового відтворення музики, що становить від \$0,003 до \$0,005. Це гіпотетичний розрахунок, щоб дати користувачеві уявлення про те, скільки б вони заплатили артистам, якщо б слухали їхні пісні на різних музичних стрімінгових платформах.';
 
   @override
   String count_mins(Object minutes) {
@@ -1383,4 +1383,161 @@ class AppLocalizationsUk extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'Підключення відхилено. Користувач відмовив у доступі.';
+
+  @override
+  String get an_error_occurred => 'Сталася помилка';
+
+  @override
+  String get copy_to_clipboard => 'Копіювати в буфер обміну';
+
+  @override
+  String get view_logs => 'Переглянути логи';
+
+  @override
+  String get retry => 'Повторити';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'Ви не встановили провайдера метаданих за замовчуванням';
+
+  @override
+  String get manage_metadata_providers => 'Керувати провайдерами метаданих';
+
+  @override
+  String get open_link_in_browser => 'Відкрити посилання в браузері?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Ви хочете відкрити наступне посилання';
+
+  @override
+  String get unsafe_url_warning =>
+      'Відкриття посилань з ненадійних джерел може бути небезпечним. Будьте обережні!\nВи також можете скопіювати посилання в буфер обміну.';
+
+  @override
+  String get copy_link => 'Копіювати посилання';
+
+  @override
+  String get building_your_timeline =>
+      'Створення вашої часової шкали на основі ваших прослуховувань...';
+
+  @override
+  String get official => 'Офіційний';
+
+  @override
+  String author_name(Object author) {
+    return 'Автор: $author';
+  }
+
+  @override
+  String get third_party => 'Сторонній';
+
+  @override
+  String get plugin_requires_authentication => 'Плагін вимагає автентифікації';
+
+  @override
+  String get update_available => 'Доступне оновлення';
+
+  @override
+  String get supports_scrobbling => 'Підтримує скроблінг';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Цей плагін скроббить вашу музику, щоб створити вашу історію прослуховувань.';
+
+  @override
+  String get default_plugin => 'За замовчуванням';
+
+  @override
+  String get set_default => 'Встановити за замовчуванням';
+
+  @override
+  String get support => 'Підтримка';
+
+  @override
+  String get support_plugin_development => 'Підтримати розробку плагіна';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- Може отримати доступ до **$name** API';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Ви хочете встановити цей плагін?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Цей плагін із стороннього репозиторію. Будь ласка, переконайтеся, що ви довіряєте джерелу перед встановленням.';
+
+  @override
+  String get author => 'Автор';
+
+  @override
+  String get this_plugin_can_do_following => 'Цей плагін може робити наступне';
+
+  @override
+  String get install => 'Встановити';
+
+  @override
+  String get install_a_metadata_provider => 'Встановити провайдера метаданих';
+
+  @override
+  String get no_tracks_playing => 'Наразі не відтворюється жоден трек';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Синхронізовані тексти недоступні для цієї пісні. Будь ласка, використовуйте вкладку';
+
+  @override
+  String get plain_lyrics => 'Звичайні тексти';
+
+  @override
+  String get tab_instead => 'замість цього.';
+
+  @override
+  String get disclaimer => 'Відмова від відповідальності';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Команда Spotube не несе жодної відповідальності (включно з юридичною) за будь-які плагіни \"третіх сторін\".\nБудь ласка, використовуйте їх на свій страх і ризик. Про будь-які помилки/проблеми повідомляйте в репозиторій плагіна.\n\nЯкщо якийсь плагін \"третьої сторони\" порушує ToS/DMCA будь-якої служби/юридичної особи, будь ласка, попросіть автора плагіна \"третьої сторони\" або хостингову платформу, наприклад, GitHub/Codeberg, вжити заходів. Усі перераховані вище (позначені як \"треті сторони\") є плагінами, які підтримуються публічно/спільнотою. Ми не куруємо їх, тому не можемо вжити жодних заходів щодо них.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'Введені дані не відповідають необхідному формату';
+
+  @override
+  String get metadata_provider_plugins => 'Плагіни провайдера метаданих';
+
+  @override
+  String get paste_plugin_download_url =>
+      'Вставте URL-адресу для завантаження або URL-адресу репозиторію GitHub/Codeberg або пряме посилання на файл .smplug';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'Завантажити та встановити плагін з URL-адреси';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Не вдалося додати плагін: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'Завантажити плагін з файлу';
+
+  @override
+  String get installed => 'Встановлено';
+
+  @override
+  String get available_plugins => 'Доступні плагіни';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'Налаштуйте свій власний провайдер метаданих для плейлиста/альбому/виконавця/стрічки';
+
+  @override
+  String get audio_scrobblers => 'Аудіо скробблери';
+
+  @override
+  String get scrobbling => 'Скроблінг';
 }

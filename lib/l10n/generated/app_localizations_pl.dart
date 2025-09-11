@@ -1203,7 +1203,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Jest to obliczone na podstawie średniej wypłaty z internetowych platform streamingowych za jeden stream w wysokości 0,003 do 0,005 USD. Jest to hipotetyczne obliczenie, które ma na celu dać użytkownikowi wgląd w to, ile zapłaciłby artystom, gdyby słuchał ich piosenek na różnych platformach streamingowych.';
 
   @override
   String count_mins(Object minutes) {
@@ -1385,4 +1385,163 @@ class AppLocalizationsPl extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'Połączenie odrzucone. Użytkownik odmówił dostępu.';
+
+  @override
+  String get an_error_occurred => 'Wystąpił błąd';
+
+  @override
+  String get copy_to_clipboard => 'Kopiuj do schowka';
+
+  @override
+  String get view_logs => 'Wyświetl logi';
+
+  @override
+  String get retry => 'Ponów';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'Nie masz ustawionego domyślnego dostawcy metadanych';
+
+  @override
+  String get manage_metadata_providers => 'Zarządzaj dostawcami metadanych';
+
+  @override
+  String get open_link_in_browser => 'Otworzyć link w przeglądarce?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Czy chcesz otworzyć następujący link';
+
+  @override
+  String get unsafe_url_warning =>
+      'Otwieranie linków z niezaufanych źródeł może być niebezpieczne. Zachowaj ostrożność!\nMożesz również skopiować link do schowka.';
+
+  @override
+  String get copy_link => 'Kopiuj link';
+
+  @override
+  String get building_your_timeline =>
+      'Budowanie Twojej osi czasu na podstawie Twoich odsłuchań...';
+
+  @override
+  String get official => 'Oficjalny';
+
+  @override
+  String author_name(Object author) {
+    return 'Autor: $author';
+  }
+
+  @override
+  String get third_party => 'Zewnętrzny';
+
+  @override
+  String get plugin_requires_authentication =>
+      'Wtyczka wymaga uwierzytelnienia';
+
+  @override
+  String get update_available => 'Dostępna aktualizacja';
+
+  @override
+  String get supports_scrobbling => 'Obsługuje scrobbling';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Ta wtyczka scrobbluje Twoją muzykę, aby wygenerować historię odsłuchań.';
+
+  @override
+  String get default_plugin => 'Domyślna';
+
+  @override
+  String get set_default => 'Ustaw jako domyślną';
+
+  @override
+  String get support => 'Wsparcie';
+
+  @override
+  String get support_plugin_development => 'Wspieraj rozwój wtyczki';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- Może uzyskać dostęp do API **$name**';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Czy chcesz zainstalować tę wtyczkę?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Ta wtyczka pochodzi z zewnętrznego repozytorium. Upewnij się, że ufasz źródłu przed instalacją.';
+
+  @override
+  String get author => 'Autor';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'Ta wtyczka może wykonywać następujące czynności';
+
+  @override
+  String get install => 'Instaluj';
+
+  @override
+  String get install_a_metadata_provider => 'Zainstaluj dostawcę metadanych';
+
+  @override
+  String get no_tracks_playing => 'Obecnie nie odtwarzany jest żaden utwór';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Zsynchronizowane teksty nie są dostępne dla tego utworu. Zamiast tego użyj zakładki';
+
+  @override
+  String get plain_lyrics => 'Zwykłe teksty';
+
+  @override
+  String get tab_instead => 'zamiast tego.';
+
+  @override
+  String get disclaimer => 'Zastrzeżenie';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Zespół Spotube nie ponosi żadnej odpowiedzialności (w tym prawnej) za żadne wtyczki \"zewnętrzne\".\nUżywaj ich na własne ryzyko. Wszelkie błędy/problemy prosimy zgłaszać w repozytorium wtyczki.\n\nJeśli jakakolwiek wtyczka \"zewnętrzna\" narusza ToS/DMCA jakiejkolwiek usługi/podmiotu prawnego, prosimy o kontakt z autorem wtyczki \"zewnętrznej\" lub platformą hostingową, np. GitHub/Codeberg, w celu podjęcia działań. Wymienione powyżej (oznaczone jako \"zewnętrzne\") są publicznymi wtyczkami utrzymywanymi przez społeczność. Nie kuratujemy ich, więc nie możemy podjąć żadnych działań w ich sprawie.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'Wprowadzony tekst nie pasuje do wymaganego formatu';
+
+  @override
+  String get metadata_provider_plugins => 'Wtyczki dostawców metadanych';
+
+  @override
+  String get paste_plugin_download_url =>
+      'Wklej adres URL do pobrania lub adres URL repozytorium GitHub/Codeberg lub bezpośredni link do pliku .smplug';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'Pobierz i zainstaluj wtyczkę z adresu URL';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Nie udało się dodać wtyczki: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'Prześlij wtyczkę z pliku';
+
+  @override
+  String get installed => 'Zainstalowane';
+
+  @override
+  String get available_plugins => 'Dostępne wtyczki';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'Skonfiguruj własnego dostawcę metadanych dla playlisty/albumu/artysty/kanału';
+
+  @override
+  String get audio_scrobblers => 'Scrobblery audio';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

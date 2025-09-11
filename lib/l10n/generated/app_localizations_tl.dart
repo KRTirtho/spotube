@@ -1210,7 +1210,7 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Ito ay kinakalkula batay sa average na payout ng online music streaming platform na \$0.003 hanggang \$0.005 kada stream. Ito ay isang hypothetical na kalkulasyon upang bigyan ang user ng insight kung magkano ang babayaran nila sa mga artist kung sakaling makinig sila ng kanilang kanta sa iba\'t ibang music streaming platform.';
 
   @override
   String count_mins(Object minutes) {
@@ -1391,4 +1391,164 @@ class AppLocalizationsTl extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'Tanggihan ang koneksyon. Tinanggihan ng gumagamit ang pag-access.';
+
+  @override
+  String get an_error_occurred => 'May naganap na error';
+
+  @override
+  String get copy_to_clipboard => 'Kopyahin sa clipboard';
+
+  @override
+  String get view_logs => 'Tingnan ang mga log';
+
+  @override
+  String get retry => 'Subukang muli';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'Wala kang nakatakdang default na metadata provider';
+
+  @override
+  String get manage_metadata_providers =>
+      'Pamahalaan ang mga metadata provider';
+
+  @override
+  String get open_link_in_browser => 'Buksan ang Link sa Browser?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Gusto mo bang buksan ang sumusunod na link';
+
+  @override
+  String get unsafe_url_warning =>
+      'Maaaring hindi ligtas ang pagbukas ng mga link mula sa hindi pinagkakatiwalaang pinagmulan. Mag-ingat!\nMaaari mo ring kopyahin ang link sa iyong clipboard.';
+
+  @override
+  String get copy_link => 'Kopyahin ang Link';
+
+  @override
+  String get building_your_timeline =>
+      'Binubuo ang iyong timeline batay sa iyong mga pinakinggan...';
+
+  @override
+  String get official => 'Opisyal';
+
+  @override
+  String author_name(Object author) {
+    return 'May-akda: $author';
+  }
+
+  @override
+  String get third_party => 'Third-party';
+
+  @override
+  String get plugin_requires_authentication =>
+      'Nangangailangan ng authentication ang plugin';
+
+  @override
+  String get update_available => 'May available na update';
+
+  @override
+  String get supports_scrobbling => 'Sinusuportahan ang scrobbling';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Sinis-scrobble ng plugin na ito ang iyong musika upang mabuo ang iyong kasaysayan ng pakikinig.';
+
+  @override
+  String get default_plugin => 'Default';
+
+  @override
+  String get set_default => 'Itakda bilang default';
+
+  @override
+  String get support => 'Suporta';
+
+  @override
+  String get support_plugin_development => 'Suportahan ang pagbuo ng plugin';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- Maaaring i-access ang **$name** API';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Gusto mo bang i-install ang plugin na ito?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Ang plugin na ito ay mula sa third-party na repository. Mangyaring tiyakin na pinagkakatiwalaan mo ang pinagmulan bago mag-install.';
+
+  @override
+  String get author => 'May-akda';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'Maaaring gawin ng plugin na ito ang sumusunod';
+
+  @override
+  String get install => 'I-install';
+
+  @override
+  String get install_a_metadata_provider => 'Mag-install ng Metadata Provider';
+
+  @override
+  String get no_tracks_playing => 'Walang Track na kasalukuyang tumutugtog';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Hindi available ang mga naka-sync na lyrics para sa kantang ito. Mangyaring gamitin ang';
+
+  @override
+  String get plain_lyrics => 'Simpleng Lyrics';
+
+  @override
+  String get tab_instead => 'na tab sa halip.';
+
+  @override
+  String get disclaimer => 'Disclaimer';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Ang Spotube team ay walang hawak na anumang responsibilidad (kabilang ang legal) para sa anumang \"Third-party\" plugins.\nMangyaring gamitin ang mga ito sa iyong sariling peligro. Para sa anumang mga bug/isyu, mangyaring iulat ang mga ito sa repository ng plugin.\n\nKung ang anumang \"Third-party\" plugin ay lumalabag sa ToS/DMCA ng anumang serbisyo/legal na entity, mangyaring hilingin sa \"Third-party\" plugin author o sa hosting platform e.g. GitHub/Codeberg na gumawa ng aksyon. Ang nakalista sa itaas (\"Third-party\" na may label) ay lahat ng pampubliko/komunidad na pinananatiling mga plugin. Hindi namin sila kinukurusado, kaya hindi kami makakagawa ng anumang aksyon sa kanila.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'Ang input ay hindi tumutugma sa kinakailangang format';
+
+  @override
+  String get metadata_provider_plugins => 'Mga Plugin ng Metadata Provider';
+
+  @override
+  String get paste_plugin_download_url =>
+      'I-paste ang download url o GitHub/Codeberg repo url o direktang link sa .smplug file';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'I-download at i-install ang plugin mula sa url';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Nabigo ang pagdagdag ng plugin: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'I-upload ang plugin mula sa file';
+
+  @override
+  String get installed => 'Naka-install';
+
+  @override
+  String get available_plugins => 'Mga available na plugin';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'I-configure ang iyong sariling playlist/album/artist/feed metadata provider';
+
+  @override
+  String get audio_scrobblers => 'Mga Audio Scrobbler';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

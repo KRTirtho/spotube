@@ -1208,7 +1208,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Això està calculat en funció d’un pagament mitjà per reproducció de 0,003–0,005  USD en plataformes de reproducció musical en línia. És un càlcul hipotètic per ajudar l’usuari a entendre quant hauria pagat als artistes si hagués escoltat la seva cançó en diferents plataformes.';
 
   @override
   String count_mins(Object minutes) {
@@ -1386,4 +1386,166 @@ class AppLocalizationsCa extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'Connexió denegada. L\'usuari ha denegat l\'accés.';
+
+  @override
+  String get an_error_occurred => 'S’ha produït un error';
+
+  @override
+  String get copy_to_clipboard => 'Copiar al porta-retalls';
+
+  @override
+  String get view_logs => 'Veure registres';
+
+  @override
+  String get retry => 'Tornar-ho a provar';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'No has configurat cap proveïdor de metadades predeterminat';
+
+  @override
+  String get manage_metadata_providers => 'Gestionar proveïdors de metadades';
+
+  @override
+  String get open_link_in_browser => 'Obrir l’enllaç en el navegador?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Vols obrir l’enllaç següent?';
+
+  @override
+  String get unsafe_url_warning =>
+      'Pot ser perillós obrir enllaços de fonts no fiables. Sigues precavís!\nTambé pots copiar l’enllaç al porta-retalls.';
+
+  @override
+  String get copy_link => 'Copiar enllaç';
+
+  @override
+  String get building_your_timeline =>
+      'Construint la teva cronologia en funció de les teves escoltes...';
+
+  @override
+  String get official => 'Oficial';
+
+  @override
+  String author_name(Object author) {
+    return 'Autor: $author';
+  }
+
+  @override
+  String get third_party => 'Tercers';
+
+  @override
+  String get plugin_requires_authentication =>
+      'El complement requereix autenticació';
+
+  @override
+  String get update_available => 'Actualització disponible';
+
+  @override
+  String get supports_scrobbling => 'Admet scrobbling';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Aquest complement fa scrobbling de la teva música per generar l’historial d’escoltes.';
+
+  @override
+  String get default_plugin => 'Predeterminat';
+
+  @override
+  String get set_default => 'Establir com a predeterminat';
+
+  @override
+  String get support => 'Suport';
+
+  @override
+  String get support_plugin_development =>
+      'Suportar el desenvolupament del complement';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- Pot accedir a l’API **$name**';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Vols instal·lar aquest complement?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Aquest complement prové d’un repositori de tercers. Assegura’t de confiar en la font abans d’instal·lar-lo.';
+
+  @override
+  String get author => 'Autor';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'Aquest complement pot fer el següent';
+
+  @override
+  String get install => 'Instal·lar';
+
+  @override
+  String get install_a_metadata_provider =>
+      'Instal·lar un proveïdor de metadades';
+
+  @override
+  String get no_tracks_playing => 'No s’està reproduint cap pista actualment';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Les lletres sincronitzades no estan disponibles per a aquesta cançó. Si us plau, usa';
+
+  @override
+  String get plain_lyrics => 'Lletres sense format';
+
+  @override
+  String get tab_instead => 'en lloc d’això, utilitza la tecla Tab.';
+
+  @override
+  String get disclaimer => 'Avís legal';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'L’equip de Spotube no accepta cap responsabilitat (inclosa legal) pels complements de “tercers”.\nFes-los servir sota la teva responsabilitat. Si detectes errors/problemes, informa’ls al repositori del complement.\n\nSi algun complement de “tercers” incompleix els ToS/DMCA d’un servei o entitat legal, contacta amb l’autor del complement o amb la plataforma d’allotjament (per exemple GitHub/Codeberg) per prendre mesures. Els complements etiquetats com a “tercers” són públics i gestionats per la comunitat; no els curatem, per la qual cosa no podem intervenir-hi.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'L’entrada no coincideix amb el format requerit';
+
+  @override
+  String get metadata_provider_plugins =>
+      'Complements de proveïdor de metadades';
+
+  @override
+  String get paste_plugin_download_url =>
+      'Enllaça l’URL de descàrrega o el repositori de GitHub/Codeberg o l’enllaç directe al fitxer .smplug';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'Descarrega i instal·la el complement des d’un URL';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Error en afegir el complement: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'Penja el complement des d’un fitxer';
+
+  @override
+  String get installed => 'Instal·lat';
+
+  @override
+  String get available_plugins => 'Complements disponibles';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'Configura el teu propi proveïdor de metadades per llistes/reproduccions àlbum/artista/flux';
+
+  @override
+  String get audio_scrobblers => 'Scrobblers d’àudio';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

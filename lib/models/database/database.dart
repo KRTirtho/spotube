@@ -65,7 +65,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration {
@@ -102,7 +102,7 @@ class AppDatabase extends _$AppDatabase {
           );
           await customStatement(
             "ALTER TABLE $tableName "
-            "ADD COLUMN $columnName TEXT NOT NULL DEFAULT 'Orange:0xFFf97315'",
+            "ADD COLUMN $columnName TEXT NOT NULL DEFAULT 'Slate:0xff64748b'",
           );
           await customStatement(
             "UPDATE $tableName "
@@ -114,7 +114,7 @@ class AppDatabase extends _$AppDatabase {
           );
           await customStatement(
             "UPDATE $tableName "
-            "SET $columnName = 'Orange:0xFFf97315' WHERE $columnName = 'Blue:0xFF2196F3'",
+            "SET $columnName = 'Slate:0xff64748b' WHERE $columnName = 'Blue:0xFF2196F3'",
           );
         },
         from5To6: (m, schema) async {
@@ -141,6 +141,63 @@ class AppDatabase extends _$AppDatabase {
             schema.audioPlayerStateTable,
             schema.audioPlayerStateTable.tracks,
           );
+        },
+        from7To8: (m, schema) async {
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.entryPoint,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.apis,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.abilities,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.repository,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
+          await m
+              .addColumn(
+            schema.metadataPluginsTable,
+            schema.metadataPluginsTable.pluginApiVersion,
+          )
+              .catchError((error, stackTrace) {
+            // If the column already exists, ignore the error
+            if (!error.toString().contains('duplicate column name')) {
+              throw error;
+            }
+          });
         },
       ),
     );

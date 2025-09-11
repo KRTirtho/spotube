@@ -1200,7 +1200,7 @@ class AppLocalizationsFi extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Tämä on laskettu keskimääräisen musiikin suoratoistopalvelun 0,003–0,005 dollarin kappalekohtaisen maksun perusteella. Tämä on hypoteettinen laskelma, joka antaa käyttäjälle käsityksen siitä, kuinka paljon he olisivat maksaneet artisteille, jos he kuuntelisivat heidän kappaleitaan eri musiikin suoratoistopalveluissa.';
 
   @override
   String count_mins(Object minutes) {
@@ -1380,4 +1380,160 @@ class AppLocalizationsFi extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'Yhteys evätty. Käyttäjä eväsi pääsyn.';
+
+  @override
+  String get an_error_occurred => 'Tapahtui virhe';
+
+  @override
+  String get copy_to_clipboard => 'Kopioi leikepöydälle';
+
+  @override
+  String get view_logs => 'Näytä lokit';
+
+  @override
+  String get retry => 'Yritä uudelleen';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'Et ole asettanut oletusmetatietojen tarjoajaa';
+
+  @override
+  String get manage_metadata_providers => 'Hallinnoi metatietojen tarjoajia';
+
+  @override
+  String get open_link_in_browser => 'Avaa linkki selaimessa?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Haluatko avata seuraavan linkin';
+
+  @override
+  String get unsafe_url_warning =>
+      'Linkkien avaaminen epäluotettavista lähteistä voi olla vaarallista. Ole varovainen!\nVoit myös kopioida linkin leikepöydälle.';
+
+  @override
+  String get copy_link => 'Kopioi linkki';
+
+  @override
+  String get building_your_timeline =>
+      'Rakennetaan aikajanaasi kuuntelujesi perusteella...';
+
+  @override
+  String get official => 'Virallinen';
+
+  @override
+  String author_name(Object author) {
+    return 'Tekijä: $author';
+  }
+
+  @override
+  String get third_party => 'Kolmannen osapuolen';
+
+  @override
+  String get plugin_requires_authentication => 'Lisäosa vaatii todentamisen';
+
+  @override
+  String get update_available => 'Päivitys saatavilla';
+
+  @override
+  String get supports_scrobbling => 'Tukee scrobblingia';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Tämä lisäosa scrobblaa musiikkisi luodakseen kuunteluhistoriasi.';
+
+  @override
+  String get default_plugin => 'Oletus';
+
+  @override
+  String get set_default => 'Aseta oletukseksi';
+
+  @override
+  String get support => 'Tuki';
+
+  @override
+  String get support_plugin_development => 'Tue lisäosan kehitystä';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- Voi käyttää **$name** APIa';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Haluatko asentaa tämän lisäosan?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Tämä lisäosa on kolmannen osapuolen arkistosta. Varmista, että luotat lähteeseen ennen asennusta.';
+
+  @override
+  String get author => 'Tekijä';
+
+  @override
+  String get this_plugin_can_do_following => 'Tämä lisäosa voi tehdä seuraavaa';
+
+  @override
+  String get install => 'Asenna';
+
+  @override
+  String get install_a_metadata_provider => 'Asenna metatietojen tarjoaja';
+
+  @override
+  String get no_tracks_playing => 'Ei kappaletta toistossa tällä hetkellä';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Synkronoidut sanoitukset eivät ole saatavilla tälle kappaleelle. Käytä sen sijaan';
+
+  @override
+  String get plain_lyrics => 'Pelkät sanoitukset';
+
+  @override
+  String get tab_instead => 'välilehteä.';
+
+  @override
+  String get disclaimer => 'Vastuuvapauslauseke';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Spotube-tiimi ei ota mitään vastuuta (mukaan lukien oikeudellinen) mistään \"kolmannen osapuolen\" lisäosista.\nKäytä niitä omalla vastuullasi. Ilmoita kaikista virheistä/ongelmista lisäosan arkistoon.\n\nJos jokin \"kolmannen osapuolen\" lisäosa rikkoo jonkin palvelun/oikeushenkilön käyttöehtoja/DMCA:ta, pyydä \"kolmannen osapuolen\" lisäosan tekijää tai isännöintialustaa, esim. GitHubia/Codebergiä, ryhtymään toimiin. Yllä luetellut (\"kolmannen osapuolen\" merkityt) ovat kaikki julkisia/yhteisön ylläpitämiä lisäosia. Emme kuratoi niitä, joten emme voi ryhtyä niihin toimiin.\n\n';
+
+  @override
+  String get input_does_not_match_format => 'Syöte ei vastaa vaadittua muotoa';
+
+  @override
+  String get metadata_provider_plugins => 'Metatietojen tarjoajan lisäosat';
+
+  @override
+  String get paste_plugin_download_url =>
+      'Liitä lataus-URL-osoite tai GitHub/Codeberg-arkiston URL-osoite tai suora linkki .smplug-tiedostoon';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'Lataa ja asenna lisäosa URL-osoitteesta';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Lisäosan lisääminen epäonnistui: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'Lataa lisäosa tiedostosta';
+
+  @override
+  String get installed => 'Asennettu';
+
+  @override
+  String get available_plugins => 'Saatavilla olevat lisäosat';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'Määritä oma soittolistan/albumin/artistin/syötteen metatietojen tarjoaja';
+
+  @override
+  String get audio_scrobblers => 'Äänen scrobblerit';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

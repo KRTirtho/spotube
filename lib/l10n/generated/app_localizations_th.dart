@@ -1198,7 +1198,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*การคำนวณนี้อิงจากค่าเฉลี่ยการจ่ายเงินต่อสตรีมของแพลตฟอร์มสตรีมมิ่งเพลงออนไลน์ที่ \$0.003 ถึง \$0.005 นี่เป็นการคำนวณสมมติฐานเพื่อให้ผู้ใช้เข้าใจว่าพวกเขาจะต้องจ่ายเงินให้ศิลปินเท่าไหร่หากพวกเขาฟังเพลงบนแพลตฟอร์มสตรีมมิ่งเพลงที่แตกต่างกัน';
 
   @override
   String count_mins(Object minutes) {
@@ -1376,4 +1376,161 @@ class AppLocalizationsTh extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'การเชื่อมต่อล้มเหลว ผู้ใช้ปฏิเสธการเข้าถึง';
+
+  @override
+  String get an_error_occurred => 'เกิดข้อผิดพลาด';
+
+  @override
+  String get copy_to_clipboard => 'คัดลอกไปยังคลิปบอร์ด';
+
+  @override
+  String get view_logs => 'ดูบันทึก';
+
+  @override
+  String get retry => 'ลองใหม่';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'คุณไม่ได้ตั้งค่าผู้ให้บริการเมตาดาต้าเริ่มต้น';
+
+  @override
+  String get manage_metadata_providers => 'จัดการผู้ให้บริการเมตาดาต้า';
+
+  @override
+  String get open_link_in_browser => 'เปิดลิงก์ในเบราว์เซอร์หรือไม่?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'คุณต้องการเปิดลิงก์ต่อไปนี้หรือไม่';
+
+  @override
+  String get unsafe_url_warning =>
+      'การเปิดลิงก์จากแหล่งที่ไม่น่าเชื่อถืออาจไม่ปลอดภัย โปรดระมัดระวัง!\nคุณยังสามารถคัดลอกลิงก์ไปยังคลิปบอร์ดของคุณได้';
+
+  @override
+  String get copy_link => 'คัดลอกลิงก์';
+
+  @override
+  String get building_your_timeline =>
+      'กำลังสร้างไทม์ไลน์ของคุณตามการฟังของคุณ...';
+
+  @override
+  String get official => 'อย่างเป็นทางการ';
+
+  @override
+  String author_name(Object author) {
+    return 'ผู้เขียน: $author';
+  }
+
+  @override
+  String get third_party => 'บุคคลที่สาม';
+
+  @override
+  String get plugin_requires_authentication =>
+      'ปลั๊กอินต้องมีการรับรองความถูกต้อง';
+
+  @override
+  String get update_available => 'มีการอัปเดต';
+
+  @override
+  String get supports_scrobbling => 'รองรับการ scrobbling';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'ปลั๊กอินนี้จะ scrobble เพลงของคุณเพื่อสร้างประวัติการฟังของคุณ';
+
+  @override
+  String get default_plugin => 'ค่าเริ่มต้น';
+
+  @override
+  String get set_default => 'ตั้งค่าเริ่มต้น';
+
+  @override
+  String get support => 'สนับสนุน';
+
+  @override
+  String get support_plugin_development => 'สนับสนุนการพัฒนาปลั๊กอิน';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- สามารถเข้าถึง API **$name**';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'คุณต้องการติดตั้งปลั๊กอินนี้หรือไม่?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'ปลั๊กอินนี้มาจากที่เก็บของบุคคลที่สาม โปรดตรวจสอบให้แน่ใจว่าคุณเชื่อถือแหล่งที่มาก่อนทำการติดตั้ง';
+
+  @override
+  String get author => 'ผู้เขียน';
+
+  @override
+  String get this_plugin_can_do_following => 'ปลั๊กอินนี้สามารถทำสิ่งต่อไปนี้';
+
+  @override
+  String get install => 'ติดตั้ง';
+
+  @override
+  String get install_a_metadata_provider => 'ติดตั้งผู้ให้บริการเมตาดาต้า';
+
+  @override
+  String get no_tracks_playing => 'ขณะนี้ไม่มีเพลงที่กำลังเล่นอยู่';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'ไม่มีเนื้อเพลงที่ซิงค์สำหรับเพลงนี้ กรุณาใช้แท็บ';
+
+  @override
+  String get plain_lyrics => 'เนื้อเพลงธรรมดา';
+
+  @override
+  String get tab_instead => 'แทน';
+
+  @override
+  String get disclaimer => 'ข้อสงวนสิทธิ์';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'ทีม Spotube ไม่รับผิดชอบใดๆ (รวมถึงทางกฎหมาย) สำหรับปลั๊กอิน \"บุคคลที่สาม\" ใดๆ\nโปรดใช้งานด้วยความเสี่ยงของคุณเอง สำหรับข้อบกพร่อง/ปัญหาใดๆ โปรดรายงานไปยังที่เก็บปลั๊กอิน\n\nหากปลั๊กอิน \"บุคคลที่สาม\" ใดๆ ละเมิด ToS/DMCA ของบริการ/นิติบุคคลใดๆ โปรดขอให้ผู้เขียนปลั๊กอิน \"บุคคลที่สาม\" หรือแพลตฟอร์มโฮสติ้ง เช่น GitHub/Codeberg ดำเนินการ ที่ระบุไว้ข้างต้น (ที่ติดป้าย \"บุคคลที่สาม\") เป็นปลั๊กอินสาธารณะ/ที่ดูแลโดยชุมชนทั้งหมด เราไม่ได้จัดการดูแล ดังนั้นเราจึงไม่สามารถดำเนินการใดๆ กับพวกเขาได้\n\n';
+
+  @override
+  String get input_does_not_match_format => 'อินพุตไม่ตรงกับรูปแบบที่ต้องการ';
+
+  @override
+  String get metadata_provider_plugins => 'ปลั๊กอินผู้ให้บริการเมตาดาต้า';
+
+  @override
+  String get paste_plugin_download_url =>
+      'วาง url ดาวน์โหลดหรือ url ที่เก็บ GitHub/Codeberg หรือลิงก์โดยตรงไปยังไฟล์ .smplug';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'ดาวน์โหลดและติดตั้งปลั๊กอินจาก url';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'ไม่สามารถเพิ่มปลั๊กอินได้: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'อัปโหลดปลั๊กอินจากไฟล์';
+
+  @override
+  String get installed => 'ติดตั้งแล้ว';
+
+  @override
+  String get available_plugins => 'ปลั๊กอินที่มีอยู่';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'กำหนดค่าผู้ให้บริการเมตาดาต้าเพลย์ลิสต์/อัลบั้ม/ศิลปิน/ฟีดของคุณเอง';
+
+  @override
+  String get audio_scrobblers => 'เครื่อง scrobbler เสียง';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

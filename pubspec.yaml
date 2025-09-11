@@ -3,7 +3,7 @@ description: Open source extensible music streaming platform and app, based on B
 
 publish_to: "none"
 
-version: 4.0.2+41
+version: 5.0.0+42
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -27,7 +27,6 @@ dependencies:
   desktop_webview_window:
     git:
       path: packages/desktop_webview_window
-      ref: feat/cookies
       url: https://github.com/KRTirtho/flutter-plugins.git
   device_info_plus: ^11.1.1
   dio: ^5.4.3+1
@@ -42,7 +41,7 @@ dependencies:
   duration: ^3.0.12
   encrypt: ^5.0.3
   envied: ^1.0.0
-  file_picker: 8.1.4
+  file_picker: 10.3.3
   file_selector: ^1.0.3
   fluentui_system_icons: ^1.1.234
   flutter:
@@ -52,12 +51,12 @@ dependencies:
       url: https://github.com/KRTirtho/flutter_broadcasts.git
       ref: 63931dfe06733d4fb7452e9981e1f0b23414d97a
   flutter_cache_manager: ^3.3.0
-  flutter_discord_rpc: ^1.0.0
+  flutter_discord_rpc: ^1.1.0
   flutter_displaymode: ^0.6.0
   flutter_feather_icons: ^2.0.0+1
   flutter_form_builder: ^9.6.0
   flutter_hooks: ^0.20.5
-  flutter_inappwebview: ^6.1.3
+  flutter_inappwebview: ^6.1.5
   flutter_localizations:
     sdk: flutter
   flutter_native_splash: ^2.4.6
@@ -85,9 +84,15 @@ dependencies:
   logger: ^2.0.2
   logging: ^1.3.0
   lrc: ^1.0.2
-  media_kit: ^1.1.10+1
-  media_kit_libs_audio: ^1.0.4
-  metadata_god: ^1.0.0
+  media_kit:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: media_kit
+  media_kit_libs_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/universal/media_kit_libs_audio
+  metadata_god: ^1.1.0
   mime: ^2.0.0
   open_file: ^3.5.10
   package_info_plus: ^6.0.0
@@ -102,7 +107,7 @@ dependencies:
       ref: dart-3-support
       url: https://github.com/KRTirtho/scrobblenaut.git
   scroll_to_index: ^3.0.1
-  shadcn_flutter: ^0.0.37
+  shadcn_flutter: ^0.0.42
   shared_preferences: ^2.2.3
   shelf: ^1.4.1
   shelf_router: ^1.1.4
@@ -111,7 +116,7 @@ dependencies:
   skeletonizer: ^2.1.0+1
   sliding_up_panel: ^2.0.0+1
   sliver_tools: ^0.2.12
-  smtc_windows: ^1.0.0
+  smtc_windows: ^1.1.0
   sqlite3: ^2.4.3
   sqlite3_flutter_libs: ^0.5.23
   stroke_text: ^0.0.2
@@ -133,7 +138,7 @@ dependencies:
   yt_dlp_dart:
     git:
       url: https://github.com/KRTirtho/yt_dlp_dart.git
-      ref: e2d82305fab18566408d6f8758361017d1640c3d
+      ref: 4e5310e14af74bdbb51e2a4766e66d6c6a2562a8
   flutter_new_pipe_extractor:
     git:
       url: https://github.com/KRTirtho/flutter_new_pipe_extractor.git
@@ -195,16 +200,36 @@ dependency_overrides:
       ref: patch-2
       path: flutter_secure_storage_linux
   flutter_secure_storage_platform_interface: 2.0.0
+  media_kit_libs_android_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/android/media_kit_libs_android_audio
+  media_kit_libs_ios_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/ios/media_kit_libs_ios_audio
+  media_kit_libs_macos_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/macos/media_kit_libs_macos_audio
+  media_kit_libs_windows_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/windows/media_kit_libs_windows_audio
+  media_kit_libs_linux:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/linux/media_kit_libs_linux
 
 flutter:
   generate: true
   uses-material-design: true
   assets:
-    - assets/
-    - assets/tutorial/
-    - assets/logos/
-    - assets/backgrounds/
-    - assets/patterns/
+    - assets/images/
+    - assets/images/logos/
+    - assets/branding/spotube-logo.png
+    - assets/branding/spotube-logo-light.png
+    - assets/branding/spotube-logo.ico
     - LICENSE
     - packages/flutter_undraw/assets/undraw/access_denied.svg
     - packages/flutter_undraw/assets/undraw/fixing_bugs.svg
@@ -217,6 +242,7 @@ flutter:
     - packages/flutter_undraw/assets/undraw/empty.svg
     - packages/flutter_undraw/assets/undraw/no_data.svg
     - packages/flutter_undraw/assets/undraw/process.svg
+    - packages/flutter_undraw/assets/undraw/stars.svg
     # hetu script bytecode
     - packages/hetu_std/assets/bytecode/std.out
     - packages/hetu_otp_util/assets/bytecode/otp_util.out
@@ -233,6 +259,20 @@ flutter:
         - asset: assets/fonts/Cookie-Regular.ttf
           style: normal
           weight: 500
+    - family: Ubuntu Mono
+      fonts:
+        - asset: assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf
+          style: normal
+          weight: 400
+        - asset: assets/fonts/Ubuntu_Mono/UbuntuMono-Bold.ttf
+          style: normal
+          weight: 700
+        - asset: assets/fonts/Ubuntu_Mono/UbuntuMono-Italic.ttf
+          style: italic
+          weight: 400
+        - asset: assets/fonts/Ubuntu_Mono/UbuntuMono-BoldItalic.ttf
+          style: italic
+          weight: 700
 
 flutter_gen:
   output: lib/collections

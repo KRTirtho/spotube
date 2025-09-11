@@ -1,12 +1,8 @@
-import 'dart:ui';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/database/database.dart';
@@ -45,19 +41,17 @@ class HomePage extends HookConsumerWidget {
               if (mediaQuery.smAndDown || layoutMode == LayoutMode.compact)
                 SliverAppBar(
                   floating: true,
-                  title: Image.asset(
-                    theme.brightness == Brightness.dark
-                        ? Assets.spotubeLogoPng.path
-                        : Assets.spotubeLogoLight.path,
-                    height: 45,
-                    width: 45,
-                    color: theme.colorScheme.background,
-                    colorBlendMode: BlendMode.saturation,
-                    cacheHeight:
-                        (100 * MediaQuery.devicePixelRatioOf(context)).toInt(),
+                  title: DefaultTextStyle(
+                    style: TextStyle(
+                      fontFamily: "Cookie",
+                      fontSize: 30,
+                      letterSpacing: 1.8,
+                      color: theme.colorScheme.foreground,
+                    ),
+                    child: const Text("Spotube"),
                   ),
-                  backgroundColor: context.theme.colorScheme.background,
-                  foregroundColor: context.theme.colorScheme.foreground,
+                  backgroundColor: theme.colorScheme.background,
+                  foregroundColor: theme.colorScheme.foreground,
                   actions: [
                     const ConnectDeviceButton(),
                     const Gap(10),

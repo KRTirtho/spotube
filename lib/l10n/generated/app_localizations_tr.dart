@@ -1204,7 +1204,7 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Bu, çevrimiçi müzik akışı platformlarının ortalama akış başına \$0,003 ile \$0,005 arasındaki ödemesine göre hesaplanmıştır. Bu, kullanıcının farklı müzik akışı platformlarında şarkılarını dinleselerdi sanatçılara ne kadar ödeme yapacaklarına dair fikir vermek için yapılan varsayımsal bir hesaplamadır.';
 
   @override
   String count_mins(Object minutes) {
@@ -1386,4 +1386,162 @@ class AppLocalizationsTr extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'Bağlantı reddedildi. Kullanıcı erişimi reddetti.';
+
+  @override
+  String get an_error_occurred => 'Bir hata oluştu';
+
+  @override
+  String get copy_to_clipboard => 'Panoya kopyala';
+
+  @override
+  String get view_logs => 'Günlükleri görüntüle';
+
+  @override
+  String get retry => 'Tekrar dene';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'Varsayılan bir meta veri sağlayıcısı ayarlanmadı';
+
+  @override
+  String get manage_metadata_providers => 'Meta veri sağlayıcılarını yönet';
+
+  @override
+  String get open_link_in_browser => 'Bağlantıyı Tarayıcıda Aç?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Aşağıdaki bağlantıyı açmak istiyor musunuz';
+
+  @override
+  String get unsafe_url_warning =>
+      'Güvenilmeyen kaynaklardan bağlantı açmak güvensiz olabilir. Dikkatli olun!\nBağlantıyı panonuza da kopyalayabilirsiniz.';
+
+  @override
+  String get copy_link => 'Bağlantıyı Kopyala';
+
+  @override
+  String get building_your_timeline =>
+      'Dinlemelerinize göre zaman çizelgeniz oluşturuluyor...';
+
+  @override
+  String get official => 'Resmi';
+
+  @override
+  String author_name(Object author) {
+    return 'Yazar: $author';
+  }
+
+  @override
+  String get third_party => 'Üçüncü taraf';
+
+  @override
+  String get plugin_requires_authentication =>
+      'Eklenti kimlik doğrulama gerektirir';
+
+  @override
+  String get update_available => 'Güncelleme mevcut';
+
+  @override
+  String get supports_scrobbling => 'Scrobbling\'i destekler';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Bu eklenti, dinleme geçmişinizi oluşturmak için müziğinizi scrobble eder.';
+
+  @override
+  String get default_plugin => 'Varsayılan';
+
+  @override
+  String get set_default => 'Varsayılan olarak ayarla';
+
+  @override
+  String get support => 'Destek';
+
+  @override
+  String get support_plugin_development => 'Eklenti geliştirmeyi destekle';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- **$name** API\'ye erişebilir';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Bu eklentiyi yüklemek istiyor musunuz?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Bu eklenti üçüncü taraf bir depodan gelmektedir. Lütfen yüklemeden önce kaynağa güvendiğinizden emin olun.';
+
+  @override
+  String get author => 'Yazar';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'Bu eklenti aşağıdakileri yapabilir';
+
+  @override
+  String get install => 'Yükle';
+
+  @override
+  String get install_a_metadata_provider => 'Bir Meta Veri Sağlayıcısı Yükle';
+
+  @override
+  String get no_tracks_playing => 'Şu anda çalınan bir Parça yok';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Bu şarkı için senkronize şarkı sözleri mevcut değil. Lütfen';
+
+  @override
+  String get plain_lyrics => 'Düz Şarkı Sözleri';
+
+  @override
+  String get tab_instead => 'sekmesini kullanın.';
+
+  @override
+  String get disclaimer => 'Sorumluluk Reddi';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Spotube ekibi, herhangi bir \"Üçüncü taraf\" eklentisi için herhangi bir sorumluluk (yasal olanlar dahil) kabul etmez.\nLütfen bunları kendi riskinizde kullanın. Herhangi bir hata/sorun için lütfen bunları eklenti deposuna bildirin.\n\nHerhangi bir \"Üçüncü taraf\" eklentisi bir hizmetin/yasal varlığın ToS/DMCA\'sını ihlal ediyorsa, lütfen \"Üçüncü taraf\" eklenti yazarından veya barındırma platformundan, örneğin GitHub/Codeberg\'den harekete geçmesini isteyin. Yukarıda listelenen (\"Üçüncü taraf\" olarak etiketlenen) eklentilerin tümü genel/topluluk tarafından sürdürülen eklentilerdir. Biz bunları küratörlüğünü yapmıyoruz, bu yüzden onlar üzerinde herhangi bir işlem yapamayız.\n\n';
+
+  @override
+  String get input_does_not_match_format => 'Girdi, gerekli biçimle eşleşmiyor';
+
+  @override
+  String get metadata_provider_plugins => 'Meta Veri Sağlayıcısı Eklentileri';
+
+  @override
+  String get paste_plugin_download_url =>
+      'İndirme url\'sini veya GitHub/Codeberg repo url\'sini veya .smplug dosyasına doğrudan bağlantıyı yapıştırın';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'url\'den eklentiyi indir ve yükle';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Eklenti eklenemedi: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'Dosyadan eklenti yükle';
+
+  @override
+  String get installed => 'Yüklü';
+
+  @override
+  String get available_plugins => 'Mevcut eklentiler';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'Kendi çalma listenizi/albümünüzü/sanatçınızı/akış meta veri sağlayıcınızı yapılandırın';
+
+  @override
+  String get audio_scrobblers => 'Ses Scrobbler\'lar';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

@@ -73,7 +73,7 @@ class SettingsMetadataProviderFormPage extends HookConsumerWidget {
                             FormBuilderValidators.match(
                               RegExp(field.regex!),
                               errorText:
-                                  "Input doesn't match the required format",
+                                  context.l10n.input_does_not_match_format,
                             ),
                         ]),
                         builder: (formField) {

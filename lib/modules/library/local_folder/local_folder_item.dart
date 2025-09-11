@@ -32,23 +32,6 @@ class LocalFolderItem extends HookConsumerWidget {
     final isDownloadFolder = folder == downloadFolder;
     final isCacheFolder = folder == cacheFolder.data;
 
-    final Uri(:pathSegments) = Uri.parse(
-      folder
-          .replaceFirst(RegExp(r'^/Volumes/[^/]+/Users/'), "")
-          .replaceFirst(r'C:\Users\', "")
-          .replaceFirst(r'/home/', ""),
-    );
-
-    // if length > 5, we ... all the middle segments after 2 and the last 2
-    final segments = pathSegments.length > 5
-        ? [
-            ...pathSegments.take(2),
-            "...",
-            ...pathSegments.skip(pathSegments.length - 3).toList()
-              ..removeLast(),
-          ]
-        : pathSegments.take(max(pathSegments.length - 1, 0)).toList();
-
     final trackSnapshot = ref.watch(
       localTracksProvider.select(
         (s) => s.whenData((tracks) => tracks[folder]?.take(4).toList()),
@@ -111,40 +94,18 @@ class LocalFolderItem extends HookConsumerWidget {
           const Gap(8),
           Stack(
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: Text(
-                      isDownloadFolder
-                          ? context.l10n.downloads
-                          : isCacheFolder
-                              ? context.l10n.cache_folder.capitalize()
-                              : basename(folder),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  Wrap(
-                    spacing: 2,
-                    runSpacing: 2,
-                    children: [
-                      for (final MapEntry(key: index, value: segment)
-                          in segments.asMap().entries)
-                        Text.rich(
-                          TextSpan(
-                            children: [
-                              if (index != 0) const TextSpan(text: "/ "),
-                              TextSpan(text: segment),
-                            ],
-                          ),
-                          maxLines: 2,
-                        ).xSmall().muted(),
-                    ],
-                  ),
-                ],
+              Center(
+                child: Text(
+                  isDownloadFolder
+                      ? context.l10n.downloads
+                      : isCacheFolder
+                          ? context.l10n.cache_folder.capitalize()
+                          : basename(folder),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
               if (!isDownloadFolder && !isCacheFolder)
                 Align(

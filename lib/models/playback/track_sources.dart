@@ -2,6 +2,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
 
 part 'track_sources.freezed.dart';
@@ -38,6 +39,27 @@ class TrackSourceQuery with _$TrackSourceQuery {
 
   /// Parses [SpotubeMedia]'s [uri] property to create a [TrackSourceQuery].
   factory TrackSourceQuery.parseUri(String url) {
+    final isLocal = !url.startsWith("http");
+
+    if (isLocal) {
+      try {
+        return TrackSourceQuery(
+          id: url,
+          title: '',
+          artists: [],
+          album: '',
+          durationMs: 0,
+          isrc: '',
+          explicit: false,
+        );
+      } catch (e, stackTrace) {
+        AppLogger.log.e(
+          "Failed to parse local track URI: $url\n$e",
+          stackTrace: stackTrace,
+        );
+      }
+    }
+
     final uri = Uri.parse(url);
     return TrackSourceQuery(
       id: uri.pathSegments.last,

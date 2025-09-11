@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/database/database.dart';
@@ -6,6 +7,7 @@ import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/provider/youtube_engine/youtube_engine.dart';
+import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/song_link/song_link.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -118,6 +120,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     dynamic ref,
   ) async {
     assert(ref is WidgetRef || ref is Ref, "Invalid ref type");
+
     List<TrackSource>? sourceMap;
     if (index == 0) {
       final manifest =
@@ -201,7 +204,12 @@ class YoutubeSourcedTrack extends SourcedTrack {
       final searchedVideos =
           await ref.read(youtubeEngineProvider).searchVideos(isrc.toString());
       if (searchedVideos.isNotEmpty) {
-        isrcResults.addAll(searchedVideos
+        AppLogger.log
+            .d("${track.title} ISRC $isrc Total ${searchedVideos.length}");
+
+        final stringBuffer = StringBuffer();
+
+        final filteredMatches = searchedVideos
             .map<YoutubeVideoInfo>(YoutubeVideoInfo.fromVideo)
             .map((YoutubeVideoInfo videoInfo) {
               final ytWords = videoInfo.title
@@ -221,12 +229,20 @@ class YoutubeSourcedTrack extends SourcedTrack {
                           .abs()
                           .inMilliseconds <=
                       3000) {
+                stringBuffer.writeln(
+                  "ISRC MATCH: ${videoInfo.id} ${videoInfo.title} by ${videoInfo.channelName} ${videoInfo.duration}",
+                );
+
                 return videoInfo;
               }
               return null;
             })
-            .whereType<YoutubeVideoInfo>()
-            .toList());
+            .nonNulls
+            .toList();
+
+        AppLogger.log.d(stringBuffer.toString());
+
+        isrcResults.addAll(filteredMatches);
       }
     }
     return isrcResults;
@@ -247,7 +263,21 @@ class YoutubeSourcedTrack extends SourcedTrack {
       videoResults.addAll(isrcResults);
 
       if (isrcResults.isEmpty) {
+        AppLogger.log.w("No ISRC results found, falling back to SongLink");
+
         final links = await SongLinkService.links(query.id);
+
+        final stringBuffer = links.fold(
+          StringBuffer(),
+          (previousValue, element) {
+            previousValue.writeln(
+                "SongLink ${query.id} ${element.platform} ${element.url}");
+            return previousValue;
+          },
+        );
+
+        AppLogger.log.d(stringBuffer.toString());
+
         final ytLink = links.firstWhereOrNull(
           (link) => link.platform == "youtube",
         );
@@ -262,6 +292,8 @@ class YoutubeSourcedTrack extends SourcedTrack {
             // Ignore this error and continue with the search
             AppLogger.reportError(e, stack);
           }
+        } else {
+          AppLogger.log.w("No YouTube link found in SongLink results");
         }
       }
     }
@@ -307,6 +339,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
     final newSourceInfo = isStepSibling
         ? sibling
         : siblings.firstWhere((s) => s.id == sibling.id);
+
     final newSiblings = siblings.where((s) => s.id != sibling.id).toList()
       ..insert(0, info);
 
@@ -333,7 +366,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
       source: source,
       siblings: newSiblings,
       sources: toTrackSources(manifest),
-      info: info,
+      info: newSourceInfo,
       query: query,
     );
   }
@@ -360,14 +393,39 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
   @override
   Future<SourcedTrack> refreshStream() async {
-    final manifest =
-        await ref.read(youtubeEngineProvider).getStreamManifest(info.id);
+    List<TrackSource> validStreams = [];
+
+    final stringBuffer = StringBuffer();
+    for (final source in sources) {
+      final res = await globalDio.head(
+        source.url,
+        options:
+            Options(validateStatus: (status) => status != null && status < 500),
+      );
+
+      stringBuffer.writeln(
+        "[${query.id}] ${res.statusCode} ${source.quality} ${source.codec} ${source.bitrate}",
+      );
+
+      if (res.statusCode! < 400) {
+        validStreams.add(source);
+      }
+    }
+
+    AppLogger.log.d(stringBuffer.toString());
+
+    if (validStreams.isEmpty) {
+      final manifest =
+          await ref.read(youtubeEngineProvider).getStreamManifest(info.id);
+
+      validStreams = toTrackSources(manifest);
+    }
 
     final sourcedTrack = YoutubeSourcedTrack(
       ref: ref,
       siblings: siblings,
       source: source,
-      sources: toTrackSources(manifest),
+      sources: validStreams,
       info: info,
       query: query,
     );

@@ -5,6 +5,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
 import 'package:spotube/components/waypoint.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
@@ -26,6 +27,15 @@ class SearchPageArtistsTab extends HookConsumerWidget {
     final searchArtistsNotifier =
         ref.read(metadataPluginSearchArtistsProvider(searchTerm).notifier);
     final searchArtists = searchArtistsSnapshot.asData?.value.items ?? [];
+
+    if (searchArtistsSnapshot.hasError) {
+      return ErrorBox(
+        error: searchArtistsSnapshot.error!,
+        onRetry: () {
+          ref.invalidate(metadataPluginSearchArtistsProvider(searchTerm));
+        },
+      );
+    }
 
     return SearchPlaceholder(
       snapshot: searchArtistsSnapshot,

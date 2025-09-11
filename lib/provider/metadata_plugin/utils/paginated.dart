@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/async_notifier.dart';
 import 'package:spotube/provider/metadata_plugin/utils/common.dart';
+import 'package:spotube/services/logger/logger.dart';
 
 mixin PaginatedAsyncNotifierMixin<K>
     // ignore: invalid_use_of_internal_member
@@ -14,22 +16,24 @@ mixin PaginatedAsyncNotifierMixin<K>
   Future<void> fetchMore() async {
     if (state.value == null || !state.value!.hasMore) return;
 
-    state = AsyncLoadingNext(state.asData!.value);
+    final oldState = state.value;
+    try {
+      state = AsyncLoadingNext(state.asData!.value);
 
-    state = await AsyncValue.guard(
-      () async {
-        final newState = await fetch(
-          state.value!.nextOffset!,
-          state.value!.limit,
-        );
+      final newState = await fetch(
+        state.value!.nextOffset!,
+        state.value!.limit,
+      );
 
-        final oldItems =
-            state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
-        final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+      final oldItems =
+          state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+      final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
 
-        return newState.copyWith(items: <K>[...oldItems, ...items]);
-      },
-    );
+      state = AsyncData(newState.copyWith(items: <K>[...oldItems, ...items]));
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack);
+      state = AsyncData(oldState!);
+    }
   }
 
   Future<List<K>> fetchAll() async {
@@ -38,17 +42,32 @@ mixin PaginatedAsyncNotifierMixin<K>
 
     bool hasMore = true;
     while (hasMore) {
-      await update((state) async {
-        final newState = await fetch(
-          state.nextOffset!,
-          state.limit,
-        );
+      final newState = await fetch(
+        state.value!.nextOffset!,
+        max(state.value!.limit, 100),
+      )
+          .catchError(
+            (e) => fetch(state.value!.nextOffset!, max(state.value!.limit, 50)),
+          )
+          .catchError(
+            (e) => fetch(state.value!.nextOffset!, state.value!.limit),
+          )
+          .catchError(
+        (e) async {
+          await Future.delayed(const Duration(milliseconds: 500));
+          return fetch(state.value!.nextOffset!, state.value!.limit);
+        },
+      );
 
-        hasMore = newState.hasMore;
-        final oldItems = state.items.isEmpty ? <K>[] : state.items.cast<K>();
-        final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
-        return newState.copyWith(items: <K>[...oldItems, ...items]);
-      });
+      hasMore = newState.hasMore;
+
+      final oldItems =
+          state.value!.items.isEmpty ? <K>[] : state.value!.items.cast<K>();
+      final items = newState.items.isEmpty ? <K>[] : newState.items.cast<K>();
+
+      state = AsyncData(
+        newState.copyWith(items: [...oldItems, ...items]),
+      );
     }
 
     return state.value!.items.cast<K>();

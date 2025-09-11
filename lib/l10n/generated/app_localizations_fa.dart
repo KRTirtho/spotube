@@ -1197,7 +1197,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*این محاسبه بر اساس میانگین پرداخت به ازای هر پخش (0.003 تا 0.005 دلار) در پلتفرم‌های استریم موزیک آنلاین انجام شده است. این یک محاسبه فرضی است که به کاربر دیدی از مقدار پرداختی به هنرمندان در صورت گوش دادن به آهنگ آن‌ها در پلتفرم‌های مختلف ارائه می‌دهد.';
 
   @override
   String count_mins(Object minutes) {
@@ -1378,4 +1378,162 @@ class AppLocalizationsFa extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'اتصال رد شد. کاربر دسترسی را رد کرد.';
+
+  @override
+  String get an_error_occurred => 'خطایی رخ داد';
+
+  @override
+  String get copy_to_clipboard => 'کپی به کلیپ‌بورد';
+
+  @override
+  String get view_logs => 'مشاهده لاگ‌ها';
+
+  @override
+  String get retry => 'دوباره تلاش کن';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'هیچ ارائه‌دهندهٔ پیش‌فرض متادیتا تعیین نکرده‌اید';
+
+  @override
+  String get manage_metadata_providers => 'مدیریت ارائه‌دهندگان متادیتا';
+
+  @override
+  String get open_link_in_browser => 'باز کردن لینک در مرورگر؟';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'آیا می‌خواهید لینک زیر را باز کنید؟';
+
+  @override
+  String get unsafe_url_warning =>
+      'باز کردن لینک از منابع نامطمئن می‌تواند ناامن باشد. مراقب باشید!\nهمچنین می‌توانید لینک را در کلیپ‌بورد خود کپی کنید.';
+
+  @override
+  String get copy_link => 'کپی لینک';
+
+  @override
+  String get building_your_timeline =>
+      'در حال ساخت جدول زمانی بر اساس شنیده‌هایتان…';
+
+  @override
+  String get official => 'رسمی';
+
+  @override
+  String author_name(Object author) {
+    return 'نویسنده: $author';
+  }
+
+  @override
+  String get third_party => 'سوم‌شخص';
+
+  @override
+  String get plugin_requires_authentication => 'افزونه نیاز به احراز هویت دارد';
+
+  @override
+  String get update_available => 'به‌روزرسانی در دسترس است';
+
+  @override
+  String get supports_scrobbling => 'پشتیبانی از اسکراب‌بلینگ';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'این افزونه موسیقی شما را اسکراب می‌کند تا تاریخچهٔ شنیداری‌تان را تولید کند.';
+
+  @override
+  String get default_plugin => 'پیش‌فرض';
+
+  @override
+  String get set_default => 'تنظیم به عنوان پیش‌فرض';
+
+  @override
+  String get support => 'پشتیبانی';
+
+  @override
+  String get support_plugin_development => 'حمایت از توسعهٔ افزونه';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- می‌تواند به API **$name** دسترسی پیدا کند';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'می‌خواهید این افزونه را نصب کنید؟';
+
+  @override
+  String get third_party_plugin_warning =>
+      'این افزونه از مخزن شخص ثالث آمده است. لطفاً قبل از نصب از منابع آن مطمئن شوید.';
+
+  @override
+  String get author => 'نویسنده';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'این افزونه می‌تواند موارد زیر را انجام دهد';
+
+  @override
+  String get install => 'نصب';
+
+  @override
+  String get install_a_metadata_provider => 'نصب یک ارائه‌دهندهٔ متادیتا';
+
+  @override
+  String get no_tracks_playing => 'در حال‌ حاضر هیچ تراکی در حال پخش نیست';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'متن هم‌زمان‌شده برای این آهنگ در دسترس نیست. لطفاً از';
+
+  @override
+  String get plain_lyrics => 'متن ساده';
+
+  @override
+  String get tab_instead => 'به‌جای آن از کلید Tab استفاده کنید.';
+
+  @override
+  String get disclaimer => 'سلب مسئولیت';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'تیم Spotube هیچ مسئولیتی (حتی قانونی) در قبال افزونه‌های \"شخص ثالث\" ندارد. از آن‌ها به‌خاطر خود استفاده کنید. برای خطاها/مشکلات، لطفاً در مخزن افزونه گزارش دهید.\n\nاگر هر افزونهٔ \"شخص ثالث\" قوانین ToS/DMCA سرویس یا نهاد قانونی را نقض کند، لطفاً از نویسندهٔ افزونه یا پلتفرم میزبانی (مثل GitHub/Codeberg) درخواست اقدام کنید. افزونه‌هایی که با برچسب \"شخص ثالث\" مشخص شده‌اند، عمومی هستند و توسط جامعه نگهداری می‌شوند؛ ما آن‌ها را تغییر یا مدیریت نمی‌کنیم و نمی‌توانیم دخالت کنیم.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'ورودی با قالب مورد نیاز تطابق ندارد';
+
+  @override
+  String get metadata_provider_plugins => 'افزونه‌های ارائه‌دهندهٔ متادیتا';
+
+  @override
+  String get paste_plugin_download_url =>
+      'URL دانلود یا مخزن GitHub/Codeberg یا لینک مستقیم فایل .smplug را الصاق کنید';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'دانلود و نصب افزونه از طریق لینک';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'افزونه اضافه نشد: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'بارگذاری افزونه از فایل';
+
+  @override
+  String get installed => 'نصب شد';
+
+  @override
+  String get available_plugins => 'افزونه‌های موجود';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'پیکربندی ارائه‌دهندهٔ متادیتا برای پلی‌لیست/آلبوم/هنرمند/فید به‌صورت سفارشی';
+
+  @override
+  String get audio_scrobblers => 'اسکراب‌بلرهای صوتی';
+
+  @override
+  String get scrobbling => 'اسکراب‌بلینگ';
 }

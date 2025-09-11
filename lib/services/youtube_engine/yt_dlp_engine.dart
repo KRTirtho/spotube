@@ -11,9 +11,7 @@ import 'package:http_parser/http_parser.dart';
 class YtDlpEngine implements YouTubeEngine {
   StreamManifest _parseFormats(List formats, videoId) {
     final audioOnlyStreams = formats
-        .where(
-          (f) => f["resolution"] == "audio only" && f["manifest_url"] == null,
-        )
+        .where((f) => f["resolution"] == "audio only")
         .sorted((a, b) => a["quality"] > b["quality"] ? 1 : -1)
         .map((f) {
       final filesize = f["filesize"] ?? f["filesize_approx"];
@@ -22,13 +20,14 @@ class YtDlpEngine implements YouTubeEngine {
         0,
         Uri.parse(f["url"]),
         StreamContainer.parse(
-          f["container"]?.replaceAll("_dash", "").replaceAll("m4a", "mp4"),
+          f["container"]?.replaceAll("_dash", "").replaceAll("m4a", "mp4") ??
+              (f["protocol"] == "m3u8_native" ? "m3u8" : "mp4"),
         ),
         filesize != null ? FileSize(filesize) : FileSize.unknown,
         Bitrate(
           (((f["abr"] ?? f["tbr"] ?? 0) * 1000) as num).toInt(),
         ),
-        f["acodec"] ?? "webm",
+        f["acodec"] ?? "aac",
         f["format_note"],
         [],
         MediaType.parse(

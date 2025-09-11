@@ -112,13 +112,8 @@ mixin _$WebSocketLoadEventData {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
-
-  /// Serializes this WebSocketLoadEventData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $WebSocketLoadEventDataCopyWith<WebSocketLoadEventData> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -147,8 +142,6 @@ class _$WebSocketLoadEventDataCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -197,8 +190,6 @@ class __$$WebSocketLoadEventDataPlaylistImplCopyWithImpl<$Res>
       $Res Function(_$WebSocketLoadEventDataPlaylistImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -222,8 +213,6 @@ class __$$WebSocketLoadEventDataPlaylistImplCopyWithImpl<$Res>
     ));
   }
 
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SpotubeSimplePlaylistObjectCopyWith<$Res>? get collection {
@@ -292,14 +281,12 @@ class _$WebSocketLoadEventDataPlaylistImpl
                 other.initialIndex == initialIndex));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType,
       const DeepCollectionEquality().hash(_tracks), collection, initialIndex);
 
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$WebSocketLoadEventDataPlaylistImplCopyWith<
@@ -433,11 +420,8 @@ abstract class WebSocketLoadEventDataPlaylist extends WebSocketLoadEventData {
   SpotubeSimplePlaylistObject? get collection;
   @override
   int? get initialIndex;
-
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$WebSocketLoadEventDataPlaylistImplCopyWith<
           _$WebSocketLoadEventDataPlaylistImpl>
       get copyWith => throw _privateConstructorUsedError;
@@ -472,8 +456,6 @@ class __$$WebSocketLoadEventDataAlbumImplCopyWithImpl<$Res>
       $Res Function(_$WebSocketLoadEventDataAlbumImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -497,8 +479,6 @@ class __$$WebSocketLoadEventDataAlbumImplCopyWithImpl<$Res>
     ));
   }
 
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $SpotubeSimpleAlbumObjectCopyWith<$Res>? get collection {
@@ -565,14 +545,12 @@ class _$WebSocketLoadEventDataAlbumImpl extends WebSocketLoadEventDataAlbum {
                 other.initialIndex == initialIndex));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType,
       const DeepCollectionEquality().hash(_tracks), collection, initialIndex);
 
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$WebSocketLoadEventDataAlbumImplCopyWith<_$WebSocketLoadEventDataAlbumImpl>
@@ -705,11 +683,8 @@ abstract class WebSocketLoadEventDataAlbum extends WebSocketLoadEventData {
   SpotubeSimpleAlbumObject? get collection;
   @override
   int? get initialIndex;
-
-  /// Create a copy of WebSocketLoadEventData
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$WebSocketLoadEventDataAlbumImplCopyWith<_$WebSocketLoadEventDataAlbumImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

@@ -8,6 +8,8 @@ import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/assets.gen.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
+import 'package:spotube/components/fallbacks/no_default_metadata_plugin.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
@@ -19,6 +21,7 @@ import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/core/user.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 
 @RoutePage()
 class UserPlaylistsPage extends HookConsumerWidget {
@@ -47,7 +50,7 @@ class UserPlaylistsPage extends HookConsumerWidget {
               owner: me.asData!.value!,
               images: [
                   SpotubeImageObject(
-                    url: Assets.likedTracks.path,
+                    url: Assets.images.likedTracks.path,
                     width: 300,
                     height: 300,
                   )
@@ -78,8 +81,25 @@ class UserPlaylistsPage extends HookConsumerWidget {
 
     final controller = useScrollController();
 
+    if (playlistsQuery.error
+        case MetadataPluginException(
+          errorCode: MetadataPluginErrorCode.noDefaultPlugin,
+          message: _,
+        )) {
+      return const Center(child: NoDefaultMetadataPlugin());
+    }
+
     if (authenticated.asData?.value != true) {
       return const AnonymousFallback();
+    }
+
+    if (playlistsQuery.hasError) {
+      return ErrorBox(
+        error: playlistsQuery.error!,
+        onRetry: () {
+          ref.invalidate(metadataPluginSavedPlaylistsProvider);
+        },
+      );
     }
 
     return material.RefreshIndicator.adaptive(

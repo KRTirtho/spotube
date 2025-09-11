@@ -18,6 +18,7 @@ import 'package:spotube/hooks/utils/use_debounce.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/models/playback/track_sources.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -36,7 +37,7 @@ final sourceInfoToIconMap = {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(90),
       image: DecorationImage(
-        image: Assets.jiosaavn.provider(),
+        image: Assets.images.logos.jiosaavn.provider(),
         fit: BoxFit.cover,
       ),
     ),
@@ -48,7 +49,7 @@ final sourceInfoToIconMap = {
     decoration: BoxDecoration(
       borderRadius: BorderRadius.circular(90),
       image: DecorationImage(
-        image: Assets.invidious.provider(),
+        image: Assets.images.logos.invidious.provider(),
         fit: BoxFit.cover,
       ),
     ),
@@ -69,6 +70,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
     final preferences = ref.watch(userPreferencesProvider);
     final youtubeEngine = ref.watch(youtubeEngineProvider);
 
+    final isLoading = useState(false);
     final isSearching = useState(false);
     final searchMode = useState(preferences.searchMode);
     final activeTrackSources = ref.watch(activeTrackSourcesProvider);
@@ -95,7 +97,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
     final controller = useScrollController();
 
     final searchRequest = useMemoized(() async {
-      if (searchTerm.trim().isEmpty) {
+      if (searchTerm.trim().isEmpty || activeTrackSource == null) {
         return <TrackSourceInfo>[];
       }
       if (preferences.audioSource == AudioSource.jiosaavn) {
@@ -107,7 +109,7 @@ class SiblingTracksSheet extends HookConsumerWidget {
           return siblingType.info;
         }));
 
-        final activeSourceInfo = activeTrackSource?.info as TrackSourceInfo;
+        final activeSourceInfo = activeTrackSource.info;
 
         return results
           ..removeWhere((element) => element.id == activeSourceInfo.id)
@@ -122,18 +124,18 @@ class SiblingTracksSheet extends HookConsumerWidget {
           resultsYt
               .map(YoutubeVideoInfo.fromVideo)
               .mapIndexed((i, video) async {
-            final siblingType =
-                await YoutubeSourcedTrack.toSiblingType(i, video, ref);
-            return siblingType.info;
-          }),
+                if (!context.mounted) return null;
+                final siblingType =
+                    await YoutubeSourcedTrack.toSiblingType(i, video, ref);
+                return siblingType.info;
+              })
+              .whereType<Future<TrackSourceInfo>>()
+              .toList(),
         );
-        final activeSourceInfo = activeTrackSource?.info as TrackSourceInfo;
+        final activeSourceInfo = activeTrackSource.info;
         return searchResults
           ..removeWhere((element) => element.id == activeSourceInfo.id)
-          ..insert(
-            0,
-            activeSourceInfo,
-          );
+          ..insert(0, activeSourceInfo);
       }
     }, [
       searchTerm,
@@ -165,8 +167,8 @@ class SiblingTracksSheet extends HookConsumerWidget {
     }, [activeTrack, previousActiveTrack]);
 
     final itemBuilder = useCallback(
-      (TrackSourceInfo sourceInfo) {
-        final icon = sourceInfoToIconMap[sourceInfo.runtimeType];
+      (TrackSourceInfo sourceInfo, AudioSource source) {
+        final icon = sourceInfoToIconMap[source];
         return ButtonTile(
           style: ButtonVariance.ghost,
           padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -194,23 +196,40 @@ class SiblingTracksSheet extends HookConsumerWidget {
               ),
             ],
           ),
-          enabled: !isFetchingActiveTrack,
+          enabled: !isFetchingActiveTrack && !isLoading.value,
           selected: !isFetchingActiveTrack &&
               sourceInfo.id == activeTrackSource?.info.id,
-          onPressed: () {
+          onPressed: () async {
             if (!isFetchingActiveTrack &&
                 sourceInfo.id != activeTrackSource?.info.id) {
-              activeTrackNotifier?.swapWithSibling(sourceInfo);
-              if (MediaQuery.sizeOf(context).mdAndUp) {
-                closeOverlay(context);
-              } else {
-                closeDrawer(context);
+              try {
+                isLoading.value = true;
+                await activeTrackNotifier?.swapWithSibling(sourceInfo);
+                await ref.read(audioPlayerProvider.notifier).swapActiveSource();
+
+                if (context.mounted) {
+                  if (MediaQuery.sizeOf(context).mdAndUp) {
+                    closeOverlay(context);
+                  } else {
+                    closeDrawer(context);
+                  }
+                }
+              } finally {
+                if (context.mounted) {
+                  isLoading.value = false;
+                }
               }
             }
           },
         );
       },
-      [activeTrackSource, activeTrackNotifier, siblings],
+      [
+        activeTrackSource,
+        activeTrackNotifier,
+        siblings,
+        isFetchingActiveTrack,
+        isLoading.value,
+      ],
     );
 
     final scale = context.theme.scaling;
@@ -288,6 +307,15 @@ class SiblingTracksSheet extends HookConsumerWidget {
               ],
             ),
           ),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            child: isLoading.value
+                ? const SizedBox(
+                    width: double.infinity,
+                    child: LinearProgressIndicator(),
+                  )
+                : const SizedBox.shrink(),
+          ),
           Expanded(
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
@@ -301,8 +329,10 @@ class SiblingTracksSheet extends HookConsumerWidget {
                       controller: controller,
                       itemCount: siblings.length,
                       separatorBuilder: (context, index) => const Gap(8),
-                      itemBuilder: (context, index) =>
-                          itemBuilder(siblings[index]),
+                      itemBuilder: (context, index) => itemBuilder(
+                        siblings[index],
+                        activeTrackSource!.source,
+                      ),
                     ),
                   true => FutureBuilder(
                       future: searchRequest,
@@ -321,8 +351,10 @@ class SiblingTracksSheet extends HookConsumerWidget {
                           controller: controller,
                           itemCount: snapshot.data!.length,
                           separatorBuilder: (context, index) => const Gap(8),
-                          itemBuilder: (context, index) =>
-                              itemBuilder(snapshot.data![index]),
+                          itemBuilder: (context, index) => itemBuilder(
+                            snapshot.data![index],
+                            preferences.audioSource,
+                          ),
                         );
                       },
                     ),

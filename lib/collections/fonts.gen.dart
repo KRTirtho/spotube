@@ -18,4 +18,7 @@ class FontFamily {
 
   /// Font family: RadixIcons
   static const String radixIcons = 'RadixIcons';
+
+  /// Font family: Ubuntu Mono
+  static const String ubuntuMono = 'Ubuntu Mono';
 }

@@ -2,6 +2,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/modules/search/loading.dart';
@@ -22,6 +23,15 @@ class SearchPageAlbumsTab extends HookConsumerWidget {
         ref.read(metadataPluginSearchAlbumsProvider(searchTerm).notifier);
     final searchAlbums =
         searchAlbumsSnapshot.asData?.value.items ?? [FakeData.albumSimple];
+
+    if (searchAlbumsSnapshot.hasError) {
+      return ErrorBox(
+        error: searchAlbumsSnapshot.error!,
+        onRetry: () {
+          ref.invalidate(metadataPluginSearchAlbumsProvider(searchTerm));
+        },
+      );
+    }
 
     return SearchPlaceholder(
       snapshot: searchAlbumsSnapshot,

@@ -48,6 +48,7 @@ class ServerPlaybackRoutes {
 
   Future<({dio_lib.Response<Uint8List> response, Uint8List? bytes})>
       streamTrack(
+    Request request,
     SourcedTrack track,
     Map<String, dynamic> headers,
   ) async {
@@ -59,28 +60,6 @@ class ServerPlaybackRoutes {
         ),
       ),
     );
-    final trackPartialCacheFile = File("${trackCacheFile.path}.part");
-
-    var options = Options(
-      headers: {
-        ...headers,
-        "user-agent": _randomUserAgent,
-        "Cache-Control": "max-age=3600",
-        "Connection": "keep-alive",
-        "host": Uri.parse(track.url).host,
-      },
-      responseType: ResponseType.bytes,
-      validateStatus: (status) => status! < 400,
-    );
-
-    final headersRes = await Future<dio_lib.Response?>.value(
-      dio.head(
-        track.url,
-        options: options,
-      ),
-    ).catchError((_) async => null);
-
-    final contentLength = headersRes?.headers.value("content-length");
 
     if (await trackCacheFile.exists() && userPreferences.cacheMusic) {
       final bytes = await trackCacheFile.readAsBytes();
@@ -95,11 +74,68 @@ class ServerPlaybackRoutes {
             "accept-ranges": ["bytes"],
             "content-range": ["bytes 0-$cachedFileLength/$cachedFileLength"],
           }),
-          requestOptions: RequestOptions(path: track.url),
+          requestOptions: RequestOptions(path: request.requestedUri.toString()),
         ),
         bytes: bytes,
       );
     }
+
+    final trackPartialCacheFile = File("${trackCacheFile.path}.part");
+
+    String url = track.url ??
+        await ref
+            .read(trackSourcesProvider(track.query).notifier)
+            .swapWithNextSibling()
+            .then((track) => track.url!);
+
+    var options = Options(
+      headers: {
+        ...headers,
+        "user-agent": _randomUserAgent,
+        "Cache-Control": "max-age=3600",
+        "Connection": "keep-alive",
+        "host": Uri.parse(url).host,
+      },
+      responseType: ResponseType.bytes,
+      validateStatus: (status) => status! < 400,
+    );
+
+    final contentLengthRes = await Future<dio_lib.Response?>.value(
+      dio.head(
+        url,
+        options: options,
+      ),
+    ).catchError((e, stack) async {
+      AppLogger.reportError(e, stack);
+
+      final sourcedTrack = await ref
+          .read(trackSourcesProvider(track.query).notifier)
+          .refreshStreamingUrl();
+
+      url = sourcedTrack.url!;
+
+      return dio.head(url, options: options);
+    });
+
+    // Redirect to m3u8 link directly as it handles range requests internally
+    if (contentLengthRes?.headers.value("content-type") ==
+        "application/vnd.apple.mpegurl") {
+      return (
+        response: dio_lib.Response<Uint8List>(
+          statusCode: 301,
+          statusMessage: "M3U8 Redirect",
+          headers: Headers.fromMap({
+            "location": [url],
+            "content-type": ["application/vnd.apple.mpegurl"],
+          }),
+          requestOptions: RequestOptions(path: request.requestedUri.toString()),
+          isRedirect: true,
+        ),
+        bytes: null,
+      );
+    }
+
+    final contentLength = contentLengthRes?.headers.value("content-length");
 
     /// Forcing partial content range as mpv sometimes greedily wants
     /// everything at one go. Slows down overall streaming.
@@ -116,33 +152,7 @@ class ServerPlaybackRoutes {
       );
     }
 
-    final res = await dio
-        .get<Uint8List>(
-      track.url,
-      options: options.copyWith(headers: {
-        ...?options.headers,
-        "user-agent": _randomUserAgent,
-      }),
-    )
-        .catchError((e, stack) async {
-      AppLogger.reportError(e, stack);
-      final sourcedTrack = await ref
-          .read(trackSourcesProvider(track.query).notifier)
-          .refreshStreamingUrl();
-
-      // It gets updated by itself.
-      // if (playlist.activeTrack?.id == sourcedTrack.query.id) {
-      //   ref.read(activeTrackSourcesProvider.notifier).update(sourcedTrack);
-      // }
-
-      return await dio.get<Uint8List>(
-        sourcedTrack.url,
-        options: options.copyWith(headers: {
-          ...?options.headers,
-          "user-agent": _randomUserAgent,
-        }),
-      );
-    });
+    final res = await dio.get<Uint8List>(url, options: options);
 
     final bytes = res.data;
 
@@ -215,18 +225,17 @@ class ServerPlaybackRoutes {
           ? activeSourcedTrack?.source
           : await ref.read(
               trackSourcesProvider(
-                TrackSourceQuery.parseUri(request.url.toString()),
+                //! Use [Request.requestedUri] as it contains full https url.
+                //! [Request.url] will exclude and starts relatively. (streams/<trackId>... basically)
+                TrackSourceQuery.parseUri(request.requestedUri.toString()),
               ).future,
             );
 
-      // This will be automatically updated by the notifier.
-      // if (playlist.activeTrack?.id == sourcedTrack?.query.id &&
-      //     sourcedTrack != null) {
-      //   ref.read(activeTrackSourcesProvider.notifier).update(sourcedTrack);
-      // }
-
-      final (bytes: audioBytes, response: res) =
-          await streamTrack(sourcedTrack!, request.headers);
+      final (bytes: audioBytes, response: res) = await streamTrack(
+        request,
+        sourcedTrack!,
+        request.headers,
+      );
 
       return Response(
         res.statusCode!,

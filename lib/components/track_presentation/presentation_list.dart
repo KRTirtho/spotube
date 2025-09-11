@@ -6,6 +6,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/presentation_state.dart';
 import 'package:spotube/components/track_presentation/use_track_tile_play_callback.dart';
@@ -30,6 +31,19 @@ class PresentationListSection extends HookConsumerWidget {
     final onTileTap = useTrackTilePlayCallback(ref);
 
     if (state.presentationTracks.isEmpty && !options.pagination.isLoading) {
+      if (options.error != null) {
+        return SliverToBoxAdapter(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ErrorBox(
+                error: options.error!,
+                onRetry: options.pagination.onRefresh,
+              ),
+            ),
+          ),
+        );
+      }
       return SliverToBoxAdapter(
         child: Padding(
           padding: const EdgeInsets.all(8.0),

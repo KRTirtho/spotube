@@ -1210,7 +1210,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*இது சராசரி ஆன்லைன் இசை ஸ்ட்ரீமிங் தளத்தின் ஒரு ஸ்ட்ரீமிற்கான \$0.003 முதல் \$0.005 வரையிலான கட்டணத்தின் அடிப்படையில் கணக்கிடப்படுகிறது. இது ஒரு கற்பனையான கணக்கீடு ஆகும், இது பயனர்கள் வெவ்வேறு இசை ஸ்ட்ரீமிங் தளங்களில் தங்கள் பாடல்களைக் கேட்டால் கலைஞர்களுக்கு எவ்வளவு பணம் செலுத்தியிருப்பார்கள் என்பது குறித்த நுண்ணறிவை வழங்குகிறது.';
 
   @override
   String count_mins(Object minutes) {
@@ -1390,4 +1390,164 @@ class AppLocalizationsTa extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'இணைப்பு மறுக்கப்பட்டது. பயனர் அணுகலை மறுத்தார்.';
+
+  @override
+  String get an_error_occurred => 'ஒரு பிழை ஏற்பட்டது';
+
+  @override
+  String get copy_to_clipboard => 'கிளிப்போர்டுக்கு நகலெடுக்கவும்';
+
+  @override
+  String get view_logs => 'பதிவுகளைப் பார்க்கவும்';
+
+  @override
+  String get retry => 'மீண்டும் முயற்சிக்கவும்';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'நீங்கள் எந்த இயல்புநிலை மெட்டாடேட்டா வழங்குநரையும் அமைக்கவில்லை';
+
+  @override
+  String get manage_metadata_providers =>
+      'மெட்டாடேட்டா வழங்குநர்களை நிர்வகிக்கவும்';
+
+  @override
+  String get open_link_in_browser => 'இணைப்பை உலாவியில் திறக்கவா?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'பின்வரும் இணைப்பை நீங்கள் திறக்க விரும்புகிறீர்களா';
+
+  @override
+  String get unsafe_url_warning =>
+      'நம்பத்தகாத மூலங்களிலிருந்து இணைப்புகளைத் திறப்பது பாதுகாப்பற்றதாக இருக்கலாம். எச்சரிக்கையாக இருங்கள்!\nநீங்கள் இணைப்பை உங்கள் கிளிப்போர்டுக்கு நகலெடுக்கலாம்.';
+
+  @override
+  String get copy_link => 'இணைப்பை நகலெடுக்கவும்';
+
+  @override
+  String get building_your_timeline =>
+      'உங்கள் கேட்டலின் அடிப்படையில் உங்கள் காலவரிசையை உருவாக்குகிறது...';
+
+  @override
+  String get official => 'அதிகாரபூர்வமானது';
+
+  @override
+  String author_name(Object author) {
+    return 'ஆசிரியர்: $author';
+  }
+
+  @override
+  String get third_party => 'மூன்றாம் தரப்பு';
+
+  @override
+  String get plugin_requires_authentication =>
+      'பிளகின் அங்கீகாரத்தைக் கோருகிறது';
+
+  @override
+  String get update_available => 'புதுப்பிப்பு உள்ளது';
+
+  @override
+  String get supports_scrobbling => 'ஸ்க்ரோப்ளிங்கை ஆதரிக்கிறது';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'இந்த பிளகின் உங்கள் கேட்பதின் வரலாற்றை உருவாக்க உங்கள் இசையை ஸ்க்ரோப்ள் செய்கிறது.';
+
+  @override
+  String get default_plugin => 'இயல்புநிலை';
+
+  @override
+  String get set_default => 'இயல்புநிலையாக அமைக்கவும்';
+
+  @override
+  String get support => 'ஆதரவு';
+
+  @override
+  String get support_plugin_development => 'பிளகின் வளர்ச்சிக்கு ஆதரவு';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- **$name** API ஐ அணுக முடியும்';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'இந்த பிளகினை நீங்கள் நிறுவ விரும்புகிறீர்களா?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'இந்த பிளகின் மூன்றாம் தரப்பு களஞ்சியத்திலிருந்து வருகிறது. நிறுவும் முன் மூலத்தை நீங்கள் நம்புகிறீர்கள் என்பதை உறுதிப்படுத்தவும்.';
+
+  @override
+  String get author => 'ஆசிரியர்';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'இந்த பிளகின் பின்வருவனவற்றைச் செய்ய முடியும்';
+
+  @override
+  String get install => 'நிறுவவும்';
+
+  @override
+  String get install_a_metadata_provider => 'மெட்டாடேட்டா வழங்குநரை நிறுவவும்';
+
+  @override
+  String get no_tracks_playing => 'தற்போது எந்த பாடலும் இயங்கவில்லை';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'இந்த பாடலுக்கு ஒத்திசைக்கப்பட்ட வரிகள் கிடைக்கவில்லை. தயவுசெய்து';
+
+  @override
+  String get plain_lyrics => 'சாதாரண வரிகள்';
+
+  @override
+  String get tab_instead => 'தாவலை அதற்கு பதிலாக பயன்படுத்தவும்.';
+
+  @override
+  String get disclaimer => 'துறப்பு';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'ஸ்பாட்யூப் குழு எந்த \"மூன்றாம் தரப்பு\" பிளகின்களுக்கும் எந்தப் பொறுப்பையும் (சட்டரீதியான உட்பட) ஏற்காது.\nதயவுசெய்து உங்கள் சொந்த ஆபத்தில் அவற்றைப் பயன்படுத்தவும். ஏதேனும் பிழைகள்/சிக்கல்களுக்கு, பிளகின் களஞ்சியத்தில் அவற்றைப் புகாரளிக்கவும்.\n\nஏதேனும் ஒரு \"மூன்றாம் தரப்பு\" பிளகின் ஒரு சேவை/சட்ட நிறுவனத்தின் ToS/DMCA ஐ மீறினால், தயவுசெய்து \"மூன்றாம் தரப்பு\" பிளகின் ஆசிரியரையோ அல்லது ஹோஸ்டிங் தளத்தையோ, எ.கா. GitHub/Codeberg, நடவடிக்கை எடுக்கக் கோரவும். மேலே பட்டியலிடப்பட்ட (\"மூன்றாம் தரப்பு\" என பெயரிடப்பட்ட) அனைத்து பொதுவான/சமூகத்தால் பராமரிக்கப்படும் பிளகின்கள். நாங்கள் அவற்றை க்யூரேட் செய்யவில்லை, எனவே அவற்றின் மீது எந்த நடவடிக்கையும் எடுக்க முடியாது.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'உள்ளீடு தேவையான வடிவத்துடன் பொருந்தவில்லை';
+
+  @override
+  String get metadata_provider_plugins => 'மெட்டாடேட்டா வழங்குநர் பிளகின்கள்';
+
+  @override
+  String get paste_plugin_download_url =>
+      'பதிவிறக்க url அல்லது GitHub/Codeberg repo url அல்லது .smplug கோப்பிற்கான நேரடி இணைப்பை ஒட்டவும்';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'url இலிருந்து பிளகினைப் பதிவிறக்கி நிறுவவும்';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'பிளகினைச் சேர்க்கத் தவறிவிட்டது: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'கோப்பிலிருந்து பிளகினைப் பதிவேற்றவும்';
+
+  @override
+  String get installed => 'நிறுவப்பட்டது';
+
+  @override
+  String get available_plugins => 'கிடைக்கக்கூடிய பிளகின்கள்';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'உங்கள் சொந்த பிளேலிஸ்ட்/ஆல்பம்/கலைஞர்/ஊட்ட மெட்டாடேட்டா வழங்குநரை உள்ளமைக்கவும்';
+
+  @override
+  String get audio_scrobblers => 'ஆடியோ ஸ்க்ரோப்ளர்கள்';
+
+  @override
+  String get scrobbling => 'ஸ்க்ரோப்ளிங்';
 }

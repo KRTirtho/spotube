@@ -1,6 +1,6 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/utils/paginated.dart';
 
 class MetadataPluginSavedArtistNotifier
@@ -20,38 +20,53 @@ class MetadataPluginSavedArtistNotifier
 
   @override
   build() async {
-    ref.watch(metadataPluginProvider);
+    await ref.watch(metadataPluginAuthenticatedProvider.future);
     return await fetch(0, 20);
   }
 
   Future<void> addFavorite(List<SpotubeFullArtistObject> artists) async {
-    await update((state) async {
-      (await metadataPlugin).artist.save(artists.map((e) => e.id).toList());
-      return state.copyWith(
-        items: [...state.items, ...artists],
-      );
-    });
+    if (artists.isEmpty || state.value == null) return;
+    final oldState = state.value;
 
-    for (final artist in artists) {
-      ref.invalidate(metadataPluginIsSavedArtistProvider(artist.id));
+    state = AsyncData(
+      state.value!.copyWith(
+        items: [
+          ...artists,
+          ...state.value!.items,
+        ],
+      ),
+    );
+    try {
+      await (await metadataPlugin)
+          .artist
+          .save(artists.map((e) => e.id).toList());
+    } catch (e) {
+      state = AsyncData(oldState!);
+      rethrow;
     }
   }
 
   Future<void> removeFavorite(List<SpotubeFullArtistObject> artists) async {
-    await update((state) async {
-      final artistIds = artists.map((e) => e.id).toList();
-      (await metadataPlugin).artist.unsave(artistIds);
-      return state.copyWith(
-        items: state.items
+    if (artists.isEmpty || state.value == null) return;
+
+    final oldState = state.value;
+
+    final artistIds = artists.map((e) => e.id).toList();
+    state = AsyncData(
+      state.value!.copyWith(
+        items: state.value!.items
             .where(
               (e) => artistIds.contains((e).id) == false,
             )
             .toList(),
-      );
-    });
+      ),
+    );
 
-    for (final artist in artists) {
-      ref.invalidate(metadataPluginIsSavedArtistProvider(artist.id));
+    try {
+      await (await metadataPlugin).artist.unsave(artistIds);
+    } catch (e) {
+      state = AsyncData(oldState!);
+      rethrow;
     }
   }
 }
@@ -65,9 +80,15 @@ final metadataPluginSavedArtistsProvider = AsyncNotifierProvider<
 final metadataPluginIsSavedArtistProvider =
     FutureProvider.autoDispose.family<bool, String>(
   (ref, artistId) async {
-    final metadataPlugin = await ref.watch(metadataPluginProvider.future);
+    final savedArtists =
+        await ref.watch(metadataPluginSavedArtistsProvider.future);
+    final savedArtistsNotifier =
+        ref.read(metadataPluginSavedArtistsProvider.notifier);
 
-    return metadataPlugin!.user
-        .isSavedArtists([artistId]).then((value) => value.first);
+    final allSavedArtists = savedArtists.hasMore
+        ? await savedArtistsNotifier.fetchAll()
+        : savedArtists.items;
+
+    return allSavedArtists.any((element) => element.id == artistId);
   },
 );

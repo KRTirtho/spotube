@@ -20,9 +20,9 @@ enum ImagePlaceholder {
 }
 
 final placeholderUrlMap = {
-  ImagePlaceholder.albumArt: Assets.albumPlaceholder.path,
-  ImagePlaceholder.artist: Assets.userPlaceholder.path,
-  ImagePlaceholder.collection: Assets.placeholder.path,
+  ImagePlaceholder.albumArt: Assets.images.albumPlaceholder.path,
+  ImagePlaceholder.artist: Assets.images.userPlaceholder.path,
+  ImagePlaceholder.collection: Assets.images.placeholder.path,
   ImagePlaceholder.online:
       "https://avatars.dicebear.com/api/bottts/${PrimitiveUtils.uuid.v4()}.png",
 };
@@ -40,6 +40,17 @@ extension SpotubeImageExtensions on List<SpotubeImageObject>? {
                 index > sortedImage.length - 1 ? sortedImage.length - 1 : index]
             .url
         : placeholderUrlMap[placeholder]!;
+  }
+
+  Uri asUri({
+    int index = 1,
+    required ImagePlaceholder placeholder,
+  }) {
+    final url = asUrlString(placeholder: placeholder, index: index);
+    if (url.startsWith("http")) {
+      return Uri.parse(url);
+    }
+    return Uri.file(url);
   }
 
   String smallest(ImagePlaceholder placeholder) {

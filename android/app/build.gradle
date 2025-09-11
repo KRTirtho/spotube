@@ -33,7 +33,7 @@ def composeVersion = "1.4.8"
 android {
     namespace "oss.krtirtho.spotube"
     
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     ndkVersion = "27.0.12077973"
 

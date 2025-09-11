@@ -12,6 +12,8 @@ import 'package:spotube/collections/fake.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
+import 'package:spotube/components/fallbacks/no_default_metadata_plugin.dart';
 import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/waypoint.dart';
@@ -20,6 +22,7 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/library/artists.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 
 @RoutePage()
 class UserArtistsPage extends HookConsumerWidget {
@@ -55,8 +58,25 @@ class UserArtistsPage extends HookConsumerWidget {
 
     final controller = useScrollController();
 
+    if (artistQuery.error
+        case MetadataPluginException(
+          errorCode: MetadataPluginErrorCode.noDefaultPlugin,
+          message: _,
+        )) {
+      return const Center(child: NoDefaultMetadataPlugin());
+    }
+
     if (authenticated.asData?.value != true) {
       return const AnonymousFallback();
+    }
+
+    if (artistQuery.hasError) {
+      return ErrorBox(
+        error: artistQuery.error!,
+        onRetry: () {
+          ref.invalidate(metadataPluginSavedArtistsProvider);
+        },
+      );
     }
 
     return SafeArea(

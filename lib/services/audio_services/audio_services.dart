@@ -53,10 +53,8 @@ class AudioServices with WidgetsBindingObserver {
       title: track.name,
       artist: track.artists.asString(),
       duration: Duration(milliseconds: track.durationMs),
-      artUri: Uri.parse(
-        (track.album.images).asUrlString(
-          placeholder: ImagePlaceholder.albumArt,
-        ),
+      artUri: (track.album.images).asUri(
+        placeholder: ImagePlaceholder.albumArt,
       ),
       playable: true,
     ));

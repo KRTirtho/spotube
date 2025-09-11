@@ -1206,7 +1206,7 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Kalkulu hau online musika-streaming plataformetako batez besteko irteerako ordainari (0,003–0,005 USD) oinarrituta dago. Hipotetikoa da eta erabiltzaileari ideia bat ematen laguntzen dio artista nork zenbat kobratu zuen jakiteko, bere abestia plataform desberdinetan entzungo balu.';
 
   @override
   String count_mins(Object minutes) {
@@ -1387,4 +1387,165 @@ class AppLocalizationsEu extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'Konektatzea ukatu da. Erabiltzaileak sarbidea ukatu du.';
+
+  @override
+  String get an_error_occurred => 'Errore bat gertatu da';
+
+  @override
+  String get copy_to_clipboard => 'Hiztegiraino kopiatzea';
+
+  @override
+  String get view_logs => 'Erregistroak ikusi';
+
+  @override
+  String get retry => 'Berriro saiatu';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'Ezarri ez duzu metadaten hornitzaile lehenetsirik';
+
+  @override
+  String get manage_metadata_providers => 'Metadaten hornitzaileak kudeatu';
+
+  @override
+  String get open_link_in_browser => 'Esteka nabigatzailean irekiko duzu?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Hurrengo esteka irekiko duzu?';
+
+  @override
+  String get unsafe_url_warning =>
+      'Iturri seguru gabeko estekak irekiz gero, ez da seguru suerta daiteke. Arduratu zaitez!\nEsteka ere hiztegirainokoan kopiatu dezakezu.';
+
+  @override
+  String get copy_link => 'Esteka kopiatu';
+
+  @override
+  String get building_your_timeline =>
+      'Zure entzuteen arabera zure kronologia eraikitzen…';
+
+  @override
+  String get official => 'Ofiziala';
+
+  @override
+  String author_name(Object author) {
+    return 'Egilea: $author';
+  }
+
+  @override
+  String get third_party => 'Hirugarrena';
+
+  @override
+  String get plugin_requires_authentication =>
+      'Pluginak autentifikazioa eskatzen du';
+
+  @override
+  String get update_available => 'Eguneratze bat dago eskuragarri';
+
+  @override
+  String get supports_scrobbling => 'Scrobbling-a onartzen du';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Plugin honek zure musika scrobbled egiten du zure entzuteen historia sortzeko.';
+
+  @override
+  String get default_plugin => 'Lehenetsia';
+
+  @override
+  String get set_default => 'Lehenetsi gisa ezarri';
+
+  @override
+  String get support => 'Laguntza';
+
+  @override
+  String get support_plugin_development => 'Pluginaren garapena lagundu';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- **$name** API-ra sar daiteke';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Plugin hau instalatu nahiko zenuke?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Plugin hau hirugarrenen biltegi batetik dator. Instalatu aurretik iturriari konfiantza behar diozu.';
+
+  @override
+  String get author => 'Egilea';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'Plugin honek honako hau egin dezake:';
+
+  @override
+  String get install => 'Instalatu';
+
+  @override
+  String get install_a_metadata_provider =>
+      'Metadaten hornitzaile bat instalatu';
+
+  @override
+  String get no_tracks_playing =>
+      'Une honetan ez dago abestirik erreproduzitzen';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Abestiarentzako letra sinkronizatua ez dago erabilgarri. Mesedez, erabili';
+
+  @override
+  String get plain_lyrics => 'Letra arrunta';
+
+  @override
+  String get tab_instead => 'horren ordez, Tab teklatxaza erabili.';
+
+  @override
+  String get disclaimer => 'Aldez aurreko oharra';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Spotube taldea ezin da arduratu (“hirugarrenen”) plugin-en>gatik (barne legala). Erabili zure arriskuarekin. Erroreak/ arazoak dituzu, jakinarazi pluginaren biltegiari.\n\nPlugin batek edozein zerbitzu/legalki entitate baten ToS/DMCA hautsi baditu, eska iezaiozu pluginaren egileari edo hosting plataformari (adibidez GitHub/Codeberg) neurriak har ditzaten. “Hirugarrena” etiketatutako plugin guztiak komunitate publikoaren bidez mantentzen dira; ez ditugu kuratoriatu, beraz ezin dugu inplikatu.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'Sarrera ezin da beharrezko formatutik desberdina izan';
+
+  @override
+  String get metadata_provider_plugins => 'Metadaten hornitzailearen pluginak';
+
+  @override
+  String get paste_plugin_download_url =>
+      'Kopiatu deskarga-URLa, GitHub/Codeberg biltegi-URLa edo .smplug fitxategiaren esteka zuzena';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'Download eta instalatu plugin-a URL batetik';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Plugin gehitu ezin izan da: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'Plugin fitxategi batetik igo';
+
+  @override
+  String get installed => 'Instalatuta';
+
+  @override
+  String get available_plugins => 'Eskaintzen diren pluginak';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'Konfiguratu zureko playlists-/album-/artista-/feed-metadaten hornitzailea';
+
+  @override
+  String get audio_scrobblers => 'Audio scrobbler-ak';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

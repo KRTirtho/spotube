@@ -15,7 +15,6 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:uuid/uuid.dart';
 import 'package:archive/archive.dart';
 import 'package:pub_semver/pub_semver.dart';
 
@@ -89,42 +88,62 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
   }
 
   Future<MetadataPluginState> toStatePlugins(
-      List<MetadataPluginsTableData> plugins) async {
+    List<MetadataPluginsTableData> plugins,
+  ) async {
     int defaultPlugin = -1;
-    final pluginConfigs = plugins.mapIndexed(
-      (index, plugin) {
-        if (plugin.selected) {
-          defaultPlugin = index;
-        }
+    final pluginConfigs = <PluginConfiguration>[];
 
-        return PluginConfiguration(
-          type: PluginType.metadata,
-          name: plugin.name,
-          author: plugin.author,
-          description: plugin.description,
-          version: plugin.version,
-          entryPoint: plugin.entryPoint,
-          pluginApiVersion: plugin.pluginApiVersion,
-          repository: plugin.repository,
-          apis: plugin.apis
-              .map(
-                (e) => PluginApis.values.firstWhereOrNull(
-                  (api) => api.name == e,
-                ),
-              )
-              .nonNulls
-              .toList(),
-          abilities: plugin.abilities
-              .map(
-                (e) => PluginAbilities.values.firstWhereOrNull(
-                  (ability) => ability.name == e,
-                ),
-              )
-              .nonNulls
-              .toList(),
-        );
-      },
-    ).toList();
+    for (int i = 0; i < plugins.length; i++) {
+      final plugin = plugins[i];
+
+      final pluginConfig = PluginConfiguration(
+        type: PluginType.metadata,
+        name: plugin.name,
+        author: plugin.author,
+        description: plugin.description,
+        version: plugin.version,
+        entryPoint: plugin.entryPoint,
+        pluginApiVersion: plugin.pluginApiVersion,
+        repository: plugin.repository,
+        apis: plugin.apis
+            .map(
+              (e) => PluginApis.values.firstWhereOrNull(
+                (api) => api.name == e,
+              ),
+            )
+            .nonNulls
+            .toList(),
+        abilities: plugin.abilities
+            .map(
+              (e) => PluginAbilities.values.firstWhereOrNull(
+                (ability) => ability.name == e,
+              ),
+            )
+            .nonNulls
+            .toList(),
+      );
+
+      final pluginExtractionDir = await _getPluginExtractionDir(pluginConfig);
+      final pluginJsonFile =
+          File(join(pluginExtractionDir.path, "plugin.json"));
+      final pluginBinaryFile =
+          File(join(pluginExtractionDir.path, "plugin.out"));
+
+      if (!await pluginExtractionDir.exists() ||
+          !await pluginJsonFile.exists() ||
+          !await pluginBinaryFile.exists()) {
+        // Delete the plugin entry from DB if the plugin files are not there.
+        await database.metadataPluginsTable.deleteOne(plugin);
+        continue;
+      }
+
+      pluginConfigs.add(pluginConfig);
+
+      if (plugin.selected) {
+        defaultPlugin = pluginConfigs.length - 1;
+      }
+    }
+
     return MetadataPluginState(
       plugins: pluginConfigs,
       defaultPlugin: defaultPlugin,
@@ -207,7 +226,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     final pluginDir = await _getPluginRootDir();
     final pluginExtractionDirPath = join(
       pluginDir.path,
-      "${ServiceUtils.sanitizeFilename(plugin.name)}-${plugin.version}",
+      "${ServiceUtils.sanitizeFilename(plugin.author)}-${ServiceUtils.sanitizeFilename(plugin.name)}-${plugin.version}",
     );
     return Directory(pluginExtractionDirPath);
   }
@@ -272,12 +291,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     final pluginDir = await _getPluginRootDir();
     await pluginDir.create(recursive: true);
 
-    final tempPluginName = "${const Uuid().v4()}.smplug";
-    final pluginFile = File(join(pluginDir.path, tempPluginName));
-
-    final pluginRes = await globalDio.download(
+    final pluginRes = await globalDio.get(
       pluginDownloadUrl,
-      pluginFile.path,
       options: Options(
         responseType: ResponseType.bytes,
         followRedirects: true,
@@ -289,7 +304,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
       throw MetadataPluginException.pluginDownloadFailed();
     }
 
-    return await extractPluginArchive(await pluginFile.readAsBytes());
+    return await extractPluginArchive(pluginRes.data);
   }
 
   bool validatePluginApiCompatibility(PluginConfiguration plugin) {
@@ -314,7 +329,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
 
     final pluginRes = await (database.metadataPluginsTable.select()
           ..where(
-            (tbl) => tbl.name.equals(plugin.name),
+            (tbl) =>
+                tbl.name.equals(plugin.name) & tbl.author.equals(plugin.author),
           )
           ..limit(1))
         .get();
@@ -332,7 +348,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         entryPoint: plugin.entryPoint,
         apis: plugin.apis.map((e) => e.name).toList(),
         abilities: plugin.abilities.map((e) => e.name).toList(),
-        pluginApiVersion: plugin.pluginApiVersion,
+        pluginApiVersion: Value(plugin.pluginApiVersion),
         repository: Value(plugin.repository),
       ),
     );
@@ -344,8 +360,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     if (pluginExtractionDir.existsSync()) {
       await pluginExtractionDir.delete(recursive: true);
     }
-    await database.metadataPluginsTable
-        .deleteWhere((tbl) => tbl.name.equals(plugin.name));
+    await database.metadataPluginsTable.deleteWhere((tbl) =>
+        tbl.name.equals(plugin.name) & tbl.author.equals(plugin.author));
   }
 
   Future<void> updatePlugin(
@@ -356,7 +372,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     final pluginUpdatedConfig =
         await downloadAndCachePlugin(update.downloadUrl);
 
-    if (pluginUpdatedConfig.name != plugin.name) {
+    if (pluginUpdatedConfig.name != plugin.name &&
+        pluginUpdatedConfig.author != plugin.author) {
       throw MetadataPluginException.invalidPluginConfiguration();
     }
     _assertPluginApiCompatibility(pluginUpdatedConfig);
@@ -375,7 +392,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         .write(const MetadataPluginsTableCompanion(selected: Value(false)));
 
     await (database.metadataPluginsTable.update()
-          ..where((tbl) => tbl.name.equals(plugin.name)))
+          ..where((tbl) =>
+              tbl.name.equals(plugin.name) & tbl.author.equals(plugin.author)))
         .write(
       const MetadataPluginsTableCompanion(selected: Value(true)),
     );

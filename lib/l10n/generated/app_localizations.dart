@@ -149,7 +149,8 @@ abstract class AppLocalizations {
     Locale('tr'),
     Locale('uk'),
     Locale('vi'),
-    Locale('zh')
+    Locale('zh'),
+    Locale('zh', 'TW')
   ];
 
   /// No description provided for @guest.
@@ -2653,6 +2654,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Connection denied. User denied access.'**
   String get connection_request_denied;
+
+  /// No description provided for @an_error_occurred.
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred'**
+  String get an_error_occurred;
+
+  /// No description provided for @copy_to_clipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy to clipboard'**
+  String get copy_to_clipboard;
+
+  /// No description provided for @view_logs.
+  ///
+  /// In en, this message translates to:
+  /// **'View logs'**
+  String get view_logs;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @no_default_metadata_provider_selected.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve no default metadata provider set'**
+  String get no_default_metadata_provider_selected;
+
+  /// No description provided for @manage_metadata_providers.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage metadata providers'**
+  String get manage_metadata_providers;
+
+  /// No description provided for @open_link_in_browser.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Link in Browser?'**
+  String get open_link_in_browser;
+
+  /// No description provided for @do_you_want_to_open_the_following_link.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to open the following link'**
+  String get do_you_want_to_open_the_following_link;
+
+  /// No description provided for @unsafe_url_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'It can be unsafe to open links from untrusted sources. Be cautious!\nYou can also copy the link to your clipboard.'**
+  String get unsafe_url_warning;
+
+  /// No description provided for @copy_link.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy Link'**
+  String get copy_link;
+
+  /// No description provided for @building_your_timeline.
+  ///
+  /// In en, this message translates to:
+  /// **'Building your timeline based on your listenings...'**
+  String get building_your_timeline;
+
+  /// No description provided for @official.
+  ///
+  /// In en, this message translates to:
+  /// **'Official'**
+  String get official;
+
+  /// No description provided for @author_name.
+  ///
+  /// In en, this message translates to:
+  /// **'Author: {author}'**
+  String author_name(Object author);
+
+  /// No description provided for @third_party.
+  ///
+  /// In en, this message translates to:
+  /// **'Third-party'**
+  String get third_party;
+
+  /// No description provided for @plugin_requires_authentication.
+  ///
+  /// In en, this message translates to:
+  /// **'Plugin requires authentication'**
+  String get plugin_requires_authentication;
+
+  /// No description provided for @update_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Update available'**
+  String get update_available;
+
+  /// No description provided for @supports_scrobbling.
+  ///
+  /// In en, this message translates to:
+  /// **'Supports scrobbling'**
+  String get supports_scrobbling;
+
+  /// No description provided for @plugin_scrobbling_info.
+  ///
+  /// In en, this message translates to:
+  /// **'This plugin scrobbles your music to generate your listening history.'**
+  String get plugin_scrobbling_info;
+
+  /// No description provided for @default_plugin.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get default_plugin;
+
+  /// No description provided for @set_default.
+  ///
+  /// In en, this message translates to:
+  /// **'Set default'**
+  String get set_default;
+
+  /// No description provided for @support.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get support;
+
+  /// No description provided for @support_plugin_development.
+  ///
+  /// In en, this message translates to:
+  /// **'Support plugin development'**
+  String get support_plugin_development;
+
+  /// No description provided for @can_access_name_api.
+  ///
+  /// In en, this message translates to:
+  /// **'- Can access **{name}** API'**
+  String can_access_name_api(Object name);
+
+  /// No description provided for @do_you_want_to_install_this_plugin.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to install this plugin?'**
+  String get do_you_want_to_install_this_plugin;
+
+  /// No description provided for @third_party_plugin_warning.
+  ///
+  /// In en, this message translates to:
+  /// **'This plugin is from a third-party repository. Please ensure you trust the source before installing.'**
+  String get third_party_plugin_warning;
+
+  /// No description provided for @author.
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
+  String get author;
+
+  /// No description provided for @this_plugin_can_do_following.
+  ///
+  /// In en, this message translates to:
+  /// **'This plugin can do following'**
+  String get this_plugin_can_do_following;
+
+  /// No description provided for @install.
+  ///
+  /// In en, this message translates to:
+  /// **'Install'**
+  String get install;
+
+  /// No description provided for @install_a_metadata_provider.
+  ///
+  /// In en, this message translates to:
+  /// **'Install a Metadata Provider'**
+  String get install_a_metadata_provider;
+
+  /// No description provided for @no_tracks_playing.
+  ///
+  /// In en, this message translates to:
+  /// **'No Track being played currently'**
+  String get no_tracks_playing;
+
+  /// No description provided for @synced_lyrics_not_available.
+  ///
+  /// In en, this message translates to:
+  /// **'Synced lyrics are not available for this song. Please use the'**
+  String get synced_lyrics_not_available;
+
+  /// No description provided for @plain_lyrics.
+  ///
+  /// In en, this message translates to:
+  /// **'Plain Lyrics'**
+  String get plain_lyrics;
+
+  /// No description provided for @tab_instead.
+  ///
+  /// In en, this message translates to:
+  /// **'tab instead.'**
+  String get tab_instead;
+
+  /// No description provided for @disclaimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Disclaimer'**
+  String get disclaimer;
+
+  /// No description provided for @third_party_plugin_dmca_notice.
+  ///
+  /// In en, this message translates to:
+  /// **'The Spotube team does not hold any responsibility (including legal) for any \"Third-party\" plugins.\nPlease use them at your own risk. For any bugs/issues, please report them to the plugin repository.\n\nIf any \"Third-party\" plugin is breaking ToS/DMCA of any service/legal entity, please ask the \"Third-party\" plugin author or the hosting platform .e.g GitHub/Codeberg to take action. Above listed (\"Third-party\" labelled) are all public/community maintained plugins. We\'re not curating them, so we cannot take any action on them.\n\n'**
+  String get third_party_plugin_dmca_notice;
+
+  /// No description provided for @input_does_not_match_format.
+  ///
+  /// In en, this message translates to:
+  /// **'Input doesn\'t match the required format'**
+  String get input_does_not_match_format;
+
+  /// No description provided for @metadata_provider_plugins.
+  ///
+  /// In en, this message translates to:
+  /// **'Metadata Provider Plugins'**
+  String get metadata_provider_plugins;
+
+  /// No description provided for @paste_plugin_download_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste download url or GitHub/Codeberg repo url or direct link to .smplug file'**
+  String get paste_plugin_download_url;
+
+  /// No description provided for @download_and_install_plugin_from_url.
+  ///
+  /// In en, this message translates to:
+  /// **'Download and install plugin from url'**
+  String get download_and_install_plugin_from_url;
+
+  /// No description provided for @failed_to_add_plugin_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to add plugin: {error}'**
+  String failed_to_add_plugin_error(Object error);
+
+  /// No description provided for @upload_plugin_from_file.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload plugin from file'**
+  String get upload_plugin_from_file;
+
+  /// No description provided for @installed.
+  ///
+  /// In en, this message translates to:
+  /// **'Installed'**
+  String get installed;
+
+  /// No description provided for @available_plugins.
+  ///
+  /// In en, this message translates to:
+  /// **'Available plugins'**
+  String get available_plugins;
+
+  /// No description provided for @configure_your_own_metadata_plugin.
+  ///
+  /// In en, this message translates to:
+  /// **'Configure your own playlist/album/artist/feed metadata provider'**
+  String get configure_your_own_metadata_plugin;
+
+  /// No description provided for @audio_scrobblers.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio Scrobblers'**
+  String get audio_scrobblers;
+
+  /// No description provided for @scrobbling.
+  ///
+  /// In en, this message translates to:
+  /// **'Scrobbling'**
+  String get scrobbling;
 }
 
 class _AppLocalizationsDelegate
@@ -2702,6 +2979,18 @@ class _AppLocalizationsDelegate
 }
 
 AppLocalizations lookupAppLocalizations(Locale locale) {
+  // Lookup logic when language+country codes are specified.
+  switch (locale.languageCode) {
+    case 'zh':
+      {
+        switch (locale.countryCode) {
+          case 'TW':
+            return AppLocalizationsZhTw();
+        }
+        break;
+      }
+  }
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
     case 'ar':

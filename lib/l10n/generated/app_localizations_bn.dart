@@ -1201,7 +1201,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*এটি নিরূপণ করা হয়েছে গড় অনলাইন মিউজিক স্ট্রিমিং প্ল্যাটফর্মের প্রতি স্ট্রিম 0.003–0.005 USD পেআউটের ভিত্তিতে। এটি একটি কাল্পনিক হিসাব যা ব্যবহারকারীকে ধারণা দিতে পারে তারা অন্যান্য স্ট্রিমিং প্ল্যাটফর্মে একই গান শোনার জন্য শিল্পীদের কত টাকা দিয়েছেন হোক।';
 
   @override
   String count_mins(Object minutes) {
@@ -1380,4 +1380,162 @@ class AppLocalizationsBn extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'সংযোগ অস্বীকৃত। ব্যবহারকারী প্রবেশাধিকার অস্বীকার করেছে।';
+
+  @override
+  String get an_error_occurred => 'একটি ত্রুটি ঘটেছে';
+
+  @override
+  String get copy_to_clipboard => 'ক্লিপবোর্ডে কপি করুন';
+
+  @override
+  String get view_logs => 'লগ দেখুন';
+
+  @override
+  String get retry => 'পুনরায় চেষ্টা করুন';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'আপনি কোনো ডিফল্ট মেটাডেটা প্রদানকারী সেট করেননি';
+
+  @override
+  String get manage_metadata_providers => 'মেটাডেটা প্রদানকারীগণ পরিচালনা করুন';
+
+  @override
+  String get open_link_in_browser => 'লিংকটি ব্রাউজারে খুলবেন?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'নিচের লিংকটি খুলতে চান?';
+
+  @override
+  String get unsafe_url_warning =>
+      'অবিশ্বাসযোগ্য উৎস থেকে লিংক খোলা নিরাপদ নাও হতে পারে। সতর্ক থাকুন!\nআপনি এটি ক্লিপবোর্ডে কপি করতে পারেন।';
+
+  @override
+  String get copy_link => 'লিংক কপি করুন';
+
+  @override
+  String get building_your_timeline =>
+      'আপনার শোনার ধারা অনুযায়ী টাইমলাইন তৈরি করা হচ্ছে...';
+
+  @override
+  String get official => 'সরকারি';
+
+  @override
+  String author_name(Object author) {
+    return 'লেখক: $author';
+  }
+
+  @override
+  String get third_party => 'তৃতীয় পক্ষ';
+
+  @override
+  String get plugin_requires_authentication => 'প্লাগইনটি প্রমাণীকরণ প্রয়োজন';
+
+  @override
+  String get update_available => 'হালনাগাদ উপলব্ধ';
+
+  @override
+  String get supports_scrobbling => 'স্ক্রোব্বলিং সমর্থিত';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'এই প্লাগইনটি আপনার সঙ্গীত স্ক্রোব্বল করে আপনার শোনা ইতিহাস তৈরি করে।';
+
+  @override
+  String get default_plugin => 'ডিফল্ট';
+
+  @override
+  String get set_default => 'ডিফল্ট হিসাবে নির্ধারণ করুন';
+
+  @override
+  String get support => 'সমর্থন';
+
+  @override
+  String get support_plugin_development => 'প্লাগইন উন্নয়নকে সমর্থন করুন';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- **$name** API-তে অ্যাক্সেস করতে পারে';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'আপনি কি এই প্লাগইন ইনস্টল করতে চান?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'এই প্লাগইন একটি তৃতীয় পক্ষের রেপোজিটরির। ইনস্টল করার আগে উৎস বিশ্বস্ত কিনা নিশ্চিত করুন।';
+
+  @override
+  String get author => 'লেখক';
+
+  @override
+  String get this_plugin_can_do_following => 'এই প্লাগইন নিচের কাজ করতে পারে';
+
+  @override
+  String get install => 'ইনস্টল করুন';
+
+  @override
+  String get install_a_metadata_provider =>
+      'একটি মেটাডেটা প্রদানকারী ইনস্টল করুন';
+
+  @override
+  String get no_tracks_playing => 'বর্তমানে কোনো ট্র্যাক শোনা হচ্ছে না';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'এই গানের জন্য সিঙ্ক্রোনাইজড লিরিক্স পাওয়া যায় না। অনুগ্রহ করে ব্যবহার করুন';
+
+  @override
+  String get plain_lyrics => 'সহজ লিরিক্স';
+
+  @override
+  String get tab_instead => 'তার পরিবর্তে ট্যাব ব্যবহার করুন।';
+
+  @override
+  String get disclaimer => 'অস্বীকৃতি';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Spotube দল কোনো “তৃতীয় পক্ষ” প্লাগইনের জন্য কোনো (আইনগত সহ) দায়িত্ব নেয় না। নিজের বিপদে ব্যবহার করুন। কোনো বাগ/সমস্যা হলে প্লাগইন রেপোজিটরিতে জানাতে অনুরোধ করা হচ্ছে।\n\nযদি কোনো “তৃতীয় পক্ষ” প্লাগইন কোনো পরিষেবা/আইনগত সংস্থার ToS/DMCA ভূঙ্গ করে, অনুগ্রহ করে “তৃতীয় পক্ষ” প্লাগইনের লেখক বা হোস্টিং প্ল্যাটফর্মে (যেমন GitHub/Codeberg) পদক্ষেপ নিতে বলুন। “তৃতীয় পক্ষ” লেবেলযুক্ত যুক্তিগুলি সকলই পাবলিক/কমিউনিটি দ্বারা রক্ষণাবেক্ষণ করা হয়; আমরা সেগুলি কিউরেট করি না, তাই আমরা কোনো পদক্ষেপ নিতে পারি না।\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'ইনপুট প্রয়োজনীয় ফরম্যাটের সাথে মেলে না';
+
+  @override
+  String get metadata_provider_plugins => 'মেটাডেটা প্রদানকারী প্লাগইনসমূহ';
+
+  @override
+  String get paste_plugin_download_url =>
+      'ডাউনলোড URL বা GitHub/Codeberg রিপো URL বা .smplug ফাইলের সরাসরি লিঙ্ক পেস্ট করুন';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'URL থেকে প্লাগইন ডাউনলোড এবং ইনস্টল করুন';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'প্লাগইন যোগ করতে ব্যর্থ: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'ফাইল থেকে প্লাগইন আপলোড করুন';
+
+  @override
+  String get installed => 'ইনস্টল করা হয়েছে';
+
+  @override
+  String get available_plugins => 'উপলব্ধ প্লাগইনগুলো';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'নিজস্ব প্লেলিস্ট/অ্যালবাম/শিল্পী/ফিড মেটাডেটা প্রদানকারী কনফিগার করুন';
+
+  @override
+  String get audio_scrobblers => 'অডিও স্ক্রোব্বলার্স';
+
+  @override
+  String get scrobbling => 'স্ক্রোব্বলিং';
 }

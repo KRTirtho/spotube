@@ -109,6 +109,10 @@ class AppRouter extends RootStackRouter {
               page: AboutSpotubeRoute.page,
             ),
             AutoRoute(
+              path: "settings/scrobbling",
+              page: SettingsScrobblingRoute.page,
+            ),
+            AutoRoute(
               path: "album/:id",
               page: AlbumRoute.page,
             ),

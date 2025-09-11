@@ -2,6 +2,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/fake.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
 import 'package:spotube/components/playbutton_view/playbutton_view.dart';
 import 'package:spotube/modules/playlist/playlist_card.dart';
 import 'package:spotube/modules/search/loading.dart';
@@ -22,6 +23,15 @@ class SearchPagePlaylistsTab extends HookConsumerWidget {
         ref.read(metadataPluginSearchPlaylistsProvider(searchTerm).notifier);
     final searchPlaylists = searchPlaylistsSnapshot.asData?.value.items ??
         [FakeData.playlistSimple];
+
+    if (searchPlaylistsSnapshot.hasError) {
+      return ErrorBox(
+        error: searchPlaylistsSnapshot.error!,
+        onRetry: () {
+          ref.invalidate(metadataPluginSearchPlaylistsProvider(searchTerm));
+        },
+      );
+    }
 
     return SearchPlaceholder(
       snapshot: searchPlaylistsSnapshot,

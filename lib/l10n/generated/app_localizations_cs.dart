@@ -1199,7 +1199,7 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*Toto je vypočítáno na základě průměrného výplatu za přehrání 0,003–0,005 USD na online hudebních streamovacích platformách. Jedná se o hypotetický výpočet, který má uživateli ukázat, kolik by umělci dostali, pokud by jeho píseň poslouchal na jiné platformě.';
 
   @override
   String count_mins(Object minutes) {
@@ -1379,4 +1379,163 @@ class AppLocalizationsCs extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'Připojení bylo zamítnuto. Uživatel odmítl přístup.';
+
+  @override
+  String get an_error_occurred => 'Došlo k chybě';
+
+  @override
+  String get copy_to_clipboard => 'Kopírovat do schránky';
+
+  @override
+  String get view_logs => 'Zobrazit protokoly';
+
+  @override
+  String get retry => 'Zkusit znovu';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'Nemáte nastaven výchozí poskytovatel metadat';
+
+  @override
+  String get manage_metadata_providers => 'Spravovat poskytovatele metadat';
+
+  @override
+  String get open_link_in_browser => 'Otevřít odkaz v prohlížeči?';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'Chcete otevřít následující odkaz?';
+
+  @override
+  String get unsafe_url_warning =>
+      'Odkazy z nedůvěryhodných zdrojů mohou být nebezpečné. Buďte opatrní!\nOdkaz si také můžete zkopírovat do schránky.';
+
+  @override
+  String get copy_link => 'Zkopírovat odkaz';
+
+  @override
+  String get building_your_timeline =>
+      'Vytváří se váš časový přehled podle poslechů...';
+
+  @override
+  String get official => 'Oficiální';
+
+  @override
+  String author_name(Object author) {
+    return 'Autor: $author';
+  }
+
+  @override
+  String get third_party => 'Třetí strana';
+
+  @override
+  String get plugin_requires_authentication => 'Plugin vyžaduje ověření';
+
+  @override
+  String get update_available => 'Aktualizace dostupná';
+
+  @override
+  String get supports_scrobbling => 'Podpora scrobblování';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'Tento plugin scrobbles vaši hudbu pro vytvoření historie poslechů.';
+
+  @override
+  String get default_plugin => 'Výchozí';
+
+  @override
+  String get set_default => 'Nastavit jako výchozí';
+
+  @override
+  String get support => 'Podpora';
+
+  @override
+  String get support_plugin_development => 'Podpořit vývoj pluginu';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- Může přistupovat k API **$name**';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'Chcete tento plugin nainstalovat?';
+
+  @override
+  String get third_party_plugin_warning =>
+      'Tento plugin pochází z repozitáře třetí strany. Ujistěte se, že důvěřujete zdroji, než ho nainstalujete.';
+
+  @override
+  String get author => 'Autor';
+
+  @override
+  String get this_plugin_can_do_following =>
+      'Tento plugin může provádět následující úkony';
+
+  @override
+  String get install => 'Instalovat';
+
+  @override
+  String get install_a_metadata_provider =>
+      'Nainstalovat poskytovatele metadat';
+
+  @override
+  String get no_tracks_playing => 'Momentálně není přehrávána žádná skladba';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'Synchronizované texty nejsou k dispozici k této písni. Prosím použijte';
+
+  @override
+  String get plain_lyrics => 'Prostý text';
+
+  @override
+  String get tab_instead => 'místo toho použijte tabulátor.';
+
+  @override
+  String get disclaimer => 'Prohlášení';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Tým Spotube nenese žádnou odpovědnost (včetně právní) za pluginy „třetích stran“.\nPoužívejte je na vlastní riziko. Pro chyby/problémy je nahlaste do repozitáře pluginu.\n\nPokud jakýkoli plugin „třetí strany“ porušuje podmínky služby nebo DMCA kteréhokoli poskytovatele či právního subjektu, požádejte autora pluginu nebo hostingovou platformu (např. GitHub/Codeberg), aby podnikla kroky. Pluginy označené jako „třetí strana“ jsou otevřené a spravovány komunitou; nespravujeme je, tudíž nemůžeme jednat.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'Vstup neodpovídá požadovanému formátu';
+
+  @override
+  String get metadata_provider_plugins => 'Pluginy poskytovatelů metadat';
+
+  @override
+  String get paste_plugin_download_url =>
+      'Vložte URL ke stažení nebo GitHub/Codeberg repozitář či přímý odkaz na soubor .smplug';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'Stáhnout a nainstalovat plugin z URL';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'Nepodařilo se přidat plugin: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'Nahrát plugin ze souboru';
+
+  @override
+  String get installed => 'Nainstalováno';
+
+  @override
+  String get available_plugins => 'Dostupné pluginy';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'Nakonfigurujte si vlastního poskytovatele metadat pro playlist/album/umělec/fid';
+
+  @override
+  String get audio_scrobblers => 'Audio scrobblers';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart' as material;
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/track_presentation.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/pages/playlist/playlist.dart';
 import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 
 @RoutePage()
 class LikedPlaylistPage extends HookConsumerWidget {
@@ -21,6 +23,8 @@ class LikedPlaylistPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final likedTracks = ref.watch(metadataPluginSavedTracksProvider);
+    final likedTracksNotifier =
+        ref.watch(metadataPluginSavedTracksProvider.notifier);
     final tracks = likedTracks.asData?.value.items ?? [];
 
     return material.RefreshIndicator.adaptive(
@@ -30,13 +34,15 @@ class LikedPlaylistPage extends HookConsumerWidget {
       child: TrackPresentation(
         options: TrackPresentationOptions(
           collection: playlist,
-          image: "assets/liked-tracks.jpg",
+          image: Assets.images.likedTracks.path,
           pagination: PaginationProps(
-            hasNextPage: false,
-            isLoading: likedTracks.isLoading,
-            onFetchMore: () {},
+            hasNextPage: likedTracks.asData?.value.hasMore ?? false,
+            isLoading: likedTracks.isLoadingNextPage && !likedTracks.isLoading,
+            onFetchMore: () async {
+              await likedTracksNotifier.fetchMore();
+            },
             onFetchAll: () async {
-              return tracks.toList();
+              return await likedTracksNotifier.fetchAll();
             },
             onRefresh: () async {
               ref.invalidate(metadataPluginSavedTracksProvider);
@@ -45,6 +51,7 @@ class LikedPlaylistPage extends HookConsumerWidget {
           title: playlist.name,
           description: playlist.description,
           tracks: tracks,
+          error: likedTracks.error,
           routePath: '/playlist/${playlist.id}',
           isLiked: false,
           shareUrl: null,

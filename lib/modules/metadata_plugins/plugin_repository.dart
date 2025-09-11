@@ -4,6 +4,7 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/markdown/markdown.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -26,7 +27,8 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
 
     return Card(
       child: Basic(
-        title: Text(pluginRepo.name),
+        title: Text(
+            "${pluginRepo.owner == "KRTirtho" ? "" : "${pluginRepo.owner}/"}${pluginRepo.name}"),
         subtitle: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,9 +39,9 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
               spacing: 8,
               children: [
                 if (pluginRepo.owner == "KRTirtho") ...[
-                  const PrimaryBadge(
+                  PrimaryBadge(
                     leading: Icon(SpotubeIcons.done),
-                    child: Text("Official"),
+                    child: Text(context.l10n.official),
                   ),
                   SecondaryBadge(
                     leading: host == "github.com"
@@ -51,10 +53,10 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
                     },
                   ),
                 ] else ...[
-                  Text("Author: ${pluginRepo.owner}"),
-                  const DestructiveBadge(
-                    leading: Icon(SpotubeIcons.warning),
-                    child: Text("Third-party"),
+                  Text(context.l10n.author_name(pluginRepo.owner)),
+                  DestructiveBadge(
+                    leading: const Icon(SpotubeIcons.warning),
+                    child: Text(context.l10n.third_party),
                   )
                 ]
               ],
@@ -78,21 +80,19 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
                       context: context,
                       builder: (context) {
                         final pluginAbilities = pluginConfig.apis
-                            .map((e) => "- Can access **${e.name}** API")
+                            .map(
+                                (e) => context.l10n.can_access_name_api(e.name))
                             .join("\n\n");
 
                         return AlertDialog(
-                          title:
-                              const Text("Do you want to install this plugin?"),
+                          title: Text(
+                              context.l10n.do_you_want_to_install_this_plugin),
                           content: Column(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Text(
-                                "This plugin is from a third-party repository. "
-                                "Please ensure you trust the source before installing.",
-                              ),
+                              Text(context.l10n.third_party_plugin_warning),
                               const Gap(8),
                               FutureBuilder(
                                 future:
@@ -125,9 +125,10 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
                               ),
                               const Gap(8),
                               AppMarkdown(
-                                data: "**Author**: ${pluginConfig.author}\n\n"
-                                    "**Repository**: [${pluginConfig.repository ?? 'N/A'}](${pluginConfig.repository})\n\n\n\n"
-                                    "This plugin can do following:\n\n"
+                                data:
+                                    "**${context.l10n.author}**: ${pluginConfig.author}\n\n"
+                                    "**${context.l10n.repository}**: [${pluginConfig.repository ?? 'N/A'}](${pluginConfig.repository})\n\n\n\n"
+                                    "${context.l10n.this_plugin_can_do_following}:\n\n"
                                     "$pluginAbilities",
                               ),
                             ],
@@ -137,13 +138,13 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
                               onPressed: () {
                                 Navigator.of(context).pop(false);
                               },
-                              child: const Text("Deny"),
+                              child: Text(context.l10n.decline),
                             ),
                             Button.primary(
                               onPressed: () {
                                 Navigator.of(context).pop(true);
                               },
-                              child: const Text("Allow"),
+                              child: Text(context.l10n.accept),
                             ),
                           ],
                         );
@@ -161,7 +162,7 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
           leading: isInstalling.value
               ? const CircularProgressIndicator()
               : const Icon(SpotubeIcons.add),
-          child: const Text("Install"),
+          child: Text(context.l10n.install),
         ),
       ),
     );

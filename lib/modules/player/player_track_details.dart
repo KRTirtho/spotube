@@ -37,7 +37,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               child: UniversalImage(
                 path: (track?.album.images)
                     .asUrlString(placeholder: ImagePlaceholder.albumArt),
-                placeholder: Assets.albumPlaceholder.path,
+                placeholder: Assets.images.albumPlaceholder.path,
               ),
             ),
           ),
@@ -47,10 +47,8 @@ class PlayerTrackDetails extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 4),
-                LinkText(
+                Text(
                   playback.activeTrack?.name ?? "",
-                  TrackRoute(trackId: playback.activeTrack?.id ?? ""),
-                  push: true,
                   overflow: TextOverflow.ellipsis,
                   style: theme.typography.normal.copyWith(
                     color: color,

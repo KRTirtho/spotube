@@ -28,20 +28,18 @@ class PlayerLyricsPage extends HookConsumerWidget {
     final selectedIndex = useState(0);
     final palette = usePaletteColor(albumArt, ref);
 
-    final tabbar = Padding(
-        padding: const EdgeInsets.all(10),
-        child: TabList(
-          index: selectedIndex.value,
-          onChanged: (index) => selectedIndex.value = index,
-          children: [
-            TabItem(
-              child: Text(context.l10n.synced),
-            ),
-            TabItem(
-              child: Text(context.l10n.plain),
-            ),
-          ],
-        ));
+    final tabbar = TabList(
+      index: selectedIndex.value,
+      onChanged: (index) => selectedIndex.value = index,
+      children: [
+        TabItem(
+          child: Text(context.l10n.synced),
+        ),
+        TabItem(
+          child: Text(context.l10n.plain),
+        ),
+      ],
+    );
 
     return Scaffold(
       headers: [

@@ -147,21 +147,38 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         try {
           // Playlist and state has to be in sync. This is only meant for
           // the shuffle/re-ordering indices to be in sync
-          if (playlist.medias.length != state.tracks.length) return;
-
-          final queries = playlist.medias
-              .map((media) => TrackSourceQuery.parseUri(media.uri))
-              .toList();
+          if (playlist.medias.length != state.tracks.length) {
+            AppLogger.log.w(
+              "Playlist length does not match state tracks length. Ignoring... "
+              "Playlist length: ${playlist.medias.length}, "
+              "State tracks length: ${state.tracks.length}",
+            );
+            return;
+          }
 
           final trackGroupedById = groupBy(
             state.tracks,
             (query) => query.id,
           );
 
-          final tracks = queries
-              .map((query) => trackGroupedById[query.id]?.firstOrNull)
-              .nonNulls
-              .toList();
+          final tracks = <SpotubeTrackObject>[];
+
+          for (final media in playlist.medias) {
+            final trackQuery = TrackSourceQuery.parseUri(media.uri);
+            final track = trackGroupedById[trackQuery.id]?.firstOrNull;
+            if (track != null) {
+              tracks.add(track);
+            }
+          }
+
+          if (tracks.length != state.tracks.length) {
+            AppLogger.log.w("Mismatch in tracks after reordering/shuffling.");
+            final missingTracks =
+                state.tracks.where((track) => !tracks.contains(track)).toList();
+            AppLogger.log.w(
+              "Missing tracks: ${missingTracks.map((e) => e.id).join(", ")}",
+            );
+          }
 
           state = state.copyWith(
             tracks: tracks,
@@ -410,6 +427,20 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         currentIndex: Value(max(state.currentIndex, 0)),
       ),
     );
+  }
+
+  Future<void> swapActiveSource() async {
+    if (state.tracks.isEmpty || state.activeTrack is! SpotubeFullTrackObject) {
+      return;
+    }
+
+    final currentIndex = state.currentIndex;
+    final currentTrack = state.activeTrack as SpotubeFullTrackObject;
+    final swappedMedia = SpotubeMedia(currentTrack);
+
+    await audioPlayer.addTrackAt(swappedMedia, currentIndex + 1);
+    await audioPlayer.skipToNext();
+    await audioPlayer.removeTrack(currentIndex);
   }
 
   Future<void> jumpToTrack(SpotubeTrackObject track) async {

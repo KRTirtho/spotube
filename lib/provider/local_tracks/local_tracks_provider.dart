@@ -35,6 +35,12 @@ const imgMimeToExt = {
   "image/gif": ".gif",
 };
 
+typedef MetadataFile = ({
+  Metadata? metadata,
+  File file,
+  String? art,
+});
+
 final localTracksProvider =
     FutureProvider<Map<String, List<SpotubeLocalTrackObject>>>((ref) async {
   try {
@@ -89,7 +95,7 @@ final localTracksProvider =
         }
       }
 
-      final List<Map<dynamic, dynamic>> filesWithMetadata = await Future.wait(
+      final List<MetadataFile> filesWithMetadata = await Future.wait(
         entities.map((file) async {
           try {
             final metadata = await MetadataGod.readMetadata(file: file.path);
@@ -111,10 +117,10 @@ final localTracksProvider =
               );
             }
 
-            return {"metadata": metadata, "file": file, "art": imageFile.path};
+            return (metadata: metadata, file: file, art: imageFile.path);
           } catch (e, stack) {
             if (e case FrbException() || TimeoutException()) {
-              return {"file": file};
+              return (file: file, metadata: null, art: null);
             }
             AppLogger.reportError(e, stack);
             return null;
@@ -125,9 +131,9 @@ final localTracksProvider =
       final tracksFromMetadata = filesWithMetadata
           .map(
             (fileWithMetadata) => SpotubeTrackObject.localTrackFromFile(
-              fileWithMetadata["file"] as File,
-              metadata: fileWithMetadata["metadata"] as Metadata?,
-              art: fileWithMetadata["art"] as String?,
+              fileWithMetadata.file,
+              metadata: fileWithMetadata.metadata,
+              art: fileWithMetadata.art,
             ) as SpotubeLocalTrackObject,
           )
           .toList();

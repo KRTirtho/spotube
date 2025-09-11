@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:flutter/foundation.dart';
 import 'package:spotube/services/youtube_engine/youtube_engine.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -57,6 +58,7 @@ class IsolatedYoutubeExplode {
   static void _isolateEntry(SendPort mainSendPort) {
     final receivePort = ReceivePort();
     final youtubeExplode = YoutubeExplode();
+    final stopWatch = kDebugMode ? Stopwatch() : null;
 
     /// Send the main port to the main isolate
     mainSendPort.send(receivePort.sendPort);
@@ -65,6 +67,19 @@ class IsolatedYoutubeExplode {
       final SendPort replyPort = message[0];
       final String methodName = message[1];
       final List<dynamic> arguments = message[2];
+
+      if (stopWatch != null) {
+        if (stopWatch.isRunning) {
+          stopWatch.stop();
+          final symbol = stopWatch.elapsedMilliseconds < 1000 ? "⚠️" : "⏱️";
+          debugPrint(
+            "$symbol YoutubeExplode operation gap ${stopWatch.elapsedMilliseconds} ms",
+          );
+          stopWatch.reset();
+        } else {
+          stopWatch.start();
+        }
+      }
 
       // Run the requested method on YoutubeExplode
       var result = switch (methodName) {
@@ -152,9 +167,13 @@ class YouTubeExplodeEngine implements YouTubeEngine {
       ],
     );
 
+    final audioStreams = streamManifest.audioOnly.where(
+      (stream) => stream.bitrate.bitsPerSecond >= 40960,
+    );
+
     return StreamManifest(
-      streamManifest.audioOnly.map((stream) {
-        return AudioOnlyStreamInfo(
+      audioStreams.map(
+        (stream) => AudioOnlyStreamInfo(
           stream.videoId,
           stream.tag,
           stream.url,
@@ -170,8 +189,8 @@ class YouTubeExplodeEngine implements YouTubeEngine {
           stream.fragments,
           stream.codec,
           stream.audioTrack,
-        );
-      }),
+        ),
+      ),
     );
   }
 

@@ -82,13 +82,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get liked_tracks_description => 'いいねしたすべての曲';
 
   @override
-  String get playlist => 'プレイリスト';
+  String get playlist => '再生リスト';
 
   @override
   String get create_a_playlist => '再生リストの作成';
 
   @override
-  String get update_playlist => 'プレイリストを更新';
+  String get update_playlist => '再生リストを更新';
 
   @override
   String get create => '作成';
@@ -139,14 +139,14 @@ class AppLocalizationsJa extends AppLocalizations {
   String get sort_album => 'アルバム順に並び替え';
 
   @override
-  String get sort_duration => '時間で並べ替え';
+  String get sort_duration => '長さ順に並べ替え';
 
   @override
   String get sort_tracks => '曲の並び替え';
 
   @override
   String currently_downloading(Object tracks_length) {
-    return 'いまダウンロード中 ($tracks_length) 曲';
+    return 'ダウンロード中 ($tracks_length) 曲';
   }
 
   @override
@@ -368,7 +368,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get download_location => 'ダウンロード先';
 
   @override
-  String get local_library => 'ローカルライブラリ';
+  String get local_library => '端末内ライブラリ';
 
   @override
   String get add_library_location => 'ライブラリに追加';
@@ -395,10 +395,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get system_default => 'システムの既定値';
 
   @override
-  String get market_place_region => '市場の地域';
+  String get market_place_region => '音楽市場の地域';
 
   @override
-  String get recommendation_country => '推薦先の国';
+  String get recommendation_country => 'おすすめの国';
 
   @override
   String get appearance => '外観';
@@ -588,7 +588,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get invidious_instance => 'Invidiousサーバーインスタンス';
 
   @override
-  String get invidious_description => 'トラックマッチングに使用するInvidiousサーバーインスタンス';
+  String get invidious_description => '曲の一致に使用するInvidiousサーバーインスタンス';
 
   @override
   String get invidious_warning => '一部はうまく機能しない可能性があります。自己責任で使用してください';
@@ -804,17 +804,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get search_mode => '検索モード';
 
   @override
-  String get audio_source => '音声ソース';
+  String get audio_source => '音声の提供元';
 
   @override
-  String get ok => '分かりました';
+  String get ok => 'OK';
 
   @override
   String get failed_to_encrypt => '暗号化に失敗しました';
 
   @override
   String get encryption_failed_warning =>
-      'Spotubeはデータを安全に保存するために暗号化を使用しています。しかし、失敗しました。したがって、安全でないストレージにフォールバックします\nLinuxを使用している場合は、gnome-keyring、kde-wallet、keepassxcなどのシークレットサービスがインストールされていることを確認してください';
+      'SpoTubeはデータを安全に保存するために暗号化を用いますが、暗号化に失敗しました。このため、安全でない保存領域への保存に切り替えます\nOSがLinuxなら、gnome-keyring、kde-wallet、keepassxcなどの管理ツールがインストールされていることを確認してください';
 
   @override
   String get querying_info => '情報を取得中...';
@@ -824,7 +824,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String piped_down_error_instructions(Object pipedInstance) {
-    return 'Pipedインスタンス$pipedInstanceは現在ダウンしています\n\nインスタンスを変更するか、\'APIタイプ\'を公式のYouTube APIに変更してください\n\n変更後にアプリを再起動してください';
+    return 'Pipedインスタンス $pipedInstance は現在ダウンしています\n\nインスタンスを変更するか、「APIの種類」を公式のYouTube APIに変更してください\n\n変更後にアプリを再起動してください';
   }
 
   @override
@@ -834,7 +834,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get connection_restored => 'インターネット接続が復旧しました';
 
   @override
-  String get use_system_title_bar => 'システムタイトルバーを使用する';
+  String get use_system_title_bar => 'システムのタイトルバーを使う';
 
   @override
   String get crunching_results => '結果を処理中...';
@@ -843,40 +843,40 @@ class AppLocalizationsJa extends AppLocalizations {
   String get search_to_get_results => '結果を取得するために検索';
 
   @override
-  String get use_amoled_mode => 'AMOLEDモードを使用する';
+  String get use_amoled_mode => 'AMOLEDモードを使用';
 
   @override
-  String get pitch_dark_theme => 'ピッチブラックダートテーマ';
+  String get pitch_dark_theme => 'ピッチブラック ダークテーマ';
 
   @override
-  String get normalize_audio => 'オーディオを正規化する';
+  String get normalize_audio => '音声を正規化';
 
   @override
-  String get change_cover => 'カバーを変更する';
+  String get change_cover => 'カバーを変更';
 
   @override
-  String get add_cover => 'カバーを追加する';
+  String get add_cover => 'カバーを追加';
 
   @override
-  String get restore_defaults => 'デフォルト値に戻す';
+  String get restore_defaults => '設定を初期化';
 
   @override
-  String get download_music_codec => '音楽コーデックをダウンロードする';
+  String get download_music_codec => 'ダウンロード用の音声コーデック';
 
   @override
-  String get streaming_music_codec => 'ストリーミング音楽コーデック';
+  String get streaming_music_codec => 'ストリーミング用の音声コーデック';
 
   @override
-  String get login_with_lastfm => 'Last.fmでログインする';
+  String get login_with_lastfm => 'Last.fmでログイン';
 
   @override
-  String get connect => '接続する';
+  String get connect => '接続';
 
   @override
-  String get disconnect_lastfm => 'Last.fmから切断する';
+  String get disconnect_lastfm => 'Last.fmから切断';
 
   @override
-  String get disconnect => '切断する';
+  String get disconnect => '切断';
 
   @override
   String get username => 'ユーザー名';
@@ -885,10 +885,10 @@ class AppLocalizationsJa extends AppLocalizations {
   String get password => 'パスワード';
 
   @override
-  String get login => 'ログインする';
+  String get login => 'ログイン';
 
   @override
-  String get login_with_your_lastfm => 'あなたのLast.fmアカウントでログインする';
+  String get login_with_your_lastfm => 'Last.fmアカウントでログイン';
 
   @override
   String get scrobble_to_lastfm => 'Last.fmにスクロブルする';
@@ -897,7 +897,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get go_to_album => 'アルバムに移動';
 
   @override
-  String get discord_rich_presence => 'ディスコードリッチプレゼンス';
+  String get discord_rich_presence => 'Discord リッチプレゼンス';
 
   @override
   String get browse_all => 'すべてを閲覧';
@@ -912,7 +912,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get friends => '友達';
 
   @override
-  String get no_lyrics_available => '申し訳ありませんが、このトラックの歌詞を見つけることができません';
+  String get no_lyrics_available => 'すみません、この曲の歌詞が見つかりません';
 
   @override
   String get start_a_radio => 'ラジオを開始';
@@ -927,28 +927,28 @@ class AppLocalizationsJa extends AppLocalizations {
   String get endless_playback => 'エンドレス再生';
 
   @override
-  String get delete_playlist => 'プレイリストを削除';
+  String get delete_playlist => '再生リストを削除';
 
   @override
-  String get delete_playlist_confirmation => 'このプレイリストを削除してもよろしいですか？';
+  String get delete_playlist_confirmation => 'この再生リストを削除しますか？';
 
   @override
-  String get local_tracks => 'ローカルトラック';
+  String get local_tracks => '端末内の曲';
 
   @override
-  String get local_tab => 'ローカル';
+  String get local_tab => '端末内';
 
   @override
   String get song_link => '曲のリンク';
 
   @override
-  String get skip_this_nonsense => 'この愚かなことをスキップ';
+  String get skip_this_nonsense => 'こんなことはスキップ';
 
   @override
   String get freedom_of_music => '“音楽の自由”';
 
   @override
-  String get freedom_of_music_palm => '“手のひらの中の音楽の自由”';
+  String get freedom_of_music_palm => '“音楽の自由を思いのままに”';
 
   @override
   String get get_started => 'さあ始めましょう';
@@ -957,13 +957,13 @@ class AppLocalizationsJa extends AppLocalizations {
   String get youtube_source_description => '推奨され、最適に機能します。';
 
   @override
-  String get piped_source_description => '自由に感じますか？ YouTubeと同じですが、はるかに無料です。';
+  String get piped_source_description => '自由を感じる？YouTubeと同じだけど、はるかに自由です。';
 
   @override
-  String get jiosaavn_source_description => '南アジア地域向けの最適です。';
+  String get jiosaavn_source_description => '南アジア地域では最適です。';
 
   @override
-  String get invidious_source_description => 'Pipedに似ていますが、より高い可用性があります。';
+  String get invidious_source_description => 'Pipedに似ていますが、より利用性があります。';
 
   @override
   String highest_quality(Object quality) {
@@ -971,56 +971,55 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get select_audio_source => 'オーディオソースを選択';
+  String get select_audio_source => '音声の提供元を選択';
 
   @override
-  String get endless_playback_description => '新しい曲をキューの最後に自動的に追加';
+  String get endless_playback_description => 'キューの最後に新しい曲を自動で追加';
 
   @override
   String get choose_your_region => '地域を選択';
 
   @override
-  String get choose_your_region_description =>
-      'これにより、Spotubeがあなたの場所に適したコンテンツを表示できます。';
+  String get choose_your_region_description => 'Spotubeがあなたの地域に適したコンテンツを表示します。';
 
   @override
   String get choose_your_language => '言語を選択してください';
 
   @override
-  String get help_project_grow => 'このプロジェクトの成長を支援する';
+  String get help_project_grow => 'プロジェクトの成長を支援する';
 
   @override
   String get help_project_grow_description =>
-      'Spotubeはオープンソースプロジェクトです。プロジェクトに貢献したり、バグを報告したり、新しい機能を提案することで、このプロジェクトの成長に貢献できます。';
+      'SpoTubeはオープンソースプロジェクトです。貢献したり、バグ報告したり、新機能を提案することで、プロジェクトの成長に貢献できます。';
 
   @override
-  String get contribute_on_github => 'GitHubで貢献する';
+  String get contribute_on_github => 'GitHubで貢献';
 
   @override
-  String get donate_on_open_collective => 'Open Collectiveで寄付する';
+  String get donate_on_open_collective => 'Open Collectiveで寄付';
 
   @override
   String get browse_anonymously => '匿名で閲覧する';
 
   @override
-  String get enable_connect => '接続を有効にする';
+  String get enable_connect => '接続する';
 
   @override
-  String get enable_connect_description => '他のデバイスからSpotubeを制御する';
+  String get enable_connect_description => '他の端末からSpotubeを制御する';
 
   @override
-  String get devices => 'デバイス';
+  String get devices => '機器';
 
   @override
-  String get select => '選択する';
+  String get select => '選択';
 
   @override
   String connect_client_alert(Object client) {
-    return '$client によって操作されています';
+    return '$client から操作されています';
   }
 
   @override
-  String get this_device => 'このデバイス';
+  String get this_device => 'この端末';
 
   @override
   String get remote => 'リモート';
@@ -1030,23 +1029,23 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String and_n_more(Object count) {
-    return 'そして $count つのアイテム';
+    return 'さらに $count 項目';
   }
 
   @override
-  String get recently_played => '最近再生された';
+  String get recently_played => '最近聴いた曲';
 
   @override
-  String get browse_more => 'もっと見る';
+  String get browse_more => 'もっと表示';
 
   @override
   String get no_title => 'タイトルなし';
 
   @override
-  String get not_playing => '再生中ではありません';
+  String get not_playing => '再生なし';
 
   @override
-  String get epic_failure => '壮大な失敗！';
+  String get epic_failure => '壮大なエラー！';
 
   @override
   String added_num_tracks_to_queue(Object tracks_length) {
@@ -1054,7 +1053,7 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get spotube_has_an_update => 'Spotube にアップデートがあります';
+  String get spotube_has_an_update => 'Spotube の最新版あり';
 
   @override
   String get download_now => '今すぐダウンロード';
@@ -1073,20 +1072,19 @@ class AppLocalizationsJa extends AppLocalizations {
   String get read_the_latest => '最新の ';
 
   @override
-  String get release_notes => 'リリースノート';
+  String get release_notes => '更新情報を読む';
 
   @override
-  String get pick_color_scheme => 'カラースキームを選択';
+  String get pick_color_scheme => 'カラーテーマを選択';
 
   @override
   String get save => '保存';
 
   @override
-  String get choose_the_device => 'デバイスを選択：';
+  String get choose_the_device => '端末を選択：';
 
   @override
-  String get multiple_device_connected =>
-      '複数のデバイスが接続されています。\nこのアクションを実行するデバイスを選択してください';
+  String get multiple_device_connected => '複数の端末が接続されています。\nこの操作を実行する端末を選択';
 
   @override
   String get nothing_found => '何も見つかりませんでした';
@@ -1133,7 +1131,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get birthday => '誕生日';
 
   @override
-  String get subscription => 'サブスクリプション';
+  String get subscription => '登録';
 
   @override
   String get not_born => '未出生';
@@ -1159,11 +1157,10 @@ class AppLocalizationsJa extends AppLocalizations {
   }
 
   @override
-  String get streaming_fees_hypothetical =>
-      '*これは Spotify のストリームあたりの支払い\nが \$0.003 から \$0.005 であると仮定して計算されています。\nこれは、Spotify でその曲を聴いた場合にアーティストにいくら支払ったかの\n洞察を得るための仮定の計算です。';
+  String get streaming_fees_hypothetical => 'ストリーミング料金 (概算)';
 
   @override
-  String get minutes_listened => 'リスニング時間';
+  String get minutes_listened => '視聴時間';
 
   @override
   String get streamed_songs => 'ストリーミングされた曲';
@@ -1183,7 +1180,7 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*これは、オンライン音楽ストリーミングプラットフォームの1ストリームあたりの平均支払い額である\$0.003〜\$0.005に基づいて計算されています。これは、ユーザーが異なる音楽ストリーミングプラットフォームで曲を聴いた場合に、アーティストにどれだけ支払ったかを把握するための仮説的な計算です。';
 
   @override
   String count_mins(Object minutes) {
@@ -1200,32 +1197,32 @@ class AppLocalizationsJa extends AppLocalizations {
   String get summary_songs => '曲';
 
   @override
-  String get summary_streamed_overall => '全体のストリーミング';
+  String get summary_streamed_overall => 'まるごと聴いた';
 
   @override
-  String get summary_owed_to_artists => '今月アーティストに支払うべき額';
+  String get summary_owed_to_artists => '今月アーティストに払う\nべき額';
 
   @override
-  String get summary_artists => 'アーティストの';
+  String get summary_artists => 'アーティスト';
 
   @override
-  String get summary_music_reached_you => '音楽があなたに届いた';
+  String get summary_music_reached_you => 'の音楽が届いた';
 
   @override
   String get summary_full_albums => 'フルアルバム';
 
   @override
-  String get summary_got_your_love => 'あなたの愛を受け取った';
+  String get summary_got_your_love => 'があなたの愛を受け取った';
 
   @override
-  String get summary_playlists => 'プレイリスト';
+  String get summary_playlists => '再生リスト';
 
   @override
-  String get summary_were_on_repeat => 'リピートしていた';
+  String get summary_were_on_repeat => 'をリピートしました';
 
   @override
   String total_money(Object money) {
-    return '合計 $money';
+    return '計 $money';
   }
 
   @override
@@ -1233,10 +1230,10 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get webview_not_found_description =>
-      'デバイスにWebviewランタイムがインストールされていません。\nインストールされている場合は、environment PATHにあることを確認してください\n\nインストール後、アプリを再起動してください';
+      '端末にWebviewランタイムがインストールされていません。\nインストールされている場合は、環境変数のパスにあるか確認してください\n\nインストール後、アプリを再起動してください';
 
   @override
-  String get unsupported_platform => 'サポートされていないプラットフォーム';
+  String get unsupported_platform => '未対応のプラットフォーム';
 
   @override
   String get cache_music => '音楽をキャッシュ';
@@ -1276,22 +1273,22 @@ class AppLocalizationsJa extends AppLocalizations {
   String get undo => '元に戻す';
 
   @override
-  String get download_all => 'すべてをダウンロード';
+  String get download_all => 'すべてダウンロード';
 
   @override
-  String get add_all_to_playlist => 'すべてをプレイリストに追加';
+  String get add_all_to_playlist => 'すべて再生リストに追加';
 
   @override
-  String get add_all_to_queue => 'すべてをキューに追加';
+  String get add_all_to_queue => 'すべてキューに追加';
 
   @override
-  String get play_all_next => '次にすべてを再生';
+  String get play_all_next => 'すべてを次に再生';
 
   @override
   String get pause => '一時停止';
 
   @override
-  String get view_all => 'すべてを見る';
+  String get view_all => 'すべて表示';
 
   @override
   String get no_tracks_added_yet => 'まだ曲を追加していないようです';
@@ -1309,7 +1306,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get no_favorite_albums_yet => 'まだお気に入りのアルバムを追加していないようです';
 
   @override
-  String get no_logs_found => 'ログが見つかりませんでした';
+  String get no_logs_found => 'ログなし';
 
   @override
   String get youtube_engine => 'YouTubeエンジン';
@@ -1340,17 +1337,17 @@ class AppLocalizationsJa extends AppLocalizations {
   String get file_not_found => 'ファイルが見つかりません';
 
   @override
-  String get custom => 'カスタム';
+  String get custom => '独自';
 
   @override
-  String get add_custom_url => 'カスタムURLを追加';
+  String get add_custom_url => '独自にURLを追加';
 
   @override
   String get edit_port => 'ポートを編集';
 
   @override
   String get port_helper_msg =>
-      'デフォルトは-1で、ランダムな番号を示します。ファイアウォールを設定している場合は、これを設定することをお勧めします。';
+      '初期設定は-1で、ランダムな番号を示します。ファイアウォールを設定している場合に設定することを推奨します。';
 
   @override
   String connect_request(Object client) {
@@ -1359,4 +1356,155 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get connection_request_denied => '接続が拒否されました。ユーザーがアクセスを拒否しました。';
+
+  @override
+  String get an_error_occurred => 'エラーが発生しました';
+
+  @override
+  String get copy_to_clipboard => 'クリップボードにコピー';
+
+  @override
+  String get view_logs => 'ログを表示';
+
+  @override
+  String get retry => '再試行';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'デフォルトのメタデータプロバイダーが設定されていません';
+
+  @override
+  String get manage_metadata_providers => 'メタデータプロバイダーを管理';
+
+  @override
+  String get open_link_in_browser => 'リンクをブラウザで開きますか？';
+
+  @override
+  String get do_you_want_to_open_the_following_link => '次のリンクを開きますか';
+
+  @override
+  String get unsafe_url_warning =>
+      '信頼できないソースからのリンクを開くのは安全ではない場合があります。注意してください！\nリンクをクリップボードにコピーすることもできます。';
+
+  @override
+  String get copy_link => 'リンクをコピー';
+
+  @override
+  String get building_your_timeline => 'あなたの視聴履歴に基づいてタイムラインを作成しています...';
+
+  @override
+  String get official => '公式';
+
+  @override
+  String author_name(Object author) {
+    return '作者: $author';
+  }
+
+  @override
+  String get third_party => 'サードパーティ';
+
+  @override
+  String get plugin_requires_authentication => 'プラグインには認証が必要です';
+
+  @override
+  String get update_available => 'アップデートが利用可能です';
+
+  @override
+  String get supports_scrobbling => 'scrobblingに対応';
+
+  @override
+  String get plugin_scrobbling_info => 'このプラグインは、あなたの音楽をscrobbleして視聴履歴を生成します。';
+
+  @override
+  String get default_plugin => 'デフォルト';
+
+  @override
+  String get set_default => 'デフォルトに設定';
+
+  @override
+  String get support => 'サポート';
+
+  @override
+  String get support_plugin_development => 'プラグイン開発をサポート';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- **$name** APIにアクセスできます';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin => 'このプラグインをインストールしますか？';
+
+  @override
+  String get third_party_plugin_warning =>
+      'このプラグインはサードパーティのリポジトリからのものです。インストールする前にソースを信頼できるか確認してください。';
+
+  @override
+  String get author => '作者';
+
+  @override
+  String get this_plugin_can_do_following => 'このプラグインは以下のことができます';
+
+  @override
+  String get install => 'インストール';
+
+  @override
+  String get install_a_metadata_provider => 'メタデータプロバイダーをインストール';
+
+  @override
+  String get no_tracks_playing => '現在再生中のトラックはありません';
+
+  @override
+  String get synced_lyrics_not_available => 'この曲の同期歌詞は利用できません。代わりに';
+
+  @override
+  String get plain_lyrics => 'シンプルな歌詞';
+
+  @override
+  String get tab_instead => 'タブを使用してください。';
+
+  @override
+  String get disclaimer => '免責事項';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'Spotubeチームは、いかなる「サードパーティ」プラグインについても責任（法的責任を含む）を負いません。\nご自身の責任でご使用ください。バグや問題については、プラグインリポジトリに報告してください。\n\n「サードパーティ」プラグインが何らかのサービス/法人のToS/DMCAを侵害している場合、その「サードパーティ」プラグインの作者またはホスティングプラットフォーム（例：GitHub/Codeberg）に措置を講じるよう依頼してください。上記に記載されている（「サードパーティ」とラベル付けされた）ものはすべて、パブリック/コミュニティによって維持されているプラグインです。私たちはそれらをキュレーションしていないため、それらに対して措置を講じることはできません。\n\n';
+
+  @override
+  String get input_does_not_match_format => '入力が必須フォーマットと一致しません';
+
+  @override
+  String get metadata_provider_plugins => 'メタデータプロバイダープラグイン';
+
+  @override
+  String get paste_plugin_download_url =>
+      'ダウンロードURL、GitHub/CodebergリポジトリURL、または.smplugファイルへの直接リンクを貼り付けます';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'URLからプラグインをダウンロードしてインストール';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'プラグインの追加に失敗しました: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'ファイルからプラグインをアップロード';
+
+  @override
+  String get installed => 'インストール済み';
+
+  @override
+  String get available_plugins => '利用可能なプラグイン';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      '独自のプレイリスト/アルバム/アーティスト/フィードのメタデータプロバイダーを構成';
+
+  @override
+  String get audio_scrobblers => 'オーディオスクロッブラー';
+
+  @override
+  String get scrobbling => 'Scrobbling';
 }

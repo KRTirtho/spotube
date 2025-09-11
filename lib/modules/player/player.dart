@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
@@ -21,11 +21,9 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
-import 'package:spotube/utils/platform.dart';
 
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -41,7 +39,6 @@ class PlayerView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
     final sourcedCurrentTrack = ref.watch(activeTrackSourcesProvider);
     final currentActiveTrack =
         ref.watch(audioPlayerProvider.select((s) => s.activeTrack));
@@ -100,22 +97,22 @@ class PlayerView extends HookConsumerWidget {
           backgroundColor: Colors.transparent,
           headers: [
             SafeArea(
-              minimum:
-                  kIsMobile ? const EdgeInsets.only(top: 80) : EdgeInsets.zero,
               bottom: false,
               child: TitleBar(
                 surfaceOpacity: 0,
                 surfaceBlur: 0,
                 leading: [
                   IconButton.ghost(
-                    icon: const Icon(SpotubeIcons.angleDown, size: 18),
+                    size: const ButtonSize(1.2),
+                    icon: const Icon(SpotubeIcons.angleDown),
                     onPressed: panelController.close,
                   )
                 ],
                 trailing: [
                   if (currentActiveTrackSource is YoutubeSourcedTrack)
                     TextButton(
-                      leading: Assets.logos.songlinkTransparent.image(
+                      size: const ButtonSize(1.2),
+                      leading: Assets.images.logos.songlinkTransparent.image(
                         width: 20,
                         height: 20,
                         color: theme.colorScheme.foreground,
@@ -134,7 +131,8 @@ class PlayerView extends HookConsumerWidget {
                         child: Text(context.l10n.details),
                       ).call,
                       child: IconButton.ghost(
-                        icon: const Icon(SpotubeIcons.info, size: 18),
+                        size: const ButtonSize(1.2),
+                        icon: const Icon(SpotubeIcons.info),
                         onPressed: currentActiveTrackSource == null
                             ? null
                             : () {
@@ -178,7 +176,7 @@ class PlayerView extends HookConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: UniversalImage(
                         path: albumArt,
-                        placeholder: Assets.albumPlaceholder.path,
+                        placeholder: Assets.images.albumPlaceholder.path,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -242,18 +240,16 @@ class PlayerView extends HookConsumerWidget {
                           },
                         ),
                       ),
-                      if (authenticated.asData?.value == true)
-                        const SizedBox(width: 10),
-                      if (authenticated.asData?.value == true)
-                        Expanded(
-                          child: OutlineButton(
-                            leading: const Icon(SpotubeIcons.music),
-                            child: Text(context.l10n.lyrics),
-                            onPressed: () {
-                              context.pushRoute(const PlayerLyricsRoute());
-                            },
-                          ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: OutlineButton(
+                          leading: const Icon(SpotubeIcons.music),
+                          child: Text(context.l10n.lyrics),
+                          onPressed: () {
+                            context.pushRoute(const PlayerLyricsRoute());
+                          },
                         ),
+                      ),
                       const SizedBox(width: 10),
                     ],
                   ),

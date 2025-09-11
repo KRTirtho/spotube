@@ -79,6 +79,7 @@ class PlaylistPage extends HookConsumerWidget {
           owner: playlist.owner.name,
           ownerImage: playlist.owner.images.lastOrNull?.url,
           tracks: tracks.asData?.value.items ?? [],
+          error: tracks.error,
           routePath: '/playlist/${playlist.id}',
           isLiked: isFavoritePlaylist.asData?.value ?? false,
           shareUrl: playlist.externalUri,

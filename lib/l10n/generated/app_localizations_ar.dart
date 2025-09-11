@@ -1202,7 +1202,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get hipotetical_calculation =>
-      '*This is calculated based on average online music streaming platform\'s per stream\npayout of \$0.003 to \$0.005. This is a hypothetical\ncalculation to give user insight about how much they\nwould have paid to the artists if they were to listen\ntheir song in different music streaming platform.';
+      '*تمّ الحساب بمعدّل دفعة تتراوح بين 0.003–0.005 دولار أمريكي لكل تشغيل على منصات الموسيقى عبر الإنترنت. هذا حساب افتراضي لتوضيح للمستخدم مقدار ما كان سيدفعه للفنانين لو استمع إلى أغنيتهم على منصات مختلفة.';
 
   @override
   String count_mins(Object minutes) {
@@ -1380,4 +1380,161 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String get connection_request_denied =>
       'تم رفض الاتصال. المستخدم رفض الوصول.';
+
+  @override
+  String get an_error_occurred => 'حدث خطأ';
+
+  @override
+  String get copy_to_clipboard => 'نسخ إلى الحافظة';
+
+  @override
+  String get view_logs => 'عرض السجلات';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get no_default_metadata_provider_selected =>
+      'لم تقُم بتعيين مزود بيانات افتراضي';
+
+  @override
+  String get manage_metadata_providers => 'إدارة مزوّدي البيانات';
+
+  @override
+  String get open_link_in_browser => 'فتح الرابط في المتصفح؟';
+
+  @override
+  String get do_you_want_to_open_the_following_link =>
+      'هل ترغب في فتح الرابط التالي؟';
+
+  @override
+  String get unsafe_url_warning =>
+      'قد يكون فتح الروابط من مصادر غير موثوقة غير آمن. تحرّ الحذر!\nيمكنك أيضًا نسخ الرابط إلى الحافظة.';
+
+  @override
+  String get copy_link => 'نسخ الرابط';
+
+  @override
+  String get building_your_timeline =>
+      'جاري بناء المخطط الزمني استنادًا إلى استماعاتك...';
+
+  @override
+  String get official => 'رسمي';
+
+  @override
+  String author_name(Object author) {
+    return 'المؤلّف: $author';
+  }
+
+  @override
+  String get third_party => 'طرف ثالث';
+
+  @override
+  String get plugin_requires_authentication => 'تتطلّب الإضافة تسجيل الدخول';
+
+  @override
+  String get update_available => 'تحديث متوفر';
+
+  @override
+  String get supports_scrobbling => 'يدعم التتبع (scrobbling)';
+
+  @override
+  String get plugin_scrobbling_info =>
+      'تقوم هذه الإضافة بتتبع مقاطعك الموسيقية لإنشاء سجل الاستماع الخاص بك.';
+
+  @override
+  String get default_plugin => 'الافتراضي';
+
+  @override
+  String get set_default => 'تعيين كافتراضي';
+
+  @override
+  String get support => 'الدعم';
+
+  @override
+  String get support_plugin_development => 'دعم تطوير الإضافات';
+
+  @override
+  String can_access_name_api(Object name) {
+    return '- يمكن الوصول إلى واجهة برمجة التطبيقات **$name**';
+  }
+
+  @override
+  String get do_you_want_to_install_this_plugin =>
+      'هل ترغب في تثبيت هذه الإضافة؟';
+
+  @override
+  String get third_party_plugin_warning =>
+      'هذه الإضافة من مستودع طرف ثالث. تأكد من موثوقية المصدر قبل التثبيت.';
+
+  @override
+  String get author => 'المؤلف';
+
+  @override
+  String get this_plugin_can_do_following => 'يمكن لهذه الإضافة القيام بما يلي';
+
+  @override
+  String get install => 'تثبيت';
+
+  @override
+  String get install_a_metadata_provider => 'تثبيت مزوّد بيانات';
+
+  @override
+  String get no_tracks_playing => 'لا توجد مقاطع تعمل حاليًا';
+
+  @override
+  String get synced_lyrics_not_available =>
+      'الكلمات المتزامنة غير متوفرة لهذه الأغنية. يُرجى استخدام';
+
+  @override
+  String get plain_lyrics => 'الكلمات العادية';
+
+  @override
+  String get tab_instead => 'بدلاً من ذلك، استخدم التبويب.';
+
+  @override
+  String get disclaimer => 'إخلاء المسؤولية';
+
+  @override
+  String get third_party_plugin_dmca_notice =>
+      'لا تتحمّل فريق Spotube أي مسؤولية (بما في ذلك القانونية) عن أي من الإضافات “لطرف ثالث”.\nاستخدمها على مسؤوليتك الخاصّة. لأيّة أخطاء/مشكلات، يُرجى الإبلاغ عنها في مستودع الإضافة.\n\nإذا كانت أي إضافة “لطرف ثالث” تنتهك شروط الخدمة أو قانون DMCA الخاص بأي خدمة أو كيان قانوني، فيُرجى طلب اتخاذ إجراء من مؤلف الإضافة أو منصة الاستضافة مثل GitHub/Codeberg. الإضافات المدرجة كـ “لطرف ثالث” هي مفعّلة ومُدارة من المجتمع، وليس لدينا صلاحية إدارتها أو التدخل فيها.\n\n';
+
+  @override
+  String get input_does_not_match_format =>
+      'المدخل لا يتوافق مع التنسيق المطلوب';
+
+  @override
+  String get metadata_provider_plugins => 'إضافات مزود البيانات';
+
+  @override
+  String get paste_plugin_download_url =>
+      'الصق رابط التنزيل أو GitHub/Codeberg أو رابط مباشر لملف .smplug';
+
+  @override
+  String get download_and_install_plugin_from_url =>
+      'تنزيل وتثبيت الإضافة من رابط';
+
+  @override
+  String failed_to_add_plugin_error(Object error) {
+    return 'فشل في إضافة الإضافة: $error';
+  }
+
+  @override
+  String get upload_plugin_from_file => 'رفع الإضافة من ملف';
+
+  @override
+  String get installed => 'تم التثبيت';
+
+  @override
+  String get available_plugins => 'الإضافات المتوفّرة';
+
+  @override
+  String get configure_your_own_metadata_plugin =>
+      'تهيئة مزوّد بيانات للقائمة/الألبوم/الفنان/المصدر خاص بك';
+
+  @override
+  String get audio_scrobblers => 'أجهزة تتبع الصوت';
+
+  @override
+  String get scrobbling => 'التتبع';
 }
