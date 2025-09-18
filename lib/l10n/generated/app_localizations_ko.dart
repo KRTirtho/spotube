@@ -1511,4 +1511,7 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get scrobbling => '스크로블링';
+
+  @override
+  String get source => 'Source: ';
 }

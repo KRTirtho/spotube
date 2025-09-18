@@ -461,5 +461,6 @@
   "available_plugins": "Available plugins",
   "configure_your_own_metadata_plugin": "Configure your own playlist/album/artist/feed metadata provider",
   "audio_scrobblers": "Audio Scrobblers",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "source": "Source: "
 }

@@ -1542,4 +1542,7 @@ class AppLocalizationsHi extends AppLocalizations {
 
   @override
   String get scrobbling => 'स्क्रॉबलिंग';
+
+  @override
+  String get source => 'Source: ';
 }

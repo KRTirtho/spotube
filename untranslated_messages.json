@@ -1,5 +1,118 @@
 {
+  "ar": [
+    "source"
+  ],
+
+  "bn": [
+    "source"
+  ],
+
+  "ca": [
+    "source"
+  ],
+
+  "cs": [
+    "source"
+  ],
+
+  "de": [
+    "source"
+  ],
+
+  "es": [
+    "source"
+  ],
+
+  "eu": [
+    "source"
+  ],
+
+  "fa": [
+    "source"
+  ],
+
+  "fi": [
+    "source"
+  ],
+
+  "fr": [
+    "source"
+  ],
+
+  "hi": [
+    "source"
+  ],
+
+  "id": [
+    "source"
+  ],
+
+  "it": [
+    "source"
+  ],
+
+  "ja": [
+    "source"
+  ],
+
+  "ka": [
+    "source"
+  ],
+
+  "ko": [
+    "source"
+  ],
+
+  "ne": [
+    "source"
+  ],
+
   "nl": [
-    "audio_source"
+    "audio_source",
+    "source"
+  ],
+
+  "pl": [
+    "source"
+  ],
+
+  "pt": [
+    "source"
+  ],
+
+  "ru": [
+    "source"
+  ],
+
+  "ta": [
+    "source"
+  ],
+
+  "th": [
+    "source"
+  ],
+
+  "tl": [
+    "source"
+  ],
+
+  "tr": [
+    "source"
+  ],
+
+  "uk": [
+    "source"
+  ],
+
+  "vi": [
+    "source"
+  ],
+
+  "zh": [
+    "source"
+  ],
+
+  "zh_TW": [
+    "source"
   ]
 }

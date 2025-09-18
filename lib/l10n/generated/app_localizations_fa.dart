@@ -1536,4 +1536,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get scrobbling => 'اسکراب‌بلینگ';
+
+  @override
+  String get source => 'Source: ';
 }

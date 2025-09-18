@@ -1500,6 +1500,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Source: ';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).

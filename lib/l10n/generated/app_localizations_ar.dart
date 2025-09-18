@@ -1537,4 +1537,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get scrobbling => 'التتبع';
+
+  @override
+  String get source => 'Source: ';
 }

@@ -2930,6 +2930,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scrobbling'**
   String get scrobbling;
+
+  /// No description provided for @source.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: '**
+  String get source;
 }
 
 class _AppLocalizationsDelegate

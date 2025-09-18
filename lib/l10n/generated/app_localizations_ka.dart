@@ -1545,4 +1545,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get scrobbling => 'სქრობლინგი';
+
+  @override
+  String get source => 'Source: ';
 }

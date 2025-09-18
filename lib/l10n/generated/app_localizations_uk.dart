@@ -1540,4 +1540,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get scrobbling => 'Скроблінг';
+
+  @override
+  String get source => 'Source: ';
 }

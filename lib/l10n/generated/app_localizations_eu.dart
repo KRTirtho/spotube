@@ -1548,4 +1548,7 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Source: ';
 }

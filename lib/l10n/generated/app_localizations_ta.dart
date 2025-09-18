@@ -1550,4 +1550,7 @@ class AppLocalizationsTa extends AppLocalizations {
 
   @override
   String get scrobbling => 'ஸ்க்ரோப்ளிங்';
+
+  @override
+  String get source => 'Source: ';
 }

@@ -1544,4 +1544,7 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get scrobbling => 'Скробблинг';
+
+  @override
+  String get source => 'Source: ';
 }

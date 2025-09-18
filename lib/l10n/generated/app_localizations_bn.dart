@@ -1538,4 +1538,7 @@ class AppLocalizationsBn extends AppLocalizations {
 
   @override
   String get scrobbling => 'স্ক্রোব্বলিং';
+
+  @override
+  String get source => 'Source: ';
 }

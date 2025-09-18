@@ -350,6 +350,8 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         abilities: plugin.abilities.map((e) => e.name).toList(),
         pluginApiVersion: Value(plugin.pluginApiVersion),
         repository: Value(plugin.repository),
+        // Setting the very first plugin as the default plugin
+        selected: Value(state.valueOrNull?.plugins.isEmpty ?? true),
       ),
     );
   }
@@ -362,6 +364,17 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
     }
     await database.metadataPluginsTable.deleteWhere((tbl) =>
         tbl.name.equals(plugin.name) & tbl.author.equals(plugin.author));
+
+    // Same here, if the removed plugin is the default plugin
+    // set the first available plugin as the default plugin
+    // only when there is 1 remaining plugin
+    if (state.valueOrNull?.defaultPluginConfig == plugin) {
+      final remainingPlugins =
+          state.valueOrNull?.plugins.where((p) => p != plugin) ?? [];
+      if (remainingPlugins.length == 1) {
+        await setDefaultPlugin(remainingPlugins.first);
+      }
+    }
   }
 
   Future<void> updatePlugin(
