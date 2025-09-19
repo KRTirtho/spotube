@@ -39,6 +39,11 @@ class InstallDependenciesCommand extends Command {
 
     switch (argResults!.option("platform")) {
       case "windows":
+        await shell.run(
+          """
+          choco install innosetup -y
+          """,
+        );
         break;
       case "linux":
         await shell.run(

@@ -56,9 +56,10 @@ class DABMusicSourcedTrack extends SourcedTrack {
     SourceQualities quality,
   ) async {
     try {
+      final isUncompressed = quality == SourceQualities.uncompressed;
       final streamResponse = await dabMusicApiClient.music.getStream(
         trackId: id,
-        quality: "5", // mp3 320kbps (best available)
+        quality: isUncompressed ? "27" : "5",
       );
       if (streamResponse.url == null) {
         throw Exception("No stream URL found for track ID: $id");
@@ -66,9 +67,11 @@ class DABMusicSourcedTrack extends SourcedTrack {
       return [
         TrackSource(
           url: streamResponse.url!,
-          quality: SourceQualities.high,
-          bitrate: "320kbps",
-          codec: SourceCodecs.mp3,
+          quality: isUncompressed
+              ? SourceQualities.uncompressed
+              : SourceQualities.high,
+          bitrate: isUncompressed ? "2998kbps" : "320kbps",
+          codec: isUncompressed ? SourceCodecs.flac : SourceCodecs.mp3,
         ),
       ];
     } catch (e, stackTrace) {
@@ -126,7 +129,7 @@ class DABMusicSourcedTrack extends SourcedTrack {
       if (results.isEmpty) {
         final res = await dabMusicApiClient.music.getSearch(
           q: SourcedTrack.getSearchTerm(query),
-          limit: 20,
+          limit: 5,
         );
         results = res.tracks ?? <Track>[];
       }

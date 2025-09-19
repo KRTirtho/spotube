@@ -101,10 +101,7 @@ class ServerPlaybackRoutes {
     );
 
     final contentLengthRes = await Future<dio_lib.Response?>.value(
-      dio.head(
-        url,
-        options: options,
-      ),
+      dio.head(url, options: options),
     ).catchError((e, stack) async {
       AppLogger.reportError(e, stack);
 
@@ -132,6 +129,21 @@ class ServerPlaybackRoutes {
           isRedirect: true,
         ),
         bytes: null,
+      );
+    }
+
+    if (headers["range"] == "bytes=0-") {
+      final bufferSize =
+          userPreferences.audioQuality == SourceQualities.uncompressed
+              ? 6 * 1024 * 1024
+              : 4 * 1024 * 1024;
+      final endRange = min(bufferSize,
+          int.parse(contentLengthRes?.headers.value("content-length") ?? "0"));
+      options = options.copyWith(
+        headers: {
+          ...options.headers ?? {},
+          "range": "bytes=0-$endRange",
+        },
       );
     }
 
@@ -166,7 +178,7 @@ class ServerPlaybackRoutes {
       await trackPartialCacheFile.rename(trackCacheFile.path);
     }
 
-    if (contentRange.total == fileLength && track.codec == SourceCodecs.m4a) {
+    if (contentRange.total == fileLength && track.codec != SourceCodecs.weba) {
       final playlistTrack = playlist.tracks.firstWhereOrNull(
         (element) => element.id == track.query.id,
       );

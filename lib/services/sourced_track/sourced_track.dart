@@ -212,7 +212,10 @@ abstract class SourcedTrack extends BasicSourcedTrack {
     final preferences = ref.read(userPreferencesProvider);
 
     return switch (preferences.audioSource) {
-      AudioSource.dabMusic => SourceCodecs.mp3,
+      AudioSource.dabMusic =>
+        preferences.audioQuality == SourceQualities.uncompressed
+            ? SourceCodecs.flac
+            : SourceCodecs.mp3,
       AudioSource.jiosaavn => SourceCodecs.m4a,
       _ => preferences.streamMusicCodec
     };

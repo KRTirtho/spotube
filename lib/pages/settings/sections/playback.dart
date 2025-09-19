@@ -44,6 +44,11 @@ class SettingsPlaybackSection extends HookConsumerWidget {
           title: Text(context.l10n.audio_quality),
           value: preferences.audioQuality,
           options: [
+            if (preferences.audioSource == AudioSource.dabMusic)
+              SelectItemButton(
+                value: SourceQualities.uncompressed,
+                child: Text(context.l10n.uncompressed),
+              ),
             SelectItemButton(
               value: SourceQualities.high,
               child: Text(context.l10n.high),

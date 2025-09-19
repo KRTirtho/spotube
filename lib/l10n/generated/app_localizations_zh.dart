@@ -1503,6 +1503,9 @@ class AppLocalizationsZh extends AppLocalizations {
 
   @override
   String get source => 'Source: ';
+
+  @override
+  String get uncompressed => 'Uncompressed';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).

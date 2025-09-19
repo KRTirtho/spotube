@@ -133,4 +133,12 @@ class CustomPlayer extends Player {
       await nativePlayer.setProperty('af', '');
     }
   }
+
+  Future<void> setDemuxerBufferSize(int sizeInBytes) async {
+    await nativePlayer.setProperty('demuxer-max-bytes', sizeInBytes.toString());
+    await nativePlayer.setProperty(
+      'demuxer-max-back-bytes',
+      sizeInBytes.toString(),
+    );
+  }
 }

@@ -1,118 +1,147 @@
 {
   "ar": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "bn": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "ca": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "cs": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "de": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "es": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "eu": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "fa": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "fi": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "fr": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "hi": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "id": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "it": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "ja": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "ka": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "ko": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "ne": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "nl": [
     "audio_source",
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "pl": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "pt": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "ru": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "ta": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "th": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "tl": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "tr": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "uk": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "vi": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "zh": [
-    "source"
+    "source",
+    "uncompressed"
   ],
 
   "zh_TW": [
-    "source"
+    "source",
+    "uncompressed"
   ]
 }

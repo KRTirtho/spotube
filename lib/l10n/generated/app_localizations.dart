@@ -2936,6 +2936,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Source: '**
   String get source;
+
+  /// No description provided for @uncompressed.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncompressed'**
+  String get uncompressed;
 }
 
 class _AppLocalizationsDelegate

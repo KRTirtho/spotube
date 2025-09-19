@@ -41,14 +41,6 @@ enum YoutubeClientEngine {
   }
 }
 
-enum MusicCodec {
-  m4a._("M4a (Best for downloaded music)"),
-  weba._("WebA (Best for streamed music)\nDoesn't support audio metadata");
-
-  final String label;
-  const MusicCodec._(this.label);
-}
-
 enum SearchMode {
   youtube._("YouTube"),
   youtubeMusic._("YouTube Music");

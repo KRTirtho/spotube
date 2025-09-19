@@ -1551,4 +1551,7 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get source => 'Source: ';
+
+  @override
+  String get uncompressed => 'Uncompressed';
 }
