@@ -12,12 +12,14 @@ enum CloseBehavior {
 }
 
 enum AudioSource {
-  youtube,
-  piped,
-  jiosaavn,
-  invidious;
+  youtube("YouTube"),
+  piped("Piped"),
+  jiosaavn("JioSaavn"),
+  invidious("Invidious"),
+  dabMusic("DAB Music");
 
-  String get label => name[0].toUpperCase() + name.substring(1);
+  final String label;
+  const AudioSource(this.label);
 }
 
 enum YoutubeClientEngine {

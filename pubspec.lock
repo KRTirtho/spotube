@@ -458,6 +458,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  dab_music_api:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: main
+      resolved-ref: "55f96368b7465eec2e5e81774f9f2a7b18acc4ab"
+      url: "https://github.com/KRTirtho/dab_music_api.git"
+    source: git
+    version: "0.1.0"
   dart_des:
     dependency: transitive
     description:
@@ -2046,6 +2055,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  retrofit:
+    dependency: transitive
+    description:
+      name: retrofit
+      sha256: "699cf44ec6c7fc7d248740932eca75d334e36bdafe0a8b3e9ff93100591c8a25"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.7.2"
   riverpod:
     dependency: "direct main"
     description:

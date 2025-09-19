@@ -135,23 +135,6 @@ class ServerPlaybackRoutes {
       );
     }
 
-    final contentLength = contentLengthRes?.headers.value("content-length");
-
-    /// Forcing partial content range as mpv sometimes greedily wants
-    /// everything at one go. Slows down overall streaming.
-    final range = RangeHeader.parse(headers["range"] ?? "");
-    final contentPartialLength = int.tryParse(contentLength ?? "");
-    if ((range.end == null) &&
-        contentPartialLength != null &&
-        range.start == 0) {
-      options = options.copyWith(
-        headers: {
-          ...?options.headers,
-          "range": "$range${(contentPartialLength * 0.3).ceil()}",
-        },
-      );
-    }
-
     final res = await dio.get<Uint8List>(url, options: options);
 
     final bytes = res.data;
@@ -183,7 +166,7 @@ class ServerPlaybackRoutes {
       await trackPartialCacheFile.rename(trackCacheFile.path);
     }
 
-    if (contentRange.total == fileLength && track.codec != SourceCodecs.weba) {
+    if (contentRange.total == fileLength && track.codec == SourceCodecs.m4a) {
       final playlistTrack = playlist.tracks.firstWhereOrNull(
         (element) => element.id == track.query.id,
       );

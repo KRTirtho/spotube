@@ -2,7 +2,8 @@ import 'package:spotube/models/playback/track_sources.dart';
 
 enum SourceCodecs {
   m4a._("M4a (Best for downloaded music)"),
-  weba._("WebA (Best for streamed music)\nDoesn't support audio metadata");
+  weba._("WebA (Best for streamed music)\nDoesn't support audio metadata"),
+  mp3._("MP3 (Widely supported audio format)");
 
   final String label;
   const SourceCodecs._(this.label);

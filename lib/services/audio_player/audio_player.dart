@@ -56,6 +56,7 @@ abstract class AudioPlayerInterface {
           configuration: const mk.PlayerConfiguration(
             title: "Spotube",
             logLevel: kDebugMode ? mk.MPVLogLevel.info : mk.MPVLogLevel.error,
+            bufferSize: 4 * 1024 * 1024, // 4MB buffer
           ),
         ) {
     _mkPlayer.stream.error.listen((event) {

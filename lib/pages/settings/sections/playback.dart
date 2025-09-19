@@ -8,7 +8,7 @@ import 'package:flutter/material.dart' show ListTile;
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:piped_client/piped_client.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/models/database/database.dart';
@@ -396,7 +396,9 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             onChanged: preferencesNotifier.setNormalizeAudio,
           ),
         ),
-        if (preferences.audioSource != AudioSource.jiosaavn) ...[
+        if (const [AudioSource.jiosaavn, AudioSource.dabMusic]
+                .contains(preferences.audioSource) ==
+            false) ...[
           AdaptiveSelectTile<SourceCodecs>(
             popupConstraints: const BoxConstraints(maxWidth: 300),
             secondary: const Icon(SpotubeIcons.stream),

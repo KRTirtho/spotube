@@ -24,6 +24,10 @@ dependencies:
   bonsoir: ^5.1.10
   cached_network_image: ^3.3.1
   connectivity_plus: ^6.1.2
+  dab_music_api:
+    git:
+      url: https://github.com/KRTirtho/dab_music_api.git
+      ref: main
   desktop_webview_window:
     git:
       path: packages/desktop_webview_window
