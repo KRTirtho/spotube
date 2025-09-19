@@ -103,6 +103,7 @@ class TrackSource with _$TrackSource {
     required SourceQualities quality,
     required SourceCodecs codec,
     required String bitrate,
+    required String qualityLabel,
   }) = _TrackSource;
 
   factory TrackSource.fromJson(Map<String, dynamic> json) =>

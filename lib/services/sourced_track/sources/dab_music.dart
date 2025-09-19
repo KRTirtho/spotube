@@ -54,6 +54,7 @@ class DABMusicSourcedTrack extends SourcedTrack {
   static Future<List<TrackSource>> fetchSources(
     String id,
     SourceQualities quality,
+    AudioQuality trackMaximumQuality,
   ) async {
     try {
       final isUncompressed = quality == SourceQualities.uncompressed;
@@ -64,14 +65,26 @@ class DABMusicSourcedTrack extends SourcedTrack {
       if (streamResponse.url == null) {
         throw Exception("No stream URL found for track ID: $id");
       }
+
+      // kbps = (bitDepth * sampleRate * channels) / 1000
+      final uncompressedBitrate = !isUncompressed
+          ? 0
+          : ((trackMaximumQuality.maximumBitDepth ?? 0) *
+                  ((trackMaximumQuality.maximumSamplingRate ?? 0) * 1000) *
+                  2) /
+              1000;
       return [
         TrackSource(
           url: streamResponse.url!,
           quality: isUncompressed
               ? SourceQualities.uncompressed
               : SourceQualities.high,
-          bitrate: isUncompressed ? "2998kbps" : "320kbps",
+          bitrate:
+              isUncompressed ? "${uncompressedBitrate.floor()}kbps" : "320kbps",
           codec: isUncompressed ? SourceCodecs.flac : SourceCodecs.mp3,
+          qualityLabel: isUncompressed
+              ? "${trackMaximumQuality.maximumBitDepth}bit • ${trackMaximumQuality.maximumSamplingRate}kHz • FLAC • Stereo"
+              : "MP3 • 320kbps • mp3 • Stereo",
         ),
       ];
     } catch (e, stackTrace) {
@@ -91,6 +104,7 @@ class DABMusicSourcedTrack extends SourcedTrack {
         source = await fetchSources(
           result.id.toString(),
           ref.read(userPreferencesProvider).audioQuality,
+          result.audioQuality!,
         );
       }
 
@@ -186,6 +200,11 @@ class DABMusicSourcedTrack extends SourcedTrack {
     final source = await fetchSources(
       sibling.id,
       ref.read(userPreferencesProvider).audioQuality,
+      const AudioQuality(
+        isHiRes: true,
+        maximumBitDepth: 16,
+        maximumSamplingRate: 44.1,
+      ),
     );
 
     return DABMusicSourcedTrack(

@@ -98,6 +98,7 @@ class PipedSourcedTrack extends SourcedTrack {
 
   static List<TrackSource> toSources(PipedStreamResponse manifest) {
     return manifest.audioStreams.map((audio) {
+      final isMp4 = audio.format == PipedAudioStreamFormat.m4a;
       return TrackSource(
         url: audio.url.toString(),
         quality: switch (audio.quality) {
@@ -105,10 +106,11 @@ class PipedSourcedTrack extends SourcedTrack {
           "medium" => SourceQualities.medium,
           _ => SourceQualities.low,
         },
-        codec: audio.format == PipedAudioStreamFormat.m4a
-            ? SourceCodecs.m4a
-            : SourceCodecs.weba,
+        codec: isMp4 ? SourceCodecs.m4a : SourceCodecs.weba,
         bitrate: audio.bitrate.toString(),
+        qualityLabel:
+            "${isMp4 ? "AAC" : "Opus"} • ${(audio.bitrate / 1000).floor()}kbps "
+            "• ${isMp4 ? "m4a" : "weba"} • Stereo",
       );
     }).toList();
   }

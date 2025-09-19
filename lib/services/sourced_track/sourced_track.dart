@@ -170,7 +170,7 @@ abstract class SourcedTrack extends BasicSourcedTrack {
   ///
   /// If no sources match the codec, it will return the first or last source
   /// based on the user's audio quality preference.
-  String? getUrlOfCodec(SourceCodecs codec) {
+  TrackSource? getSourceOfCodec(SourceCodecs codec) {
     final preferences = ref.read(userPreferencesProvider);
 
     final exactMatch = sources.firstWhereOrNull(
@@ -179,7 +179,7 @@ abstract class SourcedTrack extends BasicSourcedTrack {
     );
 
     if (exactMatch != null) {
-      return exactMatch.url;
+      return exactMatch;
     }
 
     final sameCodecSources = sources
@@ -193,8 +193,8 @@ abstract class SourcedTrack extends BasicSourcedTrack {
 
     if (sameCodecSources.isNotEmpty) {
       return preferences.audioQuality > SourceQualities.low
-          ? sameCodecSources.first.url
-          : sameCodecSources.last.url;
+          ? sameCodecSources.first
+          : sameCodecSources.last;
     }
 
     final fallbackSource = sources.sorted((a, b) {
@@ -204,8 +204,12 @@ abstract class SourcedTrack extends BasicSourcedTrack {
     });
 
     return preferences.audioQuality > SourceQualities.low
-        ? fallbackSource.firstOrNull?.url
-        : fallbackSource.lastOrNull?.url;
+        ? fallbackSource.firstOrNull
+        : fallbackSource.lastOrNull;
+  }
+
+  String? getUrlOfCodec(SourceCodecs codec) {
+    return getSourceOfCodec(codec)?.url;
   }
 
   SourceCodecs get codec {
@@ -219,13 +223,5 @@ abstract class SourcedTrack extends BasicSourcedTrack {
       AudioSource.jiosaavn => SourceCodecs.m4a,
       _ => preferences.streamMusicCodec
     };
-  }
-
-  TrackSource get activeTrackSource {
-    final audioQuality = ref.read(userPreferencesProvider).audioQuality;
-    return sources.firstWhereOrNull(
-          (source) => source.codec == codec && source.quality == audioQuality,
-        ) ??
-        sources.first;
   }
 }

@@ -91,10 +91,27 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                             )
                           else ...[
                             Text(context.l10n.author_name(plugin.author)),
-                            DestructiveBadge(
-                              leading: const Icon(SpotubeIcons.warning),
-                              child: Text(context.l10n.third_party),
-                            )
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                spacing: 4,
+                                children: [
+                                  const Icon(SpotubeIcons.warning, size: 14),
+                                  Text(
+                                    context.l10n.third_party,
+                                    style: const TextStyle(color: Colors.white),
+                                  ).xSmall
+                                ],
+                              ),
+                            ),
                           ],
                           SecondaryBadge(
                             leading: const Icon(SpotubeIcons.connect),

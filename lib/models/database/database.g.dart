@@ -18,15 +18,12 @@ class $AuthenticationTableTable extends AuthenticationTable
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _cookieMeta = const VerificationMeta('cookie');
   @override
   late final GeneratedColumnWithTypeConverter<DecryptedText, String> cookie =
       GeneratedColumn<String>('cookie', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<DecryptedText>(
               $AuthenticationTableTable.$convertercookie);
-  static const VerificationMeta _accessTokenMeta =
-      const VerificationMeta('accessToken');
   @override
   late final GeneratedColumnWithTypeConverter<DecryptedText, String>
       accessToken = GeneratedColumn<String>('access_token', aliasedName, false,
@@ -55,8 +52,6 @@ class $AuthenticationTableTable extends AuthenticationTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    context.handle(_cookieMeta, const VerificationResult.success());
-    context.handle(_accessTokenMeta, const VerificationResult.success());
     if (data.containsKey('expiration')) {
       context.handle(
           _expirationMeta,
@@ -301,8 +296,6 @@ class $BlacklistTableTable extends BlacklistTable
   late final GeneratedColumn<String> name = GeneratedColumn<String>(
       'name', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _elementTypeMeta =
-      const VerificationMeta('elementType');
   @override
   late final GeneratedColumnWithTypeConverter<BlacklistedType, String>
       elementType = GeneratedColumn<String>('element_type', aliasedName, false,
@@ -336,7 +329,6 @@ class $BlacklistTableTable extends BlacklistTable
     } else if (isInserting) {
       context.missing(_nameMeta);
     }
-    context.handle(_elementTypeMeta, const VerificationResult.success());
     if (data.containsKey('element_id')) {
       context.handle(_elementIdMeta,
           elementId.isAcceptableOrUnknown(data['element_id']!, _elementIdMeta));
@@ -566,8 +558,6 @@ class $PreferencesTableTable extends PreferencesTable
       requiredDuringInsert: false,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('PRIMARY KEY AUTOINCREMENT'));
-  static const VerificationMeta _audioQualityMeta =
-      const VerificationMeta('audioQuality');
   @override
   late final GeneratedColumnWithTypeConverter<SourceQualities, String>
       audioQuality = GeneratedColumn<String>(
@@ -647,8 +637,6 @@ class $PreferencesTableTable extends PreferencesTable
       defaultConstraints: GeneratedColumn.constraintIsAlways(
           'CHECK ("skip_non_music" IN (0, 1))'),
       defaultValue: const Constant(false));
-  static const VerificationMeta _closeBehaviorMeta =
-      const VerificationMeta('closeBehavior');
   @override
   late final GeneratedColumnWithTypeConverter<CloseBehavior, String>
       closeBehavior = GeneratedColumn<String>(
@@ -658,8 +646,6 @@ class $PreferencesTableTable extends PreferencesTable
               defaultValue: Constant(CloseBehavior.close.name))
           .withConverter<CloseBehavior>(
               $PreferencesTableTable.$convertercloseBehavior);
-  static const VerificationMeta _accentColorSchemeMeta =
-      const VerificationMeta('accentColorScheme');
   @override
   late final GeneratedColumnWithTypeConverter<SpotubeColor, String>
       accentColorScheme = GeneratedColumn<String>(
@@ -669,8 +655,6 @@ class $PreferencesTableTable extends PreferencesTable
               defaultValue: const Constant("Slate:0xff64748b"))
           .withConverter<SpotubeColor>(
               $PreferencesTableTable.$converteraccentColorScheme);
-  static const VerificationMeta _layoutModeMeta =
-      const VerificationMeta('layoutMode');
   @override
   late final GeneratedColumnWithTypeConverter<LayoutMode, String> layoutMode =
       GeneratedColumn<String>('layout_mode', aliasedName, false,
@@ -679,7 +663,6 @@ class $PreferencesTableTable extends PreferencesTable
               defaultValue: Constant(LayoutMode.adaptive.name))
           .withConverter<LayoutMode>(
               $PreferencesTableTable.$converterlayoutMode);
-  static const VerificationMeta _localeMeta = const VerificationMeta('locale');
   @override
   late final GeneratedColumnWithTypeConverter<Locale, String> locale =
       GeneratedColumn<String>('locale', aliasedName, false,
@@ -688,7 +671,6 @@ class $PreferencesTableTable extends PreferencesTable
               defaultValue: const Constant(
                   '{"languageCode":"system","countryCode":"system"}'))
           .withConverter<Locale>($PreferencesTableTable.$converterlocale);
-  static const VerificationMeta _marketMeta = const VerificationMeta('market');
   @override
   late final GeneratedColumnWithTypeConverter<Market, String> market =
       GeneratedColumn<String>('market', aliasedName, false,
@@ -696,8 +678,6 @@ class $PreferencesTableTable extends PreferencesTable
               requiredDuringInsert: false,
               defaultValue: Constant(Market.US.name))
           .withConverter<Market>($PreferencesTableTable.$convertermarket);
-  static const VerificationMeta _searchModeMeta =
-      const VerificationMeta('searchMode');
   @override
   late final GeneratedColumnWithTypeConverter<SearchMode, String> searchMode =
       GeneratedColumn<String>('search_mode', aliasedName, false,
@@ -714,8 +694,6 @@ class $PreferencesTableTable extends PreferencesTable
       type: DriftSqlType.string,
       requiredDuringInsert: false,
       defaultValue: const Constant(""));
-  static const VerificationMeta _localLibraryLocationMeta =
-      const VerificationMeta('localLibraryLocation');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       localLibraryLocation = GeneratedColumn<String>(
@@ -741,8 +719,6 @@ class $PreferencesTableTable extends PreferencesTable
           type: DriftSqlType.string,
           requiredDuringInsert: false,
           defaultValue: const Constant("https://inv.nadeko.net"));
-  static const VerificationMeta _themeModeMeta =
-      const VerificationMeta('themeMode');
   @override
   late final GeneratedColumnWithTypeConverter<ThemeMode, String> themeMode =
       GeneratedColumn<String>('theme_mode', aliasedName, false,
@@ -750,8 +726,6 @@ class $PreferencesTableTable extends PreferencesTable
               requiredDuringInsert: false,
               defaultValue: Constant(ThemeMode.system.name))
           .withConverter<ThemeMode>($PreferencesTableTable.$converterthemeMode);
-  static const VerificationMeta _audioSourceMeta =
-      const VerificationMeta('audioSource');
   @override
   late final GeneratedColumnWithTypeConverter<AudioSource, String> audioSource =
       GeneratedColumn<String>('audio_source', aliasedName, false,
@@ -760,8 +734,6 @@ class $PreferencesTableTable extends PreferencesTable
               defaultValue: Constant(AudioSource.youtube.name))
           .withConverter<AudioSource>(
               $PreferencesTableTable.$converteraudioSource);
-  static const VerificationMeta _youtubeClientEngineMeta =
-      const VerificationMeta('youtubeClientEngine');
   @override
   late final GeneratedColumnWithTypeConverter<YoutubeClientEngine, String>
       youtubeClientEngine = GeneratedColumn<String>(
@@ -771,8 +743,6 @@ class $PreferencesTableTable extends PreferencesTable
               defaultValue: Constant(YoutubeClientEngine.youtubeExplode.name))
           .withConverter<YoutubeClientEngine>(
               $PreferencesTableTable.$converteryoutubeClientEngine);
-  static const VerificationMeta _streamMusicCodecMeta =
-      const VerificationMeta('streamMusicCodec');
   @override
   late final GeneratedColumnWithTypeConverter<SourceCodecs, String>
       streamMusicCodec = GeneratedColumn<String>(
@@ -782,8 +752,6 @@ class $PreferencesTableTable extends PreferencesTable
               defaultValue: Constant(SourceCodecs.weba.name))
           .withConverter<SourceCodecs>(
               $PreferencesTableTable.$converterstreamMusicCodec);
-  static const VerificationMeta _downloadMusicCodecMeta =
-      const VerificationMeta('downloadMusicCodec');
   @override
   late final GeneratedColumnWithTypeConverter<SourceCodecs, String>
       downloadMusicCodec = GeneratedColumn<String>(
@@ -887,7 +855,6 @@ class $PreferencesTableTable extends PreferencesTable
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
     }
-    context.handle(_audioQualityMeta, const VerificationResult.success());
     if (data.containsKey('album_color_sync')) {
       context.handle(
           _albumColorSyncMeta,
@@ -930,20 +897,12 @@ class $PreferencesTableTable extends PreferencesTable
           skipNonMusic.isAcceptableOrUnknown(
               data['skip_non_music']!, _skipNonMusicMeta));
     }
-    context.handle(_closeBehaviorMeta, const VerificationResult.success());
-    context.handle(_accentColorSchemeMeta, const VerificationResult.success());
-    context.handle(_layoutModeMeta, const VerificationResult.success());
-    context.handle(_localeMeta, const VerificationResult.success());
-    context.handle(_marketMeta, const VerificationResult.success());
-    context.handle(_searchModeMeta, const VerificationResult.success());
     if (data.containsKey('download_location')) {
       context.handle(
           _downloadLocationMeta,
           downloadLocation.isAcceptableOrUnknown(
               data['download_location']!, _downloadLocationMeta));
     }
-    context.handle(
-        _localLibraryLocationMeta, const VerificationResult.success());
     if (data.containsKey('piped_instance')) {
       context.handle(
           _pipedInstanceMeta,
@@ -956,12 +915,6 @@ class $PreferencesTableTable extends PreferencesTable
           invidiousInstance.isAcceptableOrUnknown(
               data['invidious_instance']!, _invidiousInstanceMeta));
     }
-    context.handle(_themeModeMeta, const VerificationResult.success());
-    context.handle(_audioSourceMeta, const VerificationResult.success());
-    context.handle(
-        _youtubeClientEngineMeta, const VerificationResult.success());
-    context.handle(_streamMusicCodecMeta, const VerificationResult.success());
-    context.handle(_downloadMusicCodecMeta, const VerificationResult.success());
     if (data.containsKey('discord_presence')) {
       context.handle(
           _discordPresenceMeta,
@@ -2030,8 +1983,6 @@ class $ScrobblerTableTable extends ScrobblerTable
   late final GeneratedColumn<String> username = GeneratedColumn<String>(
       'username', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _passwordHashMeta =
-      const VerificationMeta('passwordHash');
   @override
   late final GeneratedColumnWithTypeConverter<DecryptedText, String>
       passwordHash = GeneratedColumn<String>(
@@ -2064,7 +2015,6 @@ class $ScrobblerTableTable extends ScrobblerTable
     } else if (isInserting) {
       context.missing(_usernameMeta);
     }
-    context.handle(_passwordHashMeta, const VerificationResult.success());
     return context;
   }
 
@@ -2595,8 +2545,6 @@ class $SourceMatchTableTable extends SourceMatchTable
   late final GeneratedColumn<String> sourceId = GeneratedColumn<String>(
       'source_id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _sourceTypeMeta =
-      const VerificationMeta('sourceType');
   @override
   late final GeneratedColumnWithTypeConverter<SourceType, String> sourceType =
       GeneratedColumn<String>('source_type', aliasedName, false,
@@ -2642,7 +2590,6 @@ class $SourceMatchTableTable extends SourceMatchTable
     } else if (isInserting) {
       context.missing(_sourceIdMeta);
     }
-    context.handle(_sourceTypeMeta, const VerificationResult.success());
     if (data.containsKey('created_at')) {
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
@@ -2901,8 +2848,6 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("playing" IN (0, 1))'));
-  static const VerificationMeta _loopModeMeta =
-      const VerificationMeta('loopMode');
   @override
   late final GeneratedColumnWithTypeConverter<PlaylistMode, String> loopMode =
       GeneratedColumn<String>('loop_mode', aliasedName, false,
@@ -2918,15 +2863,12 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
       requiredDuringInsert: true,
       defaultConstraints:
           GeneratedColumn.constraintIsAlways('CHECK ("shuffled" IN (0, 1))'));
-  static const VerificationMeta _collectionsMeta =
-      const VerificationMeta('collections');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String>
       collections = GeneratedColumn<String>('collections', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<List<String>>(
               $AudioPlayerStateTableTable.$convertercollections);
-  static const VerificationMeta _tracksMeta = const VerificationMeta('tracks');
   @override
   late final GeneratedColumnWithTypeConverter<List<SpotubeTrackObject>, String>
       tracks = GeneratedColumn<String>('tracks', aliasedName, false,
@@ -2966,15 +2908,12 @@ class $AudioPlayerStateTableTable extends AudioPlayerStateTable
     } else if (isInserting) {
       context.missing(_playingMeta);
     }
-    context.handle(_loopModeMeta, const VerificationResult.success());
     if (data.containsKey('shuffled')) {
       context.handle(_shuffledMeta,
           shuffled.isAcceptableOrUnknown(data['shuffled']!, _shuffledMeta));
     } else if (isInserting) {
       context.missing(_shuffledMeta);
     }
-    context.handle(_collectionsMeta, const VerificationResult.success());
-    context.handle(_tracksMeta, const VerificationResult.success());
     if (data.containsKey('current_index')) {
       context.handle(
           _currentIndexMeta,
@@ -3305,7 +3244,6 @@ class $HistoryTableTable extends HistoryTable
       type: DriftSqlType.dateTime,
       requiredDuringInsert: false,
       defaultValue: currentDateAndTime);
-  static const VerificationMeta _typeMeta = const VerificationMeta('type');
   @override
   late final GeneratedColumnWithTypeConverter<HistoryEntryType, String> type =
       GeneratedColumn<String>('type', aliasedName, false,
@@ -3316,7 +3254,6 @@ class $HistoryTableTable extends HistoryTable
   late final GeneratedColumn<String> itemId = GeneratedColumn<String>(
       'item_id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
   late final GeneratedColumnWithTypeConverter<Map<String, dynamic>, String>
       data = GeneratedColumn<String>('data', aliasedName, false,
@@ -3342,14 +3279,12 @@ class $HistoryTableTable extends HistoryTable
       context.handle(_createdAtMeta,
           createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta));
     }
-    context.handle(_typeMeta, const VerificationResult.success());
     if (data.containsKey('item_id')) {
       context.handle(_itemIdMeta,
           itemId.isAcceptableOrUnknown(data['item_id']!, _itemIdMeta));
     } else if (isInserting) {
       context.missing(_itemIdMeta);
     }
-    context.handle(_dataMeta, const VerificationResult.success());
     return context;
   }
 
@@ -3608,7 +3543,6 @@ class $LyricsTableTable extends LyricsTable
   late final GeneratedColumn<String> trackId = GeneratedColumn<String>(
       'track_id', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _dataMeta = const VerificationMeta('data');
   @override
   late final GeneratedColumnWithTypeConverter<SubtitleSimple, String> data =
       GeneratedColumn<String>('data', aliasedName, false,
@@ -3635,7 +3569,6 @@ class $LyricsTableTable extends LyricsTable
     } else if (isInserting) {
       context.missing(_trackIdMeta);
     }
-    context.handle(_dataMeta, const VerificationResult.success());
     return context;
   }
 
@@ -3853,15 +3786,12 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
   late final GeneratedColumn<String> entryPoint = GeneratedColumn<String>(
       'entry_point', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
-  static const VerificationMeta _apisMeta = const VerificationMeta('apis');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String> apis =
       GeneratedColumn<String>('apis', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
           .withConverter<List<String>>(
               $MetadataPluginsTableTable.$converterapis);
-  static const VerificationMeta _abilitiesMeta =
-      const VerificationMeta('abilities');
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String> abilities =
       GeneratedColumn<String>('abilities', aliasedName, false,
@@ -3954,8 +3884,6 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
     } else if (isInserting) {
       context.missing(_entryPointMeta);
     }
-    context.handle(_apisMeta, const VerificationResult.success());
-    context.handle(_abilitiesMeta, const VerificationResult.success());
     if (data.containsKey('selected')) {
       context.handle(_selectedMeta,
           selected.isAcceptableOrUnknown(data['selected']!, _selectedMeta));

@@ -104,6 +104,7 @@ class JioSaavnSourcedTrack extends SourcedTrack {
                   : SourceQualities.low,
           codec: SourceCodecs.m4a,
           bitrate: link.quality,
+          qualityLabel: "AAC • ${link.quality} • MP4 • Stereo",
         );
       }).toList()
     );

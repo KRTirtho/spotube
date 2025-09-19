@@ -53,14 +53,16 @@ class SettingsPlaybackSection extends HookConsumerWidget {
               value: SourceQualities.high,
               child: Text(context.l10n.high),
             ),
-            SelectItemButton(
-              value: SourceQualities.medium,
-              child: Text(context.l10n.medium),
-            ),
-            SelectItemButton(
-              value: SourceQualities.low,
-              child: Text(context.l10n.low),
-            ),
+            if (preferences.audioSource != AudioSource.dabMusic) ...[
+              SelectItemButton(
+                value: SourceQualities.medium,
+                child: Text(context.l10n.medium),
+              ),
+              SelectItemButton(
+                value: SourceQualities.low,
+                child: Text(context.l10n.low),
+              ),
+            ]
           ],
           onChanged: (value) {
             if (value != null) {
