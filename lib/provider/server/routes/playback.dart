@@ -46,20 +46,94 @@ class ServerPlaybackRoutes {
 
   ServerPlaybackRoutes(this.ref) : dio = Dio();
 
+  Future<String> _getTrackCacheFilePath(SourcedTrack track) async {
+    return join(
+      await UserPreferencesNotifier.getMusicCacheDir(),
+      ServiceUtils.sanitizeFilename(
+        '${track.query.title} - ${track.query.artists.join(",")} (${track.info.id}).${track.codec.name}',
+      ),
+    );
+  }
+
+  Future<SourcedTrack?> _getSourcedTrack(
+      Request request, String trackId) async {
+    final track =
+        playlist.tracks.firstWhere((element) => element.id == trackId);
+
+    final activeSourcedTrack =
+        await ref.read(activeTrackSourcesProvider.future);
+    final sourcedTrack = activeSourcedTrack?.track.id == track.id
+        ? activeSourcedTrack?.source
+        : await ref.read(
+            trackSourcesProvider(
+              //! Use [Request.requestedUri] as it contains full https url.
+              //! [Request.url] will exclude and starts relatively. (streams/<trackId>... basically)
+              TrackSourceQuery.parseUri(request.requestedUri.toString()),
+            ).future,
+          );
+
+    return sourcedTrack;
+  }
+
+  Future<dio_lib.Response> streamTrackInformation(
+    Request request,
+    SourcedTrack track,
+  ) async {
+    AppLogger.log.i(
+      "HEAD request for track: ${track.query.title}\n"
+      "Headers: ${request.headers}",
+    );
+
+    final trackCacheFile = File(await _getTrackCacheFilePath(track));
+
+    if (await trackCacheFile.exists() && userPreferences.cacheMusic) {
+      final fileLength = await trackCacheFile.length();
+
+      return dio_lib.Response(
+        statusCode: 200,
+        headers: Headers.fromMap({
+          "content-type": ["audio/${track.codec.name}"],
+          "content-length": ["$fileLength"],
+          "accept-ranges": ["bytes"],
+          "content-range": ["bytes 0-$fileLength/$fileLength"],
+        }),
+        requestOptions: RequestOptions(path: request.requestedUri.toString()),
+      );
+    }
+
+    String url = track.url ??
+        await ref
+            .read(trackSourcesProvider(track.query).notifier)
+            .swapWithNextSibling()
+            .then((track) => track.url!);
+
+    final options = Options(
+      headers: {
+        "user-agent": _randomUserAgent,
+        "Cache-Control": "max-age=3600",
+        "Connection": "keep-alive",
+        "host": Uri.parse(url).host,
+      },
+      validateStatus: (status) => status! < 400,
+    );
+
+    final res = await dio.head(url, options: options);
+
+    return res;
+  }
+
   Future<({dio_lib.Response<Uint8List> response, Uint8List? bytes})>
       streamTrack(
     Request request,
     SourcedTrack track,
     Map<String, dynamic> headers,
   ) async {
-    final trackCacheFile = File(
-      join(
-        await UserPreferencesNotifier.getMusicCacheDir(),
-        ServiceUtils.sanitizeFilename(
-          '${track.query.title} - ${track.query.artists.join(",")} (${track.info.id}).${track.codec.name}',
-        ),
-      ),
+    AppLogger.log.i(
+      "GET request for track: ${track.query.title}\n"
+      "Headers: ${request.headers}",
     );
+
+    final trackCacheFile = File(await _getTrackCacheFilePath(track));
 
     if (await trackCacheFile.exists() && userPreferences.cacheMusic) {
       final bytes = await trackCacheFile.readAsBytes();
@@ -132,22 +206,32 @@ class ServerPlaybackRoutes {
       );
     }
 
-    if (headers["range"] == "bytes=0-") {
+    if (headers["range"] == "bytes=0-" && track.codec == SourceCodecs.flac) {
       final bufferSize =
           userPreferences.audioQuality == SourceQualities.uncompressed
-              ? 6 * 1024 * 1024
-              : 4 * 1024 * 1024;
-      final endRange = min(bufferSize,
-          int.parse(contentLengthRes?.headers.value("content-length") ?? "0"));
+              ? 6 * 1024 * 1024 // 6MB for lossless
+              : 4 * 1024 * 1024; // 4MB for lossy
+
+      final endRange = min(
+        bufferSize,
+        int.parse(contentLengthRes?.headers.value("content-length") ?? "0"),
+      );
+
       options = options.copyWith(
         headers: {
-          ...options.headers ?? {},
+          ...?options.headers,
           "range": "bytes=0-$endRange",
         },
       );
     }
 
     final res = await dio.get<Uint8List>(url, options: options);
+
+    AppLogger.log.i(
+      "Response for track: ${track.query.title}\n"
+      "Status Code: ${res.statusCode}\n"
+      "Headers: ${res.headers.map}",
+    );
 
     final bytes = res.data;
 
@@ -208,27 +292,42 @@ class ServerPlaybackRoutes {
     return (bytes: bytes, response: res);
   }
 
+  /// @head('/stream/<trackId>')
+  Future<Response> headStreamTrackId(Request request, String trackId) async {
+    try {
+      final sourcedTrack = await _getSourcedTrack(request, trackId);
+
+      if (sourcedTrack == null) {
+        return Response.notFound("Track not found in the current queue");
+      }
+
+      final res = await streamTrackInformation(
+        request,
+        sourcedTrack,
+      );
+
+      return Response(
+        res.statusCode!,
+        headers: res.headers.map,
+      );
+    } catch (e, stack) {
+      AppLogger.reportError(e, stack);
+      return Response.internalServerError();
+    }
+  }
+
   /// @get('/stream/<trackId>')
   Future<Response> getStreamTrackId(Request request, String trackId) async {
     try {
-      final track =
-          playlist.tracks.firstWhere((element) => element.id == trackId);
+      final sourcedTrack = await _getSourcedTrack(request, trackId);
 
-      final activeSourcedTrack =
-          await ref.read(activeTrackSourcesProvider.future);
-      final sourcedTrack = activeSourcedTrack?.track.id == track.id
-          ? activeSourcedTrack?.source
-          : await ref.read(
-              trackSourcesProvider(
-                //! Use [Request.requestedUri] as it contains full https url.
-                //! [Request.url] will exclude and starts relatively. (streams/<trackId>... basically)
-                TrackSourceQuery.parseUri(request.requestedUri.toString()),
-              ).future,
-            );
+      if (sourcedTrack == null) {
+        return Response.notFound("Track not found in the current queue");
+      }
 
       final (bytes: audioBytes, response: res) = await streamTrack(
         request,
-        sourcedTrack!,
+        sourcedTrack,
         request.headers,
       );
 
