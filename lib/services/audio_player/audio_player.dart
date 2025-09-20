@@ -57,6 +57,7 @@ abstract class AudioPlayerInterface {
             title: "Spotube",
             logLevel: kDebugMode ? mk.MPVLogLevel.info : mk.MPVLogLevel.error,
             bufferSize: 4 * 1024 * 1024, // 4MB buffer
+            async: true,
           ),
         ) {
     _mkPlayer.stream.error.listen((event) {

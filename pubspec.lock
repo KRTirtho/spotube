@@ -1412,10 +1412,10 @@ packages:
     dependency: "direct main"
     description:
       name: invidious
-      sha256: "27ef3a001df875665de15535dbc9099f44d12a59480018fb1e17377d4af0308d"
+      sha256: "0da8ebc4c4110057f03302bbd54514b10642154d7be569e7994172f2202dcfe8"
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.1"
+    version: "0.1.2"
   io:
     dependency: "direct dev"
     description:
