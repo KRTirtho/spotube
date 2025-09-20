@@ -214,7 +214,7 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
   /// Root directory where all metadata plugins are stored.
   Future<Directory> _getPluginRootDir() async => Directory(
         join(
-          (await getApplicationCacheDirectory()).path,
+          (await getApplicationSupportDirectory()).path,
           "metadata-plugins",
         ),
       );

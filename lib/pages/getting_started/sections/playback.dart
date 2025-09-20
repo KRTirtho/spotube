@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show Badge;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -83,14 +84,20 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
                 runSpacing: 6,
                 children: [
                   for (final source in AudioSource.values)
-                    RadioCard(
-                      value: source,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          audioSourceToIconMap[source]!,
-                          Text(source.label),
-                        ],
+                    Badge(
+                      isLabelVisible: source == AudioSource.dabMusic,
+                      label: const Text("NEW"),
+                      backgroundColor: Colors.lime[300],
+                      textColor: Colors.black,
+                      child: RadioCard(
+                        value: source,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            audioSourceToIconMap[source]!,
+                            Text(source.label),
+                          ],
+                        ),
                       ),
                     ),
                 ],
