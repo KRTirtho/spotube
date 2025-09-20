@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
+import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/playback/track_sources.dart';
+import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/enums.dart';
@@ -32,11 +36,68 @@ class DABMusicSourcedTrack extends SourcedTrack {
     required Ref ref,
   }) async {
     try {
+      final database = ref.read(databaseProvider);
+      final cachedSource = await (database.select(database.sourceMatchTable)
+            ..where((s) => s.trackId.equals(query.id))
+            ..limit(1)
+            ..orderBy([
+              (s) => OrderingTerm(
+                    expression: s.createdAt,
+                    mode: OrderingMode.desc,
+                  ),
+            ]))
+          .get()
+          .then((s) => s.firstOrNull);
+
+      if (cachedSource != null &&
+          cachedSource.sourceType == SourceType.dabMusic) {
+        final json = jsonDecode(cachedSource.sourceId);
+        final info = TrackSourceInfo.fromJson(json["info"]);
+        final source = (json["sources"] as List?)
+            ?.map((s) => TrackSource.fromJson(s))
+            .toList();
+
+        final [updatedSource] = await fetchSources(
+          info.id,
+          ref.read(userPreferencesProvider).audioQuality,
+          const AudioQuality(
+            isHiRes: true,
+            maximumBitDepth: 16,
+            maximumSamplingRate: 44.1,
+          ),
+        );
+
+        return DABMusicSourcedTrack(
+          ref: ref,
+          source: AudioSource.dabMusic,
+          siblings: [],
+          info: info,
+          query: query,
+          sources: [
+            source!.first.copyWith(url: updatedSource.url),
+          ],
+        );
+      }
+
       final siblings = await fetchSiblings(ref: ref, query: query);
 
       if (siblings.isEmpty) {
         throw TrackNotFoundError(query);
       }
+
+      await database.into(database.sourceMatchTable).insert(
+            SourceMatchTableCompanion.insert(
+              trackId: query.id,
+              sourceId: jsonEncode({
+                "info": siblings.first.info.toJson(),
+                "sources": (siblings.first.source ?? [])
+                    .map((s) => s.toJson())
+                    .toList(),
+              }),
+              sourceType: const Value(SourceType.dabMusic),
+            ),
+          );
+
       return DABMusicSourcedTrack(
         ref: ref,
         siblings: siblings.map((s) => s.info).skip(1).toList(),
@@ -206,6 +267,23 @@ class DABMusicSourcedTrack extends SourcedTrack {
         maximumSamplingRate: 44.1,
       ),
     );
+
+    final database = ref.read(databaseProvider);
+
+    await database.into(database.sourceMatchTable).insert(
+          SourceMatchTableCompanion.insert(
+            trackId: query.id,
+            sourceId: jsonEncode({
+              "info": newSourceInfo.toJson(),
+              "sources": source.map((s) => s.toJson()).toList(),
+            }),
+            sourceType: const Value(SourceType.dabMusic),
+            // Because we're sorting by createdAt in the query
+            // we have to update it to indicate priority
+            createdAt: Value(DateTime.now()),
+          ),
+          mode: InsertMode.replace,
+        );
 
     return DABMusicSourcedTrack(
       ref: ref,
