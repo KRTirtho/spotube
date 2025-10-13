@@ -96,7 +96,9 @@ class LastFMLoginPage extends HookConsumerWidget {
                             FormField(
                               label: Text(context.l10n.username),
                               key: usernameKey,
-                              validator: const NotEmptyValidator(),
+                              validator: const NotEmptyValidator(
+                                message: "Username is required",
+                              ),
                               child: TextField(
                                 autofillHints: const [
                                   AutofillHints.username,
@@ -107,7 +109,9 @@ class LastFMLoginPage extends HookConsumerWidget {
                             ),
                             FormField(
                               key: passwordKey,
-                              validator: const NotEmptyValidator(),
+                              validator: const NotEmptyValidator(
+                                message: "Password is required",
+                              ),
                               label: Text(context.l10n.password),
                               child: TextField(
                                 autofillHints: const [
@@ -115,15 +119,19 @@ class LastFMLoginPage extends HookConsumerWidget {
                                 ],
                                 obscureText: !passwordVisible.value,
                                 placeholder: Text(context.l10n.password),
-                                trailing: IconButton.ghost(
-                                  icon: Icon(
-                                    passwordVisible.value
-                                        ? SpotubeIcons.eye
-                                        : SpotubeIcons.noEye,
+                                features: [
+                                  InputFeature.trailing(
+                                    IconButton.ghost(
+                                      icon: Icon(
+                                        passwordVisible.value
+                                            ? SpotubeIcons.eye
+                                            : SpotubeIcons.noEye,
+                                      ),
+                                      onPressed: () => passwordVisible.value =
+                                          !passwordVisible.value,
+                                    ),
                                   ),
-                                  onPressed: () => passwordVisible.value =
-                                      !passwordVisible.value,
-                                ),
+                                ],
                               ),
                             ),
                           ],

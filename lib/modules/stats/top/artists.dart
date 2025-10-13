@@ -9,7 +9,7 @@ import 'package:spotube/modules/stats/common/artist_item.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/history/top.dart';
 import 'package:spotube/provider/history/top/tracks.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/utils/common.dart';
 import 'package:very_good_infinite_list/very_good_infinite_list.dart';
 
 class TopArtists extends HookConsumerWidget {
@@ -24,8 +24,8 @@ class TopArtists extends HookConsumerWidget {
     final topTracksNotifier =
         ref.watch(historyTopTracksProvider(historyDuration).notifier);
 
-    final artistsData = useMemoized(
-        () => topTracks.asData?.value.artists ?? [], [topTracks.asData?.value]);
+    final artistsData =
+        useMemoized(() => topTracksNotifier.artists, [topTracks.asData?.value]);
 
     return Skeletonizer.sliver(
       enabled: topTracks.isLoading && !topTracks.isLoadingNextPage,

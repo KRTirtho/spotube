@@ -10,16 +10,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
 
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/form/checkbox_form_field.dart';
 import 'package:spotube/components/form/text_form_field.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
-import 'package:spotube/provider/spotify_provider.dart';
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
+import 'package:spotube/provider/metadata_plugin/playlist/playlist.dart';
 
 class PlaylistCreateDialog extends HookConsumerWidget {
   /// Track ids to add to the playlist
@@ -33,10 +32,11 @@ class PlaylistCreateDialog extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final userPlaylists = ref.watch(favoritePlaylistsProvider);
-    final playlist = ref.watch(playlistProvider(playlistId ?? ""));
+    final userPlaylists = ref.watch(metadataPluginSavedPlaylistsProvider);
+    final playlist =
+        ref.watch(metadataPluginPlaylistProvider(playlistId ?? ""));
     final playlistNotifier =
-        ref.watch(playlistProvider(playlistId ?? "").notifier);
+        ref.watch(metadataPluginPlaylistProvider(playlistId ?? "").notifier);
 
     final isSubmitting = useState(false);
 
@@ -56,25 +56,36 @@ class PlaylistCreateDialog extends HookConsumerWidget {
     final l10n = context.l10n;
     final theme = Theme.of(context);
 
+    useEffect(() {
+      if (playlist.asData?.value != null) {
+        formKey.currentState?.patchValue({
+          'playlistName': playlist.asData!.value.name,
+          'description': playlist.asData!.value.description,
+          'public': playlist.asData!.value.public,
+          'collaborative': playlist.asData!.value.collaborative,
+        });
+      }
+
+      return;
+    }, [playlist]);
+
     final onError = useCallback((error) {
-      if (error is SpotifyError || error is SpotifyException) {
-        showToast(
-          context: context,
-          location: ToastLocation.topRight,
-          builder: (context, overlay) {
-            return SurfaceCard(
-              child: Basic(
-                title: Text(
-                  l10n.error(error.message ?? l10n.epic_failure),
-                  style: theme.typography.normal.copyWith(
-                    color: theme.colorScheme.destructive,
-                  ),
+      showToast(
+        context: context,
+        location: ToastLocation.topRight,
+        builder: (context, overlay) {
+          return SurfaceCard(
+            child: Basic(
+              title: Text(
+                l10n.error(l10n.epic_failure),
+                style: theme.typography.normal.copyWith(
+                  color: theme.colorScheme.destructive,
                 ),
               ),
-            );
-          },
-        );
-      }
+            ),
+          );
+        },
+      );
     }, [l10n, theme]);
 
     Future<void> onCreate() async {
@@ -84,7 +95,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
         isSubmitting.value = true;
         final values = formKey.currentState!.value;
 
-        final PlaylistInput payload = (
+        final payload = (
           playlistName: values['playlistName'],
           collaborative: values['collaborative'],
           public: values['public'],
@@ -97,15 +108,36 @@ class PlaylistCreateDialog extends HookConsumerWidget {
         );
 
         if (isUpdatingPlaylist) {
-          await playlistNotifier.modify(payload, onError);
+          await playlistNotifier.modify(
+            name: payload.playlistName,
+            description: payload.description,
+            public: payload.public,
+            collaborative: payload.collaborative,
+            onError: onError,
+          );
         } else {
-          await playlistNotifier.create(payload, onError);
+          await playlistNotifier.create(
+            name: payload.playlistName,
+            description: payload.description,
+            public: payload.public,
+            collaborative: payload.collaborative,
+            onError: onError,
+          );
+        }
+
+        if (trackIds.isNotEmpty) {
+          await playlistNotifier.addTracks(trackIds, onError);
         }
       } finally {
         isSubmitting.value = false;
         if (context.mounted &&
-            !ref.read(playlistProvider(playlistId ?? "")).hasError) {
-          context.router.maybePop();
+            !ref
+                .read(metadataPluginPlaylistProvider(playlistId ?? ""))
+                .hasError) {
+          context.router.maybePop<SpotubeFullPlaylistObject>(
+            await ref
+                .read(metadataPluginPlaylistProvider(playlistId ?? "").future),
+          );
         }
       }
     }
@@ -139,8 +171,8 @@ class PlaylistCreateDialog extends HookConsumerWidget {
           initialValue: {
             'playlistName': updatingPlaylist?.name,
             'description': updatingPlaylist?.description,
-            'public': updatingPlaylist?.public ?? false,
-            'collaborative': updatingPlaylist?.collaborative ?? false,
+            'public': playlist.asData?.value.public ?? false,
+            'collaborative': playlist.asData?.value.collaborative ?? false,
           },
           child: ListView(
             shrinkWrap: true,
@@ -254,7 +286,7 @@ class PlaylistCreateDialog extends HookConsumerWidget {
 class PlaylistCreateDialogButton extends HookConsumerWidget {
   const PlaylistCreateDialogButton({super.key});
 
-  showPlaylistDialog(BuildContext context, SpotifyApi spotify) {
+  showPlaylistDialog(BuildContext context) {
     showDialog(
       context: context,
       alignment: Alignment.center,
@@ -266,12 +298,10 @@ class PlaylistCreateDialogButton extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final spotify = ref.watch(spotifyProvider);
-
     return Button.secondary(
       leading: const Icon(SpotubeIcons.addFilled),
       child: Text(context.l10n.playlist),
-      onPressed: () => showPlaylistDialog(context, spotify),
+      onPressed: () => showPlaylistDialog(context),
     );
   }
 }

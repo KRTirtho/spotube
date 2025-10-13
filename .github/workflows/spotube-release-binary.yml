@@ -20,7 +20,7 @@ on:
         description: Dry run without uploading to release
 
 env:
-  FLUTTER_VERSION: 3.29.0
+  FLUTTER_VERSION: 3.35.2
   FLUTTER_CHANNEL: master
 
 permissions:
@@ -56,7 +56,7 @@ jobs:
             files: |
               dist/Spotube-windows-x86_64.nupkg
               dist/Spotube-windows-x86_64-setup.exe
-          - os: macos-latest
+          - os: macos-14
             platform: ios
             arch: all
             files: |
@@ -95,7 +95,7 @@ jobs:
         if: ${{matrix.platform == 'ios'}}
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: "16.1"
+          xcode-version: "16.2"
 
       - name: Install ${{matrix.platform}} dependencies
         run: |

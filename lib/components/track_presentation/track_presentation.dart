@@ -55,37 +55,35 @@ class TrackPresentation extends HookConsumerWidget {
             slivers: [
               const TrackPresentationTopSection(),
               const SliverGap(16),
-              SliverLayoutBuilder(
-                builder: (context, constrains) {
-                  return SliverList.list(
-                    children: [
-                      TrackPresentationModifiersSection(
-                        focusNode: focusNode,
+              SliverList.list(
+                children: [
+                  TrackPresentationModifiersSection(
+                    focusNode: focusNode,
+                  ),
+                  LayoutBuilder(builder: (context, constrains) {
+                    return Basic(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 16,
                       ),
-                      Basic(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 16,
-                        ),
-                        leading: constrains.mdAndUp ? const Text("  #") : null,
-                        title: Row(
-                          children: [
+                      leading: constrains.mdAndUp ? const Text("  #") : null,
+                      title: Row(
+                        children: [
+                          Expanded(
+                            flex: constrains.lgAndUp ? 5 : 6,
+                            child: Text(context.l10n.title),
+                          ),
+                          if (constrains.mdAndUp)
                             Expanded(
-                              flex: constrains.lgAndUp ? 5 : 6,
-                              child: Text(context.l10n.title),
+                              flex: 3,
+                              child: Text(context.l10n.album),
                             ),
-                            if (constrains.mdAndUp)
-                              Expanded(
-                                flex: 3,
-                                child: Text(context.l10n.album),
-                              ),
-                            Text(context.l10n.duration),
-                          ],
-                        ),
-                      ).small().muted(),
-                    ],
-                  );
-                },
+                          Text(context.l10n.duration),
+                        ],
+                      ),
+                    ).small().muted();
+                  }),
+                ],
               ),
               const PresentationListSection(),
               const SliverSafeArea(sliver: SliverGap(10)),

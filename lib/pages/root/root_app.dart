@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/hooks/configurators/use_check_yt_dlp_installed.dart';
 import 'package:spotube/modules/root/bottom_player.dart';
 import 'package:spotube/modules/root/sidebar/sidebar.dart';
@@ -43,13 +44,24 @@ class RootAppPage extends HookConsumerWidget {
     final scaffold = MediaQuery.removeViewInsets(
       context: context,
       removeBottom: true,
-      child: const Scaffold(
-        footers: [
-          BottomPlayer(),
-          SpotubeNavigationBar(),
-        ],
-        floatingFooter: true,
-        child: Sidebar(child: AutoRouter()),
+      child: SafeArea(
+        top: false,
+        child: Scaffold(
+          footers: const [
+            BottomPlayer(),
+            SpotubeNavigationBar(),
+          ],
+          floatingFooter: true,
+          child: Sidebar(
+            child: MediaQuery(
+              data: MediaQuery.of(context).copyWith(
+                padding: MediaQuery.paddingOf(context)
+                    .copyWith(bottom: 100 * context.theme.scaling),
+              ),
+              child: const AutoRouter(),
+            ),
+          ),
+        ),
       ),
     );
 

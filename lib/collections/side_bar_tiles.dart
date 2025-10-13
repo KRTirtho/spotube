@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:spotube/l10n/l10n.dart';
 
 class SideBarTiles {
   final IconData icon;
@@ -38,7 +38,7 @@ List<SideBarTiles> getSidebarTileList(AppLocalizations l10n) => [
       SideBarTiles(
         id: "lyrics",
         pathPrefix: "/lyrics",
-        route: LyricsRoute(),
+        route: const LyricsRoute(),
         icon: SpotubeIcons.music,
         title: l10n.lyrics,
       ),

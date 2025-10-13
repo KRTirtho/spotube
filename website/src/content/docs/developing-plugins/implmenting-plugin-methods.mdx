@@ -1,0 +1,95 @@
+---
+layout: "layouts/DocLayout.astro"
+title: Implementing plugin methods
+description: Tutorial on how to implement methods in your Spotube plugin.
+order: 2
+---
+
+In the previous section, you learned how to create a plugin project and run the example app.
+In this section, you will learn how to implement methods in your Spotube plugin.
+
+## The `entryPoint` class
+
+The `entryPoint` (from the plugin.json) class is the main class of your plugin. You can find it in `src/plugin.ht`. It's the class
+that Spotube will instantiate when it loads your plugin. You can pretty much keep this class same as the template, unless you
+there's something specific you want to change.
+
+```hetu_script
+// The name of the class should match the `entryPoint` in plugin.json
+class TemplateMetadataProviderPlugin {
+  // These are required properties that Spotube will use to call the methods.
+  // ==== Start of required properties ====
+  var auth: AuthEndpoint
+  var album: AlbumEndpoint
+  var artist: ArtistEndpoint
+  var browse: BrowseEndpoint
+  var playlist: PlaylistEndpoint
+  var search: SearchEndpoint
+  var track: TrackEndpoint
+  var user: UserEndpoint
+  var core: CorePlugin
+  // ==== End of required properties ====
+
+  var api: HttpClient
+
+  construct (){
+    api = HttpClient(
+      HttpBaseOptions(
+        baseUrl: "https://example.com"
+      )
+    )
+
+    auth = AuthEndpoint(api)
+
+    album = AlbumEndpoint(api)
+    artist = ArtistEndpoint(api)
+    browse = BrowseEndpoint(api)
+    playlist = PlaylistEndpoint(api)
+    search = SearchEndpoint(api)
+    track = TrackEndpoint(api)
+    user = UserEndpoint(api)
+    core = CorePlugin(api)
+
+    auth.authStateStream.listen((event) {
+      // get authentication events
+    })
+  }
+}
+```
+
+If you read how the import/export works for [hetu_script][hetu_script_import_export_docs], you should realize it's pretty similar to ECMA Script modules or ES6+ Modules
+from the JavaScript world.
+
+```hetu_script
+import { AuthEndpoint } from './segments/auth.ht'
+import { AlbumEndpoint } from "./segments/album.ht"
+import { ArtistEndpoint } from "./segments/artist.ht"
+import { BrowseEndpoint } from "./segments/browse.ht"
+import { PlaylistEndpoint } from './segments/playlist.ht'
+import { SearchEndpoint } from './segments/search.ht'
+import { TrackEndpoint } from './segments/track.ht'
+import { UserEndpoint } from './segments/user.ht'
+import { CorePlugin } from './segments/core.ht'
+```
+
+## Implementing subclasses
+
+Now that we've seen `entryPoint` class, we can look into the properties of that classes which are the actual
+classes that contains methods that Spotube calls. All of them are in `src/segments` folder
+
+> **IMPORTANT!:** hetu\*script claims it supports async/await. But unfortunately it still doesn't work yet.
+> So for now, we have to bear with .then()
+>
+> Also, if you've read the hetu_script docs, you should know hetu_script doesn't support <ins>Error Handling</ins>.
+> This is a design decision of the language and the errors should only be handled in the Dart code.
+> So there's no try/catch/finally or .catch() method
+
+In the next section, we will cover how to implement the methods in these classes.
+
+{/* Urls */}
+[hetu_script_import_export_docs]: https://hetu-script.github.io/docs/en-US/grammar/import/
+[hetu_spotube_plugin]: https://github.com/KRTirtho/hetu_spotube_plugin
+[spotube_plugin_api]: /
+[hetu_std]: https://github.com/hetu-community/hetu_std
+[dart_stream_controller]: https://api.flutter.dev/flutter/dart-async/StreamController-class.html
+[hetu_struct_into_map]: https://hetu-script.github.io/docs/en-US/api_reference/hetu/#struct

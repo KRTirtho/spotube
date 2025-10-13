@@ -3,7 +3,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/side_bar_tiles.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -20,18 +19,9 @@ class Sidebar extends HookConsumerWidget {
     super.key,
   });
 
-  static Widget brandLogo() {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.circular(50),
-      ),
-      child: Assets.spotubeLogoPng.image(height: 50),
-    );
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final ThemeData(:colorScheme) = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
 
     final layoutMode =
@@ -62,13 +52,26 @@ class Sidebar extends HookConsumerWidget {
 
     final navigationButtons = [
       NavigationLabel(
-        child: mediaQuery.lgAndUp ? const Text("Spotube") : const Text(""),
+        child: mediaQuery.lgAndUp
+            ? DefaultTextStyle(
+                style: TextStyle(
+                  fontFamily: "Cookie",
+                  fontSize: 30,
+                  letterSpacing: 1.8,
+                  color: colorScheme.foreground,
+                ),
+                child: const Text("Spotube"),
+              )
+            : const Text(""),
       ),
       for (final tile in sidebarTileList)
         NavigationButton(
+          style: router.currentPath.startsWith(tile.pathPrefix)
+              ? const ButtonStyle.secondary()
+              : null,
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           child: Tooltip(
-            tooltip: TooltipContainer(child: Text(tile.title)),
+            tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
           onPressed: () {
@@ -80,12 +83,15 @@ class Sidebar extends HookConsumerWidget {
         NavigationLabel(child: Text(context.l10n.library)),
       for (final tile in sidebarLibraryTileList)
         NavigationButton(
+          style: router.currentPath.startsWith(tile.pathPrefix)
+              ? const ButtonStyle.secondary()
+              : null,
           label: mediaQuery.lgAndUp ? Text(tile.title) : null,
           onPressed: () {
             context.navigateTo(tile.route);
           },
           child: Tooltip(
-            tooltip: TooltipContainer(child: Text(tile.title)),
+            tooltip: TooltipContainer(child: Text(tile.title)).call,
             child: Icon(tile.icon),
           ),
         ),

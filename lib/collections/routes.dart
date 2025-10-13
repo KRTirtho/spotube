@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/collections/routes.gr.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -28,9 +28,10 @@ class AppRouter extends RootStackRouter {
               guards: [
                 AutoRouteGuardCallback(
                   (resolver, router) async {
-                    final auth = await ref.read(authenticationProvider.future);
+                    final authenticated = await ref
+                        .read(metadataPluginAuthenticatedProvider.future);
 
-                    if (auth == null && !KVStoreService.doneGettingStarted) {
+                    if (!authenticated && !KVStoreService.doneGettingStarted) {
                       resolver.redirect(const GettingStartedRoute());
                     } else {
                       resolver.next(true);
@@ -40,16 +41,8 @@ class AppRouter extends RootStackRouter {
               ],
             ),
             AutoRoute(
-              path: "home/genres",
-              page: GenreRoute.page,
-            ),
-            AutoRoute(
-              path: "home/genre/:categoryId",
-              page: GenrePlaylistsRoute.page,
-            ),
-            AutoRoute(
-              path: "home/feeds/:feedId",
-              page: HomeFeedSectionRoute.page,
+              path: "home/sections/:sectionId",
+              page: HomeBrowseSectionItemsRoute.page,
             ),
             AutoRoute(
               path: "search",
@@ -76,23 +69,15 @@ class AppRouter extends RootStackRouter {
                   page: UserLocalLibraryRoute.page,
                 ),
                 AutoRoute(
-                  path: "local/folder",
-                  page: LocalLibraryRoute.page,
-                  // parentNavigatorKey: shellRouteNavigatorKey,
-                ),
-                AutoRoute(
                   path: "downloads",
                   page: UserDownloadsRoute.page,
                 ),
               ],
             ),
             AutoRoute(
-              path: "library/generate",
-              page: PlaylistGeneratorRoute.page,
-            ),
-            AutoRoute(
-              path: "library/generate/result",
-              page: PlaylistGenerateResultRoute.page,
+              path: "local/folder",
+              page: LocalLibraryRoute.page,
+              // parentNavigatorKey: shellRouteNavigatorKey,
             ),
             AutoRoute(
               path: "lyrics",
@@ -101,6 +86,14 @@ class AppRouter extends RootStackRouter {
             AutoRoute(
               path: "settings",
               page: SettingsRoute.page,
+            ),
+            AutoRoute(
+              path: "settings/metadata-provider",
+              page: SettingsMetadataProviderRoute.page,
+            ),
+            AutoRoute(
+              path: "settings/metadata-provider/metadata-form",
+              page: SettingsMetadataProviderFormRoute.page,
             ),
             AutoRoute(
               path: "settings/blacklist",
@@ -114,6 +107,10 @@ class AppRouter extends RootStackRouter {
             AutoRoute(
               path: "settings/about",
               page: AboutSpotubeRoute.page,
+            ),
+            AutoRoute(
+              path: "settings/scrobbling",
+              page: SettingsScrobblingRoute.page,
             ),
             AutoRoute(
               path: "album/:id",
@@ -219,11 +216,6 @@ class AppRouter extends RootStackRouter {
         AutoRoute(
           path: "/getting-started",
           page: GettingStartedRoute.page,
-          // parentNavigatorKey: rootNavigatorKey,
-        ),
-        AutoRoute(
-          path: "/login",
-          page: WebViewLoginRoute.page,
           // parentNavigatorKey: rootNavigatorKey,
         ),
         AutoRoute(

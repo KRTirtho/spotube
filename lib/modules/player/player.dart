@@ -9,6 +9,7 @@ import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/framework/app_pop_scope.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/modules/player/player_actions.dart';
 import 'package:spotube/modules/player/player_controls.dart';
 import 'package:spotube/modules/player/volume_slider.dart';
@@ -16,15 +17,11 @@ import 'package:spotube/components/dialogs/track_details_dialog.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
-import 'package:spotube/models/local_track.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/server/active_sourced_track.dart';
+import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/volume_provider.dart';
 import 'package:spotube/services/sourced_track/sources/youtube.dart';
 
@@ -42,13 +39,12 @@ class PlayerView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
-    final auth = ref.watch(authenticationProvider);
-    final sourcedCurrentTrack = ref.watch(activeSourcedTrackProvider);
+    final sourcedCurrentTrack = ref.watch(activeTrackSourcesProvider);
     final currentActiveTrack =
         ref.watch(audioPlayerProvider.select((s) => s.activeTrack));
-    final currentTrack = sourcedCurrentTrack ?? currentActiveTrack;
-    final isLocalTrack = currentTrack is LocalTrack;
-    final mediaQuery = MediaQuery.of(context);
+    final currentActiveTrackSource = sourcedCurrentTrack.asData?.value?.source;
+    final isLocalTrack = currentActiveTrack is SpotubeLocalTrackObject;
+    final mediaQuery = MediaQuery.sizeOf(context);
 
     final shouldHide = useState(true);
 
@@ -70,10 +66,10 @@ class PlayerView extends HookConsumerWidget {
     }, [mediaQuery.lgAndUp]);
 
     String albumArt = useMemoized(
-      () => (currentTrack?.album?.images).asUrlString(
+      () => (currentActiveTrack?.album.images).asUrlString(
         placeholder: ImagePlaceholder.albumArt,
       ),
-      [currentTrack?.album?.images],
+      [currentActiveTrack?.album.images],
     );
 
     useEffect(() {
@@ -101,63 +97,72 @@ class PlayerView extends HookConsumerWidget {
           backgroundColor: Colors.transparent,
           headers: [
             SafeArea(
+              bottom: false,
               child: TitleBar(
                 surfaceOpacity: 0,
                 surfaceBlur: 0,
                 leading: [
                   IconButton.ghost(
-                    icon: const Icon(SpotubeIcons.angleDown, size: 18),
+                    size: const ButtonSize(1.2),
+                    icon: const Icon(SpotubeIcons.angleDown),
                     onPressed: panelController.close,
                   )
                 ],
                 trailing: [
-                  if (currentTrack is YoutubeSourcedTrack)
+                  if (currentActiveTrackSource is YoutubeSourcedTrack)
                     TextButton(
-                      leading: Assets.logos.songlinkTransparent.image(
+                      size: const ButtonSize(1.2),
+                      leading: Assets.images.logos.songlinkTransparent.image(
                         width: 20,
                         height: 20,
                         color: theme.colorScheme.foreground,
                       ),
                       onPressed: () {
-                        final url = "https://song.link/s/${currentTrack.id}";
+                        final url =
+                            "https://song.link/s/${currentActiveTrack?.id}";
 
                         launchUrlString(url);
                       },
                       child: Text(context.l10n.song_link),
-                    ),
-                  Tooltip(
-                    tooltip: TooltipContainer(
-                      child: Text(context.l10n.details),
-                    ),
-                    child: IconButton.ghost(
-                      icon: const Icon(SpotubeIcons.info, size: 18),
-                      onPressed: currentTrack == null
-                          ? null
-                          : () {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return TrackDetailsDialog(
-                                      track: currentTrack,
-                                    );
-                                  });
-                            },
-                    ),
-                  ),
-                  Tooltip(
-                    tooltip: TooltipContainer(
-                      child: Text(context.l10n.lyrics),
-                    ),
-                    child: IconButton.ghost(
-                      icon: const Icon(SpotubeIcons.lyrics, size: 18),
-                      onPressed: currentTrack == null
-                          ? null
-                          : () {
-                              context.pushRoute(const PlayerLyricsRoute());
-                            },
-                    ),
-                  ),
-                ],
+),
+if (!isLocalTrack) ...[
+  Tooltip(
+    tooltip: TooltipContainer(
+      child: Text(context.l10n.details),
+    ).call,
+    child: IconButton.ghost(
+      size: const ButtonSize(1.2),
+      icon: const Icon(SpotubeIcons.info),
+      onPressed: currentActiveTrackSource == null
+          ? null
+          : () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return TrackDetailsDialog(
+                    track: currentActiveTrack as SpotubeFullTrackObject,
+                  );
+                },
+              );
+            },
+    ),
+  ),
+  Tooltip(
+    tooltip: TooltipContainer(
+      child: Text(context.l10n.lyrics),
+    ),
+    child: IconButton.ghost(
+      icon: const Icon(SpotubeIcons.lyrics, size: 18),
+      onPressed: currentTrack == null
+          ? null
+          : () {
+              context.pushRoute(const PlayerLyricsRoute());
+            },
+    ),
+  ),
+],
+],
+
               ),
             ),
           ],
@@ -186,7 +191,7 @@ class PlayerView extends HookConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                       child: UniversalImage(
                         path: albumArt,
-                        placeholder: Assets.albumPlaceholder.path,
+                        placeholder: Assets.images.albumPlaceholder.path,
                         fit: BoxFit.cover,
                       ),
                     ),
@@ -199,7 +204,7 @@ class PlayerView extends HookConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         AutoSizeText(
-                          currentTrack?.name ?? context.l10n.not_playing,
+                          currentActiveTrack?.name ?? context.l10n.not_playing,
                           style: const TextStyle(fontSize: 22),
                           maxFontSize: 22,
                           maxLines: 1,
@@ -207,13 +212,13 @@ class PlayerView extends HookConsumerWidget {
                         ),
                         if (isLocalTrack)
                           Text(
-                            currentTrack.artists?.asString() ?? "",
+                            currentActiveTrack.artists.asString(),
                             style: theme.typography.normal
                                 .copyWith(fontWeight: FontWeight.bold),
                           )
                         else
                           ArtistLink(
-                            artists: currentTrack?.artists ?? [],
+                            artists: currentActiveTrack?.artists ?? [],
                             textStyle: theme.typography.normal
                                 .copyWith(fontWeight: FontWeight.bold),
                             onRouteChange: (route) {
@@ -221,7 +226,9 @@ class PlayerView extends HookConsumerWidget {
                               context.router.navigateNamed(route);
                             },
                             onOverflowArtistClick: () => context.navigateTo(
-                              TrackRoute(trackId: currentTrack!.id!),
+                              TrackRoute(
+                                trackId: currentActiveTrack!.id,
+                              ),
                             ),
                           ),
                       ],
@@ -248,17 +255,16 @@ class PlayerView extends HookConsumerWidget {
                           },
                         ),
                       ),
-                      if (auth.asData?.value != null) const SizedBox(width: 10),
-                      if (auth.asData?.value != null)
-                        Expanded(
-                          child: OutlineButton(
-                            leading: const Icon(SpotubeIcons.music),
-                            child: Text(context.l10n.lyrics),
-                            onPressed: () {
-                              context.pushRoute(const PlayerLyricsRoute());
-                            },
-                          ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: OutlineButton(
+                          leading: const Icon(SpotubeIcons.music),
+                          child: Text(context.l10n.lyrics),
+                          onPressed: () {
+                            context.pushRoute(const PlayerLyricsRoute());
+                          },
                         ),
+                      ),
                       const SizedBox(width: 10),
                     ],
                   ),

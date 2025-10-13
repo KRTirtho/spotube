@@ -1,18 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Consumer;
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/image.dart';
 import 'package:spotube/models/database/database.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/provider/metadata_plugin/artist/artist.dart';
+import 'package:spotube/provider/metadata_plugin/core/auth.dart';
+import 'package:spotube/provider/metadata_plugin/library/artists.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 
 class ArtistPageHeader extends HookConsumerWidget {
@@ -21,16 +22,16 @@ class ArtistPageHeader extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final artistQuery = ref.watch(artistProvider(artistId));
+    final artistQuery = ref.watch(metadataPluginArtistProvider(artistId));
     final artist = artistQuery.asData?.value ?? FakeData.artist;
 
     final theme = Theme.of(context);
     final ThemeData(:typography) = theme;
 
-    final auth = ref.watch(authenticationProvider);
+    final authenticated = ref.watch(metadataPluginAuthenticatedProvider);
     ref.watch(blacklistProvider);
     final blacklistNotifier = ref.watch(blacklistProvider.notifier);
-    final isBlackListed = blacklistNotifier.containsArtist(artist);
+    final isBlackListed = blacklistNotifier.containsArtist(artist.id);
 
     final image = artist.images.asUrlString(
       placeholder: ImagePlaceholder.artist,
@@ -40,15 +41,14 @@ class ArtistPageHeader extends HookConsumerWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (auth.asData?.value != null)
+          if (authenticated.asData?.value == true)
             Consumer(
               builder: (context, ref, _) {
                 final isFollowingQuery = ref.watch(
-                  artistIsFollowingProvider(artist.id!),
+                  metadataPluginIsSavedArtistProvider(artist.id),
                 );
-                final followingArtistNotifier = ref.watch(
-                  followedArtistsProvider.notifier,
-                );
+                final followingArtistNotifier =
+                    ref.watch(metadataPluginSavedArtistsProvider.notifier);
 
                 return switch (isFollowingQuery) {
                   AsyncData(value: final following) => Builder(
@@ -57,7 +57,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                           return Button.outline(
                             onPressed: () async {
                               await followingArtistNotifier
-                                  .removeArtists([artist.id!]);
+                                  .removeFavorite([artist]);
                             },
                             child: Text(context.l10n.following),
                           );
@@ -65,8 +65,7 @@ class ArtistPageHeader extends HookConsumerWidget {
 
                         return Button.primary(
                           onPressed: () async {
-                            await followingArtistNotifier
-                                .saveArtists([artist.id!]);
+                            await followingArtistNotifier.addFavorite([artist]);
                           },
                           child: Text(context.l10n.follow),
                         );
@@ -84,7 +83,7 @@ class ArtistPageHeader extends HookConsumerWidget {
           Tooltip(
             tooltip: TooltipContainer(
               child: Text(context.l10n.add_artist_to_blacklist),
-            ),
+            ).call,
             child: IconButton(
               icon: Icon(
                 SpotubeIcons.userRemove,
@@ -95,12 +94,12 @@ class ArtistPageHeader extends HookConsumerWidget {
                   : ButtonVariance.ghost,
               onPressed: () async {
                 if (isBlackListed) {
-                  await ref.read(blacklistProvider.notifier).remove(artist.id!);
+                  await ref.read(blacklistProvider.notifier).remove(artist.id);
                 } else {
                   await ref.read(blacklistProvider.notifier).add(
                         BlacklistTableCompanion.insert(
-                          name: artist.name!,
-                          elementId: artist.id!,
+                          name: artist.name,
+                          elementId: artist.id,
                           elementType: BlacklistedType.artist,
                         ),
                       );
@@ -111,13 +110,11 @@ class ArtistPageHeader extends HookConsumerWidget {
           IconButton.ghost(
             icon: const Icon(SpotubeIcons.share),
             onPressed: () async {
-              if (artist.externalUrls?.spotify != null) {
-                await Clipboard.setData(
-                  ClipboardData(
-                    text: artist.externalUrls!.spotify!,
-                  ),
-                );
-              }
+              await Clipboard.setData(
+                ClipboardData(
+                  text: artist.externalUri,
+                ),
+              );
 
               if (!context.mounted) return;
 
@@ -185,7 +182,7 @@ class ArtistPageHeader extends HookConsumerWidget {
                           const Gap(10),
                           Flexible(
                             child: AutoSizeText(
-                              artist.name!,
+                              artist.name,
                               style: constrains.smAndDown
                                   ? typography.h4
                                   : typography.h3,
@@ -198,9 +195,11 @@ class ArtistPageHeader extends HookConsumerWidget {
                           Flexible(
                             child: AutoSizeText(
                               context.l10n.followers(
-                                PrimitiveUtils.toReadableNumber(
-                                  artist.followers!.total!.toDouble(),
-                                ),
+                                artist.followers == null
+                                    ? double.infinity
+                                    : PrimitiveUtils.toReadableNumber(
+                                        artist.followers!.toDouble(),
+                                      ),
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,

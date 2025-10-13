@@ -1,9 +1,8 @@
 <div align="center">
-  <img width="600" src="assets/spotube_banner.png" alt="Spotube Logo">
+  <img width="600" src="assets/branding/spotube_banner.png" alt="Spotube Logo">
 
-An open source, cross-platform Spotify client compatible across multiple platforms<br />
-utilizing Spotify's data API and YouTube, Piped.video or JioSaavn as an audio source,<br />
-eliminating the need for Spotify Premium
+A cross-platform extensible open-source music streaming platform.<br>
+Bring your own music metadata/playlist with plugins created by community or by yourself. A small step towards the decentralized music streaming era!
 
 Btw it's not just another Electron app 😉
 
@@ -19,31 +18,24 @@ Btw it's not just another Electron app 😉
 
 ---
 
-![Spotube Desktop](assets/spotube-screenshot.png)
+![Spotube Desktop](assets/branding/spotube-screenshot.png)
 
-![Spotube Mobile](assets/mobile-screenshots/combined.png)
+![Spotube Mobile](assets/branding/mobile-screenshots/combined.jpg)
 
 </div>
 
 ## 🌃 Features
 
-- 🚫 No ads, thanks to the use of public & free Spotify and YT Music APIs¹
-- ⬇️ Freely downloadable tracks
-- 🖥️ 📱 Cross-platform support
-- 🪶 Small size & less data usage
-- 🕵️ Anonymous/guest login
-- 🕒 Time synced lyrics
-- ✋ No telemetry, diagnostics or user data collection
-- 🚀 Native performance
-- 📖 Open source/libre software
-- 🔉 Playback control is done locally, not on the server
-
-**¹** It is still **recommended** to support creators by engaging with their YouTube channels/Spotify tracks (or preferably by buying their merch/concert tickets/physical media).
-
-### ❌ Unsupported features
-
-- 🗣️ **Spotify Shows & Podcasts:** Shows and Podcasts will <ins>**never be supported**</ins> because the audio tracks are <ins>_only_</ins> available on Spotify and accessing them would require Spotify Premium.
-- 🎧 **Spotify Listen Along:** [Coming soon!](https://github.com/KRTirtho/spotube/issues/8)
+- 🧩 Plugin powered, supports any platform or custom music service through plugins.
+- 🗺️ Community driven plugins for popular platforms or create your own.
+- ⬇️ Freely downloadable tracks with tagged metadata.
+- 🖥️ 📱 Cross-platform support.
+- 🪶 Small size & less data usage.
+- 🕒 Time synced lyrics regardless of the plugin support.
+- ✋ No telemetry, diagnostics or user data collection.
+- 🚀 Native performance.
+- 📖 Open source/libre software.
+- 🔉 Playback control is done locally, not on the server.
 
 ## 📜 ⬇️ Installation guide
 
@@ -66,17 +58,13 @@ This handy table lists all the methods you can use to install Spotube:
     <td>MacOS</td>
     <td>
       <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-macos-universal.dmg">
-        <img width="220" alt="MacOS Download" src="https://reachify.io/wp-content/uploads/2018/09/mac-download-button-1.png">
+        <img width="220" alt="MacOS Download" src="https://memory-map.com/wp-content/uploads/download-mac-OS-01.svg">
       </a>
     </td>
   </tr>
   <tr>
     <td>Android</td>
     <td>
-      <a href="https://play.google.com/store/apps/details?id=oss.krtirtho.spotube">
-        <img width="220" alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png">
-      </a>
-      <br>
       <a href="https://github.com/KRTirtho/spotube/releases/latest/download/Spotube-android-all-arch.apk">
         <img width="220" alt="APK download" src="https://user-images.githubusercontent.com/114044633/223920025-83687de0-e463-4c5d-8122-e06e4bb7d40c.png">
       </a>
@@ -189,9 +177,7 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 ## 👥 The Spotube team
 
 - [Kingkor Roy Tirtho](https://github.com/KRTirtho) - The Founder, Maintainer and Lead Developer
-- [RaptaG](https://github.com/RaptaG) - The GitHub Moderator and Community Manager
 - [Owen Connor](https://github.com/owencz1998) - The Cool Discord Moderator
-- [Meenbeese](https://github.com/meenbeese) - The Android Developer
 - [Piotr Rogowski](https://github.com/karniv00l) - The MacOS Developer
 - [Rusty Apple](https://github.com/RustyApple) - The Mysterious Unknown Guy
 
@@ -199,7 +185,7 @@ You can compile Spotube's source code by [following these instructions](CONTRIBU
 
 Spotube is open source and licensed under the [BSD-4-Clause](/LICENSE) License.
 
-If you are concerned, you can [read the reason of choosing this license](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
+If you are curious, you can [read the reason of choosing this license](https://dev.to/krtirtho/choosing-open-source-license-wisely-1m3p).
 
 <details>
   <summary>
@@ -210,15 +196,14 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 
 1. [Flutter](https://flutter.dev) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
 1. [MPV](https://mpv.io) - mpv is a free (as in freedom) media player for the command line. It supports a wide variety of media file formats, audio and video codecs, and subtitle types.
-1. [Spotify API](https://developer.spotify.com/documentation/web-api) - The Spotify Web API is a RESTful API that provides access to Spotify data
+1. [Musicbrainz](https://musicbrainz.org) - MusicBrainz is a MetaBrainz project that aims to create a collaborative music database that is similar to the freedb project.
+1. [Listenbrainz](https://listenbrainz.org) - ListenBrainz is a open-source project by the MetaBrainz Foundation that allows users to crowdsource and publicly store their digital music listening data.
 1. [Piped](https://piped-docs.kavin.rocks/) - Piped is a privacy friendly alternative YouTube frontend, which is efficient and scalable by design.
 1. [Invidious](https://invidious.io/) - Invidious is an open source alternative front-end to YouTube.
-1. [YouTube](https://youtube.com/) - YouTube is an American online video-sharing platform headquartered in San Bruno, California. Three former PayPal employees—Chad Hurley, Steve Chen, and Jawed Karim—created the service in February 2005
-   1. [yt-dlp](https://github.com/yt-dlp/yt-dlp) - A feature-rich command-line audio/video downloader
-   1. [NewPipeExtractor](https://github.com/TeamNewPipe/NewPipeExtractor) - NewPipe's core library for extracting data from streaming sites
-1. [JioSaavn](https://www.jiosaavn.com) - JioSaavn is an Indian online music streaming service and a digital distributor of Bollywood, English and other regional Indian music across the world. Since it was founded in 2007 as Saavn, the company has acquired rights to over 5 crore (50 million) music tracks in 15 languages
+1. [yt-dlp](https://github.com/yt-dlp/yt-dlp) - A feature-rich command-line audio/video downloader.
+1. [NewPipeExtractor](https://github.com/TeamNewPipe/NewPipeExtractor) - NewPipe's core library for extracting data from streaming sites.
 1. [SongLink](https://song.link) - SongLink is a free smart link service that helps you share music with your audience. It's a one-stop-shop for creating smart links for music, podcasts, and other audio content
-1. [LRCLib](https://lrclib.net/) - A public synced lyric API
+1. [LRCLib](https://lrclib.net/) - A public synced lyric API.
 1. [Linux](https://www.linux.org) - Linux is a family of open-source Unix-like operating systems based on the Linux kernel, an operating system kernel first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution
 1. [AUR](https://aur.archlinux.org) - AUR stands for Arch User Repository. It is a community-driven repository for Arch-based Linux distributions users
 1. [Flatpak](https://flatpak.org) - Flatpak is a utility for software deployment and package management for Linux
@@ -304,7 +289,6 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [sliding_up_panel](https://github.com/akshathjain/sliding_up_panel) - A draggable Flutter widget that makes implementing a SlidingUpPanel much easier!
 1. [sliver_tools](https://github.com/Kavantix) - A set of useful sliver tools that are missing from the flutter framework
 1. [smtc_windows](https://pub.dev/packages/smtc_windows) - Windows `SystemMediaTransportControls` implementation for Flutter giving access to Windows OS Media Control applet.
-1. [spotify](https://github.com/rinukkusu/spotify-dart) - An incomplete dart library for interfacing with the Spotify Web API.
 1. [sqlite3](https://github.com/simolus3/sqlite3.dart/tree/main/sqlite3) - Provides lightweight yet convenient bindings to SQLite by using dart:ffi
 1. [sqlite3_flutter_libs](https://github.com/simolus3/sqlite3.dart/tree/main/sqlite3_flutter_libs) - Flutter plugin to include native sqlite3 libraries with your app
 1. [stroke_text](https://github.com/MohamedAbd0/stroke_text) - A Simple Flutter plugin for applying stroke (border) style to a text widget
@@ -325,8 +309,9 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [youtube_explode_dart](https://github.com/Hexer10/youtube_explode_dart) - A port in dart of the youtube explode library. Supports several API functions without the need of Youtube API Key.
 1. [http_parser](https://pub.dev/packages/http_parser) - A platform-independent package for parsing and serializing HTTP formats.
 1. [collection](https://pub.dev/packages/collection) - Collections and utilities functions and classes related to collections.
+1. [otp_util](https://github.com/dushiling) - otp_util is a dart package to generate and verify one-time passwords,it It provides two methods TOPT and HOTP.They are Time-based OTPs and Counter-based OTPs.
+1. [dio_http2_adapter](https://github.com/cfug/dio) - An adapter that combines HTTP/2 and dio. Supports reusing connections, header compression, etc.
 1. [build_runner](https://pub.dev/packages/build_runner) - A build system for Dart code generation and modular compilation.
-1. [crypto](https://pub.dev/packages/crypto) - Implementations of SHA, MD5, and HMAC cryptographic functions.
 1. [envied_generator](https://github.com/petercinibulk/envied) - Generator for the Envied package. See https://pub.dev/packages/envied.
 1. [flutter_gen_runner](https://github.com/FlutterGen/flutter_gen) - The Flutter code generator for your assets, fonts, colors, … — Get rid of all String-based APIs.
 1. [flutter_launcher_icons](https://github.com/fluttercommunity/flutter_launcher_icons) - A package which simplifies the task of updating your Flutter app's launcher icon.
@@ -349,4 +334,4 @@ If you are concerned, you can [read the reason of choosing this license](https:/
 1. [flutter_new_pipe_extractor](https://github.com/KRTirtho/flutter_new_pipe_extractor) - NewPipeExtractor binding for Flutter (Android only)
 </details>
 
-<div align="center"><h4>© Copyright Spotube 2024</h4></div>
+<div align="center"><h4>© Copyright Spotube 2025</h4></div>

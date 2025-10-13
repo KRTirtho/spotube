@@ -58,10 +58,10 @@ class UniversalImage extends HookWidget {
         ),
         height: height,
         width: width,
-        placeholder: AssetImage(placeholder ?? Assets.placeholder.path),
+        placeholder: AssetImage(placeholder ?? Assets.images.placeholder.path),
         imageErrorBuilder: (context, error, stackTrace) {
           return Image.asset(
-            placeholder ?? Assets.placeholder.path,
+            placeholder ?? Assets.images.placeholder.path,
             width: width,
             height: height,
             cacheHeight: height?.toInt(),
@@ -82,7 +82,7 @@ class UniversalImage extends HookWidget {
         fit: fit,
         errorBuilder: (context, error, stackTrace) {
           return Image.asset(
-            placeholder ?? Assets.placeholder.path,
+            placeholder ?? Assets.images.placeholder.path,
             width: width,
             height: height,
             cacheHeight: height?.toInt(),
@@ -102,7 +102,7 @@ class UniversalImage extends HookWidget {
         fit: fit,
         errorBuilder: (context, error, stackTrace) {
           return Image.asset(
-            placeholder ?? Assets.placeholder.path,
+            placeholder ?? Assets.images.placeholder.path,
             width: width,
             height: height,
             cacheHeight: height?.toInt(),
@@ -123,7 +123,7 @@ class UniversalImage extends HookWidget {
       fit: fit,
       errorBuilder: (context, error, stackTrace) {
         return Image.asset(
-          placeholder ?? Assets.placeholder.path,
+          placeholder ?? Assets.images.placeholder.path,
           width: width,
           height: height,
           cacheHeight: height?.toInt(),

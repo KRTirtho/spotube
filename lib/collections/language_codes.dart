@@ -133,9 +133,13 @@ abstract class LanguageLocals {
     //   name: "Chichewa",
     //   nativeName: "chiCheŵa",
     // ),
-    "zh": const ISOLanguageName(
+    "zh_CN": const ISOLanguageName(
       name: "Simplified Chinese",
       nativeName: "简体中文",
+    ),
+    "zh_TW": const ISOLanguageName(
+      name: "Traditional Chinese",
+      nativeName: "繁體中文（台灣）",
     ),
     // "cv": const ISOLanguageName(
     //   name: "Chuvash",
@@ -625,10 +629,10 @@ abstract class LanguageLocals {
     //   name: "Swedish",
     //   nativeName: "svenska",
     // ),
-    // "ta": const ISOLanguageName(
-    //   name: "Tamil",
-    //   nativeName: "தமிழ்",
-    // ),
+    "ta": const ISOLanguageName(
+      name: "Tamil",
+      nativeName: "தமிழ்",
+    ),
     // "te": const ISOLanguageName(
     //   name: "Telugu",
     //   nativeName: "తెలుగు",
@@ -653,10 +657,10 @@ abstract class LanguageLocals {
     //   name: "Turkmen",
     //   nativeName: "Türkmen, Түркмен",
     // ),
-    // "tl": const ISOLanguageName(
-    //   name: "Tagalog",
-    //   nativeName: "Wikang Tagalog, ᜏᜒᜃᜅ᜔ ᜆᜄᜎᜓᜄ᜔",
-    // ),
+    "tl": const ISOLanguageName(
+      name: "Tagalog",
+      nativeName: "Wikang Tagalog",
+    ),
     // "tn": const ISOLanguageName(
     //   name: "Tswana",
     //   nativeName: "Setswana",
@@ -747,9 +751,13 @@ abstract class LanguageLocals {
     // )
   };
 
-  static ISOLanguageName getDisplayLanguage(key) {
+  static ISOLanguageName getDisplayLanguage(String key, String? countryCode) {
     if (isoLangs.containsKey(key)) {
       return isoLangs[key]!;
+    } else if (countryCode != null &&
+        countryCode.isNotEmpty &&
+        isoLangs.containsKey("${key}_$countryCode")) {
+      return isoLangs["${key}_$countryCode"]!;
     } else {
       throw Exception("Language key incorrect");
     }

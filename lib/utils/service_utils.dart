@@ -1,12 +1,12 @@
+import 'dart:math';
 import 'dart:typed_data';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:html/dom.dart' hide Text;
 import 'package:shadcn_flutter/shadcn_flutter.dart' hide Element;
-import 'package:spotify/spotify.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/modules/root/update_dialog.dart';
 
@@ -27,6 +27,11 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotube/collections/env.dart';
 
 import 'package:version/version.dart';
+
+enum UserAgentDevice {
+  desktop,
+  mobile,
+}
 
 abstract class ServiceUtils {
   static final _englishMatcherRegex = RegExp(
@@ -64,9 +69,8 @@ abstract class ServiceUtils {
     }
 
     return "$title ${artists.map((e) => e.replaceAll(",", " ")).join(", ")}"
-        .toLowerCase()
         .replaceAll(RegExp(r"\s*\[[^\]]*]"), ' ')
-        .replaceAll(RegExp(r"\sfeat\.|\sft\."), ' ')
+        .replaceAll(RegExp(r"\sfeat\.|\sft\.", caseSensitive: false), ' ')
         .replaceAll(RegExp(r"\s+"), ' ')
         .trim();
   }
@@ -190,10 +194,9 @@ abstract class ServiceUtils {
 
   @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
   static Future<SubtitleSimple?> getTimedLyrics(SourcedTrack track) async {
-    final artistNames =
-        track.artists?.map((artist) => artist.name!).toList() ?? [];
+    final artistNames = track.query.artists;
     final query = getTitle(
-      track.name!,
+      track.query.title,
       artists: artistNames,
     );
 
@@ -212,13 +215,11 @@ abstract class ServiceUtils {
     final rateSortedResults = results.map((result) {
       final title = result.text.trim().toLowerCase();
       int points = 0;
-      final hasAllArtists = track.artists
-              ?.map((artist) => artist.name!)
-              .every((artist) => title.contains(artist.toLowerCase())) ??
-          false;
-      final hasTrackName = title.contains(track.name!.toLowerCase());
+      final hasAllArtists = track.query.artists
+          .every((artist) => title.contains(artist.toLowerCase()));
+      final hasTrackName = title.contains(track.query.title.toLowerCase());
       final isNotLive = !PrimitiveUtils.containsTextInBracket(title, "live");
-      final exactYtMatch = title == track.sourceInfo.title.toLowerCase();
+      final exactYtMatch = title == track.info.title.toLowerCase();
       if (exactYtMatch) points = 7;
       for (final criteria in [hasTrackName, hasAllArtists, isNotLive]) {
         if (criteria) points++;
@@ -277,46 +278,39 @@ abstract class ServiceUtils {
     return subtitle;
   }
 
-  static DateTime parseSpotifyAlbumDate(AlbumSimple? album) {
-    if (album == null || album.releaseDate == null) {
+  static DateTime parseSpotifyAlbumDate(SpotubeFullAlbumObject? album) {
+    if (album == null) {
       return DateTime.parse("1975-01-01");
     }
 
-    switch (album.releaseDatePrecision ?? DatePrecision.year) {
-      case DatePrecision.day:
-        return DateTime.parse(album.releaseDate!);
-      case DatePrecision.month:
-        return DateTime.parse("${album.releaseDate}-01");
-      case DatePrecision.year:
-        return DateTime.parse("${album.releaseDate}-01-01");
-    }
+    return DateTime.parse(album.releaseDate);
   }
 
-  static List<T> sortTracks<T extends Track>(List<T> tracks, SortBy sortBy) {
+  static List<T> sortTracks<T extends SpotubeTrackObject>(
+      List<T> tracks, SortBy sortBy) {
     if (sortBy == SortBy.none) return tracks;
     return List<T>.from(tracks)
       ..sort((a, b) {
         switch (sortBy) {
           case SortBy.ascending:
-            return a.name?.compareTo(b.name ?? "") ?? 0;
+            return a.name.compareTo(b.name);
           case SortBy.descending:
-            return b.name?.compareTo(a.name ?? "") ?? 0;
-          case SortBy.newest:
-            final aDate = parseSpotifyAlbumDate(a.album);
-            final bDate = parseSpotifyAlbumDate(b.album);
-            return bDate.compareTo(aDate);
-          case SortBy.oldest:
-            final aDate = parseSpotifyAlbumDate(a.album);
-            final bDate = parseSpotifyAlbumDate(b.album);
-            return aDate.compareTo(bDate);
+            return b.name.compareTo(a.name);
+          // TODO: We'll figure this one out later :')
+          // case SortBy.newest:
+          //   final aDate = parseSpotifyAlbumDate(a.album);
+          //   final bDate = parseSpotifyAlbumDate(b.album);
+          //   return bDate.compareTo(aDate);
+          // case SortBy.oldest:
+          //   final aDate = parseSpotifyAlbumDate(a.album);
+          //   final bDate = parseSpotifyAlbumDate(b.album);
+          // return aDate.compareTo(bDate);
           case SortBy.duration:
-            return a.durationMs?.compareTo(b.durationMs ?? 0) ?? 0;
+            return a.durationMs.compareTo(b.durationMs);
           case SortBy.artist:
-            return a.artists?.first.name
-                    ?.compareTo(b.artists?.first.name ?? "") ??
-                0;
+            return a.artists.first.name.compareTo(b.artists.first.name);
           case SortBy.album:
-            return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
+            return a.album.name.compareTo(b.album.name);
           default:
             return 0;
         }
@@ -395,7 +389,6 @@ abstract class ServiceUtils {
     }
   }
 
-  /// Spotify Images are always JPEGs
   static Future<Uint8List?> downloadImage(
     String imageUrl,
   ) async {
@@ -416,5 +409,50 @@ abstract class ServiceUtils {
       AppLogger.reportError(e, stackTrace);
       return null;
     }
+  }
+
+  static int randomNumber(int min, int max) {
+    return min + Random().nextInt(max - min);
+  }
+
+  static String randomUserAgent(UserAgentDevice type) {
+    if (type == UserAgentDevice.desktop) {
+      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_${randomNumber(11, 15)}_${randomNumber(4, 9)}) AppleWebKit/${randomNumber(530, 537)}.${randomNumber(30, 37)} (KHTML, like Gecko) Chrome/${randomNumber(80, 105)}.0.${randomNumber(3000, 4500)}.${randomNumber(60, 125)} Safari/${randomNumber(530, 537)}.${randomNumber(30, 36)}";
+    } else {
+      return "Mozilla/5.0 (Linux; Android ${randomNumber(8, 13)}) AppleWebKit/${randomNumber(530, 537)}.${randomNumber(30, 36)} (KHTML, like Gecko) Chrome/${randomNumber(101, 116)}.0.${randomNumber(3000, 6000)}.${randomNumber(60, 125)} Mobile Safari/${randomNumber(530, 537)}.${randomNumber(30, 36)}";
+    }
+  }
+
+  static String sanitizeFilename(String input, {String replacement = ''}) {
+    final result = input
+        // illegalRe
+        .replaceAll(
+          RegExp(r'[\/\?<>\\:\*\|"]'),
+          replacement,
+        )
+        // controlRe
+        .replaceAll(
+          RegExp(
+            r'[\x00-\x1f\x80-\x9f]',
+          ),
+          replacement,
+        )
+        // reservedRe
+        .replaceFirst(
+          RegExp(r'^\.+$'),
+          replacement,
+        )
+        // windowsReservedRe
+        .replaceFirst(
+          RegExp(
+            r'^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$',
+            caseSensitive: false,
+          ),
+          replacement,
+        )
+        // windowsTrailingRe
+        .replaceFirst(RegExp(r'[\. ]+$'), replacement);
+
+    return result.length > 255 ? result.substring(0, 255) : result;
   }
 }

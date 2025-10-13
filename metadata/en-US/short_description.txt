@@ -1,1 +1,1 @@
-Lightweight & resource friendly spotify client without requiring Spotify Premium
+Lightweight & resource friendly music client

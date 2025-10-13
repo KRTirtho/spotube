@@ -15,6 +15,7 @@ import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/provider/volume_provider.dart';
+import 'package:spotube/utils/platform.dart';
 
 class PlayerControls extends HookConsumerWidget {
   final PaletteGenerator? palette;
@@ -58,6 +59,9 @@ class PlayerControls extends HookConsumerWidget {
         useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
     final theme = Theme.of(context);
 
+    final buttonSize =
+        kIsMobile ? const ButtonSize(1.5) : const ButtonSize(1.2);
+
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () {
@@ -99,7 +103,7 @@ class PlayerControls extends HookConsumerWidget {
                         Tooltip(
                           tooltip: TooltipContainer(
                             child: Text(context.l10n.slide_to_seek),
-                          ),
+                          ).call,
                           child: SizedBox(
                             width: mediaQuery.xlAndUp ? 600 : 500,
                             child: Slider(
@@ -157,11 +161,13 @@ class PlayerControls extends HookConsumerWidget {
                               ? context.l10n.unshuffle_playlist
                               : context.l10n.shuffle_playlist,
                         ),
-                      ),
+                      ).call,
                       child: IconButton(
+                        size: buttonSize,
                         icon: Icon(
                           SpotubeIcons.shuffle,
                           color: shuffled ? theme.colorScheme.primary : null,
+                          size: 22,
                         ),
                         variance: shuffled
                             ? ButtonVariance.secondary
@@ -180,8 +186,10 @@ class PlayerControls extends HookConsumerWidget {
                   }),
                   Tooltip(
                     tooltip: TooltipContainer(
-                        child: Text(context.l10n.previous_track)),
+                      child: Text(context.l10n.previous_track),
+                    ).call,
                     child: IconButton.ghost(
+                      size: buttonSize,
                       enabled: !isFetchingActiveTrack,
                       icon: const Icon(SpotubeIcons.skipBack),
                       onPressed: audioPlayer.skipToPrevious,
@@ -194,8 +202,9 @@ class PlayerControls extends HookConsumerWidget {
                             ? context.l10n.pause_playback
                             : context.l10n.resume_playback,
                       ),
-                    ),
+                    ).call,
                     child: IconButton.primary(
+                      size: buttonSize,
                       shape: ButtonShape.circle,
                       icon: isFetchingActiveTrack
                           ? const SizedBox(
@@ -216,8 +225,10 @@ class PlayerControls extends HookConsumerWidget {
                   ),
                   Tooltip(
                     tooltip:
-                        TooltipContainer(child: Text(context.l10n.next_track)),
+                        TooltipContainer(child: Text(context.l10n.next_track))
+                            .call,
                     child: IconButton.ghost(
+                      size: buttonSize,
                       icon: const Icon(SpotubeIcons.skipForward),
                       onPressed:
                           isFetchingActiveTrack ? null : audioPlayer.skipToNext,
@@ -236,8 +247,9 @@ class PlayerControls extends HookConsumerWidget {
                                   ? context.l10n.repeat_playlist
                                   : "",
                         ),
-                      ),
+                      ).call,
                       child: IconButton(
+                        size: buttonSize,
                         icon: Icon(
                           loopMode == PlaylistMode.single
                               ? SpotubeIcons.repeatOne

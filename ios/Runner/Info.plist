@@ -3,7 +3,7 @@
 <plist version="1.0">
   <dict>
     <key>CADisableMinimumFrameDurationOnPhone</key>
-    <true />
+    <true/>
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
@@ -25,34 +25,39 @@
     <key>CFBundleVersion</key>
     <string>$(FLUTTER_BUILD_NUMBER)</string>
     <key>LSRequiresIPhoneOS</key>
-    <true />
+    <true/>
+
     <key>NSAppTransportSecurity</key>
     <dict>
       <key>NSAllowsArbitraryLoads</key>
-      <true />
+      <true/>
       <key>NSAllowsArbitraryLoadsForMedia</key>
-      <true />
+      <true/>
     </dict>
+
     <key>NSCameraUsageDescription</key>
     <string>This app require access to the device camera</string>
     <key>NSMicrophoneUsageDescription</key>
     <string>This app does not require access to the device microphone</string>
     <key>NSPhotoLibraryUsageDescription</key>
     <string>This app require access to the photo library</string>
+
     <key>UIApplicationSupportsIndirectInputEvents</key>
-    <true />
+    <true/>
+
     <key>UIBackgroundModes</key>
     <array>
       <string>audio</string>
       <string>fetch</string>
       <string>remote-notification</string>
     </array>
+
     <key>UILaunchStoryboardName</key>
     <string>LaunchScreen</string>
     <key>UIMainStoryboardFile</key>
     <string>Main</string>
     <key>UIStatusBarHidden</key>
-    <false />
+    <false/>
     <key>UISupportedInterfaceOrientations</key>
     <array>
       <string>UIInterfaceOrientationPortrait</string>
@@ -67,26 +72,23 @@
       <string>UIInterfaceOrientationLandscapeRight</string>
     </array>
     <key>UIViewControllerBasedStatusBarAppearance</key>
-    <true />
+    <true/>
+
     <key>NSLocalNetworkUsageDescription</key>
     <string>To allow other devices on the network control playback of Spotube securely.</string>
     <key>NSBonjourServices</key>
     <array>
       <string>_spotube._tcp</string>
     </array>
+
     <key>UIFileSharingEnabled</key>
     <true/>
     <key>LSSupportsOpeningDocumentsInPlace</key>
     <true/>
     <key>UISupportsDocumentBrowser</key>
     <true/>
+
     <key>NSSiriUsageDescription</key>
     <string>This app uses Siri to control playback.</string>
-    <key>UIBackgroundModes</key>
-    <array>
-      <string>audio</string>
-      <string>fetch</string>
-      <string>remote-notification</string>
-    </array>
   </dict>
 </plist>

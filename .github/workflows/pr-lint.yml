@@ -4,7 +4,7 @@ on:
   pull_request:
 
 env:
-  FLUTTER_VERSION: 3.29.0
+  FLUTTER_VERSION: 3.35.2
 
 jobs:
   lint:
@@ -21,7 +21,6 @@ jobs:
         run: |
           envsubst < .env.example > .env
         env:
-          SPOTIFY_SECRETS: xxx:xxx
           ENABLE_UPDATE_CHECK: true
           LASTFM_API_KEY: xxx
           LASTFM_API_SECRET: xxx

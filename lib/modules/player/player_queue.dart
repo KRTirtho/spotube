@@ -7,16 +7,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/fallbacks/not_found.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 
@@ -24,7 +23,7 @@ class PlayerQueue extends HookConsumerWidget {
   final bool floating;
   final AudioPlayerState playlist;
 
-  final Future<void> Function(Track track) onJump;
+  final Future<void> Function(SpotubeTrackObject track) onJump;
   final Future<void> Function(String trackId) onRemove;
   final Future<void> Function(int oldIndex, int newIndex) onReorder;
   final Future<void> Function() onStop;
@@ -68,7 +67,7 @@ class PlayerQueue extends HookConsumerWidget {
         return tracks
             .map((e) => (
                   weightedRatio(
-                    '${e.name!} - ${e.artists?.asString() ?? ""}',
+                    '${e.name} - ${e.artists.asString()}',
                     searchText.value,
                   ),
                   e
@@ -161,7 +160,8 @@ class PlayerQueue extends HookConsumerWidget {
                           const SizedBox(width: 10),
                           Tooltip(
                             tooltip: TooltipContainer(
-                                child: Text(context.l10n.clear_all)),
+                                    child: Text(context.l10n.clear_all))
+                                .call,
                             child: IconButton.outline(
                               icon: const Icon(SpotubeIcons.playlistRemove),
                               onPressed: () {
@@ -244,7 +244,7 @@ class PlayerQueue extends HookConsumerWidget {
             icon: const Icon(SpotubeIcons.angleDown),
             onPressed: () {
               controller.scrollToIndex(
-                playlist.playlist.index,
+                playlist.currentIndex,
                 preferPosition: AutoScrollPosition.middle,
               );
             },

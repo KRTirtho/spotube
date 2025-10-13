@@ -71,7 +71,7 @@ class GettingStartedPage extends HookConsumerWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: Assets.bengaliPatternsBg.provider(),
+            image: Assets.images.bengaliPatternsBg.provider(),
             fit: BoxFit.cover,
           ),
         ),
