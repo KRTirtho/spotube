@@ -124,30 +124,45 @@ class PlayerView extends HookConsumerWidget {
                         launchUrlString(url);
                       },
                       child: Text(context.l10n.song_link),
-                    ),
-                  if (!isLocalTrack)
-                    Tooltip(
-                      tooltip: TooltipContainer(
-                        child: Text(context.l10n.details),
-                      ).call,
-                      child: IconButton.ghost(
-                        size: const ButtonSize(1.2),
-                        icon: const Icon(SpotubeIcons.info),
-                        onPressed: currentActiveTrackSource == null
-                            ? null
-                            : () {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return TrackDetailsDialog(
-                                        track: currentActiveTrack
-                                            as SpotubeFullTrackObject,
-                                      );
-                                    });
-                              },
-                      ),
-                    )
-                ],
+),
+if (!isLocalTrack) ...[
+  Tooltip(
+    tooltip: TooltipContainer(
+      child: Text(context.l10n.details),
+    ).call,
+    child: IconButton.ghost(
+      size: const ButtonSize(1.2),
+      icon: const Icon(SpotubeIcons.info),
+      onPressed: currentActiveTrackSource == null
+          ? null
+          : () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return TrackDetailsDialog(
+                    track: currentActiveTrack as SpotubeFullTrackObject,
+                  );
+                },
+              );
+            },
+    ),
+  ),
+  Tooltip(
+    tooltip: TooltipContainer(
+      child: Text(context.l10n.lyrics),
+    ),
+    child: IconButton.ghost(
+      icon: const Icon(SpotubeIcons.lyrics, size: 18),
+      onPressed: currentTrack == null
+          ? null
+          : () {
+              context.pushRoute(const PlayerLyricsRoute());
+            },
+    ),
+  ),
+],
+],
+
               ),
             ),
           ],

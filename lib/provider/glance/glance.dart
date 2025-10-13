@@ -101,6 +101,9 @@ Future<void> _sendActiveTrack(SpotubeTrackObject? track) async {
   };
 
   await _saveWidgetData("activeTrack", jsonEncode(data));
+  await _saveWidgetData("trackTitle", track.name);
+  await _saveWidgetData("artistName", track.artists?.map((artist) => artist.name).join(", "));
+  await _saveWidgetData("albumArt", cachedImage.path);
 
   await _updateWidget();
 }

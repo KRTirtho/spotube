@@ -154,6 +154,7 @@ class Spotube extends HookConsumerWidget {
     ref.listen(metadataPluginProvider, (_, __) {});
     ref.listen(serverProvider, (_, __) {});
     ref.listen(trayManagerProvider, (_, __) {});
+    ref.listen(glanceProvider, (_, __) {}); // Register the HomePlayerWidget for iOS
     ref.listen(metadataPluginUpdateCheckerProvider, (_, __) {});
 
     useFixWindowStretching();
