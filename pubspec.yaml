@@ -82,7 +82,7 @@ dependencies:
   image_picker: ^1.1.0
   intl: any
   invidious: ^0.1.2
-  jiosaavn: ^0.1.0
+  jiosaavn: ^0.1.1
   json_annotation: ^4.8.1
   local_notifier: ^0.1.6
   logger: ^2.0.2

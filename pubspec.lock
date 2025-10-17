@@ -1444,10 +1444,10 @@ packages:
     dependency: "direct main"
     description:
       name: jiosaavn
-      sha256: d32b4f43f26488f942f5d7d19d748a1f2664ae3d41ff9c7d50eeb81705174bd2
+      sha256: b6bde15c56398ebfd439825a64fb540a265773d1a518ba103e79988e13d16e1d
       url: "https://pub.dev"
     source: hosted
-    version: "0.1.0"
+    version: "0.1.1"
   jovial_misc:
     dependency: transitive
     description:
