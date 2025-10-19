@@ -14,6 +14,1502 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+SpotubeAudioSourceContainerPreset _$SpotubeAudioSourceContainerPresetFromJson(
+    Map<String, dynamic> json) {
+  switch (json['type']) {
+    case 'lossy':
+      return SpotubeAudioSourceContainerPresetLossy.fromJson(json);
+    case 'lossless':
+      return SpotubeAudioSourceContainerPresetLossless.fromJson(json);
+
+    default:
+      throw CheckedFromJsonException(
+          json,
+          'type',
+          'SpotubeAudioSourceContainerPreset',
+          'Invalid union type "${json['type']}"!');
+  }
+}
+
+/// @nodoc
+mixin _$SpotubeAudioSourceContainerPreset {
+  SpotubeMediaCompressionType get type => throw _privateConstructorUsedError;
+  String get name => throw _privateConstructorUsedError;
+  List<Object> get qualities => throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLossyContainerQuality> qualities)
+        lossy,
+    required TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLosslessContainerQuality> qualities)
+        lossless,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLossyContainerQuality> qualities)?
+        lossy,
+    TResult? Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLosslessContainerQuality> qualities)?
+        lossless,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLossyContainerQuality> qualities)?
+        lossy,
+    TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLosslessContainerQuality> qualities)?
+        lossless,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SpotubeAudioSourceContainerPresetLossy value)
+        lossy,
+    required TResult Function(SpotubeAudioSourceContainerPresetLossless value)
+        lossless,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SpotubeAudioSourceContainerPresetLossy value)? lossy,
+    TResult? Function(SpotubeAudioSourceContainerPresetLossless value)?
+        lossless,
+  }) =>
+      throw _privateConstructorUsedError;
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SpotubeAudioSourceContainerPresetLossy value)? lossy,
+    TResult Function(SpotubeAudioSourceContainerPresetLossless value)? lossless,
+    required TResult orElse(),
+  }) =>
+      throw _privateConstructorUsedError;
+
+  /// Serializes this SpotubeAudioSourceContainerPreset to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SpotubeAudioSourceContainerPreset
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SpotubeAudioSourceContainerPresetCopyWith<SpotubeAudioSourceContainerPreset>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SpotubeAudioSourceContainerPresetCopyWith<$Res> {
+  factory $SpotubeAudioSourceContainerPresetCopyWith(
+          SpotubeAudioSourceContainerPreset value,
+          $Res Function(SpotubeAudioSourceContainerPreset) then) =
+      _$SpotubeAudioSourceContainerPresetCopyWithImpl<$Res,
+          SpotubeAudioSourceContainerPreset>;
+  @useResult
+  $Res call({SpotubeMediaCompressionType type, String name});
+}
+
+/// @nodoc
+class _$SpotubeAudioSourceContainerPresetCopyWithImpl<$Res,
+        $Val extends SpotubeAudioSourceContainerPreset>
+    implements $SpotubeAudioSourceContainerPresetCopyWith<$Res> {
+  _$SpotubeAudioSourceContainerPresetCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SpotubeAudioSourceContainerPreset
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? type = null,
+    Object? name = null,
+  }) {
+    return _then(_value.copyWith(
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SpotubeMediaCompressionType,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SpotubeAudioSourceContainerPresetLossyImplCopyWith<$Res>
+    implements $SpotubeAudioSourceContainerPresetCopyWith<$Res> {
+  factory _$$SpotubeAudioSourceContainerPresetLossyImplCopyWith(
+          _$SpotubeAudioSourceContainerPresetLossyImpl value,
+          $Res Function(_$SpotubeAudioSourceContainerPresetLossyImpl) then) =
+      __$$SpotubeAudioSourceContainerPresetLossyImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {SpotubeMediaCompressionType type,
+      String name,
+      List<SpotubeAudioLossyContainerQuality> qualities});
+}
+
+/// @nodoc
+class __$$SpotubeAudioSourceContainerPresetLossyImplCopyWithImpl<$Res>
+    extends _$SpotubeAudioSourceContainerPresetCopyWithImpl<$Res,
+        _$SpotubeAudioSourceContainerPresetLossyImpl>
+    implements _$$SpotubeAudioSourceContainerPresetLossyImplCopyWith<$Res> {
+  __$$SpotubeAudioSourceContainerPresetLossyImplCopyWithImpl(
+      _$SpotubeAudioSourceContainerPresetLossyImpl _value,
+      $Res Function(_$SpotubeAudioSourceContainerPresetLossyImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SpotubeAudioSourceContainerPreset
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? type = null,
+    Object? name = null,
+    Object? qualities = null,
+  }) {
+    return _then(_$SpotubeAudioSourceContainerPresetLossyImpl(
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SpotubeMediaCompressionType,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      qualities: null == qualities
+          ? _value._qualities
+          : qualities // ignore: cast_nullable_to_non_nullable
+              as List<SpotubeAudioLossyContainerQuality>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SpotubeAudioSourceContainerPresetLossyImpl
+    implements SpotubeAudioSourceContainerPresetLossy {
+  _$SpotubeAudioSourceContainerPresetLossyImpl(
+      {required this.type,
+      required this.name,
+      required final List<SpotubeAudioLossyContainerQuality> qualities})
+      : _qualities = qualities;
+
+  factory _$SpotubeAudioSourceContainerPresetLossyImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$SpotubeAudioSourceContainerPresetLossyImplFromJson(json);
+
+  @override
+  final SpotubeMediaCompressionType type;
+  @override
+  final String name;
+  final List<SpotubeAudioLossyContainerQuality> _qualities;
+  @override
+  List<SpotubeAudioLossyContainerQuality> get qualities {
+    if (_qualities is EqualUnmodifiableListView) return _qualities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_qualities);
+  }
+
+  @override
+  String toString() {
+    return 'SpotubeAudioSourceContainerPreset.lossy(type: $type, name: $name, qualities: $qualities)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SpotubeAudioSourceContainerPresetLossyImpl &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.name, name) || other.name == name) &&
+            const DeepCollectionEquality()
+                .equals(other._qualities, _qualities));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, type, name, const DeepCollectionEquality().hash(_qualities));
+
+  /// Create a copy of SpotubeAudioSourceContainerPreset
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SpotubeAudioSourceContainerPresetLossyImplCopyWith<
+          _$SpotubeAudioSourceContainerPresetLossyImpl>
+      get copyWith =>
+          __$$SpotubeAudioSourceContainerPresetLossyImplCopyWithImpl<
+              _$SpotubeAudioSourceContainerPresetLossyImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLossyContainerQuality> qualities)
+        lossy,
+    required TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLosslessContainerQuality> qualities)
+        lossless,
+  }) {
+    return lossy(type, name, qualities);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLossyContainerQuality> qualities)?
+        lossy,
+    TResult? Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLosslessContainerQuality> qualities)?
+        lossless,
+  }) {
+    return lossy?.call(type, name, qualities);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLossyContainerQuality> qualities)?
+        lossy,
+    TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLosslessContainerQuality> qualities)?
+        lossless,
+    required TResult orElse(),
+  }) {
+    if (lossy != null) {
+      return lossy(type, name, qualities);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SpotubeAudioSourceContainerPresetLossy value)
+        lossy,
+    required TResult Function(SpotubeAudioSourceContainerPresetLossless value)
+        lossless,
+  }) {
+    return lossy(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SpotubeAudioSourceContainerPresetLossy value)? lossy,
+    TResult? Function(SpotubeAudioSourceContainerPresetLossless value)?
+        lossless,
+  }) {
+    return lossy?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SpotubeAudioSourceContainerPresetLossy value)? lossy,
+    TResult Function(SpotubeAudioSourceContainerPresetLossless value)? lossless,
+    required TResult orElse(),
+  }) {
+    if (lossy != null) {
+      return lossy(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SpotubeAudioSourceContainerPresetLossyImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class SpotubeAudioSourceContainerPresetLossy
+    implements SpotubeAudioSourceContainerPreset {
+  factory SpotubeAudioSourceContainerPresetLossy(
+          {required final SpotubeMediaCompressionType type,
+          required final String name,
+          required final List<SpotubeAudioLossyContainerQuality> qualities}) =
+      _$SpotubeAudioSourceContainerPresetLossyImpl;
+
+  factory SpotubeAudioSourceContainerPresetLossy.fromJson(
+          Map<String, dynamic> json) =
+      _$SpotubeAudioSourceContainerPresetLossyImpl.fromJson;
+
+  @override
+  SpotubeMediaCompressionType get type;
+  @override
+  String get name;
+  @override
+  List<SpotubeAudioLossyContainerQuality> get qualities;
+
+  /// Create a copy of SpotubeAudioSourceContainerPreset
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SpotubeAudioSourceContainerPresetLossyImplCopyWith<
+          _$SpotubeAudioSourceContainerPresetLossyImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$SpotubeAudioSourceContainerPresetLosslessImplCopyWith<$Res>
+    implements $SpotubeAudioSourceContainerPresetCopyWith<$Res> {
+  factory _$$SpotubeAudioSourceContainerPresetLosslessImplCopyWith(
+          _$SpotubeAudioSourceContainerPresetLosslessImpl value,
+          $Res Function(_$SpotubeAudioSourceContainerPresetLosslessImpl) then) =
+      __$$SpotubeAudioSourceContainerPresetLosslessImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {SpotubeMediaCompressionType type,
+      String name,
+      List<SpotubeAudioLosslessContainerQuality> qualities});
+}
+
+/// @nodoc
+class __$$SpotubeAudioSourceContainerPresetLosslessImplCopyWithImpl<$Res>
+    extends _$SpotubeAudioSourceContainerPresetCopyWithImpl<$Res,
+        _$SpotubeAudioSourceContainerPresetLosslessImpl>
+    implements _$$SpotubeAudioSourceContainerPresetLosslessImplCopyWith<$Res> {
+  __$$SpotubeAudioSourceContainerPresetLosslessImplCopyWithImpl(
+      _$SpotubeAudioSourceContainerPresetLosslessImpl _value,
+      $Res Function(_$SpotubeAudioSourceContainerPresetLosslessImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SpotubeAudioSourceContainerPreset
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? type = null,
+    Object? name = null,
+    Object? qualities = null,
+  }) {
+    return _then(_$SpotubeAudioSourceContainerPresetLosslessImpl(
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SpotubeMediaCompressionType,
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      qualities: null == qualities
+          ? _value._qualities
+          : qualities // ignore: cast_nullable_to_non_nullable
+              as List<SpotubeAudioLosslessContainerQuality>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SpotubeAudioSourceContainerPresetLosslessImpl
+    implements SpotubeAudioSourceContainerPresetLossless {
+  _$SpotubeAudioSourceContainerPresetLosslessImpl(
+      {required this.type,
+      required this.name,
+      required final List<SpotubeAudioLosslessContainerQuality> qualities})
+      : _qualities = qualities;
+
+  factory _$SpotubeAudioSourceContainerPresetLosslessImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$SpotubeAudioSourceContainerPresetLosslessImplFromJson(json);
+
+  @override
+  final SpotubeMediaCompressionType type;
+  @override
+  final String name;
+  final List<SpotubeAudioLosslessContainerQuality> _qualities;
+  @override
+  List<SpotubeAudioLosslessContainerQuality> get qualities {
+    if (_qualities is EqualUnmodifiableListView) return _qualities;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_qualities);
+  }
+
+  @override
+  String toString() {
+    return 'SpotubeAudioSourceContainerPreset.lossless(type: $type, name: $name, qualities: $qualities)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SpotubeAudioSourceContainerPresetLosslessImpl &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.name, name) || other.name == name) &&
+            const DeepCollectionEquality()
+                .equals(other._qualities, _qualities));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, type, name, const DeepCollectionEquality().hash(_qualities));
+
+  /// Create a copy of SpotubeAudioSourceContainerPreset
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SpotubeAudioSourceContainerPresetLosslessImplCopyWith<
+          _$SpotubeAudioSourceContainerPresetLosslessImpl>
+      get copyWith =>
+          __$$SpotubeAudioSourceContainerPresetLosslessImplCopyWithImpl<
+                  _$SpotubeAudioSourceContainerPresetLosslessImpl>(
+              this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLossyContainerQuality> qualities)
+        lossy,
+    required TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLosslessContainerQuality> qualities)
+        lossless,
+  }) {
+    return lossless(type, name, qualities);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLossyContainerQuality> qualities)?
+        lossy,
+    TResult? Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLosslessContainerQuality> qualities)?
+        lossless,
+  }) {
+    return lossless?.call(type, name, qualities);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLossyContainerQuality> qualities)?
+        lossy,
+    TResult Function(SpotubeMediaCompressionType type, String name,
+            List<SpotubeAudioLosslessContainerQuality> qualities)?
+        lossless,
+    required TResult orElse(),
+  }) {
+    if (lossless != null) {
+      return lossless(type, name, qualities);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(SpotubeAudioSourceContainerPresetLossy value)
+        lossy,
+    required TResult Function(SpotubeAudioSourceContainerPresetLossless value)
+        lossless,
+  }) {
+    return lossless(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(SpotubeAudioSourceContainerPresetLossy value)? lossy,
+    TResult? Function(SpotubeAudioSourceContainerPresetLossless value)?
+        lossless,
+  }) {
+    return lossless?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(SpotubeAudioSourceContainerPresetLossy value)? lossy,
+    TResult Function(SpotubeAudioSourceContainerPresetLossless value)? lossless,
+    required TResult orElse(),
+  }) {
+    if (lossless != null) {
+      return lossless(this);
+    }
+    return orElse();
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SpotubeAudioSourceContainerPresetLosslessImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class SpotubeAudioSourceContainerPresetLossless
+    implements SpotubeAudioSourceContainerPreset {
+  factory SpotubeAudioSourceContainerPresetLossless(
+      {required final SpotubeMediaCompressionType type,
+      required final String name,
+      required final List<SpotubeAudioLosslessContainerQuality>
+          qualities}) = _$SpotubeAudioSourceContainerPresetLosslessImpl;
+
+  factory SpotubeAudioSourceContainerPresetLossless.fromJson(
+          Map<String, dynamic> json) =
+      _$SpotubeAudioSourceContainerPresetLosslessImpl.fromJson;
+
+  @override
+  SpotubeMediaCompressionType get type;
+  @override
+  String get name;
+  @override
+  List<SpotubeAudioLosslessContainerQuality> get qualities;
+
+  /// Create a copy of SpotubeAudioSourceContainerPreset
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SpotubeAudioSourceContainerPresetLosslessImplCopyWith<
+          _$SpotubeAudioSourceContainerPresetLosslessImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+SpotubeAudioLossyContainerQuality _$SpotubeAudioLossyContainerQualityFromJson(
+    Map<String, dynamic> json) {
+  return _SpotubeAudioLossyContainerQuality.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SpotubeAudioLossyContainerQuality {
+  double get bitrate => throw _privateConstructorUsedError;
+
+  /// Serializes this SpotubeAudioLossyContainerQuality to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SpotubeAudioLossyContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SpotubeAudioLossyContainerQualityCopyWith<SpotubeAudioLossyContainerQuality>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SpotubeAudioLossyContainerQualityCopyWith<$Res> {
+  factory $SpotubeAudioLossyContainerQualityCopyWith(
+          SpotubeAudioLossyContainerQuality value,
+          $Res Function(SpotubeAudioLossyContainerQuality) then) =
+      _$SpotubeAudioLossyContainerQualityCopyWithImpl<$Res,
+          SpotubeAudioLossyContainerQuality>;
+  @useResult
+  $Res call({double bitrate});
+}
+
+/// @nodoc
+class _$SpotubeAudioLossyContainerQualityCopyWithImpl<$Res,
+        $Val extends SpotubeAudioLossyContainerQuality>
+    implements $SpotubeAudioLossyContainerQualityCopyWith<$Res> {
+  _$SpotubeAudioLossyContainerQualityCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SpotubeAudioLossyContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? bitrate = null,
+  }) {
+    return _then(_value.copyWith(
+      bitrate: null == bitrate
+          ? _value.bitrate
+          : bitrate // ignore: cast_nullable_to_non_nullable
+              as double,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SpotubeAudioLossyContainerQualityImplCopyWith<$Res>
+    implements $SpotubeAudioLossyContainerQualityCopyWith<$Res> {
+  factory _$$SpotubeAudioLossyContainerQualityImplCopyWith(
+          _$SpotubeAudioLossyContainerQualityImpl value,
+          $Res Function(_$SpotubeAudioLossyContainerQualityImpl) then) =
+      __$$SpotubeAudioLossyContainerQualityImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({double bitrate});
+}
+
+/// @nodoc
+class __$$SpotubeAudioLossyContainerQualityImplCopyWithImpl<$Res>
+    extends _$SpotubeAudioLossyContainerQualityCopyWithImpl<$Res,
+        _$SpotubeAudioLossyContainerQualityImpl>
+    implements _$$SpotubeAudioLossyContainerQualityImplCopyWith<$Res> {
+  __$$SpotubeAudioLossyContainerQualityImplCopyWithImpl(
+      _$SpotubeAudioLossyContainerQualityImpl _value,
+      $Res Function(_$SpotubeAudioLossyContainerQualityImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SpotubeAudioLossyContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? bitrate = null,
+  }) {
+    return _then(_$SpotubeAudioLossyContainerQualityImpl(
+      bitrate: null == bitrate
+          ? _value.bitrate
+          : bitrate // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SpotubeAudioLossyContainerQualityImpl
+    implements _SpotubeAudioLossyContainerQuality {
+  _$SpotubeAudioLossyContainerQualityImpl({required this.bitrate});
+
+  factory _$SpotubeAudioLossyContainerQualityImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$SpotubeAudioLossyContainerQualityImplFromJson(json);
+
+  @override
+  final double bitrate;
+
+  @override
+  String toString() {
+    return 'SpotubeAudioLossyContainerQuality(bitrate: $bitrate)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SpotubeAudioLossyContainerQualityImpl &&
+            (identical(other.bitrate, bitrate) || other.bitrate == bitrate));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, bitrate);
+
+  /// Create a copy of SpotubeAudioLossyContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SpotubeAudioLossyContainerQualityImplCopyWith<
+          _$SpotubeAudioLossyContainerQualityImpl>
+      get copyWith => __$$SpotubeAudioLossyContainerQualityImplCopyWithImpl<
+          _$SpotubeAudioLossyContainerQualityImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SpotubeAudioLossyContainerQualityImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SpotubeAudioLossyContainerQuality
+    implements SpotubeAudioLossyContainerQuality {
+  factory _SpotubeAudioLossyContainerQuality({required final double bitrate}) =
+      _$SpotubeAudioLossyContainerQualityImpl;
+
+  factory _SpotubeAudioLossyContainerQuality.fromJson(
+          Map<String, dynamic> json) =
+      _$SpotubeAudioLossyContainerQualityImpl.fromJson;
+
+  @override
+  double get bitrate;
+
+  /// Create a copy of SpotubeAudioLossyContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SpotubeAudioLossyContainerQualityImplCopyWith<
+          _$SpotubeAudioLossyContainerQualityImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+SpotubeAudioLosslessContainerQuality
+    _$SpotubeAudioLosslessContainerQualityFromJson(Map<String, dynamic> json) {
+  return _SpotubeAudioLosslessContainerQuality.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SpotubeAudioLosslessContainerQuality {
+  int get bitDepth => throw _privateConstructorUsedError;
+  double get sampleRate => throw _privateConstructorUsedError;
+
+  /// Serializes this SpotubeAudioLosslessContainerQuality to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SpotubeAudioLosslessContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SpotubeAudioLosslessContainerQualityCopyWith<
+          SpotubeAudioLosslessContainerQuality>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SpotubeAudioLosslessContainerQualityCopyWith<$Res> {
+  factory $SpotubeAudioLosslessContainerQualityCopyWith(
+          SpotubeAudioLosslessContainerQuality value,
+          $Res Function(SpotubeAudioLosslessContainerQuality) then) =
+      _$SpotubeAudioLosslessContainerQualityCopyWithImpl<$Res,
+          SpotubeAudioLosslessContainerQuality>;
+  @useResult
+  $Res call({int bitDepth, double sampleRate});
+}
+
+/// @nodoc
+class _$SpotubeAudioLosslessContainerQualityCopyWithImpl<$Res,
+        $Val extends SpotubeAudioLosslessContainerQuality>
+    implements $SpotubeAudioLosslessContainerQualityCopyWith<$Res> {
+  _$SpotubeAudioLosslessContainerQualityCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SpotubeAudioLosslessContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? bitDepth = null,
+    Object? sampleRate = null,
+  }) {
+    return _then(_value.copyWith(
+      bitDepth: null == bitDepth
+          ? _value.bitDepth
+          : bitDepth // ignore: cast_nullable_to_non_nullable
+              as int,
+      sampleRate: null == sampleRate
+          ? _value.sampleRate
+          : sampleRate // ignore: cast_nullable_to_non_nullable
+              as double,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SpotubeAudioLosslessContainerQualityImplCopyWith<$Res>
+    implements $SpotubeAudioLosslessContainerQualityCopyWith<$Res> {
+  factory _$$SpotubeAudioLosslessContainerQualityImplCopyWith(
+          _$SpotubeAudioLosslessContainerQualityImpl value,
+          $Res Function(_$SpotubeAudioLosslessContainerQualityImpl) then) =
+      __$$SpotubeAudioLosslessContainerQualityImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({int bitDepth, double sampleRate});
+}
+
+/// @nodoc
+class __$$SpotubeAudioLosslessContainerQualityImplCopyWithImpl<$Res>
+    extends _$SpotubeAudioLosslessContainerQualityCopyWithImpl<$Res,
+        _$SpotubeAudioLosslessContainerQualityImpl>
+    implements _$$SpotubeAudioLosslessContainerQualityImplCopyWith<$Res> {
+  __$$SpotubeAudioLosslessContainerQualityImplCopyWithImpl(
+      _$SpotubeAudioLosslessContainerQualityImpl _value,
+      $Res Function(_$SpotubeAudioLosslessContainerQualityImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SpotubeAudioLosslessContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? bitDepth = null,
+    Object? sampleRate = null,
+  }) {
+    return _then(_$SpotubeAudioLosslessContainerQualityImpl(
+      bitDepth: null == bitDepth
+          ? _value.bitDepth
+          : bitDepth // ignore: cast_nullable_to_non_nullable
+              as int,
+      sampleRate: null == sampleRate
+          ? _value.sampleRate
+          : sampleRate // ignore: cast_nullable_to_non_nullable
+              as double,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SpotubeAudioLosslessContainerQualityImpl
+    implements _SpotubeAudioLosslessContainerQuality {
+  _$SpotubeAudioLosslessContainerQualityImpl(
+      {required this.bitDepth, required this.sampleRate});
+
+  factory _$SpotubeAudioLosslessContainerQualityImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$SpotubeAudioLosslessContainerQualityImplFromJson(json);
+
+  @override
+  final int bitDepth;
+  @override
+  final double sampleRate;
+
+  @override
+  String toString() {
+    return 'SpotubeAudioLosslessContainerQuality(bitDepth: $bitDepth, sampleRate: $sampleRate)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SpotubeAudioLosslessContainerQualityImpl &&
+            (identical(other.bitDepth, bitDepth) ||
+                other.bitDepth == bitDepth) &&
+            (identical(other.sampleRate, sampleRate) ||
+                other.sampleRate == sampleRate));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, bitDepth, sampleRate);
+
+  /// Create a copy of SpotubeAudioLosslessContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SpotubeAudioLosslessContainerQualityImplCopyWith<
+          _$SpotubeAudioLosslessContainerQualityImpl>
+      get copyWith => __$$SpotubeAudioLosslessContainerQualityImplCopyWithImpl<
+          _$SpotubeAudioLosslessContainerQualityImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SpotubeAudioLosslessContainerQualityImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SpotubeAudioLosslessContainerQuality
+    implements SpotubeAudioLosslessContainerQuality {
+  factory _SpotubeAudioLosslessContainerQuality(
+          {required final int bitDepth, required final double sampleRate}) =
+      _$SpotubeAudioLosslessContainerQualityImpl;
+
+  factory _SpotubeAudioLosslessContainerQuality.fromJson(
+          Map<String, dynamic> json) =
+      _$SpotubeAudioLosslessContainerQualityImpl.fromJson;
+
+  @override
+  int get bitDepth;
+  @override
+  double get sampleRate;
+
+  /// Create a copy of SpotubeAudioLosslessContainerQuality
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SpotubeAudioLosslessContainerQualityImplCopyWith<
+          _$SpotubeAudioLosslessContainerQualityImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+SpotubeAudioSourceMatchObject _$SpotubeAudioSourceMatchObjectFromJson(
+    Map<String, dynamic> json) {
+  return _SpotubeAudioSourceMatchObject.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SpotubeAudioSourceMatchObject {
+  String get id => throw _privateConstructorUsedError;
+  String get title => throw _privateConstructorUsedError;
+  List<String> get artists => throw _privateConstructorUsedError;
+  Duration get duration => throw _privateConstructorUsedError;
+  String? get thumbnail => throw _privateConstructorUsedError;
+  String get externalUri => throw _privateConstructorUsedError;
+
+  /// Serializes this SpotubeAudioSourceMatchObject to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SpotubeAudioSourceMatchObject
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SpotubeAudioSourceMatchObjectCopyWith<SpotubeAudioSourceMatchObject>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SpotubeAudioSourceMatchObjectCopyWith<$Res> {
+  factory $SpotubeAudioSourceMatchObjectCopyWith(
+          SpotubeAudioSourceMatchObject value,
+          $Res Function(SpotubeAudioSourceMatchObject) then) =
+      _$SpotubeAudioSourceMatchObjectCopyWithImpl<$Res,
+          SpotubeAudioSourceMatchObject>;
+  @useResult
+  $Res call(
+      {String id,
+      String title,
+      List<String> artists,
+      Duration duration,
+      String? thumbnail,
+      String externalUri});
+}
+
+/// @nodoc
+class _$SpotubeAudioSourceMatchObjectCopyWithImpl<$Res,
+        $Val extends SpotubeAudioSourceMatchObject>
+    implements $SpotubeAudioSourceMatchObjectCopyWith<$Res> {
+  _$SpotubeAudioSourceMatchObjectCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SpotubeAudioSourceMatchObject
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? artists = null,
+    Object? duration = null,
+    Object? thumbnail = freezed,
+    Object? externalUri = null,
+  }) {
+    return _then(_value.copyWith(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      artists: null == artists
+          ? _value.artists
+          : artists // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      duration: null == duration
+          ? _value.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      thumbnail: freezed == thumbnail
+          ? _value.thumbnail
+          : thumbnail // ignore: cast_nullable_to_non_nullable
+              as String?,
+      externalUri: null == externalUri
+          ? _value.externalUri
+          : externalUri // ignore: cast_nullable_to_non_nullable
+              as String,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SpotubeAudioSourceMatchObjectImplCopyWith<$Res>
+    implements $SpotubeAudioSourceMatchObjectCopyWith<$Res> {
+  factory _$$SpotubeAudioSourceMatchObjectImplCopyWith(
+          _$SpotubeAudioSourceMatchObjectImpl value,
+          $Res Function(_$SpotubeAudioSourceMatchObjectImpl) then) =
+      __$$SpotubeAudioSourceMatchObjectImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String id,
+      String title,
+      List<String> artists,
+      Duration duration,
+      String? thumbnail,
+      String externalUri});
+}
+
+/// @nodoc
+class __$$SpotubeAudioSourceMatchObjectImplCopyWithImpl<$Res>
+    extends _$SpotubeAudioSourceMatchObjectCopyWithImpl<$Res,
+        _$SpotubeAudioSourceMatchObjectImpl>
+    implements _$$SpotubeAudioSourceMatchObjectImplCopyWith<$Res> {
+  __$$SpotubeAudioSourceMatchObjectImplCopyWithImpl(
+      _$SpotubeAudioSourceMatchObjectImpl _value,
+      $Res Function(_$SpotubeAudioSourceMatchObjectImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SpotubeAudioSourceMatchObject
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? title = null,
+    Object? artists = null,
+    Object? duration = null,
+    Object? thumbnail = freezed,
+    Object? externalUri = null,
+  }) {
+    return _then(_$SpotubeAudioSourceMatchObjectImpl(
+      id: null == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String,
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      artists: null == artists
+          ? _value._artists
+          : artists // ignore: cast_nullable_to_non_nullable
+              as List<String>,
+      duration: null == duration
+          ? _value.duration
+          : duration // ignore: cast_nullable_to_non_nullable
+              as Duration,
+      thumbnail: freezed == thumbnail
+          ? _value.thumbnail
+          : thumbnail // ignore: cast_nullable_to_non_nullable
+              as String?,
+      externalUri: null == externalUri
+          ? _value.externalUri
+          : externalUri // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SpotubeAudioSourceMatchObjectImpl
+    implements _SpotubeAudioSourceMatchObject {
+  _$SpotubeAudioSourceMatchObjectImpl(
+      {required this.id,
+      required this.title,
+      required final List<String> artists,
+      required this.duration,
+      this.thumbnail,
+      required this.externalUri})
+      : _artists = artists;
+
+  factory _$SpotubeAudioSourceMatchObjectImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$SpotubeAudioSourceMatchObjectImplFromJson(json);
+
+  @override
+  final String id;
+  @override
+  final String title;
+  final List<String> _artists;
+  @override
+  List<String> get artists {
+    if (_artists is EqualUnmodifiableListView) return _artists;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_artists);
+  }
+
+  @override
+  final Duration duration;
+  @override
+  final String? thumbnail;
+  @override
+  final String externalUri;
+
+  @override
+  String toString() {
+    return 'SpotubeAudioSourceMatchObject(id: $id, title: $title, artists: $artists, duration: $duration, thumbnail: $thumbnail, externalUri: $externalUri)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SpotubeAudioSourceMatchObjectImpl &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(other._artists, _artists) &&
+            (identical(other.duration, duration) ||
+                other.duration == duration) &&
+            (identical(other.thumbnail, thumbnail) ||
+                other.thumbnail == thumbnail) &&
+            (identical(other.externalUri, externalUri) ||
+                other.externalUri == externalUri));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      title,
+      const DeepCollectionEquality().hash(_artists),
+      duration,
+      thumbnail,
+      externalUri);
+
+  /// Create a copy of SpotubeAudioSourceMatchObject
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SpotubeAudioSourceMatchObjectImplCopyWith<
+          _$SpotubeAudioSourceMatchObjectImpl>
+      get copyWith => __$$SpotubeAudioSourceMatchObjectImplCopyWithImpl<
+          _$SpotubeAudioSourceMatchObjectImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SpotubeAudioSourceMatchObjectImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SpotubeAudioSourceMatchObject
+    implements SpotubeAudioSourceMatchObject {
+  factory _SpotubeAudioSourceMatchObject(
+      {required final String id,
+      required final String title,
+      required final List<String> artists,
+      required final Duration duration,
+      final String? thumbnail,
+      required final String externalUri}) = _$SpotubeAudioSourceMatchObjectImpl;
+
+  factory _SpotubeAudioSourceMatchObject.fromJson(Map<String, dynamic> json) =
+      _$SpotubeAudioSourceMatchObjectImpl.fromJson;
+
+  @override
+  String get id;
+  @override
+  String get title;
+  @override
+  List<String> get artists;
+  @override
+  Duration get duration;
+  @override
+  String? get thumbnail;
+  @override
+  String get externalUri;
+
+  /// Create a copy of SpotubeAudioSourceMatchObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SpotubeAudioSourceMatchObjectImplCopyWith<
+          _$SpotubeAudioSourceMatchObjectImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+SpotubeAudioSourceStreamObject _$SpotubeAudioSourceStreamObjectFromJson(
+    Map<String, dynamic> json) {
+  return _SpotubeAudioSourceStreamObject.fromJson(json);
+}
+
+/// @nodoc
+mixin _$SpotubeAudioSourceStreamObject {
+  String get url => throw _privateConstructorUsedError;
+  String get container => throw _privateConstructorUsedError;
+  SpotubeMediaCompressionType get type => throw _privateConstructorUsedError;
+  String? get codec => throw _privateConstructorUsedError;
+  double? get bitrate => throw _privateConstructorUsedError;
+  int? get bitDepth => throw _privateConstructorUsedError;
+  double? get sampleRate => throw _privateConstructorUsedError;
+
+  /// Serializes this SpotubeAudioSourceStreamObject to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+
+  /// Create a copy of SpotubeAudioSourceStreamObject
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $SpotubeAudioSourceStreamObjectCopyWith<SpotubeAudioSourceStreamObject>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $SpotubeAudioSourceStreamObjectCopyWith<$Res> {
+  factory $SpotubeAudioSourceStreamObjectCopyWith(
+          SpotubeAudioSourceStreamObject value,
+          $Res Function(SpotubeAudioSourceStreamObject) then) =
+      _$SpotubeAudioSourceStreamObjectCopyWithImpl<$Res,
+          SpotubeAudioSourceStreamObject>;
+  @useResult
+  $Res call(
+      {String url,
+      String container,
+      SpotubeMediaCompressionType type,
+      String? codec,
+      double? bitrate,
+      int? bitDepth,
+      double? sampleRate});
+}
+
+/// @nodoc
+class _$SpotubeAudioSourceStreamObjectCopyWithImpl<$Res,
+        $Val extends SpotubeAudioSourceStreamObject>
+    implements $SpotubeAudioSourceStreamObjectCopyWith<$Res> {
+  _$SpotubeAudioSourceStreamObjectCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of SpotubeAudioSourceStreamObject
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? url = null,
+    Object? container = null,
+    Object? type = null,
+    Object? codec = freezed,
+    Object? bitrate = freezed,
+    Object? bitDepth = freezed,
+    Object? sampleRate = freezed,
+  }) {
+    return _then(_value.copyWith(
+      url: null == url
+          ? _value.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as String,
+      container: null == container
+          ? _value.container
+          : container // ignore: cast_nullable_to_non_nullable
+              as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SpotubeMediaCompressionType,
+      codec: freezed == codec
+          ? _value.codec
+          : codec // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bitrate: freezed == bitrate
+          ? _value.bitrate
+          : bitrate // ignore: cast_nullable_to_non_nullable
+              as double?,
+      bitDepth: freezed == bitDepth
+          ? _value.bitDepth
+          : bitDepth // ignore: cast_nullable_to_non_nullable
+              as int?,
+      sampleRate: freezed == sampleRate
+          ? _value.sampleRate
+          : sampleRate // ignore: cast_nullable_to_non_nullable
+              as double?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$SpotubeAudioSourceStreamObjectImplCopyWith<$Res>
+    implements $SpotubeAudioSourceStreamObjectCopyWith<$Res> {
+  factory _$$SpotubeAudioSourceStreamObjectImplCopyWith(
+          _$SpotubeAudioSourceStreamObjectImpl value,
+          $Res Function(_$SpotubeAudioSourceStreamObjectImpl) then) =
+      __$$SpotubeAudioSourceStreamObjectImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {String url,
+      String container,
+      SpotubeMediaCompressionType type,
+      String? codec,
+      double? bitrate,
+      int? bitDepth,
+      double? sampleRate});
+}
+
+/// @nodoc
+class __$$SpotubeAudioSourceStreamObjectImplCopyWithImpl<$Res>
+    extends _$SpotubeAudioSourceStreamObjectCopyWithImpl<$Res,
+        _$SpotubeAudioSourceStreamObjectImpl>
+    implements _$$SpotubeAudioSourceStreamObjectImplCopyWith<$Res> {
+  __$$SpotubeAudioSourceStreamObjectImplCopyWithImpl(
+      _$SpotubeAudioSourceStreamObjectImpl _value,
+      $Res Function(_$SpotubeAudioSourceStreamObjectImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of SpotubeAudioSourceStreamObject
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? url = null,
+    Object? container = null,
+    Object? type = null,
+    Object? codec = freezed,
+    Object? bitrate = freezed,
+    Object? bitDepth = freezed,
+    Object? sampleRate = freezed,
+  }) {
+    return _then(_$SpotubeAudioSourceStreamObjectImpl(
+      url: null == url
+          ? _value.url
+          : url // ignore: cast_nullable_to_non_nullable
+              as String,
+      container: null == container
+          ? _value.container
+          : container // ignore: cast_nullable_to_non_nullable
+              as String,
+      type: null == type
+          ? _value.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as SpotubeMediaCompressionType,
+      codec: freezed == codec
+          ? _value.codec
+          : codec // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bitrate: freezed == bitrate
+          ? _value.bitrate
+          : bitrate // ignore: cast_nullable_to_non_nullable
+              as double?,
+      bitDepth: freezed == bitDepth
+          ? _value.bitDepth
+          : bitDepth // ignore: cast_nullable_to_non_nullable
+              as int?,
+      sampleRate: freezed == sampleRate
+          ? _value.sampleRate
+          : sampleRate // ignore: cast_nullable_to_non_nullable
+              as double?,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _$SpotubeAudioSourceStreamObjectImpl
+    implements _SpotubeAudioSourceStreamObject {
+  _$SpotubeAudioSourceStreamObjectImpl(
+      {required this.url,
+      required this.container,
+      required this.type,
+      this.codec,
+      this.bitrate,
+      this.bitDepth,
+      this.sampleRate});
+
+  factory _$SpotubeAudioSourceStreamObjectImpl.fromJson(
+          Map<String, dynamic> json) =>
+      _$$SpotubeAudioSourceStreamObjectImplFromJson(json);
+
+  @override
+  final String url;
+  @override
+  final String container;
+  @override
+  final SpotubeMediaCompressionType type;
+  @override
+  final String? codec;
+  @override
+  final double? bitrate;
+  @override
+  final int? bitDepth;
+  @override
+  final double? sampleRate;
+
+  @override
+  String toString() {
+    return 'SpotubeAudioSourceStreamObject(url: $url, container: $container, type: $type, codec: $codec, bitrate: $bitrate, bitDepth: $bitDepth, sampleRate: $sampleRate)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SpotubeAudioSourceStreamObjectImpl &&
+            (identical(other.url, url) || other.url == url) &&
+            (identical(other.container, container) ||
+                other.container == container) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.codec, codec) || other.codec == codec) &&
+            (identical(other.bitrate, bitrate) || other.bitrate == bitrate) &&
+            (identical(other.bitDepth, bitDepth) ||
+                other.bitDepth == bitDepth) &&
+            (identical(other.sampleRate, sampleRate) ||
+                other.sampleRate == sampleRate));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, url, container, type, codec, bitrate, bitDepth, sampleRate);
+
+  /// Create a copy of SpotubeAudioSourceStreamObject
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SpotubeAudioSourceStreamObjectImplCopyWith<
+          _$SpotubeAudioSourceStreamObjectImpl>
+      get copyWith => __$$SpotubeAudioSourceStreamObjectImplCopyWithImpl<
+          _$SpotubeAudioSourceStreamObjectImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$SpotubeAudioSourceStreamObjectImplToJson(
+      this,
+    );
+  }
+}
+
+abstract class _SpotubeAudioSourceStreamObject
+    implements SpotubeAudioSourceStreamObject {
+  factory _SpotubeAudioSourceStreamObject(
+      {required final String url,
+      required final String container,
+      required final SpotubeMediaCompressionType type,
+      final String? codec,
+      final double? bitrate,
+      final int? bitDepth,
+      final double? sampleRate}) = _$SpotubeAudioSourceStreamObjectImpl;
+
+  factory _SpotubeAudioSourceStreamObject.fromJson(Map<String, dynamic> json) =
+      _$SpotubeAudioSourceStreamObjectImpl.fromJson;
+
+  @override
+  String get url;
+  @override
+  String get container;
+  @override
+  SpotubeMediaCompressionType get type;
+  @override
+  String? get codec;
+  @override
+  double? get bitrate;
+  @override
+  int? get bitDepth;
+  @override
+  double? get sampleRate;
+
+  /// Create a copy of SpotubeAudioSourceStreamObject
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SpotubeAudioSourceStreamObjectImplCopyWith<
+          _$SpotubeAudioSourceStreamObjectImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
 SpotubeFullAlbumObject _$SpotubeFullAlbumObjectFromJson(
     Map<String, dynamic> json) {
   return _SpotubeFullAlbumObject.fromJson(json);
@@ -4499,7 +5995,6 @@ PluginConfiguration _$PluginConfigurationFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PluginConfiguration {
-  PluginType get type => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get version => throw _privateConstructorUsedError;
@@ -4527,8 +6022,7 @@ abstract class $PluginConfigurationCopyWith<$Res> {
       _$PluginConfigurationCopyWithImpl<$Res, PluginConfiguration>;
   @useResult
   $Res call(
-      {PluginType type,
-      String name,
+      {String name,
       String description,
       String version,
       String author,
@@ -4554,7 +6048,6 @@ class _$PluginConfigurationCopyWithImpl<$Res, $Val extends PluginConfiguration>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? type = null,
     Object? name = null,
     Object? description = null,
     Object? version = null,
@@ -4566,10 +6059,6 @@ class _$PluginConfigurationCopyWithImpl<$Res, $Val extends PluginConfiguration>
     Object? repository = freezed,
   }) {
     return _then(_value.copyWith(
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as PluginType,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -4619,8 +6108,7 @@ abstract class _$$PluginConfigurationImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {PluginType type,
-      String name,
+      {String name,
       String description,
       String version,
       String author,
@@ -4644,7 +6132,6 @@ class __$$PluginConfigurationImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? type = null,
     Object? name = null,
     Object? description = null,
     Object? version = null,
@@ -4656,10 +6143,6 @@ class __$$PluginConfigurationImplCopyWithImpl<$Res>
     Object? repository = freezed,
   }) {
     return _then(_$PluginConfigurationImpl(
-      type: null == type
-          ? _value.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as PluginType,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -4704,8 +6187,7 @@ class __$$PluginConfigurationImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PluginConfigurationImpl extends _PluginConfiguration {
   _$PluginConfigurationImpl(
-      {required this.type,
-      required this.name,
+      {required this.name,
       required this.description,
       required this.version,
       required this.author,
@@ -4721,8 +6203,6 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
   factory _$PluginConfigurationImpl.fromJson(Map<String, dynamic> json) =>
       _$$PluginConfigurationImplFromJson(json);
 
-  @override
-  final PluginType type;
   @override
   final String name;
   @override
@@ -4758,7 +6238,7 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
 
   @override
   String toString() {
-    return 'PluginConfiguration(type: $type, name: $name, description: $description, version: $version, author: $author, entryPoint: $entryPoint, pluginApiVersion: $pluginApiVersion, apis: $apis, abilities: $abilities, repository: $repository)';
+    return 'PluginConfiguration(name: $name, description: $description, version: $version, author: $author, entryPoint: $entryPoint, pluginApiVersion: $pluginApiVersion, apis: $apis, abilities: $abilities, repository: $repository)';
   }
 
   @override
@@ -4766,7 +6246,6 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$PluginConfigurationImpl &&
-            (identical(other.type, type) || other.type == type) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -4787,7 +6266,6 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
   @override
   int get hashCode => Object.hash(
       runtimeType,
-      type,
       name,
       description,
       version,
@@ -4817,8 +6295,7 @@ class _$PluginConfigurationImpl extends _PluginConfiguration {
 
 abstract class _PluginConfiguration extends PluginConfiguration {
   factory _PluginConfiguration(
-      {required final PluginType type,
-      required final String name,
+      {required final String name,
       required final String description,
       required final String version,
       required final String author,
@@ -4832,8 +6309,6 @@ abstract class _PluginConfiguration extends PluginConfiguration {
   factory _PluginConfiguration.fromJson(Map<String, dynamic> json) =
       _$PluginConfigurationImpl.fromJson;
 
-  @override
-  PluginType get type;
   @override
   String get name;
   @override

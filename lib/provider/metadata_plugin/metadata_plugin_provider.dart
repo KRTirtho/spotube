@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/database/database.dart';
+import 'package:spotube/provider/youtube_engine/youtube_engine.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
@@ -97,7 +98,6 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
       final plugin = plugins[i];
 
       final pluginConfig = PluginConfiguration(
-        type: PluginType.metadata,
         name: plugin.name,
         author: plugin.author,
         description: plugin.description,
@@ -447,6 +447,7 @@ final metadataPluginProvider = FutureProvider<MetadataPlugin?>(
     final defaultPlugin = await ref.watch(
       metadataPluginsProvider.selectAsync((data) => data.defaultPluginConfig),
     );
+    final youtubeEngine = ref.read(youtubeEngineProvider);
 
     if (defaultPlugin == null) {
       return null;
@@ -456,6 +457,10 @@ final metadataPluginProvider = FutureProvider<MetadataPlugin?>(
     final pluginByteCode =
         await pluginsNotifier.getPluginByteCode(defaultPlugin);
 
-    return await MetadataPlugin.create(defaultPlugin, pluginByteCode);
+    return await MetadataPlugin.create(
+      youtubeEngine,
+      defaultPlugin,
+      pluginByteCode,
+    );
   },
 );

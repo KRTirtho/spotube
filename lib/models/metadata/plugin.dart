@@ -1,17 +1,20 @@
 part of 'metadata.dart';
 
-enum PluginType { metadata }
-
 enum PluginApis { webview, localstorage, timezone }
 
-enum PluginAbilities { authentication, scrobbling }
+enum PluginAbilities {
+  authentication,
+  scrobbling,
+  metadata,
+  @JsonValue('audio-source')
+  audioSource,
+}
 
 @freezed
 class PluginConfiguration with _$PluginConfiguration {
   const PluginConfiguration._();
 
   factory PluginConfiguration({
-    required PluginType type,
     required String name,
     required String description,
     required String version,

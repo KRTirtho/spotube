@@ -15,6 +15,7 @@ import 'package:spotube/utils/primitive_utils.dart';
 part 'metadata.g.dart';
 part 'metadata.freezed.dart';
 
+part 'audio_source.dart';
 part 'album.dart';
 part 'artist.dart';
 part 'browse.dart';

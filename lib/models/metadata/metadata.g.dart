@@ -6,6 +6,123 @@ part of 'metadata.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+_$SpotubeAudioSourceContainerPresetLossyImpl
+    _$$SpotubeAudioSourceContainerPresetLossyImplFromJson(Map json) =>
+        _$SpotubeAudioSourceContainerPresetLossyImpl(
+          type: $enumDecode(_$SpotubeMediaCompressionTypeEnumMap, json['type']),
+          name: json['name'] as String,
+          qualities: (json['qualities'] as List<dynamic>)
+              .map((e) => SpotubeAudioLossyContainerQuality.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList(),
+        );
+
+Map<String, dynamic> _$$SpotubeAudioSourceContainerPresetLossyImplToJson(
+        _$SpotubeAudioSourceContainerPresetLossyImpl instance) =>
+    <String, dynamic>{
+      'type': _$SpotubeMediaCompressionTypeEnumMap[instance.type]!,
+      'name': instance.name,
+      'qualities': instance.qualities.map((e) => e.toJson()).toList(),
+    };
+
+const _$SpotubeMediaCompressionTypeEnumMap = {
+  SpotubeMediaCompressionType.lossy: 'lossy',
+  SpotubeMediaCompressionType.lossless: 'lossless',
+};
+
+_$SpotubeAudioSourceContainerPresetLosslessImpl
+    _$$SpotubeAudioSourceContainerPresetLosslessImplFromJson(Map json) =>
+        _$SpotubeAudioSourceContainerPresetLosslessImpl(
+          type: $enumDecode(_$SpotubeMediaCompressionTypeEnumMap, json['type']),
+          name: json['name'] as String,
+          qualities: (json['qualities'] as List<dynamic>)
+              .map((e) => SpotubeAudioLosslessContainerQuality.fromJson(
+                  Map<String, dynamic>.from(e as Map)))
+              .toList(),
+        );
+
+Map<String, dynamic> _$$SpotubeAudioSourceContainerPresetLosslessImplToJson(
+        _$SpotubeAudioSourceContainerPresetLosslessImpl instance) =>
+    <String, dynamic>{
+      'type': _$SpotubeMediaCompressionTypeEnumMap[instance.type]!,
+      'name': instance.name,
+      'qualities': instance.qualities.map((e) => e.toJson()).toList(),
+    };
+
+_$SpotubeAudioLossyContainerQualityImpl
+    _$$SpotubeAudioLossyContainerQualityImplFromJson(Map json) =>
+        _$SpotubeAudioLossyContainerQualityImpl(
+          bitrate: (json['bitrate'] as num).toDouble(),
+        );
+
+Map<String, dynamic> _$$SpotubeAudioLossyContainerQualityImplToJson(
+        _$SpotubeAudioLossyContainerQualityImpl instance) =>
+    <String, dynamic>{
+      'bitrate': instance.bitrate,
+    };
+
+_$SpotubeAudioLosslessContainerQualityImpl
+    _$$SpotubeAudioLosslessContainerQualityImplFromJson(Map json) =>
+        _$SpotubeAudioLosslessContainerQualityImpl(
+          bitDepth: (json['bitDepth'] as num).toInt(),
+          sampleRate: (json['sampleRate'] as num).toDouble(),
+        );
+
+Map<String, dynamic> _$$SpotubeAudioLosslessContainerQualityImplToJson(
+        _$SpotubeAudioLosslessContainerQualityImpl instance) =>
+    <String, dynamic>{
+      'bitDepth': instance.bitDepth,
+      'sampleRate': instance.sampleRate,
+    };
+
+_$SpotubeAudioSourceMatchObjectImpl
+    _$$SpotubeAudioSourceMatchObjectImplFromJson(Map json) =>
+        _$SpotubeAudioSourceMatchObjectImpl(
+          id: json['id'] as String,
+          title: json['title'] as String,
+          artists: (json['artists'] as List<dynamic>)
+              .map((e) => e as String)
+              .toList(),
+          duration: Duration(microseconds: (json['duration'] as num).toInt()),
+          thumbnail: json['thumbnail'] as String?,
+          externalUri: json['externalUri'] as String,
+        );
+
+Map<String, dynamic> _$$SpotubeAudioSourceMatchObjectImplToJson(
+        _$SpotubeAudioSourceMatchObjectImpl instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'artists': instance.artists,
+      'duration': instance.duration.inMicroseconds,
+      'thumbnail': instance.thumbnail,
+      'externalUri': instance.externalUri,
+    };
+
+_$SpotubeAudioSourceStreamObjectImpl
+    _$$SpotubeAudioSourceStreamObjectImplFromJson(Map json) =>
+        _$SpotubeAudioSourceStreamObjectImpl(
+          url: json['url'] as String,
+          container: json['container'] as String,
+          type: $enumDecode(_$SpotubeMediaCompressionTypeEnumMap, json['type']),
+          codec: json['codec'] as String?,
+          bitrate: (json['bitrate'] as num?)?.toDouble(),
+          bitDepth: (json['bitDepth'] as num?)?.toInt(),
+          sampleRate: (json['sampleRate'] as num?)?.toDouble(),
+        );
+
+Map<String, dynamic> _$$SpotubeAudioSourceStreamObjectImplToJson(
+        _$SpotubeAudioSourceStreamObjectImpl instance) =>
+    <String, dynamic>{
+      'url': instance.url,
+      'container': instance.container,
+      'type': _$SpotubeMediaCompressionTypeEnumMap[instance.type]!,
+      'codec': instance.codec,
+      'bitrate': instance.bitrate,
+      'bitDepth': instance.bitDepth,
+      'sampleRate': instance.sampleRate,
+    };
+
 _$SpotubeFullAlbumObjectImpl _$$SpotubeFullAlbumObjectImplFromJson(Map json) =>
     _$SpotubeFullAlbumObjectImpl(
       id: json['id'] as String,
@@ -419,7 +536,6 @@ Map<String, dynamic> _$$SpotubeUserObjectImplToJson(
 
 _$PluginConfigurationImpl _$$PluginConfigurationImplFromJson(Map json) =>
     _$PluginConfigurationImpl(
-      type: $enumDecode(_$PluginTypeEnumMap, json['type']),
       name: json['name'] as String,
       description: json['description'] as String,
       version: json['version'] as String,
@@ -440,7 +556,6 @@ _$PluginConfigurationImpl _$$PluginConfigurationImplFromJson(Map json) =>
 Map<String, dynamic> _$$PluginConfigurationImplToJson(
         _$PluginConfigurationImpl instance) =>
     <String, dynamic>{
-      'type': _$PluginTypeEnumMap[instance.type]!,
       'name': instance.name,
       'description': instance.description,
       'version': instance.version,
@@ -453,10 +568,6 @@ Map<String, dynamic> _$$PluginConfigurationImplToJson(
       'repository': instance.repository,
     };
 
-const _$PluginTypeEnumMap = {
-  PluginType.metadata: 'metadata',
-};
-
 const _$PluginApisEnumMap = {
   PluginApis.webview: 'webview',
   PluginApis.localstorage: 'localstorage',
@@ -466,6 +577,8 @@ const _$PluginApisEnumMap = {
 const _$PluginAbilitiesEnumMap = {
   PluginAbilities.authentication: 'authentication',
   PluginAbilities.scrobbling: 'scrobbling',
+  PluginAbilities.metadata: 'metadata',
+  PluginAbilities.audioSource: 'audio-source',
 };
 
 _$PluginUpdateAvailableImpl _$$PluginUpdateAvailableImplFromJson(Map json) =>

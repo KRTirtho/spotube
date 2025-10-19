@@ -1230,10 +1230,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "01935a75640092af7947bfb21a497240376f0c83"
+      resolved-ref: "32828156bc111d147709f8d644804227bbdfe8f1"
       url: "https://github.com/KRTirtho/hetu_spotube_plugin.git"
     source: git
-    version: "0.0.1"
+    version: "0.0.2"
   hetu_std:
     dependency: "direct main"
     description:
@@ -2888,10 +2888,11 @@ packages:
   youtube_explode_dart:
     dependency: "direct main"
     description:
-      name: youtube_explode_dart
-      sha256: "9ff345caf8351c59eb1b7560837f761e08d2beaea3b4187637942715a31a6f58"
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: caa3023386dbc10e69c99f49f491148094874671
+      url: "https://github.com/Coronon/youtube_explode_dart"
+    source: git
     version: "2.5.2"
   yt_dlp_dart:
     dependency: "direct main"
