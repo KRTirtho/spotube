@@ -1511,7 +1511,7 @@ class AppLocalizationsRu extends AppLocalizations {
       'Введенные данные не соответствуют требуемому формату';
 
   @override
-  String get metadata_provider_plugins => 'Плагины поставщика метаданных';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1536,8 +1536,8 @@ class AppLocalizationsRu extends AppLocalizations {
   String get available_plugins => 'Доступные плагины';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Настройте свой собственный поставщик метаданных для плейлиста/альбома/артиста/ленты';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Аудио скробблеры';

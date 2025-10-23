@@ -1474,7 +1474,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get input_does_not_match_format => '入力が必須フォーマットと一致しません';
 
   @override
-  String get metadata_provider_plugins => 'メタデータプロバイダープラグイン';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1499,8 +1499,8 @@ class AppLocalizationsJa extends AppLocalizations {
   String get available_plugins => '利用可能なプラグイン';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      '独自のプレイリスト/アルバム/アーティスト/フィードのメタデータプロバイダーを構成';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'オーディオスクロッブラー';

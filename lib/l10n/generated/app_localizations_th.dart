@@ -1500,7 +1500,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get input_does_not_match_format => 'อินพุตไม่ตรงกับรูปแบบที่ต้องการ';
 
   @override
-  String get metadata_provider_plugins => 'ปลั๊กอินผู้ให้บริการเมตาดาต้า';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1525,8 +1525,8 @@ class AppLocalizationsTh extends AppLocalizations {
   String get available_plugins => 'ปลั๊กอินที่มีอยู่';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'กำหนดค่าผู้ให้บริการเมตาดาต้าเพลย์ลิสต์/อัลบั้ม/ศิลปิน/ฟีดของคุณเอง';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'เครื่อง scrobbler เสียง';

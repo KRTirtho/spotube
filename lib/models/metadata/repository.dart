@@ -7,6 +7,7 @@ class MetadataPluginRepository with _$MetadataPluginRepository {
     required String owner,
     required String description,
     required String repoUrl,
+    required List<String> topics,
   }) = _MetadataPluginRepository;
 
   factory MetadataPluginRepository.fromJson(Map<String, dynamic> json) =>

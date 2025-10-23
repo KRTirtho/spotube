@@ -6539,6 +6539,7 @@ mixin _$MetadataPluginRepository {
   String get owner => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   String get repoUrl => throw _privateConstructorUsedError;
+  List<String> get topics => throw _privateConstructorUsedError;
 
   /// Serializes this MetadataPluginRepository to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -6556,7 +6557,12 @@ abstract class $MetadataPluginRepositoryCopyWith<$Res> {
           $Res Function(MetadataPluginRepository) then) =
       _$MetadataPluginRepositoryCopyWithImpl<$Res, MetadataPluginRepository>;
   @useResult
-  $Res call({String name, String owner, String description, String repoUrl});
+  $Res call(
+      {String name,
+      String owner,
+      String description,
+      String repoUrl,
+      List<String> topics});
 }
 
 /// @nodoc
@@ -6579,6 +6585,7 @@ class _$MetadataPluginRepositoryCopyWithImpl<$Res,
     Object? owner = null,
     Object? description = null,
     Object? repoUrl = null,
+    Object? topics = null,
   }) {
     return _then(_value.copyWith(
       name: null == name
@@ -6597,6 +6604,10 @@ class _$MetadataPluginRepositoryCopyWithImpl<$Res,
           ? _value.repoUrl
           : repoUrl // ignore: cast_nullable_to_non_nullable
               as String,
+      topics: null == topics
+          ? _value.topics
+          : topics // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ) as $Val);
   }
 }
@@ -6610,7 +6621,12 @@ abstract class _$$MetadataPluginRepositoryImplCopyWith<$Res>
       __$$MetadataPluginRepositoryImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String name, String owner, String description, String repoUrl});
+  $Res call(
+      {String name,
+      String owner,
+      String description,
+      String repoUrl,
+      List<String> topics});
 }
 
 /// @nodoc
@@ -6632,6 +6648,7 @@ class __$$MetadataPluginRepositoryImplCopyWithImpl<$Res>
     Object? owner = null,
     Object? description = null,
     Object? repoUrl = null,
+    Object? topics = null,
   }) {
     return _then(_$MetadataPluginRepositoryImpl(
       name: null == name
@@ -6650,6 +6667,10 @@ class __$$MetadataPluginRepositoryImplCopyWithImpl<$Res>
           ? _value.repoUrl
           : repoUrl // ignore: cast_nullable_to_non_nullable
               as String,
+      topics: null == topics
+          ? _value._topics
+          : topics // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
@@ -6661,7 +6682,9 @@ class _$MetadataPluginRepositoryImpl implements _MetadataPluginRepository {
       {required this.name,
       required this.owner,
       required this.description,
-      required this.repoUrl});
+      required this.repoUrl,
+      required final List<String> topics})
+      : _topics = topics;
 
   factory _$MetadataPluginRepositoryImpl.fromJson(Map<String, dynamic> json) =>
       _$$MetadataPluginRepositoryImplFromJson(json);
@@ -6674,10 +6697,17 @@ class _$MetadataPluginRepositoryImpl implements _MetadataPluginRepository {
   final String description;
   @override
   final String repoUrl;
+  final List<String> _topics;
+  @override
+  List<String> get topics {
+    if (_topics is EqualUnmodifiableListView) return _topics;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_topics);
+  }
 
   @override
   String toString() {
-    return 'MetadataPluginRepository(name: $name, owner: $owner, description: $description, repoUrl: $repoUrl)';
+    return 'MetadataPluginRepository(name: $name, owner: $owner, description: $description, repoUrl: $repoUrl, topics: $topics)';
   }
 
   @override
@@ -6689,13 +6719,14 @@ class _$MetadataPluginRepositoryImpl implements _MetadataPluginRepository {
             (identical(other.owner, owner) || other.owner == owner) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.repoUrl, repoUrl) || other.repoUrl == repoUrl));
+            (identical(other.repoUrl, repoUrl) || other.repoUrl == repoUrl) &&
+            const DeepCollectionEquality().equals(other._topics, _topics));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, name, owner, description, repoUrl);
+  int get hashCode => Object.hash(runtimeType, name, owner, description,
+      repoUrl, const DeepCollectionEquality().hash(_topics));
 
   /// Create a copy of MetadataPluginRepository
   /// with the given fields replaced by the non-null parameter values.
@@ -6719,7 +6750,8 @@ abstract class _MetadataPluginRepository implements MetadataPluginRepository {
       {required final String name,
       required final String owner,
       required final String description,
-      required final String repoUrl}) = _$MetadataPluginRepositoryImpl;
+      required final String repoUrl,
+      required final List<String> topics}) = _$MetadataPluginRepositoryImpl;
 
   factory _MetadataPluginRepository.fromJson(Map<String, dynamic> json) =
       _$MetadataPluginRepositoryImpl.fromJson;
@@ -6732,6 +6764,8 @@ abstract class _MetadataPluginRepository implements MetadataPluginRepository {
   String get description;
   @override
   String get repoUrl;
+  @override
+  List<String> get topics;
 
   /// Create a copy of MetadataPluginRepository
   /// with the given fields replaced by the non-null parameter values.

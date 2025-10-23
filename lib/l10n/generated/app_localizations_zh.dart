@@ -1469,7 +1469,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get input_does_not_match_format => '输入与所需格式不匹配';
 
   @override
-  String get metadata_provider_plugins => '元数据提供者插件';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1493,7 +1493,8 @@ class AppLocalizationsZh extends AppLocalizations {
   String get available_plugins => '可用插件';
 
   @override
-  String get configure_your_own_metadata_plugin => '配置您自己的播放列表/专辑/艺人/订阅元数据提供者';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => '音频 Scrobblers';
@@ -2977,9 +2978,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get input_does_not_match_format => '輸入不符合所需格式';
 
   @override
-  String get metadata_provider_plugins => '中繼資料供應商外掛程式';
-
-  @override
   String get paste_plugin_download_url =>
       '貼上下載網址、GitHub/Codeberg 儲存庫網址或 .smplug 檔案的直接連結';
 
@@ -2999,9 +2997,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get available_plugins => '可用的外掛程式';
-
-  @override
-  String get configure_your_own_metadata_plugin => '設定您自己的播放清單/專輯/藝人/動態中繼資料供應商';
 
   @override
   String get audio_scrobblers => '音訊 Scrobblers';

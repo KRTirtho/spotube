@@ -1,101 +1,135 @@
 {
   "ar": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "bn": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ca": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "cs": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "de": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "es": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "eu": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "fa": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "fi": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "fr": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "hi": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "id": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "it": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ja": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ka": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ko": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ne": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
@@ -103,72 +137,96 @@
 
   "nl": [
     "audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "pl": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "pt": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ru": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ta": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "th": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "tl": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "tr": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "uk": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "vi": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "zh": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "zh_TW": [
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"

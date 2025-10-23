@@ -1511,7 +1511,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Masukan tidak cocok dengan format yang diperlukan';
 
   @override
-  String get metadata_provider_plugins => 'Plugin Penyedia Metadata';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1536,8 +1536,8 @@ class AppLocalizationsId extends AppLocalizations {
   String get available_plugins => 'Plugin yang tersedia';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Konfigurasi penyedia metadata playlist/album/artis/feed Anda sendiri';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Scrobblers Audio';

@@ -1505,7 +1505,7 @@ class AppLocalizationsCs extends AppLocalizations {
       'Vstup neodpovídá požadovanému formátu';
 
   @override
-  String get metadata_provider_plugins => 'Pluginy poskytovatelů metadat';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1530,8 +1530,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get available_plugins => 'Dostupné pluginy';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Nakonfigurujte si vlastního poskytovatele metadat pro playlist/album/umělec/fid';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Audio scrobblers';

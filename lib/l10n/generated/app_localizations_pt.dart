@@ -1508,7 +1508,7 @@ class AppLocalizationsPt extends AppLocalizations {
       'A entrada não corresponde ao formato exigido';
 
   @override
-  String get metadata_provider_plugins => 'Plugins do provedor de metadados';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1533,8 +1533,8 @@ class AppLocalizationsPt extends AppLocalizations {
   String get available_plugins => 'Plugins disponíveis';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Configure seu próprio provedor de metadados de playlist/álbum/artista/feed';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Scrobblers de áudio';

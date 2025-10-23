@@ -1505,7 +1505,7 @@ class AppLocalizationsBn extends AppLocalizations {
       'ইনপুট প্রয়োজনীয় ফরম্যাটের সাথে মেলে না';
 
   @override
-  String get metadata_provider_plugins => 'মেটাডেটা প্রদানকারী প্লাগইনসমূহ';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1530,8 +1530,8 @@ class AppLocalizationsBn extends AppLocalizations {
   String get available_plugins => 'উপলব্ধ প্লাগইনগুলো';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'নিজস্ব প্লেলিস্ট/অ্যালবাম/শিল্পী/ফিড মেটাডেটা প্রদানকারী কনফিগার করুন';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'অডিও স্ক্রোব্বলার্স';

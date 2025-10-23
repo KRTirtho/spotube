@@ -1517,7 +1517,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'உள்ளீடு தேவையான வடிவத்துடன் பொருந்தவில்லை';
 
   @override
-  String get metadata_provider_plugins => 'மெட்டாடேட்டா வழங்குநர் பிளகின்கள்';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1542,8 +1542,8 @@ class AppLocalizationsTa extends AppLocalizations {
   String get available_plugins => 'கிடைக்கக்கூடிய பிளகின்கள்';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'உங்கள் சொந்த பிளேலிஸ்ட்/ஆல்பம்/கலைஞர்/ஊட்ட மெட்டாடேட்டா வழங்குநரை உள்ளமைக்கவும்';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'ஆடியோ ஸ்க்ரோப்ளர்கள்';

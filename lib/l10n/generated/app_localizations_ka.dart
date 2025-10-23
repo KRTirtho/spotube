@@ -1511,8 +1511,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'შეყვანა არ ემთხვევა საჭირო ფორმატს';
 
   @override
-  String get metadata_provider_plugins =>
-      'მეტამონაცემების პროვაიდერების პლაგინები';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1537,8 +1536,8 @@ class AppLocalizationsKa extends AppLocalizations {
   String get available_plugins => 'ხელმისაწვდომი პლაგინები';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'დააყენეთ თქვენი საკუთარი პლეილისტის/ალბომის/არტისტის/ფიდის მეტამონაცემების პროვაიდერი';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'აუდიო სქრობლერები';

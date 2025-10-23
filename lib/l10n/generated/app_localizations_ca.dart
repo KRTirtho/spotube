@@ -1514,8 +1514,7 @@ class AppLocalizationsCa extends AppLocalizations {
       'L’entrada no coincideix amb el format requerit';
 
   @override
-  String get metadata_provider_plugins =>
-      'Complements de proveïdor de metadades';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1540,8 +1539,8 @@ class AppLocalizationsCa extends AppLocalizations {
   String get available_plugins => 'Complements disponibles';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Configura el teu propi proveïdor de metadades per llistes/reproduccions àlbum/artista/flux';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Scrobblers d’àudio';

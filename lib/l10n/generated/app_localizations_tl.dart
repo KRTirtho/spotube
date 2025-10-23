@@ -1518,7 +1518,7 @@ class AppLocalizationsTl extends AppLocalizations {
       'Ang input ay hindi tumutugma sa kinakailangang format';
 
   @override
-  String get metadata_provider_plugins => 'Mga Plugin ng Metadata Provider';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1543,8 +1543,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get available_plugins => 'Mga available na plugin';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'I-configure ang iyong sariling playlist/album/artist/feed metadata provider';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Mga Audio Scrobbler';

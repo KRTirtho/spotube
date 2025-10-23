@@ -1509,7 +1509,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'इनपुट आवश्यक प्रारूप से मेल नहीं खाता है';
 
   @override
-  String get metadata_provider_plugins => 'मेटाडेटा प्रदाता प्लगइन';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1534,8 +1534,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get available_plugins => 'उपलब्ध प्लगइन';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'अपनी खुद की प्लेलिस्ट/एल्बम/कलाकार/फ़ीड मेटाडेटा प्रदाता कॉन्फ़िगर करें';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'ऑडियो स्क्रॉबलर्स';

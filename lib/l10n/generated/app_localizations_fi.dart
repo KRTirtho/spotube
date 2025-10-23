@@ -1503,7 +1503,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get input_does_not_match_format => 'Syöte ei vastaa vaadittua muotoa';
 
   @override
-  String get metadata_provider_plugins => 'Metatietojen tarjoajan lisäosat';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1528,8 +1528,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get available_plugins => 'Saatavilla olevat lisäosat';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Määritä oma soittolistan/albumin/artistin/syötteen metatietojen tarjoaja';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Äänen scrobblerit';

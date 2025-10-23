@@ -1507,7 +1507,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Введені дані не відповідають необхідному формату';
 
   @override
-  String get metadata_provider_plugins => 'Плагіни провайдера метаданих';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1532,8 +1532,8 @@ class AppLocalizationsUk extends AppLocalizations {
   String get available_plugins => 'Доступні плагіни';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Налаштуйте свій власний провайдер метаданих для плейлиста/альбому/виконавця/стрічки';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Аудіо скробблери';

@@ -1513,7 +1513,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Đầu vào không khớp với định dạng yêu cầu';
 
   @override
-  String get metadata_provider_plugins => 'Plugin Nhà cung cấp siêu dữ liệu';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1538,8 +1538,8 @@ class AppLocalizationsVi extends AppLocalizations {
   String get available_plugins => 'Các plugin có sẵn';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Cấu hình nhà cung cấp siêu dữ liệu danh sách phát/album/nghệ sĩ/nguồn cấp dữ liệu của riêng bạn';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Bộ scrobbler âm thanh';

@@ -1503,7 +1503,7 @@ class AppLocalizationsFa extends AppLocalizations {
       'ورودی با قالب مورد نیاز تطابق ندارد';
 
   @override
-  String get metadata_provider_plugins => 'افزونه‌های ارائه‌دهندهٔ متادیتا';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1528,8 +1528,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get available_plugins => 'افزونه‌های موجود';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'پیکربندی ارائه‌دهندهٔ متادیتا برای پلی‌لیست/آلبوم/هنرمند/فید به‌صورت سفارشی';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'اسکراب‌بلرهای صوتی';

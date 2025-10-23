@@ -30,6 +30,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final tabState = useState<int>(0);
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>(), []);
 
     final plugins = ref.watch(metadataPluginsProvider);
@@ -49,11 +50,30 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
 
         final pluginRepos = pluginReposSnapshot.asData?.value.items ?? [];
         if (installedPluginIds.isEmpty) return pluginRepos;
-        return pluginRepos
+        final availablePlugins = pluginRepos
             .whereNot((repo) => installedPluginIds.contains(repo.repoUrl))
             .toList();
+
+        if (tabState.value != 0) {
+          // metadata only plugins
+          return availablePlugins
+              .where(
+                (d) => d.topics.contains(
+                  tabState.value == 1
+                      ? "spotube-metadata-plugin"
+                      : "spotube-audio-source-plugin",
+                ),
+              )
+              .toList();
+        }
+
+        return availablePlugins; // all plugins
       },
-      [plugins.asData?.value.plugins, pluginReposSnapshot.asData?.value],
+      [
+        plugins.asData?.value.plugins,
+        pluginReposSnapshot.asData?.value,
+        tabState.value,
+      ],
     );
 
     return SafeArea(
@@ -61,7 +81,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
       child: Scaffold(
         headers: [
           TitleBar(
-            title: Text(context.l10n.metadata_provider_plugins),
+            title: Text(context.l10n.plugins),
           )
         ],
         child: Padding(
@@ -193,6 +213,20 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                 ),
               ),
               const SliverGap(12),
+              SliverToBoxAdapter(
+                child: TabList(
+                  index: tabState.value,
+                  onChanged: (value) {
+                    tabState.value = value;
+                  },
+                  children: const [
+                    TabItem(child: Text("All")),
+                    TabItem(child: Text("Metadata")),
+                    TabItem(child: Text("Audio Source")),
+                  ],
+                ),
+              ),
+              const SliverGap(12),
               if (plugins.asData?.value.plugins.isNotEmpty ?? false)
                 SliverToBoxAdapter(
                   child: Row(
@@ -249,6 +283,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                         description: "Loading...",
                         repoUrl: "",
                         owner: "",
+                        topics: [],
                       ),
                     ),
                   );

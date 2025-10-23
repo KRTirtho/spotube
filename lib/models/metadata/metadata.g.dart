@@ -603,6 +603,8 @@ _$MetadataPluginRepositoryImpl _$$MetadataPluginRepositoryImplFromJson(
       owner: json['owner'] as String,
       description: json['description'] as String,
       repoUrl: json['repoUrl'] as String,
+      topics:
+          (json['topics'] as List<dynamic>).map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$$MetadataPluginRepositoryImplToJson(
@@ -612,4 +614,5 @@ Map<String, dynamic> _$$MetadataPluginRepositoryImplToJson(
       'owner': instance.owner,
       'description': instance.description,
       'repoUrl': instance.repoUrl,
+      'topics': instance.topics,
     };

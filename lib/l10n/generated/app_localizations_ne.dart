@@ -1515,7 +1515,7 @@ class AppLocalizationsNe extends AppLocalizations {
   String get input_does_not_match_format => 'इनपुट आवश्यक ढाँचासँग मेल खाँदैन';
 
   @override
-  String get metadata_provider_plugins => 'मेटाडेटा प्रदायक प्लगइनहरू';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1540,8 +1540,8 @@ class AppLocalizationsNe extends AppLocalizations {
   String get available_plugins => 'उपलब्ध प्लगइनहरू';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'तपाईंको आफ्नै प्लेलिस्ट/एल्बम/कलाकार/फिड मेटाडेटा प्रदायक कन्फिगर गर्नुहोस्';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'अडियो स्क्रब्बलरहरू';

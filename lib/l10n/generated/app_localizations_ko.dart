@@ -1479,7 +1479,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get input_does_not_match_format => '입력이 필요한 형식과 일치하지 않습니다';
 
   @override
-  String get metadata_provider_plugins => '메타데이터 제공자 플러그인';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1503,8 +1503,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get available_plugins => '사용 가능한 플러그인';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      '자신만의 플레이리스트/앨범/아티스트/피드 메타데이터 제공자 구성';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => '오디오 스크로블러';

@@ -1503,7 +1503,7 @@ class AppLocalizationsEn extends AppLocalizations {
       'Input doesn\'t match the required format';
 
   @override
-  String get metadata_provider_plugins => 'Metadata Provider Plugins';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1528,8 +1528,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get available_plugins => 'Available plugins';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Configure your own playlist/album/artist/feed metadata provider';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Audio Scrobblers';
