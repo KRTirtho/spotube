@@ -1451,7 +1451,16 @@ class AppLocalizationsEu extends AppLocalizations {
       'Plugin honek zure musika scrobbled egiten du zure entzuteen historia sortzeko.';
 
   @override
-  String get default_plugin => 'Lehenetsia';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Lehenetsi gisa ezarri';

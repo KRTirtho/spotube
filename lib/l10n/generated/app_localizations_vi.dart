@@ -1450,7 +1450,16 @@ class AppLocalizationsVi extends AppLocalizations {
       'Plugin này scrobble nhạc của bạn để tạo lịch sử nghe của bạn.';
 
   @override
-  String get default_plugin => 'Mặc định';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Đặt làm mặc định';

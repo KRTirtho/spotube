@@ -1448,7 +1448,16 @@ class AppLocalizationsHi extends AppLocalizations {
       'यह प्लगइन आपके सुनने के इतिहास को उत्पन्न करने के लिए आपके संगीत को स्क्रॉबल करता है।';
 
   @override
-  String get default_plugin => 'डिफ़ॉल्ट';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'डिफ़ॉल्ट सेट करें';

@@ -1450,7 +1450,16 @@ class AppLocalizationsCa extends AppLocalizations {
       'Aquest complement fa scrobbling de la teva música per generar l’historial d’escoltes.';
 
   @override
-  String get default_plugin => 'Predeterminat';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Establir com a predeterminat';

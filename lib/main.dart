@@ -150,11 +150,13 @@ class Spotube extends HookConsumerWidget {
     ref.listen(audioPlayerStreamListenersProvider, (_, __) {});
     ref.listen(bonsoirProvider, (_, __) {});
     ref.listen(connectClientsProvider, (_, __) {});
-    ref.listen(metadataPluginsProvider, (_, __) {});
-    ref.listen(metadataPluginProvider, (_, __) {});
     ref.listen(serverProvider, (_, __) {});
     ref.listen(trayManagerProvider, (_, __) {});
+    ref.listen(metadataPluginsProvider, (_, __) {});
+    ref.listen(metadataPluginProvider, (_, __) {});
+    ref.listen(audioSourcePluginProvider, (_, __) {});
     ref.listen(metadataPluginUpdateCheckerProvider, (_, __) {});
+    ref.listen(audioSourcePluginUpdateCheckerProvider, (_, __) {});
 
     useFixWindowStretching();
     useDisableBatteryOptimizations();

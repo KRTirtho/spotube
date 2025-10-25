@@ -1455,7 +1455,16 @@ class AppLocalizationsTa extends AppLocalizations {
       'இந்த பிளகின் உங்கள் கேட்பதின் வரலாற்றை உருவாக்க உங்கள் இசையை ஸ்க்ரோப்ள் செய்கிறது.';
 
   @override
-  String get default_plugin => 'இயல்புநிலை';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'இயல்புநிலையாக அமைக்கவும்';

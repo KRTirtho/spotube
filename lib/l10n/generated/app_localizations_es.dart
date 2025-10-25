@@ -1452,7 +1452,16 @@ class AppLocalizationsEs extends AppLocalizations {
       'Este complemento scrobblea tu música para generar tu historial de reproducción.';
 
   @override
-  String get default_plugin => 'Predeterminado';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Establecer como predeterminado';

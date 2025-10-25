@@ -3,9 +3,9 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/markdown/markdown.dart';
+import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/modules/metadata_plugins/plugin_repository.dart';
 import 'package:spotube/modules/metadata_plugins/plugin_update_available_dialog.dart';
 import 'package:spotube/provider/metadata_plugin/core/auth.dart';
 import 'package:spotube/provider/metadata_plugin/core/support.dart';
@@ -20,27 +20,52 @@ final validAbilities = {
 
 class MetadataInstalledPluginItem extends HookConsumerWidget {
   final PluginConfiguration plugin;
-  final bool isDefault;
+  final bool isDefaultMetadata;
+  final bool isDefaultAudioSource;
   const MetadataInstalledPluginItem({
     super.key,
     required this.plugin,
-    required this.isDefault,
+    required this.isDefaultMetadata,
+    required this.isDefaultAudioSource,
   });
 
   @override
   Widget build(BuildContext context, ref) {
+    final mediaQuery = MediaQuery.sizeOf(context);
+
     final metadataPlugin = ref.watch(metadataPluginProvider);
-    final isAuthenticatedSnapshot =
-        ref.watch(metadataPluginAuthenticatedProvider);
+    final audioSourcePlugin = ref.watch(audioSourcePluginProvider);
+    final pluginSnapshot = switch ((isDefaultMetadata, isDefaultAudioSource)) {
+      (true, _) => metadataPlugin,
+      (false, true) => audioSourcePlugin,
+      _ => null,
+    };
+
     final pluginsNotifier = ref.watch(metadataPluginsProvider.notifier);
-    final requiresAuth =
-        isDefault && plugin.abilities.contains(PluginAbilities.authentication);
-    final supportsScrobbling =
-        isDefault && plugin.abilities.contains(PluginAbilities.scrobbling);
-    final isAuthenticated = isAuthenticatedSnapshot.asData?.value == true;
-    final updateAvailable =
-        isDefault ? ref.watch(metadataPluginUpdateCheckerProvider) : null;
-    final hasUpdate = isDefault && updateAvailable?.asData?.value != null;
+
+    final requiresAuth = (isDefaultMetadata || isDefaultAudioSource) &&
+        plugin.abilities.contains(PluginAbilities.authentication);
+    final supportsScrobbling = isDefaultMetadata &&
+        plugin.abilities.contains(PluginAbilities.scrobbling);
+
+    final isMetadataAuthenticatedSnapshot =
+        ref.watch(metadataPluginAuthenticatedProvider);
+    final isAudioSourceAuthenticatedSnapshot =
+        ref.watch(audioSourcePluginAuthenticatedProvider);
+    final isAuthenticated =
+        isMetadataAuthenticatedSnapshot.asData?.value == true ||
+            isAudioSourceAuthenticatedSnapshot.asData?.value == true;
+
+    final metadataUpdateAvailable =
+        ref.watch(metadataPluginUpdateCheckerProvider);
+    final audioSourceUpdateAvailable =
+        ref.watch(audioSourcePluginUpdateCheckerProvider);
+    final updateAvailable = switch ((isDefaultMetadata, isDefaultAudioSource)) {
+      (true, _) => metadataUpdateAvailable,
+      (false, true) => audioSourceUpdateAvailable,
+      _ => null,
+    };
+    final hasUpdate = updateAvailable?.asData?.value != null;
 
     return Card(
       child: Column(
@@ -218,111 +243,158 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
                 ],
               ),
             ),
-          Row(
+          Wrap(
             spacing: 8,
+            runSpacing: 8,
+            alignment: WrapAlignment.spaceBetween,
             children: [
-              Button.secondary(
-                enabled: !isDefault,
-                onPressed: () async {
-                  await pluginsNotifier.setDefaultPlugin(plugin);
-                },
-                child: Text(
-                  isDefault
-                      ? context.l10n.default_plugin
-                      : context.l10n.set_default,
-                ),
-              ),
-              if (isDefault)
-                Consumer(builder: (context, ref, _) {
-                  final supportTextSnapshot =
-                      ref.watch(metadataPluginSupportTextProvider);
-
-                  if (supportTextSnapshot.hasValue &&
-                      supportTextSnapshot.value == null) {
-                    return const SizedBox.shrink();
-                  }
-
-                  final bgColor = context.theme.brightness == Brightness.dark
-                      ? const Color.fromARGB(255, 255, 145, 175)
-                      : Colors.pink[600];
-                  final textColor = context.theme.brightness == Brightness.dark
-                      ? Colors.pink[700]
-                      : Colors.pink[50];
-
-                  final mediaQuery = MediaQuery.sizeOf(context);
-
-                  return Button(
-                    style: ButtonVariance.secondary.copyWith(
-                      decoration: (context, states, value) {
-                        return value.copyWithIfBoxDecoration(
-                          color: bgColor,
-                        );
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  if (plugin.abilities.contains(PluginAbilities.metadata))
+                    Button.secondary(
+                      enabled: !isDefaultMetadata,
+                      onPressed: () async {
+                        await pluginsNotifier.setDefaultMetadataPlugin(plugin);
                       },
-                      textStyle: (context, states, value) {
-                        return value.copyWith(
-                          color: textColor,
-                        );
-                      },
-                      iconTheme: (context, states, value) {
-                        return value.copyWith(
-                          color: textColor,
-                        );
-                      },
+                      child: Text(
+                        isDefaultMetadata
+                            ? context.l10n.default_metadata_source
+                            : context.l10n.set_default_metadata_source,
+                      ),
                     ),
-                    leading: const Icon(SpotubeIcons.heartFilled),
-                    child: Text(context.l10n.support),
-                    onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title:
-                                Text(context.l10n.support_plugin_development),
-                            content: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight: mediaQuery.height * 0.8,
-                                maxWidth: 720,
-                              ),
-                              child: SizedBox(
-                                width: double.infinity,
-                                child: SingleChildScrollView(
-                                  child: AppMarkdown(
-                                    data: supportTextSnapshot.value ?? "",
+                  if (plugin.abilities.contains(PluginAbilities.audioSource))
+                    Button.secondary(
+                      enabled: !isDefaultAudioSource,
+                      onPressed: () async {
+                        await pluginsNotifier
+                            .setDefaultAudioSourcePlugin(plugin);
+                      },
+                      child: Text(
+                        isDefaultAudioSource
+                            ? context.l10n.default_audio_source
+                            : context.l10n.set_default_audio_source,
+                      ),
+                    ),
+                ],
+              ),
+              Row(
+                mainAxisSize:
+                    mediaQuery.smAndUp ? MainAxisSize.min : MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                spacing: 8,
+                children: [
+                  if (isDefaultMetadata || isDefaultAudioSource)
+                    Consumer(builder: (context, ref, _) {
+                      final metadataSupportTextSnapshot =
+                          ref.watch(metadataPluginSupportTextProvider);
+                      final audioSourceSupportTextSnapshot =
+                          ref.watch(audioSourcePluginSupportTextProvider);
+
+                      final supportTextSnapshot =
+                          switch ((isDefaultMetadata, isDefaultAudioSource)) {
+                        (true, _) => metadataSupportTextSnapshot,
+                        (false, true) => audioSourceSupportTextSnapshot,
+                        _ => null,
+                      };
+
+                      if ((supportTextSnapshot?.hasValue ?? false) &&
+                          supportTextSnapshot?.value == null) {
+                        return const SizedBox.shrink();
+                      }
+
+                      final bgColor =
+                          context.theme.brightness == Brightness.dark
+                              ? const Color.fromARGB(255, 255, 145, 175)
+                              : Colors.pink[600];
+                      final textColor =
+                          context.theme.brightness == Brightness.dark
+                              ? Colors.pink[700]
+                              : Colors.pink[50];
+
+                      final mediaQuery = MediaQuery.sizeOf(context);
+
+                      return Button(
+                        style: ButtonVariance.secondary.copyWith(
+                          decoration: (context, states, value) {
+                            return value.copyWithIfBoxDecoration(
+                              color: bgColor,
+                            );
+                          },
+                          textStyle: (context, states, value) {
+                            return value.copyWith(
+                              color: textColor,
+                            );
+                          },
+                          iconTheme: (context, states, value) {
+                            return value.copyWith(
+                              color: textColor,
+                            );
+                          },
+                        ),
+                        leading: const Icon(SpotubeIcons.heartFilled),
+                        child: Text(context.l10n.support),
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(
+                                    context.l10n.support_plugin_development),
+                                content: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxHeight: mediaQuery.height * 0.8,
+                                    maxWidth: 720,
+                                  ),
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    child: SingleChildScrollView(
+                                      child: AppMarkdown(
+                                        data: supportTextSnapshot
+                                                ?.asData?.value ??
+                                            "",
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            actions: [
-                              Button.secondary(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text(context.l10n.close),
-                              ),
-                            ],
+                                actions: [
+                                  Button.secondary(
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                    child: Text(context.l10n.close),
+                                  ),
+                                ],
+                              );
+                            },
                           );
                         },
                       );
-                    },
-                  );
-                }),
-              const Spacer(),
-              if (isDefault && requiresAuth && !isAuthenticated)
-                Button.primary(
-                  onPressed: () async {
-                    await metadataPlugin.asData?.value?.auth.authenticate();
-                  },
-                  leading: const Icon(SpotubeIcons.login),
-                  child: Text(context.l10n.login),
-                )
-              else if (isDefault && requiresAuth && isAuthenticated)
-                Button.destructive(
-                  onPressed: () async {
-                    await metadataPlugin.asData?.value?.auth.logout();
-                  },
-                  leading: const Icon(SpotubeIcons.logout),
-                  child: Text(context.l10n.logout),
-                )
+                    }),
+                  if ((isDefaultMetadata || isDefaultAudioSource) &&
+                      requiresAuth &&
+                      !isAuthenticated)
+                    Button.primary(
+                      onPressed: () async {
+                        await pluginSnapshot?.asData?.value?.auth
+                            .authenticate();
+                      },
+                      leading: const Icon(SpotubeIcons.login),
+                      child: Text(context.l10n.login),
+                    )
+                  else if ((isDefaultMetadata || isDefaultAudioSource) &&
+                      requiresAuth &&
+                      isAuthenticated)
+                    Button.destructive(
+                      onPressed: () async {
+                        await pluginSnapshot?.asData?.value?.auth.logout();
+                      },
+                      leading: const Icon(SpotubeIcons.logout),
+                      child: Text(context.l10n.logout),
+                    ),
+                ],
+              )
             ],
           )
         ],

@@ -1455,7 +1455,16 @@ class AppLocalizationsDe extends AppLocalizations {
       'Dieses Plugin scrobbelt Ihre Musik, um Ihre Hörhistorie zu erstellen.';
 
   @override
-  String get default_plugin => 'Standard';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Als Standard festlegen';

@@ -1443,7 +1443,16 @@ class AppLocalizationsBn extends AppLocalizations {
       'এই প্লাগইনটি আপনার সঙ্গীত স্ক্রোব্বল করে আপনার শোনা ইতিহাস তৈরি করে।';
 
   @override
-  String get default_plugin => 'ডিফল্ট';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'ডিফল্ট হিসাবে নির্ধারণ করুন';

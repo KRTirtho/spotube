@@ -2763,11 +2763,29 @@ abstract class AppLocalizations {
   /// **'This plugin scrobbles your music to generate your listening history.'**
   String get plugin_scrobbling_info;
 
-  /// No description provided for @default_plugin.
+  /// No description provided for @default_metadata_source.
   ///
   /// In en, this message translates to:
-  /// **'Default'**
-  String get default_plugin;
+  /// **'Default metadata source'**
+  String get default_metadata_source;
+
+  /// No description provided for @set_default_metadata_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Set default metadata source'**
+  String get set_default_metadata_source;
+
+  /// No description provided for @default_audio_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Default audio source'**
+  String get default_audio_source;
+
+  /// No description provided for @set_default_audio_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Set default audio source'**
+  String get set_default_audio_source;
 
   /// No description provided for @set_default.
   ///

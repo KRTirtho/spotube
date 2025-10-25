@@ -1,5 +1,9 @@
 {
   "ar": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -8,6 +12,10 @@
   ],
 
   "bn": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -16,6 +24,10 @@
   ],
 
   "ca": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -24,6 +36,10 @@
   ],
 
   "cs": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -32,6 +48,10 @@
   ],
 
   "de": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -40,6 +60,10 @@
   ],
 
   "es": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -48,6 +72,10 @@
   ],
 
   "eu": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -56,6 +84,10 @@
   ],
 
   "fa": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -64,6 +96,10 @@
   ],
 
   "fi": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -72,6 +108,10 @@
   ],
 
   "fr": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -80,6 +120,10 @@
   ],
 
   "hi": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -88,6 +132,10 @@
   ],
 
   "id": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -96,6 +144,10 @@
   ],
 
   "it": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -104,6 +156,10 @@
   ],
 
   "ja": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -112,6 +168,10 @@
   ],
 
   "ka": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -120,6 +180,10 @@
   ],
 
   "ko": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -128,6 +192,10 @@
   ],
 
   "ne": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -137,6 +205,10 @@
 
   "nl": [
     "audio_source",
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -145,6 +217,10 @@
   ],
 
   "pl": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -153,6 +229,10 @@
   ],
 
   "pt": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -161,6 +241,10 @@
   ],
 
   "ru": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -169,6 +253,10 @@
   ],
 
   "ta": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -177,6 +265,10 @@
   ],
 
   "th": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -185,6 +277,10 @@
   ],
 
   "tl": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -193,6 +289,10 @@
   ],
 
   "tr": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -201,6 +301,10 @@
   ],
 
   "uk": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -209,6 +313,10 @@
   ],
 
   "vi": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -217,6 +325,10 @@
   ],
 
   "zh": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",
@@ -225,6 +337,10 @@
   ],
 
   "zh_TW": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
     "plugins",
     "configure_plugins",
     "source",

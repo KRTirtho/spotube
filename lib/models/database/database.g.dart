@@ -3740,12 +3740,12 @@ class LyricsTableCompanion extends UpdateCompanion<LyricsTableData> {
   }
 }
 
-class $MetadataPluginsTableTable extends MetadataPluginsTable
-    with TableInfo<$MetadataPluginsTableTable, MetadataPluginsTableData> {
+class $PluginsTableTable extends PluginsTable
+    with TableInfo<$PluginsTableTable, PluginsTableData> {
   @override
   final GeneratedDatabase attachedDatabase;
   final String? _alias;
-  $MetadataPluginsTableTable(this.attachedDatabase, [this._alias]);
+  $PluginsTableTable(this.attachedDatabase, [this._alias]);
   static const VerificationMeta _idMeta = const VerificationMeta('id');
   @override
   late final GeneratedColumn<int> id = GeneratedColumn<int>(
@@ -3790,24 +3790,32 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
   late final GeneratedColumnWithTypeConverter<List<String>, String> apis =
       GeneratedColumn<String>('apis', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<List<String>>(
-              $MetadataPluginsTableTable.$converterapis);
+          .withConverter<List<String>>($PluginsTableTable.$converterapis);
   @override
   late final GeneratedColumnWithTypeConverter<List<String>, String> abilities =
       GeneratedColumn<String>('abilities', aliasedName, false,
               type: DriftSqlType.string, requiredDuringInsert: true)
-          .withConverter<List<String>>(
-              $MetadataPluginsTableTable.$converterabilities);
-  static const VerificationMeta _selectedMeta =
-      const VerificationMeta('selected');
+          .withConverter<List<String>>($PluginsTableTable.$converterabilities);
+  static const VerificationMeta _selectedForMetadataMeta =
+      const VerificationMeta('selectedForMetadata');
   @override
-  late final GeneratedColumn<bool> selected = GeneratedColumn<bool>(
-      'selected', aliasedName, false,
+  late final GeneratedColumn<bool> selectedForMetadata = GeneratedColumn<bool>(
+      'selected_for_metadata', aliasedName, false,
       type: DriftSqlType.bool,
       requiredDuringInsert: false,
-      defaultConstraints:
-          GeneratedColumn.constraintIsAlways('CHECK ("selected" IN (0, 1))'),
+      defaultConstraints: GeneratedColumn.constraintIsAlways(
+          'CHECK ("selected_for_metadata" IN (0, 1))'),
       defaultValue: const Constant(false));
+  static const VerificationMeta _selectedForAudioSourceMeta =
+      const VerificationMeta('selectedForAudioSource');
+  @override
+  late final GeneratedColumn<bool> selectedForAudioSource =
+      GeneratedColumn<bool>('selected_for_audio_source', aliasedName, false,
+          type: DriftSqlType.bool,
+          requiredDuringInsert: false,
+          defaultConstraints: GeneratedColumn.constraintIsAlways(
+              'CHECK ("selected_for_audio_source" IN (0, 1))'),
+          defaultValue: const Constant(false));
   static const VerificationMeta _repositoryMeta =
       const VerificationMeta('repository');
   @override
@@ -3821,7 +3829,7 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
       'plugin_api_version', aliasedName, false,
       type: DriftSqlType.string,
       requiredDuringInsert: false,
-      defaultValue: const Constant('1.0.0'));
+      defaultValue: const Constant('2.0.0'));
   @override
   List<GeneratedColumn> get $columns => [
         id,
@@ -3832,7 +3840,8 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
         entryPoint,
         apis,
         abilities,
-        selected,
+        selectedForMetadata,
+        selectedForAudioSource,
         repository,
         pluginApiVersion
       ];
@@ -3840,10 +3849,9 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
   String get aliasedName => _alias ?? actualTableName;
   @override
   String get actualTableName => $name;
-  static const String $name = 'metadata_plugins_table';
+  static const String $name = 'plugins_table';
   @override
-  VerificationContext validateIntegrity(
-      Insertable<MetadataPluginsTableData> instance,
+  VerificationContext validateIntegrity(Insertable<PluginsTableData> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -3884,9 +3892,17 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
     } else if (isInserting) {
       context.missing(_entryPointMeta);
     }
-    if (data.containsKey('selected')) {
-      context.handle(_selectedMeta,
-          selected.isAcceptableOrUnknown(data['selected']!, _selectedMeta));
+    if (data.containsKey('selected_for_metadata')) {
+      context.handle(
+          _selectedForMetadataMeta,
+          selectedForMetadata.isAcceptableOrUnknown(
+              data['selected_for_metadata']!, _selectedForMetadataMeta));
+    }
+    if (data.containsKey('selected_for_audio_source')) {
+      context.handle(
+          _selectedForAudioSourceMeta,
+          selectedForAudioSource.isAcceptableOrUnknown(
+              data['selected_for_audio_source']!, _selectedForAudioSourceMeta));
     }
     if (data.containsKey('repository')) {
       context.handle(
@@ -3906,10 +3922,9 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
   @override
   Set<GeneratedColumn> get $primaryKey => {id};
   @override
-  MetadataPluginsTableData map(Map<String, dynamic> data,
-      {String? tablePrefix}) {
+  PluginsTableData map(Map<String, dynamic> data, {String? tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return MetadataPluginsTableData(
+    return PluginsTableData(
       id: attachedDatabase.typeMapping
           .read(DriftSqlType.int, data['${effectivePrefix}id'])!,
       name: attachedDatabase.typeMapping
@@ -3922,14 +3937,17 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
           .read(DriftSqlType.string, data['${effectivePrefix}author'])!,
       entryPoint: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}entry_point'])!,
-      apis: $MetadataPluginsTableTable.$converterapis.fromSql(attachedDatabase
+      apis: $PluginsTableTable.$converterapis.fromSql(attachedDatabase
           .typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}apis'])!),
-      abilities: $MetadataPluginsTableTable.$converterabilities.fromSql(
-          attachedDatabase.typeMapping
-              .read(DriftSqlType.string, data['${effectivePrefix}abilities'])!),
-      selected: attachedDatabase.typeMapping
-          .read(DriftSqlType.bool, data['${effectivePrefix}selected'])!,
+      abilities: $PluginsTableTable.$converterabilities.fromSql(attachedDatabase
+          .typeMapping
+          .read(DriftSqlType.string, data['${effectivePrefix}abilities'])!),
+      selectedForMetadata: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool, data['${effectivePrefix}selected_for_metadata'])!,
+      selectedForAudioSource: attachedDatabase.typeMapping.read(
+          DriftSqlType.bool,
+          data['${effectivePrefix}selected_for_audio_source'])!,
       repository: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}repository']),
       pluginApiVersion: attachedDatabase.typeMapping.read(
@@ -3938,8 +3956,8 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
   }
 
   @override
-  $MetadataPluginsTableTable createAlias(String alias) {
-    return $MetadataPluginsTableTable(attachedDatabase, alias);
+  $PluginsTableTable createAlias(String alias) {
+    return $PluginsTableTable(attachedDatabase, alias);
   }
 
   static TypeConverter<List<String>, String> $converterapis =
@@ -3948,8 +3966,8 @@ class $MetadataPluginsTableTable extends MetadataPluginsTable
       const StringListConverter();
 }
 
-class MetadataPluginsTableData extends DataClass
-    implements Insertable<MetadataPluginsTableData> {
+class PluginsTableData extends DataClass
+    implements Insertable<PluginsTableData> {
   final int id;
   final String name;
   final String description;
@@ -3958,10 +3976,11 @@ class MetadataPluginsTableData extends DataClass
   final String entryPoint;
   final List<String> apis;
   final List<String> abilities;
-  final bool selected;
+  final bool selectedForMetadata;
+  final bool selectedForAudioSource;
   final String? repository;
   final String pluginApiVersion;
-  const MetadataPluginsTableData(
+  const PluginsTableData(
       {required this.id,
       required this.name,
       required this.description,
@@ -3970,7 +3989,8 @@ class MetadataPluginsTableData extends DataClass
       required this.entryPoint,
       required this.apis,
       required this.abilities,
-      required this.selected,
+      required this.selectedForMetadata,
+      required this.selectedForAudioSource,
       this.repository,
       required this.pluginApiVersion});
   @override
@@ -3983,14 +4003,15 @@ class MetadataPluginsTableData extends DataClass
     map['author'] = Variable<String>(author);
     map['entry_point'] = Variable<String>(entryPoint);
     {
-      map['apis'] = Variable<String>(
-          $MetadataPluginsTableTable.$converterapis.toSql(apis));
+      map['apis'] =
+          Variable<String>($PluginsTableTable.$converterapis.toSql(apis));
     }
     {
       map['abilities'] = Variable<String>(
-          $MetadataPluginsTableTable.$converterabilities.toSql(abilities));
+          $PluginsTableTable.$converterabilities.toSql(abilities));
     }
-    map['selected'] = Variable<bool>(selected);
+    map['selected_for_metadata'] = Variable<bool>(selectedForMetadata);
+    map['selected_for_audio_source'] = Variable<bool>(selectedForAudioSource);
     if (!nullToAbsent || repository != null) {
       map['repository'] = Variable<String>(repository);
     }
@@ -3998,8 +4019,8 @@ class MetadataPluginsTableData extends DataClass
     return map;
   }
 
-  MetadataPluginsTableCompanion toCompanion(bool nullToAbsent) {
-    return MetadataPluginsTableCompanion(
+  PluginsTableCompanion toCompanion(bool nullToAbsent) {
+    return PluginsTableCompanion(
       id: Value(id),
       name: Value(name),
       description: Value(description),
@@ -4008,7 +4029,8 @@ class MetadataPluginsTableData extends DataClass
       entryPoint: Value(entryPoint),
       apis: Value(apis),
       abilities: Value(abilities),
-      selected: Value(selected),
+      selectedForMetadata: Value(selectedForMetadata),
+      selectedForAudioSource: Value(selectedForAudioSource),
       repository: repository == null && nullToAbsent
           ? const Value.absent()
           : Value(repository),
@@ -4016,10 +4038,10 @@ class MetadataPluginsTableData extends DataClass
     );
   }
 
-  factory MetadataPluginsTableData.fromJson(Map<String, dynamic> json,
+  factory PluginsTableData.fromJson(Map<String, dynamic> json,
       {ValueSerializer? serializer}) {
     serializer ??= driftRuntimeOptions.defaultSerializer;
-    return MetadataPluginsTableData(
+    return PluginsTableData(
       id: serializer.fromJson<int>(json['id']),
       name: serializer.fromJson<String>(json['name']),
       description: serializer.fromJson<String>(json['description']),
@@ -4028,7 +4050,10 @@ class MetadataPluginsTableData extends DataClass
       entryPoint: serializer.fromJson<String>(json['entryPoint']),
       apis: serializer.fromJson<List<String>>(json['apis']),
       abilities: serializer.fromJson<List<String>>(json['abilities']),
-      selected: serializer.fromJson<bool>(json['selected']),
+      selectedForMetadata:
+          serializer.fromJson<bool>(json['selectedForMetadata']),
+      selectedForAudioSource:
+          serializer.fromJson<bool>(json['selectedForAudioSource']),
       repository: serializer.fromJson<String?>(json['repository']),
       pluginApiVersion: serializer.fromJson<String>(json['pluginApiVersion']),
     );
@@ -4045,13 +4070,14 @@ class MetadataPluginsTableData extends DataClass
       'entryPoint': serializer.toJson<String>(entryPoint),
       'apis': serializer.toJson<List<String>>(apis),
       'abilities': serializer.toJson<List<String>>(abilities),
-      'selected': serializer.toJson<bool>(selected),
+      'selectedForMetadata': serializer.toJson<bool>(selectedForMetadata),
+      'selectedForAudioSource': serializer.toJson<bool>(selectedForAudioSource),
       'repository': serializer.toJson<String?>(repository),
       'pluginApiVersion': serializer.toJson<String>(pluginApiVersion),
     };
   }
 
-  MetadataPluginsTableData copyWith(
+  PluginsTableData copyWith(
           {int? id,
           String? name,
           String? description,
@@ -4060,10 +4086,11 @@ class MetadataPluginsTableData extends DataClass
           String? entryPoint,
           List<String>? apis,
           List<String>? abilities,
-          bool? selected,
+          bool? selectedForMetadata,
+          bool? selectedForAudioSource,
           Value<String?> repository = const Value.absent(),
           String? pluginApiVersion}) =>
-      MetadataPluginsTableData(
+      PluginsTableData(
         id: id ?? this.id,
         name: name ?? this.name,
         description: description ?? this.description,
@@ -4072,13 +4099,14 @@ class MetadataPluginsTableData extends DataClass
         entryPoint: entryPoint ?? this.entryPoint,
         apis: apis ?? this.apis,
         abilities: abilities ?? this.abilities,
-        selected: selected ?? this.selected,
+        selectedForMetadata: selectedForMetadata ?? this.selectedForMetadata,
+        selectedForAudioSource:
+            selectedForAudioSource ?? this.selectedForAudioSource,
         repository: repository.present ? repository.value : this.repository,
         pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
       );
-  MetadataPluginsTableData copyWithCompanion(
-      MetadataPluginsTableCompanion data) {
-    return MetadataPluginsTableData(
+  PluginsTableData copyWithCompanion(PluginsTableCompanion data) {
+    return PluginsTableData(
       id: data.id.present ? data.id.value : this.id,
       name: data.name.present ? data.name.value : this.name,
       description:
@@ -4089,7 +4117,12 @@ class MetadataPluginsTableData extends DataClass
           data.entryPoint.present ? data.entryPoint.value : this.entryPoint,
       apis: data.apis.present ? data.apis.value : this.apis,
       abilities: data.abilities.present ? data.abilities.value : this.abilities,
-      selected: data.selected.present ? data.selected.value : this.selected,
+      selectedForMetadata: data.selectedForMetadata.present
+          ? data.selectedForMetadata.value
+          : this.selectedForMetadata,
+      selectedForAudioSource: data.selectedForAudioSource.present
+          ? data.selectedForAudioSource.value
+          : this.selectedForAudioSource,
       repository:
           data.repository.present ? data.repository.value : this.repository,
       pluginApiVersion: data.pluginApiVersion.present
@@ -4100,7 +4133,7 @@ class MetadataPluginsTableData extends DataClass
 
   @override
   String toString() {
-    return (StringBuffer('MetadataPluginsTableData(')
+    return (StringBuffer('PluginsTableData(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
@@ -4109,7 +4142,8 @@ class MetadataPluginsTableData extends DataClass
           ..write('entryPoint: $entryPoint, ')
           ..write('apis: $apis, ')
           ..write('abilities: $abilities, ')
-          ..write('selected: $selected, ')
+          ..write('selectedForMetadata: $selectedForMetadata, ')
+          ..write('selectedForAudioSource: $selectedForAudioSource, ')
           ..write('repository: $repository, ')
           ..write('pluginApiVersion: $pluginApiVersion')
           ..write(')'))
@@ -4117,12 +4151,23 @@ class MetadataPluginsTableData extends DataClass
   }
 
   @override
-  int get hashCode => Object.hash(id, name, description, version, author,
-      entryPoint, apis, abilities, selected, repository, pluginApiVersion);
+  int get hashCode => Object.hash(
+      id,
+      name,
+      description,
+      version,
+      author,
+      entryPoint,
+      apis,
+      abilities,
+      selectedForMetadata,
+      selectedForAudioSource,
+      repository,
+      pluginApiVersion);
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is MetadataPluginsTableData &&
+      (other is PluginsTableData &&
           other.id == this.id &&
           other.name == this.name &&
           other.description == this.description &&
@@ -4131,13 +4176,13 @@ class MetadataPluginsTableData extends DataClass
           other.entryPoint == this.entryPoint &&
           other.apis == this.apis &&
           other.abilities == this.abilities &&
-          other.selected == this.selected &&
+          other.selectedForMetadata == this.selectedForMetadata &&
+          other.selectedForAudioSource == this.selectedForAudioSource &&
           other.repository == this.repository &&
           other.pluginApiVersion == this.pluginApiVersion);
 }
 
-class MetadataPluginsTableCompanion
-    extends UpdateCompanion<MetadataPluginsTableData> {
+class PluginsTableCompanion extends UpdateCompanion<PluginsTableData> {
   final Value<int> id;
   final Value<String> name;
   final Value<String> description;
@@ -4146,10 +4191,11 @@ class MetadataPluginsTableCompanion
   final Value<String> entryPoint;
   final Value<List<String>> apis;
   final Value<List<String>> abilities;
-  final Value<bool> selected;
+  final Value<bool> selectedForMetadata;
+  final Value<bool> selectedForAudioSource;
   final Value<String?> repository;
   final Value<String> pluginApiVersion;
-  const MetadataPluginsTableCompanion({
+  const PluginsTableCompanion({
     this.id = const Value.absent(),
     this.name = const Value.absent(),
     this.description = const Value.absent(),
@@ -4158,11 +4204,12 @@ class MetadataPluginsTableCompanion
     this.entryPoint = const Value.absent(),
     this.apis = const Value.absent(),
     this.abilities = const Value.absent(),
-    this.selected = const Value.absent(),
+    this.selectedForMetadata = const Value.absent(),
+    this.selectedForAudioSource = const Value.absent(),
     this.repository = const Value.absent(),
     this.pluginApiVersion = const Value.absent(),
   });
-  MetadataPluginsTableCompanion.insert({
+  PluginsTableCompanion.insert({
     this.id = const Value.absent(),
     required String name,
     required String description,
@@ -4171,7 +4218,8 @@ class MetadataPluginsTableCompanion
     required String entryPoint,
     required List<String> apis,
     required List<String> abilities,
-    this.selected = const Value.absent(),
+    this.selectedForMetadata = const Value.absent(),
+    this.selectedForAudioSource = const Value.absent(),
     this.repository = const Value.absent(),
     this.pluginApiVersion = const Value.absent(),
   })  : name = Value(name),
@@ -4181,7 +4229,7 @@ class MetadataPluginsTableCompanion
         entryPoint = Value(entryPoint),
         apis = Value(apis),
         abilities = Value(abilities);
-  static Insertable<MetadataPluginsTableData> custom({
+  static Insertable<PluginsTableData> custom({
     Expression<int>? id,
     Expression<String>? name,
     Expression<String>? description,
@@ -4190,7 +4238,8 @@ class MetadataPluginsTableCompanion
     Expression<String>? entryPoint,
     Expression<String>? apis,
     Expression<String>? abilities,
-    Expression<bool>? selected,
+    Expression<bool>? selectedForMetadata,
+    Expression<bool>? selectedForAudioSource,
     Expression<String>? repository,
     Expression<String>? pluginApiVersion,
   }) {
@@ -4203,13 +4252,16 @@ class MetadataPluginsTableCompanion
       if (entryPoint != null) 'entry_point': entryPoint,
       if (apis != null) 'apis': apis,
       if (abilities != null) 'abilities': abilities,
-      if (selected != null) 'selected': selected,
+      if (selectedForMetadata != null)
+        'selected_for_metadata': selectedForMetadata,
+      if (selectedForAudioSource != null)
+        'selected_for_audio_source': selectedForAudioSource,
       if (repository != null) 'repository': repository,
       if (pluginApiVersion != null) 'plugin_api_version': pluginApiVersion,
     });
   }
 
-  MetadataPluginsTableCompanion copyWith(
+  PluginsTableCompanion copyWith(
       {Value<int>? id,
       Value<String>? name,
       Value<String>? description,
@@ -4218,10 +4270,11 @@ class MetadataPluginsTableCompanion
       Value<String>? entryPoint,
       Value<List<String>>? apis,
       Value<List<String>>? abilities,
-      Value<bool>? selected,
+      Value<bool>? selectedForMetadata,
+      Value<bool>? selectedForAudioSource,
       Value<String?>? repository,
       Value<String>? pluginApiVersion}) {
-    return MetadataPluginsTableCompanion(
+    return PluginsTableCompanion(
       id: id ?? this.id,
       name: name ?? this.name,
       description: description ?? this.description,
@@ -4230,7 +4283,9 @@ class MetadataPluginsTableCompanion
       entryPoint: entryPoint ?? this.entryPoint,
       apis: apis ?? this.apis,
       abilities: abilities ?? this.abilities,
-      selected: selected ?? this.selected,
+      selectedForMetadata: selectedForMetadata ?? this.selectedForMetadata,
+      selectedForAudioSource:
+          selectedForAudioSource ?? this.selectedForAudioSource,
       repository: repository ?? this.repository,
       pluginApiVersion: pluginApiVersion ?? this.pluginApiVersion,
     );
@@ -4258,16 +4313,19 @@ class MetadataPluginsTableCompanion
       map['entry_point'] = Variable<String>(entryPoint.value);
     }
     if (apis.present) {
-      map['apis'] = Variable<String>(
-          $MetadataPluginsTableTable.$converterapis.toSql(apis.value));
+      map['apis'] =
+          Variable<String>($PluginsTableTable.$converterapis.toSql(apis.value));
     }
     if (abilities.present) {
-      map['abilities'] = Variable<String>($MetadataPluginsTableTable
-          .$converterabilities
-          .toSql(abilities.value));
+      map['abilities'] = Variable<String>(
+          $PluginsTableTable.$converterabilities.toSql(abilities.value));
     }
-    if (selected.present) {
-      map['selected'] = Variable<bool>(selected.value);
+    if (selectedForMetadata.present) {
+      map['selected_for_metadata'] = Variable<bool>(selectedForMetadata.value);
+    }
+    if (selectedForAudioSource.present) {
+      map['selected_for_audio_source'] =
+          Variable<bool>(selectedForAudioSource.value);
     }
     if (repository.present) {
       map['repository'] = Variable<String>(repository.value);
@@ -4280,7 +4338,7 @@ class MetadataPluginsTableCompanion
 
   @override
   String toString() {
-    return (StringBuffer('MetadataPluginsTableCompanion(')
+    return (StringBuffer('PluginsTableCompanion(')
           ..write('id: $id, ')
           ..write('name: $name, ')
           ..write('description: $description, ')
@@ -4289,7 +4347,8 @@ class MetadataPluginsTableCompanion
           ..write('entryPoint: $entryPoint, ')
           ..write('apis: $apis, ')
           ..write('abilities: $abilities, ')
-          ..write('selected: $selected, ')
+          ..write('selectedForMetadata: $selectedForMetadata, ')
+          ..write('selectedForAudioSource: $selectedForAudioSource, ')
           ..write('repository: $repository, ')
           ..write('pluginApiVersion: $pluginApiVersion')
           ..write(')'))
@@ -4314,8 +4373,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
       $AudioPlayerStateTableTable(this);
   late final $HistoryTableTable historyTable = $HistoryTableTable(this);
   late final $LyricsTableTable lyricsTable = $LyricsTableTable(this);
-  late final $MetadataPluginsTableTable metadataPluginsTable =
-      $MetadataPluginsTableTable(this);
+  late final $PluginsTableTable pluginsTable = $PluginsTableTable(this);
   late final Index uniqueBlacklist = Index('unique_blacklist',
       'CREATE UNIQUE INDEX unique_blacklist ON blacklist_table (element_type, element_id)');
   late final Index uniqTrackMatch = Index('uniq_track_match',
@@ -4334,7 +4392,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         audioPlayerStateTable,
         historyTable,
         lyricsTable,
-        metadataPluginsTable,
+        pluginsTable,
         uniqueBlacklist,
         uniqTrackMatch
       ];
@@ -6280,8 +6338,8 @@ typedef $$LyricsTableTableProcessedTableManager = ProcessedTableManager<
     ),
     LyricsTableData,
     PrefetchHooks Function()>;
-typedef $$MetadataPluginsTableTableCreateCompanionBuilder
-    = MetadataPluginsTableCompanion Function({
+typedef $$PluginsTableTableCreateCompanionBuilder = PluginsTableCompanion
+    Function({
   Value<int> id,
   required String name,
   required String description,
@@ -6290,12 +6348,13 @@ typedef $$MetadataPluginsTableTableCreateCompanionBuilder
   required String entryPoint,
   required List<String> apis,
   required List<String> abilities,
-  Value<bool> selected,
+  Value<bool> selectedForMetadata,
+  Value<bool> selectedForAudioSource,
   Value<String?> repository,
   Value<String> pluginApiVersion,
 });
-typedef $$MetadataPluginsTableTableUpdateCompanionBuilder
-    = MetadataPluginsTableCompanion Function({
+typedef $$PluginsTableTableUpdateCompanionBuilder = PluginsTableCompanion
+    Function({
   Value<int> id,
   Value<String> name,
   Value<String> description,
@@ -6304,14 +6363,15 @@ typedef $$MetadataPluginsTableTableUpdateCompanionBuilder
   Value<String> entryPoint,
   Value<List<String>> apis,
   Value<List<String>> abilities,
-  Value<bool> selected,
+  Value<bool> selectedForMetadata,
+  Value<bool> selectedForAudioSource,
   Value<String?> repository,
   Value<String> pluginApiVersion,
 });
 
-class $$MetadataPluginsTableTableFilterComposer
-    extends Composer<_$AppDatabase, $MetadataPluginsTableTable> {
-  $$MetadataPluginsTableTableFilterComposer({
+class $$PluginsTableTableFilterComposer
+    extends Composer<_$AppDatabase, $PluginsTableTable> {
+  $$PluginsTableTableFilterComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -6346,8 +6406,13 @@ class $$MetadataPluginsTableTableFilterComposer
           column: $table.abilities,
           builder: (column) => ColumnWithTypeConverterFilters(column));
 
-  ColumnFilters<bool> get selected => $composableBuilder(
-      column: $table.selected, builder: (column) => ColumnFilters(column));
+  ColumnFilters<bool> get selectedForMetadata => $composableBuilder(
+      column: $table.selectedForMetadata,
+      builder: (column) => ColumnFilters(column));
+
+  ColumnFilters<bool> get selectedForAudioSource => $composableBuilder(
+      column: $table.selectedForAudioSource,
+      builder: (column) => ColumnFilters(column));
 
   ColumnFilters<String> get repository => $composableBuilder(
       column: $table.repository, builder: (column) => ColumnFilters(column));
@@ -6357,9 +6422,9 @@ class $$MetadataPluginsTableTableFilterComposer
       builder: (column) => ColumnFilters(column));
 }
 
-class $$MetadataPluginsTableTableOrderingComposer
-    extends Composer<_$AppDatabase, $MetadataPluginsTableTable> {
-  $$MetadataPluginsTableTableOrderingComposer({
+class $$PluginsTableTableOrderingComposer
+    extends Composer<_$AppDatabase, $PluginsTableTable> {
+  $$PluginsTableTableOrderingComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -6390,8 +6455,13 @@ class $$MetadataPluginsTableTableOrderingComposer
   ColumnOrderings<String> get abilities => $composableBuilder(
       column: $table.abilities, builder: (column) => ColumnOrderings(column));
 
-  ColumnOrderings<bool> get selected => $composableBuilder(
-      column: $table.selected, builder: (column) => ColumnOrderings(column));
+  ColumnOrderings<bool> get selectedForMetadata => $composableBuilder(
+      column: $table.selectedForMetadata,
+      builder: (column) => ColumnOrderings(column));
+
+  ColumnOrderings<bool> get selectedForAudioSource => $composableBuilder(
+      column: $table.selectedForAudioSource,
+      builder: (column) => ColumnOrderings(column));
 
   ColumnOrderings<String> get repository => $composableBuilder(
       column: $table.repository, builder: (column) => ColumnOrderings(column));
@@ -6401,9 +6471,9 @@ class $$MetadataPluginsTableTableOrderingComposer
       builder: (column) => ColumnOrderings(column));
 }
 
-class $$MetadataPluginsTableTableAnnotationComposer
-    extends Composer<_$AppDatabase, $MetadataPluginsTableTable> {
-  $$MetadataPluginsTableTableAnnotationComposer({
+class $$PluginsTableTableAnnotationComposer
+    extends Composer<_$AppDatabase, $PluginsTableTable> {
+  $$PluginsTableTableAnnotationComposer({
     required super.$db,
     required super.$table,
     super.joinBuilder,
@@ -6434,8 +6504,11 @@ class $$MetadataPluginsTableTableAnnotationComposer
   GeneratedColumnWithTypeConverter<List<String>, String> get abilities =>
       $composableBuilder(column: $table.abilities, builder: (column) => column);
 
-  GeneratedColumn<bool> get selected =>
-      $composableBuilder(column: $table.selected, builder: (column) => column);
+  GeneratedColumn<bool> get selectedForMetadata => $composableBuilder(
+      column: $table.selectedForMetadata, builder: (column) => column);
+
+  GeneratedColumn<bool> get selectedForAudioSource => $composableBuilder(
+      column: $table.selectedForAudioSource, builder: (column) => column);
 
   GeneratedColumn<String> get repository => $composableBuilder(
       column: $table.repository, builder: (column) => column);
@@ -6444,35 +6517,31 @@ class $$MetadataPluginsTableTableAnnotationComposer
       column: $table.pluginApiVersion, builder: (column) => column);
 }
 
-class $$MetadataPluginsTableTableTableManager extends RootTableManager<
+class $$PluginsTableTableTableManager extends RootTableManager<
     _$AppDatabase,
-    $MetadataPluginsTableTable,
-    MetadataPluginsTableData,
-    $$MetadataPluginsTableTableFilterComposer,
-    $$MetadataPluginsTableTableOrderingComposer,
-    $$MetadataPluginsTableTableAnnotationComposer,
-    $$MetadataPluginsTableTableCreateCompanionBuilder,
-    $$MetadataPluginsTableTableUpdateCompanionBuilder,
+    $PluginsTableTable,
+    PluginsTableData,
+    $$PluginsTableTableFilterComposer,
+    $$PluginsTableTableOrderingComposer,
+    $$PluginsTableTableAnnotationComposer,
+    $$PluginsTableTableCreateCompanionBuilder,
+    $$PluginsTableTableUpdateCompanionBuilder,
     (
-      MetadataPluginsTableData,
-      BaseReferences<_$AppDatabase, $MetadataPluginsTableTable,
-          MetadataPluginsTableData>
+      PluginsTableData,
+      BaseReferences<_$AppDatabase, $PluginsTableTable, PluginsTableData>
     ),
-    MetadataPluginsTableData,
+    PluginsTableData,
     PrefetchHooks Function()> {
-  $$MetadataPluginsTableTableTableManager(
-      _$AppDatabase db, $MetadataPluginsTableTable table)
+  $$PluginsTableTableTableManager(_$AppDatabase db, $PluginsTableTable table)
       : super(TableManagerState(
           db: db,
           table: table,
           createFilteringComposer: () =>
-              $$MetadataPluginsTableTableFilterComposer($db: db, $table: table),
+              $$PluginsTableTableFilterComposer($db: db, $table: table),
           createOrderingComposer: () =>
-              $$MetadataPluginsTableTableOrderingComposer(
-                  $db: db, $table: table),
+              $$PluginsTableTableOrderingComposer($db: db, $table: table),
           createComputedFieldComposer: () =>
-              $$MetadataPluginsTableTableAnnotationComposer(
-                  $db: db, $table: table),
+              $$PluginsTableTableAnnotationComposer($db: db, $table: table),
           updateCompanionCallback: ({
             Value<int> id = const Value.absent(),
             Value<String> name = const Value.absent(),
@@ -6482,11 +6551,12 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             Value<String> entryPoint = const Value.absent(),
             Value<List<String>> apis = const Value.absent(),
             Value<List<String>> abilities = const Value.absent(),
-            Value<bool> selected = const Value.absent(),
+            Value<bool> selectedForMetadata = const Value.absent(),
+            Value<bool> selectedForAudioSource = const Value.absent(),
             Value<String?> repository = const Value.absent(),
             Value<String> pluginApiVersion = const Value.absent(),
           }) =>
-              MetadataPluginsTableCompanion(
+              PluginsTableCompanion(
             id: id,
             name: name,
             description: description,
@@ -6495,7 +6565,8 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             entryPoint: entryPoint,
             apis: apis,
             abilities: abilities,
-            selected: selected,
+            selectedForMetadata: selectedForMetadata,
+            selectedForAudioSource: selectedForAudioSource,
             repository: repository,
             pluginApiVersion: pluginApiVersion,
           ),
@@ -6508,11 +6579,12 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             required String entryPoint,
             required List<String> apis,
             required List<String> abilities,
-            Value<bool> selected = const Value.absent(),
+            Value<bool> selectedForMetadata = const Value.absent(),
+            Value<bool> selectedForAudioSource = const Value.absent(),
             Value<String?> repository = const Value.absent(),
             Value<String> pluginApiVersion = const Value.absent(),
           }) =>
-              MetadataPluginsTableCompanion.insert(
+              PluginsTableCompanion.insert(
             id: id,
             name: name,
             description: description,
@@ -6521,7 +6593,8 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
             entryPoint: entryPoint,
             apis: apis,
             abilities: abilities,
-            selected: selected,
+            selectedForMetadata: selectedForMetadata,
+            selectedForAudioSource: selectedForAudioSource,
             repository: repository,
             pluginApiVersion: pluginApiVersion,
           ),
@@ -6532,23 +6605,21 @@ class $$MetadataPluginsTableTableTableManager extends RootTableManager<
         ));
 }
 
-typedef $$MetadataPluginsTableTableProcessedTableManager
-    = ProcessedTableManager<
-        _$AppDatabase,
-        $MetadataPluginsTableTable,
-        MetadataPluginsTableData,
-        $$MetadataPluginsTableTableFilterComposer,
-        $$MetadataPluginsTableTableOrderingComposer,
-        $$MetadataPluginsTableTableAnnotationComposer,
-        $$MetadataPluginsTableTableCreateCompanionBuilder,
-        $$MetadataPluginsTableTableUpdateCompanionBuilder,
-        (
-          MetadataPluginsTableData,
-          BaseReferences<_$AppDatabase, $MetadataPluginsTableTable,
-              MetadataPluginsTableData>
-        ),
-        MetadataPluginsTableData,
-        PrefetchHooks Function()>;
+typedef $$PluginsTableTableProcessedTableManager = ProcessedTableManager<
+    _$AppDatabase,
+    $PluginsTableTable,
+    PluginsTableData,
+    $$PluginsTableTableFilterComposer,
+    $$PluginsTableTableOrderingComposer,
+    $$PluginsTableTableAnnotationComposer,
+    $$PluginsTableTableCreateCompanionBuilder,
+    $$PluginsTableTableUpdateCompanionBuilder,
+    (
+      PluginsTableData,
+      BaseReferences<_$AppDatabase, $PluginsTableTable, PluginsTableData>
+    ),
+    PluginsTableData,
+    PrefetchHooks Function()>;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -6571,6 +6642,6 @@ class $AppDatabaseManager {
       $$HistoryTableTableTableManager(_db, _db.historyTable);
   $$LyricsTableTableTableManager get lyricsTable =>
       $$LyricsTableTableTableManager(_db, _db.lyricsTable);
-  $$MetadataPluginsTableTableTableManager get metadataPluginsTable =>
-      $$MetadataPluginsTableTableTableManager(_db, _db.metadataPluginsTable);
+  $$PluginsTableTableTableManager get pluginsTable =>
+      $$PluginsTableTableTableManager(_db, _db.pluginsTable);
 }

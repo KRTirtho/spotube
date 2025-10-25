@@ -1446,7 +1446,16 @@ class AppLocalizationsPt extends AppLocalizations {
       'Este plugin faz o scrobbling de sua música para gerar seu histórico de audição.';
 
   @override
-  String get default_plugin => 'Padrão';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Definir como padrão';

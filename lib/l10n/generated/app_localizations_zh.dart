@@ -1412,7 +1412,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get plugin_scrobbling_info => '此插件会 scrobble 您的音乐以生成您的收听历史记录。';
 
   @override
-  String get default_plugin => '默认';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => '设为默认';
@@ -2919,9 +2928,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get plugin_scrobbling_info => '此外掛程式會 Scrobble 您的音樂以產生您的收聽記錄。';
-
-  @override
-  String get default_plugin => '預設';
 
   @override
   String get set_default => '設為預設';

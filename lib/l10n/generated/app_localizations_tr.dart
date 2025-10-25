@@ -1450,7 +1450,16 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu eklenti, dinleme geçmişinizi oluşturmak için müziğinizi scrobble eder.';
 
   @override
-  String get default_plugin => 'Varsayılan';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Varsayılan olarak ayarla';

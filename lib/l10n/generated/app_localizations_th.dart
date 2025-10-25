@@ -1440,7 +1440,16 @@ class AppLocalizationsTh extends AppLocalizations {
       'ปลั๊กอินนี้จะ scrobble เพลงของคุณเพื่อสร้างประวัติการฟังของคุณ';
 
   @override
-  String get default_plugin => 'ค่าเริ่มต้น';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'ตั้งค่าเริ่มต้น';

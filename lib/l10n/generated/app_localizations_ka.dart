@@ -1448,7 +1448,16 @@ class AppLocalizationsKa extends AppLocalizations {
       'ეს პლაგინი აწარმოებს თქვენი მუსიკის სქრობლინგს, რათა შექმნას თქვენი მოსმენის ისტორია.';
 
   @override
-  String get default_plugin => 'ნაგულისხმევი';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'ნაგულისხმევად დაყენება';

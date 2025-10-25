@@ -56,15 +56,15 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
 
         if (tabState.value != 0) {
           // metadata only plugins
-          return availablePlugins
-              .where(
-                (d) => d.topics.contains(
-                  tabState.value == 1
-                      ? "spotube-metadata-plugin"
-                      : "spotube-audio-source-plugin",
-                ),
-              )
-              .toList();
+          return availablePlugins.where(
+            (d) {
+              return d.topics.contains(
+                tabState.value == 1
+                    ? "spotube-metadata-plugin"
+                    : "spotube-audio-source-plugin",
+              );
+            },
+          ).toList();
         }
 
         return availablePlugins; // all plugins
@@ -75,6 +75,18 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
         tabState.value,
       ],
     );
+
+    final installedPlugins = useMemoized<List<PluginConfiguration>?>(() {
+      if (tabState.value == 0) return plugins.asData?.value.plugins;
+
+      return plugins.asData?.value.plugins.where((d) {
+        return d.abilities.contains(
+          tabState.value == 1
+              ? PluginAbilities.metadata
+              : PluginAbilities.audioSource,
+        );
+      }).toList();
+    }, [tabState.value, plugins.asData?.value]);
 
     return SafeArea(
       bottom: false,
@@ -241,15 +253,20 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                 ),
               const SliverGap(20),
               SliverList.separated(
-                itemCount: plugins.asData?.value.plugins.length ?? 0,
+                itemCount: installedPlugins?.length ?? 0,
                 separatorBuilder: (context, index) => const Gap(12),
                 itemBuilder: (context, index) {
-                  final plugin = plugins.asData!.value.plugins[index];
-                  final isDefault =
-                      plugins.asData!.value.defaultPlugin == index;
+                  final plugin = installedPlugins![index];
+                  final isDefaultMetadata =
+                      plugins.asData!.value.defaultMetadataPluginConfig?.slug ==
+                          plugin.slug;
+                  final isDefaultAudioSource = plugins
+                          .asData!.value.defaultAudioSourcePluginConfig?.slug ==
+                      plugin.slug;
                   return MetadataInstalledPluginItem(
                     plugin: plugin,
-                    isDefault: isDefault,
+                    isDefaultMetadata: isDefaultMetadata,
+                    isDefaultAudioSource: isDefaultAudioSource,
                   );
                 },
               ),
