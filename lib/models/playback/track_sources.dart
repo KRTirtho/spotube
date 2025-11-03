@@ -1,7 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 
-part 'track_sources.freezed.dart';
 part 'track_sources.g.dart';
 
 @JsonSerializable()

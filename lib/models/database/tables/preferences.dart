@@ -76,10 +76,6 @@ class PreferencesTable extends Table {
   TextColumn get downloadLocation => text().withDefault(const Constant(""))();
   TextColumn get localLibraryLocation =>
       text().withDefault(const Constant("")).map(const StringListConverter())();
-  TextColumn get pipedInstance =>
-      text().withDefault(const Constant("https://pipedapi.kavin.rocks"))();
-  TextColumn get invidiousInstance =>
-      text().withDefault(const Constant("https://inv.nadeko.net"))();
   TextColumn get themeMode =>
       textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
   TextColumn get audioSourceId => text().nullable()();
@@ -113,8 +109,6 @@ class PreferencesTable extends Table {
       searchMode: SearchMode.youtube,
       downloadLocation: "",
       localLibraryLocation: [],
-      pipedInstance: "https://pipedapi.kavin.rocks",
-      invidiousInstance: "https://inv.nadeko.net",
       themeMode: ThemeMode.system,
       audioSourceId: null,
       youtubeClientEngine: YoutubeClientEngine.youtubeExplode,

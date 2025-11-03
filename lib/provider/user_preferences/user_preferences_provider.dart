@@ -53,7 +53,6 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
           }
 
           await audioPlayer.setAudioNormalization(state.normalizeAudio);
-          await _updatePlayerBufferSize(event.audioQuality, state.audioQuality);
         } catch (e, stack) {
           AppLogger.reportError(e, stack);
         }
@@ -77,24 +76,6 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     return paths.getDownloadsDirectory().then((dir) {
       return join(dir!.path, "Spotube");
     });
-  }
-
-  /// Sets audio player's buffer size based on the selected audio quality
-  /// Uncompressed quality gets a larger buffer size for smoother playback
-  /// while other qualities use a standard buffer size.
-  Future<void> _updatePlayerBufferSize(
-    SourceQualities newQuality,
-    SourceQualities oldQuality,
-  ) async {
-    if (newQuality == SourceQualities.uncompressed) {
-      audioPlayer.setDemuxerBufferSize(6 * 1024 * 1024); // 6MB
-      return;
-    }
-
-    if (oldQuality == SourceQualities.uncompressed &&
-        newQuality != SourceQualities.uncompressed) {
-      audioPlayer.setDemuxerBufferSize(4 * 1024 * 1024); // 4MB
-    }
   }
 
   Future<void> setData(PreferencesTableCompanion data) async {
@@ -137,14 +118,6 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     }
   }
 
-  void setStreamMusicCodec(SourceCodecs codec) {
-    setData(PreferencesTableCompanion(streamMusicCodec: Value(codec)));
-  }
-
-  void setDownloadMusicCodec(SourceCodecs codec) {
-    setData(PreferencesTableCompanion(downloadMusicCodec: Value(codec)));
-  }
-
   void setThemeMode(ThemeMode mode) {
     setData(PreferencesTableCompanion(themeMode: Value(mode)));
   }
@@ -169,11 +142,6 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setCheckUpdate(bool check) {
     setData(PreferencesTableCompanion(checkUpdate: Value(check)));
-  }
-
-  void setAudioQuality(SourceQualities quality) {
-    setData(PreferencesTableCompanion(audioQuality: Value(quality)));
-    _updatePlayerBufferSize(quality, state.audioQuality);
   }
 
   void setDownloadLocation(String downloadDir) {
@@ -206,41 +174,12 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     setData(PreferencesTableCompanion(locale: Value(locale)));
   }
 
-  void setPipedInstance(String instance) {
-    setData(PreferencesTableCompanion(pipedInstance: Value(instance)));
-  }
-
-  void setInvidiousInstance(String instance) {
-    setData(PreferencesTableCompanion(invidiousInstance: Value(instance)));
-  }
-
   void setSearchMode(SearchMode mode) {
     setData(PreferencesTableCompanion(searchMode: Value(mode)));
   }
 
   void setSkipNonMusic(bool skip) {
     setData(PreferencesTableCompanion(skipNonMusic: Value(skip)));
-  }
-
-  void setAudioSource(AudioSource type) {
-    switch ((type, state.audioQuality)) {
-      // DAB music only supports high quality/uncompressed streams
-      case (
-          AudioSource.dabMusic,
-          SourceQualities.low || SourceQualities.medium
-        ):
-        setAudioQuality(SourceQualities.high);
-        break;
-      // If the user switches from DAB music to other sources and has
-      // uncompressed quality selected, downgrade to high quality
-      case (!= AudioSource.dabMusic, SourceQualities.uncompressed):
-        setAudioQuality(SourceQualities.high);
-        break;
-      default:
-        break;
-    }
-
-    setData(PreferencesTableCompanion(audioSource: Value(type)));
   }
 
   void setYoutubeClientEngine(YoutubeClientEngine engine) {

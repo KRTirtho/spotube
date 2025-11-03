@@ -12,7 +12,7 @@ import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/discord_provider.dart';
-import 'package:spotube/provider/server/track_sources.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 
@@ -164,8 +164,8 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
           final tracks = <SpotubeTrackObject>[];
 
           for (final media in playlist.medias) {
-            final trackQuery = TrackSourceQuery.parseUri(media.uri);
-            final track = trackGroupedById[trackQuery.id]?.firstOrNull;
+            final track = trackGroupedById[SpotubeMedia.media(media).track.id]
+                ?.firstOrNull;
             if (track != null) {
               tracks.add(track);
             }
@@ -401,9 +401,8 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     final intendedActiveTrack = medias.elementAt(initialIndex);
     if (intendedActiveTrack.track is! SpotubeLocalTrackObject) {
       await ref.read(
-        trackSourcesProvider(
-          TrackSourceQuery.fromTrack(
-              intendedActiveTrack.track as SpotubeFullTrackObject),
+        sourcedTrackProvider(
+          intendedActiveTrack.track as SpotubeFullTrackObject,
         ).future,
       );
     }

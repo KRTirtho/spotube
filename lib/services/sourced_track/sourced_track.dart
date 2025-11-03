@@ -4,13 +4,12 @@ import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:spotube/extensions/string.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/database/database.dart';
+import 'package:spotube/provider/metadata_plugin/audio_source/quality_presets.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
 
@@ -34,19 +33,7 @@ class SourcedTrack extends BasicSourcedTrack {
     required super.sources,
   });
 
-  static String getSearchTerm(SpotubeFullTrackObject track) {
-    final title = ServiceUtils.getTitle(
-      track.name,
-      artists: track.artists.map((e) => e.name).toList(),
-      onlyCleanArtist: true,
-    ).trim();
-
-    assert(title.trim().isNotEmpty, "Title should not be empty");
-
-    return "$title - ${track.artists.join(", ")}";
-  }
-
-  static Future<SourcedTrack> fetchFromQuery({
+  static Future<SourcedTrack> fetchFromTrack({
     required SpotubeFullTrackObject query,
     required Ref ref,
   }) async {
@@ -79,22 +66,25 @@ class SourcedTrack extends BasicSourcedTrack {
       await database.into(database.sourceMatchTable).insert(
             SourceMatchTableCompanion.insert(
               trackId: query.id,
-              source: jsonEncode(siblings.first),
-              sourceType: Value(audioSourceConfig.slug),
+              sourceInfo: Value(jsonEncode(siblings.first)),
+              sourceType: audioSourceConfig.slug,
             ),
           );
 
+      final manifest = await audioSource.audioSource.streams(siblings.first);
+
       return SourcedTrack(
         ref: ref,
-        siblings: siblings.map((s) => s.info).skip(1).toList(),
-        info: siblings.first.info,
+        siblings: siblings.skip(1).toList(),
+        info: siblings.first,
         source: audioSourceConfig.slug,
-        sources: siblings.first.source ?? [],
+        sources: manifest,
         query: query,
       );
     }
-    final item =
-        SpotubeAudioSourceMatchObject.fromJson(jsonDecode(cachedSource.source));
+    final item = SpotubeAudioSourceMatchObject.fromJson(
+      jsonDecode(cachedSource.sourceInfo),
+    );
     final manifest = await audioSource.audioSource.streams(item);
 
     final sourcedTrack = SourcedTrack(
@@ -229,8 +219,8 @@ class SourcedTrack extends BasicSourcedTrack {
     await database.into(database.sourceMatchTable).insert(
           SourceMatchTableCompanion.insert(
             trackId: query.id,
-            source: jsonEncode(siblings.first),
-            sourceType: Value(audioSourceConfig.slug),
+            sourceInfo: Value(jsonEncode(siblings.first)),
+            sourceType: audioSourceConfig.slug,
             createdAt: Value(DateTime.now()),
           ),
           mode: InsertMode.replace,
@@ -298,13 +288,12 @@ class SourcedTrack extends BasicSourcedTrack {
   }
 
   String? get url {
-    final preferences = ref.read(userPreferencesProvider);
+    final preferences = ref.read(audioSourcePresetsProvider);
 
-    final codec = preferences.audioSource == AudioSource.jiosaavn
-        ? SourceCodecs.m4a
-        : preferences.streamMusicCodec;
-
-    return getUrlOfCodec(codec);
+    return getUrlOfQuality(
+      preferences.presets[preferences.selectedStreamingContainerIndex],
+      preferences.selectedStreamingQualityIndex,
+    );
   }
 
   /// Returns the URL of the track based on the codec and quality preferences.
@@ -383,5 +372,11 @@ class SourcedTrack extends BasicSourcedTrack {
     int qualityIndex,
   ) {
     return getStreamOfQuality(preset, qualityIndex)?.url;
+  }
+
+  SpotubeAudioSourceContainerPreset? get qualityPreset {
+    final presetState = ref.read(audioSourcePresetsProvider);
+    return presetState.presets
+        .elementAtOrNull(presetState.selectedStreamingContainerIndex);
   }
 }

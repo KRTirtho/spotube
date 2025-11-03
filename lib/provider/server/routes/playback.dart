@@ -11,12 +11,11 @@ import 'package:path/path.dart';
 import 'package:shelf/shelf.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/models/parser/range_headers.dart';
-import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 
 import 'package:spotube/provider/server/active_track_sources.dart';
-import 'package:spotube/provider/server/track_sources.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
@@ -49,26 +48,30 @@ class ServerPlaybackRoutes {
     return join(
       await UserPreferencesNotifier.getMusicCacheDir(),
       ServiceUtils.sanitizeFilename(
-        '${track.query.title} - ${track.query.artists.join(",")} (${track.info.id}).${track.codec.name}',
+        '${track.query.name} - ${track.query.artists.join(",")} (${track.info.id}).${track.qualityPreset!.name}',
       ),
     );
   }
 
   Future<SourcedTrack?> _getSourcedTrack(
-      Request request, String trackId) async {
+    Request request,
+    String trackId,
+  ) async {
     final track =
         playlist.tracks.firstWhere((element) => element.id == trackId);
 
     final activeSourcedTrack =
         await ref.read(activeTrackSourcesProvider.future);
+
+    final media = audioPlayer.playlist.medias
+        .firstWhere((e) => e.uri == request.requestedUri.toString());
+    final spotubeMedia =
+        media is SpotubeMedia ? media : SpotubeMedia.media(media);
     final sourcedTrack = activeSourcedTrack?.track.id == track.id
         ? activeSourcedTrack?.source
         : await ref.read(
-            trackSourcesProvider(
-              //! Use [Request.requestedUri] as it contains full https url.
-              //! [Request.url] will exclude and starts relatively. (streams/<trackId>... basically)
-              TrackSourceQuery.parseUri(request.requestedUri.toString()),
-            ).future,
+            sourcedTrackProvider(spotubeMedia.track as SpotubeFullTrackObject)
+                .future,
           );
 
     return sourcedTrack;
@@ -79,7 +82,7 @@ class ServerPlaybackRoutes {
     SourcedTrack track,
   ) async {
     AppLogger.log.i(
-      "HEAD request for track: ${track.query.title}\n"
+      "HEAD request for track: ${track.query.name}\n"
       "Headers: ${request.headers}",
     );
 
@@ -91,7 +94,7 @@ class ServerPlaybackRoutes {
       return dio_lib.Response(
         statusCode: 200,
         headers: Headers.fromMap({
-          "content-type": ["audio/${track.codec.name}"],
+          "content-type": ["audio/${track.qualityPreset!.name}"],
           "content-length": ["$fileLength"],
           "accept-ranges": ["bytes"],
           "content-range": ["bytes 0-$fileLength/$fileLength"],
@@ -102,7 +105,7 @@ class ServerPlaybackRoutes {
 
     String url = track.url ??
         await ref
-            .read(trackSourcesProvider(track.query).notifier)
+            .read(sourcedTrackProvider(track.query).notifier)
             .swapWithNextSibling()
             .then((track) => track.url!);
 
@@ -128,7 +131,7 @@ class ServerPlaybackRoutes {
     Map<String, dynamic> headers,
   ) async {
     AppLogger.log.i(
-      "GET request for track: ${track.query.title}\n"
+      "GET request for track: ${track.query.name}\n"
       "Headers: ${request.headers}",
     );
 
@@ -142,7 +145,7 @@ class ServerPlaybackRoutes {
         response: dio_lib.Response<Uint8List>(
           statusCode: 200,
           headers: Headers.fromMap({
-            "content-type": ["audio/${track.codec.name}"],
+            "content-type": ["audio/${track.qualityPreset!.name}"],
             "content-length": ["$cachedFileLength"],
             "accept-ranges": ["bytes"],
             "content-range": ["bytes 0-$cachedFileLength/$cachedFileLength"],
@@ -157,7 +160,7 @@ class ServerPlaybackRoutes {
 
     String url = track.url ??
         await ref
-            .read(trackSourcesProvider(track.query).notifier)
+            .read(sourcedTrackProvider(track.query).notifier)
             .swapWithNextSibling()
             .then((track) => track.url!);
 
@@ -179,7 +182,7 @@ class ServerPlaybackRoutes {
       AppLogger.reportError(e, stack);
 
       final sourcedTrack = await ref
-          .read(trackSourcesProvider(track.query).notifier)
+          .read(sourcedTrackProvider(track.query).notifier)
           .refreshStreamingUrl();
 
       url = sourcedTrack.url!;
@@ -205,11 +208,9 @@ class ServerPlaybackRoutes {
       );
     }
 
-    if (headers["range"] == "bytes=0-" && track.codec == SourceCodecs.flac) {
-      final bufferSize =
-          userPreferences.audioQuality == SourceQualities.uncompressed
-              ? 6 * 1024 * 1024 // 6MB for lossless
-              : 4 * 1024 * 1024; // 4MB for lossy
+    if (headers["range"] == "bytes=0-" &&
+        track.qualityPreset is SpotubeAudioSourceContainerPresetLossless) {
+      const bufferSize = 6 * 1024 * 1024; // 6MB for lossless
 
       final endRange = min(
         bufferSize,
@@ -227,7 +228,7 @@ class ServerPlaybackRoutes {
     final res = await dio.get<Uint8List>(url, options: options);
 
     AppLogger.log.i(
-      "Response for track: ${track.query.title}\n"
+      "Response for track: ${track.query.name}\n"
       "Status Code: ${res.statusCode}\n"
       "Headers: ${res.headers.map}",
     );
@@ -261,7 +262,9 @@ class ServerPlaybackRoutes {
       await trackPartialCacheFile.rename(trackCacheFile.path);
     }
 
-    if (contentRange.total == fileLength && track.codec != SourceCodecs.weba) {
+    if (contentRange.total == fileLength &&
+            track.qualityPreset!.name != "webm" ||
+        track.qualityPreset!.name != "weba") {
       final playlistTrack = playlist.tracks.firstWhereOrNull(
         (element) => element.id == track.query.id,
       );

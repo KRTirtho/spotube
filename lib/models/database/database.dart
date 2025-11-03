@@ -210,6 +210,15 @@ class AppDatabase extends _$AppDatabase {
             pluginsTable.selectedForAudioSource,
           );
         },
+        from9To10: (m, schema) async {
+          await m.dropColumn(schema.preferencesTable, "piped_instance");
+          await m.dropColumn(schema.preferencesTable, "invidious_instance");
+          await m.addColumn(
+            schema.sourceMatchTable,
+            sourceMatchTable.sourceInfo,
+          );
+          await m.dropColumn(schema.sourceMatchTable, "source_id");
+        },
       ),
     );
   }

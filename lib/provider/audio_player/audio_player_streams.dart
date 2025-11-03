@@ -3,14 +3,13 @@ import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/metadata_plugin/core/scrobble.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
-import 'package:spotube/provider/server/track_sources.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
 import 'package:spotube/provider/skip_segments/skip_segments.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
@@ -156,9 +155,7 @@ class AudioPlayerStreamListeners {
 
         try {
           await ref.read(
-            trackSourcesProvider(
-              TrackSourceQuery.fromTrack(nextTrack as SpotubeFullTrackObject),
-            ).future,
+            sourcedTrackProvider(nextTrack as SpotubeFullTrackObject).future,
           );
         } finally {
           lastTrack = nextTrack.id;

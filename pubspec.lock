@@ -467,14 +467,6 @@ packages:
       url: "https://github.com/KRTirtho/dab_music_api.git"
     source: git
     version: "0.1.0"
-  dart_des:
-    dependency: transitive
-    description:
-      name: dart_des
-      sha256: "0a66afb8883368c824497fd2a1fd67bdb1a785965a3956728382c03d40747c33"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   dart_mappable:
     dependency: transitive
     description:
@@ -1408,14 +1400,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.2"
-  invidious:
-    dependency: "direct main"
-    description:
-      name: invidious
-      sha256: "0da8ebc4c4110057f03302bbd54514b10642154d7be569e7994172f2202dcfe8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.2"
   io:
     dependency: "direct dev"
     description:
@@ -1440,14 +1424,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
-  jiosaavn:
-    dependency: "direct main"
-    description:
-      name: jiosaavn
-      sha256: b6bde15c56398ebfd439825a64fb540a265773d1a518ba103e79988e13d16e1d
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
   jovial_misc:
     dependency: transitive
     description:
@@ -1935,14 +1911,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.4"
-  piped_client:
-    dependency: "direct main"
-    description:
-      name: piped_client
-      sha256: "947613e2a8d368b72cb36473de2c5c2784e4e72b2d3f17e5a5181b98b1a5436e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.2"
   pixel_snap:
     dependency: transitive
     description:

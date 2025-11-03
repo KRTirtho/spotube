@@ -1,5 +1,7 @@
 part of 'metadata.dart';
 
+final oneOptionalDecimalFormatter = NumberFormat('0.#', 'en_US');
+
 enum SpotubeMediaCompressionType {
   lossy,
   lossless,
@@ -30,26 +32,40 @@ class SpotubeAudioSourceContainerPreset
 @freezed
 class SpotubeAudioLossyContainerQuality
     with _$SpotubeAudioLossyContainerQuality {
+  const SpotubeAudioLossyContainerQuality._();
+
   factory SpotubeAudioLossyContainerQuality({
-    required double bitrate,
+    required int bitrate, // bits per second
   }) = _SpotubeAudioLossyContainerQuality;
 
   factory SpotubeAudioLossyContainerQuality.fromJson(
           Map<String, dynamic> json) =>
       _$SpotubeAudioLossyContainerQualityFromJson(json);
+
+  @override
+  toString() {
+    return "${oneOptionalDecimalFormatter.format(bitrate)}kbps";
+  }
 }
 
 @freezed
 class SpotubeAudioLosslessContainerQuality
     with _$SpotubeAudioLosslessContainerQuality {
+  const SpotubeAudioLosslessContainerQuality._();
+
   factory SpotubeAudioLosslessContainerQuality({
-    required int bitDepth,
-    required double sampleRate,
+    required int bitDepth, // bit
+    required int sampleRate, // hz
   }) = _SpotubeAudioLosslessContainerQuality;
 
   factory SpotubeAudioLosslessContainerQuality.fromJson(
           Map<String, dynamic> json) =>
       _$SpotubeAudioLosslessContainerQualityFromJson(json);
+
+  @override
+  toString() {
+    return "${bitDepth}bit • ${oneOptionalDecimalFormatter.format(sampleRate / 1000)}kHz";
+  }
 }
 
 @freezed

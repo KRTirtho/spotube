@@ -595,7 +595,7 @@ SpotubeAudioLossyContainerQuality _$SpotubeAudioLossyContainerQualityFromJson(
 
 /// @nodoc
 mixin _$SpotubeAudioLossyContainerQuality {
-  double get bitrate => throw _privateConstructorUsedError;
+  int get bitrate => throw _privateConstructorUsedError;
 
   /// Serializes this SpotubeAudioLossyContainerQuality to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -615,7 +615,7 @@ abstract class $SpotubeAudioLossyContainerQualityCopyWith<$Res> {
       _$SpotubeAudioLossyContainerQualityCopyWithImpl<$Res,
           SpotubeAudioLossyContainerQuality>;
   @useResult
-  $Res call({double bitrate});
+  $Res call({int bitrate});
 }
 
 /// @nodoc
@@ -640,7 +640,7 @@ class _$SpotubeAudioLossyContainerQualityCopyWithImpl<$Res,
       bitrate: null == bitrate
           ? _value.bitrate
           : bitrate // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
     ) as $Val);
   }
 }
@@ -654,7 +654,7 @@ abstract class _$$SpotubeAudioLossyContainerQualityImplCopyWith<$Res>
       __$$SpotubeAudioLossyContainerQualityImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({double bitrate});
+  $Res call({int bitrate});
 }
 
 /// @nodoc
@@ -678,7 +678,7 @@ class __$$SpotubeAudioLossyContainerQualityImplCopyWithImpl<$Res>
       bitrate: null == bitrate
           ? _value.bitrate
           : bitrate // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
     ));
   }
 }
@@ -686,20 +686,15 @@ class __$$SpotubeAudioLossyContainerQualityImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$SpotubeAudioLossyContainerQualityImpl
-    implements _SpotubeAudioLossyContainerQuality {
-  _$SpotubeAudioLossyContainerQualityImpl({required this.bitrate});
+    extends _SpotubeAudioLossyContainerQuality {
+  _$SpotubeAudioLossyContainerQualityImpl({required this.bitrate}) : super._();
 
   factory _$SpotubeAudioLossyContainerQualityImpl.fromJson(
           Map<String, dynamic> json) =>
       _$$SpotubeAudioLossyContainerQualityImplFromJson(json);
 
   @override
-  final double bitrate;
-
-  @override
-  String toString() {
-    return 'SpotubeAudioLossyContainerQuality(bitrate: $bitrate)';
-  }
+  final int bitrate;
 
   @override
   bool operator ==(Object other) {
@@ -732,16 +727,17 @@ class _$SpotubeAudioLossyContainerQualityImpl
 }
 
 abstract class _SpotubeAudioLossyContainerQuality
-    implements SpotubeAudioLossyContainerQuality {
-  factory _SpotubeAudioLossyContainerQuality({required final double bitrate}) =
+    extends SpotubeAudioLossyContainerQuality {
+  factory _SpotubeAudioLossyContainerQuality({required final int bitrate}) =
       _$SpotubeAudioLossyContainerQualityImpl;
+  _SpotubeAudioLossyContainerQuality._() : super._();
 
   factory _SpotubeAudioLossyContainerQuality.fromJson(
           Map<String, dynamic> json) =
       _$SpotubeAudioLossyContainerQualityImpl.fromJson;
 
   @override
-  double get bitrate;
+  int get bitrate;
 
   /// Create a copy of SpotubeAudioLossyContainerQuality
   /// with the given fields replaced by the non-null parameter values.
@@ -759,8 +755,8 @@ SpotubeAudioLosslessContainerQuality
 
 /// @nodoc
 mixin _$SpotubeAudioLosslessContainerQuality {
-  int get bitDepth => throw _privateConstructorUsedError;
-  double get sampleRate => throw _privateConstructorUsedError;
+  int get bitDepth => throw _privateConstructorUsedError; // bit
+  int get sampleRate => throw _privateConstructorUsedError;
 
   /// Serializes this SpotubeAudioLosslessContainerQuality to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -781,7 +777,7 @@ abstract class $SpotubeAudioLosslessContainerQualityCopyWith<$Res> {
       _$SpotubeAudioLosslessContainerQualityCopyWithImpl<$Res,
           SpotubeAudioLosslessContainerQuality>;
   @useResult
-  $Res call({int bitDepth, double sampleRate});
+  $Res call({int bitDepth, int sampleRate});
 }
 
 /// @nodoc
@@ -811,7 +807,7 @@ class _$SpotubeAudioLosslessContainerQualityCopyWithImpl<$Res,
       sampleRate: null == sampleRate
           ? _value.sampleRate
           : sampleRate // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
     ) as $Val);
   }
 }
@@ -825,7 +821,7 @@ abstract class _$$SpotubeAudioLosslessContainerQualityImplCopyWith<$Res>
       __$$SpotubeAudioLosslessContainerQualityImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int bitDepth, double sampleRate});
+  $Res call({int bitDepth, int sampleRate});
 }
 
 /// @nodoc
@@ -854,7 +850,7 @@ class __$$SpotubeAudioLosslessContainerQualityImplCopyWithImpl<$Res>
       sampleRate: null == sampleRate
           ? _value.sampleRate
           : sampleRate // ignore: cast_nullable_to_non_nullable
-              as double,
+              as int,
     ));
   }
 }
@@ -862,9 +858,10 @@ class __$$SpotubeAudioLosslessContainerQualityImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$SpotubeAudioLosslessContainerQualityImpl
-    implements _SpotubeAudioLosslessContainerQuality {
+    extends _SpotubeAudioLosslessContainerQuality {
   _$SpotubeAudioLosslessContainerQualityImpl(
-      {required this.bitDepth, required this.sampleRate});
+      {required this.bitDepth, required this.sampleRate})
+      : super._();
 
   factory _$SpotubeAudioLosslessContainerQualityImpl.fromJson(
           Map<String, dynamic> json) =>
@@ -872,13 +869,9 @@ class _$SpotubeAudioLosslessContainerQualityImpl
 
   @override
   final int bitDepth;
+// bit
   @override
-  final double sampleRate;
-
-  @override
-  String toString() {
-    return 'SpotubeAudioLosslessContainerQuality(bitDepth: $bitDepth, sampleRate: $sampleRate)';
-  }
+  final int sampleRate;
 
   @override
   bool operator ==(Object other) {
@@ -914,19 +907,20 @@ class _$SpotubeAudioLosslessContainerQualityImpl
 }
 
 abstract class _SpotubeAudioLosslessContainerQuality
-    implements SpotubeAudioLosslessContainerQuality {
+    extends SpotubeAudioLosslessContainerQuality {
   factory _SpotubeAudioLosslessContainerQuality(
-          {required final int bitDepth, required final double sampleRate}) =
+          {required final int bitDepth, required final int sampleRate}) =
       _$SpotubeAudioLosslessContainerQualityImpl;
+  _SpotubeAudioLosslessContainerQuality._() : super._();
 
   factory _SpotubeAudioLosslessContainerQuality.fromJson(
           Map<String, dynamic> json) =
       _$SpotubeAudioLosslessContainerQualityImpl.fromJson;
 
   @override
-  int get bitDepth;
+  int get bitDepth; // bit
   @override
-  double get sampleRate;
+  int get sampleRate;
 
   /// Create a copy of SpotubeAudioLosslessContainerQuality
   /// with the given fields replaced by the non-null parameter values.

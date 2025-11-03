@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:intl/intl.dart';
 import 'package:metadata_god/metadata_god.dart';
 import 'package:mime/mime.dart';
 import 'package:path/path.dart';

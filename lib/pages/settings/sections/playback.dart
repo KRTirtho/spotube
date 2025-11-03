@@ -1,29 +1,18 @@
-import 'dart:io';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' show ListTile;
 
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:piped_client/piped_client.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/models/database/database.dart';
-import 'package:spotube/modules/settings/playback/edit_connect_port_dialog.dart';
-import 'package:spotube/modules/settings/playback/edit_instance_url_dialog.dart';
-import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
+import 'package:spotube/modules/settings/playback/edit_connect_port_dialog.dart';
+import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/modules/settings/youtube_engine_not_installed_dialog.dart';
-import 'package:spotube/provider/audio_player/sources/invidious_instances_provider.dart';
-import 'package:spotube/provider/audio_player/sources/piped_instances_provider.dart';
+import 'package:spotube/provider/metadata_plugin/audio_source/quality_presets.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/services/kv_store/kv_store.dart';
 
-import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 import 'package:spotube/utils/platform.dart';
 
 class SettingsPlaybackSection extends HookConsumerWidget {
@@ -33,332 +22,78 @@ class SettingsPlaybackSection extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final preferences = ref.watch(userPreferencesProvider);
     final preferencesNotifier = ref.watch(userPreferencesProvider.notifier);
+    final sourcePresets = ref.watch(audioSourcePresetsProvider);
+    final sourcePresetsNotifier =
+        ref.watch(audioSourcePresetsProvider.notifier);
     final theme = Theme.of(context);
 
     return SectionCardWithHeading(
       heading: context.l10n.playback,
       children: [
-        AdaptiveSelectTile<SourceQualities>(
-          secondary: const Icon(SpotubeIcons.audioQuality),
-          title: Text(context.l10n.audio_quality),
-          value: preferences.audioQuality,
-          options: [
-            if (preferences.audioSource == AudioSource.dabMusic)
-              SelectItemButton(
-                value: SourceQualities.uncompressed,
-                child: Text(context.l10n.uncompressed),
-              ),
-            SelectItemButton(
-              value: SourceQualities.high,
-              child: Text(context.l10n.high),
-            ),
-            if (preferences.audioSource != AudioSource.dabMusic) ...[
-              SelectItemButton(
-                value: SourceQualities.medium,
-                child: Text(context.l10n.medium),
-              ),
-              SelectItemButton(
-                value: SourceQualities.low,
-                child: Text(context.l10n.low),
-              ),
-            ]
-          ],
-          onChanged: (value) {
-            if (value != null) {
-              preferencesNotifier.setAudioQuality(value);
-            }
-          },
-        ),
-        AdaptiveSelectTile<AudioSource>(
-          secondary: const Icon(SpotubeIcons.api),
-          title: Text(context.l10n.audio_source),
-          value: preferences.audioSource,
-          options: AudioSource.values
-              .map((e) => SelectItemButton(
-                    value: e,
-                    child: Text(e.label),
-                  ))
-              .toList(),
-          onChanged: (value) {
-            if (value == null) return;
-            preferencesNotifier.setAudioSource(value);
-          },
-        ),
-        AnimatedCrossFade(
-          duration: const Duration(milliseconds: 300),
-          crossFadeState: preferences.audioSource != AudioSource.piped
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
-          firstChild: const SizedBox.shrink(),
-          secondChild: Consumer(
-            builder: (context, ref, child) {
-              final instanceList = ref.watch(pipedInstancesFutureProvider);
-
-              return instanceList.when(
-                data: (data) {
-                  return AdaptiveSelectTile<String>(
-                    secondary: const Icon(SpotubeIcons.piped),
-                    title: Text(context.l10n.piped_instance),
-                    subtitle: Text(
-                      "${context.l10n.piped_description}\n"
-                      "${context.l10n.piped_warning}",
-                    ),
-                    value: preferences.pipedInstance,
-                    showValueWhenUnfolded: false,
-                    trailing: [
-                      Tooltip(
-                        tooltip: TooltipContainer(
-                          child: Text(context.l10n.add_custom_url),
-                        ).call,
-                        child: IconButton.outline(
-                          icon: const Icon(SpotubeIcons.edit),
-                          size: ButtonSize.small,
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              barrierColor: Colors.black.withValues(alpha: 0.5),
-                              builder: (context) =>
-                                  SettingsPlaybackEditInstanceUrlDialog(
-                                title: context.l10n.piped_instance,
-                                initialValue: preferences.pipedInstance,
-                                onSave: (value) {
-                                  preferencesNotifier.setPipedInstance(value);
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    ],
-                    options: [
-                      if (data
-                          .none((e) => e.apiUrl == preferences.pipedInstance))
-                        SelectItemButton(
-                          value: preferences.pipedInstance,
-                          child: Text.rich(
-                            TextSpan(
-                              style: theme.typography.xSmall.copyWith(
-                                color: theme.colorScheme.foreground,
-                              ),
-                              children: [
-                                TextSpan(text: context.l10n.custom),
-                                const TextSpan(text: "\n"),
-                                TextSpan(text: preferences.pipedInstance),
-                              ],
-                            ),
-                          ),
-                        ),
-                      for (final e in data.sortedBy((e) => e.name))
-                        SelectItemButton(
-                          value: e.apiUrl,
-                          child: RichText(
-                            text: TextSpan(
-                              style: theme.typography.normal.copyWith(
-                                color: theme.colorScheme.foreground,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: "${e.name.trim()}\n",
-                                ),
-                                TextSpan(
-                                  text: e.locations
-                                      .map(countryCodeToEmoji)
-                                      .join(""),
-                                  style: GoogleFonts.notoColorEmoji(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        preferencesNotifier.setPipedInstance(value);
-                      }
-                    },
-                  );
-                },
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                error: (error, stackTrace) => Text(error.toString()),
-              );
+        if (sourcePresets.presets.isNotEmpty) ...[
+          AdaptiveSelectTile(
+            secondary: const Icon(SpotubeIcons.api),
+            title: Text(context.l10n.streaming_music_codec),
+            value: sourcePresets.selectedStreamingContainerIndex,
+            options: [
+              for (final MapEntry(:key, value: preset)
+                  in sourcePresets.presets.asMap().entries)
+                SelectItemButton(value: key, child: Text(preset.name)),
+            ],
+            onChanged: (value) {
+              if (value == null) return;
+              sourcePresetsNotifier.setSelectedStreamingContainerIndex(value);
             },
           ),
-        ),
-        AnimatedCrossFade(
-          duration: const Duration(milliseconds: 300),
-          crossFadeState: preferences.audioSource != AudioSource.invidious
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
-          firstChild: const SizedBox.shrink(),
-          secondChild: Consumer(
-            builder: (context, ref, child) {
-              final instanceList = ref.watch(invidiousInstancesProvider);
-
-              return instanceList.when(
-                data: (data) {
-                  return AdaptiveSelectTile<String>(
-                    secondary: const Icon(SpotubeIcons.piped),
-                    title: Text(context.l10n.invidious_instance),
-                    subtitle: Text(
-                      "${context.l10n.invidious_description}\n"
-                      "${context.l10n.invidious_warning}",
-                    ),
-                    trailing: [
-                      Tooltip(
-                        tooltip: TooltipContainer(
-                          child: Text(context.l10n.add_custom_url),
-                        ).call,
-                        child: IconButton.outline(
-                          icon: const Icon(SpotubeIcons.edit),
-                          size: ButtonSize.small,
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              barrierColor: Colors.black.withValues(alpha: 0.5),
-                              builder: (context) =>
-                                  SettingsPlaybackEditInstanceUrlDialog(
-                                title: context.l10n.invidious_instance,
-                                initialValue: preferences.invidiousInstance,
-                                onSave: (value) {
-                                  preferencesNotifier
-                                      .setInvidiousInstance(value);
-                                },
-                              ),
-                            );
-                          },
-                        ),
-                      )
-                    ],
-                    value: preferences.invidiousInstance,
-                    showValueWhenUnfolded: false,
-                    options: [
-                      if (data.none((e) =>
-                          e.details.uri == preferences.invidiousInstance))
-                        SelectItemButton(
-                          value: preferences.invidiousInstance,
-                          child: Text.rich(
-                            TextSpan(
-                              style: theme.typography.xSmall.copyWith(
-                                color: theme.colorScheme.foreground,
-                              ),
-                              children: [
-                                TextSpan(text: context.l10n.custom),
-                                const TextSpan(text: "\n"),
-                                TextSpan(text: preferences.invidiousInstance),
-                              ],
-                            ),
-                          ),
-                        ),
-                      for (final e in data.sortedBy((e) => e.name))
-                        SelectItemButton(
-                          value: e.details.uri,
-                          child: RichText(
-                            text: TextSpan(
-                              style: theme.typography.normal.copyWith(
-                                color: theme.colorScheme.foreground,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: "${e.name.trim()}\n",
-                                ),
-                                TextSpan(
-                                  text: countryCodeToEmoji(
-                                    e.details.region,
-                                  ),
-                                  style: GoogleFonts.notoColorEmoji(),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        preferencesNotifier.setInvidiousInstance(value);
-                      }
-                    },
-                  );
-                },
-                loading: () => const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                error: (error, stackTrace) => Text(error.toString()),
-              );
+          AdaptiveSelectTile(
+            secondary: const Icon(SpotubeIcons.api),
+            title: const Text("Streaming music quality"),
+            value: sourcePresets.selectedStreamingQualityIndex,
+            options: [
+              for (final MapEntry(:key, value: quality) in sourcePresets
+                  .presets[sourcePresets.selectedStreamingContainerIndex]
+                  .qualities
+                  .asMap()
+                  .entries)
+                SelectItemButton(value: key, child: Text(quality.toString())),
+            ],
+            onChanged: (value) {
+              if (value == null) return;
+              sourcePresetsNotifier.setSelectedStreamingQualityIndex(value);
             },
           ),
-        ),
-        switch (preferences.audioSource) {
-          AudioSource.youtube => AdaptiveSelectTile<YoutubeClientEngine>(
-              secondary: const Icon(SpotubeIcons.engine),
-              title: Text(context.l10n.youtube_engine),
-              value: preferences.youtubeClientEngine,
-              options: YoutubeClientEngine.values
-                  .where((e) => e.isAvailableForPlatform())
-                  .map((e) => SelectItemButton(
-                        value: e,
-                        child: Text(e.label),
-                      ))
-                  .toList(),
-              onChanged: (value) async {
-                if (value == null) return;
-                if (value == YoutubeClientEngine.ytDlp) {
-                  final customPath = KVStoreService.getYoutubeEnginePath(value);
-                  if (!await YtDlpEngine.isInstalled() &&
-                      (customPath == null ||
-                          !await File(customPath).exists()) &&
-                      context.mounted) {
-                    final hasInstalled = await showDialog<bool>(
-                      context: context,
-                      builder: (context) =>
-                          YouTubeEngineNotInstalledDialog(engine: value),
-                    );
-                    if (hasInstalled != true) return;
-                  }
-                }
-                preferencesNotifier.setYoutubeClientEngine(value);
-              },
-            ),
-          AudioSource.piped ||
-          AudioSource.invidious =>
-            AdaptiveSelectTile<SearchMode>(
-              secondary: const Icon(SpotubeIcons.search),
-              title: Text(context.l10n.search_mode),
-              value: preferences.searchMode,
-              options: SearchMode.values
-                  .map((e) => SelectItemButton(
-                        value: e,
-                        child: Text(e.label),
-                      ))
-                  .toList(),
-              onChanged: (value) {
-                if (value == null) return;
-                preferencesNotifier.setSearchMode(value);
-              },
-            ),
-          _ => const SizedBox.shrink(),
-        },
-        AnimatedCrossFade(
-          duration: const Duration(milliseconds: 300),
-          crossFadeState: preferences.searchMode == SearchMode.youtube &&
-                  (preferences.audioSource == AudioSource.piped ||
-                      preferences.audioSource == AudioSource.youtube ||
-                      preferences.audioSource == AudioSource.invidious)
-              ? CrossFadeState.showFirst
-              : CrossFadeState.showSecond,
-          firstChild: ListTile(
-            leading: const Icon(SpotubeIcons.skip),
-            title: Text(context.l10n.skip_non_music),
-            trailing: Switch(
-              value: preferences.skipNonMusic,
-              onChanged: (state) {
-                preferencesNotifier.setSkipNonMusic(state);
-              },
-            ),
+          AdaptiveSelectTile(
+            secondary: const Icon(SpotubeIcons.api),
+            title: Text(context.l10n.download_music_codec),
+            value: sourcePresets.selectedDownloadingContainerIndex,
+            options: [
+              for (final MapEntry(:key, value: preset)
+                  in sourcePresets.presets.asMap().entries)
+                SelectItemButton(value: key, child: Text(preset.name)),
+            ],
+            onChanged: (value) {
+              if (value == null) return;
+              sourcePresetsNotifier.setSelectedDownloadingContainerIndex(value);
+            },
           ),
-          secondChild: const SizedBox.shrink(),
-        ),
+          AdaptiveSelectTile(
+            secondary: const Icon(SpotubeIcons.api),
+            title: const Text("Downloading music quality"),
+            value: sourcePresets.selectedStreamingQualityIndex,
+            options: [
+              for (final MapEntry(:key, value: quality) in sourcePresets
+                  .presets[sourcePresets.selectedDownloadingContainerIndex]
+                  .qualities
+                  .asMap()
+                  .entries)
+                SelectItemButton(value: key, child: Text(quality.toString())),
+            ],
+            onChanged: (value) {
+              if (value == null) return;
+              sourcePresetsNotifier.setSelectedStreamingQualityIndex(value);
+            },
+          ),
+        ],
         ListTile(
           title: Text(context.l10n.cache_music),
           subtitle: kIsMobile
@@ -402,50 +137,6 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             onChanged: preferencesNotifier.setNormalizeAudio,
           ),
         ),
-        if (const [AudioSource.jiosaavn, AudioSource.dabMusic]
-                .contains(preferences.audioSource) ==
-            false) ...[
-          AdaptiveSelectTile<SourceCodecs>(
-            popupConstraints: const BoxConstraints(maxWidth: 300),
-            secondary: const Icon(SpotubeIcons.stream),
-            title: Text(context.l10n.streaming_music_codec),
-            value: preferences.streamMusicCodec,
-            showValueWhenUnfolded: false,
-            options: SourceCodecs.values
-                .map((e) => SelectItemButton(
-                      value: e,
-                      child: Text(
-                        e.label,
-                        style: theme.typography.small,
-                      ),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              if (value == null) return;
-              preferencesNotifier.setStreamMusicCodec(value);
-            },
-          ),
-          AdaptiveSelectTile<SourceCodecs>(
-            popupConstraints: const BoxConstraints(maxWidth: 300),
-            secondary: const Icon(SpotubeIcons.file),
-            title: Text(context.l10n.download_music_codec),
-            value: preferences.downloadMusicCodec,
-            showValueWhenUnfolded: false,
-            options: SourceCodecs.values
-                .map((e) => SelectItemButton(
-                      value: e,
-                      child: Text(
-                        e.label,
-                        style: theme.typography.small,
-                      ),
-                    ))
-                .toList(),
-            onChanged: (value) {
-              if (value == null) return;
-              preferencesNotifier.setDownloadMusicCodec(value);
-            },
-          ),
-        ],
         ListTile(
             leading: const Icon(SpotubeIcons.repeat),
             title: Text(context.l10n.endless_playback),

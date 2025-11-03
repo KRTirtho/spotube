@@ -52,7 +52,7 @@ Map<String, dynamic> _$$SpotubeAudioSourceContainerPresetLosslessImplToJson(
 _$SpotubeAudioLossyContainerQualityImpl
     _$$SpotubeAudioLossyContainerQualityImplFromJson(Map json) =>
         _$SpotubeAudioLossyContainerQualityImpl(
-          bitrate: (json['bitrate'] as num).toDouble(),
+          bitrate: (json['bitrate'] as num).toInt(),
         );
 
 Map<String, dynamic> _$$SpotubeAudioLossyContainerQualityImplToJson(
@@ -65,7 +65,7 @@ _$SpotubeAudioLosslessContainerQualityImpl
     _$$SpotubeAudioLosslessContainerQualityImplFromJson(Map json) =>
         _$SpotubeAudioLosslessContainerQualityImpl(
           bitDepth: (json['bitDepth'] as num).toInt(),
-          sampleRate: (json['sampleRate'] as num).toDouble(),
+          sampleRate: (json['sampleRate'] as num).toInt(),
         );
 
 Map<String, dynamic> _$$SpotubeAudioLosslessContainerQualityImplToJson(

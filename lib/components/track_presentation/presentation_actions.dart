@@ -8,12 +8,10 @@ import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/presentation_state.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
 import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 ToastOverlay showToastForAction(
   BuildContext context,
@@ -70,8 +68,6 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
     final downloader = ref.watch(downloadManagerProvider.notifier);
     final playlistNotifier = ref.watch(audioPlayerProvider.notifier);
     final historyNotifier = ref.watch(playbackHistoryActionsProvider);
-    final audioSource =
-        ref.watch(userPreferencesProvider.select((s) => s.audioSource));
 
     final state = ref.watch(presentationStateProvider(options.collection));
     final notifier =
@@ -85,14 +81,13 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
     }) async {
       final fullTrackObjects =
           tracks.whereType<SpotubeFullTrackObject>().toList();
-      final confirmed = audioSource == AudioSource.piped ||
-          (await showDialog<bool>(
-                context: context,
-                builder: (context) {
-                  return const ConfirmDownloadDialog();
-                },
-              ) ??
-              false);
+      final confirmed = await showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return const ConfirmDownloadDialog();
+            },
+          ) ??
+          false;
       if (confirmed != true) return;
       downloader.batchAddToQueue(fullTrackObjects);
       notifier.deselectAllTracks();

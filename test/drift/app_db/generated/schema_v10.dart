@@ -552,16 +552,6 @@ class PreferencesTable extends Table
           type: DriftSqlType.string,
           requiredDuringInsert: false,
           defaultValue: const Constant(""));
-  late final GeneratedColumn<String> pipedInstance = GeneratedColumn<String>(
-      'piped_instance', aliasedName, false,
-      type: DriftSqlType.string,
-      requiredDuringInsert: false,
-      defaultValue: const Constant("https://pipedapi.kavin.rocks"));
-  late final GeneratedColumn<String> invidiousInstance =
-      GeneratedColumn<String>('invidious_instance', aliasedName, false,
-          type: DriftSqlType.string,
-          requiredDuringInsert: false,
-          defaultValue: const Constant("https://inv.nadeko.net"));
   late final GeneratedColumn<String> themeMode = GeneratedColumn<String>(
       'theme_mode', aliasedName, false,
       type: DriftSqlType.string,
@@ -626,8 +616,6 @@ class PreferencesTable extends Table
         searchMode,
         downloadLocation,
         localLibraryLocation,
-        pipedInstance,
-        invidiousInstance,
         themeMode,
         audioSourceId,
         youtubeClientEngine,
@@ -681,10 +669,6 @@ class PreferencesTable extends Table
       localLibraryLocation: attachedDatabase.typeMapping.read(
           DriftSqlType.string,
           data['${effectivePrefix}local_library_location'])!,
-      pipedInstance: attachedDatabase.typeMapping
-          .read(DriftSqlType.string, data['${effectivePrefix}piped_instance'])!,
-      invidiousInstance: attachedDatabase.typeMapping.read(
-          DriftSqlType.string, data['${effectivePrefix}invidious_instance'])!,
       themeMode: attachedDatabase.typeMapping
           .read(DriftSqlType.string, data['${effectivePrefix}theme_mode'])!,
       audioSourceId: attachedDatabase.typeMapping
@@ -729,8 +713,6 @@ class PreferencesTableData extends DataClass
   final String searchMode;
   final String downloadLocation;
   final String localLibraryLocation;
-  final String pipedInstance;
-  final String invidiousInstance;
   final String themeMode;
   final String? audioSourceId;
   final String youtubeClientEngine;
@@ -756,8 +738,6 @@ class PreferencesTableData extends DataClass
       required this.searchMode,
       required this.downloadLocation,
       required this.localLibraryLocation,
-      required this.pipedInstance,
-      required this.invidiousInstance,
       required this.themeMode,
       this.audioSourceId,
       required this.youtubeClientEngine,
@@ -785,8 +765,6 @@ class PreferencesTableData extends DataClass
     map['search_mode'] = Variable<String>(searchMode);
     map['download_location'] = Variable<String>(downloadLocation);
     map['local_library_location'] = Variable<String>(localLibraryLocation);
-    map['piped_instance'] = Variable<String>(pipedInstance);
-    map['invidious_instance'] = Variable<String>(invidiousInstance);
     map['theme_mode'] = Variable<String>(themeMode);
     if (!nullToAbsent || audioSourceId != null) {
       map['audio_source_id'] = Variable<String>(audioSourceId);
@@ -818,8 +796,6 @@ class PreferencesTableData extends DataClass
       searchMode: Value(searchMode),
       downloadLocation: Value(downloadLocation),
       localLibraryLocation: Value(localLibraryLocation),
-      pipedInstance: Value(pipedInstance),
-      invidiousInstance: Value(invidiousInstance),
       themeMode: Value(themeMode),
       audioSourceId: audioSourceId == null && nullToAbsent
           ? const Value.absent()
@@ -854,8 +830,6 @@ class PreferencesTableData extends DataClass
       downloadLocation: serializer.fromJson<String>(json['downloadLocation']),
       localLibraryLocation:
           serializer.fromJson<String>(json['localLibraryLocation']),
-      pipedInstance: serializer.fromJson<String>(json['pipedInstance']),
-      invidiousInstance: serializer.fromJson<String>(json['invidiousInstance']),
       themeMode: serializer.fromJson<String>(json['themeMode']),
       audioSourceId: serializer.fromJson<String?>(json['audioSourceId']),
       youtubeClientEngine:
@@ -887,8 +861,6 @@ class PreferencesTableData extends DataClass
       'searchMode': serializer.toJson<String>(searchMode),
       'downloadLocation': serializer.toJson<String>(downloadLocation),
       'localLibraryLocation': serializer.toJson<String>(localLibraryLocation),
-      'pipedInstance': serializer.toJson<String>(pipedInstance),
-      'invidiousInstance': serializer.toJson<String>(invidiousInstance),
       'themeMode': serializer.toJson<String>(themeMode),
       'audioSourceId': serializer.toJson<String?>(audioSourceId),
       'youtubeClientEngine': serializer.toJson<String>(youtubeClientEngine),
@@ -917,8 +889,6 @@ class PreferencesTableData extends DataClass
           String? searchMode,
           String? downloadLocation,
           String? localLibraryLocation,
-          String? pipedInstance,
-          String? invidiousInstance,
           String? themeMode,
           Value<String?> audioSourceId = const Value.absent(),
           String? youtubeClientEngine,
@@ -944,8 +914,6 @@ class PreferencesTableData extends DataClass
         searchMode: searchMode ?? this.searchMode,
         downloadLocation: downloadLocation ?? this.downloadLocation,
         localLibraryLocation: localLibraryLocation ?? this.localLibraryLocation,
-        pipedInstance: pipedInstance ?? this.pipedInstance,
-        invidiousInstance: invidiousInstance ?? this.invidiousInstance,
         themeMode: themeMode ?? this.themeMode,
         audioSourceId:
             audioSourceId.present ? audioSourceId.value : this.audioSourceId,
@@ -997,12 +965,6 @@ class PreferencesTableData extends DataClass
       localLibraryLocation: data.localLibraryLocation.present
           ? data.localLibraryLocation.value
           : this.localLibraryLocation,
-      pipedInstance: data.pipedInstance.present
-          ? data.pipedInstance.value
-          : this.pipedInstance,
-      invidiousInstance: data.invidiousInstance.present
-          ? data.invidiousInstance.value
-          : this.invidiousInstance,
       themeMode: data.themeMode.present ? data.themeMode.value : this.themeMode,
       audioSourceId: data.audioSourceId.present
           ? data.audioSourceId.value
@@ -1045,8 +1007,6 @@ class PreferencesTableData extends DataClass
           ..write('searchMode: $searchMode, ')
           ..write('downloadLocation: $downloadLocation, ')
           ..write('localLibraryLocation: $localLibraryLocation, ')
-          ..write('pipedInstance: $pipedInstance, ')
-          ..write('invidiousInstance: $invidiousInstance, ')
           ..write('themeMode: $themeMode, ')
           ..write('audioSourceId: $audioSourceId, ')
           ..write('youtubeClientEngine: $youtubeClientEngine, ')
@@ -1077,8 +1037,6 @@ class PreferencesTableData extends DataClass
         searchMode,
         downloadLocation,
         localLibraryLocation,
-        pipedInstance,
-        invidiousInstance,
         themeMode,
         audioSourceId,
         youtubeClientEngine,
@@ -1108,8 +1066,6 @@ class PreferencesTableData extends DataClass
           other.searchMode == this.searchMode &&
           other.downloadLocation == this.downloadLocation &&
           other.localLibraryLocation == this.localLibraryLocation &&
-          other.pipedInstance == this.pipedInstance &&
-          other.invidiousInstance == this.invidiousInstance &&
           other.themeMode == this.themeMode &&
           other.audioSourceId == this.audioSourceId &&
           other.youtubeClientEngine == this.youtubeClientEngine &&
@@ -1137,8 +1093,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
   final Value<String> searchMode;
   final Value<String> downloadLocation;
   final Value<String> localLibraryLocation;
-  final Value<String> pipedInstance;
-  final Value<String> invidiousInstance;
   final Value<String> themeMode;
   final Value<String?> audioSourceId;
   final Value<String> youtubeClientEngine;
@@ -1164,8 +1118,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.searchMode = const Value.absent(),
     this.downloadLocation = const Value.absent(),
     this.localLibraryLocation = const Value.absent(),
-    this.pipedInstance = const Value.absent(),
-    this.invidiousInstance = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.audioSourceId = const Value.absent(),
     this.youtubeClientEngine = const Value.absent(),
@@ -1192,8 +1144,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     this.searchMode = const Value.absent(),
     this.downloadLocation = const Value.absent(),
     this.localLibraryLocation = const Value.absent(),
-    this.pipedInstance = const Value.absent(),
-    this.invidiousInstance = const Value.absent(),
     this.themeMode = const Value.absent(),
     this.audioSourceId = const Value.absent(),
     this.youtubeClientEngine = const Value.absent(),
@@ -1220,8 +1170,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
     Expression<String>? searchMode,
     Expression<String>? downloadLocation,
     Expression<String>? localLibraryLocation,
-    Expression<String>? pipedInstance,
-    Expression<String>? invidiousInstance,
     Expression<String>? themeMode,
     Expression<String>? audioSourceId,
     Expression<String>? youtubeClientEngine,
@@ -1250,8 +1198,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       if (downloadLocation != null) 'download_location': downloadLocation,
       if (localLibraryLocation != null)
         'local_library_location': localLibraryLocation,
-      if (pipedInstance != null) 'piped_instance': pipedInstance,
-      if (invidiousInstance != null) 'invidious_instance': invidiousInstance,
       if (themeMode != null) 'theme_mode': themeMode,
       if (audioSourceId != null) 'audio_source_id': audioSourceId,
       if (youtubeClientEngine != null)
@@ -1281,8 +1227,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       Value<String>? searchMode,
       Value<String>? downloadLocation,
       Value<String>? localLibraryLocation,
-      Value<String>? pipedInstance,
-      Value<String>? invidiousInstance,
       Value<String>? themeMode,
       Value<String?>? audioSourceId,
       Value<String>? youtubeClientEngine,
@@ -1308,8 +1252,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       searchMode: searchMode ?? this.searchMode,
       downloadLocation: downloadLocation ?? this.downloadLocation,
       localLibraryLocation: localLibraryLocation ?? this.localLibraryLocation,
-      pipedInstance: pipedInstance ?? this.pipedInstance,
-      invidiousInstance: invidiousInstance ?? this.invidiousInstance,
       themeMode: themeMode ?? this.themeMode,
       audioSourceId: audioSourceId ?? this.audioSourceId,
       youtubeClientEngine: youtubeClientEngine ?? this.youtubeClientEngine,
@@ -1373,12 +1315,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
       map['local_library_location'] =
           Variable<String>(localLibraryLocation.value);
     }
-    if (pipedInstance.present) {
-      map['piped_instance'] = Variable<String>(pipedInstance.value);
-    }
-    if (invidiousInstance.present) {
-      map['invidious_instance'] = Variable<String>(invidiousInstance.value);
-    }
     if (themeMode.present) {
       map['theme_mode'] = Variable<String>(themeMode.value);
     }
@@ -1426,8 +1362,6 @@ class PreferencesTableCompanion extends UpdateCompanion<PreferencesTableData> {
           ..write('searchMode: $searchMode, ')
           ..write('downloadLocation: $downloadLocation, ')
           ..write('localLibraryLocation: $localLibraryLocation, ')
-          ..write('pipedInstance: $pipedInstance, ')
-          ..write('invidiousInstance: $invidiousInstance, ')
           ..write('themeMode: $themeMode, ')
           ..write('audioSourceId: $audioSourceId, ')
           ..write('youtubeClientEngine: $youtubeClientEngine, ')
@@ -1935,7 +1869,9 @@ class SourceMatchTable extends Table
       type: DriftSqlType.string, requiredDuringInsert: true);
   late final GeneratedColumn<String> sourceInfo = GeneratedColumn<String>(
       'source_info', aliasedName, false,
-      type: DriftSqlType.string, requiredDuringInsert: true);
+      type: DriftSqlType.string,
+      requiredDuringInsert: false,
+      defaultValue: const Constant("{}"));
   late final GeneratedColumn<String> sourceType = GeneratedColumn<String>(
       'source_type', aliasedName, false,
       type: DriftSqlType.string, requiredDuringInsert: true);
@@ -2101,11 +2037,10 @@ class SourceMatchTableCompanion extends UpdateCompanion<SourceMatchTableData> {
   SourceMatchTableCompanion.insert({
     this.id = const Value.absent(),
     required String trackId,
-    required String sourceInfo,
+    this.sourceInfo = const Value.absent(),
     required String sourceType,
     this.createdAt = const Value.absent(),
   })  : trackId = Value(trackId),
-        sourceInfo = Value(sourceInfo),
         sourceType = Value(sourceType);
   static Insertable<SourceMatchTableData> custom({
     Expression<int>? id,
