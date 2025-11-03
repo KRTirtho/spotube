@@ -49,7 +49,7 @@ class PlayerView extends HookConsumerWidget {
     final activeSourceCodec = useMemoized(
       () {
         return currentActiveTrackSource
-            ?.getSourceOfCodec(currentActiveTrackSource.codec);
+            ?.getStreamOfCodec(currentActiveTrackSource.codec);
       },
       [currentActiveTrackSource?.sources, currentActiveTrackSource?.codec],
     );

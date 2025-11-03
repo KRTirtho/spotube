@@ -20,7 +20,6 @@ import 'package:spotube/provider/server/track_sources.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
-import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/service_utils.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';

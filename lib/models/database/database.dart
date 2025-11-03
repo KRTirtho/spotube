@@ -16,7 +16,6 @@ import 'package:spotube/models/metadata/market.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
-import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:flutter/widgets.dart' hide Table, Key, View;
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:drift/native.dart';
@@ -65,7 +64,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 9;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration {

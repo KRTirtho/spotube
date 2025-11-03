@@ -6,7 +6,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/services/logger/logger.dart';
-import 'package:spotube/services/sourced_track/enums.dart';
 
 final codecs = SourceCodecs.values.map((s) => s.name);
 

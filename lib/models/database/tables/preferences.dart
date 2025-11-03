@@ -11,17 +11,6 @@ enum CloseBehavior {
   close,
 }
 
-enum AudioSource {
-  youtube("YouTube"),
-  piped("Piped"),
-  jiosaavn("JioSaavn"),
-  invidious("Invidious"),
-  dabMusic("DAB Music");
-
-  final String label;
-  const AudioSource(this.label);
-}
-
 enum YoutubeClientEngine {
   ytDlp("yt-dlp"),
   youtubeExplode("YouTubeExplode"),
@@ -56,8 +45,6 @@ enum SearchMode {
 
 class PreferencesTable extends Table {
   IntColumn get id => integer().autoIncrement()();
-  TextColumn get audioQuality => textEnum<SourceQualities>()
-      .withDefault(Constant(SourceQualities.high.name))();
   BoolColumn get albumColorSync =>
       boolean().withDefault(const Constant(true))();
   BoolColumn get amoledDarkTheme =>
@@ -95,14 +82,9 @@ class PreferencesTable extends Table {
       text().withDefault(const Constant("https://inv.nadeko.net"))();
   TextColumn get themeMode =>
       textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
-  TextColumn get audioSource =>
-      textEnum<AudioSource>().withDefault(Constant(AudioSource.youtube.name))();
+  TextColumn get audioSourceId => text().nullable()();
   TextColumn get youtubeClientEngine => textEnum<YoutubeClientEngine>()
       .withDefault(Constant(YoutubeClientEngine.youtubeExplode.name))();
-  TextColumn get streamMusicCodec =>
-      textEnum<SourceCodecs>().withDefault(Constant(SourceCodecs.weba.name))();
-  TextColumn get downloadMusicCodec =>
-      textEnum<SourceCodecs>().withDefault(Constant(SourceCodecs.m4a.name))();
   BoolColumn get discordPresence =>
       boolean().withDefault(const Constant(true))();
   BoolColumn get endlessPlayback =>
@@ -116,7 +98,6 @@ class PreferencesTable extends Table {
   static PreferencesTableData defaults() {
     return PreferencesTableData(
       id: 0,
-      audioQuality: SourceQualities.high,
       albumColorSync: true,
       amoledDarkTheme: false,
       checkUpdate: true,
@@ -135,10 +116,8 @@ class PreferencesTable extends Table {
       pipedInstance: "https://pipedapi.kavin.rocks",
       invidiousInstance: "https://inv.nadeko.net",
       themeMode: ThemeMode.system,
-      audioSource: AudioSource.youtube,
+      audioSourceId: null,
       youtubeClientEngine: YoutubeClientEngine.youtubeExplode,
-      streamMusicCodec: SourceCodecs.m4a,
-      downloadMusicCodec: SourceCodecs.m4a,
       discordPresence: true,
       endlessPlayback: true,
       enableConnect: false,

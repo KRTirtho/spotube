@@ -12,7 +12,6 @@ import 'package:metadata_god/metadata_god.dart';
 import 'package:path/path.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/download_manager/download_manager.dart';
-import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:spotube/utils/service_utils.dart';

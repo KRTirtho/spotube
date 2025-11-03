@@ -2888,12 +2888,11 @@ packages:
   youtube_explode_dart:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: caa3023386dbc10e69c99f49f491148094874671
-      url: "https://github.com/Coronon/youtube_explode_dart"
-    source: git
-    version: "2.5.2"
+      name: youtube_explode_dart
+      sha256: "947ba05e0c4f050743e480e7bca3575ff6427d86cc898c1a69f5e1d188cdc9e0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.3"
   yt_dlp_dart:
     dependency: "direct main"
     description:

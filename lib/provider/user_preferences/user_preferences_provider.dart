@@ -10,7 +10,6 @@ import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
-import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:open_file/open_file.dart';

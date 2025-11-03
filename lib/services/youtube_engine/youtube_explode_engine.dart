@@ -162,7 +162,6 @@ class YouTubeExplodeEngine implements YouTubeEngine {
       requireWatchPage: false,
       ytClients: [
         YoutubeApiClient.ios,
-        YoutubeApiClient.android,
         YoutubeApiClient.androidVr,
       ],
     );
