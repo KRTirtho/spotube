@@ -22,7 +22,7 @@ class MetadataPluginAudioSourceEndpoint {
     SpotubeFullTrackObject track,
   ) async {
     final raw = await hetuMetadataAudioSource
-        .invoke("matches", positionalArgs: [track]) as List;
+        .invoke("matches", positionalArgs: [track.toJson()]) as List;
 
     return raw.map((e) => SpotubeAudioSourceMatchObject.fromJson(e)).toList();
   }
@@ -31,7 +31,7 @@ class MetadataPluginAudioSourceEndpoint {
     SpotubeAudioSourceMatchObject match,
   ) async {
     final raw = await hetuMetadataAudioSource
-        .invoke("streams", positionalArgs: [match]) as List;
+        .invoke("streams", positionalArgs: [match.toJson()]) as List;
 
     return raw.map((e) => SpotubeAudioSourceStreamObject.fromJson(e)).toList();
   }

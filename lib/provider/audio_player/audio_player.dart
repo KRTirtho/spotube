@@ -7,7 +7,6 @@ import 'package:media_kit/media_kit.dart';
 import 'package:spotube/extensions/list.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/database/database.dart';
@@ -400,7 +399,7 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     // because of timeout
     final intendedActiveTrack = medias.elementAt(initialIndex);
     if (intendedActiveTrack.track is! SpotubeLocalTrackObject) {
-      await ref.read(
+      ref.read(
         sourcedTrackProvider(
           intendedActiveTrack.track as SpotubeFullTrackObject,
         ).future,

@@ -543,7 +543,7 @@ final audioSourcePluginProvider = FutureProvider<MetadataPlugin?>(
       metadataPluginsProvider
           .selectAsync((data) => data.defaultAudioSourcePluginConfig),
     );
-    final youtubeEngine = ref.read(youtubeEngineProvider);
+    final youtubeEngine = ref.watch(youtubeEngineProvider);
 
     if (defaultPlugin == null) {
       return null;

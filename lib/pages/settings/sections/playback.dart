@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' show ListTile;
@@ -7,11 +9,15 @@ import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/adaptive/adaptive_select_tile.dart';
+import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/playback/edit_connect_port_dialog.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/extensions/context.dart';
+import 'package:spotube/modules/settings/youtube_engine_not_installed_dialog.dart';
 import 'package:spotube/provider/metadata_plugin/audio_source/quality_presets.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/kv_store/kv_store.dart';
+import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
 
 import 'package:spotube/utils/platform.dart';
 
@@ -30,6 +36,35 @@ class SettingsPlaybackSection extends HookConsumerWidget {
     return SectionCardWithHeading(
       heading: context.l10n.playback,
       children: [
+        AdaptiveSelectTile<YoutubeClientEngine>(
+          secondary: const Icon(SpotubeIcons.engine),
+          title: Text(context.l10n.youtube_engine),
+          value: preferences.youtubeClientEngine,
+          options: YoutubeClientEngine.values
+              .where((e) => e.isAvailableForPlatform())
+              .map((e) => SelectItemButton(
+                    value: e,
+                    child: Text(e.label),
+                  ))
+              .toList(),
+          onChanged: (value) async {
+            if (value == null) return;
+            if (value == YoutubeClientEngine.ytDlp) {
+              final customPath = KVStoreService.getYoutubeEnginePath(value);
+              if (!await YtDlpEngine.isInstalled() &&
+                  (customPath == null || !await File(customPath).exists()) &&
+                  context.mounted) {
+                final hasInstalled = await showDialog<bool>(
+                  context: context,
+                  builder: (context) =>
+                      YouTubeEngineNotInstalledDialog(engine: value),
+                );
+                if (hasInstalled != true) return;
+              }
+            }
+            preferencesNotifier.setYoutubeClientEngine(value);
+          },
+        ),
         if (sourcePresets.presets.isNotEmpty) ...[
           AdaptiveSelectTile(
             secondary: const Icon(SpotubeIcons.api),
