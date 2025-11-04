@@ -44,7 +44,7 @@ class SpotubeAudioLossyContainerQuality
 
   @override
   toString() {
-    return "${oneOptionalDecimalFormatter.format(bitrate)}kbps";
+    return "${oneOptionalDecimalFormatter.format(bitrate / 1000)}kbps";
   }
 }
 

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/metadata/metadata.dart';
 
 part 'quality_presets.g.dart';
 part 'quality_presets.freezed.dart';
@@ -28,9 +29,13 @@ class AudioSourceAvailableQualityPresetsNotifier
     extends Notifier<AudioSourcePresetsState> {
   @override
   build() {
-    ref.watch(audioSourcePluginProvider);
+    final audioSourceSnapshot = ref.watch(audioSourcePluginProvider);
+    final audioSourceConfigSnapshot = ref.watch(
+      metadataPluginsProvider.select((data) =>
+          data.whenData((value) => value.defaultAudioSourcePluginConfig)),
+    );
 
-    _initialize();
+    _initialize(audioSourceSnapshot, audioSourceConfigSnapshot);
 
     listenSelf((previous, next) {
       final isNewLossless =
@@ -49,26 +54,29 @@ class AudioSourceAvailableQualityPresetsNotifier
     return AudioSourcePresetsState();
   }
 
-  void _initialize() async {
-    final audioSource = await ref.read(audioSourcePluginProvider.future);
-    final audioSourceConfig = await ref.read(
-      metadataPluginsProvider
-          .selectAsync((data) => data.defaultAudioSourcePluginConfig),
-    );
-    if (audioSource == null || audioSourceConfig == null) {
-      throw Exception("Dude wat?");
-    }
-    final preferences = await SharedPreferences.getInstance();
-    final persistedStateStr =
-        preferences.getString("audioSourceState-${audioSourceConfig.slug}");
+  void _initialize(
+    AsyncValue<MetadataPlugin?> audioSourceSnapshot,
+    AsyncValue<PluginConfiguration?> audioSourceConfigSnapshot,
+  ) async {
+    audioSourceConfigSnapshot.whenData((audioSourceConfig) {
+      audioSourceSnapshot.whenData((audioSource) async {
+        if (audioSource == null || audioSourceConfig == null) {
+          throw Exception("Dude wat?");
+        }
+        final preferences = await SharedPreferences.getInstance();
+        final persistedStateStr =
+            preferences.getString("audioSourceState-${audioSourceConfig.slug}");
 
-    if (persistedStateStr != null) {
-      state = AudioSourcePresetsState.fromJson(jsonDecode(persistedStateStr));
-    } else {
-      state = AudioSourcePresetsState(
-        presets: audioSource.audioSource.supportedPresets,
-      );
-    }
+        if (persistedStateStr != null) {
+          state =
+              AudioSourcePresetsState.fromJson(jsonDecode(persistedStateStr));
+        } else {
+          state = AudioSourcePresetsState(
+            presets: audioSource.audioSource.supportedPresets,
+          );
+        }
+      });
+    });
   }
 
   void setSelectedStreamingContainerIndex(int index) {

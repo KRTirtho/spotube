@@ -48,7 +48,7 @@ class ServerPlaybackRoutes {
     return join(
       await UserPreferencesNotifier.getMusicCacheDir(),
       ServiceUtils.sanitizeFilename(
-        '${track.query.name} - ${track.query.artists.join(",")} (${track.info.id}).${track.qualityPreset!.name}',
+        '${track.query.name} - ${track.query.artists.map((d) => d.name).join(",")} (${track.info.id}).${track.qualityPreset!.name}',
       ),
     );
   }
@@ -288,7 +288,9 @@ class ServerPlaybackRoutes {
           imageBytes: imageBytes,
           fileLength: fileLength,
         ),
-      );
+      ).catchError((e, stackTrace) {
+        AppLogger.reportError(e, stackTrace);
+      });
     }
 
     return (bytes: bytes, response: res);

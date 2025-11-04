@@ -317,7 +317,7 @@ class SourcedTrack extends BasicSourcedTrack {
               source.bitDepth == quality.bitDepth;
         } else {
           return source.bitrate ==
-              (preset as SpotubeAudioLossyContainerQuality).bitrate;
+              (quality as SpotubeAudioLossyContainerQuality).bitrate;
         }
       },
     );

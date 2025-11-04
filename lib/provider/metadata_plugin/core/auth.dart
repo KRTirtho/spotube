@@ -65,6 +65,6 @@ class AudioSourcePluginAuthenticatedNotifier extends AsyncNotifier<bool> {
 }
 
 final audioSourcePluginAuthenticatedProvider =
-    AsyncNotifierProvider<MetadataPluginAuthenticatedNotifier, bool>(
-  MetadataPluginAuthenticatedNotifier.new,
+    AsyncNotifierProvider<AudioSourcePluginAuthenticatedNotifier, bool>(
+  AudioSourcePluginAuthenticatedNotifier.new,
 );

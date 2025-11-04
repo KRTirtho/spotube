@@ -52,9 +52,10 @@ class MetadataInstalledPluginItem extends HookConsumerWidget {
         ref.watch(metadataPluginAuthenticatedProvider);
     final isAudioSourceAuthenticatedSnapshot =
         ref.watch(audioSourcePluginAuthenticatedProvider);
-    final isAuthenticated =
-        isMetadataAuthenticatedSnapshot.asData?.value == true ||
-            isAudioSourceAuthenticatedSnapshot.asData?.value == true;
+    final isAuthenticated = (isDefaultMetadata &&
+            isMetadataAuthenticatedSnapshot.asData?.value == true) ||
+        (isDefaultAudioSource &&
+            isAudioSourceAuthenticatedSnapshot.asData?.value == true);
 
     final metadataUpdateAvailable =
         ref.watch(metadataPluginUpdateCheckerProvider);
