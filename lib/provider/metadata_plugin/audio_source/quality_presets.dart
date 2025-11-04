@@ -69,7 +69,10 @@ class AudioSourceAvailableQualityPresetsNotifier
 
         if (persistedStateStr != null) {
           state =
-              AudioSourcePresetsState.fromJson(jsonDecode(persistedStateStr));
+              AudioSourcePresetsState.fromJson(jsonDecode(persistedStateStr))
+                  .copyWith(
+            presets: audioSource.audioSource.supportedPresets,
+          );
         } else {
           state = AudioSourcePresetsState(
             presets: audioSource.audioSource.supportedPresets,

@@ -306,6 +306,8 @@ class SourcedTrack extends BasicSourcedTrack {
     SpotubeAudioSourceContainerPreset preset,
     int qualityIndex,
   ) {
+    if (sources.isEmpty) return null;
+
     final quality = preset.qualities[qualityIndex];
 
     final exactMatch = sources.firstWhereOrNull(
@@ -326,45 +328,24 @@ class SourcedTrack extends BasicSourcedTrack {
       return exactMatch;
     }
 
-    // Find the closest to preset
-    SpotubeAudioSourceStreamObject? closest;
-    for (final source in sources) {
-      if (source.container != preset.name) continue;
-
-      if (quality case SpotubeAudioLosslessContainerQuality()) {
-        final sourceBps = (source.bitDepth ?? 0) * (source.sampleRate ?? 0);
-        final qualityBps = quality.bitDepth * quality.sampleRate;
-        final closestBps =
-            (closest?.bitDepth ?? 0) * (closest?.sampleRate ?? 0);
-
-        if (sourceBps == qualityBps) {
-          closest = source;
-          break;
-        }
-        final closestDiff = (closestBps - qualityBps).abs();
-        final sourceDiff = (sourceBps - qualityBps).abs();
-
-        if (sourceDiff < closestDiff) {
-          closest = source;
-        }
+    // Find the preset with closest quality to the supplied quality
+    return sources.where((source) {
+      return source.container == preset.name;
+    }).reduce((prev, curr) {
+      if (quality is SpotubeAudioLosslessContainerQuality) {
+        final prevDiff = ((prev.sampleRate ?? 0) - quality.sampleRate).abs() +
+            ((prev.bitDepth ?? 0) - quality.bitDepth).abs();
+        final currDiff = ((curr.sampleRate ?? 0) - quality.sampleRate).abs() +
+            ((curr.bitDepth ?? 0) - quality.bitDepth).abs();
+        return currDiff < prevDiff ? curr : prev;
       } else {
-        final presetBitrate =
-            (preset as SpotubeAudioLossyContainerQuality).bitrate;
-        if (presetBitrate == source.bitrate) {
-          closest = source;
-          break;
-        }
-
-        final closestDiff = (closest?.bitrate ?? 0) - presetBitrate;
-        final sourceDiff = (source.bitrate ?? 0) - presetBitrate;
-
-        if (sourceDiff < closestDiff) {
-          closest = source;
-        }
+        final prevDiff = ((prev.bitrate ?? 0) -
+                (quality as SpotubeAudioLossyContainerQuality).bitrate)
+            .abs();
+        final currDiff = ((curr.bitrate ?? 0) - quality.bitrate).abs();
+        return currDiff < prevDiff ? curr : prev;
       }
-    }
-
-    return closest;
+    });
   }
 
   String? getUrlOfQuality(
