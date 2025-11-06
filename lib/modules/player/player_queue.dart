@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter/material.dart' show showModalBottomSheet, ListTile, SafeArea, Column, Navigator;
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -12,6 +13,7 @@ import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/fallbacks/not_found.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/track_tile/track_tile.dart';
+import 'package:spotube/components/dialogs/playlist_add_track_dialog.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/hooks/controllers/use_auto_scroll_controller.dart';
@@ -55,9 +57,12 @@ class PlayerQueue extends HookConsumerWidget {
     final controller = useAutoScrollController();
     final searchText = useState('');
 
+    final selectionMode = useState(false);
+    final selectedTrackIds = useState(<String>{});
+
     final isSearching = useState(false);
 
-    final tracks = playlist.tracks;
+  final tracks = playlist.tracks;
 
     final filteredTracks = useMemoized(
       () {
@@ -132,50 +137,156 @@ class PlayerQueue extends HookConsumerWidget {
                       child: searchBar,
                     )
                   else
-                    AppBar(
-                      trailingGap: 0,
-                      backgroundColor: Colors.transparent,
-                      surfaceBlur: 0,
-                      surfaceOpacity: 0,
-                      title: mediaQuery.mdAndUp || !isSearching.value
-                          ? SizedBox(
+                    selectionMode.value
+                        ? AppBar(
+                            backgroundColor: Colors.transparent,
+                            surfaceBlur: 0,
+                            surfaceOpacity: 0,
+                            leading: [
+                              IconButton.ghost(
+                                icon: const Icon(SpotubeIcons.close),
+                                onPressed: () {
+                                  selectedTrackIds.value = {};
+                                  selectionMode.value = false;
+                                },
+                              )
+                            ],
+                            title: SizedBox(
                               height: 30,
                               child: AutoSizeText(
-                                context.l10n.tracks_in_queue(tracks.length),
+                                '${selectedTrackIds.value.length} selected',
                                 maxLines: 1,
                               ),
-                            )
-                          : null,
-                      trailing: [
-                        if (mediaQuery.mdAndUp)
-                          searchBar
-                        else
-                          IconButton.ghost(
-                            icon: const Icon(SpotubeIcons.filter),
-                            onPressed: () {
-                              isSearching.value = !isSearching.value;
-                            },
-                          ),
-                        if (!isSearching.value) ...[
-                          const SizedBox(width: 10),
-                          Tooltip(
-                            tooltip: TooltipContainer(
-                                    child: Text(context.l10n.clear_all))
-                                .call,
-                            child: IconButton.outline(
-                              icon: const Icon(SpotubeIcons.playlistRemove),
-                              onPressed: () {
-                                onStop();
-                                closeDrawer(context);
-                              },
                             ),
+                            trailing: [
+                              IconButton.ghost(
+                                icon: const Icon(SpotubeIcons.moreHorizontal),
+                                onPressed: () async {
+                                  await showModalBottomSheet<void>(
+                                    context: context,
+                                    builder: (context) {
+                                      return SafeArea(
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            ListTile(
+                                              leading: const Icon(
+                                                  SpotubeIcons.selectionCheck),
+                                              title: Text(
+                                                  context.l10n.select_all),
+                                              onTap: () {
+                                                selectedTrackIds.value =
+                                                    filteredTracks
+                                                        .map((t) => t.id)
+                                                        .toSet();
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(
+                                                  SpotubeIcons.playlistAdd),
+                                              title: Text(
+                                                  context.l10n.add_to_playlist),
+                                              onTap: () async {
+                                                final selected = filteredTracks
+                                                    .where((t) => selectedTrackIds
+                                                        .value
+                                                        .contains(t.id))
+                                                    .toList();
+                                                Navigator.pop(context);
+                                                if (selected.isEmpty) return;
+                                                final res = await showDialog<
+                                                    bool?>(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      PlaylistAddTrackDialog(
+                                                    tracks: selected,
+                                                    openFromPlaylist: null,
+                                                  ),
+                                                );
+                                                if (res == true) {
+                                                  selectedTrackIds.value = {};
+                                                  selectionMode.value = false;
+                                                }
+                                              },
+                                            ),
+                                            ListTile(
+                                              leading:
+                                                  const Icon(SpotubeIcons.trash),
+                                              title: Text(
+                                                  context.l10n.remove_from_queue),
+                                              onTap: () async {
+                                                final ids = selectedTrackIds
+                                                    .value
+                                                    .toList();
+                                                Navigator.pop(context);
+                                                if (ids.isEmpty) return;
+                                                await Future.wait(ids
+                                                    .map((id) => onRemove(id)));
+                                                selectedTrackIds.value = {};
+                                                selectionMode.value = false;
+                                              },
+                                            ),
+                                            ListTile(
+                                              leading: const Icon(
+                                                  SpotubeIcons.close),
+                                              title: Text(context.l10n.cancel),
+                                              onTap: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ],
+                          )
+                        : AppBar(
+                            trailingGap: 0,
+                            backgroundColor: Colors.transparent,
+                            surfaceBlur: 0,
+                            surfaceOpacity: 0,
+                            title: mediaQuery.mdAndUp || !isSearching.value
+                                ? SizedBox(
+                                    height: 30,
+                                    child: AutoSizeText(
+                                      context.l10n.tracks_in_queue(tracks.length),
+                                      maxLines: 1,
+                                    ),
+                                  )
+                                : null,
+                            trailing: [
+                              if (mediaQuery.mdAndUp) searchBar
+                              else
+                                IconButton.ghost(
+                                  icon: const Icon(SpotubeIcons.filter),
+                                  onPressed: () {
+                                    isSearching.value = !isSearching.value;
+                                  },
+                                ),
+                              if (!isSearching.value) ...[
+                                const SizedBox(width: 10),
+                                Tooltip(
+                                  tooltip: TooltipContainer(
+                                          child: Text(context.l10n.clear_all))
+                                      .call,
+                                  child: IconButton.outline(
+                                    icon: const Icon(SpotubeIcons.playlistRemove),
+                                    onPressed: () {
+                                      onStop();
+                                      closeDrawer(context);
+                                    },
+                                  ),
+                                ),
+                                const Gap(5),
+                                if (mediaQuery.smAndDown)
+                                  const BackButton(icon: SpotubeIcons.angleDown),
+                              ],
+                            ],
                           ),
-                          const Gap(5),
-                          if (mediaQuery.smAndDown)
-                            const BackButton(icon: SpotubeIcons.angleDown),
-                        ],
-                      ],
-                    ),
                   const Divider(),
                   Expanded(
                     child: InterScrollbar(
@@ -195,6 +306,20 @@ class PlayerQueue extends HookConsumerWidget {
                             },
                             itemBuilder: (context, i) {
                               final track = filteredTracks.elementAt(i);
+
+                              void toggleSelection(String id) {
+                                final s = {...selectedTrackIds.value};
+                                if (s.contains(id)) {
+                                  s.remove(id);
+                                } else {
+                                  s.add(id);
+                                }
+                                selectedTrackIds.value = s;
+                                if (selectedTrackIds.value.isEmpty) {
+                                  selectionMode.value = false;
+                                }
+                              }
+
                               return AutoScrollTag(
                                 key: ValueKey<int>(i),
                                 controller: controller,
@@ -203,15 +328,34 @@ class PlayerQueue extends HookConsumerWidget {
                                   playlist: playlist,
                                   index: i,
                                   track: track,
+                                  selectionMode: selectionMode.value,
+                                  selected:
+                                      selectedTrackIds.value.contains(track.id),
+                  onChanged: selectionMode.value
+                    ? (_) => toggleSelection(track.id)
+                    : null,
                                   onTap: () async {
+                                    if (selectionMode.value) {
+                                      toggleSelection(track.id);
+                                      return;
+                                    }
                                     if (playlist.activeTrack?.id == track.id) {
                                       return;
                                     }
                                     await onJump(track);
                                   },
+                                  onLongPress: () {
+                                    if (!selectionMode.value) {
+                                      selectionMode.value = true;
+                                      selectedTrackIds.value = {track.id};
+                                    } else {
+                                      toggleSelection(track.id);
+                                    }
+                                  },
                                   leadingActions: [
                                     if (!isSearching.value &&
-                                        searchText.value.isEmpty)
+                                        searchText.value.isEmpty &&
+                                        !selectionMode.value)
                                       Padding(
                                         padding:
                                             const EdgeInsets.only(left: 8.0),

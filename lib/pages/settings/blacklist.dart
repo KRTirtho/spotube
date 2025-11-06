@@ -64,7 +64,7 @@ class BlackListPage extends HookConsumerWidget {
               child: TextField(
                 onChanged: (value) => searchText.value = value,
                 placeholder: Text(context.l10n.search),
-                leading: const Icon(SpotubeIcons.search),
+                // prefixIcon: const Icon(SpotubeIcons.search),
               ),
             ),
             InterScrollbar(

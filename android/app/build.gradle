@@ -69,6 +69,12 @@ android {
     }
 
     signingConfigs {
+        debug {
+            storeFile file("${System.getenv("HOME")}/.android/debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
         release {
             keyAlias keystoreProperties['keyAlias']
             keyPassword keystoreProperties['keyPassword']
@@ -82,7 +88,7 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
     }
 
@@ -94,14 +100,14 @@ android {
             resValue "string", "app_name_en", "Spotube Nightly"
             applicationIdSuffix ".nightly"
             versionNameSuffix "-nightly"
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
         dev {
             dimension "default"
             resValue "string", "app_name_en", "Spotube Dev"
             applicationIdSuffix ".dev"
             versionNameSuffix "-dev"
-            signingConfig signingConfigs.release
+            signingConfig signingConfigs.debug
         }
         stable {
             dimension "default"
