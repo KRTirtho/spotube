@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   desktop_webview_window
   file_selector_linux
+  flutter_new_pipe_extractor
   flutter_secure_storage_linux
   flutter_timezone
   gtk

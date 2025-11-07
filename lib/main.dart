@@ -83,6 +83,8 @@ Future<void> main(List<String> rawArgs) async {
     // force High Refresh Rate on some Android devices (like One Plus)
     if (kIsAndroid) {
       await FlutterDisplayMode.setHighRefreshRate();
+    }
+    if (kIsAndroid || kIsDesktop) {
       await NewPipeExtractor.init();
     }
 
