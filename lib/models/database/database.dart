@@ -19,7 +19,6 @@ import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:flutter/widgets.dart' hide Table, Key, View;
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:drift/native.dart';
-import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
 import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
@@ -212,26 +211,14 @@ class AppDatabase extends _$AppDatabase {
           );
         },
         from9To10: (m, schema) async {
-          try {
-            await m
-                .dropColumn(schema.preferencesTable, "piped_instance")
-                .catchError((e) {});
-            await m
-                .dropColumn(schema.preferencesTable, "invidious_instance")
-                .catchError((e) {});
-            await m
-                .addColumn(
-                  schema.sourceMatchTable,
-                  sourceMatchTable.sourceInfo,
-                )
-                .catchError((e) {});
-            await m
-                .dropColumn(schema.sourceMatchTable, "source_id")
-                .catchError((e) {});
-          } catch (e) {
-            AppLogger.log.e(e);
-            return;
-          }
+          await m.dropColumn(schema.preferencesTable, "piped_instance");
+          await m.dropColumn(schema.preferencesTable, "invidious_instance");
+          await m.addColumn(
+            schema.sourceMatchTable,
+            sourceMatchTable.sourceInfo,
+          );
+          await customStatement("DROP INDEX IF EXISTS uniq_track_match;");
+          await m.dropColumn(schema.sourceMatchTable, "source_id");
         },
       ),
     );

@@ -2002,10 +2002,10 @@ packages:
     dependency: transitive
     description:
       name: random_user_agents
-      sha256: "19facde509a2482dababb454faf2aceff797a6ae08e80f91268c0c8a7420f03b"
+      sha256: "95647149687167e82a7b39e1b4616fdebb574981b71b6f0cfca21b69f36293a8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.15"
+    version: "1.0.17"
   recase:
     dependency: transitive
     description:
