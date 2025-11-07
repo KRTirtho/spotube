@@ -1,5 +1,176 @@
 {
+  "ar": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "bn": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "ca": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "cs": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "de": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "es": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "eu": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "fa": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "fi": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "fr": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "hi": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "id": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "it": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "ja": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "ka": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "ko": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "ne": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
   "nl": [
-    "audio_source"
+    "audio_source",
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "pl": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "pt": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "ru": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "ta": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "th": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "tl": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "tr": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "uk": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "vi": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "zh": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
+  ],
+
+  "zh_TW": [
+    "source",
+    "uncompressed",
+    "dab_music_source_description"
   ]
 }

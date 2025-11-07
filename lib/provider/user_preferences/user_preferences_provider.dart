@@ -54,6 +54,7 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
           }
 
           await audioPlayer.setAudioNormalization(state.normalizeAudio);
+          await _updatePlayerBufferSize(event.audioQuality, state.audioQuality);
         } catch (e, stack) {
           AppLogger.reportError(e, stack);
         }
@@ -77,6 +78,24 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     return paths.getDownloadsDirectory().then((dir) {
       return join(dir!.path, "Spotube");
     });
+  }
+
+  /// Sets audio player's buffer size based on the selected audio quality
+  /// Uncompressed quality gets a larger buffer size for smoother playback
+  /// while other qualities use a standard buffer size.
+  Future<void> _updatePlayerBufferSize(
+    SourceQualities newQuality,
+    SourceQualities oldQuality,
+  ) async {
+    if (newQuality == SourceQualities.uncompressed) {
+      audioPlayer.setDemuxerBufferSize(6 * 1024 * 1024); // 6MB
+      return;
+    }
+
+    if (oldQuality == SourceQualities.uncompressed &&
+        newQuality != SourceQualities.uncompressed) {
+      audioPlayer.setDemuxerBufferSize(4 * 1024 * 1024); // 4MB
+    }
   }
 
   Future<void> setData(PreferencesTableCompanion data) async {
@@ -155,6 +174,7 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setAudioQuality(SourceQualities quality) {
     setData(PreferencesTableCompanion(audioQuality: Value(quality)));
+    _updatePlayerBufferSize(quality, state.audioQuality);
   }
 
   void setDownloadLocation(String downloadDir) {
@@ -204,6 +224,23 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   }
 
   void setAudioSource(AudioSource type) {
+    switch ((type, state.audioQuality)) {
+      // DAB music only supports high quality/uncompressed streams
+      case (
+          AudioSource.dabMusic,
+          SourceQualities.low || SourceQualities.medium
+        ):
+        setAudioQuality(SourceQualities.high);
+        break;
+      // If the user switches from DAB music to other sources and has
+      // uncompressed quality selected, downgrade to high quality
+      case (!= AudioSource.dabMusic, SourceQualities.uncompressed):
+        setAudioQuality(SourceQualities.high);
+        break;
+      default:
+        break;
+    }
+
     setData(PreferencesTableCompanion(audioSource: Value(type)));
   }
 

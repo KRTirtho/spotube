@@ -166,7 +166,7 @@ class TrackOptionsActions {
         }
         break;
       case TrackOptionValue.playNext:
-        playback.addTracksAtFirst([track]);
+        await playback.addTracksAtFirst([track]);
 
         if (context.mounted) {
           showToast(

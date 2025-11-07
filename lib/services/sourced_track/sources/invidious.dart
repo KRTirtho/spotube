@@ -94,6 +94,7 @@ class InvidiousSourcedTrack extends SourcedTrack {
 
   static List<TrackSource> toSources(InvidiousVideoResponse manifest) {
     return manifest.adaptiveFormats.map((stream) {
+      var isWebm = stream.type.contains("audio/webm");
       return TrackSource(
         url: stream.url.toString(),
         quality: switch (stream.qualityLabel) {
@@ -101,10 +102,11 @@ class InvidiousSourcedTrack extends SourcedTrack {
           "medium" => SourceQualities.medium,
           _ => SourceQualities.low,
         },
-        codec: stream.type.contains("audio/webm")
-            ? SourceCodecs.weba
-            : SourceCodecs.m4a,
+        codec: isWebm ? SourceCodecs.weba : SourceCodecs.m4a,
         bitrate: stream.bitrate,
+        qualityLabel:
+            "${isWebm ? "Opus" : "AAC"} • ${stream.bitrate.replaceAll("kbps", "")}kbps "
+            "• ${isWebm ? "weba" : "m4a"} • Stereo",
       );
     }).toList();
   }

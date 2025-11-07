@@ -24,6 +24,10 @@ dependencies:
   bonsoir: ^5.1.10
   cached_network_image: ^3.3.1
   connectivity_plus: ^6.1.2
+  dab_music_api:
+    git:
+      url: https://github.com/KRTirtho/dab_music_api.git
+      ref: main
   desktop_webview_window:
     git:
       path: packages/desktop_webview_window
@@ -77,8 +81,8 @@ dependencies:
   http: ^1.2.1
   image_picker: ^1.1.0
   intl: any
-  invidious: ^0.1.1
-  jiosaavn: ^0.1.0
+  invidious: ^0.1.2
+  jiosaavn: ^0.1.1
   json_annotation: ^4.8.1
   local_notifier: ^0.1.6
   logger: ^2.0.2
@@ -163,6 +167,7 @@ dependencies:
   get_it: ^8.0.3
   flutter_markdown_plus: ^1.0.3
   pub_semver: ^2.2.0
+  change_case: ^1.1.0
 
 dev_dependencies:
   build_runner: ^2.4.13

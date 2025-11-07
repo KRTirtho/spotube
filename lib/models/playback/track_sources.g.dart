@@ -36,6 +36,7 @@ const _$AudioSourceEnumMap = {
   AudioSource.piped: 'piped',
   AudioSource.jiosaavn: 'jiosaavn',
   AudioSource.invidious: 'invidious',
+  AudioSource.dabMusic: 'dabMusic',
 };
 
 _$TrackSourceQueryImpl _$$TrackSourceQueryImplFromJson(Map json) =>
@@ -88,6 +89,7 @@ _$TrackSourceImpl _$$TrackSourceImplFromJson(Map json) => _$TrackSourceImpl(
       quality: $enumDecode(_$SourceQualitiesEnumMap, json['quality']),
       codec: $enumDecode(_$SourceCodecsEnumMap, json['codec']),
       bitrate: json['bitrate'] as String,
+      qualityLabel: json['qualityLabel'] as String,
     );
 
 Map<String, dynamic> _$$TrackSourceImplToJson(_$TrackSourceImpl instance) =>
@@ -96,9 +98,11 @@ Map<String, dynamic> _$$TrackSourceImplToJson(_$TrackSourceImpl instance) =>
       'quality': _$SourceQualitiesEnumMap[instance.quality]!,
       'codec': _$SourceCodecsEnumMap[instance.codec]!,
       'bitrate': instance.bitrate,
+      'qualityLabel': instance.qualityLabel,
     };
 
 const _$SourceQualitiesEnumMap = {
+  SourceQualities.uncompressed: 'uncompressed',
   SourceQualities.high: 'high',
   SourceQualities.medium: 'medium',
   SourceQualities.low: 'low',
@@ -107,4 +111,6 @@ const _$SourceQualitiesEnumMap = {
 const _$SourceCodecsEnumMap = {
   SourceCodecs.m4a: 'm4a',
   SourceCodecs.weba: 'weba',
+  SourceCodecs.mp3: 'mp3',
+  SourceCodecs.flac: 'flac',
 };

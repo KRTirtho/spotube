@@ -259,11 +259,14 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       return addTracks(tracks);
     }
 
-    final addableTracks = _blacklist.filter(tracks).where(
+    final addableTracks = _blacklist
+        .filter(tracks)
+        .where(
           (track) =>
               allowDuplicates ||
               !state.tracks.any((element) => _compareTracks(element, track)),
-        );
+        )
+        .toList();
 
     state = state.copyWith(
       tracks: [...addableTracks, ...state.tracks],
@@ -371,13 +374,12 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   }
 
   bool _compareTracks(SpotubeTrackObject a, SpotubeTrackObject b) {
-    if ((a is SpotubeLocalTrackObject && b is! SpotubeLocalTrackObject) ||
-        (a is! SpotubeLocalTrackObject && b is SpotubeLocalTrackObject)) {
+    if (a.runtimeType != b.runtimeType) {
       return false;
     }
 
     return a is SpotubeLocalTrackObject && b is SpotubeLocalTrackObject
-        ? (a).path == (b).path
+        ? a.path == b.path
         : a.id == b.id;
   }
 

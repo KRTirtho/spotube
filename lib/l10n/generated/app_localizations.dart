@@ -2930,6 +2930,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Scrobbling'**
   String get scrobbling;
+
+  /// No description provided for @source.
+  ///
+  /// In en, this message translates to:
+  /// **'Source: '**
+  String get source;
+
+  /// No description provided for @uncompressed.
+  ///
+  /// In en, this message translates to:
+  /// **'Uncompressed'**
+  String get uncompressed;
+
+  /// No description provided for @dab_music_source_description.
+  ///
+  /// In en, this message translates to:
+  /// **'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.'**
+  String get dab_music_source_description;
 }
 
 class _AppLocalizationsDelegate

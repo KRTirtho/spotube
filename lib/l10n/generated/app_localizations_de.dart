@@ -1550,4 +1550,14 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Source: ';
+
+  @override
+  String get uncompressed => 'Uncompressed';
+
+  @override
+  String get dab_music_source_description =>
+      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
 }

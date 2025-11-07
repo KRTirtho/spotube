@@ -98,6 +98,7 @@ class YoutubeSourcedTrack extends SourcedTrack {
 
   static List<TrackSource> toTrackSources(StreamManifest manifest) {
     return manifest.audioOnly.map((streamInfo) {
+      var isWebm = streamInfo.codec.mimeType == "audio/webm";
       return TrackSource(
         url: streamInfo.url.toString(),
         quality: switch (streamInfo.qualityLabel) {
@@ -106,10 +107,11 @@ class YoutubeSourcedTrack extends SourcedTrack {
           "low" => SourceQualities.low,
           _ => SourceQualities.high,
         },
-        codec: streamInfo.codec.mimeType == "audio/webm"
-            ? SourceCodecs.weba
-            : SourceCodecs.m4a,
+        codec: isWebm ? SourceCodecs.weba : SourceCodecs.m4a,
         bitrate: streamInfo.bitrate.bitsPerSecond.toString(),
+        qualityLabel:
+            "${isWebm ? "Opus" : "AAC"} • ${(streamInfo.bitrate.kiloBitsPerSecond).floor()}kbps "
+            "• ${isWebm ? "weba" : "m4a"} • Stereo",
       );
     }).toList();
   }

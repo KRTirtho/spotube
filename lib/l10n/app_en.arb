@@ -461,5 +461,8 @@
   "available_plugins": "Available plugins",
   "configure_your_own_metadata_plugin": "Configure your own playlist/album/artist/feed metadata provider",
   "audio_scrobblers": "Audio Scrobblers",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "source": "Source: ",
+  "uncompressed": "Uncompressed",
+  "dab_music_source_description": "For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching."
 }

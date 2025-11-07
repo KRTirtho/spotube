@@ -3,7 +3,8 @@ part of '../database.dart';
 enum SourceType {
   youtube._("YouTube"),
   youtubeMusic._("YouTube Music"),
-  jiosaavn._("JioSaavn");
+  jiosaavn._("JioSaavn"),
+  dabMusic._("DAB Music");
 
   final String label;
 

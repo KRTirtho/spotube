@@ -46,6 +46,14 @@ class PlayerView extends HookConsumerWidget {
     final isLocalTrack = currentActiveTrack is SpotubeLocalTrackObject;
     final mediaQuery = MediaQuery.sizeOf(context);
 
+    final activeSourceCodec = useMemoized(
+      () {
+        return currentActiveTrackSource
+            ?.getSourceOfCodec(currentActiveTrackSource.codec);
+      },
+      [currentActiveTrackSource?.sources, currentActiveTrackSource?.codec],
+    );
+
     final shouldHide = useState(true);
 
     ref.listen(navigationPanelHeight, (_, height) {
@@ -267,6 +275,21 @@ class PlayerView extends HookConsumerWidget {
                       );
                     }),
                   ),
+                  const Gap(25),
+                  if (activeSourceCodec != null)
+                    OutlineBadge(
+                      style: const ButtonStyle.outline(
+                        size: ButtonSize.normal,
+                        density: ButtonDensity.dense,
+                        shape: ButtonShape.rectangle,
+                      ).copyWith(
+                        textStyle: (context, states, value) {
+                          return value.copyWith(fontWeight: FontWeight.w500);
+                        },
+                      ),
+                      leading: const Icon(SpotubeIcons.lightningOutlined),
+                      child: Text(activeSourceCodec.qualityLabel),
+                    )
                 ],
               ),
             ),

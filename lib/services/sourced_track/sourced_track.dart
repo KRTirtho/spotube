@@ -5,6 +5,7 @@ import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 import 'package:spotube/services/sourced_track/enums.dart';
+import 'package:spotube/services/sourced_track/sources/dab_music.dart';
 import 'package:spotube/services/sourced_track/sources/invidious.dart';
 import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
 import 'package:spotube/services/sourced_track/sources/piped.dart';
@@ -74,6 +75,14 @@ abstract class SourcedTrack extends BasicSourcedTrack {
           query: query,
           sources: sources,
         ),
+      AudioSource.dabMusic => DABMusicSourcedTrack(
+          ref: ref,
+          source: source,
+          siblings: siblings,
+          info: info,
+          query: query,
+          sources: sources,
+        ),
     };
   }
 
@@ -104,6 +113,8 @@ abstract class SourcedTrack extends BasicSourcedTrack {
           await InvidiousSourcedTrack.fetchFromTrack(query: query, ref: ref),
         AudioSource.jiosaavn =>
           await JioSaavnSourcedTrack.fetchFromTrack(query: query, ref: ref),
+        AudioSource.dabMusic =>
+          await DABMusicSourcedTrack.fetchFromTrack(query: query, ref: ref),
       };
     } catch (e) {
       if (preferences.audioSource == AudioSource.youtube) {
@@ -129,6 +140,8 @@ abstract class SourcedTrack extends BasicSourcedTrack {
         JioSaavnSourcedTrack.fetchSiblings(query: query, ref: ref),
       AudioSource.invidious =>
         InvidiousSourcedTrack.fetchSiblings(query: query, ref: ref),
+      AudioSource.dabMusic =>
+        DABMusicSourcedTrack.fetchSiblings(query: query, ref: ref),
     };
   }
 
@@ -157,7 +170,7 @@ abstract class SourcedTrack extends BasicSourcedTrack {
   ///
   /// If no sources match the codec, it will return the first or last source
   /// based on the user's audio quality preference.
-  String? getUrlOfCodec(SourceCodecs codec) {
+  TrackSource? getSourceOfCodec(SourceCodecs codec) {
     final preferences = ref.read(userPreferencesProvider);
 
     final exactMatch = sources.firstWhereOrNull(
@@ -166,7 +179,7 @@ abstract class SourcedTrack extends BasicSourcedTrack {
     );
 
     if (exactMatch != null) {
-      return exactMatch.url;
+      return exactMatch;
     }
 
     final sameCodecSources = sources
@@ -180,8 +193,8 @@ abstract class SourcedTrack extends BasicSourcedTrack {
 
     if (sameCodecSources.isNotEmpty) {
       return preferences.audioQuality > SourceQualities.low
-          ? sameCodecSources.first.url
-          : sameCodecSources.last.url;
+          ? sameCodecSources.first
+          : sameCodecSources.last;
     }
 
     final fallbackSource = sources.sorted((a, b) {
@@ -191,23 +204,24 @@ abstract class SourcedTrack extends BasicSourcedTrack {
     });
 
     return preferences.audioQuality > SourceQualities.low
-        ? fallbackSource.firstOrNull?.url
-        : fallbackSource.lastOrNull?.url;
+        ? fallbackSource.firstOrNull
+        : fallbackSource.lastOrNull;
+  }
+
+  String? getUrlOfCodec(SourceCodecs codec) {
+    return getSourceOfCodec(codec)?.url;
   }
 
   SourceCodecs get codec {
     final preferences = ref.read(userPreferencesProvider);
 
-    return preferences.audioSource == AudioSource.jiosaavn
-        ? SourceCodecs.m4a
-        : preferences.streamMusicCodec;
-  }
-
-  TrackSource get activeTrackSource {
-    final audioQuality = ref.read(userPreferencesProvider).audioQuality;
-    return sources.firstWhereOrNull(
-          (source) => source.codec == codec && source.quality == audioQuality,
-        ) ??
-        sources.first;
+    return switch (preferences.audioSource) {
+      AudioSource.dabMusic =>
+        preferences.audioQuality == SourceQualities.uncompressed
+            ? SourceCodecs.flac
+            : SourceCodecs.mp3,
+      AudioSource.jiosaavn => SourceCodecs.m4a,
+      _ => preferences.streamMusicCodec
+    };
   }
 }

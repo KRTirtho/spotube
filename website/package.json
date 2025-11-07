@@ -17,7 +17,7 @@
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
     "astro": "^5.12.8",
-    "astro-pagefind": "^1.8.3",
+    "astro-pagefind": "1.8.3",
     "date-fns": "^4.1.0",
     "markdown-it": "^14.1.0",
     "react": "^19.1.1",

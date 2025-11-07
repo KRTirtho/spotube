@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show Badge;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -7,7 +8,6 @@ import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/getting_started/blur_card.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/extensions/string.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 final audioSourceToIconMap = {
@@ -23,6 +23,8 @@ final audioSourceToIconMap = {
   ),
   AudioSource.jiosaavn:
       Assets.images.logos.jiosaavn.image(width: 20, height: 20),
+  AudioSource.dabMusic:
+      Assets.images.logos.dabMusic.image(width: 20, height: 20),
 };
 
 class GettingStartedPagePlaybackSection extends HookConsumerWidget {
@@ -47,8 +49,10 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
               AudioSource.piped: context.l10n.piped_source_description,
               AudioSource.jiosaavn:
                   "${context.l10n.jiosaavn_source_description}\n"
-                      "${context.l10n.highest_quality("320kbps mp")}",
+                      "${context.l10n.highest_quality("320kbps mp4")}",
               AudioSource.invidious: context.l10n.invidious_source_description,
+              AudioSource.dabMusic: "${context.l10n.dab_music_source_description}\n"
+                  "${context.l10n.highest_quality("320kbps mp3, HI-RES 24bit 44.1kHz-96kHz flac")}",
             },
         []);
 
@@ -70,43 +74,34 @@ class GettingStartedPagePlaybackSection extends HookConsumerWidget {
               child: Text(context.l10n.select_audio_source).semiBold().large(),
             ),
             const Gap(16),
-            Select<AudioSource>(
+            RadioGroup<AudioSource>(
               value: preferences.audioSource,
               onChanged: (value) {
-                if (value == null) return;
                 preferencesNotifier.setAudioSource(value);
               },
-              placeholder: Text(preferences.audioSource.name.capitalize()),
-              itemBuilder: (context, value) => Row(
-                mainAxisSize: MainAxisSize.min,
+              child: Wrap(
                 spacing: 6,
+                runSpacing: 6,
                 children: [
-                  audioSourceToIconMap[value]!,
-                  Text(value.name.capitalize()),
-                ],
-              ),
-              popup: (context) {
-                return SelectPopup(
-                  items: SelectItemBuilder(
-                    childCount: AudioSource.values.length,
-                    builder: (context, index) {
-                      final source = AudioSource.values[index];
-
-                      return SelectItemButton(
+                  for (final source in AudioSource.values)
+                    Badge(
+                      isLabelVisible: source == AudioSource.dabMusic,
+                      label: const Text("NEW"),
+                      backgroundColor: Colors.lime[300],
+                      textColor: Colors.black,
+                      child: RadioCard(
                         value: source,
-                        child: Row(
+                        child: Column(
                           mainAxisSize: MainAxisSize.min,
-                          spacing: 6,
                           children: [
                             audioSourceToIconMap[source]!,
-                            Text(source.name.capitalize()),
+                            Text(source.label),
                           ],
                         ),
-                      );
-                    },
-                  ),
-                );
-              },
+                      ),
+                    ),
+                ],
+              ),
             ),
             const Gap(16),
             Text(

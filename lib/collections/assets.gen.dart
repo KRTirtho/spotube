@@ -69,6 +69,10 @@ class $AssetsImagesGen {
 class $AssetsImagesLogosGen {
   const $AssetsImagesLogosGen();
 
+  /// File path: assets/images/logos/dab-music.png
+  AssetGenImage get dabMusic =>
+      const AssetGenImage('assets/images/logos/dab-music.png');
+
   /// File path: assets/images/logos/invidious.jpg
   AssetGenImage get invidious =>
       const AssetGenImage('assets/images/logos/invidious.jpg');
@@ -82,7 +86,8 @@ class $AssetsImagesLogosGen {
       const AssetGenImage('assets/images/logos/songlink-transparent.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [invidious, jiosaavn, songlinkTransparent];
+  List<AssetGenImage> get values =>
+      [dabMusic, invidious, jiosaavn, songlinkTransparent];
 }
 
 class Assets {
