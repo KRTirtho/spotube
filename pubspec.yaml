@@ -177,7 +177,6 @@ dev_dependencies:
   process_run: ^0.14.2
   pubspec_parse: ^1.3.0
   pub_api_client: ^3.0.0
-  xml: ^6.5.0
   io: ^1.0.4
   drift_dev: ^2.21.0
   auto_route_generator: ^9.0.0
