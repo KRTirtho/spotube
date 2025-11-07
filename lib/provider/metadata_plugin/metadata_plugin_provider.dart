@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:drift/drift.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -101,7 +102,11 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
 
     final plugins = await database.pluginsTable.select().get();
 
-    return await toStatePlugins(plugins);
+    final pluginState = await toStatePlugins(plugins);
+
+    await _loadDefaultPlugins(pluginState);
+
+    return pluginState;
   }
 
   Future<MetadataPluginState> toStatePlugins(
@@ -169,6 +174,45 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
       defaultMetadataPlugin: defaultMetadataPlugin,
       defaultAudioSourcePlugin: defaultAudioSourcePlugin,
     );
+  }
+
+  Future<void> _loadDefaultPlugins(MetadataPluginState pluginState) async {
+    const plugins = [
+      "spotube-plugin-musicbrainz-listenbrainz",
+      "spotube-plugin-youtube-audio",
+    ];
+
+    for (final plugin in plugins) {
+      final byteData = await rootBundle.load(
+        "assets/plugins/$plugin/plugin.smplug",
+      );
+      final pluginConfig =
+          await extractPluginArchive(byteData.buffer.asUint8List());
+      try {
+        await addPlugin(pluginConfig);
+      } on MetadataPluginException catch (e) {
+        if (e.errorCode == MetadataPluginErrorCode.duplicatePlugin &&
+            await isPluginUpdate(pluginConfig)) {
+          final oldConfig = pluginState.plugins
+              .firstWhereOrNull((p) => p.slug == pluginConfig.slug);
+          if (oldConfig == null) continue;
+          final isDefaultMetadata =
+              oldConfig == pluginState.defaultMetadataPluginConfig;
+          final isDefaultAudioSource =
+              oldConfig == pluginState.defaultAudioSourcePluginConfig;
+
+          await removePlugin(pluginConfig);
+          await addPlugin(pluginConfig);
+
+          if (isDefaultMetadata) {
+            await setDefaultMetadataPlugin(pluginConfig);
+          }
+          if (isDefaultAudioSource) {
+            await setDefaultAudioSourcePlugin(pluginConfig);
+          }
+        }
+      }
+    }
   }
 
   Uri _getGithubReleasesUrl(String repoUrl) {
@@ -373,11 +417,19 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         repository: Value(plugin.repository),
         // Setting the very first plugin as the default plugin
         selectedForMetadata: Value(
-          (state.valueOrNull?.plugins.isEmpty ?? true) &&
+          (state.valueOrNull?.plugins
+                      .where(
+                          (d) => d.abilities.contains(PluginAbilities.metadata))
+                      .isEmpty ??
+                  true) &&
               plugin.abilities.contains(PluginAbilities.metadata),
         ),
         selectedForAudioSource: Value(
-          (state.valueOrNull?.plugins.isEmpty ?? true) &&
+          (state.valueOrNull?.plugins
+                      .where((d) =>
+                          d.abilities.contains(PluginAbilities.audioSource))
+                      .isEmpty ??
+                  true) &&
               plugin.abilities.contains(PluginAbilities.audioSource),
         ),
       ),
@@ -418,6 +470,27 @@ class MetadataPluginNotifier extends AsyncNotifier<MetadataPluginState> {
         await setDefaultAudioSourcePlugin(remainingPlugins.first);
       }
     }
+  }
+
+  Future<bool> isPluginUpdate(PluginConfiguration newPlugin) async {
+    final pluginRes = await (database.pluginsTable.select()
+          ..where(
+            (tbl) =>
+                tbl.name.equals(newPlugin.name) &
+                tbl.author.equals(newPlugin.author),
+          )
+          ..limit(1))
+        .get();
+
+    if (pluginRes.isEmpty) {
+      return false;
+    }
+
+    final oldPlugin = pluginRes.first;
+    final oldPluginApiVersion = Version.parse(oldPlugin.pluginApiVersion);
+    final newPluginApiVersion = Version.parse(newPlugin.pluginApiVersion);
+
+    return newPluginApiVersion > oldPluginApiVersion;
   }
 
   Future<void> updatePlugin(

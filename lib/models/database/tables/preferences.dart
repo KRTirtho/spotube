@@ -111,7 +111,9 @@ class PreferencesTable extends Table {
       localLibraryLocation: [],
       themeMode: ThemeMode.system,
       audioSourceId: null,
-      youtubeClientEngine: YoutubeClientEngine.youtubeExplode,
+      youtubeClientEngine: kIsIOS
+          ? YoutubeClientEngine.youtubeExplode
+          : YoutubeClientEngine.newPipe,
       discordPresence: true,
       endlessPlayback: true,
       enableConnect: false,

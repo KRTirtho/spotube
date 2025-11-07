@@ -22,6 +22,7 @@ import 'package:drift/native.dart';
 import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
 import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 

@@ -227,6 +227,8 @@ flutter:
     - assets/branding/spotube-logo.png
     - assets/branding/spotube-logo-light.png
     - assets/branding/spotube-logo.ico
+    - assets/plugins/spotube-plugin-musicbrainz-listenbrainz/plugin.smplug
+    - assets/plugins/spotube-plugin-youtube-audio/plugin.smplug
     - LICENSE
     - packages/flutter_undraw/assets/undraw/access_denied.svg
     - packages/flutter_undraw/assets/undraw/fixing_bugs.svg
