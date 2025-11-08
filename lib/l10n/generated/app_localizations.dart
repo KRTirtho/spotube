@@ -2763,11 +2763,29 @@ abstract class AppLocalizations {
   /// **'This plugin scrobbles your music to generate your listening history.'**
   String get plugin_scrobbling_info;
 
-  /// No description provided for @default_plugin.
+  /// No description provided for @default_metadata_source.
   ///
   /// In en, this message translates to:
-  /// **'Default'**
-  String get default_plugin;
+  /// **'Default metadata source'**
+  String get default_metadata_source;
+
+  /// No description provided for @set_default_metadata_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Set default metadata source'**
+  String get set_default_metadata_source;
+
+  /// No description provided for @default_audio_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Default audio source'**
+  String get default_audio_source;
+
+  /// No description provided for @set_default_audio_source.
+  ///
+  /// In en, this message translates to:
+  /// **'Set default audio source'**
+  String get set_default_audio_source;
 
   /// No description provided for @set_default.
   ///
@@ -2871,11 +2889,11 @@ abstract class AppLocalizations {
   /// **'Input doesn\'t match the required format'**
   String get input_does_not_match_format;
 
-  /// No description provided for @metadata_provider_plugins.
+  /// No description provided for @plugins.
   ///
   /// In en, this message translates to:
-  /// **'Metadata Provider Plugins'**
-  String get metadata_provider_plugins;
+  /// **'Plugins'**
+  String get plugins;
 
   /// No description provided for @paste_plugin_download_url.
   ///
@@ -2913,11 +2931,11 @@ abstract class AppLocalizations {
   /// **'Available plugins'**
   String get available_plugins;
 
-  /// No description provided for @configure_your_own_metadata_plugin.
+  /// No description provided for @configure_plugins.
   ///
   /// In en, this message translates to:
-  /// **'Configure your own playlist/album/artist/feed metadata provider'**
-  String get configure_your_own_metadata_plugin;
+  /// **'Configure your own metadata provider and audio source plugins'**
+  String get configure_plugins;
 
   /// No description provided for @audio_scrobblers.
   ///

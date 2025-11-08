@@ -1450,7 +1450,16 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu eklenti, dinleme geçmişinizi oluşturmak için müziğinizi scrobble eder.';
 
   @override
-  String get default_plugin => 'Varsayılan';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Varsayılan olarak ayarla';
@@ -1511,7 +1520,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get input_does_not_match_format => 'Girdi, gerekli biçimle eşleşmiyor';
 
   @override
-  String get metadata_provider_plugins => 'Meta Veri Sağlayıcısı Eklentileri';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1536,8 +1545,8 @@ class AppLocalizationsTr extends AppLocalizations {
   String get available_plugins => 'Mevcut eklentiler';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Kendi çalma listenizi/albümünüzü/sanatçınızı/akış meta veri sağlayıcınızı yapılandırın';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Ses Scrobbler\'lar';

@@ -2,6 +2,7 @@ import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
 import 'package:spotube/services/youtube_engine/youtube_engine.dart';
+// import 'package:youtube_explode_dart/solvers.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 import 'dart:async';
@@ -55,8 +56,9 @@ class IsolatedYoutubeExplode {
     }
   }
 
-  static void _isolateEntry(SendPort mainSendPort) {
+  static Future<void> _isolateEntry(SendPort mainSendPort) async {
     final receivePort = ReceivePort();
+    // final solver = await DenoEJSSolver.init();
     final youtubeExplode = YoutubeExplode();
     final stopWatch = kDebugMode ? Stopwatch() : null;
 
@@ -162,8 +164,8 @@ class YouTubeExplodeEngine implements YouTubeEngine {
       requireWatchPage: false,
       ytClients: [
         YoutubeApiClient.ios,
-        YoutubeApiClient.android,
         YoutubeApiClient.androidVr,
+        YoutubeApiClient.android,
       ],
     );
 

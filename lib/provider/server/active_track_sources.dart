@@ -1,14 +1,13 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/server/track_sources.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 final activeTrackSourcesProvider = FutureProvider<
     ({
       SourcedTrack? source,
-      TrackSourcesNotifier? notifier,
+      SourcedTrackNotifier? notifier,
       SpotubeTrackObject track,
     })?>((ref) async {
   final audioPlayerState = ref.watch(audioPlayerProvider);
@@ -25,13 +24,15 @@ final activeTrackSourcesProvider = FutureProvider<
     );
   }
 
-  final trackQuery = TrackSourceQuery.fromTrack(
-    audioPlayerState.activeTrack! as SpotubeFullTrackObject,
+  final sourcedTrack = await ref.watch(
+    sourcedTrackProvider(
+      audioPlayerState.activeTrack! as SpotubeFullTrackObject,
+    ).future,
   );
-
-  final sourcedTrack = await ref.watch(trackSourcesProvider(trackQuery).future);
   final sourcedTrackNotifier = ref.watch(
-    trackSourcesProvider(trackQuery).notifier,
+    sourcedTrackProvider(
+      audioPlayerState.activeTrack! as SpotubeFullTrackObject,
+    ).notifier,
   );
 
   return (

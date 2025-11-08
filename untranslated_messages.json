@@ -1,101 +1,203 @@
 {
   "ar": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "bn": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ca": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "cs": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "de": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "es": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "eu": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "fa": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "fi": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "fr": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "hi": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "id": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "it": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ja": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ka": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ko": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ne": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
@@ -103,72 +205,144 @@
 
   "nl": [
     "audio_source",
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "pl": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "pt": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ru": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "ta": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "th": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "tl": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "tr": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "uk": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "vi": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "zh": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"
   ],
 
   "zh_TW": [
+    "default_metadata_source",
+    "set_default_metadata_source",
+    "default_audio_source",
+    "set_default_audio_source",
+    "plugins",
+    "configure_plugins",
     "source",
     "uncompressed",
     "dab_music_source_description"

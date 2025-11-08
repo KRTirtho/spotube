@@ -8,10 +8,25 @@ final metadataPluginUpdateCheckerProvider =
   final metadataPlugin = await ref.watch(metadataPluginProvider.future);
 
   if (metadataPlugin == null ||
-      metadataPluginConfigs.defaultPluginConfig == null) {
+      metadataPluginConfigs.defaultMetadataPluginConfig == null) {
     return null;
   }
 
   return metadataPlugin.core
-      .checkUpdate(metadataPluginConfigs.defaultPluginConfig!);
+      .checkUpdate(metadataPluginConfigs.defaultMetadataPluginConfig!);
+});
+
+final audioSourcePluginUpdateCheckerProvider =
+    FutureProvider<PluginUpdateAvailable?>((ref) async {
+  final audioSourcePluginConfigs =
+      await ref.watch(metadataPluginsProvider.future);
+  final audioSourcePlugin = await ref.watch(audioSourcePluginProvider.future);
+
+  if (audioSourcePlugin == null ||
+      audioSourcePluginConfigs.defaultAudioSourcePluginConfig == null) {
+    return null;
+  }
+
+  return audioSourcePlugin.core
+      .checkUpdate(audioSourcePluginConfigs.defaultAudioSourcePluginConfig!);
 });

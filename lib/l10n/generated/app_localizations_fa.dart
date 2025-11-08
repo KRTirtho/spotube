@@ -1441,7 +1441,16 @@ class AppLocalizationsFa extends AppLocalizations {
       'این افزونه موسیقی شما را اسکراب می‌کند تا تاریخچهٔ شنیداری‌تان را تولید کند.';
 
   @override
-  String get default_plugin => 'پیش‌فرض';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'تنظیم به عنوان پیش‌فرض';
@@ -1503,7 +1512,7 @@ class AppLocalizationsFa extends AppLocalizations {
       'ورودی با قالب مورد نیاز تطابق ندارد';
 
   @override
-  String get metadata_provider_plugins => 'افزونه‌های ارائه‌دهندهٔ متادیتا';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1528,8 +1537,8 @@ class AppLocalizationsFa extends AppLocalizations {
   String get available_plugins => 'افزونه‌های موجود';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'پیکربندی ارائه‌دهندهٔ متادیتا برای پلی‌لیست/آلبوم/هنرمند/فید به‌صورت سفارشی';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'اسکراب‌بلرهای صوتی';

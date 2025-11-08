@@ -1456,7 +1456,16 @@ class AppLocalizationsTl extends AppLocalizations {
       'Sinis-scrobble ng plugin na ito ang iyong musika upang mabuo ang iyong kasaysayan ng pakikinig.';
 
   @override
-  String get default_plugin => 'Default';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Itakda bilang default';
@@ -1518,7 +1527,7 @@ class AppLocalizationsTl extends AppLocalizations {
       'Ang input ay hindi tumutugma sa kinakailangang format';
 
   @override
-  String get metadata_provider_plugins => 'Mga Plugin ng Metadata Provider';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1543,8 +1552,8 @@ class AppLocalizationsTl extends AppLocalizations {
   String get available_plugins => 'Mga available na plugin';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'I-configure ang iyong sariling playlist/album/artist/feed metadata provider';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Mga Audio Scrobbler';

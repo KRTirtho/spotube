@@ -1443,7 +1443,16 @@ class AppLocalizationsAr extends AppLocalizations {
       'تقوم هذه الإضافة بتتبع مقاطعك الموسيقية لإنشاء سجل الاستماع الخاص بك.';
 
   @override
-  String get default_plugin => 'الافتراضي';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'تعيين كافتراضي';
@@ -1504,7 +1513,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'المدخل لا يتوافق مع التنسيق المطلوب';
 
   @override
-  String get metadata_provider_plugins => 'إضافات مزود البيانات';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1529,8 +1538,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get available_plugins => 'الإضافات المتوفّرة';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'تهيئة مزوّد بيانات للقائمة/الألبوم/الفنان/المصدر خاص بك';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'أجهزة تتبع الصوت';

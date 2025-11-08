@@ -1442,7 +1442,16 @@ class AppLocalizationsCs extends AppLocalizations {
       'Tento plugin scrobbles vaši hudbu pro vytvoření historie poslechů.';
 
   @override
-  String get default_plugin => 'Výchozí';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Nastavit jako výchozí';
@@ -1505,7 +1514,7 @@ class AppLocalizationsCs extends AppLocalizations {
       'Vstup neodpovídá požadovanému formátu';
 
   @override
-  String get metadata_provider_plugins => 'Pluginy poskytovatelů metadat';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1530,8 +1539,8 @@ class AppLocalizationsCs extends AppLocalizations {
   String get available_plugins => 'Dostupné pluginy';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Nakonfigurujte si vlastního poskytovatele metadat pro playlist/album/umělec/fid';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Audio scrobblers';

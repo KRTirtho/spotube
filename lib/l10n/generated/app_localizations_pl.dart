@@ -1449,7 +1449,16 @@ class AppLocalizationsPl extends AppLocalizations {
       'Ta wtyczka scrobbluje Twoją muzykę, aby wygenerować historię odsłuchań.';
 
   @override
-  String get default_plugin => 'Domyślna';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Ustaw jako domyślną';
@@ -1511,7 +1520,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wprowadzony tekst nie pasuje do wymaganego formatu';
 
   @override
-  String get metadata_provider_plugins => 'Wtyczki dostawców metadanych';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1536,8 +1545,8 @@ class AppLocalizationsPl extends AppLocalizations {
   String get available_plugins => 'Dostępne wtyczki';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Skonfiguruj własnego dostawcę metadanych dla playlisty/albumu/artysty/kanału';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Scrobblery audio';

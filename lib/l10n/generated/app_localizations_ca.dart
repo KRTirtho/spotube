@@ -1450,7 +1450,16 @@ class AppLocalizationsCa extends AppLocalizations {
       'Aquest complement fa scrobbling de la teva música per generar l’historial d’escoltes.';
 
   @override
-  String get default_plugin => 'Predeterminat';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Establir com a predeterminat';
@@ -1514,8 +1523,7 @@ class AppLocalizationsCa extends AppLocalizations {
       'L’entrada no coincideix amb el format requerit';
 
   @override
-  String get metadata_provider_plugins =>
-      'Complements de proveïdor de metadades';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1540,8 +1548,8 @@ class AppLocalizationsCa extends AppLocalizations {
   String get available_plugins => 'Complements disponibles';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Configura el teu propi proveïdor de metadades per llistes/reproduccions àlbum/artista/flux';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Scrobblers d’àudio';

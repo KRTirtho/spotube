@@ -12,10 +12,10 @@ on:
         type: boolean
         default: true
       jobs:
-        description: Jobs to run (flathub,aur,winget,chocolatey,playstore)
+        description: Jobs to run (flathub,aur,winget,chocolatey)
         required: true
         type: string
-        default: "flathub,aur,winget,chocolatey,playstore"
+        default: "flathub,aur,winget,chocolatey"
 
 jobs:
   flathub:
@@ -112,26 +112,26 @@ jobs:
       - name: Tagname (workflow dispatch)
         run: echo 'TAG_NAME=${{inputs.version}}' >> $GITHUB_ENV
 
-      - uses: robinraju/release-downloader@main
-        with:
-          repository: KRTirtho/spotube
-          tag: v${{ env.TAG_NAME }}
-          tarBall: false
-          zipBall: false
-          out-file-path: dist
-          fileName: "Spotube-playstore-all-arch.aab"
+      # - uses: robinraju/release-downloader@main
+      #   with:
+      #     repository: KRTirtho/spotube
+      #     tag: v${{ env.TAG_NAME }}
+      #     tarBall: false
+      #     zipBall: false
+      #     out-file-path: dist
+      #     fileName: "Spotube-playstore-all-arch.aab"
 
-      - name: Create service-account.json
-        run: |
-          echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_BASE64 }}" | base64 -d > service-account.json
+      # - name: Create service-account.json
+      #   run: |
+      #     echo "${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_BASE64 }}" | base64 -d > service-account.json
 
-      - name: Upload Android Release to Play Store
-        if: ${{!inputs.dry_run}}
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJson: ./service-account.json
-          releaseFiles: ./dist/Spotube-playstore-all-arch.aab
-          packageName: oss.krtirtho.spotube
-          track: production
-          status: draft
-          releaseName: ${{ env.TAG_NAME }}
+      # - name: Upload Android Release to Play Store
+      #   if: ${{!inputs.dry_run}}
+      #   uses: r0adkll/upload-google-play@v1
+      #   with:
+      #     serviceAccountJson: ./service-account.json
+      #     releaseFiles: ./dist/Spotube-playstore-all-arch.aab
+      #     packageName: oss.krtirtho.spotube
+      #     track: production
+      #     status: draft
+      #     releaseName: ${{ env.TAG_NAME }}

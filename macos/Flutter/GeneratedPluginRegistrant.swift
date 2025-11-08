@@ -15,6 +15,7 @@ import device_info_plus
 import file_picker
 import file_selector_macos
 import flutter_inappwebview_macos
+import flutter_new_pipe_extractor
 import flutter_secure_storage_macos
 import flutter_timezone
 import irondash_engine_context
@@ -44,6 +45,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FilePickerPlugin.register(with: registry.registrar(forPlugin: "FilePickerPlugin"))
   FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
   InAppWebViewFlutterPlugin.register(with: registry.registrar(forPlugin: "InAppWebViewFlutterPlugin"))
+  FlutterNewPipeExtractorPlugin.register(with: registry.registrar(forPlugin: "FlutterNewPipeExtractorPlugin"))
   FlutterSecureStoragePlugin.register(with: registry.registrar(forPlugin: "FlutterSecureStoragePlugin"))
   FlutterTimezonePlugin.register(with: registry.registrar(forPlugin: "FlutterTimezonePlugin"))
   IrondashEngineContextPlugin.register(with: registry.registrar(forPlugin: "IrondashEngineContextPlugin"))

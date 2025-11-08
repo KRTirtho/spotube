@@ -446,32 +446,15 @@ packages:
     dependency: transitive
     description:
       name: crypto
-      sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
+      sha256: c8ea0233063ba03258fbcf2ca4d6dadfefe14f02fab57702265467a19f27fadf
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.6"
+    version: "3.0.7"
   csslib:
     dependency: transitive
     description:
       name: csslib
       sha256: "09bad715f418841f976c77db72d5398dc1253c21fb9c0c7f0b0b985860b2d58e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
-  dab_music_api:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: main
-      resolved-ref: "55f96368b7465eec2e5e81774f9f2a7b18acc4ab"
-      url: "https://github.com/KRTirtho/dab_music_api.git"
-    source: git
-    version: "0.1.0"
-  dart_des:
-    dependency: transitive
-    description:
-      name: dart_des
-      sha256: "0a66afb8883368c824497fd2a1fd67bdb1a785965a3956728382c03d40747c33"
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
@@ -972,7 +955,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: d4d71545111c8ca6c91f0040091c42d74cce1762
+      resolved-ref: "898fd4ebcef77f5177b08aa6f9b9047bd02c6b9b"
       url: "https://github.com/KRTirtho/flutter_new_pipe_extractor.git"
     source: git
     version: "0.1.0"
@@ -1230,10 +1213,10 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "01935a75640092af7947bfb21a497240376f0c83"
+      resolved-ref: "32828156bc111d147709f8d644804227bbdfe8f1"
       url: "https://github.com/KRTirtho/hetu_spotube_plugin.git"
     source: git
-    version: "0.0.1"
+    version: "0.0.2"
   hetu_std:
     dependency: "direct main"
     description:
@@ -1408,14 +1391,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.2"
-  invidious:
-    dependency: "direct main"
-    description:
-      name: invidious
-      sha256: "0da8ebc4c4110057f03302bbd54514b10642154d7be569e7994172f2202dcfe8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.2"
   io:
     dependency: "direct dev"
     description:
@@ -1440,14 +1415,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
-  jiosaavn:
-    dependency: "direct main"
-    description:
-      name: jiosaavn
-      sha256: b6bde15c56398ebfd439825a64fb540a265773d1a518ba103e79988e13d16e1d
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
   jovial_misc:
     dependency: transitive
     description:
@@ -1472,6 +1439,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.7"
+  jsf:
+    dependency: "direct main"
+    description:
+      name: jsf
+      sha256: "189ba3b9216702f9b6f2d8ea90fa5acaca13bbe5dd2f72fb38618005b41a737f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.1"
   json_annotation:
     dependency: "direct main"
     description:
@@ -1935,14 +1910,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.4"
-  piped_client:
-    dependency: "direct main"
-    description:
-      name: piped_client
-      sha256: "947613e2a8d368b72cb36473de2c5c2784e4e72b2d3f17e5a5181b98b1a5436e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.2"
   pixel_snap:
     dependency: transitive
     description:
@@ -2043,10 +2010,10 @@ packages:
     dependency: transitive
     description:
       name: random_user_agents
-      sha256: "19facde509a2482dababb454faf2aceff797a6ae08e80f91268c0c8a7420f03b"
+      sha256: "95647149687167e82a7b39e1b4616fdebb574981b71b6f0cfca21b69f36293a8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.15"
+    version: "1.0.17"
   recase:
     dependency: transitive
     description:
@@ -2055,14 +2022,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
-  retrofit:
-    dependency: transitive
-    description:
-      name: retrofit
-      sha256: "699cf44ec6c7fc7d248740932eca75d334e36bdafe0a8b3e9ff93100591c8a25"
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.7.2"
   riverpod:
     dependency: "direct main"
     description:
@@ -2870,7 +2829,7 @@ packages:
     source: hosted
     version: "1.1.0"
   xml:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: xml
       sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
@@ -2889,10 +2848,10 @@ packages:
     dependency: "direct main"
     description:
       name: youtube_explode_dart
-      sha256: "9ff345caf8351c59eb1b7560837f761e08d2beaea3b4187637942715a31a6f58"
+      sha256: add33de45d80c7f71a5e3dd464dd82fafd7fb5ab875fd303c023f30f76618325
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.2"
+    version: "3.0.0"
   yt_dlp_dart:
     dependency: "direct main"
     description:

@@ -1,12 +1,12 @@
-import 'package:spotube/models/playback/track_sources.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
 class TrackNotFoundError extends Error {
-  final TrackSourceQuery track;
+  final SpotubeTrackObject track;
 
   TrackNotFoundError(this.track);
 
   @override
   String toString() {
-    return '[TrackNotFoundError] ${track.title} - ${track.artists.join(", ")}';
+    return '[TrackNotFoundError] ${track.name} - ${track.artists.join(", ")}';
   }
 }

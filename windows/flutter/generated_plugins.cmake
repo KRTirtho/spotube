@@ -9,6 +9,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
   desktop_webview_window
   file_selector_windows
   flutter_inappwebview_windows
+  flutter_new_pipe_extractor
   flutter_secure_storage_windows
   flutter_timezone
   irondash_engine_context
@@ -26,6 +27,7 @@ list(APPEND FLUTTER_PLUGIN_LIST
 
 list(APPEND FLUTTER_FFI_PLUGIN_LIST
   flutter_discord_rpc
+  jsf
   metadata_god
   smtc_windows
 )
