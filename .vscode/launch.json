@@ -1,0 +1,58 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "spotube",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+    },
+    {
+      "name": "spotube (mobile)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "args": [
+        "--flavor",
+        "dev"
+      ]
+    },
+    {
+      "name": "spotube (mobile-skia)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "args": [
+        "--flavor",
+        "dev",
+        "--no-enable-impeller"
+      ]
+    },
+    {
+      "name": "spotube (profile)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "spotube (release)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "release"
+    },
+    {
+      "name": "spotube (mobile) (release)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "args": [
+        "--flavor",
+        "dev"
+      ]
+    }
+  ],
+  "compounds": []
+}
