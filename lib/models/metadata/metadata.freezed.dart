@@ -197,12 +197,13 @@ class __$$SpotubeAudioSourceContainerPresetLossyImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$SpotubeAudioSourceContainerPresetLossyImpl
-    implements SpotubeAudioSourceContainerPresetLossy {
+    extends SpotubeAudioSourceContainerPresetLossy {
   _$SpotubeAudioSourceContainerPresetLossyImpl(
       {required this.type,
       required this.name,
       required final List<SpotubeAudioLossyContainerQuality> qualities})
-      : _qualities = qualities;
+      : _qualities = qualities,
+        super._();
 
   factory _$SpotubeAudioSourceContainerPresetLossyImpl.fromJson(
           Map<String, dynamic> json) =>
@@ -338,12 +339,13 @@ class _$SpotubeAudioSourceContainerPresetLossyImpl
 }
 
 abstract class SpotubeAudioSourceContainerPresetLossy
-    implements SpotubeAudioSourceContainerPreset {
+    extends SpotubeAudioSourceContainerPreset {
   factory SpotubeAudioSourceContainerPresetLossy(
           {required final SpotubeMediaCompressionType type,
           required final String name,
           required final List<SpotubeAudioLossyContainerQuality> qualities}) =
       _$SpotubeAudioSourceContainerPresetLossyImpl;
+  SpotubeAudioSourceContainerPresetLossy._() : super._();
 
   factory SpotubeAudioSourceContainerPresetLossy.fromJson(
           Map<String, dynamic> json) =
@@ -419,12 +421,13 @@ class __$$SpotubeAudioSourceContainerPresetLosslessImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$SpotubeAudioSourceContainerPresetLosslessImpl
-    implements SpotubeAudioSourceContainerPresetLossless {
+    extends SpotubeAudioSourceContainerPresetLossless {
   _$SpotubeAudioSourceContainerPresetLosslessImpl(
       {required this.type,
       required this.name,
       required final List<SpotubeAudioLosslessContainerQuality> qualities})
-      : _qualities = qualities;
+      : _qualities = qualities,
+        super._();
 
   factory _$SpotubeAudioSourceContainerPresetLosslessImpl.fromJson(
           Map<String, dynamic> json) =>
@@ -561,12 +564,13 @@ class _$SpotubeAudioSourceContainerPresetLosslessImpl
 }
 
 abstract class SpotubeAudioSourceContainerPresetLossless
-    implements SpotubeAudioSourceContainerPreset {
+    extends SpotubeAudioSourceContainerPreset {
   factory SpotubeAudioSourceContainerPresetLossless(
       {required final SpotubeMediaCompressionType type,
       required final String name,
       required final List<SpotubeAudioLosslessContainerQuality>
           qualities}) = _$SpotubeAudioSourceContainerPresetLosslessImpl;
+  SpotubeAudioSourceContainerPresetLossless._() : super._();
 
   factory SpotubeAudioSourceContainerPresetLossless.fromJson(
           Map<String, dynamic> json) =

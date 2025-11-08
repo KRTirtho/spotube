@@ -19,7 +19,6 @@ import 'package:spotube/utils/service_utils.dart';
 class DownloadManagerProvider extends ChangeNotifier {
   DownloadManagerProvider({required this.ref})
       : $history = <SourcedTrack>{},
-        $backHistory = <SpotubeFullTrackObject>{},
         dl = DownloadManager() {
     dl.statusStream.listen((event) async {
       try {
@@ -28,14 +27,13 @@ class DownloadManagerProvider extends ChangeNotifier {
         final sourcedTrack = $history.firstWhereOrNull(
           (element) =>
               element.getUrlOfQuality(
-                  downloadContainer, downloadQualityIndex) ==
+                downloadContainer,
+                downloadQualityIndex,
+              ) ==
               request.url,
         );
+
         if (sourcedTrack == null) return;
-        final track = $backHistory.firstWhereOrNull(
-          (element) => element.id == sourcedTrack.query.id,
-        );
-        if (track == null) return;
 
         final savePath = getTrackFileUrl(sourcedTrack);
         // related to onFileExists
@@ -47,12 +45,12 @@ class DownloadManagerProvider extends ChangeNotifier {
             await oldFile.exists()) {
           await oldFile.rename(savePath);
         }
+
         if (status != DownloadStatus.completed ||
             //? WebA audiotagging is not supported yet
             //? Although in future by converting weba to opus & then tagging it
             //? is possible using vorbis comments
-            downloadContainer.name == "weba" ||
-            downloadContainer.name == "webm") {
+            downloadContainer.getFileExtension() == "weba") {
           return;
         }
 
@@ -63,13 +61,13 @@ class DownloadManagerProvider extends ChangeNotifier {
         }
 
         final imageBytes = await ServiceUtils.downloadImage(
-          (track.album.images).asUrlString(
+          (sourcedTrack.query.album.images).asUrlString(
             placeholder: ImagePlaceholder.albumArt,
             index: 1,
           ),
         );
 
-        final metadata = track.toMetadata(
+        final metadata = sourcedTrack.query.toMetadata(
           fileLength: await file.length(),
           imageBytes: imageBytes,
         );
@@ -111,17 +109,16 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   final Set<SourcedTrack> $history;
   // these are the tracks which metadata hasn't been fetched yet
-  final Set<SpotubeFullTrackObject> $backHistory;
   final DownloadManager dl;
 
   String getTrackFileUrl(SourcedTrack track) {
     final name =
-        "${track.query.name} - ${track.query.artists.join(", ")}.${downloadContainer.name}";
+        "${track.query.name} - ${track.query.artists.map((e) => e.name).join(", ")}.${downloadContainer.getFileExtension()}";
     return join(downloadDirectory, PrimitiveUtils.toSafeFileName(name));
   }
 
   bool isActive(SpotubeFullTrackObject track) {
-    if ($backHistory.contains(track)) return true;
+    if ($history.any((e) => e.query.id == track.id)) return true;
 
     final sourcedTrack = $history.firstWhereOrNull(
       (element) => element.query.id == track.id,
@@ -146,9 +143,7 @@ class DownloadManagerProvider extends ChangeNotifier {
 
   /// For singular downloads
   Future<void> addToQueue(SpotubeFullTrackObject track) async {
-    final sourcedTrack = await ref.read(
-      sourcedTrackProvider(track).future,
-    );
+    final sourcedTrack = await ref.read(sourcedTrackProvider(track).future);
 
     final savePath = getTrackFileUrl(sourcedTrack);
 
@@ -161,35 +156,17 @@ class DownloadManagerProvider extends ChangeNotifier {
       await oldFile.rename("$savePath.old");
     }
 
-    if (sourcedTrack.qualityPreset == downloadContainer) {
-      final downloadTask = await dl.addDownload(
-        sourcedTrack.getUrlOfQuality(downloadContainer, downloadQualityIndex)!,
-        savePath,
-      );
-      if (downloadTask != null) {
-        $history.add(sourcedTrack);
-      }
-    } else {
-      $backHistory.add(track);
-      final sourcedTrack =
-          await ref.read(sourcedTrackProvider(track).future).then((d) {
-        $backHistory.remove(track);
-        return d;
-      });
-      final downloadTask = await dl.addDownload(
-        sourcedTrack.getUrlOfQuality(downloadContainer, downloadQualityIndex)!,
-        savePath,
-      );
-      if (downloadTask != null) {
-        $history.add(sourcedTrack);
-      }
+    final downloadTask = await dl.addDownload(
+      sourcedTrack.getUrlOfQuality(downloadContainer, downloadQualityIndex)!,
+      savePath,
+    );
+    if (downloadTask != null) {
+      $history.add(sourcedTrack);
     }
-
     notifyListeners();
   }
 
   Future<void> batchAddToQueue(List<SpotubeFullTrackObject> tracks) async {
-    $backHistory.addAll(tracks);
     notifyListeners();
     for (final track in tracks) {
       try {

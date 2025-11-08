@@ -48,7 +48,7 @@ class ServerPlaybackRoutes {
     return join(
       await UserPreferencesNotifier.getMusicCacheDir(),
       ServiceUtils.sanitizeFilename(
-        '${track.query.name} - ${track.query.artists.map((d) => d.name).join(",")} (${track.info.id}).${track.qualityPreset!.name}',
+        '${track.query.name} - ${track.query.artists.map((d) => d.name).join(",")} (${track.info.id}).${track.qualityPreset!.getFileExtension()}',
       ),
     );
   }
@@ -263,8 +263,7 @@ class ServerPlaybackRoutes {
     }
 
     if (contentRange.total == fileLength &&
-            track.qualityPreset!.name != "webm" ||
-        track.qualityPreset!.name != "weba") {
+        track.qualityPreset!.getFileExtension() != "weba") {
       final playlistTrack = playlist.tracks.firstWhereOrNull(
         (element) => element.id == track.query.id,
       );

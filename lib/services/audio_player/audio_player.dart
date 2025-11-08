@@ -37,7 +37,7 @@ class SpotubeMedia extends mk.Media {
 
   factory SpotubeMedia.media(Media media) {
     assert(media.extras != null, "[Media] must have extra metadata set");
-    return SpotubeMedia(SpotubeFullTrackObject.fromJson(media.extras!));
+    return SpotubeMedia(SpotubeTrackObject.fromJson(media.extras!));
   }
 }
 

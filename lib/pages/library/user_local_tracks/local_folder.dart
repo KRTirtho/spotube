@@ -346,36 +346,41 @@ class LocalLibraryPage extends HookConsumerWidget {
                           controller: controller,
                           child: Skeletonizer(
                             enabled: trackSnapshot.isLoading,
-                            child: ListView.builder(
+                            child: CustomScrollView(
                               controller: controller,
                               physics: const AlwaysScrollableScrollPhysics(),
-                              itemCount: trackSnapshot.isLoading
-                                  ? 5
-                                  : filteredTracks.length,
-                              itemBuilder: (context, index) {
-                                if (trackSnapshot.isLoading) {
-                                  return TrackTile(
-                                    playlist: playlist,
-                                    track: FakeData.track,
-                                    index: index,
-                                  );
-                                }
+                              slivers: [
+                                SliverList.builder(
+                                  itemCount: trackSnapshot.isLoading
+                                      ? 5
+                                      : filteredTracks.length,
+                                  itemBuilder: (context, index) {
+                                    if (trackSnapshot.isLoading) {
+                                      return TrackTile(
+                                        playlist: playlist,
+                                        track: FakeData.track,
+                                        index: index,
+                                      );
+                                    }
 
-                                final track = filteredTracks[index];
-                                return TrackTile(
-                                  index: index,
-                                  playlist: playlist,
-                                  track: track,
-                                  userPlaylist: false,
-                                  onTap: () async {
-                                    await playLocalTracks(
-                                      ref,
-                                      sortedTracks,
-                                      currentTrack: track,
+                                    final track = filteredTracks[index];
+                                    return TrackTile(
+                                      index: index,
+                                      playlist: playlist,
+                                      track: track,
+                                      userPlaylist: false,
+                                      onTap: () async {
+                                        await playLocalTracks(
+                                          ref,
+                                          sortedTracks,
+                                          currentTrack: track,
+                                        );
+                                      },
                                     );
                                   },
-                                );
-                              },
+                                ),
+                                const SliverGap(200),
+                              ],
                             ),
                           ),
                         ),
@@ -398,7 +403,7 @@ class LocalLibraryPage extends HookConsumerWidget {
                   error: (error, stackTrace) =>
                       Text(error.toString() + stackTrace.toString()),
                 );
-              })
+              }),
             ],
           ),
         ),

@@ -4143,8 +4143,6 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PluginsTableTable pluginsTable = $PluginsTableTable(this);
   late final Index uniqueBlacklist = Index('unique_blacklist',
       'CREATE UNIQUE INDEX unique_blacklist ON blacklist_table (element_type, element_id)');
-  late final Index uniqTrackMatch = Index('uniq_track_match',
-      'CREATE UNIQUE INDEX uniq_track_match ON source_match_table (track_id, source_info, source_type)');
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4160,8 +4158,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
         historyTable,
         lyricsTable,
         pluginsTable,
-        uniqueBlacklist,
-        uniqTrackMatch
+        uniqueBlacklist
       ];
 }
 

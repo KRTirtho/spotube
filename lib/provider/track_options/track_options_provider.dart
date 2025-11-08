@@ -21,12 +21,10 @@ import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 enum TrackOptionValue {
   album,
   share,
-  songlink,
   addToPlaylist,
   addToQueue,
   removeFromPlaylist,
@@ -237,10 +235,6 @@ class TrackOptionsActions {
       case TrackOptionValue.share:
         actionShare(context);
         break;
-      case TrackOptionValue.songlink:
-        final url = "https://song.link/s/${track.id}";
-        await launchUrlString(url);
-        break;
       case TrackOptionValue.details:
         if (track is! SpotubeFullTrackObject) break;
         showDialog(
@@ -252,8 +246,8 @@ class TrackOptionsActions {
         );
         break;
       case TrackOptionValue.download:
-        if (track is! SpotubeFullTrackObject) break;
-        await downloadManager.addToQueue(track as SpotubeFullTrackObject);
+        if (track is SpotubeLocalTrackObject) break;
+        downloadManager.addToQueue(track as SpotubeFullTrackObject);
         break;
       case TrackOptionValue.startRadio:
         actionStartRadio(context);

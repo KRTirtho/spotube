@@ -10,6 +10,8 @@ enum SpotubeMediaCompressionType {
 @Freezed(unionKey: 'type')
 class SpotubeAudioSourceContainerPreset
     with _$SpotubeAudioSourceContainerPreset {
+  const SpotubeAudioSourceContainerPreset._();
+
   @FreezedUnionValue("lossy")
   factory SpotubeAudioSourceContainerPreset.lossy({
     required SpotubeMediaCompressionType type,
@@ -27,6 +29,14 @@ class SpotubeAudioSourceContainerPreset
   factory SpotubeAudioSourceContainerPreset.fromJson(
           Map<String, dynamic> json) =>
       _$SpotubeAudioSourceContainerPresetFromJson(json);
+
+  String getFileExtension() {
+    return switch (name) {
+      "mp4" => "m4a",
+      "webm" => "weba",
+      _ => name,
+    };
+  }
 }
 
 @freezed
