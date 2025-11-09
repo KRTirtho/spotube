@@ -28,12 +28,8 @@ mixin _$TrackSourceQuery {
   String get isrc => throw _privateConstructorUsedError;
   bool get explicit => throw _privateConstructorUsedError;
 
-  /// Serializes this TrackSourceQuery to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of TrackSourceQuery
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $TrackSourceQueryCopyWith<TrackSourceQuery> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -64,8 +60,6 @@ class _$TrackSourceQueryCopyWithImpl<$Res, $Val extends TrackSourceQuery>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of TrackSourceQuery
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -136,8 +130,6 @@ class __$$TrackSourceQueryImplCopyWithImpl<$Res>
       $Res Function(_$TrackSourceQueryImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of TrackSourceQuery
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -241,7 +233,7 @@ class _$TrackSourceQueryImpl extends _TrackSourceQuery {
                 other.explicit == explicit));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -253,9 +245,7 @@ class _$TrackSourceQueryImpl extends _TrackSourceQuery {
       isrc,
       explicit);
 
-  /// Create a copy of TrackSourceQuery
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$TrackSourceQueryImplCopyWith<_$TrackSourceQueryImpl> get copyWith =>
@@ -298,11 +288,8 @@ abstract class _TrackSourceQuery extends TrackSourceQuery {
   String get isrc;
   @override
   bool get explicit;
-
-  /// Create a copy of TrackSourceQuery
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$TrackSourceQueryImplCopyWith<_$TrackSourceQueryImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -320,12 +307,8 @@ mixin _$TrackSourceInfo {
   String get pageUrl => throw _privateConstructorUsedError;
   int get durationMs => throw _privateConstructorUsedError;
 
-  /// Serializes this TrackSourceInfo to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of TrackSourceInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $TrackSourceInfoCopyWith<TrackSourceInfo> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -355,8 +338,6 @@ class _$TrackSourceInfoCopyWithImpl<$Res, $Val extends TrackSourceInfo>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of TrackSourceInfo
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -421,8 +402,6 @@ class __$$TrackSourceInfoImplCopyWithImpl<$Res>
       _$TrackSourceInfoImpl _value, $Res Function(_$TrackSourceInfoImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of TrackSourceInfo
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -509,14 +488,12 @@ class _$TrackSourceInfoImpl implements _TrackSourceInfo {
                 other.durationMs == durationMs));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(
       runtimeType, id, title, artists, thumbnail, pageUrl, durationMs);
 
-  /// Create a copy of TrackSourceInfo
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$TrackSourceInfoImplCopyWith<_$TrackSourceInfoImpl> get copyWith =>
@@ -555,11 +532,8 @@ abstract class _TrackSourceInfo implements TrackSourceInfo {
   String get pageUrl;
   @override
   int get durationMs;
-
-  /// Create a copy of TrackSourceInfo
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$TrackSourceInfoImplCopyWith<_$TrackSourceInfoImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -574,14 +548,9 @@ mixin _$TrackSource {
   SourceQualities get quality => throw _privateConstructorUsedError;
   SourceCodecs get codec => throw _privateConstructorUsedError;
   String get bitrate => throw _privateConstructorUsedError;
-  String get qualityLabel => throw _privateConstructorUsedError;
 
-  /// Serializes this TrackSource to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of TrackSource
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   $TrackSourceCopyWith<TrackSource> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -596,8 +565,7 @@ abstract class $TrackSourceCopyWith<$Res> {
       {String url,
       SourceQualities quality,
       SourceCodecs codec,
-      String bitrate,
-      String qualityLabel});
+      String bitrate});
 }
 
 /// @nodoc
@@ -610,8 +578,6 @@ class _$TrackSourceCopyWithImpl<$Res, $Val extends TrackSource>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of TrackSource
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -619,7 +585,6 @@ class _$TrackSourceCopyWithImpl<$Res, $Val extends TrackSource>
     Object? quality = null,
     Object? codec = null,
     Object? bitrate = null,
-    Object? qualityLabel = null,
   }) {
     return _then(_value.copyWith(
       url: null == url
@@ -638,10 +603,6 @@ class _$TrackSourceCopyWithImpl<$Res, $Val extends TrackSource>
           ? _value.bitrate
           : bitrate // ignore: cast_nullable_to_non_nullable
               as String,
-      qualityLabel: null == qualityLabel
-          ? _value.qualityLabel
-          : qualityLabel // ignore: cast_nullable_to_non_nullable
-              as String,
     ) as $Val);
   }
 }
@@ -658,8 +619,7 @@ abstract class _$$TrackSourceImplCopyWith<$Res>
       {String url,
       SourceQualities quality,
       SourceCodecs codec,
-      String bitrate,
-      String qualityLabel});
+      String bitrate});
 }
 
 /// @nodoc
@@ -670,8 +630,6 @@ class __$$TrackSourceImplCopyWithImpl<$Res>
       _$TrackSourceImpl _value, $Res Function(_$TrackSourceImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of TrackSource
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -679,7 +637,6 @@ class __$$TrackSourceImplCopyWithImpl<$Res>
     Object? quality = null,
     Object? codec = null,
     Object? bitrate = null,
-    Object? qualityLabel = null,
   }) {
     return _then(_$TrackSourceImpl(
       url: null == url
@@ -698,10 +655,6 @@ class __$$TrackSourceImplCopyWithImpl<$Res>
           ? _value.bitrate
           : bitrate // ignore: cast_nullable_to_non_nullable
               as String,
-      qualityLabel: null == qualityLabel
-          ? _value.qualityLabel
-          : qualityLabel // ignore: cast_nullable_to_non_nullable
-              as String,
     ));
   }
 }
@@ -713,8 +666,7 @@ class _$TrackSourceImpl implements _TrackSource {
       {required this.url,
       required this.quality,
       required this.codec,
-      required this.bitrate,
-      required this.qualityLabel});
+      required this.bitrate});
 
   factory _$TrackSourceImpl.fromJson(Map<String, dynamic> json) =>
       _$$TrackSourceImplFromJson(json);
@@ -727,12 +679,10 @@ class _$TrackSourceImpl implements _TrackSource {
   final SourceCodecs codec;
   @override
   final String bitrate;
-  @override
-  final String qualityLabel;
 
   @override
   String toString() {
-    return 'TrackSource(url: $url, quality: $quality, codec: $codec, bitrate: $bitrate, qualityLabel: $qualityLabel)';
+    return 'TrackSource(url: $url, quality: $quality, codec: $codec, bitrate: $bitrate)';
   }
 
   @override
@@ -743,19 +693,14 @@ class _$TrackSourceImpl implements _TrackSource {
             (identical(other.url, url) || other.url == url) &&
             (identical(other.quality, quality) || other.quality == quality) &&
             (identical(other.codec, codec) || other.codec == codec) &&
-            (identical(other.bitrate, bitrate) || other.bitrate == bitrate) &&
-            (identical(other.qualityLabel, qualityLabel) ||
-                other.qualityLabel == qualityLabel));
+            (identical(other.bitrate, bitrate) || other.bitrate == bitrate));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, url, quality, codec, bitrate, qualityLabel);
+  int get hashCode => Object.hash(runtimeType, url, quality, codec, bitrate);
 
-  /// Create a copy of TrackSource
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$TrackSourceImplCopyWith<_$TrackSourceImpl> get copyWith =>
@@ -774,8 +719,7 @@ abstract class _TrackSource implements TrackSource {
       {required final String url,
       required final SourceQualities quality,
       required final SourceCodecs codec,
-      required final String bitrate,
-      required final String qualityLabel}) = _$TrackSourceImpl;
+      required final String bitrate}) = _$TrackSourceImpl;
 
   factory _TrackSource.fromJson(Map<String, dynamic> json) =
       _$TrackSourceImpl.fromJson;
@@ -788,16 +732,8 @@ abstract class _TrackSource implements TrackSource {
   SourceCodecs get codec;
   @override
   String get bitrate;
-
-  /// Create a copy of TrackSource
-  /// with the given fields replaced by the non-null parameter values.
   @override
-  String get qualityLabel;
-
-  /// Create a copy of TrackSource
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$TrackSourceImplCopyWith<_$TrackSourceImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
