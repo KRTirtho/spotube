@@ -15,13 +15,11 @@
 #include <flutter_new_pipe_extractor/flutter_new_pipe_extractor_plugin_c_api.h>
 #include <flutter_secure_storage_windows/flutter_secure_storage_windows_plugin.h>
 #include <flutter_timezone/flutter_timezone_plugin_c_api.h>
-#include <irondash_engine_context/irondash_engine_context_plugin_c_api.h>
 #include <local_notifier/local_notifier_plugin.h>
 #include <media_kit_libs_windows_audio/media_kit_libs_windows_audio_plugin_c_api.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
 #include <screen_retriever_windows/screen_retriever_windows_plugin_c_api.h>
 #include <sqlite3_flutter_libs/sqlite3_flutter_libs_plugin.h>
-#include <super_native_extensions/super_native_extensions_plugin_c_api.h>
 #include <system_theme/system_theme_plugin.h>
 #include <tray_manager/tray_manager_plugin.h>
 #include <url_launcher_windows/url_launcher_windows.h>
@@ -46,8 +44,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterSecureStorageWindowsPlugin"));
   FlutterTimezonePluginCApiRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterTimezonePluginCApi"));
-  IrondashEngineContextPluginCApiRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("IrondashEngineContextPluginCApi"));
   LocalNotifierPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("LocalNotifierPlugin"));
   MediaKitLibsWindowsAudioPluginCApiRegisterWithRegistrar(
@@ -58,8 +54,6 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("ScreenRetrieverWindowsPluginCApi"));
   Sqlite3FlutterLibsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("Sqlite3FlutterLibsPlugin"));
-  SuperNativeExtensionsPluginCApiRegisterWithRegistrar(
-      registry->GetRegistrarForPlugin("SuperNativeExtensionsPluginCApi"));
   SystemThemePluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("SystemThemePlugin"));
   TrayManagerPluginRegisterWithRegistrar(
