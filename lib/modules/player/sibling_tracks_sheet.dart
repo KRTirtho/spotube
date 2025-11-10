@@ -1,60 +1,16 @@
-import 'package:collection/collection.dart';
-
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-import 'package:spotube/collections/assets.gen.dart';
-import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/button/back_button.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
-import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
-import 'package:spotube/hooks/utils/use_debounce.dart';
-import 'package:spotube/models/database/database.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/server/active_track_sources.dart';
-import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
-import 'package:spotube/provider/youtube_engine/youtube_engine.dart';
-import 'package:spotube/services/sourced_track/models/video_info.dart';
-import 'package:spotube/services/sourced_track/sources/jiosaavn.dart';
-import 'package:spotube/services/sourced_track/sources/youtube.dart';
-import 'package:spotube/utils/service_utils.dart';
-
-final sourceInfoToIconMap = {
-  AudioSource.youtube:
-      const Icon(SpotubeIcons.youtube, color: Color(0xFFFF0000)),
-  AudioSource.jiosaavn: Container(
-    height: 30,
-    width: 30,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(90),
-      image: DecorationImage(
-        image: Assets.images.logos.jiosaavn.provider(),
-        fit: BoxFit.cover,
-      ),
-    ),
-  ),
-  AudioSource.piped: const Icon(SpotubeIcons.piped),
-  AudioSource.invidious: Container(
-    height: 18,
-    width: 18,
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(90),
-      image: DecorationImage(
-        image: Assets.images.logos.invidious.provider(),
-        fit: BoxFit.cover,
-      ),
-    ),
-  ),
-};
 
 class SiblingTracksSheet extends HookConsumerWidget {
   final bool floating;
@@ -65,94 +21,21 @@ class SiblingTracksSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final theme = Theme.of(context);
-    final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
-    final preferences = ref.watch(userPreferencesProvider);
-    final youtubeEngine = ref.watch(youtubeEngineProvider);
+    final controller = useScrollController();
 
-    final isLoading = useState(false);
-    final isSearching = useState(false);
-    final searchMode = useState(preferences.searchMode);
+    final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
     final activeTrackSources = ref.watch(activeTrackSourcesProvider);
     final activeTrackNotifier = activeTrackSources.asData?.value?.notifier;
     final activeTrack = activeTrackSources.asData?.value?.track;
     final activeTrackSource = activeTrackSources.asData?.value?.source;
 
-    final title = ServiceUtils.getTitle(
-      activeTrack?.name ?? "",
-      artists: activeTrack?.artists.map((e) => e.name).toList() ?? [],
-      onlyCleanArtist: true,
-    ).trim();
-
-    final defaultSearchTerm =
-        "$title - ${activeTrack?.artists.asString() ?? ""}";
-    final searchController = useShadcnTextEditingController(
-      text: defaultSearchTerm,
-    );
-
-    final searchTerm = useDebounce<String>(
-      useValueListenable(searchController).text,
-    );
-
-    final controller = useScrollController();
-
-    final searchRequest = useMemoized(() async {
-      if (searchTerm.trim().isEmpty || activeTrackSource == null) {
-        return <TrackSourceInfo>[];
-      }
-      if (preferences.audioSource == AudioSource.jiosaavn) {
-        final resultsJioSaavn =
-            await jiosaavnClient.search.songs(searchTerm.trim());
-        final results = await Future.wait(
-            resultsJioSaavn.results.mapIndexed((i, song) async {
-          final siblingType = JioSaavnSourcedTrack.toSiblingType(song);
-          return siblingType.info;
-        }));
-
-        final activeSourceInfo = activeTrackSource.info;
-
-        return results
-          ..removeWhere((element) => element.id == activeSourceInfo.id)
-          ..insert(
-            0,
-            activeSourceInfo,
-          );
-      } else {
-        final resultsYt = await youtubeEngine.searchVideos(searchTerm.trim());
-
-        final searchResults = await Future.wait(
-          resultsYt
-              .map(YoutubeVideoInfo.fromVideo)
-              .mapIndexed((i, video) async {
-                if (!context.mounted) return null;
-                final siblingType =
-                    await YoutubeSourcedTrack.toSiblingType(i, video, ref);
-                return siblingType.info;
-              })
-              .whereType<Future<TrackSourceInfo>>()
-              .toList(),
-        );
-        final activeSourceInfo = activeTrackSource.info;
-        return searchResults
-          ..removeWhere((element) => element.id == activeSourceInfo.id)
-          ..insert(0, activeSourceInfo);
-      }
-    }, [
-      searchTerm,
-      searchMode.value,
-      activeTrack,
-      activeTrackSource,
-      preferences.audioSource,
-      youtubeEngine,
-    ]);
-
-    final siblings = useMemoized(
+    final siblings = useMemoized<List<SpotubeAudioSourceMatchObject>>(
       () => !isFetchingActiveTrack
           ? [
               if (activeTrackSource != null) activeTrackSource.info,
               ...?activeTrackSource?.siblings,
             ]
-          : <TrackSourceInfo>[],
+          : <SpotubeAudioSourceMatchObject>[],
       [activeTrackSource, isFetchingActiveTrack],
     );
 
@@ -166,74 +49,6 @@ class SiblingTracksSheet extends HookConsumerWidget {
       return null;
     }, [activeTrack, previousActiveTrack]);
 
-    final itemBuilder = useCallback(
-      (TrackSourceInfo sourceInfo, AudioSource source) {
-        final icon = sourceInfoToIconMap[source];
-        return ButtonTile(
-          style: ButtonVariance.ghost,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          title: Text(
-            sourceInfo.title,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          leading: UniversalImage(
-            path: sourceInfo.thumbnail,
-            height: 60,
-            width: 60,
-          ),
-          trailing: Text(Duration(milliseconds: sourceInfo.durationMs)
-              .toHumanReadableString()),
-          subtitle: Row(
-            children: [
-              if (icon != null) icon,
-              Flexible(
-                child: Text(
-                  " • ${sourceInfo.artists}",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-            ],
-          ),
-          enabled: !isFetchingActiveTrack && !isLoading.value,
-          selected: !isFetchingActiveTrack &&
-              sourceInfo.id == activeTrackSource?.info.id,
-          onPressed: () async {
-            if (!isFetchingActiveTrack &&
-                sourceInfo.id != activeTrackSource?.info.id) {
-              try {
-                isLoading.value = true;
-                await activeTrackNotifier?.swapWithSibling(sourceInfo);
-                await ref.read(audioPlayerProvider.notifier).swapActiveSource();
-
-                if (context.mounted) {
-                  if (MediaQuery.sizeOf(context).mdAndUp) {
-                    closeOverlay(context);
-                  } else {
-                    closeDrawer(context);
-                  }
-                }
-              } finally {
-                if (context.mounted) {
-                  isLoading.value = false;
-                }
-              }
-            }
-          },
-        );
-      },
-      [
-        activeTrackSource,
-        activeTrackNotifier,
-        siblings,
-        isFetchingActiveTrack,
-        isLoading.value,
-      ],
-    );
-
-    final scale = context.theme.scaling;
-
     return SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -244,72 +59,16 @@ class SiblingTracksSheet extends HookConsumerWidget {
               spacing: 5,
               children: [
                 AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 300),
-                  child: !isSearching.value
-                      ? Text(
-                          context.l10n.alternative_track_sources,
-                        ).bold()
-                      : ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxWidth: 320 * scale,
-                            maxHeight: 38 * scale,
-                          ),
-                          child: TextField(
-                            autofocus: true,
-                            controller: searchController,
-                            placeholder: Text(context.l10n.search),
-                            style: theme.typography.bold,
-                          ),
-                        ),
-                ),
-                const Spacer(),
-                if (!isSearching.value) ...[
-                  IconButton.outline(
-                    icon: const Icon(SpotubeIcons.search, size: 18),
-                    onPressed: () {
-                      isSearching.value = true;
-                    },
-                  ),
-                  if (!floating) const BackButton(icon: SpotubeIcons.angleDown)
-                ] else ...[
-                  if (preferences.audioSource == AudioSource.piped)
-                    IconButton.outline(
-                      icon: const Icon(SpotubeIcons.filter, size: 18),
-                      onPressed: () {
-                        showPopover(
-                          context: context,
-                          alignment: Alignment.bottomRight,
-                          builder: (context) {
-                            return DropdownMenu(
-                              children: SearchMode.values
-                                  .map(
-                                    (e) => MenuButton(
-                                      onPressed: (context) {
-                                        searchMode.value = e;
-                                      },
-                                      enabled: searchMode.value != e,
-                                      child: Text(e.label),
-                                    ),
-                                  )
-                                  .toList(),
-                            );
-                          },
-                        );
-                      },
-                    ),
-                  IconButton.outline(
-                    icon: const Icon(SpotubeIcons.close, size: 18),
-                    onPressed: () {
-                      isSearching.value = false;
-                    },
-                  ),
-                ]
+                    duration: const Duration(milliseconds: 300),
+                    child: Text(
+                      context.l10n.alternative_track_sources,
+                    ).bold()),
               ],
             ),
           ),
           AnimatedSwitcher(
             duration: const Duration(milliseconds: 300),
-            child: isLoading.value
+            child: activeTrackSources.isLoading
                 ? const SizedBox(
                     width: double.infinity,
                     child: LinearProgressIndicator(),
@@ -323,42 +82,62 @@ class SiblingTracksSheet extends HookConsumerWidget {
                   FadeTransition(opacity: animation, child: child),
               child: InterScrollbar(
                 controller: controller,
-                child: switch (isSearching.value) {
-                  false => ListView.separated(
-                      padding: const EdgeInsets.all(8.0),
-                      controller: controller,
-                      itemCount: siblings.length,
-                      separatorBuilder: (context, index) => const Gap(8),
-                      itemBuilder: (context, index) => itemBuilder(
-                        siblings[index],
-                        activeTrackSource!.source,
-                      ),
-                    ),
-                  true => FutureBuilder(
-                      future: searchRequest,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Center(
-                            child: Text(snapshot.error.toString()),
-                          );
-                        } else if (!snapshot.hasData) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
+                child: ListView.separated(
+                  padding: const EdgeInsets.all(8.0),
+                  controller: controller,
+                  itemCount: siblings.length,
+                  separatorBuilder: (context, index) => const Gap(8),
+                  itemBuilder: (context, index) {
+                    final sourceInfo = siblings[index];
 
-                        return ListView.separated(
-                          padding: const EdgeInsets.all(8.0),
-                          controller: controller,
-                          itemCount: snapshot.data!.length,
-                          separatorBuilder: (context, index) => const Gap(8),
-                          itemBuilder: (context, index) => itemBuilder(
-                            snapshot.data![index],
-                            preferences.audioSource,
-                          ),
-                        );
+                    return ButtonTile(
+                      style: ButtonVariance.ghost,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      title: Text(
+                        sourceInfo.title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      leading: sourceInfo.thumbnail != null
+                          ? UniversalImage(
+                              path: sourceInfo.thumbnail!,
+                              height: 60,
+                              width: 60,
+                            )
+                          : null,
+                      trailing:
+                          Text(sourceInfo.duration.toHumanReadableString()),
+                      subtitle: Flexible(
+                        child: Text(
+                          sourceInfo.artists.join(", "),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      enabled: !isFetchingActiveTrack,
+                      selected: !isFetchingActiveTrack &&
+                          sourceInfo.id == activeTrackSource?.info.id,
+                      onPressed: () async {
+                        if (!isFetchingActiveTrack &&
+                            sourceInfo.id != activeTrackSource?.info.id) {
+                          await activeTrackNotifier
+                              ?.swapWithSibling(sourceInfo);
+                          await ref
+                              .read(audioPlayerProvider.notifier)
+                              .swapActiveSource();
+
+                          if (context.mounted) {
+                            if (MediaQuery.sizeOf(context).mdAndUp) {
+                              closeOverlay(context);
+                            } else {
+                              closeDrawer(context);
+                            }
+                          }
+                        }
                       },
-                    ),
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),

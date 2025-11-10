@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'package:auto_route/auto_route.dart';
 import 'package:hetu_otp_util/hetu_otp_util.dart';
 import 'package:hetu_script/hetu_script.dart';
-import 'package:hetu_spotube_plugin/hetu_spotube_plugin.dart';
+import 'package:hetu_spotube_plugin/hetu_spotube_plugin.dart' as spotube_plugin;
+import 'package:hetu_spotube_plugin/hetu_spotube_plugin.dart'
+    hide YouTubeEngine;
 import 'package:hetu_std/hetu_std.dart';
 import 'package:pub_semver/pub_semver.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -15,6 +17,7 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/metadata/apis/localstorage.dart';
 import 'package:spotube/services/metadata/endpoints/album.dart';
 import 'package:spotube/services/metadata/endpoints/artist.dart';
+import 'package:spotube/services/metadata/endpoints/audio_source.dart';
 import 'package:spotube/services/metadata/endpoints/auth.dart';
 import 'package:spotube/services/metadata/endpoints/browse.dart';
 import 'package:spotube/services/metadata/endpoints/playlist.dart';
@@ -22,13 +25,15 @@ import 'package:spotube/services/metadata/endpoints/search.dart';
 import 'package:spotube/services/metadata/endpoints/track.dart';
 import 'package:spotube/services/metadata/endpoints/core.dart';
 import 'package:spotube/services/metadata/endpoints/user.dart';
+import 'package:spotube/services/youtube_engine/youtube_engine.dart';
 
 const defaultMetadataLimit = "20";
 
 class MetadataPlugin {
-  static final pluginApiVersion = Version.parse("1.0.0");
+  static final pluginApiVersion = Version.parse("2.0.0");
 
   static Future<MetadataPlugin> create(
+    YouTubeEngine youtubeEngine,
     PluginConfiguration config,
     Uint8List byteCode,
   ) async {
@@ -77,6 +82,58 @@ class MetadataPlugin {
           ),
         );
       },
+      createYoutubeEngine: () {
+        return spotube_plugin.YouTubeEngine(
+          search: (query) async {
+            final result = await youtubeEngine.searchVideos(query);
+            return result
+                .map((video) => {
+                      'id': video.id.value,
+                      'title': video.title,
+                      'author': video.author,
+                      'duration': video.duration?.inSeconds,
+                      'description': video.description,
+                      'uploadDate': video.uploadDate?.toIso8601String(),
+                      'viewCount': video.engagement.viewCount,
+                      'likeCount': video.engagement.likeCount,
+                      'isLive': video.isLive,
+                    })
+                .toList();
+          },
+          getVideo: (videoId) async {
+            final video = await youtubeEngine.getVideo(videoId);
+            return {
+              'id': video.id.value,
+              'title': video.title,
+              'author': video.author,
+              'duration': video.duration?.inSeconds,
+              'description': video.description,
+              'uploadDate': video.uploadDate?.toIso8601String(),
+              'viewCount': video.engagement.viewCount,
+              'likeCount': video.engagement.likeCount,
+              'isLive': video.isLive,
+            };
+          },
+          streamManifest: (videoId) {
+            return youtubeEngine.getStreamManifest(videoId).then(
+              (manifest) {
+                final streams = manifest.audioOnly
+                    .map(
+                      (stream) => {
+                        'url': stream.url.toString(),
+                        'quality': stream.qualityLabel,
+                        'bitrate': stream.bitrate.bitsPerSecond,
+                        'container': stream.container.name,
+                        'videoId': stream.videoId,
+                      },
+                    )
+                    .toList();
+                return streams;
+              },
+            );
+          },
+        );
+      },
     );
 
     await HetuStdLoader.loadBytecodeFlutter(hetu);
@@ -99,6 +156,7 @@ class MetadataPlugin {
 
   late final MetadataAuthEndpoint auth;
 
+  late final MetadataPluginAudioSourceEndpoint audioSource;
   late final MetadataPluginAlbumEndpoint album;
   late final MetadataPluginArtistEndpoint artist;
   late final MetadataPluginBrowseEndpoint browse;
@@ -111,6 +169,7 @@ class MetadataPlugin {
   MetadataPlugin._(this.hetu) {
     auth = MetadataAuthEndpoint(hetu);
 
+    audioSource = MetadataPluginAudioSourceEndpoint(hetu);
     artist = MetadataPluginArtistEndpoint(hetu);
     album = MetadataPluginAlbumEndpoint(hetu);
     browse = MetadataPluginBrowseEndpoint(hetu);

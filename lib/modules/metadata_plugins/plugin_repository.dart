@@ -11,6 +11,11 @@ import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:change_case/change_case.dart';
 
+final validTopics = {
+  "spotube-metadata-plugin": ("Metadata", SpotubeIcons.album),
+  "spotube-audio-source-plugin": ("Audio Source", SpotubeIcons.music),
+};
+
 class MetadataPluginRepositoryItem extends HookConsumerWidget {
   final MetadataPluginRepository pluginRepo;
   const MetadataPluginRepositoryItem({
@@ -208,6 +213,12 @@ class MetadataPluginRepositoryItem extends HookConsumerWidget {
                   ),
                 ),
               ],
+              for (final topic in pluginRepo.topics)
+                if (validTopics.keys.contains(topic))
+                  SecondaryBadge(
+                    leading: Icon(validTopics[topic]!.$2),
+                    child: Text(validTopics[topic]!.$1),
+                  ),
               SecondaryBadge(
                 leading: host == "github.com"
                     ? const Icon(SpotubeIcons.github)

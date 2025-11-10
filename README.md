@@ -202,7 +202,6 @@ If you are curious, you can [read the reason of choosing this license](https://d
 1. [Invidious](https://invidious.io/) - Invidious is an open source alternative front-end to YouTube.
 1. [yt-dlp](https://github.com/yt-dlp/yt-dlp) - A feature-rich command-line audio/video downloader.
 1. [NewPipeExtractor](https://github.com/TeamNewPipe/NewPipeExtractor) - NewPipe's core library for extracting data from streaming sites.
-1. [SongLink](https://song.link) - SongLink is a free smart link service that helps you share music with your audience. It's a one-stop-shop for creating smart links for music, podcasts, and other audio content
 1. [LRCLib](https://lrclib.net/) - A public synced lyric API.
 1. [Linux](https://www.linux.org) - Linux is a family of open-source Unix-like operating systems based on the Linux kernel, an operating system kernel first released on September 17, 1991, by Linus Torvalds. Linux is typically packaged in a Linux distribution
 1. [AUR](https://aur.archlinux.org) - AUR stands for Arch User Repository. It is a community-driven repository for Arch-based Linux distributions users

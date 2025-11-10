@@ -1448,7 +1448,16 @@ class AppLocalizationsHi extends AppLocalizations {
       'यह प्लगइन आपके सुनने के इतिहास को उत्पन्न करने के लिए आपके संगीत को स्क्रॉबल करता है।';
 
   @override
-  String get default_plugin => 'डिफ़ॉल्ट';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'डिफ़ॉल्ट सेट करें';
@@ -1509,7 +1518,7 @@ class AppLocalizationsHi extends AppLocalizations {
       'इनपुट आवश्यक प्रारूप से मेल नहीं खाता है';
 
   @override
-  String get metadata_provider_plugins => 'मेटाडेटा प्रदाता प्लगइन';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1534,8 +1543,8 @@ class AppLocalizationsHi extends AppLocalizations {
   String get available_plugins => 'उपलब्ध प्लगइन';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'अपनी खुद की प्लेलिस्ट/एल्बम/कलाकार/फ़ीड मेटाडेटा प्रदाता कॉन्फ़िगर करें';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'ऑडियो स्क्रॉबलर्स';

@@ -86,18 +86,10 @@ final segmentProvider = FutureProvider<SourcedSegments?>(
     if (snapshot == null) return null;
     final (:track, :source, :notifier) = snapshot;
     if (track is SpotubeLocalTrackObject) return null;
-    if (source!.source case AudioSource.jiosaavn) return null;
+    if (!source!.source.toLowerCase().contains("youtube")) return null;
 
-    final skipNonMusic = ref.watch(
-      userPreferencesProvider.select(
-        (s) {
-          final isPipedYTMusicMode = s.audioSource == AudioSource.piped &&
-              s.searchMode == SearchMode.youtubeMusic;
-
-          return s.skipNonMusic && !isPipedYTMusicMode;
-        },
-      ),
-    );
+    final skipNonMusic =
+        ref.watch(userPreferencesProvider.select((s) => s.skipNonMusic));
 
     if (!skipNonMusic) {
       return SourcedSegments(segments: [], source: source.info.id);

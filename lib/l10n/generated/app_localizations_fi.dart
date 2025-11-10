@@ -1443,7 +1443,16 @@ class AppLocalizationsFi extends AppLocalizations {
       'Tämä lisäosa scrobblaa musiikkisi luodakseen kuunteluhistoriasi.';
 
   @override
-  String get default_plugin => 'Oletus';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Aseta oletukseksi';
@@ -1503,7 +1512,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get input_does_not_match_format => 'Syöte ei vastaa vaadittua muotoa';
 
   @override
-  String get metadata_provider_plugins => 'Metatietojen tarjoajan lisäosat';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1528,8 +1537,8 @@ class AppLocalizationsFi extends AppLocalizations {
   String get available_plugins => 'Saatavilla olevat lisäosat';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Määritä oma soittolistan/albumin/artistin/syötteen metatietojen tarjoaja';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Äänen scrobblerit';

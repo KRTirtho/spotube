@@ -30,6 +30,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
+    final tabState = useState<int>(0);
     final formKey = useMemoized(() => GlobalKey<FormBuilderState>(), []);
 
     final plugins = ref.watch(metadataPluginsProvider);
@@ -49,19 +50,50 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
 
         final pluginRepos = pluginReposSnapshot.asData?.value.items ?? [];
         if (installedPluginIds.isEmpty) return pluginRepos;
-        return pluginRepos
+        final availablePlugins = pluginRepos
             .whereNot((repo) => installedPluginIds.contains(repo.repoUrl))
             .toList();
+
+        if (tabState.value != 0) {
+          // metadata only plugins
+          return availablePlugins.where(
+            (d) {
+              return d.topics.contains(
+                tabState.value == 1
+                    ? "spotube-metadata-plugin"
+                    : "spotube-audio-source-plugin",
+              );
+            },
+          ).toList();
+        }
+
+        return availablePlugins; // all plugins
       },
-      [plugins.asData?.value.plugins, pluginReposSnapshot.asData?.value],
+      [
+        plugins.asData?.value.plugins,
+        pluginReposSnapshot.asData?.value,
+        tabState.value,
+      ],
     );
+
+    final installedPlugins = useMemoized<List<PluginConfiguration>?>(() {
+      if (tabState.value == 0) return plugins.asData?.value.plugins;
+
+      return plugins.asData?.value.plugins.where((d) {
+        return d.abilities.contains(
+          tabState.value == 1
+              ? PluginAbilities.metadata
+              : PluginAbilities.audioSource,
+        );
+      }).toList();
+    }, [tabState.value, plugins.asData?.value]);
 
     return SafeArea(
       bottom: false,
       child: Scaffold(
         headers: [
           TitleBar(
-            title: Text(context.l10n.metadata_provider_plugins),
+            title: Text(context.l10n.plugins),
           )
         ],
         child: Padding(
@@ -193,6 +225,20 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                 ),
               ),
               const SliverGap(12),
+              SliverToBoxAdapter(
+                child: TabList(
+                  index: tabState.value,
+                  onChanged: (value) {
+                    tabState.value = value;
+                  },
+                  children: const [
+                    TabItem(child: Text("All")),
+                    TabItem(child: Text("Metadata")),
+                    TabItem(child: Text("Audio Source")),
+                  ],
+                ),
+              ),
+              const SliverGap(12),
               if (plugins.asData?.value.plugins.isNotEmpty ?? false)
                 SliverToBoxAdapter(
                   child: Row(
@@ -207,15 +253,20 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                 ),
               const SliverGap(20),
               SliverList.separated(
-                itemCount: plugins.asData?.value.plugins.length ?? 0,
+                itemCount: installedPlugins?.length ?? 0,
                 separatorBuilder: (context, index) => const Gap(12),
                 itemBuilder: (context, index) {
-                  final plugin = plugins.asData!.value.plugins[index];
-                  final isDefault =
-                      plugins.asData!.value.defaultPlugin == index;
+                  final plugin = installedPlugins![index];
+                  final isDefaultMetadata =
+                      plugins.asData!.value.defaultMetadataPluginConfig?.slug ==
+                          plugin.slug;
+                  final isDefaultAudioSource = plugins
+                          .asData!.value.defaultAudioSourcePluginConfig?.slug ==
+                      plugin.slug;
                   return MetadataInstalledPluginItem(
                     plugin: plugin,
-                    isDefault: isDefault,
+                    isDefaultMetadata: isDefaultMetadata,
+                    isDefaultAudioSource: isDefaultAudioSource,
                   );
                 },
               ),
@@ -249,6 +300,7 @@ class SettingsMetadataProviderPage extends HookConsumerWidget {
                         description: "Loading...",
                         repoUrl: "",
                         owner: "",
+                        topics: [],
                       ),
                     ),
                   );

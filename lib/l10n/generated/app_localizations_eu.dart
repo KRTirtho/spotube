@@ -1451,7 +1451,16 @@ class AppLocalizationsEu extends AppLocalizations {
       'Plugin honek zure musika scrobbled egiten du zure entzuteen historia sortzeko.';
 
   @override
-  String get default_plugin => 'Lehenetsia';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Lehenetsi gisa ezarri';
@@ -1515,7 +1524,7 @@ class AppLocalizationsEu extends AppLocalizations {
       'Sarrera ezin da beharrezko formatutik desberdina izan';
 
   @override
-  String get metadata_provider_plugins => 'Metadaten hornitzailearen pluginak';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1540,8 +1549,8 @@ class AppLocalizationsEu extends AppLocalizations {
   String get available_plugins => 'Eskaintzen diren pluginak';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Konfiguratu zureko playlists-/album-/artista-/feed-metadaten hornitzailea';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Audio scrobbler-ak';

@@ -7,8 +7,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/models/playback/track_sources.dart';
-import 'package:spotube/provider/server/track_sources.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
 
 class TrackDetailsDialog extends HookConsumerWidget {
   final SpotubeFullTrackObject track;
@@ -21,8 +20,7 @@ class TrackDetailsDialog extends HookConsumerWidget {
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
-    final sourcedTrack =
-        ref.read(trackSourcesProvider(TrackSourceQuery.fromTrack(track)));
+    final sourcedTrack = ref.read(sourcedTrackProvider(track));
 
     final detailsMap = {
       context.l10n.title: track.name,
@@ -39,8 +37,7 @@ class TrackDetailsDialog extends HookConsumerWidget {
       //   style: const TextStyle(color: Colors.blue),
       // ),
       context.l10n.duration: sourcedTrack.asData != null
-          ? Duration(milliseconds: sourcedTrack.asData!.value.info.durationMs)
-              .toHumanReadableString()
+          ? sourcedTrack.asData!.value.info.duration.toHumanReadableString()
           : Duration(milliseconds: track.durationMs).toHumanReadableString(),
       if (track.album.releaseDate != null)
         context.l10n.released: track.album.releaseDate,
@@ -57,7 +54,7 @@ class TrackDetailsDialog extends HookConsumerWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            context.l10n.channel: Text(sourceInfo.artists),
+            context.l10n.channel: Text(sourceInfo.artists.join(", ")),
             if (sourcedTrack.asData?.value.url != null)
               context.l10n.streamUrl: Hyperlink(
                 sourcedTrack.asData!.value.url ?? "",

@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:media_kit/media_kit.dart' hide Track;
 import 'package:spotube/models/metadata/metadata.dart';
-import 'package:spotube/models/playback/track_sources.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:flutter/foundation.dart';
 import 'package:spotube/services/audio_player/custom_player.dart';
@@ -22,21 +21,9 @@ class SpotubeMedia extends mk.Media {
   static String get _host =>
       kIsWindows ? "localhost" : InternetAddress.anyIPv4.address;
 
-  static String _queries(SpotubeFullTrackObject track) {
-    final params = TrackSourceQuery.fromTrack(track).toJson();
-
-    return params.entries
-        .map((e) =>
-            "${Uri.encodeComponent(e.key)}=${Uri.encodeComponent(e.value is List<String> ? e.value.join(",") : e.value.toString())}")
-        .join("&");
-  }
-
   final SpotubeTrackObject track;
-  SpotubeMedia(
-    this.track, {
-    Map<String, dynamic>? extras,
-    super.httpHeaders,
-  })  : assert(
+  SpotubeMedia(this.track)
+      : assert(
           track is SpotubeLocalTrackObject || track is SpotubeFullTrackObject,
           "Track must be a either a local track or a full track object with ISRC",
         ),
@@ -44,8 +31,14 @@ class SpotubeMedia extends mk.Media {
         super(
           track is SpotubeLocalTrackObject
               ? track.path
-              : "http://$_host:$serverPort/stream/${track.id}?${_queries(track as SpotubeFullTrackObject)}",
+              : "http://$_host:$serverPort/stream/${track.id}",
+          extras: track.toJson(),
         );
+
+  factory SpotubeMedia.media(Media media) {
+    assert(media.extras != null, "[Media] must have extra metadata set");
+    return SpotubeMedia(SpotubeTrackObject.fromJson(media.extras!));
+  }
 }
 
 abstract class AudioPlayerInterface {

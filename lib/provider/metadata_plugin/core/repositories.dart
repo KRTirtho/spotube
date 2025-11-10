@@ -49,6 +49,7 @@ class MetadataPluginRepositoriesNotifier
         owner: repo["owner"]["login"] ?? "",
         description: repo["description"] ?? "",
         repoUrl: repo["html_url"] ?? "",
+        topics: repo["topics"].cast<String>() ?? [],
       );
     }).toList();
 

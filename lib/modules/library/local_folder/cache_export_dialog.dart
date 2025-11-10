@@ -6,9 +6,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart' as path;
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/services/logger/logger.dart';
-import 'package:spotube/services/sourced_track/enums.dart';
 
-final codecs = SourceCodecs.values.map((s) => s.name);
+const containers = ["m4a", "mp3", "mp4", "ogg", "wav", "flac"];
 
 class LocalFolderCacheExportDialog extends HookConsumerWidget {
   final Directory exportDir;
@@ -30,7 +29,8 @@ class LocalFolderCacheExportDialog extends HookConsumerWidget {
       final stream = cacheDir.list().where(
             (event) =>
                 event is File &&
-                codecs.contains(path.extension(event.path).replaceAll(".", "")),
+                containers
+                    .contains(path.extension(event.path).replaceAll(".", "")),
           );
 
       stream.listen(

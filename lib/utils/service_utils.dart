@@ -10,11 +10,9 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/modules/root/update_dialog.dart';
 
-import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:collection/collection.dart';
@@ -187,95 +185,6 @@ abstract class ServiceUtils {
 
     String? lyrics = await extractLyrics(Uri.parse(worthyOne["url"]));
     return lyrics;
-  }
-
-  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
-  static const baseUri = "https://www.rentanadviser.com/subtitles";
-
-  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
-  static Future<SubtitleSimple?> getTimedLyrics(SourcedTrack track) async {
-    final artistNames = track.query.artists;
-    final query = getTitle(
-      track.query.title,
-      artists: artistNames,
-    );
-
-    final searchUri = Uri.parse("$baseUri/subtitles4songs.aspx").replace(
-      queryParameters: {"q": query},
-    );
-
-    final res = await globalDio.getUri(
-      searchUri,
-      options: Options(responseType: ResponseType.plain),
-    );
-    final document = parser.parse(res.data);
-    final results =
-        document.querySelectorAll("#tablecontainer table tbody tr td a");
-
-    final rateSortedResults = results.map((result) {
-      final title = result.text.trim().toLowerCase();
-      int points = 0;
-      final hasAllArtists = track.query.artists
-          .every((artist) => title.contains(artist.toLowerCase()));
-      final hasTrackName = title.contains(track.query.title.toLowerCase());
-      final isNotLive = !PrimitiveUtils.containsTextInBracket(title, "live");
-      final exactYtMatch = title == track.info.title.toLowerCase();
-      if (exactYtMatch) points = 7;
-      for (final criteria in [hasTrackName, hasAllArtists, isNotLive]) {
-        if (criteria) points++;
-      }
-      return {"result": result, "points": points};
-    }).sorted((a, b) => (b["points"] as int).compareTo(a["points"] as int));
-
-    // not result was found at all
-    if (rateSortedResults.first["points"] == 0) {
-      return Future.error("Subtitle lookup failed", StackTrace.current);
-    }
-
-    final topResult = rateSortedResults.first["result"] as Element;
-    final subtitleUri =
-        Uri.parse("$baseUri/${topResult.attributes["href"]}&type=lrc");
-
-    final lrcDocument = parser.parse((await globalDio.getUri(
-      subtitleUri,
-      options: Options(responseType: ResponseType.plain),
-    ))
-        .data);
-    final lrcList = lrcDocument
-            .querySelector("#ctl00_ContentPlaceHolder1_lbllyrics")
-            ?.innerHtml
-            .replaceAll(RegExp(r'<h3>.*</h3>'), "")
-            .split("<br>")
-            .map((e) {
-          e = e.trim();
-          final regexp = RegExp(r'\[.*\]');
-          final timeStr = regexp
-              .firstMatch(e)
-              ?.group(0)
-              ?.replaceAll(RegExp(r'\[|\]'), "")
-              .trim()
-              .split(":");
-          final minuteSeconds = timeStr?.last.split(".");
-
-          return LyricSlice(
-              time: Duration(
-                minutes: int.parse(timeStr?.first ?? "0"),
-                seconds: int.parse(minuteSeconds?.first ?? "0"),
-                milliseconds: int.parse(minuteSeconds?.last ?? "0"),
-              ),
-              text: e.split(regexp).last);
-        }).toList() ??
-        [];
-
-    final subtitle = SubtitleSimple(
-      name: topResult.text.trim(),
-      uri: subtitleUri,
-      lyrics: lrcList,
-      rating: rateSortedResults.first["points"] as int,
-      provider: "Rent An Adviser",
-    );
-
-    return subtitle;
   }
 
   static DateTime parseSpotifyAlbumDate(SpotubeFullAlbumObject? album) {

@@ -6,7 +6,7 @@ import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 import 'package:http_parser/http_parser.dart';
 
 class NewPipeEngine implements YouTubeEngine {
-  static bool get isAvailableForPlatform => kIsAndroid;
+  static bool get isAvailableForPlatform => kIsAndroid || kIsDesktop;
 
   AudioOnlyStreamInfo _parseAudioStream(AudioStream stream, String videoId) {
     return AudioOnlyStreamInfo(

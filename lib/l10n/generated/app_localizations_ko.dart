@@ -1421,7 +1421,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get plugin_scrobbling_info => '이 플러그인은 음악을 스크로블하여 청취 기록을 생성합니다.';
 
   @override
-  String get default_plugin => '기본';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => '기본값으로 설정';
@@ -1479,7 +1488,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get input_does_not_match_format => '입력이 필요한 형식과 일치하지 않습니다';
 
   @override
-  String get metadata_provider_plugins => '메타데이터 제공자 플러그인';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1503,8 +1512,8 @@ class AppLocalizationsKo extends AppLocalizations {
   String get available_plugins => '사용 가능한 플러그인';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      '자신만의 플레이리스트/앨범/아티스트/피드 메타데이터 제공자 구성';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => '오디오 스크로블러';

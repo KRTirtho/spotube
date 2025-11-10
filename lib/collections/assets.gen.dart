@@ -66,6 +66,19 @@ class $AssetsImagesGen {
       ];
 }
 
+class $AssetsPluginsGen {
+  const $AssetsPluginsGen();
+
+  /// Directory path: assets/plugins/spotube-plugin-musicbrainz-listenbrainz
+  $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen
+      get spotubePluginMusicbrainzListenbrainz =>
+          const $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen();
+
+  /// Directory path: assets/plugins/spotube-plugin-youtube-audio
+  $AssetsPluginsSpotubePluginYoutubeAudioGen get spotubePluginYoutubeAudio =>
+      const $AssetsPluginsSpotubePluginYoutubeAudioGen();
+}
+
 class $AssetsImagesLogosGen {
   const $AssetsImagesLogosGen();
 
@@ -81,13 +94,30 @@ class $AssetsImagesLogosGen {
   AssetGenImage get jiosaavn =>
       const AssetGenImage('assets/images/logos/jiosaavn.png');
 
-  /// File path: assets/images/logos/songlink-transparent.png
-  AssetGenImage get songlinkTransparent =>
-      const AssetGenImage('assets/images/logos/songlink-transparent.png');
+  /// List of all assets
+  List<AssetGenImage> get values => [dabMusic, invidious, jiosaavn];
+}
+
+class $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen {
+  const $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen();
+
+  /// File path: assets/plugins/spotube-plugin-musicbrainz-listenbrainz/plugin.smplug
+  String get plugin =>
+      'assets/plugins/spotube-plugin-musicbrainz-listenbrainz/plugin.smplug';
 
   /// List of all assets
-  List<AssetGenImage> get values =>
-      [dabMusic, invidious, jiosaavn, songlinkTransparent];
+  List<String> get values => [plugin];
+}
+
+class $AssetsPluginsSpotubePluginYoutubeAudioGen {
+  const $AssetsPluginsSpotubePluginYoutubeAudioGen();
+
+  /// File path: assets/plugins/spotube-plugin-youtube-audio/plugin.smplug
+  String get plugin =>
+      'assets/plugins/spotube-plugin-youtube-audio/plugin.smplug';
+
+  /// List of all assets
+  List<String> get values => [plugin];
 }
 
 class Assets {
@@ -96,6 +126,7 @@ class Assets {
   static const String license = 'LICENSE';
   static const $AssetsBrandingGen branding = $AssetsBrandingGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsPluginsGen plugins = $AssetsPluginsGen();
 
   /// List of all assets
   static List<String> get values => [license];

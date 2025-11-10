@@ -4,7 +4,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/ui/button_tile.dart';
@@ -36,7 +35,6 @@ class TrackOptions extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final mediaQuery = MediaQuery.of(context);
-    final ThemeData(:colorScheme) = Theme.of(context);
 
     final trackOptionActions = ref.watch(trackOptionActionsProvider(track));
     final (
@@ -259,24 +257,6 @@ class TrackOptions extends HookConsumerWidget {
             },
             leading: const Icon(SpotubeIcons.share),
             title: Text(context.l10n.share),
-          ),
-        if (!isLocalTrack)
-          ButtonTile(
-            style: ButtonVariance.menu,
-            onPressed: () async {
-              await trackOptionActions.action(
-                rootNavigatorKey.currentContext!,
-                TrackOptionValue.songlink,
-                playlistId,
-              );
-              onTapItem?.call();
-            },
-            leading: Assets.images.logos.songlinkTransparent.image(
-              width: 22,
-              height: 22,
-              color: colorScheme.foreground.withValues(alpha: 0.5),
-            ),
-            title: Text(context.l10n.song_link),
           ),
         if (!isLocalTrack)
           ButtonTile(

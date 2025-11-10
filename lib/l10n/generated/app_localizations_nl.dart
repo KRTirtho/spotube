@@ -1446,7 +1446,16 @@ class AppLocalizationsNl extends AppLocalizations {
       'Deze plugin scrobblet uw muziek om uw luistergeschiedenis te genereren.';
 
   @override
-  String get default_plugin => 'Standaard';
+  String get default_metadata_source => 'Default metadata source';
+
+  @override
+  String get set_default_metadata_source => 'Set default metadata source';
+
+  @override
+  String get default_audio_source => 'Default audio source';
+
+  @override
+  String get set_default_audio_source => 'Set default audio source';
 
   @override
   String get set_default => 'Instellen als standaard';
@@ -1509,7 +1518,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Invoer komt niet overeen met het vereiste formaat';
 
   @override
-  String get metadata_provider_plugins => 'Metadata-aanbieder Plugins';
+  String get plugins => 'Plugins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1534,8 +1543,8 @@ class AppLocalizationsNl extends AppLocalizations {
   String get available_plugins => 'Beschikbare plugins';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Configureer uw eigen metadata-aanbieder voor afspeellijst/album/artiest/feed';
+  String get configure_plugins =>
+      'Configure your own metadata provider and audio source plugins';
 
   @override
   String get audio_scrobblers => 'Audioscrobblers';
