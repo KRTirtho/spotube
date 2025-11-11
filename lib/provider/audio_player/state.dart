@@ -51,7 +51,11 @@ class AudioPlayerState with _$AudioPlayerState {
   }
 
   bool containsTrack(SpotubeTrackObject track) {
-    return tracks.any((t) => t.id == track.id);
+    return tracks.any(
+      (t) => t is SpotubeLocalTrackObject && track is SpotubeLocalTrackObject
+          ? t.path == track.path
+          : t.id == track.id,
+    );
   }
 
   bool containsTracks(List<SpotubeTrackObject> tracks) {

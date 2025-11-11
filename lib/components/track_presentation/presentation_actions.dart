@@ -89,7 +89,7 @@ class TrackPresentationActionsSection extends HookConsumerWidget {
           ) ??
           false;
       if (confirmed != true) return;
-      downloader.batchAddToQueue(fullTrackObjects);
+      downloader.addAllToQueue(fullTrackObjects);
       notifier.deselectAllTracks();
       if (!context.mounted) return;
       showToastForAction(context, action, fullTrackObjects.length);

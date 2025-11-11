@@ -14,6 +14,7 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/fake.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/button/back_button.dart';
+import 'package:spotube/components/track_presentation/presentation_actions.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/string.dart';
 import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
@@ -68,6 +69,37 @@ class LocalLibraryPage extends HookConsumerWidget {
     }
   }
 
+  Future<void> shufflePlayLocalTracks(
+    WidgetRef ref,
+    List<SpotubeLocalTrackObject> tracks,
+  ) async {
+    final playlist = ref.read(audioPlayerProvider);
+    final playback = ref.read(audioPlayerProvider.notifier);
+    final isPlaylistPlaying = playlist.containsTracks(tracks);
+    final shuffledTracks = tracks.shuffled();
+    if (isPlaylistPlaying) return;
+
+    await playback.load(
+      shuffledTracks,
+      initialIndex: 0,
+      autoPlay: true,
+    );
+  }
+
+  Future<void> addToQueueLocalTracks(
+    BuildContext context,
+    WidgetRef ref,
+    List<SpotubeLocalTrackObject> tracks,
+  ) async {
+    final playlist = ref.read(audioPlayerProvider);
+    final playback = ref.read(audioPlayerProvider.notifier);
+    final isPlaylistPlaying = playlist.containsTracks(tracks);
+    if (isPlaylistPlaying) return;
+    await playback.addTracks(tracks);
+    if (!context.mounted) return;
+    showToastForAction(context, "add-to-queue", tracks.length);
+  }
+
   @override
   Widget build(BuildContext context, ref) {
     final scale = context.theme.scaling;
@@ -75,8 +107,12 @@ class LocalLibraryPage extends HookConsumerWidget {
     final sortBy = useState<SortBy>(SortBy.none);
     final playlist = ref.watch(audioPlayerProvider);
     final trackSnapshot = ref.watch(localTracksProvider);
-    final isPlaylistPlaying = playlist.containsTracks(
-        trackSnapshot.asData?.value.values.flattened.toList() ?? []);
+    final isPlaylistPlaying = useMemoized(
+      () => playlist.containsTracks(
+        trackSnapshot.asData?.value[location] ?? [],
+      ),
+      [playlist, trackSnapshot, location],
+    );
 
     final searchController = useShadcnTextEditingController();
     useValueListenable(searchController);
@@ -222,26 +258,79 @@ class LocalLibraryPage extends HookConsumerWidget {
                 child: Row(
                   children: [
                     const Gap(5),
-                    Button.primary(
-                      onPressed: trackSnapshot.asData?.value != null
-                          ? () async {
-                              if (trackSnapshot.asData?.value.isNotEmpty ==
-                                  true) {
-                                if (!isPlaylistPlaying) {
-                                  await playLocalTracks(
-                                    ref,
-                                    trackSnapshot.asData!.value[location] ?? [],
-                                  );
+                    Tooltip(
+                      tooltip:
+                          TooltipContainer(child: Text(context.l10n.play)).call,
+                      child: IconButton.primary(
+                        onPressed: trackSnapshot.asData?.value != null
+                            ? () async {
+                                if (trackSnapshot.asData?.value.isNotEmpty ==
+                                    true) {
+                                  if (!isPlaylistPlaying) {
+                                    await playLocalTracks(
+                                      ref,
+                                      trackSnapshot.asData!.value[location] ??
+                                          [],
+                                    );
+                                  }
                                 }
                               }
-                            }
-                          : null,
-                      leading: Icon(
-                        isPlaylistPlaying
-                            ? SpotubeIcons.stop
-                            : SpotubeIcons.play,
+                            : null,
+                        icon: Icon(
+                          isPlaylistPlaying
+                              ? SpotubeIcons.stop
+                              : SpotubeIcons.play,
+                        ),
                       ),
-                      child: Text(context.l10n.play),
+                    ),
+                    const Gap(5),
+                    Tooltip(
+                      tooltip:
+                          TooltipContainer(child: Text(context.l10n.shuffle))
+                              .call,
+                      child: IconButton.outline(
+                        onPressed: trackSnapshot.asData?.value != null
+                            ? () async {
+                                if (trackSnapshot.asData?.value.isNotEmpty ==
+                                    true) {
+                                  if (!isPlaylistPlaying) {
+                                    await shufflePlayLocalTracks(
+                                      ref,
+                                      trackSnapshot.asData!.value[location] ??
+                                          [],
+                                    );
+                                  }
+                                }
+                              }
+                            : null,
+                        enabled: !isPlaylistPlaying,
+                        icon: const Icon(SpotubeIcons.shuffle),
+                      ),
+                    ),
+                    const Gap(5),
+                    Tooltip(
+                      tooltip: TooltipContainer(
+                              child: Text(context.l10n.add_to_queue))
+                          .call,
+                      child: IconButton.outline(
+                        onPressed: trackSnapshot.asData?.value != null
+                            ? () async {
+                                if (trackSnapshot.asData?.value.isNotEmpty ==
+                                    true) {
+                                  if (!isPlaylistPlaying) {
+                                    await addToQueueLocalTracks(
+                                      context,
+                                      ref,
+                                      trackSnapshot.asData!.value[location] ??
+                                          [],
+                                    );
+                                  }
+                                }
+                              }
+                            : null,
+                        enabled: !isPlaylistPlaying,
+                        icon: const Icon(SpotubeIcons.queueAdd),
+                      ),
                     ),
                     const Spacer(),
                     if (constraints.smAndDown)

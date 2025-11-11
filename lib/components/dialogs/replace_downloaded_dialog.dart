@@ -12,13 +12,12 @@ class ReplaceDownloadedDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final groupValue = ref.watch(replaceDownloadedFileState);
     final replaceAll = ref.watch(replaceDownloadedFileState);
 
     return AlertDialog(
       title: Text(context.l10n.track_exists(track.name)),
       content: RadioGroup(
-        value: groupValue,
+        value: replaceAll,
         onChanged: (value) {
           ref.read(replaceDownloadedFileState.notifier).state = value;
         },

@@ -49,7 +49,7 @@ class TrackOptionsActions {
       ref.read(metadataPluginSavedTracksProvider.notifier);
   MetadataPluginSavedPlaylistsNotifier get favoritePlaylistsNotifier =>
       ref.read(metadataPluginSavedPlaylistsProvider.notifier);
-  DownloadManagerProvider get downloadManager =>
+  DownloadManagerNotifier get downloadManager =>
       ref.read(downloadManagerProvider.notifier);
   BlackListNotifier get blacklist => ref.read(blacklistProvider.notifier);
 
@@ -263,7 +263,7 @@ typedef TrackOptionFlags = ({
   bool isActiveTrack,
   bool isAuthenticated,
   bool isLiked,
-  ValueNotifier<double>? progressNotifier,
+  DownloadTask? downloadTask,
 });
 
 final trackOptionActionsProvider =
@@ -283,15 +283,16 @@ final trackOptionsStateProvider =
   final isBlacklisted = blacklist.contains(track);
   final isSavedTrack = ref.watch(metadataPluginIsSavedTrackProvider(track.id));
 
+  final downloadTask = playlist.activeTrack?.id == null
+      ? null
+      : downloadManager.getTaskByTrackId(playlist.activeTrack!.id);
   final isInDownloadQueue = playlist.activeTrack == null ||
           playlist.activeTrack! is SpotubeLocalTrackObject
       ? false
-      : downloadManager
-          .isActive(playlist.activeTrack! as SpotubeFullTrackObject);
-
-  final progressNotifier = track is SpotubeLocalTrackObject
-      ? null
-      : downloadManager.getProgressNotifier(track as SpotubeFullTrackObject);
+      : const [
+          DownloadStatus.queued,
+          DownloadStatus.downloading,
+        ].contains(downloadTask?.status);
 
   return (
     isInQueue: playlist.containsTrack(track),
@@ -300,6 +301,6 @@ final trackOptionsStateProvider =
     isActiveTrack: playlist.activeTrack?.id == track.id,
     isAuthenticated: authenticated.asData?.value ?? false,
     isLiked: isSavedTrack.asData?.value ?? false,
-    progressNotifier: progressNotifier,
+    downloadTask: downloadTask,
   );
 });

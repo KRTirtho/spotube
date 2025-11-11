@@ -1,5 +1,3 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
@@ -44,7 +42,7 @@ class TrackOptions extends HookConsumerWidget {
       :isActiveTrack,
       :isAuthenticated,
       :isLiked,
-      :progressNotifier
+      :downloadTask
     ) = ref.watch(trackOptionsStateProvider(track));
     final isLocalTrack = track is SpotubeLocalTrackObject;
 
@@ -211,12 +209,19 @@ class TrackOptions extends HookConsumerWidget {
             },
             enabled: !isInDownloadQueue,
             leading: isInDownloadQueue
-                ? HookBuilder(builder: (context) {
-                    final progress = useListenable(progressNotifier);
-                    return CircularProgressIndicator(
-                      value: progress?.value,
-                    );
-                  })
+                ? StreamBuilder(
+                    stream: downloadTask?.downloadedBytesStream,
+                    builder: (context, snapshot) {
+                      final progress = downloadTask?.totalSizeBytes == null ||
+                              downloadTask?.totalSizeBytes == 0
+                          ? 0
+                          : (snapshot.data ?? 0) /
+                              downloadTask!.totalSizeBytes!;
+                      return CircularProgressIndicator(
+                        value: progress.toDouble(),
+                      );
+                    },
+                  )
                 : const Icon(SpotubeIcons.download),
             title: Text(context.l10n.download_track),
           ),
