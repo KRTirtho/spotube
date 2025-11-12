@@ -61,7 +61,6 @@ dependencies:
     sdk: flutter
   flutter_native_splash: ^2.4.6
   flutter_riverpod: ^2.5.1
-  flutter_secure_storage: ^9.2.4
   flutter_sharing_intent: ^1.1.0
   flutter_undraw: ^0.2.1
   form_builder_validators: ^11.1.1
@@ -82,14 +81,8 @@ dependencies:
   logger: ^2.0.2
   logging: ^1.3.0
   lrc: ^1.0.2
-  media_kit:
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: media_kit
-  media_kit_libs_audio:
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: libs/universal/media_kit_libs_audio
+  media_kit: ^1.2.1
+  media_kit_libs_audio: ^1.0.7
   metadata_god: ^1.1.0
   mime: ^2.0.0
   open_file: ^3.5.10
@@ -161,6 +154,7 @@ dependencies:
   flutter_markdown_plus: ^1.0.3
   pub_semver: ^2.2.0
   change_case: ^1.1.0
+  flutter_secure_storage: ^9.2.4
 
 dev_dependencies:
   build_runner: ^2.4.13
@@ -191,32 +185,6 @@ dependency_overrides:
   flutter_svg: ^2.0.17
   intl: any
   collection: any
-  flutter_secure_storage_linux:
-    git:
-      url: https://github.com/m-berto/flutter_secure_storage.git
-      ref: patch-2
-      path: flutter_secure_storage_linux
-  flutter_secure_storage_platform_interface: 2.0.0
-  media_kit_libs_android_audio:
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: libs/android/media_kit_libs_android_audio
-  media_kit_libs_ios_audio:
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: libs/ios/media_kit_libs_ios_audio
-  media_kit_libs_macos_audio:
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: libs/macos/media_kit_libs_macos_audio
-  media_kit_libs_windows_audio:
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: libs/windows/media_kit_libs_windows_audio
-  media_kit_libs_linux:
-    git:
-      url: https://github.com/media-kit/media-kit
-      path: libs/linux/media_kit_libs_linux
 
 flutter:
   generate: true
