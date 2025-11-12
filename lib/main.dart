@@ -84,32 +84,19 @@ Future<void> main(List<String> rawArgs) async {
     if (kIsAndroid) {
       await FlutterDisplayMode.setHighRefreshRate();
     }
-    if (kIsAndroid || kIsDesktop) {
-      await NewPipeExtractor.init();
-    }
 
     if (!kIsWeb) {
-      MetadataGod.initialize();
     }
 
     await KVStoreService.initialize();
 
     if (kIsDesktop) {
       await windowManager.setPreventClose(true);
-      await YtDlp.instance
-          .setBinaryLocation(
-            KVStoreService.getYoutubeEnginePath(YoutubeClientEngine.ytDlp) ??
-                "yt-dlp${kIsWindows ? '.exe' : ''}",
-          )
-          .catchError((e, stack) => null);
-      await FlutterDiscordRPC.initialize(Env.discordAppId);
     }
 
     if (kIsWindows) {
       await SMTCWindows.initialize();
     }
-
-    await EncryptedKvStoreService.initialize();
 
     final database = AppDatabase();
 
@@ -167,6 +154,24 @@ class Spotube extends HookConsumerWidget {
     useGetStoragePermissions(ref);
 
     useEffect(() {
+      (() async {
+        await EncryptedKvStoreService.initialize();
+        if (kIsAndroid || kIsDesktop) {
+          await NewPipeExtractor.init();
+        }
+        if (!kIsWeb) {
+          MetadataGod.initialize();
+        }
+        if (kIsDesktop) {
+          await YtDlp.instance
+              .setBinaryLocation(
+                KVStoreService.getYoutubeEnginePath(YoutubeClientEngine.ytDlp) ??
+                    "yt-dlp${kIsWindows ? '.exe' : ''}",
+              )
+              .catchError((e, stack) => null);
+          await FlutterDiscordRPC.initialize(Env.discordAppId);
+        }
+      })();
       FlutterNativeSplash.remove();
 
       if (kIsMobile) {

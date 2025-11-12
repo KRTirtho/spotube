@@ -1,0 +1,14 @@
+{
+  "name": "DAB Music Audio Source",
+  "author": "jules-for-spotube",
+  "version": "1.0.0",
+  "description": "Adds DAB Music as an audio source for Spotube.",
+  "entryPoint": "main",
+  "pluginApiVersion": "1.0.0",
+  "apis": [
+    "audioSource"
+  ],
+  "abilities": [
+    "audioSource"
+  ]
+}

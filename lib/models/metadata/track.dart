@@ -80,6 +80,45 @@ class SpotubeTrackObject with _$SpotubeTrackObject {
             ? {...json, "runtimeType": "local"}
             : {...json, "runtimeType": "full"},
       );
+
+  factory SpotubeTrackObject.fromDabMusicJson(Map<String, dynamic> json) {
+    return SpotubeFullTrackObject(
+      id: json['id'].toString(),
+      name: json['title'],
+      externalUri: "https://dabmusic.xyz/track/${json['id']}",
+      artists: [
+        SpotubeSimpleArtistObject(
+          id: json['artistId'].toString(),
+          name: json['artist'],
+          externalUri: "https://dabmusic.xyz/artist/${json['artistId']}",
+        ),
+      ],
+      album: SpotubeSimpleAlbumObject(
+        id: json['albumId'].toString(),
+        name: json['albumTitle'],
+        externalUri: "https://dabmusic.xyz/album/${json['albumId']}",
+        images: [
+          SpotubeImageObject(
+            url: json['albumCover'],
+            width: 300,
+            height: 300,
+          ),
+        ],
+        artists: [
+          SpotubeSimpleArtistObject(
+            id: json['artistId'].toString(),
+            name: json['artist'],
+            externalUri: "https://dabmusic.xyz/artist/${json['artistId']}",
+          ),
+        ],
+        releaseDate: json['releaseDate'],
+        albumType: SpotubeAlbumType.album,
+      ),
+      durationMs: json['duration'] * 1000,
+      isrc: '',
+      explicit: false,
+    );
+  }
 }
 
 extension AsMediaListSpotubeTrackObject on Iterable<SpotubeTrackObject> {

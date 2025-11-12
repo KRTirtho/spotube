@@ -14,6 +14,7 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/audio_source/quality_presets.dart';
 import 'package:spotube/provider/server/sourced_track_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
+import 'package:spotube/services/dab_music/dab_music_api.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/utils/service_utils.dart';
 
@@ -189,10 +190,16 @@ class DownloadManagerNotifier extends Notifier<List<DownloadTask>> {
       final downloadLocation = ref.read(
           userPreferencesProvider.select((value) => value.downloadLocation));
 
-      final url = track.getUrlOfQuality(
-        container,
-        presets.selectedDownloadingQualityIndex,
-      );
+      String? url;
+      if (track.source == 'DAB Music') {
+        final dabMusicApi = DabMusicApi();
+        url = await dabMusicApi.getDownloadUrl(track.query.album.id);
+      } else {
+        url = track.getUrlOfQuality(
+          container,
+          presets.selectedDownloadingQualityIndex,
+        );
+      }
 
       if (url == null) {
         throw Exception("No download URL found for selected codec");

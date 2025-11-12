@@ -30,6 +30,7 @@ dependencies:
       url: https://github.com/KRTirtho/flutter-plugins.git
   device_info_plus: ^11.1.1
   dio: ^5.4.3+1
+  dio_retry: ^4.0.0
   disable_battery_optimization:
     git:
       url: https://github.com/KRTirtho/Disable-Battery-Optimizations.git

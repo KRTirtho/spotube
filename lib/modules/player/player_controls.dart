@@ -45,8 +45,11 @@ class PlayerControls extends HookConsumerWidget {
         []);
     final isFetchingActiveTrack = ref.watch(queryingTrackInfoProvider);
 
-    final playing =
-        useStream(audioPlayer.playingStream).data ?? audioPlayer.isPlaying;
+    final playingStream = useMemoized(
+      () => audioPlayer.playingStream.distinct(),
+      [],
+    );
+    final playing = useStream(playingStream).data ?? audioPlayer.isPlaying;
     final theme = Theme.of(context);
 
     final buttonSize =

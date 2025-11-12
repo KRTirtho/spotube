@@ -6,6 +6,7 @@ import 'package:spotube/models/database/database.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 import 'package:local_notifier/local_notifier.dart';
+import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 
@@ -29,6 +30,8 @@ void useCloseBehavior(WidgetRef ref) {
         await windowManager.hide();
         closeNotification?.show();
       } else {
+        await audioPlayer.dispose();
+        await windowManager.destroy();
         exit(0);
       }
     },
