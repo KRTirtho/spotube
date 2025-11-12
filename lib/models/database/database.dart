@@ -19,6 +19,7 @@ import 'package:spotube/services/kv_store/kv_store.dart';
 import 'package:flutter/widgets.dart' hide Table, Key, View;
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:drift/native.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
 import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
@@ -200,26 +201,41 @@ class AppDatabase extends _$AppDatabase {
           });
         },
         from8To9: (m, schema) async {
-          await m.renameTable(schema.pluginsTable, "metadata_plugins_table");
-          await m.renameColumn(
-            schema.pluginsTable,
-            "selected",
-            pluginsTable.selectedForMetadata,
-          );
-          await m.addColumn(
-            schema.pluginsTable,
-            pluginsTable.selectedForAudioSource,
-          );
+          await m
+              .renameTable(schema.pluginsTable, "metadata_plugins_table")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .renameColumn(
+                schema.pluginsTable,
+                "selected",
+                pluginsTable.selectedForMetadata,
+              )
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .addColumn(
+                schema.pluginsTable,
+                pluginsTable.selectedForAudioSource,
+              )
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
         },
         from9To10: (m, schema) async {
-          await m.dropColumn(schema.preferencesTable, "piped_instance");
-          await m.dropColumn(schema.preferencesTable, "invidious_instance");
-          await m.addColumn(
-            schema.sourceMatchTable,
-            sourceMatchTable.sourceInfo,
-          );
-          await customStatement("DROP INDEX IF EXISTS uniq_track_match;");
-          await m.dropColumn(schema.sourceMatchTable, "source_id");
+          await m
+              .dropColumn(schema.preferencesTable, "piped_instance")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .dropColumn(schema.preferencesTable, "invidious_instance")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .addColumn(
+                schema.sourceMatchTable,
+                sourceMatchTable.sourceInfo,
+              )
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await customStatement("DROP INDEX IF EXISTS uniq_track_match;")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .dropColumn(schema.sourceMatchTable, "source_id")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
         },
       ),
     );
