@@ -198,7 +198,7 @@ class LocalLibraryPage extends HookConsumerWidget {
                       ),
                     );
 
-                    if (accepted ?? false) return;
+                    if (accepted != true) return;
 
                     final cacheDir = Directory(
                       await UserPreferencesNotifier.getMusicCacheDir(),
@@ -207,6 +207,8 @@ class LocalLibraryPage extends HookConsumerWidget {
                     if (cacheDir.existsSync()) {
                       await cacheDir.delete(recursive: true);
                     }
+
+                    ref.invalidate(localTracksProvider);
                   },
                 ),
                 IconButton.outline(

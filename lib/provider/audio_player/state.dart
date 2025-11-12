@@ -51,15 +51,17 @@ class AudioPlayerState with _$AudioPlayerState {
   }
 
   bool containsTrack(SpotubeTrackObject track) {
-    return tracks.any(
-      (t) => t is SpotubeLocalTrackObject && track is SpotubeLocalTrackObject
-          ? t.path == track.path
-          : t.id == track.id,
-    );
+    return tracks.isNotEmpty &&
+        tracks.any(
+          (t) =>
+              t is SpotubeLocalTrackObject && track is SpotubeLocalTrackObject
+                  ? t.path == track.path
+                  : t.id == track.id,
+        );
   }
 
   bool containsTracks(List<SpotubeTrackObject> tracks) {
-    return tracks.every(containsTrack);
+    return this.tracks.isNotEmpty && tracks.every(containsTrack);
   }
 
   bool containsCollection(String collectionId) {

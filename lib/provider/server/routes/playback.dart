@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -124,8 +125,7 @@ class ServerPlaybackRoutes {
     return res;
   }
 
-  Future<({dio_lib.Response<Uint8List> response, Uint8List? bytes})>
-      streamTrack(
+  Future<dio_lib.Response> streamTrack(
     Request request,
     SourcedTrack track,
     Map<String, dynamic> headers,
@@ -141,22 +141,21 @@ class ServerPlaybackRoutes {
       final bytes = await trackCacheFile.readAsBytes();
       final cachedFileLength = bytes.length;
 
-      return (
-        response: dio_lib.Response<Uint8List>(
-          statusCode: 200,
-          headers: Headers.fromMap({
-            "content-type": ["audio/${track.qualityPreset!.name}"],
-            "content-length": ["$cachedFileLength"],
-            "accept-ranges": ["bytes"],
-            "content-range": ["bytes 0-$cachedFileLength/$cachedFileLength"],
-          }),
-          requestOptions: RequestOptions(path: request.requestedUri.toString()),
-        ),
-        bytes: bytes,
+      return dio_lib.Response<Uint8List>(
+        statusCode: 200,
+        headers: Headers.fromMap({
+          "content-type": ["audio/${track.qualityPreset!.name}"],
+          "content-length": ["${cachedFileLength - 1}"],
+          "accept-ranges": ["bytes"],
+          "content-range": [
+            "bytes 0-${cachedFileLength - 1}/$cachedFileLength"
+          ],
+          "connection": ["close"],
+        }),
+        requestOptions: RequestOptions(path: request.requestedUri.toString()),
+        data: bytes,
       );
     }
-
-    final trackPartialCacheFile = File("${trackCacheFile.path}.part");
 
     String url = track.url ??
         await ref
@@ -164,7 +163,7 @@ class ServerPlaybackRoutes {
             .swapWithNextSibling()
             .then((track) => track.url!);
 
-    var options = Options(
+    final options = Options(
       headers: {
         ...headers,
         "user-agent": _randomUserAgent,
@@ -172,12 +171,15 @@ class ServerPlaybackRoutes {
         "Connection": "keep-alive",
         "host": Uri.parse(url).host,
       },
-      responseType: ResponseType.bytes,
+      responseType: ResponseType.stream,
       validateStatus: (status) => status! < 400,
     );
 
     final contentLengthRes = await Future<dio_lib.Response?>.value(
-      dio.head(url, options: options),
+      dio.head(
+        url,
+        options: options.copyWith(responseType: ResponseType.bytes),
+      ),
     ).catchError((e, stack) async {
       AppLogger.reportError(e, stack);
 
@@ -193,39 +195,19 @@ class ServerPlaybackRoutes {
     // Redirect to m3u8 link directly as it handles range requests internally
     if (contentLengthRes?.headers.value("content-type") ==
         "application/vnd.apple.mpegurl") {
-      return (
-        response: dio_lib.Response<Uint8List>(
-          statusCode: 301,
-          statusMessage: "M3U8 Redirect",
-          headers: Headers.fromMap({
-            "location": [url],
-            "content-type": ["application/vnd.apple.mpegurl"],
-          }),
-          requestOptions: RequestOptions(path: request.requestedUri.toString()),
-          isRedirect: true,
-        ),
-        bytes: null,
+      return dio_lib.Response<Uint8List>(
+        statusCode: 301,
+        statusMessage: "M3U8 Redirect",
+        headers: Headers.fromMap({
+          "location": [url],
+          "content-type": ["application/vnd.apple.mpegurl"],
+        }),
+        requestOptions: RequestOptions(path: request.requestedUri.toString()),
+        isRedirect: true,
       );
     }
 
-    if (headers["range"] == "bytes=0-" &&
-        track.qualityPreset is SpotubeAudioSourceContainerPresetLossless) {
-      const bufferSize = 6 * 1024 * 1024; // 6MB for lossless
-
-      final endRange = min(
-        bufferSize,
-        int.parse(contentLengthRes?.headers.value("content-length") ?? "0"),
-      );
-
-      options = options.copyWith(
-        headers: {
-          ...?options.headers,
-          "range": "bytes=0-$endRange",
-        },
-      );
-    }
-
-    final res = await dio.get<Uint8List>(url, options: options);
+    final res = await dio.get<ResponseBody>(url, options: options);
 
     AppLogger.log.i(
       "Response for track: ${track.query.name}\n"
@@ -233,66 +215,64 @@ class ServerPlaybackRoutes {
       "Headers: ${res.headers.map}",
     );
 
-    final bytes = res.data;
-
-    if (bytes == null || !userPreferences.cacheMusic) {
-      return (response: res, bytes: bytes);
+    if (!userPreferences.cacheMusic) {
+      return res;
     }
 
-    final contentRange =
-        ContentRangeHeader.parse(res.headers.value("content-range") ?? "");
+    final resStream = res.data!.stream.asBroadcastStream();
 
+    final trackPartialCacheFile = File("${trackCacheFile.path}.part");
     if (!await trackPartialCacheFile.exists()) {
       await trackPartialCacheFile.create(recursive: true);
     }
 
     // Write the stream to the file based on the range
-    final partialCacheFile =
-        await trackPartialCacheFile.open(mode: FileMode.writeOnlyAppend);
-    int fileLength = 0;
-    try {
-      await partialCacheFile.setPosition(contentRange.start);
-      await partialCacheFile.writeFrom(bytes);
-      fileLength = await partialCacheFile.length();
-    } finally {
-      await partialCacheFile.close();
-    }
+    final partialCacheFileSink =
+        trackPartialCacheFile.openWrite(mode: FileMode.writeOnlyAppend);
+    final contentRange = res.headers.value("content-range") != null
+        ? ContentRangeHeader.parse(res.headers.value("content-range") ?? "")
+        : ContentRangeHeader(0, 0, 0);
 
-    if (fileLength == contentRange.total) {
-      await trackPartialCacheFile.rename(trackCacheFile.path);
-    }
+    resStream.listen(
+      (data) {
+        partialCacheFileSink.add(data);
+      },
+      onError: (e, stack) {
+        partialCacheFileSink.close();
+      },
+      onDone: () async {
+        await partialCacheFileSink.close();
 
-    if (contentRange.total == fileLength &&
-        track.qualityPreset!.getFileExtension() != "weba") {
-      final playlistTrack = playlist.tracks.firstWhereOrNull(
-        (element) => element.id == track.query.id,
-      );
-      if (playlistTrack == null) {
-        AppLogger.log.e(
-          "Track ${track.query.id} not found in playlist, cannot write metadata.",
+        final fileLength = await trackPartialCacheFile.length();
+        if (fileLength != contentRange.total) return;
+
+        await trackPartialCacheFile.rename(trackCacheFile.path);
+
+        if (track.qualityPreset!.getFileExtension() == "weba") return;
+
+        final imageBytes = await ServiceUtils.downloadImage(
+          track.query.album.images.asUrlString(
+            placeholder: ImagePlaceholder.albumArt,
+            index: 1,
+          ),
         );
-        return (response: res, bytes: bytes);
-      }
 
-      final imageBytes = await ServiceUtils.downloadImage(
-        (playlistTrack.album.images).asUrlString(
-          placeholder: ImagePlaceholder.albumArt,
-          index: 1,
-        ),
-      );
+        await MetadataGod.writeMetadata(
+          file: trackCacheFile.path,
+          metadata: track.query.toMetadata(
+            imageBytes: imageBytes,
+            fileLength: fileLength,
+          ),
+        ).catchError((e, stackTrace) {
+          AppLogger.reportError(e, stackTrace);
+        });
+      },
+      cancelOnError: true,
+    );
 
-      await MetadataGod.writeMetadata(
-        file: trackCacheFile.path,
-        metadata: (playlistTrack as SpotubeFullTrackObject).toMetadata(
-          imageBytes: imageBytes,
-          fileLength: fileLength,
-        ),
-      ).catchError((e, stackTrace) {
-        AppLogger.reportError(e, stackTrace);
-      });
-    }
-
-    return (bytes: bytes, response: res);
+    res.data?.stream =
+        resStream; // To avoid Stream has been already listened to exception
+    return res;
   }
 
   /// @head('/stream/<trackId>')
@@ -328,15 +308,23 @@ class ServerPlaybackRoutes {
         return Response.notFound("Track not found in the current queue");
       }
 
-      final (bytes: audioBytes, response: res) = await streamTrack(
+      final res = await streamTrack(
         request,
         sourcedTrack,
         request.headers,
       );
 
+      if (res.data is ResponseBody) {
+        return Response(
+          res.statusCode!,
+          body: (res.data as ResponseBody).stream,
+          headers: res.headers.map,
+        );
+      }
+
       return Response(
         res.statusCode!,
-        body: audioBytes,
+        body: res.data,
         headers: res.headers.map,
       );
     } catch (e, stack) {

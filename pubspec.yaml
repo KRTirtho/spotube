@@ -185,6 +185,12 @@ dependency_overrides:
   flutter_svg: ^2.0.17
   intl: any
   collection: any
+  flutter_secure_storage_platform_interface: 2.0.0
+  flutter_secure_storage_linux:
+    git:
+      url: https://github.com/m-berto/flutter_secure_storage.git
+      ref: patch-2
+      path: flutter_secure_storage_linux
 
 flutter:
   generate: true
