@@ -36,6 +36,7 @@ jobs:
             arch: x86
             files: |
               dist/Spotube-linux-x86_64.deb
+              dist/Spotube-linux-x86_64.rpm
               dist/Spotube-linux-x86_64.AppImage
               dist/spotube-linux-*-x86_64.tar.xz
           - os: ubuntu-22.04-arm

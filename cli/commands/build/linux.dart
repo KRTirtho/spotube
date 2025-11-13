@@ -39,6 +39,11 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     await shell.run(
       "fastforge package --platform=linux --targets=deb,appimage",
     );
+    if (architecture == "x86") {
+      await shell.run(
+        "fastforge package --platform=linux --targets=rpm",
+      );
+    }
 
     final tempDir = join(Directory.systemTemp.path, "spotube-tar");
     final bundleArchName = architecture == "x86" ? "x86_64" : "aarch64";
@@ -92,6 +97,23 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
       ),
     );
     await ogDeb.delete();
+
+    if (architecture == "x86") {
+      final ogRpm = File(
+        join(
+          cwd.path,
+          "dist",
+          pubspec.version.toString(),
+          "spotube-${pubspec.version}-linux.rpm",
+        ),
+      );
+
+      await ogRpm.copy(
+        join(cwd.path, "dist", "Spotube-linux-$bundleArchName.rpm"),
+      );
+
+      await ogRpm.delete();
+    }
 
     final ogAppImage = File(
       join(
