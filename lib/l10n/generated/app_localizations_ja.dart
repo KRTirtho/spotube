@@ -861,10 +861,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get restore_defaults => '設定を初期化';
 
   @override
-  String get download_music_codec => 'ダウンロード用の音声コーデック';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'ストリーミング用の音声コーデック';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'Last.fmでログイン';

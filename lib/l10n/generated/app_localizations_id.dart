@@ -874,10 +874,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get restore_defaults => 'Kembalikan semula';
 
   @override
-  String get download_music_codec => 'Unduh codec musik';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'Streaming codec musik';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'Masuk dengan Last.fm';

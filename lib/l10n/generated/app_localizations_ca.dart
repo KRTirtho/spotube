@@ -876,10 +876,16 @@ class AppLocalizationsCa extends AppLocalizations {
   String get restore_defaults => 'Restaura els valors per defecte';
 
   @override
-  String get download_music_codec => 'Descarrega el codec de música';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'Codec de música en streaming';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'Inicia la sessió amb Last.fm';

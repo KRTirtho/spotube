@@ -1,5 +1,9 @@
 {
   "ar": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -12,6 +16,10 @@
   ],
 
   "bn": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -24,6 +32,10 @@
   ],
 
   "ca": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -36,6 +48,10 @@
   ],
 
   "cs": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -48,6 +64,10 @@
   ],
 
   "de": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -60,6 +80,10 @@
   ],
 
   "es": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -72,6 +96,10 @@
   ],
 
   "eu": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -84,6 +112,10 @@
   ],
 
   "fa": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -96,6 +128,10 @@
   ],
 
   "fi": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -108,6 +144,10 @@
   ],
 
   "fr": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -120,6 +160,10 @@
   ],
 
   "hi": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -132,6 +176,10 @@
   ],
 
   "id": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -144,6 +192,10 @@
   ],
 
   "it": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -156,6 +208,10 @@
   ],
 
   "ja": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -168,6 +224,10 @@
   ],
 
   "ka": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -180,6 +240,10 @@
   ],
 
   "ko": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -192,6 +256,10 @@
   ],
 
   "ne": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -205,6 +273,10 @@
 
   "nl": [
     "audio_source",
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -217,6 +289,10 @@
   ],
 
   "pl": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -229,6 +305,10 @@
   ],
 
   "pt": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -241,6 +321,10 @@
   ],
 
   "ru": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -253,6 +337,10 @@
   ],
 
   "ta": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -265,6 +353,10 @@
   ],
 
   "th": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -277,6 +369,10 @@
   ],
 
   "tl": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -289,6 +385,10 @@
   ],
 
   "tr": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -301,6 +401,10 @@
   ],
 
   "uk": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -313,6 +417,10 @@
   ],
 
   "vi": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -325,6 +433,10 @@
   ],
 
   "zh": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",
@@ -337,6 +449,10 @@
   ],
 
   "zh_TW": [
+    "download_music_format",
+    "streaming_music_format",
+    "download_music_quality",
+    "streaming_music_quality",
     "default_metadata_source",
     "set_default_metadata_source",
     "default_audio_source",

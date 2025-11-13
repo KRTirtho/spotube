@@ -875,10 +875,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get restore_defaults => 'Khôi phục mặc định';
 
   @override
-  String get download_music_codec => 'Định dạng tải xuống';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'Định dạng nghe';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'Đăng nhập bằng tài khoản Last.fm';

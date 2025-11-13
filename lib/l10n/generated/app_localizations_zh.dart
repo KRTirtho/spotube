@@ -859,10 +859,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restore_defaults => '恢复默认值';
 
   @override
-  String get download_music_codec => '下载音乐编解码器';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => '流媒体音乐编解码器';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => '使用 Last.fm 登录';
@@ -2375,12 +2381,6 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
 
   @override
   String get restore_defaults => '恢復預設值';
-
-  @override
-  String get download_music_codec => '下載音樂編解碼器';
-
-  @override
-  String get streaming_music_codec => '串流音樂編解碼器';
 
   @override
   String get login_with_lastfm => '使用 Last.fm 登入';

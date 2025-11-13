@@ -67,8 +67,8 @@ class SettingsPlaybackSection extends HookConsumerWidget {
         ),
         if (sourcePresets.presets.isNotEmpty) ...[
           AdaptiveSelectTile(
-            secondary: const Icon(SpotubeIcons.api),
-            title: Text(context.l10n.streaming_music_codec),
+            secondary: const Icon(SpotubeIcons.plugin),
+            title: Text(context.l10n.streaming_music_format),
             value: sourcePresets.selectedStreamingContainerIndex,
             options: [
               for (final MapEntry(:key, value: preset)
@@ -81,8 +81,8 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             },
           ),
           AdaptiveSelectTile(
-            secondary: const Icon(SpotubeIcons.api),
-            title: const Text("Streaming music quality"),
+            secondary: const Icon(SpotubeIcons.audioQuality),
+            title: Text(context.l10n.streaming_music_quality),
             value: sourcePresets.selectedStreamingQualityIndex,
             options: [
               for (final MapEntry(:key, value: quality) in sourcePresets
@@ -98,8 +98,8 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             },
           ),
           AdaptiveSelectTile(
-            secondary: const Icon(SpotubeIcons.api),
-            title: Text(context.l10n.download_music_codec),
+            secondary: const Icon(SpotubeIcons.plugin),
+            title: Text(context.l10n.download_music_format),
             value: sourcePresets.selectedDownloadingContainerIndex,
             options: [
               for (final MapEntry(:key, value: preset)
@@ -112,8 +112,8 @@ class SettingsPlaybackSection extends HookConsumerWidget {
             },
           ),
           AdaptiveSelectTile(
-            secondary: const Icon(SpotubeIcons.api),
-            title: const Text("Downloading music quality"),
+            secondary: const Icon(SpotubeIcons.audioQuality),
+            title: Text(context.l10n.download_music_quality),
             value: sourcePresets.selectedStreamingQualityIndex,
             options: [
               for (final MapEntry(:key, value: quality) in sourcePresets

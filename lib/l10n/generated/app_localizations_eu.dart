@@ -876,10 +876,16 @@ class AppLocalizationsEu extends AppLocalizations {
   String get restore_defaults => 'Berrezarri berezko balioak';
 
   @override
-  String get download_music_codec => 'Deskargatutako musikaren codec-a';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'Streaming musikaren codec-a';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'Hasi saioa Last.fm-n';

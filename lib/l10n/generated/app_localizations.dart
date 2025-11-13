@@ -1743,17 +1743,29 @@ abstract class AppLocalizations {
   /// **'Restore defaults'**
   String get restore_defaults;
 
-  /// No description provided for @download_music_codec.
+  /// No description provided for @download_music_format.
   ///
   /// In en, this message translates to:
-  /// **'Download music codec'**
-  String get download_music_codec;
+  /// **'Download music format'**
+  String get download_music_format;
 
-  /// No description provided for @streaming_music_codec.
+  /// No description provided for @streaming_music_format.
   ///
   /// In en, this message translates to:
-  /// **'Streaming music codec'**
-  String get streaming_music_codec;
+  /// **'Streaming music format'**
+  String get streaming_music_format;
+
+  /// No description provided for @download_music_quality.
+  ///
+  /// In en, this message translates to:
+  /// **'Download music quality'**
+  String get download_music_quality;
+
+  /// No description provided for @streaming_music_quality.
+  ///
+  /// In en, this message translates to:
+  /// **'Streaming music quality'**
+  String get streaming_music_quality;
 
   /// No description provided for @login_with_lastfm.
   ///

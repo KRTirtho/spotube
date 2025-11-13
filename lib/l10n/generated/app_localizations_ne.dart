@@ -880,10 +880,16 @@ class AppLocalizationsNe extends AppLocalizations {
   String get restore_defaults => 'पूर्वनिर्धारितहरू पुनः स्थापित गर्नुहोस्';
 
   @override
-  String get download_music_codec => 'साङ्गीत कोडेक डाउनलोड गर्नुहोस्';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'स्ट्रिमिङ साङ्गीत कोडेक';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'लास्ट.एफ.एम सँग लगइन गर्नुहोस्';

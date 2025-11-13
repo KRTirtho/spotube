@@ -872,10 +872,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get restore_defaults => 'คืนค่าเริ่มต้น';
 
   @override
-  String get download_music_codec => 'ดาวน์โหลดโคเดคเพลง';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'สตรีมมิ่งโคเดคเพลง';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'เข้าสู่ระบบด้วย Last.fm';

@@ -17,7 +17,6 @@ list(APPEND FLUTTER_PLUGIN_LIST
   permission_handler_windows
   screen_retriever_windows
   sqlite3_flutter_libs
-  system_theme
   tray_manager
   url_launcher_windows
   window_manager

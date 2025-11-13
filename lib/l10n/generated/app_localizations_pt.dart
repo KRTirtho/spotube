@@ -873,10 +873,16 @@ class AppLocalizationsPt extends AppLocalizations {
   String get restore_defaults => 'Restaurar padrões';
 
   @override
-  String get download_music_codec => 'Descarregar codec de música';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'Codec de streaming de música';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'Iniciar sessão com o Last.fm';

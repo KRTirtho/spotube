@@ -879,10 +879,16 @@ class AppLocalizationsTa extends AppLocalizations {
   String get restore_defaults => 'இயல்புநிலைகளை மீட்டமை';
 
   @override
-  String get download_music_codec => 'இசை கோடெக்கை பதிவிறக்கு';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'இசை கோடெக்கை ஸ்ட்ரீம் செய்';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'Last.fm உடன் உள்நுழைக';

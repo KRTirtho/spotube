@@ -15,7 +15,6 @@ environment:
 dependencies:
   app_links: ^6.4.0
   args: ^2.5.0
-  async: ^2.11.0
   audio_service: ^0.18.13
   audio_service_mpris: ^0.2.0
   audio_session: ^0.1.19
@@ -64,11 +63,8 @@ dependencies:
   flutter_sharing_intent: ^1.1.0
   flutter_undraw: ^0.2.1
   form_builder_validators: ^11.1.1
-  form_validator: ^2.1.1
   freezed_annotation: ^2.4.1
   fuzzywuzzy: ^1.1.6
-  gap: ^3.0.1
-  google_fonts: ^6.2.1
   home_widget: ^0.7.0
   hooks_riverpod: ^2.5.1
   html: ^0.15.1
@@ -76,13 +72,10 @@ dependencies:
   http: ^1.2.1
   image_picker: ^1.1.0
   intl: any
-  json_annotation: ^4.8.1
   local_notifier: ^0.1.6
   logger: ^2.0.2
   logging: ^1.3.0
   lrc: ^1.0.2
-  media_kit: ^1.2.1
-  media_kit_libs_audio: ^1.0.7
   metadata_god: ^1.1.0
   mime: ^2.0.0
   open_file: ^3.5.10
@@ -109,9 +102,6 @@ dependencies:
   smtc_windows: ^1.1.0
   sqlite3: ^2.4.3
   sqlite3_flutter_libs: ^0.5.23
-  stroke_text: ^0.0.2
-  system_theme: ^3.1.2
-  test: ^1.25.7
   timezone: ^0.10.0
   titlebar_buttons: ^1.0.0
   tray_manager: ^0.5.0
@@ -134,8 +124,6 @@ dependencies:
       url: https://github.com/KRTirtho/flutter_new_pipe_extractor.git
   http_parser: ^4.1.2
   collection: any
-  otp_util: ^1.0.2
-  dio_http2_adapter: ^2.6.0
   archive: ^4.0.7
   hetu_script: ^0.4.2+1
   hetu_std:
@@ -155,6 +143,15 @@ dependencies:
   pub_semver: ^2.2.0
   change_case: ^1.1.0
   flutter_secure_storage: ^9.2.4
+  # Have to use the git version due to unresponsive .move() after .add()
+  media_kit:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: media_kit
+  media_kit_libs_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/universal/media_kit_libs_audio
 
 dev_dependencies:
   build_runner: ^2.4.13
@@ -173,6 +170,7 @@ dev_dependencies:
   pub_api_client: ^3.0.0
   io: ^1.0.4
   drift_dev: ^2.21.0
+  test: ^1.25.7
   auto_route_generator: ^9.0.0
 
 dependency_overrides:
@@ -191,6 +189,26 @@ dependency_overrides:
       url: https://github.com/m-berto/flutter_secure_storage.git
       ref: patch-2
       path: flutter_secure_storage_linux
+  media_kit_libs_android_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/android/media_kit_libs_android_audio
+  media_kit_libs_ios_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/ios/media_kit_libs_ios_audio
+  media_kit_libs_macos_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/macos/media_kit_libs_macos_audio
+  media_kit_libs_windows_audio:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/windows/media_kit_libs_windows_audio
+  media_kit_libs_linux:
+    git:
+      url: https://github.com/media-kit/media-kit
+      path: libs/linux/media_kit_libs_linux
 
 flutter:
   generate: true

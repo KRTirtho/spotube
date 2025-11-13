@@ -870,10 +870,16 @@ class AppLocalizationsFa extends AppLocalizations {
   String get restore_defaults => 'بازیابی پیش فرض ها';
 
   @override
-  String get download_music_codec => 'دانلود کدک موسیقی';
+  String get download_music_format => 'Download music format';
 
   @override
-  String get streaming_music_codec => 'کدک موسیقی استریمینگ';
+  String get streaming_music_format => 'Streaming music format';
+
+  @override
+  String get download_music_quality => 'Download music quality';
+
+  @override
+  String get streaming_music_quality => 'Streaming music quality';
 
   @override
   String get login_with_lastfm => 'ورود با Last.fm';
