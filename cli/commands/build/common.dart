@@ -59,7 +59,7 @@ mixin BuildCommandCommonSteps on Command {
       """
       flutter pub get
       dart run build_runner build --delete-conflicting-outputs
-      dart pub global activate flutter_distributor
+      dart pub global activate fastforge
       """,
     );
   }
