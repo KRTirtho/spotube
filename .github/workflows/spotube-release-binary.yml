@@ -108,7 +108,7 @@ jobs:
       - name: Install ${{matrix.platform}} dependencies
         run: |
           flutter pub get
-          dart cli/cli.dart install-dependencies --platform=${{matrix.platform}}
+          dart cli/cli.dart install-dependencies --platform=${{matrix.platform}} --arch=${{matrix.arch}}
 
       - name: Sign Apk
         if: ${{matrix.platform == 'android'}}
