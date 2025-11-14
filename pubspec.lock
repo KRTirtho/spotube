@@ -154,7 +154,7 @@ packages:
     source: hosted
     version: "3.0.0"
   base32:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: base32
       sha256: "37548444aaee8bd5e91db442ce69ee3a79d3652ed47c1fa7568aa3bb9af0aea5"

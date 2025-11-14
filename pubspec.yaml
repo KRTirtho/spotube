@@ -152,6 +152,7 @@ dependencies:
     git:
       url: https://github.com/media-kit/media-kit
       path: libs/universal/media_kit_libs_audio
+  base32: ^2.2.0
 
 dev_dependencies:
   build_runner: ^2.4.13
