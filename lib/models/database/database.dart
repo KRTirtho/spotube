@@ -66,7 +66,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 10;
+  int get schemaVersion => 11;
 
   @override
   MigrationStrategy get migration {
@@ -236,6 +236,12 @@ class AppDatabase extends _$AppDatabase {
           await m
               .dropColumn(schema.sourceMatchTable, "source_id")
               .catchError((e, stack) => AppLogger.reportError(e, stack));
+        },
+        from10To11: (m, schema) async {
+          await m.addColumn(
+            schema.preferencesTable,
+            schema.preferencesTable.audioQuality,
+          );
         },
       ),
     );

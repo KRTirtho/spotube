@@ -10,6 +10,7 @@ import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
+import 'package:spotube/models/audio_quality.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:open_file/open_file.dart';
@@ -225,6 +226,10 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setCacheMusic(bool cache) {
     setData(PreferencesTableCompanion(cacheMusic: Value(cache)));
+  }
+
+  void setAudioQuality(AudioQuality quality) {
+    setData(PreferencesTableCompanion(audioQuality: Value(quality)));
   }
 }
 

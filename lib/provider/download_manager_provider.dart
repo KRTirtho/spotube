@@ -193,7 +193,7 @@ class DownloadManagerNotifier extends Notifier<List<DownloadTask>> {
       String? url;
       if (track.source == 'DAB Music') {
         final dabMusicApi = DabMusicApi();
-        url = await dabMusicApi.getDownloadUrl(track.query.album.id);
+        url = await dabMusicApi.getDownloadUrl(track.query.id);
       } else {
         url = track.getUrlOfQuality(
           container,

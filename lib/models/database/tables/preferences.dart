@@ -1,5 +1,7 @@
 part of '../database.dart';
 
+import 'package:spotube/models/audio_quality.dart';
+
 enum LayoutMode {
   compact,
   extended,
@@ -79,6 +81,8 @@ class PreferencesTable extends Table {
   TextColumn get themeMode =>
       textEnum<ThemeMode>().withDefault(Constant(ThemeMode.system.name))();
   TextColumn get audioSourceId => text().nullable()();
+  TextColumn get audioQuality =>
+      textEnum<AudioQuality>().withDefault(Constant(AudioQuality.high.name))();
   TextColumn get youtubeClientEngine => textEnum<YoutubeClientEngine>()
       .withDefault(Constant(YoutubeClientEngine.youtubeExplode.name))();
   BoolColumn get discordPresence =>
@@ -119,6 +123,7 @@ class PreferencesTable extends Table {
       enableConnect: false,
       cacheMusic: true,
       connectPort: -1,
+      audioQuality: AudioQuality.high,
     );
   }
 }

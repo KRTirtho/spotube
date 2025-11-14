@@ -21,7 +21,7 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/provider/metadata_plugin/audio_source/quality_label.dart';
+import 'package:spotube/provider/player/playback_quality_provider.dart';
 import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/volume_provider.dart';
 
@@ -43,7 +43,7 @@ class PlayerView extends HookConsumerWidget {
     final currentActiveTrackSource = sourcedCurrentTrack.asData?.value?.source;
     final isLocalTrack = currentActiveTrack is SpotubeLocalTrackObject;
     final mediaQuery = MediaQuery.sizeOf(context);
-    final qualityLabel = ref.watch(audioSourceQualityLabelProvider);
+    final quality = ref.watch(playbackQualityProvider);
 
     final shouldHide = useState(true);
 
@@ -262,7 +262,7 @@ class PlayerView extends HookConsumerWidget {
                       },
                     ),
                     leading: const Icon(SpotubeIcons.lightningOutlined),
-                    child: Text(qualityLabel),
+                    child: Text(quality.toShortString()),
                   )
                 ],
               ),

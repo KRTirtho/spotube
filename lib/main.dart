@@ -156,20 +156,8 @@ class Spotube extends HookConsumerWidget {
     useEffect(() {
       (() async {
         await EncryptedKvStoreService.initialize();
-        if (kIsAndroid || kIsDesktop) {
-          await NewPipeExtractor.init();
-        }
         if (!kIsWeb) {
           MetadataGod.initialize();
-        }
-        if (kIsDesktop) {
-          await YtDlp.instance
-              .setBinaryLocation(
-                KVStoreService.getYoutubeEnginePath(YoutubeClientEngine.ytDlp) ??
-                    "yt-dlp${kIsWindows ? '.exe' : ''}",
-              )
-              .catchError((e, stack) => null);
-          await FlutterDiscordRPC.initialize(Env.discordAppId);
         }
       })();
       FlutterNativeSplash.remove();
@@ -177,6 +165,21 @@ class Spotube extends HookConsumerWidget {
       if (kIsMobile) {
         HomeWidget.registerInteractivityCallback(glanceBackgroundCallback);
       }
+
+      Future.delayed(const Duration(seconds: 5), () {
+        if (kIsAndroid || kIsDesktop) {
+          NewPipeExtractor.init();
+        }
+        if (kIsDesktop) {
+          YtDlp.instance
+              .setBinaryLocation(
+                KVStoreService.getYoutubeEnginePath(YoutubeClientEngine.ytDlp) ??
+                    "yt-dlp${kIsWindows ? '.exe' : ''}",
+              )
+              .catchError((e, stack) => null);
+          FlutterDiscordRPC.initialize(Env.discordAppId);
+        }
+      });
 
       return () {
         /// For enabling hot reload for audio player

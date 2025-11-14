@@ -1,18 +1,23 @@
 import 'package:dio/dio.dart';
-import 'package:dio_retry/dio_retry.dart';
+import 'package:spotube/models/audio_quality.dart';
 import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/services/dio/retry_interceptor.dart';
 
 class DabMusicApi {
-  final Dio _dio = Dio(BaseOptions(baseUrl: 'https://dabmusic.xyz/api'));
+  final Dio _dio = Dio(
+    BaseOptions(
+      baseUrl: 'https://dabmusic.xyz/api',
+      followRedirects: false,
+      validateStatus: (status) {
+        return status != null && status < 500;
+      },
+    ),
+  );
 
   DabMusicApi() {
     _dio.interceptors.add(
       RetryInterceptor(
         dio: _dio,
-        options: const RetryOptions(
-          retries: 3,
-          retryInterval: Duration(seconds: 1),
-        ),
       ),
     );
   }
@@ -44,18 +49,21 @@ class DabMusicApi {
     }
   }
 
-  Future<String> getStreamUrl(String trackId, {String quality = '27'}) async {
+  Future<String> getStreamUrl(
+    String trackId, {
+    AudioQuality quality = AudioQuality.high,
+  }) async {
     try {
       final response = await _dio.get(
         '/stream',
         queryParameters: {
           'trackId': trackId,
-          'quality': quality,
+          'quality': quality.toDabMusicQuality(),
         },
       );
 
-      if (response.statusCode == 200) {
-        return response.data['streamUrl'];
+      if (response.statusCode == 302) {
+        return response.headers.value('location')!;
       } else {
         throw Exception('Failed to get stream URL');
       }
@@ -64,19 +72,21 @@ class DabMusicApi {
     }
   }
 
-  Future<String> getDownloadUrl(String albumId, {String quality = '27'}) async {
+  Future<String> getDownloadUrl(
+    String trackId, {
+    AudioQuality quality = AudioQuality.high,
+  }) async {
     try {
       final response = await _dio.get(
         '/download',
         queryParameters: {
-          'albumId': albumId,
-          'quality': quality,
+          'trackId': trackId,
+          'quality': quality.toDabMusicQuality(),
         },
       );
 
-      if (response.statusCode == 200) {
-        // Assuming the API returns a direct download link or a JSON with the link
-        return response.data['downloadUrl'];
+      if (response.statusCode == 302) {
+        return response.headers.value('location')!;
       } else {
         throw Exception('Failed to get download URL');
       }

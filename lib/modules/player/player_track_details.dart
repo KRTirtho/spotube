@@ -11,8 +11,9 @@ import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package.spotube/provider/player/playback_quality_provider.dart';
 import 'package:spotube/provider/server/sourced_track_provider.dart';
-import 'package.spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class PlayerTrackDetails extends HookConsumerWidget {
   final Color? color;
@@ -24,9 +25,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
     final playback = ref.watch(audioPlayerProvider);
-    final sourcedTrack = playback.activeTrack != null
-        ? ref.watch(sourcedTrackProvider(playback.activeTrack!))
-        : null;
+    final quality = ref.watch(playbackQualityProvider);
 
     return Row(
       children: [
@@ -64,12 +63,11 @@ class PlayerTrackDetails extends HookConsumerWidget {
                   overflow: TextOverflow.ellipsis,
                   style: theme.typography.small.copyWith(color: color),
                 ),
-                if (sourcedTrack?.asData?.value != null)
-                  Text(
-                    sourcedTrack!.asData!.value.qualityPreset?.name ?? "",
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.typography.small.copyWith(color: color),
-                  ),
+                Text(
+                  quality.toShortString(),
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.typography.small.copyWith(color: color),
+                ),
               ],
             ),
           ),
@@ -93,12 +91,11 @@ class PlayerTrackDetails extends HookConsumerWidget {
                   onOverflowArtistClick: () =>
                       context.navigateTo(TrackRoute(trackId: track!.id)),
                 ),
-                if (sourcedTrack?.asData?.value != null)
-                  Text(
-                    sourcedTrack!.asData!.value.qualityPreset?.name ?? "",
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.typography.small.copyWith(color: color),
-                  ),
+                Text(
+                  quality.toShortString(),
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.typography.small.copyWith(color: color),
+                ),
               ],
             ),
           ),
