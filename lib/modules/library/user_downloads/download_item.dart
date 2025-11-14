@@ -7,44 +7,19 @@ import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/ui/button_tile.dart';
-import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/download_manager_provider.dart';
-import 'package:spotube/services/download_manager/download_status.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 class DownloadItem extends HookConsumerWidget {
-  final SpotubeFullTrackObject track;
+  final DownloadTask task;
   const DownloadItem({
     super.key,
-    required this.track,
+    required this.task,
   });
 
   @override
   Widget build(BuildContext context, ref) {
-    final downloadManager = ref.watch(downloadManagerProvider);
-
-    final taskStatus = useState<DownloadStatus?>(null);
-
-    useEffect(() {
-      if (track is! SourcedTrack) return null;
-      final notifier = downloadManager.getStatusNotifier(track);
-
-      taskStatus.value = notifier?.value;
-
-      void listener() {
-        taskStatus.value = notifier?.value;
-      }
-
-      notifier?.addListener(listener);
-
-      return () {
-        notifier?.removeListener(listener);
-      };
-    }, [track]);
-
-    final isQueryingSourceInfo =
-        taskStatus.value == null || track is! SourcedTrack;
+    final downloadManager = ref.watch(downloadManagerProvider.notifier);
 
     return ButtonTile(
       style: ButtonVariance.ghost,
@@ -55,90 +30,72 @@ class DownloadItem extends HookConsumerWidget {
           child: UniversalImage(
             height: 40,
             width: 40,
-            path: track.album.images.asUrlString(
+            path: task.track.album.images.asUrlString(
               placeholder: ImagePlaceholder.albumArt,
             ),
           ),
         ),
       ),
-      title: Text(track.name),
+      title: Text(task.track.name),
       subtitle: ArtistLink(
-        artists: track.artists,
+        artists: task.track.artists,
         mainAxisAlignment: WrapAlignment.start,
         onOverflowArtistClick: () {
-          context.navigateTo(TrackRoute(trackId: track.id));
+          context.navigateTo(TrackRoute(trackId: task.track.id));
         },
       ),
-      trailing: isQueryingSourceInfo
-          ? Text(context.l10n.querying_info).small()
-          : switch (taskStatus.value!) {
-              DownloadStatus.downloading => HookBuilder(builder: (context) {
-                  final taskProgress = useListenable(useMemoized(
-                    () => downloadManager.getProgressNotifier(track),
-                    [track],
-                  ));
+      trailing: switch (task.status) {
+        DownloadStatus.downloading => HookBuilder(builder: (context) {
+            return StreamBuilder(
+                stream: task.downloadedBytesStream,
+                builder: (context, asyncSnapshot) {
+                  final progress =
+                      task.totalSizeBytes == null || task.totalSizeBytes == 0
+                          ? 0
+                          : (asyncSnapshot.data ?? 0) / task.totalSizeBytes!;
+
                   return Row(
                     children: [
                       CircularProgressIndicator(
-                        value: taskProgress?.value ?? 0,
+                        value: progress.toDouble(),
                       ),
                       const SizedBox(width: 10),
-                      IconButton.ghost(
-                          icon: const Icon(SpotubeIcons.pause),
-                          onPressed: () {
-                            downloadManager.pause(track);
-                          }),
                       const SizedBox(width: 10),
                       IconButton.ghost(
                           icon: const Icon(SpotubeIcons.close),
                           onPressed: () {
-                            downloadManager.cancel(track);
+                            downloadManager.cancel(task.track);
                           }),
                     ],
                   );
-                }),
-              DownloadStatus.paused => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton.ghost(
-                        icon: const Icon(SpotubeIcons.play),
-                        onPressed: () {
-                          downloadManager.resume(track);
-                        }),
-                    const SizedBox(width: 10),
-                    IconButton.ghost(
-                        icon: const Icon(SpotubeIcons.close),
-                        onPressed: () {
-                          downloadManager.cancel(track);
-                        })
-                  ],
+                });
+          }),
+        DownloadStatus.failed || DownloadStatus.canceled => SizedBox(
+            width: 100,
+            child: Row(
+              children: [
+                Icon(
+                  SpotubeIcons.error,
+                  color: Colors.red[400],
                 ),
-              DownloadStatus.failed || DownloadStatus.canceled => SizedBox(
-                  width: 100,
-                  child: Row(
-                    children: [
-                      Icon(
-                        SpotubeIcons.error,
-                        color: Colors.red[400],
-                      ),
-                      const SizedBox(width: 10),
-                      IconButton.ghost(
-                        icon: const Icon(SpotubeIcons.refresh),
-                        onPressed: () {
-                          downloadManager.retry(track);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              DownloadStatus.completed =>
-                Icon(SpotubeIcons.done, color: Colors.green[400]),
-              DownloadStatus.queued => IconButton.ghost(
-                  icon: const Icon(SpotubeIcons.close),
+                const SizedBox(width: 10),
+                IconButton.ghost(
+                  icon: const Icon(SpotubeIcons.refresh),
                   onPressed: () {
-                    downloadManager.removeFromQueue(track);
-                  }),
-            },
+                    downloadManager.retry(task.track);
+                  },
+                ),
+              ],
+            ),
+          ),
+        DownloadStatus.completed =>
+          Icon(SpotubeIcons.done, color: Colors.green[400]),
+        DownloadStatus.queued => IconButton.ghost(
+            icon: const Icon(SpotubeIcons.close),
+            onPressed: () {
+              downloadManager.cancel(task.track);
+            }),
+      },
     );
   }
 }

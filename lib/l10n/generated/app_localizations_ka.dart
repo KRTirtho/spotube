@@ -872,10 +872,16 @@ class AppLocalizationsKa extends AppLocalizations {
   String get restore_defaults => 'ნაგულისხმევი პარამეტრების აღდგენა';
 
   @override
-  String get download_music_codec => 'მუსიკის კოდეკის გადმოწერა';
+  String get download_music_format => 'მუსიკის ჩამოტვირთვის ფორმატი';
 
   @override
-  String get streaming_music_codec => 'სტრიმინგ მუსიკის კოდეკი';
+  String get streaming_music_format => 'სტრიმინგის მუსიკის ფორმატი';
+
+  @override
+  String get download_music_quality => 'ჩამოტვირთვის ხარისხი';
+
+  @override
+  String get streaming_music_quality => 'სტრიმინგის ხარისხი';
 
   @override
   String get login_with_lastfm => 'Last.fm-ით შესვლა';
@@ -1448,7 +1454,17 @@ class AppLocalizationsKa extends AppLocalizations {
       'ეს პლაგინი აწარმოებს თქვენი მუსიკის სქრობლინგს, რათა შექმნას თქვენი მოსმენის ისტორია.';
 
   @override
-  String get default_plugin => 'ნაგულისხმევი';
+  String get default_metadata_source => 'ნაგულისხმევი მეტამონაცემების წყარო';
+
+  @override
+  String get set_default_metadata_source =>
+      'ნაგულისხმევი მეტამონაცემების წყაროს დაყენება';
+
+  @override
+  String get default_audio_source => 'ნაგულისხმევი აუდიო წყარო';
+
+  @override
+  String get set_default_audio_source => 'ნაგულისხმევი აუდიო წყაროს დაყენება';
 
   @override
   String get set_default => 'ნაგულისხმევად დაყენება';
@@ -1511,8 +1527,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'შეყვანა არ ემთხვევა საჭირო ფორმატს';
 
   @override
-  String get metadata_provider_plugins =>
-      'მეტამონაცემების პროვაიდერების პლაგინები';
+  String get plugins => 'პლაგინები';
 
   @override
   String get paste_plugin_download_url =>
@@ -1537,12 +1552,22 @@ class AppLocalizationsKa extends AppLocalizations {
   String get available_plugins => 'ხელმისაწვდომი პლაგინები';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'დააყენეთ თქვენი საკუთარი პლეილისტის/ალბომის/არტისტის/ფიდის მეტამონაცემების პროვაიდერი';
+  String get configure_plugins =>
+      'თქვენი საკუთარი მეტამონაცემებისა და აუდიო წყაროს პლაგინების კონფიგურაცია';
 
   @override
   String get audio_scrobblers => 'აუდიო სქრობლერები';
 
   @override
   String get scrobbling => 'სქრობლინგი';
+
+  @override
+  String get source => 'წყარო: ';
+
+  @override
+  String get uncompressed => 'შეუკუმშავი';
+
+  @override
+  String get dab_music_source_description =>
+      'აუდიოფილებისთვის. უზრუნველყოფს მაღალი ხარისხის/უკომპრესო აუდიო სტრიმებს. ზუსტი შესაბამისობა ISRC-ის მიხედვით.';
 }

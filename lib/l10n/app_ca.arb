@@ -477,5 +477,18 @@
   "available_plugins": "Complements disponibles",
   "configure_your_own_metadata_plugin": "Configura el teu propi proveïdor de metadades per llistes/reproduccions àlbum/artista/flux",
   "audio_scrobblers": "Scrobblers d’àudio",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Format de descàrrega de música",
+  "streaming_music_format": "Format de reproducció de música en temps real",
+  "download_music_quality": "Qualitat de descàrrega de música",
+  "streaming_music_quality": "Qualitat de reproducció de música en temps real",
+  "default_metadata_source": "Font de metadades per defecte",
+  "set_default_metadata_source": "Estableix la font de metadades per defecte",
+  "default_audio_source": "Font d'àudio per defecte",
+  "set_default_audio_source": "Estableix la font d'àudio per defecte",
+  "plugins": "Connectors",
+  "configure_plugins": "Configura els teus propis connectors de proveïdor de metadades i de font d'àudio",
+  "source": "Font: ",
+  "uncompressed": "Sense comprimir",
+  "dab_music_source_description": "Per als audiòfils. Ofereix fluxos d'àudio d'alta qualitat/sense pèrdua. Coincidència precisa de pistes basada en ISRC."
 }

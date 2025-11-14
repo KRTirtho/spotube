@@ -1,10 +1,8 @@
-import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
-import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/routes.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
@@ -35,7 +33,6 @@ class TrackOptions extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final mediaQuery = MediaQuery.of(context);
-    final ThemeData(:colorScheme) = Theme.of(context);
 
     final trackOptionActions = ref.watch(trackOptionActionsProvider(track));
     final (
@@ -45,7 +42,7 @@ class TrackOptions extends HookConsumerWidget {
       :isActiveTrack,
       :isAuthenticated,
       :isLiked,
-      :progressNotifier
+      :downloadTask
     ) = ref.watch(trackOptionsStateProvider(track));
     final isLocalTrack = track is SpotubeLocalTrackObject;
 
@@ -59,7 +56,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.delete,
                 playlistId,
               );
@@ -73,7 +70,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.album,
                 playlistId,
               );
@@ -97,7 +94,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.addToQueue,
                 playlistId,
               );
@@ -110,7 +107,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.playNext,
                 playlistId,
               );
@@ -124,7 +121,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.removeFromQueue,
                 playlistId,
               );
@@ -139,7 +136,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.favorite,
                 playlistId,
               );
@@ -162,7 +159,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.startRadio,
                 playlistId,
               );
@@ -175,7 +172,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.addToPlaylist,
                 playlistId,
               );
@@ -190,7 +187,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.removeFromPlaylist,
                 playlistId,
               );
@@ -204,7 +201,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.download,
                 playlistId,
               );
@@ -212,12 +209,19 @@ class TrackOptions extends HookConsumerWidget {
             },
             enabled: !isInDownloadQueue,
             leading: isInDownloadQueue
-                ? HookBuilder(builder: (context) {
-                    final progress = useListenable(progressNotifier);
-                    return CircularProgressIndicator(
-                      value: progress?.value,
-                    );
-                  })
+                ? StreamBuilder(
+                    stream: downloadTask?.downloadedBytesStream,
+                    builder: (context, snapshot) {
+                      final progress = downloadTask?.totalSizeBytes == null ||
+                              downloadTask?.totalSizeBytes == 0
+                          ? 0
+                          : (snapshot.data ?? 0) /
+                              downloadTask!.totalSizeBytes!;
+                      return CircularProgressIndicator(
+                        value: progress.toDouble(),
+                      );
+                    },
+                  )
                 : const Icon(SpotubeIcons.download),
             title: Text(context.l10n.download_track),
           ),
@@ -226,7 +230,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.blacklist,
                 playlistId,
               );
@@ -250,7 +254,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.share,
                 playlistId,
               );
@@ -264,25 +268,7 @@ class TrackOptions extends HookConsumerWidget {
             style: ButtonVariance.menu,
             onPressed: () async {
               await trackOptionActions.action(
-                context,
-                TrackOptionValue.songlink,
-                playlistId,
-              );
-              onTapItem?.call();
-            },
-            leading: Assets.images.logos.songlinkTransparent.image(
-              width: 22,
-              height: 22,
-              color: colorScheme.foreground.withValues(alpha: 0.5),
-            ),
-            title: Text(context.l10n.song_link),
-          ),
-        if (!isLocalTrack)
-          ButtonTile(
-            style: ButtonVariance.menu,
-            onPressed: () async {
-              await trackOptionActions.action(
-                context,
+                rootNavigatorKey.currentContext!,
                 TrackOptionValue.details,
                 playlistId,
               );

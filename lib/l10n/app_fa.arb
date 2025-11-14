@@ -477,5 +477,18 @@
   "available_plugins": "افزونه‌های موجود",
   "configure_your_own_metadata_plugin": "پیکربندی ارائه‌دهندهٔ متادیتا برای پلی‌لیست/آلبوم/هنرمند/فید به‌صورت سفارشی",
   "audio_scrobblers": "اسکراب‌بلرهای صوتی",
-  "scrobbling": "اسکراب‌بلینگ"
+  "scrobbling": "اسکراب‌بلینگ",
+  "download_music_format": "فرمت دانلود موسیقی",
+  "streaming_music_format": "فرمت پخش آنلاین موسیقی",
+  "download_music_quality": "کیفیت دانلود موسیقی",
+  "streaming_music_quality": "کیفیت پخش آنلاین موسیقی",
+  "default_metadata_source": "منبع پیش‌فرض فراداده",
+  "set_default_metadata_source": "تنظیم منبع پیش‌فرض فراداده",
+  "default_audio_source": "منبع پیش‌فرض صوت",
+  "set_default_audio_source": "تنظیم منبع پیش‌فرض صوت",
+  "plugins": "افزونه‌ها",
+  "configure_plugins": "افزونه‌های منبع صوت و ارائه‌دهنده فراداده خود را پیکربندی کنید",
+  "source": "منبع: ",
+  "uncompressed": "بدون فشرده‌سازی",
+  "dab_music_source_description": "مخصوص علاقه‌مندان صدا. ارائه‌دهنده استریم‌های باکیفیت/بدون افت. تطبیق دقیق آهنگ بر اساس ISRC."
 }

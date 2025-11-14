@@ -16,13 +16,14 @@ import 'package:spotube/models/metadata/market.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/services/kv_store/encrypted_kv_store.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
-import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:flutter/widgets.dart' hide Table, Key, View;
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
 import 'package:drift/native.dart';
+import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/youtube_engine/newpipe_engine.dart';
 import 'package:spotube/services/youtube_engine/youtube_explode_engine.dart';
 import 'package:spotube/services/youtube_engine/yt_dlp_engine.dart';
+import 'package:spotube/utils/platform.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
@@ -58,14 +59,14 @@ part 'typeconverters/subtitle.dart';
     AudioPlayerStateTable,
     HistoryTable,
     LyricsTable,
-    MetadataPluginsTable,
+    PluginsTable,
   ],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 8;
+  int get schemaVersion => 10;
 
   @override
   MigrationStrategy get migration {
@@ -198,6 +199,43 @@ class AppDatabase extends _$AppDatabase {
               throw error;
             }
           });
+        },
+        from8To9: (m, schema) async {
+          await m
+              .renameTable(schema.pluginsTable, "metadata_plugins_table")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .renameColumn(
+                schema.pluginsTable,
+                "selected",
+                pluginsTable.selectedForMetadata,
+              )
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .addColumn(
+                schema.pluginsTable,
+                pluginsTable.selectedForAudioSource,
+              )
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+        },
+        from9To10: (m, schema) async {
+          await m
+              .dropColumn(schema.preferencesTable, "piped_instance")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .dropColumn(schema.preferencesTable, "invidious_instance")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .addColumn(
+                schema.sourceMatchTable,
+                sourceMatchTable.sourceInfo,
+              )
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await customStatement("DROP INDEX IF EXISTS uniq_track_match;")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
+          await m
+              .dropColumn(schema.sourceMatchTable, "source_id")
+              .catchError((e, stack) => AppLogger.reportError(e, stack));
         },
       ),
     );

@@ -21,12 +21,10 @@ import 'package:spotube/provider/metadata_plugin/library/playlists.dart';
 import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
 enum TrackOptionValue {
   album,
   share,
-  songlink,
   addToPlaylist,
   addToQueue,
   removeFromPlaylist,
@@ -51,7 +49,7 @@ class TrackOptionsActions {
       ref.read(metadataPluginSavedTracksProvider.notifier);
   MetadataPluginSavedPlaylistsNotifier get favoritePlaylistsNotifier =>
       ref.read(metadataPluginSavedPlaylistsProvider.notifier);
-  DownloadManagerProvider get downloadManager =>
+  DownloadManagerNotifier get downloadManager =>
       ref.read(downloadManagerProvider.notifier);
   BlackListNotifier get blacklist => ref.read(blacklistProvider.notifier);
 
@@ -97,7 +95,7 @@ class TrackOptionsActions {
     final metadataPlugin = await ref.read(metadataPluginProvider.future);
 
     if (metadataPlugin == null) {
-      throw MetadataPluginException.noDefaultPlugin();
+      throw MetadataPluginException.noDefaultMetadataPlugin();
     }
 
     final tracks = await metadataPlugin.track.radio(track.id);
@@ -166,7 +164,7 @@ class TrackOptionsActions {
         }
         break;
       case TrackOptionValue.playNext:
-        playback.addTracksAtFirst([track]);
+        await playback.addTracksAtFirst([track]);
 
         if (context.mounted) {
           showToast(
@@ -237,10 +235,6 @@ class TrackOptionsActions {
       case TrackOptionValue.share:
         actionShare(context);
         break;
-      case TrackOptionValue.songlink:
-        final url = "https://song.link/s/${track.id}";
-        await launchUrlString(url);
-        break;
       case TrackOptionValue.details:
         if (track is! SpotubeFullTrackObject) break;
         showDialog(
@@ -252,8 +246,8 @@ class TrackOptionsActions {
         );
         break;
       case TrackOptionValue.download:
-        if (track is! SpotubeFullTrackObject) break;
-        await downloadManager.addToQueue(track as SpotubeFullTrackObject);
+        if (track is SpotubeLocalTrackObject) break;
+        downloadManager.addToQueue(track as SpotubeFullTrackObject);
         break;
       case TrackOptionValue.startRadio:
         actionStartRadio(context);
@@ -269,7 +263,7 @@ typedef TrackOptionFlags = ({
   bool isActiveTrack,
   bool isAuthenticated,
   bool isLiked,
-  ValueNotifier<double>? progressNotifier,
+  DownloadTask? downloadTask,
 });
 
 final trackOptionActionsProvider =
@@ -289,15 +283,16 @@ final trackOptionsStateProvider =
   final isBlacklisted = blacklist.contains(track);
   final isSavedTrack = ref.watch(metadataPluginIsSavedTrackProvider(track.id));
 
+  final downloadTask = playlist.activeTrack?.id == null
+      ? null
+      : downloadManager.getTaskByTrackId(playlist.activeTrack!.id);
   final isInDownloadQueue = playlist.activeTrack == null ||
           playlist.activeTrack! is SpotubeLocalTrackObject
       ? false
-      : downloadManager
-          .isActive(playlist.activeTrack! as SpotubeFullTrackObject);
-
-  final progressNotifier = track is SpotubeLocalTrackObject
-      ? null
-      : downloadManager.getProgressNotifier(track as SpotubeFullTrackObject);
+      : const [
+          DownloadStatus.queued,
+          DownloadStatus.downloading,
+        ].contains(downloadTask?.status);
 
   return (
     isInQueue: playlist.containsTrack(track),
@@ -306,6 +301,6 @@ final trackOptionsStateProvider =
     isActiveTrack: playlist.activeTrack?.id == track.id,
     isAuthenticated: authenticated.asData?.value ?? false,
     isLiked: isSavedTrack.asData?.value ?? false,
-    progressNotifier: progressNotifier,
+    downloadTask: downloadTask,
   );
 });

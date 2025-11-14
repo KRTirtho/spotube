@@ -8,7 +8,7 @@ final metadataPluginTrackProvider =
   final metadataPlugin = await ref.watch(metadataPluginProvider.future);
 
   if (metadataPlugin == null) {
-    throw MetadataPluginException.noDefaultPlugin();
+    throw MetadataPluginException.noDefaultMetadataPlugin();
   }
 
   return metadataPlugin.track.getTrack(trackId);

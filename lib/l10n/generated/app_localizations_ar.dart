@@ -874,10 +874,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restore_defaults => 'استعادة الإعدادات الافتراضية';
 
   @override
-  String get download_music_codec => 'تنزيل ترميز الموسيقى';
+  String get download_music_format => 'تنسيق تنزيل الموسيقى';
 
   @override
-  String get streaming_music_codec => 'ترميز الموسيقى بالتدفق';
+  String get streaming_music_format => 'تنسيق بث الموسيقى';
+
+  @override
+  String get download_music_quality => 'جودة تنزيل الموسيقى';
+
+  @override
+  String get streaming_music_quality => 'جودة بث الموسيقى';
 
   @override
   String get login_with_lastfm => 'تسجيل الدخول باستخدام Last.fm';
@@ -1443,7 +1449,17 @@ class AppLocalizationsAr extends AppLocalizations {
       'تقوم هذه الإضافة بتتبع مقاطعك الموسيقية لإنشاء سجل الاستماع الخاص بك.';
 
   @override
-  String get default_plugin => 'الافتراضي';
+  String get default_metadata_source => 'مصدر البيانات الوصفية الافتراضي';
+
+  @override
+  String get set_default_metadata_source =>
+      'تعيين مصدر البيانات الوصفية الافتراضي';
+
+  @override
+  String get default_audio_source => 'مصدر الصوت الافتراضي';
+
+  @override
+  String get set_default_audio_source => 'تعيين مصدر الصوت الافتراضي';
 
   @override
   String get set_default => 'تعيين كافتراضي';
@@ -1504,7 +1520,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'المدخل لا يتوافق مع التنسيق المطلوب';
 
   @override
-  String get metadata_provider_plugins => 'إضافات مزود البيانات';
+  String get plugins => 'الإضافات';
 
   @override
   String get paste_plugin_download_url =>
@@ -1529,12 +1545,22 @@ class AppLocalizationsAr extends AppLocalizations {
   String get available_plugins => 'الإضافات المتوفّرة';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'تهيئة مزوّد بيانات للقائمة/الألبوم/الفنان/المصدر خاص بك';
+  String get configure_plugins =>
+      'قم بتكوين مزود البيانات الوصفية ومكونات مصدر الصوت الخاصة بك';
 
   @override
   String get audio_scrobblers => 'أجهزة تتبع الصوت';
 
   @override
   String get scrobbling => 'التتبع';
+
+  @override
+  String get source => 'المصدر: ';
+
+  @override
+  String get uncompressed => 'غير مضغوط';
+
+  @override
+  String get dab_music_source_description =>
+      'لمحبي الصوتيات. يوفر تدفقات صوتية عالية الجودة/بدون فقدان. مطابقة دقيقة للمسارات بناءً على ISRC.';
 }

@@ -862,10 +862,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get restore_defaults => '기본값으로 복원';
 
   @override
-  String get download_music_codec => '다운로드 음악 코덱';
+  String get download_music_format => '다운로드 음악 포맷';
 
   @override
-  String get streaming_music_codec => '스트리밍 음악 코덱';
+  String get streaming_music_format => '스트리밍 음악 포맷';
+
+  @override
+  String get download_music_quality => '다운로드 음질';
+
+  @override
+  String get streaming_music_quality => '스트리밍 음질';
 
   @override
   String get login_with_lastfm => 'Last.fm에 로그인';
@@ -1421,7 +1427,16 @@ class AppLocalizationsKo extends AppLocalizations {
   String get plugin_scrobbling_info => '이 플러그인은 음악을 스크로블하여 청취 기록을 생성합니다.';
 
   @override
-  String get default_plugin => '기본';
+  String get default_metadata_source => '기본 메타데이터 소스';
+
+  @override
+  String get set_default_metadata_source => '기본 메타데이터 소스 설정';
+
+  @override
+  String get default_audio_source => '기본 오디오 소스';
+
+  @override
+  String get set_default_audio_source => '기본 오디오 소스 설정';
 
   @override
   String get set_default => '기본값으로 설정';
@@ -1479,7 +1494,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get input_does_not_match_format => '입력이 필요한 형식과 일치하지 않습니다';
 
   @override
-  String get metadata_provider_plugins => '메타데이터 제공자 플러그인';
+  String get plugins => '플러그인';
 
   @override
   String get paste_plugin_download_url =>
@@ -1503,12 +1518,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get available_plugins => '사용 가능한 플러그인';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      '자신만의 플레이리스트/앨범/아티스트/피드 메타데이터 제공자 구성';
+  String get configure_plugins => '직접 메타데이터 제공자와 오디오 소스 플러그인을 구성하세요';
 
   @override
   String get audio_scrobblers => '오디오 스크로블러';
 
   @override
   String get scrobbling => '스크로블링';
+
+  @override
+  String get source => '출처: ';
+
+  @override
+  String get uncompressed => '비압축';
+
+  @override
+  String get dab_music_source_description =>
+      '오디오파일을 위한 소스입니다. 고음질/무손실 오디오 스트림을 제공하며 ISRC 기반으로 정확한 트랙 매칭을 지원합니다.';
 }

@@ -477,5 +477,18 @@
   "available_plugins": "Доступні плагіни",
   "configure_your_own_metadata_plugin": "Налаштуйте свій власний провайдер метаданих для плейлиста/альбому/виконавця/стрічки",
   "audio_scrobblers": "Аудіо скробблери",
-  "scrobbling": "Скроблінг"
+  "scrobbling": "Скроблінг",
+  "download_music_format": "Формат завантаження музики",
+  "streaming_music_format": "Формат потокової музики",
+  "download_music_quality": "Якість завантаженої музики",
+  "streaming_music_quality": "Якість потокової музики",
+  "default_metadata_source": "Джерело метаданих за замовчуванням",
+  "set_default_metadata_source": "Встановити джерело метаданих за замовчуванням",
+  "default_audio_source": "Джерело аудіо за замовчуванням",
+  "set_default_audio_source": "Встановити джерело аудіо за замовчуванням",
+  "plugins": "Плагіни",
+  "configure_plugins": "Налаштуйте власні плагіни метаданих і аудіоджерела",
+  "source": "Джерело: ",
+  "uncompressed": "Без стиснення",
+  "dab_music_source_description": "Для аудіофілів. Забезпечує високоякісні/без втрат аудіопотоки. Точна відповідність треків на основі ISRC."
 }

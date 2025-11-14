@@ -875,10 +875,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get restore_defaults => 'Відновити налаштування за замовчуванням';
 
   @override
-  String get download_music_codec => 'Завантажити кодек для музики';
+  String get download_music_format => 'Формат завантаження музики';
 
   @override
-  String get streaming_music_codec => 'Кодек потокової передачі музики';
+  String get streaming_music_format => 'Формат потокової музики';
+
+  @override
+  String get download_music_quality => 'Якість завантаженої музики';
+
+  @override
+  String get streaming_music_quality => 'Якість потокової музики';
 
   @override
   String get login_with_lastfm => 'Увійти з Last.fm';
@@ -1446,7 +1452,18 @@ class AppLocalizationsUk extends AppLocalizations {
       'Цей плагін скроббить вашу музику, щоб створити вашу історію прослуховувань.';
 
   @override
-  String get default_plugin => 'За замовчуванням';
+  String get default_metadata_source => 'Джерело метаданих за замовчуванням';
+
+  @override
+  String get set_default_metadata_source =>
+      'Встановити джерело метаданих за замовчуванням';
+
+  @override
+  String get default_audio_source => 'Джерело аудіо за замовчуванням';
+
+  @override
+  String get set_default_audio_source =>
+      'Встановити джерело аудіо за замовчуванням';
 
   @override
   String get set_default => 'Встановити за замовчуванням';
@@ -1507,7 +1524,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Введені дані не відповідають необхідному формату';
 
   @override
-  String get metadata_provider_plugins => 'Плагіни провайдера метаданих';
+  String get plugins => 'Плагіни';
 
   @override
   String get paste_plugin_download_url =>
@@ -1532,12 +1549,22 @@ class AppLocalizationsUk extends AppLocalizations {
   String get available_plugins => 'Доступні плагіни';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Налаштуйте свій власний провайдер метаданих для плейлиста/альбому/виконавця/стрічки';
+  String get configure_plugins =>
+      'Налаштуйте власні плагіни метаданих і аудіоджерела';
 
   @override
   String get audio_scrobblers => 'Аудіо скробблери';
 
   @override
   String get scrobbling => 'Скроблінг';
+
+  @override
+  String get source => 'Джерело: ';
+
+  @override
+  String get uncompressed => 'Без стиснення';
+
+  @override
+  String get dab_music_source_description =>
+      'Для аудіофілів. Забезпечує високоякісні/без втрат аудіопотоки. Точна відповідність треків на основі ISRC.';
 }

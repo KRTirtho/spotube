@@ -10,8 +10,10 @@ class MetadataPluginScrobbleNotifier
   @override
   build() {
     final metadataPlugin = ref.watch(metadataPluginProvider);
-    final pluginConfig =
-        ref.watch(metadataPluginsProvider).valueOrNull?.defaultPluginConfig;
+    final pluginConfig = ref
+        .watch(metadataPluginsProvider)
+        .valueOrNull
+        ?.defaultMetadataPluginConfig;
 
     if (metadataPlugin.valueOrNull == null ||
         pluginConfig == null ||

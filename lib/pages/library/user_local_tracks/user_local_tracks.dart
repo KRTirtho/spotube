@@ -13,7 +13,6 @@ import 'package:spotube/extensions/context.dart';
 import 'package:spotube/provider/local_tracks/local_tracks_provider.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/utils/platform.dart';
-// ignore: depend_on_referenced_packages
 
 enum SortBy {
   none,

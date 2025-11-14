@@ -477,5 +477,18 @@
   "available_plugins": "Dostupné pluginy",
   "configure_your_own_metadata_plugin": "Nakonfigurujte si vlastního poskytovatele metadat pro playlist/album/umělec/fid",
   "audio_scrobblers": "Audio scrobblers",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Formát stahování hudby",
+  "streaming_music_format": "Formát streamování hudby",
+  "download_music_quality": "Kvalita stahování hudby",
+  "streaming_music_quality": "Kvalita streamování hudby",
+  "default_metadata_source": "Výchozí zdroj metadat",
+  "set_default_metadata_source": "Nastavit výchozí zdroj metadat",
+  "default_audio_source": "Výchozí zdroj zvuku",
+  "set_default_audio_source": "Nastavit výchozí zdroj zvuku",
+  "plugins": "Pluginy",
+  "configure_plugins": "Konfigurujte své vlastní pluginy poskytovatele metadat a zdroje zvuku",
+  "source": "Zdroj: ",
+  "uncompressed": "Nekomprimováno",
+  "dab_music_source_description": "Pro audiofily. Poskytuje vysoce kvalitní/bezztrátové zvukové toky. Přesná shoda skladeb na základě ISRC."
 }

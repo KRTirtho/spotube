@@ -477,5 +477,18 @@
   "available_plugins": "Mevcut eklentiler",
   "configure_your_own_metadata_plugin": "Kendi çalma listenizi/albümünüzü/sanatçınızı/akış meta veri sağlayıcınızı yapılandırın",
   "audio_scrobblers": "Ses Scrobbler'lar",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Müzik indirme formatı",
+  "streaming_music_format": "Müzik akış formatı",
+  "download_music_quality": "İndirilen müzik kalitesi",
+  "streaming_music_quality": "Yayınlanan müzik kalitesi",
+  "default_metadata_source": "Varsayılan meta veri kaynağı",
+  "set_default_metadata_source": "Varsayılan meta veri kaynağını ayarla",
+  "default_audio_source": "Varsayılan ses kaynağı",
+  "set_default_audio_source": "Varsayılan ses kaynağını ayarla",
+  "plugins": "Eklentiler",
+  "configure_plugins": "Kendi meta veri sağlayıcı ve ses kaynağı eklentilerinizi yapılandırın",
+  "source": "Kaynak: ",
+  "uncompressed": "Sıkıştırılmamış",
+  "dab_music_source_description": "Audiophile'ler için. Yüksek kaliteli/kayıpsız ses akışları sağlar. Doğru ISRC tabanlı parça eşleştirme."
 }

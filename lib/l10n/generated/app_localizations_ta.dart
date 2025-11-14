@@ -879,10 +879,16 @@ class AppLocalizationsTa extends AppLocalizations {
   String get restore_defaults => 'இயல்புநிலைகளை மீட்டமை';
 
   @override
-  String get download_music_codec => 'இசை கோடெக்கை பதிவிறக்கு';
+  String get download_music_format => 'இசை பதிவிறக்க வடிவம்';
 
   @override
-  String get streaming_music_codec => 'இசை கோடெக்கை ஸ்ட்ரீம் செய்';
+  String get streaming_music_format => 'இசை ஸ்ட்ரீமிங் வடிவம்';
+
+  @override
+  String get download_music_quality => 'பதிவிறக்க தரம்';
+
+  @override
+  String get streaming_music_quality => 'ஸ்ட்ரீமிங் தரம்';
 
   @override
   String get login_with_lastfm => 'Last.fm உடன் உள்நுழைக';
@@ -1455,7 +1461,17 @@ class AppLocalizationsTa extends AppLocalizations {
       'இந்த பிளகின் உங்கள் கேட்பதின் வரலாற்றை உருவாக்க உங்கள் இசையை ஸ்க்ரோப்ள் செய்கிறது.';
 
   @override
-  String get default_plugin => 'இயல்புநிலை';
+  String get default_metadata_source => 'இயல்புநிலை மெட்டாடேட்டா மூலம்';
+
+  @override
+  String get set_default_metadata_source =>
+      'இயல்புநிலை மெட்டாடேட்டா மூலத்தை அமை';
+
+  @override
+  String get default_audio_source => 'இயல்புநிலை ஆடியோ மூலம்';
+
+  @override
+  String get set_default_audio_source => 'இயல்புநிலை ஆடியோ மூலத்தை அமை';
 
   @override
   String get set_default => 'இயல்புநிலையாக அமைக்கவும்';
@@ -1517,7 +1533,7 @@ class AppLocalizationsTa extends AppLocalizations {
       'உள்ளீடு தேவையான வடிவத்துடன் பொருந்தவில்லை';
 
   @override
-  String get metadata_provider_plugins => 'மெட்டாடேட்டா வழங்குநர் பிளகின்கள்';
+  String get plugins => 'செருகுநிரல்கள்';
 
   @override
   String get paste_plugin_download_url =>
@@ -1542,12 +1558,22 @@ class AppLocalizationsTa extends AppLocalizations {
   String get available_plugins => 'கிடைக்கக்கூடிய பிளகின்கள்';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'உங்கள் சொந்த பிளேலிஸ்ட்/ஆல்பம்/கலைஞர்/ஊட்ட மெட்டாடேட்டா வழங்குநரை உள்ளமைக்கவும்';
+  String get configure_plugins =>
+      'உங்கள் சொந்த மெட்டாடேட்டா வழங்குநர் மற்றும் ஆடியோ மூல செருகுநிரல்களை அமைக்கவும்';
 
   @override
   String get audio_scrobblers => 'ஆடியோ ஸ்க்ரோப்ளர்கள்';
 
   @override
   String get scrobbling => 'ஸ்க்ரோப்ளிங்';
+
+  @override
+  String get source => 'மூலம்: ';
+
+  @override
+  String get uncompressed => 'அழுத்தப்படாத';
+
+  @override
+  String get dab_music_source_description =>
+      'ஆடியோஃபைல்களுக்காக. உயர்தர/லாஸ்லெஸ் ஆடியோ ஸ்ட்ரீம்களை வழங்குகிறது. ISRC அடிப்படையில் துல்லியமான பாடல் பொருத்தம்.';
 }

@@ -477,5 +477,19 @@
   "available_plugins": "Beschikbare plugins",
   "configure_your_own_metadata_plugin": "Configureer uw eigen metadata-aanbieder voor afspeellijst/album/artiest/feed",
   "audio_scrobblers": "Audioscrobblers",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Download muziekformaat",
+  "streaming_music_format": "Streaming muziekformaat",
+  "download_music_quality": "Downloadkwaliteit",
+  "streaming_music_quality": "Streamingkwaliteit",
+  "default_metadata_source": "Standaard metadata-bron",
+  "set_default_metadata_source": "Standaard metadata-bron instellen",
+  "default_audio_source": "Standaard audiobron",
+  "set_default_audio_source": "Standaard audiobron instellen",
+  "plugins": "Plug-ins",
+  "configure_plugins": "Configureer je eigen metadata- en audiobron-plug-ins",
+  "source": "Bron: ",
+  "uncompressed": "Ongecomprimeerd",
+  "dab_music_source_description": "Voor audiofielen. Biedt hoge kwaliteit/lossless audiostreams. Nauwkeurige trackmatching op basis van ISRC.",
+  "audio_source": "Audiobron"
 }

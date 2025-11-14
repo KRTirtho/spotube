@@ -876,10 +876,16 @@ class AppLocalizationsEu extends AppLocalizations {
   String get restore_defaults => 'Berrezarri berezko balioak';
 
   @override
-  String get download_music_codec => 'Deskargatutako musikaren codec-a';
+  String get download_music_format => 'Musika deskargatzeko formatua';
 
   @override
-  String get streaming_music_codec => 'Streaming musikaren codec-a';
+  String get streaming_music_format => 'Musika streaming bidezko formatua';
+
+  @override
+  String get download_music_quality => 'Musika deskargaren kalitatea';
+
+  @override
+  String get streaming_music_quality => 'Streaming bidezko musika kalitatea';
 
   @override
   String get login_with_lastfm => 'Hasi saioa Last.fm-n';
@@ -1451,7 +1457,17 @@ class AppLocalizationsEu extends AppLocalizations {
       'Plugin honek zure musika scrobbled egiten du zure entzuteen historia sortzeko.';
 
   @override
-  String get default_plugin => 'Lehenetsia';
+  String get default_metadata_source => 'Metadatu-iturburu lehenetsia';
+
+  @override
+  String get set_default_metadata_source =>
+      'Ezarri metadatu-iturburu lehenetsia';
+
+  @override
+  String get default_audio_source => 'Audio-iturburu lehenetsia';
+
+  @override
+  String get set_default_audio_source => 'Ezarri audio-iturburu lehenetsia';
 
   @override
   String get set_default => 'Lehenetsi gisa ezarri';
@@ -1515,7 +1531,7 @@ class AppLocalizationsEu extends AppLocalizations {
       'Sarrera ezin da beharrezko formatutik desberdina izan';
 
   @override
-  String get metadata_provider_plugins => 'Metadaten hornitzailearen pluginak';
+  String get plugins => 'Pluginak';
 
   @override
   String get paste_plugin_download_url =>
@@ -1540,12 +1556,22 @@ class AppLocalizationsEu extends AppLocalizations {
   String get available_plugins => 'Eskaintzen diren pluginak';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Konfiguratu zureko playlists-/album-/artista-/feed-metadaten hornitzailea';
+  String get configure_plugins =>
+      'Konfiguratu zure metadatu-hornitzaile eta audio-iturburu pluginak';
 
   @override
   String get audio_scrobblers => 'Audio scrobbler-ak';
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Iturburua: ';
+
+  @override
+  String get uncompressed => 'Konprimitu gabea';
+
+  @override
+  String get dab_music_source_description =>
+      'Audiozaleentzat. Kalitate handiko/galerarik gabeko audio-streamak eskaintzen ditu. ISRC oinarritutako pistaren parekatze zehatza.';
 }

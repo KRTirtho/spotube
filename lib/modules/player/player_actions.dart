@@ -43,8 +43,12 @@ class PlayerActions extends HookConsumerWidget {
     final downloader = ref.watch(downloadManagerProvider.notifier);
     final isInQueue = useMemoized(() {
       if (playlist.activeTrack is! SpotubeFullTrackObject) return false;
-      return downloader
-          .isActive(playlist.activeTrack! as SpotubeFullTrackObject);
+      final downloadTask =
+          downloader.getTaskByTrackId(playlist.activeTrack!.id);
+      return const [
+        DownloadStatus.queued,
+        DownloadStatus.downloading,
+      ].contains(downloadTask?.status);
     }, [
       playlist.activeTrack,
       downloader,

@@ -31,7 +31,7 @@ void useGlobalSubscriptions(WidgetRef ref) {
           showDialog(
             context: context,
             builder: (context) => MetadataPluginUpdateAvailableDialog(
-              plugin: pluginConfig.defaultPluginConfig!,
+              plugin: pluginConfig.defaultMetadataPluginConfig!,
               update: pluginUpdate,
             ),
           );

@@ -870,10 +870,16 @@ class AppLocalizationsFa extends AppLocalizations {
   String get restore_defaults => 'بازیابی پیش فرض ها';
 
   @override
-  String get download_music_codec => 'دانلود کدک موسیقی';
+  String get download_music_format => 'فرمت دانلود موسیقی';
 
   @override
-  String get streaming_music_codec => 'کدک موسیقی استریمینگ';
+  String get streaming_music_format => 'فرمت پخش آنلاین موسیقی';
+
+  @override
+  String get download_music_quality => 'کیفیت دانلود موسیقی';
+
+  @override
+  String get streaming_music_quality => 'کیفیت پخش آنلاین موسیقی';
 
   @override
   String get login_with_lastfm => 'ورود با Last.fm';
@@ -1441,7 +1447,16 @@ class AppLocalizationsFa extends AppLocalizations {
       'این افزونه موسیقی شما را اسکراب می‌کند تا تاریخچهٔ شنیداری‌تان را تولید کند.';
 
   @override
-  String get default_plugin => 'پیش‌فرض';
+  String get default_metadata_source => 'منبع پیش‌فرض فراداده';
+
+  @override
+  String get set_default_metadata_source => 'تنظیم منبع پیش‌فرض فراداده';
+
+  @override
+  String get default_audio_source => 'منبع پیش‌فرض صوت';
+
+  @override
+  String get set_default_audio_source => 'تنظیم منبع پیش‌فرض صوت';
 
   @override
   String get set_default => 'تنظیم به عنوان پیش‌فرض';
@@ -1503,7 +1518,7 @@ class AppLocalizationsFa extends AppLocalizations {
       'ورودی با قالب مورد نیاز تطابق ندارد';
 
   @override
-  String get metadata_provider_plugins => 'افزونه‌های ارائه‌دهندهٔ متادیتا';
+  String get plugins => 'افزونه‌ها';
 
   @override
   String get paste_plugin_download_url =>
@@ -1528,12 +1543,22 @@ class AppLocalizationsFa extends AppLocalizations {
   String get available_plugins => 'افزونه‌های موجود';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'پیکربندی ارائه‌دهندهٔ متادیتا برای پلی‌لیست/آلبوم/هنرمند/فید به‌صورت سفارشی';
+  String get configure_plugins =>
+      'افزونه‌های منبع صوت و ارائه‌دهنده فراداده خود را پیکربندی کنید';
 
   @override
   String get audio_scrobblers => 'اسکراب‌بلرهای صوتی';
 
   @override
   String get scrobbling => 'اسکراب‌بلینگ';
+
+  @override
+  String get source => 'منبع: ';
+
+  @override
+  String get uncompressed => 'بدون فشرده‌سازی';
+
+  @override
+  String get dab_music_source_description =>
+      'مخصوص علاقه‌مندان صدا. ارائه‌دهنده استریم‌های باکیفیت/بدون افت. تطبیق دقیق آهنگ بر اساس ISRC.';
 }

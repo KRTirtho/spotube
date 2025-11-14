@@ -873,10 +873,16 @@ class AppLocalizationsBn extends AppLocalizations {
   String get restore_defaults => 'ডিফল্ট সেটিংস পুনরুদ্ধার করুন';
 
   @override
-  String get download_music_codec => 'সঙ্গীত কোডেক ডাউনলোড করুন';
+  String get download_music_format => 'গান ডাউনলোডের বিন্যাস';
 
   @override
-  String get streaming_music_codec => 'স্ট্রিমিং সঙ্গীত কোডেক';
+  String get streaming_music_format => 'গান স্ট্রিমিং এর বিন্যাস';
+
+  @override
+  String get download_music_quality => 'গান ডাউনলোডের মান';
+
+  @override
+  String get streaming_music_quality => 'গান স্ট্রিমিং এর মান';
 
   @override
   String get login_with_lastfm => 'Last.fm দিয়ে লগইন করুন';
@@ -1443,7 +1449,16 @@ class AppLocalizationsBn extends AppLocalizations {
       'এই প্লাগইনটি আপনার সঙ্গীত স্ক্রোব্বল করে আপনার শোনা ইতিহাস তৈরি করে।';
 
   @override
-  String get default_plugin => 'ডিফল্ট';
+  String get default_metadata_source => 'ডিফল্ট মেটাডেটা উৎস';
+
+  @override
+  String get set_default_metadata_source => 'ডিফল্ট মেটাডেটা উৎস সেট করুন';
+
+  @override
+  String get default_audio_source => 'ডিফল্ট অডিও উৎস';
+
+  @override
+  String get set_default_audio_source => 'ডিফল্ট অডিও উৎস সেট করুন';
 
   @override
   String get set_default => 'ডিফল্ট হিসাবে নির্ধারণ করুন';
@@ -1505,7 +1520,7 @@ class AppLocalizationsBn extends AppLocalizations {
       'ইনপুট প্রয়োজনীয় ফরম্যাটের সাথে মেলে না';
 
   @override
-  String get metadata_provider_plugins => 'মেটাডেটা প্রদানকারী প্লাগইনসমূহ';
+  String get plugins => 'প্লাগইন';
 
   @override
   String get paste_plugin_download_url =>
@@ -1530,12 +1545,22 @@ class AppLocalizationsBn extends AppLocalizations {
   String get available_plugins => 'উপলব্ধ প্লাগইনগুলো';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'নিজস্ব প্লেলিস্ট/অ্যালবাম/শিল্পী/ফিড মেটাডেটা প্রদানকারী কনফিগার করুন';
+  String get configure_plugins =>
+      'আপনার নিজের মেটাডেটা প্রদানকারী এবং অডিও উৎস প্লাগইন কনফিগার করুন';
 
   @override
   String get audio_scrobblers => 'অডিও স্ক্রোব্বলার্স';
 
   @override
   String get scrobbling => 'স্ক্রোব্বলিং';
+
+  @override
+  String get source => 'উৎস: ';
+
+  @override
+  String get uncompressed => 'অ-সংকুচিত';
+
+  @override
+  String get dab_music_source_description =>
+      'অডিওফাইলদের জন্য। উচ্চ-মানের/লসলেস অডিও স্ট্রিম প্রদান করে। সঠিক ISRC ভিত্তিক ট্র্যাক ম্যাচিং।';
 }

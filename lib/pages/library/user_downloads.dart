@@ -14,9 +14,8 @@ class UserDownloadsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final downloadManager = ref.watch(downloadManagerProvider);
-
-    final history = downloadManager.$backHistory;
+    final downloadQueue = ref.watch(downloadManagerProvider);
+    final downloadManagerNotifier = ref.watch(downloadManagerProvider.notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,16 +27,15 @@ class UserDownloadsPage extends HookConsumerWidget {
             children: [
               Expanded(
                 child: AutoSizeText(
-                  context.l10n
-                      .currently_downloading(downloadManager.$downloadCount),
+                  context.l10n.currently_downloading(downloadQueue.length),
                   maxLines: 1,
                 ).semiBold(),
               ),
               const SizedBox(width: 10),
               Button.destructive(
-                onPressed: downloadManager.$downloadCount == 0
+                onPressed: downloadQueue.isEmpty
                     ? null
-                    : downloadManager.cancelAll,
+                    : downloadManagerNotifier.clearAll,
                 child: Text(context.l10n.cancel_all),
               ),
             ],
@@ -46,9 +44,12 @@ class UserDownloadsPage extends HookConsumerWidget {
         Expanded(
           child: SafeArea(
             child: ListView.builder(
-              itemCount: history.length,
+              itemCount: downloadQueue.length,
+              padding: const EdgeInsets.only(bottom: 200),
               itemBuilder: (context, index) {
-                return DownloadItem(track: history.elementAt(index));
+                return DownloadItem(
+                  task: downloadQueue.elementAt(index),
+                );
               },
             ),
           ),

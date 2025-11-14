@@ -861,10 +861,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get restore_defaults => '設定を初期化';
 
   @override
-  String get download_music_codec => 'ダウンロード用の音声コーデック';
+  String get download_music_format => '音楽ダウンロード形式';
 
   @override
-  String get streaming_music_codec => 'ストリーミング用の音声コーデック';
+  String get streaming_music_format => '音楽ストリーミング形式';
+
+  @override
+  String get download_music_quality => '音楽ダウンロード品質';
+
+  @override
+  String get streaming_music_quality => '音楽ストリーミング品質';
 
   @override
   String get login_with_lastfm => 'Last.fmでログイン';
@@ -1416,7 +1422,16 @@ class AppLocalizationsJa extends AppLocalizations {
   String get plugin_scrobbling_info => 'このプラグインは、あなたの音楽をscrobbleして視聴履歴を生成します。';
 
   @override
-  String get default_plugin => 'デフォルト';
+  String get default_metadata_source => 'デフォルトメタデータソース';
+
+  @override
+  String get set_default_metadata_source => 'デフォルトメタデータソースを設定';
+
+  @override
+  String get default_audio_source => 'デフォルトオーディオソース';
+
+  @override
+  String get set_default_audio_source => 'デフォルトオーディオソースを設定';
 
   @override
   String get set_default => 'デフォルトに設定';
@@ -1474,7 +1489,7 @@ class AppLocalizationsJa extends AppLocalizations {
   String get input_does_not_match_format => '入力が必須フォーマットと一致しません';
 
   @override
-  String get metadata_provider_plugins => 'メタデータプロバイダープラグイン';
+  String get plugins => 'プラグイン';
 
   @override
   String get paste_plugin_download_url =>
@@ -1499,12 +1514,21 @@ class AppLocalizationsJa extends AppLocalizations {
   String get available_plugins => '利用可能なプラグイン';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      '独自のプレイリスト/アルバム/アーティスト/フィードのメタデータプロバイダーを構成';
+  String get configure_plugins => '独自のメタデータプロバイダーとオーディオソースプラグインを設定';
 
   @override
   String get audio_scrobblers => 'オーディオスクロッブラー';
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'ソース: ';
+
+  @override
+  String get uncompressed => '非圧縮';
+
+  @override
+  String get dab_music_source_description =>
+      'オーディオファイル向け。高品質/ロスレスオーディオストリームを提供。正確なISRCベースのトラックマッチング。';
 }

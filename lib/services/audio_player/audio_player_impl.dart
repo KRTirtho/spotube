@@ -131,4 +131,8 @@ class SpotubeAudioPlayer extends AudioPlayerInterface
   Future<void> setAudioNormalization(bool normalize) async {
     await _mkPlayer.setAudioNormalization(normalize);
   }
+
+  Future<void> setDemuxerBufferSize(int sizeInBytes) async {
+    await _mkPlayer.setDemuxerBufferSize(sizeInBytes);
+  }
 }

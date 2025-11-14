@@ -477,5 +477,18 @@
   "available_plugins": "Eskaintzen diren pluginak",
   "configure_your_own_metadata_plugin": "Konfiguratu zureko playlists-/album-/artista-/feed-metadaten hornitzailea",
   "audio_scrobblers": "Audio scrobbler-ak",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Musika deskargatzeko formatua",
+  "streaming_music_format": "Musika streaming bidezko formatua",
+  "download_music_quality": "Musika deskargaren kalitatea",
+  "streaming_music_quality": "Streaming bidezko musika kalitatea",
+  "default_metadata_source": "Metadatu-iturburu lehenetsia",
+  "set_default_metadata_source": "Ezarri metadatu-iturburu lehenetsia",
+  "default_audio_source": "Audio-iturburu lehenetsia",
+  "set_default_audio_source": "Ezarri audio-iturburu lehenetsia",
+  "plugins": "Pluginak",
+  "configure_plugins": "Konfiguratu zure metadatu-hornitzaile eta audio-iturburu pluginak",
+  "source": "Iturburua: ",
+  "uncompressed": "Konprimitu gabea",
+  "dab_music_source_description": "Audiozaleentzat. Kalitate handiko/galerarik gabeko audio-streamak eskaintzen ditu. ISRC oinarritutako pistaren parekatze zehatza."
 }

@@ -872,10 +872,16 @@ class AppLocalizationsFi extends AppLocalizations {
   String get restore_defaults => 'Palauta oletukset';
 
   @override
-  String get download_music_codec => 'Ladatun musiikin codefc';
+  String get download_music_format => 'Musiikin latausmuoto';
 
   @override
-  String get streaming_music_codec => 'Suoratoistetun musiikin codec';
+  String get streaming_music_format => 'Musiikin suoratoistomuoto';
+
+  @override
+  String get download_music_quality => 'Musiikin latauslaatu';
+
+  @override
+  String get streaming_music_quality => 'Musiikin suoratoistolaadun';
 
   @override
   String get login_with_lastfm => 'Kirjaudu sisään Last.fm:llä';
@@ -1443,7 +1449,16 @@ class AppLocalizationsFi extends AppLocalizations {
       'Tämä lisäosa scrobblaa musiikkisi luodakseen kuunteluhistoriasi.';
 
   @override
-  String get default_plugin => 'Oletus';
+  String get default_metadata_source => 'Oletusarvoinen metatietolähde';
+
+  @override
+  String get set_default_metadata_source => 'Aseta oletusmetatietolähde';
+
+  @override
+  String get default_audio_source => 'Oletusarvoinen äänilähde';
+
+  @override
+  String get set_default_audio_source => 'Aseta oletusäänilähde';
 
   @override
   String get set_default => 'Aseta oletukseksi';
@@ -1503,7 +1518,7 @@ class AppLocalizationsFi extends AppLocalizations {
   String get input_does_not_match_format => 'Syöte ei vastaa vaadittua muotoa';
 
   @override
-  String get metadata_provider_plugins => 'Metatietojen tarjoajan lisäosat';
+  String get plugins => 'Laajennukset';
 
   @override
   String get paste_plugin_download_url =>
@@ -1528,12 +1543,22 @@ class AppLocalizationsFi extends AppLocalizations {
   String get available_plugins => 'Saatavilla olevat lisäosat';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Määritä oma soittolistan/albumin/artistin/syötteen metatietojen tarjoaja';
+  String get configure_plugins =>
+      'Määritä omat metatietojen tarjoaja- ja äänilähdelaajennukset';
 
   @override
   String get audio_scrobblers => 'Äänen scrobblerit';
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Lähde: ';
+
+  @override
+  String get uncompressed => 'Pakkaamaton';
+
+  @override
+  String get dab_music_source_description =>
+      'Audiofiileille. Tarjoaa korkealaatuisia/häviöttömiä äänivirtoja. Tarkka ISRC-pohjainen kappaleiden tunnistus.';
 }

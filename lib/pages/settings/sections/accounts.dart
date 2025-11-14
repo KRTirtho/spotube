@@ -21,8 +21,8 @@ class SettingsAccountSection extends HookConsumerWidget {
       children: [
         ListTile(
           leading: const Icon(SpotubeIcons.extensions),
-          title: Text(context.l10n.metadata_provider_plugins),
-          subtitle: Text(context.l10n.configure_your_own_metadata_plugin),
+          title: Text(context.l10n.plugins),
+          subtitle: Text(context.l10n.configure_plugins),
           onTap: () {
             context.pushRoute(const SettingsMetadataProviderRoute());
           },

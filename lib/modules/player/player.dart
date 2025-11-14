@@ -21,11 +21,9 @@ import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
+import 'package:spotube/provider/metadata_plugin/audio_source/quality_label.dart';
 import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/volume_provider.dart';
-import 'package:spotube/services/sourced_track/sources/youtube.dart';
-
-import 'package:url_launcher/url_launcher_string.dart';
 
 class PlayerView extends HookConsumerWidget {
   final PanelController panelController;
@@ -45,6 +43,7 @@ class PlayerView extends HookConsumerWidget {
     final currentActiveTrackSource = sourcedCurrentTrack.asData?.value?.source;
     final isLocalTrack = currentActiveTrack is SpotubeLocalTrackObject;
     final mediaQuery = MediaQuery.sizeOf(context);
+    final qualityLabel = ref.watch(audioSourceQualityLabelProvider);
 
     final shouldHide = useState(true);
 
@@ -109,22 +108,6 @@ class PlayerView extends HookConsumerWidget {
                   )
                 ],
                 trailing: [
-                  if (currentActiveTrackSource is YoutubeSourcedTrack)
-                    TextButton(
-                      size: const ButtonSize(1.2),
-                      leading: Assets.images.logos.songlinkTransparent.image(
-                        width: 20,
-                        height: 20,
-                        color: theme.colorScheme.foreground,
-                      ),
-                      onPressed: () {
-                        final url =
-                            "https://song.link/s/${currentActiveTrack?.id}";
-
-                        launchUrlString(url);
-                      },
-                      child: Text(context.l10n.song_link),
-                    ),
                   if (!isLocalTrack)
                     Tooltip(
                       tooltip: TooltipContainer(
@@ -267,6 +250,20 @@ class PlayerView extends HookConsumerWidget {
                       );
                     }),
                   ),
+                  const Gap(25),
+                  OutlineBadge(
+                    style: const ButtonStyle.outline(
+                      size: ButtonSize.normal,
+                      density: ButtonDensity.dense,
+                      shape: ButtonShape.rectangle,
+                    ).copyWith(
+                      textStyle: (context, states, value) {
+                        return value.copyWith(fontWeight: FontWeight.w500);
+                      },
+                    ),
+                    leading: const Icon(SpotubeIcons.lightningOutlined),
+                    child: Text(qualityLabel),
+                  )
                 ],
               ),
             ),

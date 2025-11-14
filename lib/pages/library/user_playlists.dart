@@ -83,7 +83,7 @@ class UserPlaylistsPage extends HookConsumerWidget {
 
     if (playlistsQuery.error
         case MetadataPluginException(
-          errorCode: MetadataPluginErrorCode.noDefaultPlugin,
+          errorCode: MetadataPluginErrorCode.noDefaultMetadataPlugin,
           message: _,
         )) {
       return const Center(child: NoDefaultMetadataPlugin());

@@ -875,10 +875,16 @@ class AppLocalizationsVi extends AppLocalizations {
   String get restore_defaults => 'Khôi phục mặc định';
 
   @override
-  String get download_music_codec => 'Định dạng tải xuống';
+  String get download_music_format => 'Định dạng nhạc tải về';
 
   @override
-  String get streaming_music_codec => 'Định dạng nghe';
+  String get streaming_music_format => 'Định dạng nhạc phát trực tuyến';
+
+  @override
+  String get download_music_quality => 'Chất lượng nhạc tải về';
+
+  @override
+  String get streaming_music_quality => 'Chất lượng nhạc phát trực tuyến';
 
   @override
   String get login_with_lastfm => 'Đăng nhập bằng tài khoản Last.fm';
@@ -1450,7 +1456,16 @@ class AppLocalizationsVi extends AppLocalizations {
       'Plugin này scrobble nhạc của bạn để tạo lịch sử nghe của bạn.';
 
   @override
-  String get default_plugin => 'Mặc định';
+  String get default_metadata_source => 'Nguồn siêu dữ liệu mặc định';
+
+  @override
+  String get set_default_metadata_source => 'Đặt nguồn siêu dữ liệu mặc định';
+
+  @override
+  String get default_audio_source => 'Nguồn âm thanh mặc định';
+
+  @override
+  String get set_default_audio_source => 'Đặt nguồn âm thanh mặc định';
 
   @override
   String get set_default => 'Đặt làm mặc định';
@@ -1513,7 +1528,7 @@ class AppLocalizationsVi extends AppLocalizations {
       'Đầu vào không khớp với định dạng yêu cầu';
 
   @override
-  String get metadata_provider_plugins => 'Plugin Nhà cung cấp siêu dữ liệu';
+  String get plugins => 'Tiện ích bổ sung';
 
   @override
   String get paste_plugin_download_url =>
@@ -1538,12 +1553,22 @@ class AppLocalizationsVi extends AppLocalizations {
   String get available_plugins => 'Các plugin có sẵn';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Cấu hình nhà cung cấp siêu dữ liệu danh sách phát/album/nghệ sĩ/nguồn cấp dữ liệu của riêng bạn';
+  String get configure_plugins =>
+      'Cấu hình nhà cung cấp siêu dữ liệu và tiện ích nguồn âm thanh riêng';
 
   @override
   String get audio_scrobblers => 'Bộ scrobbler âm thanh';
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Nguồn: ';
+
+  @override
+  String get uncompressed => 'Không nén';
+
+  @override
+  String get dab_music_source_description =>
+      'Dành cho người yêu âm nhạc chất lượng cao. Cung cấp luồng âm thanh chất lượng cao/không nén. Phù hợp bài hát dựa trên ISRC chính xác.';
 }

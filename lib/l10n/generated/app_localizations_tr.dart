@@ -875,10 +875,16 @@ class AppLocalizationsTr extends AppLocalizations {
   String get restore_defaults => 'Varsayılanları geri yükle';
 
   @override
-  String get download_music_codec => 'Müzik codec bileşenini indir';
+  String get download_music_format => 'Müzik indirme formatı';
 
   @override
-  String get streaming_music_codec => 'Müzik codec\'i akışı';
+  String get streaming_music_format => 'Müzik akış formatı';
+
+  @override
+  String get download_music_quality => 'İndirilen müzik kalitesi';
+
+  @override
+  String get streaming_music_quality => 'Yayınlanan müzik kalitesi';
 
   @override
   String get login_with_lastfm => 'Last.fm ile giriş yap';
@@ -1450,7 +1456,17 @@ class AppLocalizationsTr extends AppLocalizations {
       'Bu eklenti, dinleme geçmişinizi oluşturmak için müziğinizi scrobble eder.';
 
   @override
-  String get default_plugin => 'Varsayılan';
+  String get default_metadata_source => 'Varsayılan meta veri kaynağı';
+
+  @override
+  String get set_default_metadata_source =>
+      'Varsayılan meta veri kaynağını ayarla';
+
+  @override
+  String get default_audio_source => 'Varsayılan ses kaynağı';
+
+  @override
+  String get set_default_audio_source => 'Varsayılan ses kaynağını ayarla';
 
   @override
   String get set_default => 'Varsayılan olarak ayarla';
@@ -1511,7 +1527,7 @@ class AppLocalizationsTr extends AppLocalizations {
   String get input_does_not_match_format => 'Girdi, gerekli biçimle eşleşmiyor';
 
   @override
-  String get metadata_provider_plugins => 'Meta Veri Sağlayıcısı Eklentileri';
+  String get plugins => 'Eklentiler';
 
   @override
   String get paste_plugin_download_url =>
@@ -1536,12 +1552,22 @@ class AppLocalizationsTr extends AppLocalizations {
   String get available_plugins => 'Mevcut eklentiler';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Kendi çalma listenizi/albümünüzü/sanatçınızı/akış meta veri sağlayıcınızı yapılandırın';
+  String get configure_plugins =>
+      'Kendi meta veri sağlayıcı ve ses kaynağı eklentilerinizi yapılandırın';
 
   @override
   String get audio_scrobblers => 'Ses Scrobbler\'lar';
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Kaynak: ';
+
+  @override
+  String get uncompressed => 'Sıkıştırılmamış';
+
+  @override
+  String get dab_music_source_description =>
+      'Audiophile\'ler için. Yüksek kaliteli/kayıpsız ses akışları sağlar. Doğru ISRC tabanlı parça eşleştirme.';
 }

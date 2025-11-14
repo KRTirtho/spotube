@@ -477,5 +477,18 @@
   "available_plugins": "Saatavilla olevat lisäosat",
   "configure_your_own_metadata_plugin": "Määritä oma soittolistan/albumin/artistin/syötteen metatietojen tarjoaja",
   "audio_scrobblers": "Äänen scrobblerit",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Musiikin latausmuoto",
+  "streaming_music_format": "Musiikin suoratoistomuoto",
+  "download_music_quality": "Musiikin latauslaatu",
+  "streaming_music_quality": "Musiikin suoratoistolaadun",
+  "default_metadata_source": "Oletusarvoinen metatietolähde",
+  "set_default_metadata_source": "Aseta oletusmetatietolähde",
+  "default_audio_source": "Oletusarvoinen äänilähde",
+  "set_default_audio_source": "Aseta oletusäänilähde",
+  "plugins": "Laajennukset",
+  "configure_plugins": "Määritä omat metatietojen tarjoaja- ja äänilähdelaajennukset",
+  "source": "Lähde: ",
+  "uncompressed": "Pakkaamaton",
+  "dab_music_source_description": "Audiofiileille. Tarjoaa korkealaatuisia/häviöttömiä äänivirtoja. Tarkka ISRC-pohjainen kappaleiden tunnistus."
 }

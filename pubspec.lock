@@ -82,7 +82,7 @@ packages:
     source: hosted
     version: "1.6.5"
   async:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: async
       sha256: "758e6d74e971c3e5aceb4110bfd6698efc7f501675bcfe0c775459a8140750eb"
@@ -154,7 +154,7 @@ packages:
     source: hosted
     version: "3.0.0"
   base32:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: base32
       sha256: "37548444aaee8bd5e91db442ce69ee3a79d3652ed47c1fa7568aa3bb9af0aea5"
@@ -315,7 +315,7 @@ packages:
     source: hosted
     version: "1.3.1"
   change_case:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: change_case
       sha256: f4e08feaa845e75e4f5ad2b0e15f24813d7ea6c27e7b78252f0c17f752cf1157
@@ -422,10 +422,10 @@ packages:
     dependency: transitive
     description:
       name: country_flags
-      sha256: "78a7bf8aabd7ae1a90087f0c517471ac9ebfe07addc652692f58da0f0f833196"
+      sha256: "714f2d415e74828eb08787d552a05e94cdf2cbe0607a5656f3e70087cd7bb7e0"
       url: "https://pub.dev"
     source: hosted
-    version: "3.3.0"
+    version: "4.1.0"
   coverage:
     dependency: transitive
     description:
@@ -446,23 +446,15 @@ packages:
     dependency: transitive
     description:
       name: crypto
-      sha256: "1e445881f28f22d6140f181e07737b22f1e099a5e1ff94b0af2f9e4a463f4855"
+      sha256: c8ea0233063ba03258fbcf2ca4d6dadfefe14f02fab57702265467a19f27fadf
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.6"
+    version: "3.0.7"
   csslib:
     dependency: transitive
     description:
       name: csslib
       sha256: "09bad715f418841f976c77db72d5398dc1253c21fb9c0c7f0b0b985860b2d58e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
-  dart_des:
-    dependency: transitive
-    description:
-      name: dart_des
-      sha256: "0a66afb8883368c824497fd2a1fd67bdb1a785965a3956728382c03d40747c33"
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
@@ -539,14 +531,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.9.0"
-  dio_http2_adapter:
-    dependency: "direct main"
-    description:
-      name: dio_http2_adapter
-      sha256: b8bd5d587fd228a461711f8b82f378ccd4bf1fbf7802e7663ca60d7b5ce0e3aa
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.6.0"
   dio_web_adapter:
     dependency: transitive
     description:
@@ -963,7 +947,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "916bde44cbead75125e8db842eb46bdcf211a79a"
+      resolved-ref: "898fd4ebcef77f5177b08aa6f9b9047bd02c6b9b"
       url: "https://github.com/KRTirtho/flutter_new_pipe_extractor.git"
     source: git
     version: "0.1.0"
@@ -1090,14 +1074,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "11.2.0"
-  form_validator:
-    dependency: "direct main"
-    description:
-      name: form_validator
-      sha256: "8cbe91b7d5260870d6fb9e23acd55d5d1d1fdf2397f0279a4931ac3c0c7bf8fb"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.1"
   freezed:
     dependency: "direct dev"
     description:
@@ -1136,7 +1112,7 @@ packages:
     source: hosted
     version: "1.2.0"
   gap:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: gap
       sha256: f19387d4e32f849394758b91377f9153a1b41d79513ef7668c088c77dbc6955d
@@ -1159,14 +1135,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
-  google_fonts:
-    dependency: "direct main"
-    description:
-      name: google_fonts
-      sha256: ebc94ed30fd13cefd397cb1658b593f21571f014b7d1197eeb41fb95f05d899a
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.3.1"
   graphs:
     dependency: transitive
     description:
@@ -1221,16 +1189,16 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "01935a75640092af7947bfb21a497240376f0c83"
+      resolved-ref: "32828156bc111d147709f8d644804227bbdfe8f1"
       url: "https://github.com/KRTirtho/hetu_spotube_plugin.git"
     source: git
-    version: "0.0.1"
+    version: "0.0.2"
   hetu_std:
     dependency: "direct main"
     description:
       path: "."
       ref: main
-      resolved-ref: "577ad115dce0514afc53e2b3ab7b96bcd88d3be3"
+      resolved-ref: "401fde426339cf8f1e00dee22cc95f64c3e60053"
       url: "https://github.com/hetu-community/hetu_std.git"
     source: git
     version: "1.0.0"
@@ -1274,14 +1242,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
-  http2:
-    dependency: transitive
-    description:
-      name: http2
-      sha256: "382d3aefc5bd6dc68c6b892d7664f29b5beb3251611ae946a98d35158a82bbfa"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.3.1"
   http_methods:
     dependency: transitive
     description:
@@ -1399,14 +1359,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.2"
-  invidious:
-    dependency: "direct main"
-    description:
-      name: invidious
-      sha256: "27ef3a001df875665de15535dbc9099f44d12a59480018fb1e17377d4af0308d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
   io:
     dependency: "direct dev"
     description:
@@ -1415,30 +1367,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
-  irondash_engine_context:
-    dependency: transitive
-    description:
-      name: irondash_engine_context
-      sha256: "2bb0bc13dfda9f5aaef8dde06ecc5feb1379f5bb387d59716d799554f3f305d7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.5"
-  irondash_message_channel:
-    dependency: transitive
-    description:
-      name: irondash_message_channel
-      sha256: b4101669776509c76133b8917ab8cfc704d3ad92a8c450b92934dd8884a2f060
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.7.0"
-  jiosaavn:
-    dependency: "direct main"
-    description:
-      name: jiosaavn
-      sha256: d32b4f43f26488f942f5d7d19d748a1f2664ae3d41ff9c7d50eeb81705174bd2
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
   jovial_misc:
     dependency: transitive
     description:
@@ -1464,7 +1392,7 @@ packages:
     source: hosted
     version: "0.6.7"
   json_annotation:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: json_annotation
       sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
@@ -1572,34 +1500,34 @@ packages:
     description:
       path: media_kit
       ref: HEAD
-      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      resolved-ref: d310049f24196250d876efb02b9ff56fa9ef5068
       url: "https://github.com/media-kit/media-kit"
     source: git
-    version: "1.2.0"
+    version: "1.2.1"
   media_kit_libs_android_audio:
     dependency: "direct overridden"
     description:
       path: "libs/android/media_kit_libs_android_audio"
       ref: HEAD
-      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      resolved-ref: d310049f24196250d876efb02b9ff56fa9ef5068
       url: "https://github.com/media-kit/media-kit"
     source: git
-    version: "1.3.7"
+    version: "1.3.8"
   media_kit_libs_audio:
     dependency: "direct main"
     description:
       path: "libs/universal/media_kit_libs_audio"
       ref: HEAD
-      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      resolved-ref: d310049f24196250d876efb02b9ff56fa9ef5068
       url: "https://github.com/media-kit/media-kit"
     source: git
-    version: "1.0.6"
+    version: "1.0.7"
   media_kit_libs_ios_audio:
     dependency: "direct overridden"
     description:
       path: "libs/ios/media_kit_libs_ios_audio"
       ref: HEAD
-      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      resolved-ref: d310049f24196250d876efb02b9ff56fa9ef5068
       url: "https://github.com/media-kit/media-kit"
     source: git
     version: "1.1.4"
@@ -1608,7 +1536,7 @@ packages:
     description:
       path: "libs/linux/media_kit_libs_linux"
       ref: HEAD
-      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      resolved-ref: d310049f24196250d876efb02b9ff56fa9ef5068
       url: "https://github.com/media-kit/media-kit"
     source: git
     version: "1.2.1"
@@ -1617,7 +1545,7 @@ packages:
     description:
       path: "libs/macos/media_kit_libs_macos_audio"
       ref: HEAD
-      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      resolved-ref: d310049f24196250d876efb02b9ff56fa9ef5068
       url: "https://github.com/media-kit/media-kit"
     source: git
     version: "1.1.4"
@@ -1626,7 +1554,7 @@ packages:
     description:
       path: "libs/windows/media_kit_libs_windows_audio"
       ref: HEAD
-      resolved-ref: c9617f570b8c0ba02857e721997f78c053a856c1
+      resolved-ref: d310049f24196250d876efb02b9ff56fa9ef5068
       url: "https://github.com/media-kit/media-kit"
     source: git
     version: "1.0.9"
@@ -1758,14 +1686,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.3"
-  otp_util:
-    dependency: "direct main"
-    description:
-      name: otp_util
-      sha256: dd8956c6472bacc3ffabe62c03f8a9782d1e5a5a3f2674420970f549d642b1cf
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.2"
   package_config:
     dependency: transitive
     description:
@@ -1926,22 +1846,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.4"
-  piped_client:
-    dependency: "direct main"
-    description:
-      name: piped_client
-      sha256: "947613e2a8d368b72cb36473de2c5c2784e4e72b2d3f17e5a5181b98b1a5436e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.2"
-  pixel_snap:
-    dependency: transitive
-    description:
-      name: pixel_snap
-      sha256: "677410ea37b07cd37ecb6d5e6c0d8d7615a7cf3bd92ba406fd1ac57e937d1fb0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.5"
   platform:
     dependency: transitive
     description:
@@ -2034,10 +1938,10 @@ packages:
     dependency: transitive
     description:
       name: random_user_agents
-      sha256: "19facde509a2482dababb454faf2aceff797a6ae08e80f91268c0c8a7420f03b"
+      sha256: "95647149687167e82a7b39e1b4616fdebb574981b71b6f0cfca21b69f36293a8"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.15"
+    version: "1.0.17"
   recase:
     dependency: transitive
     description:
@@ -2131,10 +2035,10 @@ packages:
     dependency: "direct main"
     description:
       name: shadcn_flutter
-      sha256: af83de199b7c3a965ab24e293cfcafe2764c12b7f911f5b1a427c332029262d9
+      sha256: "1fd4f798c39d6308dc8f7e94d9e870b5db39fbf417ea95c423c7555ce8227a1c"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.44"
+    version: "0.0.47"
   shared_preferences:
     dependency: "direct main"
     description:
@@ -2444,30 +2348,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.4.1"
-  stroke_text:
-    dependency: "direct main"
-    description:
-      name: stroke_text
-      sha256: "783fee071e3a3c5d3fe24011d7d776ce3cd64792e01b650c6b727ac3f38cb37b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.3"
-  super_clipboard:
-    dependency: transitive
-    description:
-      name: super_clipboard
-      sha256: e73f3bb7e66cc9260efa1dc507f979138e7e106c3521e2dda2d0311f6d728a16
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.1"
-  super_native_extensions:
-    dependency: transitive
-    description:
-      name: super_native_extensions
-      sha256: b9611dcb68f1047d6f3ef11af25e4e68a21b1a705bbcc3eb8cb4e9f5c3148569
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.9.1"
   sync_http:
     dependency: transitive
     description:
@@ -2484,30 +2364,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.0"
-  syntax_highlight:
-    dependency: transitive
-    description:
-      name: syntax_highlight
-      sha256: "4d3ba40658cadba6ba55d697f29f00b43538ebb6eb4a0ca0e895c568eaced138"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.0"
-  system_theme:
-    dependency: "direct main"
-    description:
-      name: system_theme
-      sha256: "5f93485401689601d4636a695f99f7c70a30873ee68c1d95025d908a3386be7e"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.2"
-  system_theme_web:
-    dependency: transitive
-    description:
-      name: system_theme_web
-      sha256: "900c92c5c050ce58048f241ef9a17e5cd8629808325a05b473dc62a6e99bae77"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.3"
   term_glyph:
     dependency: transitive
     description:
@@ -2517,7 +2373,7 @@ packages:
     source: hosted
     version: "1.2.2"
   test:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: test
       sha256: "65e29d831719be0591f7b3b1a32a3cda258ec98c58c7b25f7b84241bc31215bb"
@@ -2853,7 +2709,7 @@ packages:
     source: hosted
     version: "1.1.0"
   xml:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: xml
       sha256: b015a8ad1c488f66851d762d3090a21c600e479dc75e68328c52774040cf9226
@@ -2872,10 +2728,10 @@ packages:
     dependency: "direct main"
     description:
       name: youtube_explode_dart
-      sha256: "9ff345caf8351c59eb1b7560837f761e08d2beaea3b4187637942715a31a6f58"
+      sha256: add33de45d80c7f71a5e3dd464dd82fafd7fb5ab875fd303c023f30f76618325
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.2"
+    version: "3.0.0"
   yt_dlp_dart:
     dependency: "direct main"
     description:
@@ -2887,4 +2743,4 @@ packages:
     version: "1.0.0"
 sdks:
   dart: ">=3.9.0 <4.0.0"
-  flutter: ">=3.35.1"
+  flutter: ">=3.32.3"

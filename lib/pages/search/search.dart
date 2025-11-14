@@ -85,7 +85,7 @@ class SearchPage extends HookConsumerWidget {
           child: Builder(builder: (context) {
             if (searchChipSnapshot.error
                 case MetadataPluginException(
-                  errorCode: MetadataPluginErrorCode.noDefaultPlugin,
+                  errorCode: MetadataPluginErrorCode.noDefaultMetadataPlugin,
                   message: _
                 )) {
               return const NoDefaultMetadataPlugin();

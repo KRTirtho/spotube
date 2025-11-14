@@ -477,5 +477,18 @@
   "available_plugins": "الإضافات المتوفّرة",
   "configure_your_own_metadata_plugin": "تهيئة مزوّد بيانات للقائمة/الألبوم/الفنان/المصدر خاص بك",
   "audio_scrobblers": "أجهزة تتبع الصوت",
-  "scrobbling": "التتبع"
+  "scrobbling": "التتبع",
+  "download_music_format": "تنسيق تنزيل الموسيقى",
+  "streaming_music_format": "تنسيق بث الموسيقى",
+  "download_music_quality": "جودة تنزيل الموسيقى",
+  "streaming_music_quality": "جودة بث الموسيقى",
+  "default_metadata_source": "مصدر البيانات الوصفية الافتراضي",
+  "set_default_metadata_source": "تعيين مصدر البيانات الوصفية الافتراضي",
+  "default_audio_source": "مصدر الصوت الافتراضي",
+  "set_default_audio_source": "تعيين مصدر الصوت الافتراضي",
+  "plugins": "الإضافات",
+  "configure_plugins": "قم بتكوين مزود البيانات الوصفية ومكونات مصدر الصوت الخاصة بك",
+  "source": "المصدر: ",
+  "uncompressed": "غير مضغوط",
+  "dab_music_source_description": "لمحبي الصوتيات. يوفر تدفقات صوتية عالية الجودة/بدون فقدان. مطابقة دقيقة للمسارات بناءً على ISRC."
 }

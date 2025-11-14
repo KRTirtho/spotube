@@ -9,16 +9,14 @@ list(APPEND FLUTTER_PLUGIN_LIST
   desktop_webview_window
   file_selector_windows
   flutter_inappwebview_windows
+  flutter_new_pipe_extractor
   flutter_secure_storage_windows
   flutter_timezone
-  irondash_engine_context
   local_notifier
   media_kit_libs_windows_audio
   permission_handler_windows
   screen_retriever_windows
   sqlite3_flutter_libs
-  super_native_extensions
-  system_theme
   tray_manager
   url_launcher_windows
   window_manager

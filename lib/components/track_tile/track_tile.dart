@@ -39,6 +39,7 @@ class TrackTile extends HookConsumerWidget {
   final int? index;
   final SpotubeTrackObject track;
   final bool selected;
+  final bool selectionMode;
   final ValueChanged<bool?>? onChanged;
   final Future<void> Function()? onTap;
   final VoidCallback? onLongPress;
@@ -53,6 +54,7 @@ class TrackTile extends HookConsumerWidget {
     this.index,
     required this.track,
     this.selected = false,
+    this.selectionMode = false,
     required this.playlist,
     this.onTap,
     this.onLongPress,
@@ -80,6 +82,12 @@ class TrackTile extends HookConsumerWidget {
       ),
       [track.album.images],
     );
+
+    // Treat either explicit selectionMode or presence of onChanged as selection
+    // context. Some lists enable selection by providing `onChanged` without
+    // toggling a dedicated `selectionMode` flag (e.g. playlists), so we must
+    // disable inner navigation in both cases.
+    final effectiveSelection = selectionMode || onChanged != null;
 
     return LayoutBuilder(builder: (context, constrains) {
       return Listener(
@@ -222,7 +230,9 @@ class TrackTile extends HookConsumerWidget {
               children: [
                 Expanded(
                   flex: 6,
-                  child: switch (track) {
+                  child: AbsorbPointer(
+                    absorbing: selectionMode,
+                    child: switch (track) {
                     SpotubeLocalTrackObject() => Text(
                         track.name,
                         maxLines: 1,
@@ -232,15 +242,17 @@ class TrackTile extends HookConsumerWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Flexible(
-                            child: Button(
-                              style: ButtonVariance.link.copyWith(
-                                padding: (context, states, value) =>
-                                    EdgeInsets.zero,
-                              ),
-                              onPressed: () {
-                                context
-                                    .navigateTo(TrackRoute(trackId: track.id));
-                              },
+                child: Button(
+                style: ButtonVariance.link.copyWith(
+                padding: (context, states, value) =>
+                  EdgeInsets.zero,
+                ),
+                onPressed: effectiveSelection
+                  ? null
+                  : () {
+                    context
+                      .navigateTo(TrackRoute(trackId: track.id));
+                  },
                               child: Text(
                                 track.name,
                                 maxLines: 1,
@@ -251,6 +263,7 @@ class TrackTile extends HookConsumerWidget {
                         ],
                       ),
                   },
+                  ),
                 ),
                 if (constrains.mdAndUp) ...[
                   const SizedBox(width: 8),
@@ -281,20 +294,25 @@ class TrackTile extends HookConsumerWidget {
             ),
             subtitle: Align(
               alignment: Alignment.centerLeft,
-              child: track is SpotubeLocalTrackObject
+                    child: track is SpotubeLocalTrackObject
                   ? Text(
                       track.artists.asString(),
                     )
                   : ClipRect(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxHeight: 40),
-                        child: ArtistLink(
-                          artists: track.artists,
-                          onOverflowArtistClick: () {
-                            context.navigateTo(
-                              TrackRoute(trackId: track.id),
-                            );
-                          },
+                          child: AbsorbPointer(
+                          absorbing: effectiveSelection,
+                          child: ArtistLink(
+                            artists: track.artists,
+                            onOverflowArtistClick: effectiveSelection
+                                ? () {}
+                                : () {
+                                    context.navigateTo(
+                                      TrackRoute(trackId: track.id),
+                                    );
+                                  },
+                          ),
                         ),
                       ),
                     ),

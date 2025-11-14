@@ -878,10 +878,16 @@ class AppLocalizationsTl extends AppLocalizations {
   String get restore_defaults => 'Ibalik ang mga default';
 
   @override
-  String get download_music_codec => 'Codec para sa pag-download ng musika';
+  String get download_music_format => 'I-download na format ng musika';
 
   @override
-  String get streaming_music_codec => 'Codec para sa pag-stream ng musika';
+  String get streaming_music_format => 'Format ng streaming ng musika';
+
+  @override
+  String get download_music_quality => 'Kalidad ng i-download na musika';
+
+  @override
+  String get streaming_music_quality => 'Kalidad ng streaming ng musika';
 
   @override
   String get login_with_lastfm => 'Mag-login gamit ang Last.fm';
@@ -1456,7 +1462,18 @@ class AppLocalizationsTl extends AppLocalizations {
       'Sinis-scrobble ng plugin na ito ang iyong musika upang mabuo ang iyong kasaysayan ng pakikinig.';
 
   @override
-  String get default_plugin => 'Default';
+  String get default_metadata_source => 'Default na pinagmulan ng metadata';
+
+  @override
+  String get set_default_metadata_source =>
+      'Itakda ang default na pinagmulan ng metadata';
+
+  @override
+  String get default_audio_source => 'Default na pinagmulan ng audio';
+
+  @override
+  String get set_default_audio_source =>
+      'Itakda ang default na pinagmulan ng audio';
 
   @override
   String get set_default => 'Itakda bilang default';
@@ -1518,7 +1535,7 @@ class AppLocalizationsTl extends AppLocalizations {
       'Ang input ay hindi tumutugma sa kinakailangang format';
 
   @override
-  String get metadata_provider_plugins => 'Mga Plugin ng Metadata Provider';
+  String get plugins => 'Mga plugin';
 
   @override
   String get paste_plugin_download_url =>
@@ -1543,12 +1560,22 @@ class AppLocalizationsTl extends AppLocalizations {
   String get available_plugins => 'Mga available na plugin';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'I-configure ang iyong sariling playlist/album/artist/feed metadata provider';
+  String get configure_plugins =>
+      'I-configure ang sarili mong metadata provider at mga audio source plugin';
 
   @override
   String get audio_scrobblers => 'Mga Audio Scrobbler';
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Pinagmulan: ';
+
+  @override
+  String get uncompressed => 'Hindi naka-compress';
+
+  @override
+  String get dab_music_source_description =>
+      'Para sa mga audiophile. Nagbibigay ng de-kalidad/walang loss na audio streams. Tumpak na pagtutugma ng track batay sa ISRC.';
 }

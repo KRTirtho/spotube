@@ -815,7 +815,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get search_mode => 'Zoekmodus';
 
   @override
-  String get audio_source => 'Audio Source';
+  String get audio_source => 'Audiobron';
 
   @override
   String get ok => 'Oké';
@@ -872,10 +872,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get restore_defaults => 'Standaardwaarden herstellen';
 
   @override
-  String get download_music_codec => 'Download-codec';
+  String get download_music_format => 'Download muziekformaat';
 
   @override
-  String get streaming_music_codec => 'Streaming-codec';
+  String get streaming_music_format => 'Streaming muziekformaat';
+
+  @override
+  String get download_music_quality => 'Downloadkwaliteit';
+
+  @override
+  String get streaming_music_quality => 'Streamingkwaliteit';
 
   @override
   String get login_with_lastfm => 'Inloggen met Last.fm';
@@ -1446,7 +1452,16 @@ class AppLocalizationsNl extends AppLocalizations {
       'Deze plugin scrobblet uw muziek om uw luistergeschiedenis te genereren.';
 
   @override
-  String get default_plugin => 'Standaard';
+  String get default_metadata_source => 'Standaard metadata-bron';
+
+  @override
+  String get set_default_metadata_source => 'Standaard metadata-bron instellen';
+
+  @override
+  String get default_audio_source => 'Standaard audiobron';
+
+  @override
+  String get set_default_audio_source => 'Standaard audiobron instellen';
 
   @override
   String get set_default => 'Instellen als standaard';
@@ -1509,7 +1524,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Invoer komt niet overeen met het vereiste formaat';
 
   @override
-  String get metadata_provider_plugins => 'Metadata-aanbieder Plugins';
+  String get plugins => 'Plug-ins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1534,12 +1549,22 @@ class AppLocalizationsNl extends AppLocalizations {
   String get available_plugins => 'Beschikbare plugins';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Configureer uw eigen metadata-aanbieder voor afspeellijst/album/artiest/feed';
+  String get configure_plugins =>
+      'Configureer je eigen metadata- en audiobron-plug-ins';
 
   @override
   String get audio_scrobblers => 'Audioscrobblers';
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Bron: ';
+
+  @override
+  String get uncompressed => 'Ongecomprimeerd';
+
+  @override
+  String get dab_music_source_description =>
+      'Voor audiofielen. Biedt hoge kwaliteit/lossless audiostreams. Nauwkeurige trackmatching op basis van ISRC.';
 }

@@ -869,10 +869,16 @@ class AppLocalizationsCs extends AppLocalizations {
   String get restore_defaults => 'Obnovit výchozí';
 
   @override
-  String get download_music_codec => 'Kodek pro stahování';
+  String get download_music_format => 'Formát stahování hudby';
 
   @override
-  String get streaming_music_codec => 'Kodek pro streamování';
+  String get streaming_music_format => 'Formát streamování hudby';
+
+  @override
+  String get download_music_quality => 'Kvalita stahování hudby';
+
+  @override
+  String get streaming_music_quality => 'Kvalita streamování hudby';
 
   @override
   String get login_with_lastfm => 'Přihlásit se pomocí Last.fm';
@@ -1442,7 +1448,16 @@ class AppLocalizationsCs extends AppLocalizations {
       'Tento plugin scrobbles vaši hudbu pro vytvoření historie poslechů.';
 
   @override
-  String get default_plugin => 'Výchozí';
+  String get default_metadata_source => 'Výchozí zdroj metadat';
+
+  @override
+  String get set_default_metadata_source => 'Nastavit výchozí zdroj metadat';
+
+  @override
+  String get default_audio_source => 'Výchozí zdroj zvuku';
+
+  @override
+  String get set_default_audio_source => 'Nastavit výchozí zdroj zvuku';
 
   @override
   String get set_default => 'Nastavit jako výchozí';
@@ -1505,7 +1520,7 @@ class AppLocalizationsCs extends AppLocalizations {
       'Vstup neodpovídá požadovanému formátu';
 
   @override
-  String get metadata_provider_plugins => 'Pluginy poskytovatelů metadat';
+  String get plugins => 'Pluginy';
 
   @override
   String get paste_plugin_download_url =>
@@ -1530,12 +1545,22 @@ class AppLocalizationsCs extends AppLocalizations {
   String get available_plugins => 'Dostupné pluginy';
 
   @override
-  String get configure_your_own_metadata_plugin =>
-      'Nakonfigurujte si vlastního poskytovatele metadat pro playlist/album/umělec/fid';
+  String get configure_plugins =>
+      'Konfigurujte své vlastní pluginy poskytovatele metadat a zdroje zvuku';
 
   @override
   String get audio_scrobblers => 'Audio scrobblers';
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => 'Zdroj: ';
+
+  @override
+  String get uncompressed => 'Nekomprimováno';
+
+  @override
+  String get dab_music_source_description =>
+      'Pro audiofily. Poskytuje vysoce kvalitní/bezztrátové zvukové toky. Přesná shoda skladeb na základě ISRC.';
 }

@@ -477,5 +477,18 @@
   "available_plugins": "Complementos disponibles",
   "configure_your_own_metadata_plugin": "Configura tu propio proveedor de metadatos para listas/álbum/artista/feeds",
   "audio_scrobblers": "Scrobblers de audio",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Formato de descarga de música",
+  "streaming_music_format": "Formato de transmisión de música",
+  "download_music_quality": "Calidad de descarga de música",
+  "streaming_music_quality": "Calidad de transmisión de música",
+  "default_metadata_source": "Fuente de metadatos predeterminada",
+  "set_default_metadata_source": "Establecer fuente de metadatos predeterminada",
+  "default_audio_source": "Fuente de audio predeterminada",
+  "set_default_audio_source": "Establecer fuente de audio predeterminada",
+  "plugins": "Plugins",
+  "configure_plugins": "Configura tus propios plugins de proveedor de metadatos y fuente de audio",
+  "source": "Fuente: ",
+  "uncompressed": "Sin comprimir",
+  "dab_music_source_description": "Para audiófilos. Proporciona transmisiones de audio de alta calidad/sin pérdida. Coincidencia precisa de pistas basada en ISRC."
 }

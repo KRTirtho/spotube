@@ -9,7 +9,6 @@ import 'package:spotube/modules/root/bottom_player.dart';
 import 'package:spotube/modules/root/sidebar/sidebar.dart';
 import 'package:spotube/modules/root/spotube_navigation_bar.dart';
 import 'package:spotube/hooks/configurators/use_endless_playback.dart';
-import 'package:spotube/modules/root/use_downloader_dialogs.dart';
 import 'package:spotube/modules/root/use_global_subscriptions.dart';
 import 'package:spotube/provider/glance/glance.dart';
 
@@ -25,7 +24,6 @@ class RootAppPage extends HookConsumerWidget {
     ref.listen(glanceProvider, (_, __) {});
 
     useGlobalSubscriptions(ref);
-    useDownloaderDialogs(ref);
     useEndlessPlayback(ref);
     useCheckYtDlpInstalled(ref);
 
