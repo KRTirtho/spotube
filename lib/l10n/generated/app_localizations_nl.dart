@@ -815,7 +815,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get search_mode => 'Zoekmodus';
 
   @override
-  String get audio_source => 'Audio Source';
+  String get audio_source => 'Audiobron';
 
   @override
   String get ok => 'Oké';
@@ -872,16 +872,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get restore_defaults => 'Standaardwaarden herstellen';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'Download muziekformaat';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'Streaming muziekformaat';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'Downloadkwaliteit';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'Streamingkwaliteit';
 
   @override
   String get login_with_lastfm => 'Inloggen met Last.fm';
@@ -1452,16 +1452,16 @@ class AppLocalizationsNl extends AppLocalizations {
       'Deze plugin scrobblet uw muziek om uw luistergeschiedenis te genereren.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'Standaard metadata-bron';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source => 'Standaard metadata-bron instellen';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'Standaard audiobron';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source => 'Standaard audiobron instellen';
 
   @override
   String get set_default => 'Instellen als standaard';
@@ -1524,7 +1524,7 @@ class AppLocalizationsNl extends AppLocalizations {
       'Invoer komt niet overeen met het vereiste formaat';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'Plug-ins';
 
   @override
   String get paste_plugin_download_url =>
@@ -1550,7 +1550,7 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'Configureer je eigen metadata- en audiobron-plug-ins';
 
   @override
   String get audio_scrobblers => 'Audioscrobblers';
@@ -1559,12 +1559,12 @@ class AppLocalizationsNl extends AppLocalizations {
   String get scrobbling => 'Scrobbling';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'Bron: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'Ongecomprimeerd';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'Voor audiofielen. Biedt hoge kwaliteit/lossless audiostreams. Nauwkeurige trackmatching op basis van ISRC.';
 }

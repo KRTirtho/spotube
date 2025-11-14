@@ -477,5 +477,18 @@
   "available_plugins": "可用的外掛程式",
   "configure_your_own_metadata_plugin": "設定您自己的播放清單/專輯/藝人/動態中繼資料供應商",
   "audio_scrobblers": "音訊 Scrobblers",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "下載音樂格式",
+  "streaming_music_format": "串流音樂格式",
+  "download_music_quality": "下載音樂品質",
+  "streaming_music_quality": "串流音樂品質",
+  "default_metadata_source": "預設中繼資料來源",
+  "set_default_metadata_source": "設定預設中繼資料來源",
+  "default_audio_source": "預設音訊來源",
+  "set_default_audio_source": "設定預設音訊來源",
+  "plugins": "外掛程式",
+  "configure_plugins": "配置您自己的中繼資料提供者和音訊來源外掛程式",
+  "source": "來源：",
+  "uncompressed": "未壓縮",
+  "dab_music_source_description": "適合音響發燒友。提供高品質/無損音訊串流。精確的 ISRC 曲目比對。"
 }

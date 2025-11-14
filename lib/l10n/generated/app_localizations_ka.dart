@@ -872,16 +872,16 @@ class AppLocalizationsKa extends AppLocalizations {
   String get restore_defaults => 'ნაგულისხმევი პარამეტრების აღდგენა';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'მუსიკის ჩამოტვირთვის ფორმატი';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'სტრიმინგის მუსიკის ფორმატი';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'ჩამოტვირთვის ხარისხი';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'სტრიმინგის ხარისხი';
 
   @override
   String get login_with_lastfm => 'Last.fm-ით შესვლა';
@@ -1454,16 +1454,17 @@ class AppLocalizationsKa extends AppLocalizations {
       'ეს პლაგინი აწარმოებს თქვენი მუსიკის სქრობლინგს, რათა შექმნას თქვენი მოსმენის ისტორია.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'ნაგულისხმევი მეტამონაცემების წყარო';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source =>
+      'ნაგულისხმევი მეტამონაცემების წყაროს დაყენება';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'ნაგულისხმევი აუდიო წყარო';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source => 'ნაგულისხმევი აუდიო წყაროს დაყენება';
 
   @override
   String get set_default => 'ნაგულისხმევად დაყენება';
@@ -1526,7 +1527,7 @@ class AppLocalizationsKa extends AppLocalizations {
       'შეყვანა არ ემთხვევა საჭირო ფორმატს';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'პლაგინები';
 
   @override
   String get paste_plugin_download_url =>
@@ -1552,7 +1553,7 @@ class AppLocalizationsKa extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'თქვენი საკუთარი მეტამონაცემებისა და აუდიო წყაროს პლაგინების კონფიგურაცია';
 
   @override
   String get audio_scrobblers => 'აუდიო სქრობლერები';
@@ -1561,12 +1562,12 @@ class AppLocalizationsKa extends AppLocalizations {
   String get scrobbling => 'სქრობლინგი';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'წყარო: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'შეუკუმშავი';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'აუდიოფილებისთვის. უზრუნველყოფს მაღალი ხარისხის/უკომპრესო აუდიო სტრიმებს. ზუსტი შესაბამისობა ISRC-ის მიხედვით.';
 }

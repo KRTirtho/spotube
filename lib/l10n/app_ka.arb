@@ -477,5 +477,18 @@
   "available_plugins": "ხელმისაწვდომი პლაგინები",
   "configure_your_own_metadata_plugin": "დააყენეთ თქვენი საკუთარი პლეილისტის/ალბომის/არტისტის/ფიდის მეტამონაცემების პროვაიდერი",
   "audio_scrobblers": "აუდიო სქრობლერები",
-  "scrobbling": "სქრობლინგი"
+  "scrobbling": "სქრობლინგი",
+  "download_music_format": "მუსიკის ჩამოტვირთვის ფორმატი",
+  "streaming_music_format": "სტრიმინგის მუსიკის ფორმატი",
+  "download_music_quality": "ჩამოტვირთვის ხარისხი",
+  "streaming_music_quality": "სტრიმინგის ხარისხი",
+  "default_metadata_source": "ნაგულისხმევი მეტამონაცემების წყარო",
+  "set_default_metadata_source": "ნაგულისხმევი მეტამონაცემების წყაროს დაყენება",
+  "default_audio_source": "ნაგულისხმევი აუდიო წყარო",
+  "set_default_audio_source": "ნაგულისხმევი აუდიო წყაროს დაყენება",
+  "plugins": "პლაგინები",
+  "configure_plugins": "თქვენი საკუთარი მეტამონაცემებისა და აუდიო წყაროს პლაგინების კონფიგურაცია",
+  "source": "წყარო: ",
+  "uncompressed": "შეუკუმშავი",
+  "dab_music_source_description": "აუდიოფილებისთვის. უზრუნველყოფს მაღალი ხარისხის/უკომპრესო აუდიო სტრიმებს. ზუსტი შესაბამისობა ISRC-ის მიხედვით."
 }

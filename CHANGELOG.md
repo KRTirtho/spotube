@@ -1,5 +1,29 @@
 # Changelog
 
+## [5.1.0](https://github.com/KRTirtho/spotube/compare/v5.0.0...v5.1.0) (2025-11-14)
+
+### Features
+
+- Show plugin source and set the only plugin as default if no plugin is there
+- **playback**: Add dab music source
+- **playback**: Add uncompressed flac playback support
+- Add plugin audio source models and api service
+- **plugins**: Filter plugins by abilities in plugins page and show abilities as badge
+- Add setting default audio source support
+- Move away from track source query and preferences audio quality and codec
+- Add NewPipe support for desktop platforms
+- Add default plugin loading capability
+- **queue**: Add multi-select and bulk actions to queue ([#2839](https://github.com/KRTirtho/spotube/issues/2839))
+- **android**: Add 16KB page size support
+
+### Bug Fixes
+
+- Change plugin download directory to application support
+- **playback**: Play next not working
+- Downloaded tracks are not tagged with metadata
+- Download not working in different devices and slow
+- **playback**: Use stream instead of chunked serving of audio bytes
+
 ## [5.0.0](https://github.com/KRTirtho/spotube/compare/v4.0.2...v5.0.0) (2025-09-08)
 
 ### Features

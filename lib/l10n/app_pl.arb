@@ -477,5 +477,18 @@
   "available_plugins": "Dostępne wtyczki",
   "configure_your_own_metadata_plugin": "Skonfiguruj własnego dostawcę metadanych dla playlisty/albumu/artysty/kanału",
   "audio_scrobblers": "Scrobblery audio",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Format pobierania muzyki",
+  "streaming_music_format": "Format strumieniowania muzyki",
+  "download_music_quality": "Jakość pobierania",
+  "streaming_music_quality": "Jakość strumieniowania",
+  "default_metadata_source": "Domyślne źródło metadanych",
+  "set_default_metadata_source": "Ustaw domyślne źródło metadanych",
+  "default_audio_source": "Domyślne źródło audio",
+  "set_default_audio_source": "Ustaw domyślne źródło audio",
+  "plugins": "Wtyczki",
+  "configure_plugins": "Skonfiguruj własne wtyczki dostawców metadanych i źródeł audio",
+  "source": "Źródło: ",
+  "uncompressed": "Nieskompresowany",
+  "dab_music_source_description": "Dla audiofilów. Oferuje strumienie audio wysokiej jakości/lossless. Precyzyjne dopasowanie utworów na podstawie ISRC."
 }

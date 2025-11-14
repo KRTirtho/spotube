@@ -878,16 +878,16 @@ class AppLocalizationsTl extends AppLocalizations {
   String get restore_defaults => 'Ibalik ang mga default';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'I-download na format ng musika';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'Format ng streaming ng musika';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'Kalidad ng i-download na musika';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'Kalidad ng streaming ng musika';
 
   @override
   String get login_with_lastfm => 'Mag-login gamit ang Last.fm';
@@ -1462,16 +1462,18 @@ class AppLocalizationsTl extends AppLocalizations {
       'Sinis-scrobble ng plugin na ito ang iyong musika upang mabuo ang iyong kasaysayan ng pakikinig.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'Default na pinagmulan ng metadata';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source =>
+      'Itakda ang default na pinagmulan ng metadata';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'Default na pinagmulan ng audio';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source =>
+      'Itakda ang default na pinagmulan ng audio';
 
   @override
   String get set_default => 'Itakda bilang default';
@@ -1533,7 +1535,7 @@ class AppLocalizationsTl extends AppLocalizations {
       'Ang input ay hindi tumutugma sa kinakailangang format';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'Mga plugin';
 
   @override
   String get paste_plugin_download_url =>
@@ -1559,7 +1561,7 @@ class AppLocalizationsTl extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'I-configure ang sarili mong metadata provider at mga audio source plugin';
 
   @override
   String get audio_scrobblers => 'Mga Audio Scrobbler';
@@ -1568,12 +1570,12 @@ class AppLocalizationsTl extends AppLocalizations {
   String get scrobbling => 'Scrobbling';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'Pinagmulan: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'Hindi naka-compress';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'Para sa mga audiophile. Nagbibigay ng de-kalidad/walang loss na audio streams. Tumpak na pagtutugma ng track batay sa ISRC.';
 }

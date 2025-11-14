@@ -476,5 +476,18 @@
   "available_plugins": "利用可能なプラグイン",
   "configure_your_own_metadata_plugin": "独自のプレイリスト/アルバム/アーティスト/フィードのメタデータプロバイダーを構成",
   "audio_scrobblers": "オーディオスクロッブラー",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "音楽ダウンロード形式",
+  "streaming_music_format": "音楽ストリーミング形式",
+  "download_music_quality": "音楽ダウンロード品質",
+  "streaming_music_quality": "音楽ストリーミング品質",
+  "default_metadata_source": "デフォルトメタデータソース",
+  "set_default_metadata_source": "デフォルトメタデータソースを設定",
+  "default_audio_source": "デフォルトオーディオソース",
+  "set_default_audio_source": "デフォルトオーディオソースを設定",
+  "plugins": "プラグイン",
+  "configure_plugins": "独自のメタデータプロバイダーとオーディオソースプラグインを設定",
+  "source": "ソース: ",
+  "uncompressed": "非圧縮",
+  "dab_music_source_description": "オーディオファイル向け。高品質/ロスレスオーディオストリームを提供。正確なISRCベースのトラックマッチング。"
 }

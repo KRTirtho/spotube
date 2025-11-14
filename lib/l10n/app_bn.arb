@@ -477,5 +477,18 @@
   "available_plugins": "উপলব্ধ প্লাগইনগুলো",
   "configure_your_own_metadata_plugin": "নিজস্ব প্লেলিস্ট/অ্যালবাম/শিল্পী/ফিড মেটাডেটা প্রদানকারী কনফিগার করুন",
   "audio_scrobblers": "অডিও স্ক্রোব্বলার্স",
-  "scrobbling": "স্ক্রোব্বলিং"
+  "scrobbling": "স্ক্রোব্বলিং",
+  "download_music_format": "গান ডাউনলোডের বিন্যাস",
+  "streaming_music_format": "গান স্ট্রিমিং এর বিন্যাস",
+  "download_music_quality": "গান ডাউনলোডের মান",
+  "streaming_music_quality": "গান স্ট্রিমিং এর মান",
+  "default_metadata_source": "ডিফল্ট মেটাডেটা উৎস",
+  "set_default_metadata_source": "ডিফল্ট মেটাডেটা উৎস সেট করুন",
+  "default_audio_source": "ডিফল্ট অডিও উৎস",
+  "set_default_audio_source": "ডিফল্ট অডিও উৎস সেট করুন",
+  "plugins": "প্লাগইন",
+  "configure_plugins": "আপনার নিজের মেটাডেটা প্রদানকারী এবং অডিও উৎস প্লাগইন কনফিগার করুন",
+  "source": "উৎস: ",
+  "uncompressed": "অ-সংকুচিত",
+  "dab_music_source_description": "অডিওফাইলদের জন্য। উচ্চ-মানের/লসলেস অডিও স্ট্রিম প্রদান করে। সঠিক ISRC ভিত্তিক ট্র্যাক ম্যাচিং।"
 }

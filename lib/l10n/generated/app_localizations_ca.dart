@@ -876,16 +876,18 @@ class AppLocalizationsCa extends AppLocalizations {
   String get restore_defaults => 'Restaura els valors per defecte';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'Format de descàrrega de música';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format =>
+      'Format de reproducció de música en temps real';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'Qualitat de descàrrega de música';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality =>
+      'Qualitat de reproducció de música en temps real';
 
   @override
   String get login_with_lastfm => 'Inicia la sessió amb Last.fm';
@@ -1456,16 +1458,18 @@ class AppLocalizationsCa extends AppLocalizations {
       'Aquest complement fa scrobbling de la teva música per generar l’historial d’escoltes.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'Font de metadades per defecte';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source =>
+      'Estableix la font de metadades per defecte';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'Font d\'àudio per defecte';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source =>
+      'Estableix la font d\'àudio per defecte';
 
   @override
   String get set_default => 'Establir com a predeterminat';
@@ -1529,7 +1533,7 @@ class AppLocalizationsCa extends AppLocalizations {
       'L’entrada no coincideix amb el format requerit';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'Connectors';
 
   @override
   String get paste_plugin_download_url =>
@@ -1555,7 +1559,7 @@ class AppLocalizationsCa extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'Configura els teus propis connectors de proveïdor de metadades i de font d\'àudio';
 
   @override
   String get audio_scrobblers => 'Scrobblers d’àudio';
@@ -1564,12 +1568,12 @@ class AppLocalizationsCa extends AppLocalizations {
   String get scrobbling => 'Scrobbling';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'Font: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'Sense comprimir';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'Per als audiòfils. Ofereix fluxos d\'àudio d\'alta qualitat/sense pèrdua. Coincidència precisa de pistes basada en ISRC.';
 }

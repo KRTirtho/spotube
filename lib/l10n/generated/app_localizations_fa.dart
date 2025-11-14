@@ -870,16 +870,16 @@ class AppLocalizationsFa extends AppLocalizations {
   String get restore_defaults => 'بازیابی پیش فرض ها';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'فرمت دانلود موسیقی';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'فرمت پخش آنلاین موسیقی';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'کیفیت دانلود موسیقی';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'کیفیت پخش آنلاین موسیقی';
 
   @override
   String get login_with_lastfm => 'ورود با Last.fm';
@@ -1447,16 +1447,16 @@ class AppLocalizationsFa extends AppLocalizations {
       'این افزونه موسیقی شما را اسکراب می‌کند تا تاریخچهٔ شنیداری‌تان را تولید کند.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'منبع پیش‌فرض فراداده';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source => 'تنظیم منبع پیش‌فرض فراداده';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'منبع پیش‌فرض صوت';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source => 'تنظیم منبع پیش‌فرض صوت';
 
   @override
   String get set_default => 'تنظیم به عنوان پیش‌فرض';
@@ -1518,7 +1518,7 @@ class AppLocalizationsFa extends AppLocalizations {
       'ورودی با قالب مورد نیاز تطابق ندارد';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'افزونه‌ها';
 
   @override
   String get paste_plugin_download_url =>
@@ -1544,7 +1544,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'افزونه‌های منبع صوت و ارائه‌دهنده فراداده خود را پیکربندی کنید';
 
   @override
   String get audio_scrobblers => 'اسکراب‌بلرهای صوتی';
@@ -1553,12 +1553,12 @@ class AppLocalizationsFa extends AppLocalizations {
   String get scrobbling => 'اسکراب‌بلینگ';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'منبع: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'بدون فشرده‌سازی';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'مخصوص علاقه‌مندان صدا. ارائه‌دهنده استریم‌های باکیفیت/بدون افت. تطبیق دقیق آهنگ بر اساس ISRC.';
 }

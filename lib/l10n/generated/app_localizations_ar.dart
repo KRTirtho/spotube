@@ -874,16 +874,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get restore_defaults => 'استعادة الإعدادات الافتراضية';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'تنسيق تنزيل الموسيقى';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'تنسيق بث الموسيقى';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'جودة تنزيل الموسيقى';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'جودة بث الموسيقى';
 
   @override
   String get login_with_lastfm => 'تسجيل الدخول باستخدام Last.fm';
@@ -1449,16 +1449,17 @@ class AppLocalizationsAr extends AppLocalizations {
       'تقوم هذه الإضافة بتتبع مقاطعك الموسيقية لإنشاء سجل الاستماع الخاص بك.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'مصدر البيانات الوصفية الافتراضي';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source =>
+      'تعيين مصدر البيانات الوصفية الافتراضي';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'مصدر الصوت الافتراضي';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source => 'تعيين مصدر الصوت الافتراضي';
 
   @override
   String get set_default => 'تعيين كافتراضي';
@@ -1519,7 +1520,7 @@ class AppLocalizationsAr extends AppLocalizations {
       'المدخل لا يتوافق مع التنسيق المطلوب';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'الإضافات';
 
   @override
   String get paste_plugin_download_url =>
@@ -1545,7 +1546,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'قم بتكوين مزود البيانات الوصفية ومكونات مصدر الصوت الخاصة بك';
 
   @override
   String get audio_scrobblers => 'أجهزة تتبع الصوت';
@@ -1554,12 +1555,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get scrobbling => 'التتبع';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'المصدر: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'غير مضغوط';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'لمحبي الصوتيات. يوفر تدفقات صوتية عالية الجودة/بدون فقدان. مطابقة دقيقة للمسارات بناءً على ISRC.';
 }

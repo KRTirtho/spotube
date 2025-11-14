@@ -880,16 +880,16 @@ class AppLocalizationsNe extends AppLocalizations {
   String get restore_defaults => 'पूर्वनिर्धारितहरू पुनः स्थापित गर्नुहोस्';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'सङ्गीत डाउनलोड ढाँचा';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'स्ट्रिमिङ सङ्गीत ढाँचा';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'डाउनलोड गुणस्तर';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'स्ट्रिमिङ गुणस्तर';
 
   @override
   String get login_with_lastfm => 'लास्ट.एफ.एम सँग लगइन गर्नुहोस्';
@@ -1460,16 +1460,18 @@ class AppLocalizationsNe extends AppLocalizations {
       'यो प्लगइनले तपाईंको सुन्ने इतिहास उत्पन्न गर्न तपाईंको संगीतलाई स्क्रब्बल गर्दछ।';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'पूर्वनिर्धारित मेटाडाटा स्रोत';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source =>
+      'पूर्वनिर्धारित मेटाडाटा स्रोत सेट गर्नुहोस्';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'पूर्वनिर्धारित अडियो स्रोत';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source =>
+      'पूर्वनिर्धारित अडियो स्रोत सेट गर्नुहोस्';
 
   @override
   String get set_default => 'पूर्वनिर्धारित सेट गर्नुहोस्';
@@ -1530,7 +1532,7 @@ class AppLocalizationsNe extends AppLocalizations {
   String get input_does_not_match_format => 'इनपुट आवश्यक ढाँचासँग मेल खाँदैन';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'प्लगइनहरू';
 
   @override
   String get paste_plugin_download_url =>
@@ -1556,7 +1558,7 @@ class AppLocalizationsNe extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'आफ्नै मेटाडाटा प्रदायक र अडियो स्रोत प्लगइनहरू कन्फिगर गर्नुहोस्';
 
   @override
   String get audio_scrobblers => 'अडियो स्क्रब्बलरहरू';
@@ -1565,12 +1567,12 @@ class AppLocalizationsNe extends AppLocalizations {
   String get scrobbling => 'स्क्रब्बलिंग';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'स्रोत: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'असंक्षिप्त';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'अडियोप्रेमीहरूका लागि। उच्च गुणस्तर/लसलेस अडियो स्ट्रिमहरू उपलब्ध गराउँछ। ISRC-मा आधारित सटीक ट्र्याक मिलान।';
 }

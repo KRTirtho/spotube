@@ -477,5 +477,18 @@
   "available_plugins": "Các plugin có sẵn",
   "configure_your_own_metadata_plugin": "Cấu hình nhà cung cấp siêu dữ liệu danh sách phát/album/nghệ sĩ/nguồn cấp dữ liệu của riêng bạn",
   "audio_scrobblers": "Bộ scrobbler âm thanh",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Định dạng nhạc tải về",
+  "streaming_music_format": "Định dạng nhạc phát trực tuyến",
+  "download_music_quality": "Chất lượng nhạc tải về",
+  "streaming_music_quality": "Chất lượng nhạc phát trực tuyến",
+  "default_metadata_source": "Nguồn siêu dữ liệu mặc định",
+  "set_default_metadata_source": "Đặt nguồn siêu dữ liệu mặc định",
+  "default_audio_source": "Nguồn âm thanh mặc định",
+  "set_default_audio_source": "Đặt nguồn âm thanh mặc định",
+  "plugins": "Tiện ích bổ sung",
+  "configure_plugins": "Cấu hình nhà cung cấp siêu dữ liệu và tiện ích nguồn âm thanh riêng",
+  "source": "Nguồn: ",
+  "uncompressed": "Không nén",
+  "dab_music_source_description": "Dành cho người yêu âm nhạc chất lượng cao. Cung cấp luồng âm thanh chất lượng cao/không nén. Phù hợp bài hát dựa trên ISRC chính xác."
 }

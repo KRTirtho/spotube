@@ -874,16 +874,16 @@ class AppLocalizationsId extends AppLocalizations {
   String get restore_defaults => 'Kembalikan semula';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'Format unduh musik';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'Format streaming musik';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'Kualitas unduh musik';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'Kualitas streaming musik';
 
   @override
   String get login_with_lastfm => 'Masuk dengan Last.fm';
@@ -1455,16 +1455,16 @@ class AppLocalizationsId extends AppLocalizations {
       'Plugin ini scrobble musik Anda untuk menghasilkan riwayat mendengarkan Anda.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'Sumber metadata default';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source => 'Atur sumber metadata default';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'Sumber audio default';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source => 'Atur sumber audio default';
 
   @override
   String get set_default => 'Atur sebagai bawaan';
@@ -1526,7 +1526,7 @@ class AppLocalizationsId extends AppLocalizations {
       'Masukan tidak cocok dengan format yang diperlukan';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'Plugin';
 
   @override
   String get paste_plugin_download_url =>
@@ -1552,7 +1552,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'Konfigurasi plugin penyedia metadata dan sumber audio Anda sendiri';
 
   @override
   String get audio_scrobblers => 'Scrobblers Audio';
@@ -1561,12 +1561,12 @@ class AppLocalizationsId extends AppLocalizations {
   String get scrobbling => 'Scrobbling';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'Sumber: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'Tidak terkompresi';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'Untuk audiophile. Menyediakan aliran audio berkualitas tinggi/tanpa kehilangan. Pencocokkan trek yang akurat berdasarkan ISRC.';
 }

@@ -477,5 +477,18 @@
   "available_plugins": "उपलब्ध प्लगइनहरू",
   "configure_your_own_metadata_plugin": "तपाईंको आफ्नै प्लेलिस्ट/एल्बम/कलाकार/फिड मेटाडेटा प्रदायक कन्फिगर गर्नुहोस्",
   "audio_scrobblers": "अडियो स्क्रब्बलरहरू",
-  "scrobbling": "स्क्रब्बलिंग"
+  "scrobbling": "स्क्रब्बलिंग",
+  "download_music_format": "सङ्गीत डाउनलोड ढाँचा",
+  "streaming_music_format": "स्ट्रिमिङ सङ्गीत ढाँचा",
+  "download_music_quality": "डाउनलोड गुणस्तर",
+  "streaming_music_quality": "स्ट्रिमिङ गुणस्तर",
+  "default_metadata_source": "पूर्वनिर्धारित मेटाडाटा स्रोत",
+  "set_default_metadata_source": "पूर्वनिर्धारित मेटाडाटा स्रोत सेट गर्नुहोस्",
+  "default_audio_source": "पूर्वनिर्धारित अडियो स्रोत",
+  "set_default_audio_source": "पूर्वनिर्धारित अडियो स्रोत सेट गर्नुहोस्",
+  "plugins": "प्लगइनहरू",
+  "configure_plugins": "आफ्नै मेटाडाटा प्रदायक र अडियो स्रोत प्लगइनहरू कन्फिगर गर्नुहोस्",
+  "source": "स्रोत: ",
+  "uncompressed": "असंक्षिप्त",
+  "dab_music_source_description": "अडियोप्रेमीहरूका लागि। उच्च गुणस्तर/लसलेस अडियो स्ट्रिमहरू उपलब्ध गराउँछ। ISRC-मा आधारित सटीक ट्र्याक मिलान।"
 }

@@ -872,16 +872,16 @@ class AppLocalizationsTh extends AppLocalizations {
   String get restore_defaults => 'คืนค่าเริ่มต้น';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'รูปแบบการดาวน์โหลดเพลง';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'รูปแบบการสตรีมเพลง';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'คุณภาพการดาวน์โหลด';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'คุณภาพการสตรีม';
 
   @override
   String get login_with_lastfm => 'เข้าสู่ระบบด้วย Last.fm';
@@ -1446,16 +1446,16 @@ class AppLocalizationsTh extends AppLocalizations {
       'ปลั๊กอินนี้จะ scrobble เพลงของคุณเพื่อสร้างประวัติการฟังของคุณ';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'แหล่งเมตาดาต้าพื้นฐาน';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source => 'ตั้งค่าแหล่งเมตาดาต้าพื้นฐาน';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'แหล่งเสียงพื้นฐาน';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source => 'ตั้งค่าแหล่งเสียงพื้นฐาน';
 
   @override
   String get set_default => 'ตั้งค่าเริ่มต้น';
@@ -1515,7 +1515,7 @@ class AppLocalizationsTh extends AppLocalizations {
   String get input_does_not_match_format => 'อินพุตไม่ตรงกับรูปแบบที่ต้องการ';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'ปลั๊กอิน';
 
   @override
   String get paste_plugin_download_url =>
@@ -1541,7 +1541,7 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'กำหนดค่าปลั๊กอินผู้ให้บริการเมตาดาต้าและแหล่งเสียงของคุณเอง';
 
   @override
   String get audio_scrobblers => 'เครื่อง scrobbler เสียง';
@@ -1550,12 +1550,12 @@ class AppLocalizationsTh extends AppLocalizations {
   String get scrobbling => 'Scrobbling';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'แหล่งที่มา: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'ไม่บีบอัด';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'สำหรับคนรักเสียงเพลง ให้สตรีมเสียงคุณภาพสูง/ไร้การสูญเสียการบีบอัด การจับคู่แทร็กแม่นยำตาม ISRC';
 }

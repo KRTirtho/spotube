@@ -477,5 +477,18 @@
   "available_plugins": "Plugin yang tersedia",
   "configure_your_own_metadata_plugin": "Konfigurasi penyedia metadata playlist/album/artis/feed Anda sendiri",
   "audio_scrobblers": "Scrobblers Audio",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Format unduh musik",
+  "streaming_music_format": "Format streaming musik",
+  "download_music_quality": "Kualitas unduh musik",
+  "streaming_music_quality": "Kualitas streaming musik",
+  "default_metadata_source": "Sumber metadata default",
+  "set_default_metadata_source": "Atur sumber metadata default",
+  "default_audio_source": "Sumber audio default",
+  "set_default_audio_source": "Atur sumber audio default",
+  "plugins": "Plugin",
+  "configure_plugins": "Konfigurasi plugin penyedia metadata dan sumber audio Anda sendiri",
+  "source": "Sumber: ",
+  "uncompressed": "Tidak terkompresi",
+  "dab_music_source_description": "Untuk audiophile. Menyediakan aliran audio berkualitas tinggi/tanpa kehilangan. Pencocokkan trek yang akurat berdasarkan ISRC."
 }

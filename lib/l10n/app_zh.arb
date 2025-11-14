@@ -477,5 +477,18 @@
   "available_plugins": "可用插件",
   "configure_your_own_metadata_plugin": "配置您自己的播放列表/专辑/艺人/订阅元数据提供者",
   "audio_scrobblers": "音频 Scrobblers",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "下载音乐格式",
+  "streaming_music_format": "流媒体音乐格式",
+  "download_music_quality": "下载音乐质量",
+  "streaming_music_quality": "流媒体音乐质量",
+  "default_metadata_source": "默认元数据源",
+  "set_default_metadata_source": "设置默认元数据源",
+  "default_audio_source": "默认音频源",
+  "set_default_audio_source": "设置默认音频源",
+  "plugins": "插件",
+  "configure_plugins": "配置您自己的元数据提供者和音频源插件",
+  "source": "来源：",
+  "uncompressed": "无损",
+  "dab_music_source_description": "适合发烧友。提供高质量/无损音频流。基于 ISRC 的精确曲目匹配。"
 }

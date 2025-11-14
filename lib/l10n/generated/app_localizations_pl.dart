@@ -873,16 +873,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get restore_defaults => 'Przywróć domyślne';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'Format pobierania muzyki';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'Format strumieniowania muzyki';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'Jakość pobierania';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'Jakość strumieniowania';
 
   @override
   String get login_with_lastfm => 'Zaloguj się z Last.fm';
@@ -1455,16 +1455,16 @@ class AppLocalizationsPl extends AppLocalizations {
       'Ta wtyczka scrobbluje Twoją muzykę, aby wygenerować historię odsłuchań.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'Domyślne źródło metadanych';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source => 'Ustaw domyślne źródło metadanych';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'Domyślne źródło audio';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source => 'Ustaw domyślne źródło audio';
 
   @override
   String get set_default => 'Ustaw jako domyślną';
@@ -1526,7 +1526,7 @@ class AppLocalizationsPl extends AppLocalizations {
       'Wprowadzony tekst nie pasuje do wymaganego formatu';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'Wtyczki';
 
   @override
   String get paste_plugin_download_url =>
@@ -1552,7 +1552,7 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'Skonfiguruj własne wtyczki dostawców metadanych i źródeł audio';
 
   @override
   String get audio_scrobblers => 'Scrobblery audio';
@@ -1561,12 +1561,12 @@ class AppLocalizationsPl extends AppLocalizations {
   String get scrobbling => 'Scrobbling';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'Źródło: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'Nieskompresowany';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'Dla audiofilów. Oferuje strumienie audio wysokiej jakości/lossless. Precyzyjne dopasowanie utworów na podstawie ISRC.';
 }

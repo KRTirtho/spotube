@@ -859,16 +859,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get restore_defaults => '恢复默认值';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => '下载音乐格式';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => '流媒体音乐格式';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => '下载音乐质量';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => '流媒体音乐质量';
 
   @override
   String get login_with_lastfm => '使用 Last.fm 登录';
@@ -1418,16 +1418,16 @@ class AppLocalizationsZh extends AppLocalizations {
   String get plugin_scrobbling_info => '此插件会 scrobble 您的音乐以生成您的收听历史记录。';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => '默认元数据源';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source => '设置默认元数据源';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => '默认音频源';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source => '设置默认音频源';
 
   @override
   String get set_default => '设为默认';
@@ -1484,7 +1484,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get input_does_not_match_format => '输入与所需格式不匹配';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => '插件';
 
   @override
   String get paste_plugin_download_url =>
@@ -1508,8 +1508,7 @@ class AppLocalizationsZh extends AppLocalizations {
   String get available_plugins => '可用插件';
 
   @override
-  String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+  String get configure_plugins => '配置您自己的元数据提供者和音频源插件';
 
   @override
   String get audio_scrobblers => '音频 Scrobblers';
@@ -1518,14 +1517,14 @@ class AppLocalizationsZh extends AppLocalizations {
   String get scrobbling => 'Scrobbling';
 
   @override
-  String get source => 'Source: ';
+  String get source => '来源：';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => '无损';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      '适合发烧友。提供高质量/无损音频流。基于 ISRC 的精确曲目匹配。';
 }
 
 /// The translations for Chinese, as used in Taiwan (`zh_TW`).
@@ -2383,6 +2382,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get restore_defaults => '恢復預設值';
 
   @override
+  String get download_music_format => '下載音樂格式';
+
+  @override
+  String get streaming_music_format => '串流音樂格式';
+
+  @override
+  String get download_music_quality => '下載音樂品質';
+
+  @override
+  String get streaming_music_quality => '串流音樂品質';
+
+  @override
   String get login_with_lastfm => '使用 Last.fm 登入';
 
   @override
@@ -2930,6 +2941,18 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get plugin_scrobbling_info => '此外掛程式會 Scrobble 您的音樂以產生您的收聽記錄。';
 
   @override
+  String get default_metadata_source => '預設中繼資料來源';
+
+  @override
+  String get set_default_metadata_source => '設定預設中繼資料來源';
+
+  @override
+  String get default_audio_source => '預設音訊來源';
+
+  @override
+  String get set_default_audio_source => '設定預設音訊來源';
+
+  @override
   String get set_default => '設為預設';
 
   @override
@@ -2984,6 +3007,9 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get input_does_not_match_format => '輸入不符合所需格式';
 
   @override
+  String get plugins => '外掛程式';
+
+  @override
   String get paste_plugin_download_url =>
       '貼上下載網址、GitHub/Codeberg 儲存庫網址或 .smplug 檔案的直接連結';
 
@@ -3005,8 +3031,21 @@ class AppLocalizationsZhTw extends AppLocalizationsZh {
   String get available_plugins => '可用的外掛程式';
 
   @override
+  String get configure_plugins => '配置您自己的中繼資料提供者和音訊來源外掛程式';
+
+  @override
   String get audio_scrobblers => '音訊 Scrobblers';
 
   @override
   String get scrobbling => 'Scrobbling';
+
+  @override
+  String get source => '來源：';
+
+  @override
+  String get uncompressed => '未壓縮';
+
+  @override
+  String get dab_music_source_description =>
+      '適合音響發燒友。提供高品質/無損音訊串流。精確的 ISRC 曲目比對。';
 }

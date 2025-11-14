@@ -876,16 +876,16 @@ class AppLocalizationsEu extends AppLocalizations {
   String get restore_defaults => 'Berrezarri berezko balioak';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'Musika deskargatzeko formatua';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'Musika streaming bidezko formatua';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'Musika deskargaren kalitatea';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'Streaming bidezko musika kalitatea';
 
   @override
   String get login_with_lastfm => 'Hasi saioa Last.fm-n';
@@ -1457,16 +1457,17 @@ class AppLocalizationsEu extends AppLocalizations {
       'Plugin honek zure musika scrobbled egiten du zure entzuteen historia sortzeko.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'Metadatu-iturburu lehenetsia';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source =>
+      'Ezarri metadatu-iturburu lehenetsia';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'Audio-iturburu lehenetsia';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source => 'Ezarri audio-iturburu lehenetsia';
 
   @override
   String get set_default => 'Lehenetsi gisa ezarri';
@@ -1530,7 +1531,7 @@ class AppLocalizationsEu extends AppLocalizations {
       'Sarrera ezin da beharrezko formatutik desberdina izan';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'Pluginak';
 
   @override
   String get paste_plugin_download_url =>
@@ -1556,7 +1557,7 @@ class AppLocalizationsEu extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'Konfiguratu zure metadatu-hornitzaile eta audio-iturburu pluginak';
 
   @override
   String get audio_scrobblers => 'Audio scrobbler-ak';
@@ -1565,12 +1566,12 @@ class AppLocalizationsEu extends AppLocalizations {
   String get scrobbling => 'Scrobbling';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'Iturburua: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'Konprimitu gabea';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'Audiozaleentzat. Kalitate handiko/galerarik gabeko audio-streamak eskaintzen ditu. ISRC oinarritutako pistaren parekatze zehatza.';
 }

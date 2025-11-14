@@ -475,5 +475,18 @@
   "available_plugins": "கிடைக்கக்கூடிய பிளகின்கள்",
   "configure_your_own_metadata_plugin": "உங்கள் சொந்த பிளேலிஸ்ட்/ஆல்பம்/கலைஞர்/ஊட்ட மெட்டாடேட்டா வழங்குநரை உள்ளமைக்கவும்",
   "audio_scrobblers": "ஆடியோ ஸ்க்ரோப்ளர்கள்",
-  "scrobbling": "ஸ்க்ரோப்ளிங்"
+  "scrobbling": "ஸ்க்ரோப்ளிங்",
+  "download_music_format": "இசை பதிவிறக்க வடிவம்",
+  "streaming_music_format": "இசை ஸ்ட்ரீமிங் வடிவம்",
+  "download_music_quality": "பதிவிறக்க தரம்",
+  "streaming_music_quality": "ஸ்ட்ரீமிங் தரம்",
+  "default_metadata_source": "இயல்புநிலை மெட்டாடேட்டா மூலம்",
+  "set_default_metadata_source": "இயல்புநிலை மெட்டாடேட்டா மூலத்தை அமை",
+  "default_audio_source": "இயல்புநிலை ஆடியோ மூலம்",
+  "set_default_audio_source": "இயல்புநிலை ஆடியோ மூலத்தை அமை",
+  "plugins": "செருகுநிரல்கள்",
+  "configure_plugins": "உங்கள் சொந்த மெட்டாடேட்டா வழங்குநர் மற்றும் ஆடியோ மூல செருகுநிரல்களை அமைக்கவும்",
+  "source": "மூலம்: ",
+  "uncompressed": "அழுத்தப்படாத",
+  "dab_music_source_description": "ஆடியோஃபைல்களுக்காக. உயர்தர/லாஸ்லெஸ் ஆடியோ ஸ்ட்ரீம்களை வழங்குகிறது. ISRC அடிப்படையில் துல்லியமான பாடல் பொருத்தம்."
 }

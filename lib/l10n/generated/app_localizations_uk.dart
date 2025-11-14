@@ -875,16 +875,16 @@ class AppLocalizationsUk extends AppLocalizations {
   String get restore_defaults => 'Відновити налаштування за замовчуванням';
 
   @override
-  String get download_music_format => 'Download music format';
+  String get download_music_format => 'Формат завантаження музики';
 
   @override
-  String get streaming_music_format => 'Streaming music format';
+  String get streaming_music_format => 'Формат потокової музики';
 
   @override
-  String get download_music_quality => 'Download music quality';
+  String get download_music_quality => 'Якість завантаженої музики';
 
   @override
-  String get streaming_music_quality => 'Streaming music quality';
+  String get streaming_music_quality => 'Якість потокової музики';
 
   @override
   String get login_with_lastfm => 'Увійти з Last.fm';
@@ -1452,16 +1452,18 @@ class AppLocalizationsUk extends AppLocalizations {
       'Цей плагін скроббить вашу музику, щоб створити вашу історію прослуховувань.';
 
   @override
-  String get default_metadata_source => 'Default metadata source';
+  String get default_metadata_source => 'Джерело метаданих за замовчуванням';
 
   @override
-  String get set_default_metadata_source => 'Set default metadata source';
+  String get set_default_metadata_source =>
+      'Встановити джерело метаданих за замовчуванням';
 
   @override
-  String get default_audio_source => 'Default audio source';
+  String get default_audio_source => 'Джерело аудіо за замовчуванням';
 
   @override
-  String get set_default_audio_source => 'Set default audio source';
+  String get set_default_audio_source =>
+      'Встановити джерело аудіо за замовчуванням';
 
   @override
   String get set_default => 'Встановити за замовчуванням';
@@ -1522,7 +1524,7 @@ class AppLocalizationsUk extends AppLocalizations {
       'Введені дані не відповідають необхідному формату';
 
   @override
-  String get plugins => 'Plugins';
+  String get plugins => 'Плагіни';
 
   @override
   String get paste_plugin_download_url =>
@@ -1548,7 +1550,7 @@ class AppLocalizationsUk extends AppLocalizations {
 
   @override
   String get configure_plugins =>
-      'Configure your own metadata provider and audio source plugins';
+      'Налаштуйте власні плагіни метаданих і аудіоджерела';
 
   @override
   String get audio_scrobblers => 'Аудіо скробблери';
@@ -1557,12 +1559,12 @@ class AppLocalizationsUk extends AppLocalizations {
   String get scrobbling => 'Скроблінг';
 
   @override
-  String get source => 'Source: ';
+  String get source => 'Джерело: ';
 
   @override
-  String get uncompressed => 'Uncompressed';
+  String get uncompressed => 'Без стиснення';
 
   @override
   String get dab_music_source_description =>
-      'For audiophiles. Provides high-quality/lossless audio streams. Accurate ISRC based track matching.';
+      'Для аудіофілів. Забезпечує високоякісні/без втрат аудіопотоки. Точна відповідність треків на основі ISRC.';
 }

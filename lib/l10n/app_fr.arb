@@ -478,5 +478,18 @@
   "available_plugins": "Plugins disponibles",
   "configure_your_own_metadata_plugin": "Configurer votre propre fournisseur de métadonnées de playlist/album/artiste/flux",
   "audio_scrobblers": "Scrobblers audio",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Format de téléchargement de musique",
+  "streaming_music_format": "Format de streaming de musique",
+  "download_music_quality": "Qualité de téléchargement de musique",
+  "streaming_music_quality": "Qualité de streaming de musique",
+  "default_metadata_source": "Source de métadonnées par défaut",
+  "set_default_metadata_source": "Définir la source de métadonnées par défaut",
+  "default_audio_source": "Source audio par défaut",
+  "set_default_audio_source": "Définir la source audio par défaut",
+  "plugins": "Plugins",
+  "configure_plugins": "Configurez vos propres plugins de fournisseur de métadonnées et de source audio",
+  "source": "Source : ",
+  "uncompressed": "Non compressé",
+  "dab_music_source_description": "Pour les audiophiles. Fournit des flux audio de haute qualité/sans perte. Correspondance précise des pistes basée sur ISRC."
 }

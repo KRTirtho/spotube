@@ -477,5 +477,18 @@
   "available_plugins": "Verfügbare Plugins",
   "configure_your_own_metadata_plugin": "Eigenen Anbieter für Playlist-/Album-/Künstler-/Feed-Metadaten konfigurieren",
   "audio_scrobblers": "Audio-Scrobbler",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "Musik-Downloadformat",
+  "streaming_music_format": "Musik-Streamingformat",
+  "download_music_quality": "Musik-Downloadqualität",
+  "streaming_music_quality": "Musik-Streamingqualität",
+  "default_metadata_source": "Standard-Metadatenquelle",
+  "set_default_metadata_source": "Standard-Metadatenquelle festlegen",
+  "default_audio_source": "Standard-Audioquelle",
+  "set_default_audio_source": "Standard-Audioquelle festlegen",
+  "plugins": "Plugins",
+  "configure_plugins": "Richte deine eigenen Metadatenanbieter- und Audioquellen-Plugins ein",
+  "source": "Quelle: ",
+  "uncompressed": "Unkomprimiert",
+  "dab_music_source_description": "Für Audiophile. Bietet hochwertige/verlustfreie Audiostreams. Präzises ISRC-basiertes Track-Matching."
 }

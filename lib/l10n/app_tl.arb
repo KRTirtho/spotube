@@ -475,5 +475,18 @@
   "available_plugins": "Mga available na plugin",
   "configure_your_own_metadata_plugin": "I-configure ang iyong sariling playlist/album/artist/feed metadata provider",
   "audio_scrobblers": "Mga Audio Scrobbler",
-  "scrobbling": "Scrobbling"
+  "scrobbling": "Scrobbling",
+  "download_music_format": "I-download na format ng musika",
+  "streaming_music_format": "Format ng streaming ng musika",
+  "download_music_quality": "Kalidad ng i-download na musika",
+  "streaming_music_quality": "Kalidad ng streaming ng musika",
+  "default_metadata_source": "Default na pinagmulan ng metadata",
+  "set_default_metadata_source": "Itakda ang default na pinagmulan ng metadata",
+  "default_audio_source": "Default na pinagmulan ng audio",
+  "set_default_audio_source": "Itakda ang default na pinagmulan ng audio",
+  "plugins": "Mga plugin",
+  "configure_plugins": "I-configure ang sarili mong metadata provider at mga audio source plugin",
+  "source": "Pinagmulan: ",
+  "uncompressed": "Hindi naka-compress",
+  "dab_music_source_description": "Para sa mga audiophile. Nagbibigay ng de-kalidad/walang loss na audio streams. Tumpak na pagtutugma ng track batay sa ISRC."
 }
