@@ -60,7 +60,7 @@ class UserArtistsPage extends HookConsumerWidget {
 
     if (artistQuery.error
         case MetadataPluginException(
-          errorCode: MetadataPluginErrorCode.noDefaultPlugin,
+          errorCode: MetadataPluginErrorCode.noDefaultMetadataPlugin,
           message: _,
         )) {
       return const Center(child: NoDefaultMetadataPlugin());

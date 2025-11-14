@@ -55,7 +55,7 @@ class UserAlbumsPage extends HookConsumerWidget {
 
     if (albumsQuery.error
         case MetadataPluginException(
-          errorCode: MetadataPluginErrorCode.noDefaultPlugin,
+          errorCode: MetadataPluginErrorCode.noDefaultMetadataPlugin,
           message: _,
         )) {
       return const Center(child: NoDefaultMetadataPlugin());

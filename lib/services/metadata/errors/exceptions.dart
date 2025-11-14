@@ -9,7 +9,8 @@ enum MetadataPluginErrorCode {
   pluginDownloadFailed,
   duplicatePlugin,
   pluginByteCodeFileNotFound,
-  noDefaultPlugin,
+  noDefaultMetadataPlugin,
+  noDefaultAudiSourcePlugin,
 }
 
 class MetadataPluginException implements Exception {
@@ -68,10 +69,15 @@ class MetadataPluginException implements Exception {
           'Plugin byte code file, plugin.out not found. Please ensure the plugin is correctly packaged.',
           errorCode: MetadataPluginErrorCode.pluginByteCodeFileNotFound,
         );
-  MetadataPluginException.noDefaultPlugin()
+  MetadataPluginException.noDefaultMetadataPlugin()
       : this._(
           'No default metadata plugin is set. Please set a default plugin in the settings.',
-          errorCode: MetadataPluginErrorCode.noDefaultPlugin,
+          errorCode: MetadataPluginErrorCode.noDefaultMetadataPlugin,
+        );
+  MetadataPluginException.noDefaultAudioSourcePlugin()
+      : this._(
+          'No default audio source plugin is set. Please set a default plugin in the settings.',
+          errorCode: MetadataPluginErrorCode.noDefaultAudiSourcePlugin,
         );
 
   @override

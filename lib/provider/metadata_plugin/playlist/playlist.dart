@@ -13,7 +13,7 @@ class MetadataPluginPlaylistNotifier
     final metadataPlugin = await ref.read(metadataPluginProvider.future);
 
     if (metadataPlugin == null) {
-      throw MetadataPluginException.noDefaultPlugin();
+      throw MetadataPluginException.noDefaultMetadataPlugin();
     }
 
     return metadataPlugin;

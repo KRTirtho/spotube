@@ -131,7 +131,7 @@ final metadataPluginIsSavedPlaylistProvider =
     final plugin = await ref.watch(metadataPluginProvider.future);
 
     if (plugin == null) {
-      throw MetadataPluginException.noDefaultPlugin();
+      throw MetadataPluginException.noDefaultMetadataPlugin();
     }
 
     final savedPlaylists =

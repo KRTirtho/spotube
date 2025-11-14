@@ -9,7 +9,7 @@ final metadataPluginSearchAllProvider =
     final metadataPlugin = await ref.watch(metadataPluginProvider.future);
 
     if (metadataPlugin == null) {
-      throw MetadataPluginException.noDefaultPlugin();
+      throw MetadataPluginException.noDefaultMetadataPlugin();
     }
 
     return metadataPlugin.search.all(query);
@@ -20,7 +20,7 @@ final metadataPluginSearchChipsProvider = FutureProvider((ref) async {
   final metadataPlugin = await ref.watch(metadataPluginProvider.future);
 
   if (metadataPlugin == null) {
-    throw MetadataPluginException.noDefaultPlugin();
+    throw MetadataPluginException.noDefaultMetadataPlugin();
   }
   return metadataPlugin.search.chips;
 });

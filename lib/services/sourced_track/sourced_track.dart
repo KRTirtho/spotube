@@ -12,6 +12,7 @@ import 'package:spotube/provider/metadata_plugin/audio_source/quality_presets.da
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 
 import 'package:spotube/services/sourced_track/exceptions.dart';
 import 'package:spotube/utils/service_utils.dart';
@@ -41,7 +42,7 @@ class SourcedTrack extends BasicSourcedTrack {
     final audioSourceConfig = await ref.read(metadataPluginsProvider
         .selectAsync((data) => data.defaultAudioSourcePluginConfig));
     if (audioSource == null || audioSourceConfig == null) {
-      throw Exception("Dude wat?");
+      throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
 
     final database = ref.read(databaseProvider);
@@ -157,7 +158,7 @@ class SourcedTrack extends BasicSourcedTrack {
     final audioSource = await ref.read(audioSourcePluginProvider.future);
 
     if (audioSource == null) {
-      throw Exception("Dude wat?");
+      throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
 
     final videoResults = <SpotubeAudioSourceMatchObject>[];
@@ -190,7 +191,8 @@ class SourcedTrack extends BasicSourcedTrack {
   }
 
   Future<SourcedTrack?> swapWithSibling(
-      SpotubeAudioSourceMatchObject sibling) async {
+    SpotubeAudioSourceMatchObject sibling,
+  ) async {
     if (sibling.id == info.id) {
       return null;
     }
@@ -199,7 +201,7 @@ class SourcedTrack extends BasicSourcedTrack {
     final audioSourceConfig = await ref.read(metadataPluginsProvider
         .selectAsync((data) => data.defaultAudioSourcePluginConfig));
     if (audioSource == null || audioSourceConfig == null) {
-      throw Exception("Dude wat?");
+      throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
 
     // a sibling source that was fetched from the search results
@@ -216,10 +218,19 @@ class SourcedTrack extends BasicSourcedTrack {
 
     final database = ref.read(databaseProvider);
 
+    // Delete the old Entry
+    await (database.sourceMatchTable.delete()
+          ..where(
+            (table) =>
+                table.trackId.equals(query.id) &
+                table.sourceType.equals(audioSourceConfig.slug),
+          ))
+        .go();
+
     await database.into(database.sourceMatchTable).insert(
           SourceMatchTableCompanion.insert(
             trackId: query.id,
-            sourceInfo: Value(jsonEncode(siblings.first)),
+            sourceInfo: Value(jsonEncode(sibling)),
             sourceType: audioSourceConfig.slug,
             createdAt: Value(DateTime.now()),
           ),
@@ -245,7 +256,7 @@ class SourcedTrack extends BasicSourcedTrack {
     final audioSourceConfig = await ref.read(metadataPluginsProvider
         .selectAsync((data) => data.defaultAudioSourcePluginConfig));
     if (audioSource == null || audioSourceConfig == null) {
-      throw Exception("Dude wat?");
+      throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
 
     List<SpotubeAudioSourceStreamObject> validStreams = [];

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 import 'package:spotube/services/metadata/metadata.dart';
 
 part 'quality_presets.g.dart';
@@ -61,7 +62,7 @@ class AudioSourceAvailableQualityPresetsNotifier
     audioSourceConfigSnapshot.whenData((audioSourceConfig) {
       audioSourceSnapshot.whenData((audioSource) async {
         if (audioSource == null || audioSourceConfig == null) {
-          throw Exception("Dude wat?");
+          throw MetadataPluginException.noDefaultAudioSourcePlugin();
         }
         final preferences = await SharedPreferences.getInstance();
         final persistedStateStr =
@@ -114,7 +115,7 @@ class AudioSourceAvailableQualityPresetsNotifier
     final audioSourceConfig = await ref.read(metadataPluginsProvider
         .selectAsync((data) => data.defaultAudioSourcePluginConfig));
     if (audioSourceConfig == null) {
-      throw Exception("Dude wat?");
+      throw MetadataPluginException.noDefaultAudioSourcePlugin();
     }
 
     final preferences = await SharedPreferences.getInstance();

@@ -28,7 +28,7 @@ class HomeNewReleasesSection extends HookConsumerWidget {
 
     if (newReleases.error
         case MetadataPluginException(
-          errorCode: MetadataPluginErrorCode.noDefaultPlugin,
+          errorCode: MetadataPluginErrorCode.noDefaultMetadataPlugin,
           message: _,
         )) {
       return const SizedBox.shrink();

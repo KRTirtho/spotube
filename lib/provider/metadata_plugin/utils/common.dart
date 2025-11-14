@@ -20,7 +20,7 @@ mixin MetadataPluginMixin<K>
     final plugin = await ref.read(metadataPluginProvider.future);
 
     if (plugin == null) {
-      throw MetadataPluginException.noDefaultPlugin();
+      throw MetadataPluginException.noDefaultMetadataPlugin();
     }
 
     return plugin;
