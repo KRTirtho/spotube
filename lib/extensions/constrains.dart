@@ -106,3 +106,22 @@ extension ScreenBreakpoints on MediaQueryData {
   bool get lgAndDown => isXs || isSm || isMd || isLg;
   bool get xlAndDown => isXs || isSm || isMd || isLg || isXl;
 }
+
+extension SizeBreakpoints on Size {
+  bool get isXs => width <= Breakpoints.xs;
+  bool get isSm => width > Breakpoints.xs && width <= Breakpoints.sm;
+  bool get isMd => width > Breakpoints.sm && width <= Breakpoints.md;
+  bool get isLg => width > Breakpoints.md && width <= Breakpoints.lg;
+  bool get isXl => width > Breakpoints.lg && width <= Breakpoints.xl;
+  bool get is2Xl => width > Breakpoints.xl;
+
+  bool get smAndUp => isSm || isMd || isLg || isXl || is2Xl;
+  bool get mdAndUp => isMd || isLg || isXl || is2Xl;
+  bool get lgAndUp => isLg || isXl || is2Xl;
+  bool get xlAndUp => isXl || is2Xl;
+
+  bool get smAndDown => isXs || isSm;
+  bool get mdAndDown => isXs || isSm || isMd;
+  bool get lgAndDown => isXs || isSm || isMd || isLg;
+  bool get xlAndDown => isXs || isSm || isMd || isLg || isXl;
+}

@@ -12,7 +12,12 @@ final serverRouterProvider = Provider((ref) {
 
   router.get("/ping", (Request request) => Response.ok("pong"));
 
+  router.head("/stream/<trackId>", playbackRoutes.headStreamTrackId);
   router.get("/stream/<trackId>", playbackRoutes.getStreamTrackId);
+
+  router.get("/playback/toggle-playback", playbackRoutes.togglePlayback);
+  router.get("/playback/previous", playbackRoutes.previousTrack);
+  router.get("/playback/next", playbackRoutes.nextTrack);
 
   router.all("/ws", connectRoutes.websocket);
 

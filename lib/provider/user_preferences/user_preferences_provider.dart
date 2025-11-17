@@ -1,17 +1,15 @@
 import 'package:drift/drift.dart';
-import 'package:flutter/material.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart' as paths;
-import 'package:spotify/spotify.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide join;
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/market.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
-import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
-import 'package:spotube/provider/palette_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
-import 'package:spotube/services/sourced_track/enums.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:open_file/open_file.dart';
@@ -91,9 +89,9 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   Future<void> reset() async {
     final db = ref.read(databaseProvider);
 
-    final query = db.update(db.preferencesTable)..where((t) => t.id.equals(0));
+    final query = db.update(db.preferencesTable);
 
-    await query.replace(PreferencesTableCompanion.insert());
+    await query.replace(PreferencesTableCompanion.insert(id: const Value(0)));
   }
 
   static Future<String> getMusicCacheDir() async {
@@ -120,14 +118,6 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     }
   }
 
-  void setStreamMusicCodec(SourceCodecs codec) {
-    setData(PreferencesTableCompanion(streamMusicCodec: Value(codec)));
-  }
-
-  void setDownloadMusicCodec(SourceCodecs codec) {
-    setData(PreferencesTableCompanion(downloadMusicCodec: Value(codec)));
-  }
-
   void setThemeMode(ThemeMode mode) {
     setData(PreferencesTableCompanion(themeMode: Value(mode)));
   }
@@ -143,19 +133,15 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
   void setAlbumColorSync(bool sync) {
     setData(PreferencesTableCompanion(albumColorSync: Value(sync)));
 
-    if (!sync) {
-      ref.read(paletteProvider.notifier).state = null;
-    } else {
-      ref.read(audioPlayerStreamListenersProvider).updatePalette();
-    }
+    // if (!sync) {
+    //   ref.read(paletteProvider.notifier).state = null;
+    // } else {
+    //   ref.read(audioPlayerStreamListenersProvider).updatePalette();
+    // }
   }
 
   void setCheckUpdate(bool check) {
     setData(PreferencesTableCompanion(checkUpdate: Value(check)));
-  }
-
-  void setAudioQuality(SourceQualities quality) {
-    setData(PreferencesTableCompanion(audioQuality: Value(quality)));
   }
 
   void setDownloadLocation(String downloadDir) {
@@ -188,14 +174,6 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     setData(PreferencesTableCompanion(locale: Value(locale)));
   }
 
-  void setPipedInstance(String instance) {
-    setData(PreferencesTableCompanion(pipedInstance: Value(instance)));
-  }
-
-  void setInvidiousInstance(String instance) {
-    setData(PreferencesTableCompanion(invidiousInstance: Value(instance)));
-  }
-
   void setSearchMode(SearchMode mode) {
     setData(PreferencesTableCompanion(searchMode: Value(mode)));
   }
@@ -204,8 +182,8 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
     setData(PreferencesTableCompanion(skipNonMusic: Value(skip)));
   }
 
-  void setAudioSource(AudioSource type) {
-    setData(PreferencesTableCompanion(audioSource: Value(type)));
+  void setYoutubeClientEngine(YoutubeClientEngine engine) {
+    setData(PreferencesTableCompanion(youtubeClientEngine: Value(engine)));
   }
 
   void setSystemTitleBar(bool isSystemTitleBar) {
@@ -235,6 +213,14 @@ class UserPreferencesNotifier extends Notifier<PreferencesTableData> {
 
   void setEnableConnect(bool enable) {
     setData(PreferencesTableCompanion(enableConnect: Value(enable)));
+  }
+
+  void setConnectPort(int port) {
+    assert(
+      port >= -1 && port <= 65535,
+      "Port must be between -1 and 65535, got $port",
+    );
+    setData(PreferencesTableCompanion(connectPort: Value(port)));
   }
 
   void setCacheMusic(bool cache) {

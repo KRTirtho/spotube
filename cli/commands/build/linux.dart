@@ -37,23 +37,31 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     await bootstrap();
 
     await shell.run(
-      """
-      flutter_distributor package --platform=linux --targets=deb
-      flutter_distributor package --platform=linux --targets=rpm
-      """,
+      "fastforge package --platform=linux --targets=deb,appimage",
     );
+    if (architecture == "x86") {
+      await shell.run(
+        "fastforge package --platform=linux --targets=rpm",
+      );
+    }
 
     final tempDir = join(Directory.systemTemp.path, "spotube-tar");
-
-    final bundleDirPath =
-        join(cwd.path, "build", "linux", "x64", "release", "bundle");
+    final bundleArchName = architecture == "x86" ? "x86_64" : "aarch64";
+    final bundleDirPath = join(
+      cwd.path,
+      "build",
+      "linux",
+      architecture == "x86" ? "x64" : architecture,
+      "release",
+      "bundle",
+    );
 
     final tarFile = File(join(
       cwd.path,
       "dist",
       "spotube-linux-"
           "${CliEnv.channel == BuildChannel.nightly ? "nightly" : versionWithoutBuildNumber}"
-          "-x86_64.tar.xz",
+          "-$bundleArchName.tar.xz",
     ));
 
     await copyPath(bundleDirPath, tempDir);
@@ -65,7 +73,7 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     ).copy(
       join(tempDir, "com.github.KRTirtho.Spotube.appdata.xml"),
     );
-    await File(join(cwd.path, "assets", "spotube-logo.png")).copy(
+    await File(join(cwd.path, "assets", "branding", "spotube-logo.png")).copy(
       join(tempDir, "spotube-logo.png"),
     );
 
@@ -81,25 +89,48 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
         "spotube-${pubspec.version}-linux.deb",
       ),
     );
+    await ogDeb.copy(
+      join(
+        cwd.path,
+        "dist",
+        "Spotube-linux-$bundleArchName.deb",
+      ),
+    );
+    await ogDeb.delete();
 
-    final ogRpm = File(
+    if (architecture == "x86") {
+      final ogRpm = File(
+        join(
+          cwd.path,
+          "dist",
+          pubspec.version.toString(),
+          "spotube-${pubspec.version}-linux.rpm",
+        ),
+      );
+
+      await ogRpm.copy(
+        join(cwd.path, "dist", "Spotube-linux-$bundleArchName.rpm"),
+      );
+
+      await ogRpm.delete();
+    }
+
+    final ogAppImage = File(
       join(
         cwd.path,
         "dist",
         pubspec.version.toString(),
-        "spotube-${pubspec.version}-linux.rpm",
+        "spotube-${pubspec.version}-linux.AppImage",
       ),
     );
-
-    await ogDeb.copy(
-      join(cwd.path, "dist", "Spotube-linux-x86_64.deb"),
+    await ogAppImage.copy(
+      join(
+        cwd.path,
+        "dist",
+        "Spotube-linux-$bundleArchName.AppImage",
+      ),
     );
-    await ogRpm.copy(
-      join(cwd.path, "dist", "Spotube-linux-x86_64.rpm"),
-    );
-
-    await ogDeb.delete();
-    await ogRpm.delete();
+    await ogAppImage.delete();
 
     stdout.writeln("✅ Linux building done");
   }

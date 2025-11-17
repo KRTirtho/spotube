@@ -1,18 +1,17 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:palette_generator/palette_generator.dart';
-import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/extensions/image.dart';
-import 'package:spotube/models/local_track.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/discord_provider.dart';
 import 'package:spotube/provider/history/history.dart';
-import 'package:spotube/provider/palette_provider.dart';
+import 'package:spotube/provider/metadata_plugin/core/scrobble.dart';
+import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
 import 'package:spotube/provider/skip_segments/skip_segments.dart';
 import 'package:spotube/provider/scrobbler/scrobbler.dart';
-import 'package:spotube/provider/server/sourced_track.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/audio_services/audio_services.dart';
@@ -48,36 +47,12 @@ class AudioPlayerStreamListeners {
   PlaybackHistoryActions get history =>
       ref.read(playbackHistoryActionsProvider);
 
-  Future<void> updatePalette() async {
-    final palette = ref.read(paletteProvider);
-    if (!preferences.albumColorSync) {
-      if (palette != null) ref.read(paletteProvider.notifier).state = null;
-      return;
-    }
-    return Future.microtask(() async {
-      final activeTrack = ref.read(audioPlayerProvider).activeTrack;
-      if (activeTrack == null) return;
-
-      final palette = await PaletteGenerator.fromImageProvider(
-        UniversalImage.imageProvider(
-          (activeTrack.album?.images).asUrlString(
-            placeholder: ImagePlaceholder.albumArt,
-          ),
-          height: 50,
-          width: 50,
-        ),
-      );
-      ref.read(paletteProvider.notifier).state = palette;
-    });
-  }
-
   StreamSubscription subscribeToPlaylist() {
     return audioPlayer.playlistStream.listen((mpvPlaylist) {
       try {
         if (audioPlayerState.activeTrack == null) return;
         notificationService.addTrack(audioPlayerState.activeTrack!);
         discord.updatePresence(audioPlayerState.activeTrack!);
-        updatePalette();
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
       }
@@ -90,7 +65,9 @@ class AudioPlayerStreamListeners {
         final currentSegments = await ref.read(segmentProvider.future);
 
         if (currentSegments?.segments.isNotEmpty != true ||
-            position < const Duration(seconds: 3)) return;
+            position < const Duration(seconds: 3)) {
+          return;
+        }
 
         for (final segment in currentSegments!.segments) {
           final seconds = position.inSeconds;
@@ -107,21 +84,48 @@ class AudioPlayerStreamListeners {
 
   StreamSubscription subscribeToScrobbleChanged() {
     String? lastScrobbled;
-    return audioPlayer.positionStream.listen((position) {
+    return audioPlayer.positionStream.listen((position) async {
       try {
-        final uid = audioPlayerState.activeTrack is LocalTrack
-            ? (audioPlayerState.activeTrack as LocalTrack).path
+        final uid = audioPlayerState.activeTrack is SpotubeLocalTrackObject
+            ? (audioPlayerState.activeTrack as SpotubeLocalTrackObject).path
             : audioPlayerState.activeTrack?.id;
+
+        /// According to Listenbrainz and Last.fm, a scrobble should be sent
+        /// after 4 minutes of listening or 50% of the track duration,
+        /// whichever is less.
+        final minimumListenTime = min(audioPlayer.duration.inSeconds ~/ 2, 240);
 
         if (audioPlayerState.activeTrack == null ||
             lastScrobbled == uid ||
-            position.inSeconds < 30) {
+            position.inSeconds < minimumListenTime ||
+            audioPlayer.duration == Duration.zero ||
+            position == Duration.zero) {
           return;
         }
 
         scrobbler.scrobble(audioPlayerState.activeTrack!);
-        history.addTrack(audioPlayerState.activeTrack!);
+        ref
+            .read(metadataPluginScrobbleProvider.notifier)
+            .scrobble(audioPlayerState.activeTrack!);
         lastScrobbled = uid;
+
+        /// The [Track] from Playlist.getTracks doesn't contain artist images
+        /// so we need to fetch them from the API
+        var activeTrack = audioPlayerState.activeTrack!;
+        if (activeTrack.artists.any((a) => a.images == null)) {
+          final metadataPlugin = await ref.read(metadataPluginProvider.future);
+          final artists = await Future.wait(
+            activeTrack.artists
+                .map((artist) => metadataPlugin!.artist.getArtist(artist.id)),
+          );
+          activeTrack = activeTrack.copyWith(
+            artists: artists
+                .map((e) => SpotubeSimpleArtistObject.fromJson(e.toJson()))
+                .toList(),
+          );
+        }
+
+        await history.addTrack(activeTrack);
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
       }
@@ -131,25 +135,30 @@ class AudioPlayerStreamListeners {
   StreamSubscription subscribeToPosition() {
     String lastTrack = ""; // used to prevent multiple calls to the same track
     return audioPlayer.positionStream.listen((event) async {
+      final percentProgress =
+          (event.inSeconds / max(audioPlayer.duration.inSeconds, 1)) * 100;
       try {
-        if (event < const Duration(seconds: 3) ||
-            audioPlayerState.playlist.index == -1 ||
-            audioPlayerState.playlist.index ==
+        if (percentProgress < 80 ||
+            audioPlayerState.currentIndex == -1 ||
+            audioPlayerState.currentIndex ==
                 audioPlayerState.tracks.length - 1) {
           return;
         }
-        final nextTrack = SpotubeMedia.fromMedia(audioPlayerState
-            .playlist.medias
-            .elementAt(audioPlayerState.playlist.index + 1));
+        final nextTrack = audioPlayerState.tracks
+            .elementAtOrNull(audioPlayerState.currentIndex + 1);
 
-        if (lastTrack == nextTrack.track.id || nextTrack.track is LocalTrack) {
+        if (nextTrack == null ||
+            lastTrack == nextTrack.id ||
+            nextTrack is SpotubeLocalTrackObject) {
           return;
         }
 
         try {
-          await ref.read(sourcedTrackProvider(nextTrack).future);
+          await ref.read(
+            sourcedTrackProvider(nextTrack as SpotubeFullTrackObject).future,
+          );
         } finally {
-          lastTrack = nextTrack.track.id!;
+          lastTrack = nextTrack.id;
         }
       } catch (e, stack) {
         AppLogger.reportError(e, stack);

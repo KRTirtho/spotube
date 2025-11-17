@@ -1,31 +1,33 @@
-import 'dart:async';
+import 'package:flutter/services.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 
-import 'package:collection/collection.dart';
-import 'package:flutter/material.dart' hide Page;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
-import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:spotube/collections/routes.gr.dart';
 
-import 'package:spotify/spotify.dart';
 import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/inter_scrollbar/inter_scrollbar.dart';
-import 'package:spotube/components/fallbacks/anonymous_fallback.dart';
+import 'package:spotube/components/fallbacks/error_box.dart';
+import 'package:spotube/components/fallbacks/no_default_metadata_plugin.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
-import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/hooks/utils/use_force_update.dart';
-import 'package:spotube/pages/search/sections/albums.dart';
-import 'package:spotube/pages/search/sections/artists.dart';
-import 'package:spotube/pages/search/sections/playlists.dart';
-import 'package:spotube/pages/search/sections/tracks.dart';
-import 'package:spotube/provider/authentication/authentication.dart';
-import 'package:spotube/provider/spotify/spotify.dart';
+import 'package:spotube/extensions/string.dart';
+import 'package:spotube/hooks/controllers/use_shadcn_text_editing_controller.dart';
+import 'package:spotube/pages/search/tabs/albums.dart';
+import 'package:spotube/pages/search/tabs/all.dart';
+import 'package:spotube/pages/search/tabs/artists.dart';
+import 'package:spotube/pages/search/tabs/playlists.dart';
+import 'package:spotube/pages/search/tabs/tracks.dart';
+import 'package:spotube/provider/metadata_plugin/search/all.dart';
 import 'package:spotube/services/kv_store/kv_store.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:spotube/services/metadata/errors/exceptions.dart';
 
-import 'package:spotube/utils/platform.dart';
+final searchTermStateProvider = StateProvider<String>((ref) {
+  return "";
+});
 
+@RoutePage()
 class SearchPage extends HookConsumerWidget {
   static const name = "search";
 
@@ -33,21 +35,21 @@ class SearchPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    final theme = Theme.of(context);
+    final controller = useShadcnTextEditingController();
+    final focusNode = useFocusNode();
+
     final searchTerm = ref.watch(searchTermStateProvider);
-    final controller = useSearchController();
+    final searchChipSnapshot = ref.watch(metadataPluginSearchChipsProvider);
+    final selectedChip = useState<String?>(
+      searchChipSnapshot.asData?.value.first ?? "all",
+    );
 
-    final auth = ref.watch(authenticationProvider);
-    final mediaQuery = MediaQuery.of(context);
-
-    final searchTrack = ref.watch(searchProvider(SearchType.track));
-    final searchAlbum = ref.watch(searchProvider(SearchType.album));
-    final searchPlaylist = ref.watch(searchProvider(SearchType.playlist));
-    final searchArtist = ref.watch(searchProvider(SearchType.artist));
-
-    final queries = [searchTrack, searchAlbum, searchPlaylist, searchArtist];
-
-    final isFetching = queries.every((s) => s.isLoading);
+    ref.listen(
+      metadataPluginSearchChipsProvider,
+      (previous, next) {
+        selectedChip.value = next.asData?.value.first ?? "all";
+      },
+    );
 
     useEffect(() {
       controller.text = searchTerm;
@@ -55,210 +57,189 @@ class SearchPage extends HookConsumerWidget {
       return null;
     }, []);
 
-    final resultWidget = HookBuilder(
-      builder: (context) {
-        final controller = useScrollController();
+    void onSubmitted(String value) {
+      ref.read(searchTermStateProvider.notifier).state = value;
+      if (value.trim().isEmpty) {
+        return;
+      }
+      KVStoreService.setRecentSearches(
+        {
+          value,
+          ...KVStoreService.recentSearches,
+        }.toList(),
+      );
+    }
 
-        return InterScrollbar(
-          controller: controller,
-          child: SingleChildScrollView(
-            controller: controller,
-            child: const Padding(
-              padding: EdgeInsets.symmetric(vertical: 8),
-              child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SearchTracksSection(),
-                    SearchPlaylistsSection(),
-                    Gap(20),
-                    SearchArtistsSection(),
-                    Gap(20),
-                    SearchAlbumsSection(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        context.navigateTo(const HomeRoute());
       },
-    );
+      child: SafeArea(
+        bottom: false,
+        child: Scaffold(
+          headers: [
+            if (kTitlebarVisible)
+              const TitleBar(automaticallyImplyLeading: false, height: 30)
+          ],
+          child: Builder(builder: (context) {
+            if (searchChipSnapshot.error
+                case MetadataPluginException(
+                  errorCode: MetadataPluginErrorCode.noDefaultMetadataPlugin,
+                  message: _
+                )) {
+              return const NoDefaultMetadataPlugin();
+            }
 
-    return SafeArea(
-      bottom: false,
-      child: Scaffold(
-        appBar: kIsDesktop && !kIsMacOS
-            ? const PageWindowTitleBar(automaticallyImplyLeading: true)
-            : null,
-        body: auth.asData?.value == null
-            ? const AnonymousFallback()
-            : Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      if ((kIsMobile || kIsMacOS) && context.canPop())
-                        const BackButton()
-                      else
-                        const Gap(20),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            right: 20,
-                            top: 20,
-                            bottom: 20,
-                          ),
-                          child: SearchAnchor(
-                            searchController: controller,
-                            viewBuilder: (_) => HookBuilder(builder: (context) {
-                              final searchController =
-                                  useListenable(controller);
-                              final update = useForceUpdate();
-                              final suggestions = searchController.text.isEmpty
+            if (searchChipSnapshot.hasError) {
+              return ErrorBox(
+                error: searchChipSnapshot.error!,
+                onRetry: () {
+                  ref.invalidate(metadataPluginSearchChipsProvider);
+                },
+              );
+            }
+
+            return Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
+                        child: ListenableBuilder(
+                            listenable: controller,
+                            builder: (context, _) {
+                              final suggestions = controller.text.isEmpty
                                   ? KVStoreService.recentSearches
                                   : KVStoreService.recentSearches
                                       .where(
                                         (s) =>
                                             weightedRatio(
                                               s.toLowerCase(),
-                                              searchController.text
-                                                  .toLowerCase(),
+                                              controller.text.toLowerCase(),
                                             ) >
                                             50,
                                       )
                                       .toList();
 
-                              return ListView.builder(
-                                itemCount: suggestions.length,
-                                itemBuilder: (context, index) {
-                                  final suggestion = suggestions[index];
+                              return KeyboardListener(
+                                focusNode: focusNode,
+                                autofocus: true,
+                                onKeyEvent: (value) {
+                                  final isEnter = value.logicalKey ==
+                                      LogicalKeyboardKey.enter;
 
-                                  return ListTile(
-                                    leading: const Icon(SpotubeIcons.history),
-                                    title: Text(suggestion),
-                                    trailing: IconButton(
-                                      icon: const Icon(SpotubeIcons.trash),
-                                      onPressed: () {
-                                        KVStoreService.setRecentSearches(
-                                          KVStoreService.recentSearches
-                                              .where((s) => s != suggestion)
-                                              .toList(),
-                                        );
-                                        update();
-                                      },
-                                    ),
-                                    onTap: () {
-                                      controller.closeView(suggestion);
-                                      ref
-                                          .read(
-                                              searchTermStateProvider.notifier)
-                                          .state = suggestion;
-                                    },
-                                  );
+                                  if (isEnter) {
+                                    onSubmitted(controller.text);
+                                    focusNode.unfocus();
+                                  }
                                 },
+                                child: AutoComplete(
+                                  suggestions: suggestions.length <= 2
+                                      ? [
+                                          ...suggestions,
+                                          "Twenty One Pilots",
+                                          "Linkin Park",
+                                          "d4vd"
+                                        ]
+                                      : suggestions,
+                                  completer: (suggestion) => suggestion,
+                                  mode: AutoCompleteMode.replaceAll,
+                                  child: TextField(
+                                    autofocus: true,
+                                    controller: controller,
+                                    features: [
+                                      const InputFeature.leading(
+                                        Icon(SpotubeIcons.search),
+                                      ),
+                                      InputFeature.trailing(
+                                        AnimatedCrossFade(
+                                          duration:
+                                              const Duration(milliseconds: 300),
+                                          crossFadeState:
+                                              controller.text.isNotEmpty
+                                                  ? CrossFadeState.showFirst
+                                                  : CrossFadeState.showSecond,
+                                          firstChild: IconButton.ghost(
+                                            size: ButtonSize.small,
+                                            icon:
+                                                const Icon(SpotubeIcons.close),
+                                            onPressed: () {
+                                              controller.clear();
+                                            },
+                                          ),
+                                          secondChild: const SizedBox.square(
+                                              dimension: 28),
+                                        ),
+                                      )
+                                    ],
+                                    textInputAction: TextInputAction.search,
+                                    placeholder: Text(context.l10n.search),
+                                    onSubmitted: onSubmitted,
+                                  ),
+                                ),
                               );
                             }),
-                            suggestionsBuilder: (context, controller) {
-                              return [];
-                            },
-                            viewOnSubmitted: (value) async {
-                              controller.closeView(value);
-                              Timer(
-                                const Duration(milliseconds: 50),
-                                () {
-                                  ref
-                                      .read(searchTermStateProvider.notifier)
-                                      .state = value;
-                                  if (value.trim().isEmpty) {
-                                    return;
-                                  }
-                                  KVStoreService.setRecentSearches(
-                                    {
-                                      value,
-                                      ...KVStoreService.recentSearches,
-                                    }.toList(),
-                                  );
-                                },
-                              );
-                            },
-                            builder: (context, controller) {
-                              return SearchBar(
-                                autoFocus: queries.none((s) =>
-                                        s.asData?.value != null &&
-                                        !s.hasError) &&
-                                    !kIsMobile,
-                                controller: controller,
-                                leading: const Icon(SpotubeIcons.search),
-                                hintText: "${context.l10n.search}...",
-                                onTap: controller.openView,
-                                onChanged: (_) => controller.openView(),
-                              );
-                            },
-                          ),
-                        ),
                       ),
-                    ],
-                  ),
-                  Expanded(
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: searchTerm.isEmpty
-                          ? Column(
-                              children: [
-                                SizedBox(
-                                  height: mediaQuery.size.height * 0.2,
-                                ),
-                                Icon(
-                                  SpotubeIcons.web,
-                                  size: 120,
-                                  color: theme.colorScheme.onSurface
-                                      .withOpacity(0.7),
-                                ),
-                                const SizedBox(height: 20),
-                                Text(
-                                  context.l10n.search_to_get_results,
-                                  style: theme.textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                    color: theme.colorScheme.onSurface
-                                        .withOpacity(0.5),
-                                  ),
-                                ),
-                              ],
-                            )
-                          : isFetching
-                              ? Container(
-                                  constraints: BoxConstraints(
-                                    maxWidth: mediaQuery.lgAndUp
-                                        ? mediaQuery.size.width * 0.5
-                                        : mediaQuery.size.width,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 20,
-                                  ),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        context.l10n.crunching_results,
-                                        style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.w900,
-                                          color: theme.colorScheme.onSurface
-                                              .withOpacity(0.7),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      const LinearProgressIndicator(),
-                                    ],
-                                  ),
-                                )
-                              : resultWidget,
                     ),
+                  ],
+                ),
+                Row(
+                  spacing: 8,
+                  children: [
+                    const Gap(12),
+                    if (searchChipSnapshot.asData?.value != null)
+                      for (final chip in searchChipSnapshot.asData!.value)
+                        Chip(
+                          style: selectedChip.value == chip
+                              ? ButtonVariance.primary.copyWith(
+                                  decoration: (context, states, value) {
+                                    return ButtonVariance.primary
+                                        .decoration(context, states)
+                                        .copyWithIfBoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        );
+                                  },
+                                )
+                              : ButtonVariance.secondary.copyWith(
+                                  decoration: (context, states, value) {
+                                    return ButtonVariance.secondary
+                                        .decoration(context, states)
+                                        .copyWithIfBoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        );
+                                  },
+                                ),
+                          child: Text(chip.capitalize()),
+                          onPressed: () {
+                            selectedChip.value = chip;
+                          },
+                        ),
+                  ],
+                ),
+                Expanded(
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: switch (selectedChip.value) {
+                      "tracks" => const SearchPageTracksTab(),
+                      "albums" => const SearchPageAlbumsTab(),
+                      "artists" => const SearchPageArtistsTab(),
+                      "playlists" => const SearchPagePlaylistsTab(),
+                      _ => const SearchPageAllTab(),
+                    },
                   ),
-                ],
-              ),
+                ),
+              ],
+            );
+          }),
+        ),
       ),
     );
   }

@@ -1,0 +1,92 @@
+---
+import { FaAndroid, FaApple, FaLinux, FaWindows } from "react-icons/fa6";
+import RootLayout from "../layouts/RootLayout.astro";
+import { LuDownload, LuHeart } from "react-icons/lu";
+import { Supporters } from "~/modules/root/supporters";
+import Ads from "~/components/ads/Ads.astro";
+import { ADS_SLOTS } from "~/collections/app";
+---
+
+<RootLayout>
+  <section class="ps-4 pt-16 md:ps-24 md:pt-24">
+    <div class="flex flex-col gap-4">
+      <div>
+        <h1 class="h1">Spotube</h1>
+        <br />
+        <h3 class="h3">
+          A cross-platform extensible open-source music streaming platform
+          <div class="inline-flex gap-3 items-center">
+            <FaAndroid className="inline text-[#3DDC84]" />
+            <FaWindows className="inline text-[#00A2F0]" />
+            <FaLinux className="inline" />
+            <FaApple className="inline" />
+          </div>
+        </h3>
+        <p class="text-surface-500">
+          And it's <span class="text-error-500 underline decoration-dashed"
+            >not</span
+          >
+          built with Electron (web technologies)
+        </p>
+        <br />
+        <div class="flex items-center gap-3">
+          <a
+            href="https://news.ycombinator.com/item?id=39066136"
+            target="_blank"
+          >
+            <img
+              src="https://hackerbadge.vercel.app/api?id=39066136"
+              alt="HackerNews"
+            />
+          </a>
+          <a
+            href="https://flathub.org/apps/com.github.KRTirtho.Spotube"
+            target="_blank"
+          >
+            <img
+              width="160"
+              alt="Download on Flathub"
+              src="https://flathub.org/api/badge?locale=en"
+            />
+          </a>
+        </div>
+      </div>
+      <div class="flex justify-center">
+        <a
+          href="/downloads"
+          class="flex gap-2 btn btn-lg preset-filled"
+        >
+          <LuDownload />
+          Download
+        </a>
+      </div>
+    </div>
+
+    <br />
+    <Ads adSlot={ADS_SLOTS.rootPageDisplay} adFormat="auto" />
+    <br />
+
+    <div class="flex flex-col gap-4">
+      <h2 class="h2">
+        Supporters
+        <LuHeart className="inline-block" color="red" />
+      </h2>
+      <p class="text-surface-500">
+        We are grateful for the support of individuals and organizations who
+        have made Spotube possible.
+      </p>
+      <div class="flex justify-center">
+        <a href="https://opencollective.com/spotube/donate" target="_blank">
+          <img
+            src="https://opencollective.com/webpack/donate/button@2x.png?color=blue"
+            width="300"
+            alt="Open Collective"
+          />
+        </a>
+      </div>
+      <Supporters client:only />
+    </div>
+    <br />
+    <Ads adSlot={ADS_SLOTS.rootPageDisplay} adFormat="auto" />
+  </section>
+</RootLayout>

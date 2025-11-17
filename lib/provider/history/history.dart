@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/database/database.dart';
 
 class PlaybackHistoryActions {
@@ -16,44 +16,54 @@ class PlaybackHistoryActions {
     });
   }
 
-  Future<void> addPlaylists(List<PlaylistSimple> playlists) async {
+  Future<void> addPlaylists(List<SpotubeSimplePlaylistObject> playlists) async {
     await _batchInsertHistoryEntries([
       for (final playlist in playlists)
         HistoryTableCompanion.insert(
           type: HistoryEntryType.playlist,
-          itemId: playlist.id!,
+          itemId: playlist.id,
           data: playlist.toJson(),
         ),
     ]);
   }
 
-  Future<void> addAlbums(List<AlbumSimple> albums) async {
+  Future<void> addAlbums(List<SpotubeSimpleAlbumObject> albums) async {
     await _batchInsertHistoryEntries([
       for (final albums in albums)
         HistoryTableCompanion.insert(
           type: HistoryEntryType.album,
-          itemId: albums.id!,
+          itemId: albums.id,
           data: albums.toJson(),
         ),
     ]);
   }
 
-  Future<void> addTracks(List<Track> tracks) async {
+  Future<void> addTracks(List<SpotubeTrackObject> tracks) async {
+    assert(
+      tracks.every((t) => t.artists.every((a) => a.images != null)),
+      'Track artists must have images',
+    );
+
     await _batchInsertHistoryEntries([
       for (final track in tracks)
         HistoryTableCompanion.insert(
           type: HistoryEntryType.track,
-          itemId: track.id!,
+          itemId: track.id,
           data: track.toJson(),
         ),
     ]);
   }
 
-  Future<void> addTrack(Track track) async {
+  Future<void> addTrack(SpotubeTrackObject track) async {
+    assert(
+      track.artists.every((a) => a.images != null),
+      'Track artists must have images',
+    );
+
     await _db.into(_db.historyTable).insert(
           HistoryTableCompanion.insert(
             type: HistoryEntryType.track,
-            itemId: track.id!,
+            itemId: track.id,
             data: track.toJson(),
           ),
         );

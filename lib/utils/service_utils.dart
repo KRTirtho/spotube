@@ -1,18 +1,18 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:html/dom.dart' hide Text;
-import 'package:spotify/spotify.dart';
-import 'package:spotube/modules/library/user_local_tracks.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide Element;
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/pages/library/user_local_tracks/user_local_tracks.dart';
 import 'package:spotube/modules/root/update_dialog.dart';
 
-import 'package:spotube/models/lyrics.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/dio/dio.dart';
 import 'package:spotube/services/logger/logger.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 
 import 'package:spotube/utils/primitive_utils.dart';
 import 'package:collection/collection.dart';
@@ -20,12 +20,16 @@ import 'package:html/parser.dart' as parser;
 
 import 'dart:async';
 
-import 'package:flutter/material.dart' hide Element;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:spotube/collections/env.dart';
 
 import 'package:version/version.dart';
+
+enum UserAgentDevice {
+  desktop,
+  mobile,
+}
 
 abstract class ServiceUtils {
   static final _englishMatcherRegex = RegExp(
@@ -63,9 +67,8 @@ abstract class ServiceUtils {
     }
 
     return "$title ${artists.map((e) => e.replaceAll(",", " ")).join(", ")}"
-        .toLowerCase()
         .replaceAll(RegExp(r"\s*\[[^\]]*]"), ' ')
-        .replaceAll(RegExp(r"\sfeat\.|\sft\."), ' ')
+        .replaceAll(RegExp(r"\sfeat\.|\sft\.", caseSensitive: false), ' ')
         .replaceAll(RegExp(r"\s+"), ' ')
         .trim();
   }
@@ -184,200 +187,39 @@ abstract class ServiceUtils {
     return lyrics;
   }
 
-  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
-  static const baseUri = "https://www.rentanadviser.com/subtitles";
-
-  @Deprecated("In favor spotify lyrics api, this isn't needed anymore")
-  static Future<SubtitleSimple?> getTimedLyrics(SourcedTrack track) async {
-    final artistNames =
-        track.artists?.map((artist) => artist.name!).toList() ?? [];
-    final query = getTitle(
-      track.name!,
-      artists: artistNames,
-    );
-
-    final searchUri = Uri.parse("$baseUri/subtitles4songs.aspx").replace(
-      queryParameters: {"q": query},
-    );
-
-    final res = await globalDio.getUri(
-      searchUri,
-      options: Options(responseType: ResponseType.plain),
-    );
-    final document = parser.parse(res.data);
-    final results =
-        document.querySelectorAll("#tablecontainer table tbody tr td a");
-
-    final rateSortedResults = results.map((result) {
-      final title = result.text.trim().toLowerCase();
-      int points = 0;
-      final hasAllArtists = track.artists
-              ?.map((artist) => artist.name!)
-              .every((artist) => title.contains(artist.toLowerCase())) ??
-          false;
-      final hasTrackName = title.contains(track.name!.toLowerCase());
-      final isNotLive = !PrimitiveUtils.containsTextInBracket(title, "live");
-      final exactYtMatch = title == track.sourceInfo.title.toLowerCase();
-      if (exactYtMatch) points = 7;
-      for (final criteria in [hasTrackName, hasAllArtists, isNotLive]) {
-        if (criteria) points++;
-      }
-      return {"result": result, "points": points};
-    }).sorted((a, b) => (b["points"] as int).compareTo(a["points"] as int));
-
-    // not result was found at all
-    if (rateSortedResults.first["points"] == 0) {
-      return Future.error("Subtitle lookup failed", StackTrace.current);
-    }
-
-    final topResult = rateSortedResults.first["result"] as Element;
-    final subtitleUri =
-        Uri.parse("$baseUri/${topResult.attributes["href"]}&type=lrc");
-
-    final lrcDocument = parser.parse((await globalDio.getUri(
-      subtitleUri,
-      options: Options(responseType: ResponseType.plain),
-    ))
-        .data);
-    final lrcList = lrcDocument
-            .querySelector("#ctl00_ContentPlaceHolder1_lbllyrics")
-            ?.innerHtml
-            .replaceAll(RegExp(r'<h3>.*</h3>'), "")
-            .split("<br>")
-            .map((e) {
-          e = e.trim();
-          final regexp = RegExp(r'\[.*\]');
-          final timeStr = regexp
-              .firstMatch(e)
-              ?.group(0)
-              ?.replaceAll(RegExp(r'\[|\]'), "")
-              .trim()
-              .split(":");
-          final minuteSeconds = timeStr?.last.split(".");
-
-          return LyricSlice(
-              time: Duration(
-                minutes: int.parse(timeStr?.first ?? "0"),
-                seconds: int.parse(minuteSeconds?.first ?? "0"),
-                milliseconds: int.parse(minuteSeconds?.last ?? "0"),
-              ),
-              text: e.split(regexp).last);
-        }).toList() ??
-        [];
-
-    final subtitle = SubtitleSimple(
-      name: topResult.text.trim(),
-      uri: subtitleUri,
-      lyrics: lrcList,
-      rating: rateSortedResults.first["points"] as int,
-      provider: "Rent An Adviser",
-    );
-
-    return subtitle;
-  }
-
-  static void navigate(BuildContext context, String location, {Object? extra}) {
-    if (GoRouterState.of(context).matchedLocation == location) return;
-    GoRouter.of(context).go(location, extra: extra);
-  }
-
-  static void navigateNamed(
-    BuildContext context,
-    String name, {
-    Object? extra,
-    Map<String, String>? pathParameters,
-    Map<String, dynamic>? queryParameters,
-  }) {
-    if (GoRouterState.of(context).matchedLocation == name) return;
-    GoRouter.of(context).goNamed(
-      name,
-      pathParameters: pathParameters ?? const {},
-      queryParameters: queryParameters ?? const {},
-      extra: extra,
-    );
-  }
-
-  static void push(BuildContext context, String location, {Object? extra}) {
-    final router = GoRouter.of(context);
-    final routerState = GoRouterState.of(context);
-    final routerStack = router.routerDelegate.currentConfiguration.matches
-        .map((e) => e.matchedLocation);
-
-    if (routerState.matchedLocation == location ||
-        routerStack.contains(location)) return;
-    router.push(location, extra: extra);
-  }
-
-  static void pushNamed(
-    BuildContext context,
-    String name, {
-    Object? extra,
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-  }) {
-    final router = GoRouter.of(context);
-    final routerState = GoRouterState.of(context);
-    final routerStack = router.routerDelegate.currentConfiguration.matches
-        .map((e) => e.matchedLocation);
-
-    final nameLocation = routerState.namedLocation(
-      name,
-      pathParameters: pathParameters,
-      queryParameters: queryParameters,
-    );
-
-    if (routerState.matchedLocation == nameLocation ||
-        routerStack.contains(nameLocation)) {
-      return;
-    }
-    router.pushNamed(
-      name,
-      pathParameters: pathParameters,
-      queryParameters: queryParameters,
-      extra: extra,
-    );
-  }
-
-  static DateTime parseSpotifyAlbumDate(AlbumSimple? album) {
-    if (album == null || album.releaseDate == null) {
+  static DateTime parseSpotifyAlbumDate(SpotubeFullAlbumObject? album) {
+    if (album == null) {
       return DateTime.parse("1975-01-01");
     }
 
-    switch (album.releaseDatePrecision ?? DatePrecision.year) {
-      case DatePrecision.day:
-        return DateTime.parse(album.releaseDate!);
-      case DatePrecision.month:
-        return DateTime.parse("${album.releaseDate}-01");
-      case DatePrecision.year:
-        return DateTime.parse("${album.releaseDate}-01-01");
-    }
+    return DateTime.parse(album.releaseDate);
   }
 
-  static List<T> sortTracks<T extends Track>(List<T> tracks, SortBy sortBy) {
+  static List<T> sortTracks<T extends SpotubeTrackObject>(
+      List<T> tracks, SortBy sortBy) {
     if (sortBy == SortBy.none) return tracks;
     return List<T>.from(tracks)
       ..sort((a, b) {
         switch (sortBy) {
           case SortBy.ascending:
-            return a.name?.compareTo(b.name ?? "") ?? 0;
+            return a.name.compareTo(b.name);
           case SortBy.descending:
-            return b.name?.compareTo(a.name ?? "") ?? 0;
-          case SortBy.newest:
-            final aDate = parseSpotifyAlbumDate(a.album);
-            final bDate = parseSpotifyAlbumDate(b.album);
-            return bDate.compareTo(aDate);
-          case SortBy.oldest:
-            final aDate = parseSpotifyAlbumDate(a.album);
-            final bDate = parseSpotifyAlbumDate(b.album);
-            return aDate.compareTo(bDate);
+            return b.name.compareTo(a.name);
+          // TODO: We'll figure this one out later :')
+          // case SortBy.newest:
+          //   final aDate = parseSpotifyAlbumDate(a.album);
+          //   final bDate = parseSpotifyAlbumDate(b.album);
+          //   return bDate.compareTo(aDate);
+          // case SortBy.oldest:
+          //   final aDate = parseSpotifyAlbumDate(a.album);
+          //   final bDate = parseSpotifyAlbumDate(b.album);
+          // return aDate.compareTo(bDate);
           case SortBy.duration:
-            return a.durationMs?.compareTo(b.durationMs ?? 0) ?? 0;
+            return a.durationMs.compareTo(b.durationMs);
           case SortBy.artist:
-            return a.artists?.first.name
-                    ?.compareTo(b.artists?.first.name ?? "") ??
-                0;
+            return a.artists.first.name.compareTo(b.artists.first.name);
           case SortBy.album:
-            return a.album?.name?.compareTo(b.album?.name ?? "") ?? 0;
+            return a.album.name.compareTo(b.album.name);
           default:
             return 0;
         }
@@ -418,7 +260,7 @@ abstract class ServiceUtils {
       await showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: Colors.black26,
+        barrierColor: Colors.black.withAlpha(66),
         builder: (context) {
           return RootAppUpdateDialog.nightly(nightlyBuildNum: buildNum);
         },
@@ -439,14 +281,16 @@ abstract class ServiceUtils {
       if (currentVersion == null ||
           latestVersion == null ||
           (latestVersion.isPreRelease && !currentVersion.isPreRelease) ||
-          (!latestVersion.isPreRelease && currentVersion.isPreRelease)) return;
+          (!latestVersion.isPreRelease && currentVersion.isPreRelease)) {
+        return;
+      }
 
       if (latestVersion <= currentVersion || !context.mounted) return;
 
       showDialog(
         context: context,
         barrierDismissible: true,
-        barrierColor: Colors.black26,
+        barrierColor: Colors.black.withAlpha(66),
         builder: (context) {
           return RootAppUpdateDialog(version: latestVersion);
         },
@@ -454,7 +298,6 @@ abstract class ServiceUtils {
     }
   }
 
-  /// Spotify Images are always JPEGs
   static Future<Uint8List?> downloadImage(
     String imageUrl,
   ) async {
@@ -475,5 +318,50 @@ abstract class ServiceUtils {
       AppLogger.reportError(e, stackTrace);
       return null;
     }
+  }
+
+  static int randomNumber(int min, int max) {
+    return min + Random().nextInt(max - min);
+  }
+
+  static String randomUserAgent(UserAgentDevice type) {
+    if (type == UserAgentDevice.desktop) {
+      return "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_${randomNumber(11, 15)}_${randomNumber(4, 9)}) AppleWebKit/${randomNumber(530, 537)}.${randomNumber(30, 37)} (KHTML, like Gecko) Chrome/${randomNumber(80, 105)}.0.${randomNumber(3000, 4500)}.${randomNumber(60, 125)} Safari/${randomNumber(530, 537)}.${randomNumber(30, 36)}";
+    } else {
+      return "Mozilla/5.0 (Linux; Android ${randomNumber(8, 13)}) AppleWebKit/${randomNumber(530, 537)}.${randomNumber(30, 36)} (KHTML, like Gecko) Chrome/${randomNumber(101, 116)}.0.${randomNumber(3000, 6000)}.${randomNumber(60, 125)} Mobile Safari/${randomNumber(530, 537)}.${randomNumber(30, 36)}";
+    }
+  }
+
+  static String sanitizeFilename(String input, {String replacement = ''}) {
+    final result = input
+        // illegalRe
+        .replaceAll(
+          RegExp(r'[\/\?<>\\:\*\|"]'),
+          replacement,
+        )
+        // controlRe
+        .replaceAll(
+          RegExp(
+            r'[\x00-\x1f\x80-\x9f]',
+          ),
+          replacement,
+        )
+        // reservedRe
+        .replaceFirst(
+          RegExp(r'^\.+$'),
+          replacement,
+        )
+        // windowsReservedRe
+        .replaceFirst(
+          RegExp(
+            r'^(con|prn|aux|nul|com[0-9]|lpt[0-9])(\..*)?$',
+            caseSensitive: false,
+          ),
+          replacement,
+        )
+        // windowsTrailingRe
+        .replaceFirst(RegExp(r'[\. ]+$'), replacement);
+
+    return result.length > 255 ? result.substring(0, 255) : result;
   }
 }

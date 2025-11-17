@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 
 class VolumeSlider extends HookConsumerWidget {
@@ -30,24 +31,24 @@ class VolumeSlider extends HookConsumerWidget {
           }
         }
       },
-      child: SliderTheme(
-        data: const SliderThemeData(
-          showValueIndicator: ShowValueIndicator.always,
-        ),
+      child: SizedBox(
+        height: 20,
+        width: 100,
         child: Slider(
           min: 0,
           max: 1,
-          label: (value * 100).toStringAsFixed(0),
-          value: value,
-          onChanged: onChanged,
+          value: SliderValue.single(value),
+          onChanged: (v) => onChanged(v.value),
         ),
       ),
     );
+
     return Row(
       mainAxisAlignment:
           !fullWidth ? MainAxisAlignment.center : MainAxisAlignment.start,
       children: [
         IconButton(
+          variance: ButtonVariance.ghost,
           icon: Icon(
             value == 0
                 ? SpotubeIcons.volumeMute

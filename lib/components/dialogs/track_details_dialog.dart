@@ -1,53 +1,49 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:spotify/spotify.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/hyper_link.dart';
-import 'package:spotube/components/links/link_text.dart';
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/services/sourced_track/sourced_track.dart';
 import 'package:spotube/extensions/duration.dart';
+import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
 
-class TrackDetailsDialog extends HookWidget {
-  final Track track;
+class TrackDetailsDialog extends HookConsumerWidget {
+  final SpotubeFullTrackObject track;
   const TrackDetailsDialog({
     super.key,
     required this.track,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
     final mediaQuery = MediaQuery.of(context);
+    final sourcedTrack = ref.read(sourcedTrackProvider(track));
 
     final detailsMap = {
-      context.l10n.title: track.name!,
+      context.l10n.title: track.name,
       context.l10n.artist: ArtistLink(
-        artists: track.artists ?? <Artist>[],
+        artists: track.artists,
         mainAxisAlignment: WrapAlignment.start,
         textStyle: const TextStyle(color: Colors.blue),
         hideOverflowArtist: false,
       ),
-      context.l10n.album: LinkText(
-        track.album!.name!,
-        "/album/${track.album?.id}",
-        extra: track.album,
-        overflow: TextOverflow.ellipsis,
-        style: const TextStyle(color: Colors.blue),
-      ),
-      context.l10n.duration: (track is SourcedTrack
-              ? (track as SourcedTrack).sourceInfo.duration
-              : track.duration!)
-          .toHumanReadableString(),
-      if (track.album!.releaseDate != null)
-        context.l10n.released: track.album!.releaseDate,
-      context.l10n.popularity: track.popularity?.toString() ?? "0",
+      // context.l10n.album: LinkText(
+      //   track.album!.name!,
+      //   AlbumRoute(album: track.album!, id: track.album!.id!),
+      //   overflow: TextOverflow.ellipsis,
+      //   style: const TextStyle(color: Colors.blue),
+      // ),
+      context.l10n.duration: sourcedTrack.asData != null
+          ? sourcedTrack.asData!.value.info.duration.toHumanReadableString()
+          : Duration(milliseconds: track.durationMs).toHumanReadableString(),
+      if (track.album.releaseDate != null)
+        context.l10n.released: track.album.releaseDate,
     };
 
-    final sourceInfo =
-        track is SourcedTrack ? (track as SourcedTrack).sourceInfo : null;
+    final sourceInfo = sourcedTrack.asData?.value.info;
 
     final ytTracksDetailsMap = sourceInfo == null
         ? {}
@@ -58,32 +54,26 @@ class TrackDetailsDialog extends HookWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            context.l10n.channel: Hyperlink(
-              sourceInfo.artist,
-              sourceInfo.artistUrl,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-            context.l10n.streamUrl: Hyperlink(
-              (track as SourcedTrack).url,
-              (track as SourcedTrack).url,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
+            context.l10n.channel: Text(sourceInfo.artists.join(", ")),
+            if (sourcedTrack.asData?.value.url != null)
+              context.l10n.streamUrl: Hyperlink(
+                sourcedTrack.asData!.value.url ?? "",
+                sourcedTrack.asData!.value.url ?? "",
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
           };
 
     return AlertDialog(
-      contentPadding: const EdgeInsets.all(16),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 100),
-      scrollable: true,
+      surfaceBlur: 0,
+      surfaceOpacity: 1,
       title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        spacing: 8,
         children: [
           const Icon(SpotubeIcons.info),
-          const SizedBox(width: 8),
           Text(
             context.l10n.details,
-            style: theme.textTheme.titleMedium,
+            style: theme.typography.h4,
           ),
         ],
       ),
@@ -91,65 +81,64 @@ class TrackDetailsDialog extends HookWidget {
         width: mediaQuery.mdAndUp ? double.infinity : 700,
         child: Table(
           columnWidths: const {
-            0: FixedColumnWidth(95),
-            1: FixedColumnWidth(10),
-            2: FlexColumnWidth(1),
+            0: FixedTableSize(95),
+            1: FixedTableSize(10),
+            2: FlexTableSize(),
           },
-          defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-          children: [
+          theme: const TableTheme(
+            backgroundColor: Colors.transparent,
+            cellTheme: TableCellTheme(
+              backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+            ),
+          ),
+          rowHeights: const {0: FixedTableSize(40)},
+          rows: [
             for (final entry in detailsMap.entries)
               TableRow(
-                children: [
+                cells: [
                   TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.top,
                     child: Text(
                       entry.key,
-                      style: theme.textTheme.titleMedium,
+                      style: theme.typography.bold,
                     ),
                   ),
                   const TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.top,
                     child: Text(":"),
                   ),
-                  if (entry.value is Widget)
-                    entry.value as Widget
-                  else if (entry.value is String)
-                    Text(
-                      entry.value as String,
-                      style: theme.textTheme.bodyMedium,
-                    ),
+                  TableCell(
+                    child: entry.value is Widget
+                        ? entry.value as Widget
+                        : (entry.value is String)
+                            ? Text(
+                                entry.value as String,
+                                style: theme.typography.normal,
+                              )
+                            : const Text(""),
+                  ),
                 ],
               ),
-            const TableRow(
-              children: [
-                SizedBox(height: 16),
-                SizedBox(height: 16),
-                SizedBox(height: 16),
-              ],
-            ),
             for (final entry in ytTracksDetailsMap.entries)
               TableRow(
-                children: [
+                cells: [
                   TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.top,
                     child: Text(
                       entry.key,
-                      style: theme.textTheme.titleMedium,
+                      style: theme.typography.bold,
                     ),
                   ),
                   const TableCell(
-                    verticalAlignment: TableCellVerticalAlignment.top,
                     child: Text(":"),
                   ),
-                  if (entry.value is Widget)
-                    entry.value as Widget
-                  else
-                    Text(
-                      entry.value,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyMedium,
-                    ),
+                  TableCell(
+                    child: entry.value is Widget
+                        ? entry.value as Widget
+                        : Text(
+                            entry.value,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.typography.normal,
+                          ),
+                  ),
                 ],
               ),
           ],

@@ -146,7 +146,5 @@ mixin SpotubeAudioPlayersStreams on AudioPlayerInterface {
 
   Stream<String> get errorStream => _mkPlayer.stream.error;
 
-  Stream<mk.Playlist> get playlistStream => _mkPlayer.stream.playlist.map((s) {
-        return s;
-      });
+  Stream<mk.Playlist> get playlistStream => _mkPlayer.stream.playlist;
 }

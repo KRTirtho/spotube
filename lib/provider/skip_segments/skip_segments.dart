@@ -1,9 +1,10 @@
 import 'package:spotube/models/database/database.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotube/provider/server/active_sourced_track.dart';
+import 'package:spotube/provider/server/active_track_sources.dart';
 import 'package:spotube/provider/user_preferences/user_preferences_provider.dart';
 
 import 'package:spotube/services/dio/dio.dart';
@@ -81,31 +82,23 @@ Future<List<SkipSegmentTableData>> getAndCacheSkipSegments(
 
 final segmentProvider = FutureProvider<SourcedSegments?>(
   (ref) async {
-    final track = ref.watch(activeSourcedTrackProvider);
-    if (track == null) return null;
+    final snapshot = await ref.watch(activeTrackSourcesProvider.future);
+    if (snapshot == null) return null;
+    final (:track, :source, :notifier) = snapshot;
+    if (track is SpotubeLocalTrackObject) return null;
+    if (!source!.source.toLowerCase().contains("youtube")) return null;
 
-    final skipNonMusic = ref.watch(
-      userPreferencesProvider.select(
-        (s) {
-          final isPipedYTMusicMode = s.audioSource == AudioSource.piped &&
-              s.searchMode == SearchMode.youtubeMusic;
-
-          return s.skipNonMusic && !isPipedYTMusicMode;
-        },
-      ),
-    );
+    final skipNonMusic =
+        ref.watch(userPreferencesProvider.select((s) => s.skipNonMusic));
 
     if (!skipNonMusic) {
-      return SourcedSegments(
-        segments: [],
-        source: track.sourceInfo.id,
-      );
+      return SourcedSegments(segments: [], source: source.info.id);
     }
 
-    final segments = await getAndCacheSkipSegments(track.sourceInfo.id, ref);
+    final segments = await getAndCacheSkipSegments(source.info.id, ref);
 
     return SourcedSegments(
-      source: track.sourceInfo.id,
+      source: source.info.id,
       segments: segments,
     );
   },

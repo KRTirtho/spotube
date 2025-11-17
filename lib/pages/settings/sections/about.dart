@@ -1,8 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart' show ListTile;
+
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart' hide ButtonStyle;
 import 'package:spotube/collections/env.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/modules/settings/section_card_with_heading.dart';
 import 'package:spotube/components/adaptive/adaptive_list_tile.dart';
@@ -42,12 +45,25 @@ class SettingsAboutSection extends HookConsumerWidget {
                 ),
               ),
             ),
-            trailing: (context, update) => FilledButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStatePropertyAll(Colors.red[100]),
-                foregroundColor:
-                    const WidgetStatePropertyAll(Colors.pinkAccent),
-                padding: const WidgetStatePropertyAll(EdgeInsets.all(15)),
+            trailing: (context, update) => Button(
+              style: ButtonVariance.primary.copyWith(
+                decoration: (context, states, value) {
+                  final decoration = ButtonVariance.primary
+                      .decoration(context, states) as BoxDecoration;
+
+                  if (states.contains(WidgetState.hovered)) {
+                    return decoration.copyWith(color: Colors.pink[400]);
+                  } else if (states.contains(WidgetState.focused)) {
+                    return decoration.copyWith(color: Colors.pink[300]);
+                  } else if (states.isNotEmpty) {
+                    return decoration;
+                  }
+
+                  return decoration.copyWith(color: Colors.pink);
+                },
+                textStyle: (context, states, value) => ButtonVariance.primary
+                    .textStyle(context, states)
+                    .copyWith(color: Colors.white),
               ),
               onPressed: () {
                 launchUrlString(
@@ -55,29 +71,26 @@ class SettingsAboutSection extends HookConsumerWidget {
                   mode: LaunchMode.externalApplication,
                 );
               },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(SpotubeIcons.heart),
-                  const SizedBox(width: 5),
-                  Text(context.l10n.please_sponsor),
-                ],
-              ),
+              leading: const Icon(SpotubeIcons.heart),
+              child: Text(context.l10n.please_sponsor),
             ),
           ),
         if (Env.enableUpdateChecker)
-          SwitchListTile(
-            secondary: const Icon(SpotubeIcons.update),
+          ListTile(
+            leading: const Icon(SpotubeIcons.update),
             title: Text(context.l10n.check_for_updates),
-            value: preferences.checkUpdate,
-            onChanged: (checked) => preferencesNotifier.setCheckUpdate(checked),
+            trailing: Switch(
+              value: preferences.checkUpdate,
+              onChanged: (checked) =>
+                  preferencesNotifier.setCheckUpdate(checked),
+            ),
           ),
         ListTile(
           leading: const Icon(SpotubeIcons.info),
           title: Text(context.l10n.about_spotube),
           trailing: const Icon(SpotubeIcons.angleRight),
           onTap: () {
-            GoRouter.of(context).push("/settings/about");
+            context.navigateTo(const AboutSpotubeRoute());
           },
         )
       ],

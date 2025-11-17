@@ -10,9 +10,6 @@ enum ReleaseChannel {
 
 @Envied(obfuscate: true, requireEnvFile: true, path: ".env")
 abstract class Env {
-  @EnviedField(varName: 'SPOTIFY_SECRETS')
-  static final String rawSpotifySecrets = _Env.rawSpotifySecrets;
-
   @EnviedField(varName: 'LASTFM_API_KEY')
   static final String lastFmApiKey = _Env.lastFmApiKey;
 
@@ -23,14 +20,6 @@ abstract class Env {
   static final int _hideDonations = _Env._hideDonations;
 
   static bool get hideDonations => _hideDonations == 1;
-
-  static final spotifySecrets = rawSpotifySecrets.split(',').map((e) {
-    final secrets = e.trim().split(":").map((e) => e.trim());
-    return {
-      "clientId": secrets.first,
-      "clientSecret": secrets.last,
-    };
-  }).toList();
 
   @EnviedField(varName: 'ENABLE_UPDATE_CHECK', defaultValue: "1")
   static final String _enableUpdateChecker = _Env._enableUpdateChecker;

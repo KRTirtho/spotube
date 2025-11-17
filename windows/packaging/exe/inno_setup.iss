@@ -20,10 +20,11 @@ Compression=lzma
 SolidCompression=yes
 SetupIconFile={{SETUP_ICON_FILE}}
 WizardStyle=modern
-WizardSmallImageFile="..\\..\\assets\\spotube-logo.bmp"
+WizardSmallImageFile="..\\..\\assets\\branding\\spotube-logo.bmp"
 PrivilegesRequired={{PRIVILEGES_REQUIRED}}
-ArchitecturesAllowed=x64
-ArchitecturesInstallIn64BitMode=x64
+ArchitecturesAllowed=x64compatible
+ArchitecturesInstallIn64BitMode=x64compatible
+UninstallDisplayIcon={app}\{{EXECUTABLE_NAME}}
 
 [Languages]
 {% for locale in LOCALES %}

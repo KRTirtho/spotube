@@ -1,8 +1,8 @@
-Premium gerektirmeyen ve Electron kullanmayan açık kaynaklı Spotify istemcisi! Hem masaüstü hem de mobil için kullanılabilir!
+Premium gerektirmeyen ve Electron kullanmayan açık kaynaklı müzik istemcisi! Hem masaüstü hem de mobil için kullanılabilir!
 
 
 Özellikler:
-* Herkese açık ve ücretsiz Spotify ve YT Music API'lerinin kullanımı sayesinde reklam yok¹
+* Herkese açık ve ücretsiz müzik meta veri sağlayıcısı ve YT Music API'lerinin kullanımı sayesinde reklam yok¹
 * İndirilebilir parçalar
 * Çapraz platform desteği
 * Küçük boyut ve daha az veri kullanımı

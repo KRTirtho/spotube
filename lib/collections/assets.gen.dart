@@ -1,3 +1,5 @@
+// dart format width=80
+
 /// GENERATED CODE - DO NOT MODIFY BY HAND
 /// *****************************************************
 ///  FlutterGen
@@ -5,122 +7,129 @@
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-// ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
+// ignore_for_file: deprecated_member_use,directives_ordering,implicit_dynamic_list_literal,unnecessary_import
 
 import 'package:flutter/widgets.dart';
 
-class $AssetsLogosGen {
-  const $AssetsLogosGen();
+class $AssetsBrandingGen {
+  const $AssetsBrandingGen();
 
-  /// File path: assets/logos/songlink-transparent.png
-  AssetGenImage get songlinkTransparent =>
-      const AssetGenImage('assets/logos/songlink-transparent.png');
+  /// File path: assets/branding/spotube-logo-light.png
+  AssetGenImage get spotubeLogoLight =>
+      const AssetGenImage('assets/branding/spotube-logo-light.png');
 
-  /// File path: assets/logos/songlink.png
-  AssetGenImage get songlink =>
-      const AssetGenImage('assets/logos/songlink.png');
+  /// File path: assets/branding/spotube-logo.ico
+  String get spotubeLogoIco => 'assets/branding/spotube-logo.ico';
+
+  /// File path: assets/branding/spotube-logo.png
+  AssetGenImage get spotubeLogoPng =>
+      const AssetGenImage('assets/branding/spotube-logo.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [songlinkTransparent, songlink];
+  List<dynamic> get values =>
+      [spotubeLogoLight, spotubeLogoIco, spotubeLogoPng];
 }
 
-class $AssetsTutorialGen {
-  const $AssetsTutorialGen();
+class $AssetsImagesGen {
+  const $AssetsImagesGen();
 
-  /// File path: assets/tutorial/step-1.png
-  AssetGenImage get step1 => const AssetGenImage('assets/tutorial/step-1.png');
+  /// File path: assets/images/album-placeholder.png
+  AssetGenImage get albumPlaceholder =>
+      const AssetGenImage('assets/images/album-placeholder.png');
 
-  /// File path: assets/tutorial/step-2.png
-  AssetGenImage get step2 => const AssetGenImage('assets/tutorial/step-2.png');
+  /// File path: assets/images/bengali-patterns-bg.jpg
+  AssetGenImage get bengaliPatternsBg =>
+      const AssetGenImage('assets/images/bengali-patterns-bg.jpg');
 
-  /// File path: assets/tutorial/step-3.png
-  AssetGenImage get step3 => const AssetGenImage('assets/tutorial/step-3.png');
+  /// File path: assets/images/liked-tracks.jpg
+  AssetGenImage get likedTracks =>
+      const AssetGenImage('assets/images/liked-tracks.jpg');
+
+  /// Directory path: assets/images/logos
+  $AssetsImagesLogosGen get logos => const $AssetsImagesLogosGen();
+
+  /// File path: assets/images/placeholder.png
+  AssetGenImage get placeholder =>
+      const AssetGenImage('assets/images/placeholder.png');
+
+  /// File path: assets/images/user-placeholder.png
+  AssetGenImage get userPlaceholder =>
+      const AssetGenImage('assets/images/user-placeholder.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [step1, step2, step3];
+  List<AssetGenImage> get values => [
+        albumPlaceholder,
+        bengaliPatternsBg,
+        likedTracks,
+        placeholder,
+        userPlaceholder
+      ];
+}
+
+class $AssetsPluginsGen {
+  const $AssetsPluginsGen();
+
+  /// Directory path: assets/plugins/spotube-plugin-musicbrainz-listenbrainz
+  $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen
+      get spotubePluginMusicbrainzListenbrainz =>
+          const $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen();
+
+  /// Directory path: assets/plugins/spotube-plugin-youtube-audio
+  $AssetsPluginsSpotubePluginYoutubeAudioGen get spotubePluginYoutubeAudio =>
+      const $AssetsPluginsSpotubePluginYoutubeAudioGen();
+}
+
+class $AssetsImagesLogosGen {
+  const $AssetsImagesLogosGen();
+
+  /// File path: assets/images/logos/dab-music.png
+  AssetGenImage get dabMusic =>
+      const AssetGenImage('assets/images/logos/dab-music.png');
+
+  /// File path: assets/images/logos/invidious.jpg
+  AssetGenImage get invidious =>
+      const AssetGenImage('assets/images/logos/invidious.jpg');
+
+  /// File path: assets/images/logos/jiosaavn.png
+  AssetGenImage get jiosaavn =>
+      const AssetGenImage('assets/images/logos/jiosaavn.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [dabMusic, invidious, jiosaavn];
+}
+
+class $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen {
+  const $AssetsPluginsSpotubePluginMusicbrainzListenbrainzGen();
+
+  /// File path: assets/plugins/spotube-plugin-musicbrainz-listenbrainz/plugin.smplug
+  String get plugin =>
+      'assets/plugins/spotube-plugin-musicbrainz-listenbrainz/plugin.smplug';
+
+  /// List of all assets
+  List<String> get values => [plugin];
+}
+
+class $AssetsPluginsSpotubePluginYoutubeAudioGen {
+  const $AssetsPluginsSpotubePluginYoutubeAudioGen();
+
+  /// File path: assets/plugins/spotube-plugin-youtube-audio/plugin.smplug
+  String get plugin =>
+      'assets/plugins/spotube-plugin-youtube-audio/plugin.smplug';
+
+  /// List of all assets
+  List<String> get values => [plugin];
 }
 
 class Assets {
-  Assets._();
+  const Assets._();
 
   static const String license = 'LICENSE';
-  static const AssetGenImage albumPlaceholder =
-      AssetGenImage('assets/album-placeholder.png');
-  static const AssetGenImage bengaliPatternsBg =
-      AssetGenImage('assets/bengali-patterns-bg.jpg');
-  static const AssetGenImage branding = AssetGenImage('assets/branding.png');
-  static const AssetGenImage emptyBox = AssetGenImage('assets/empty_box.png');
-  static const AssetGenImage invidious = AssetGenImage('assets/invidious.jpg');
-  static const AssetGenImage jiosaavn = AssetGenImage('assets/jiosaavn.png');
-  static const AssetGenImage likedTracks =
-      AssetGenImage('assets/liked-tracks.jpg');
-  static const $AssetsLogosGen logos = $AssetsLogosGen();
-  static const AssetGenImage placeholder =
-      AssetGenImage('assets/placeholder.png');
-  static const AssetGenImage spotubeHeroBanner =
-      AssetGenImage('assets/spotube-hero-banner.png');
-  static const AssetGenImage spotubeLogoForeground =
-      AssetGenImage('assets/spotube-logo-foreground.jpg');
-  static const AssetGenImage spotubeLogoBmp =
-      AssetGenImage('assets/spotube-logo.bmp');
-  static const String spotubeLogoIco = 'assets/spotube-logo.ico';
-  static const AssetGenImage spotubeLogoPng =
-      AssetGenImage('assets/spotube-logo.png');
-  static const String spotubeLogoSvg = 'assets/spotube-logo.svg';
-  static const AssetGenImage spotubeLogoAndroid12 =
-      AssetGenImage('assets/spotube-logo_android12.png');
-  static const AssetGenImage spotubeNightlyLogoForeground =
-      AssetGenImage('assets/spotube-nightly-logo-foreground.jpg');
-  static const AssetGenImage spotubeNightlyLogoPng =
-      AssetGenImage('assets/spotube-nightly-logo.png');
-  static const String spotubeNightlyLogoSvg = 'assets/spotube-nightly-logo.svg';
-  static const AssetGenImage spotubeNightlyLogoAndroid12 =
-      AssetGenImage('assets/spotube-nightly-logo_android12.png');
-  static const AssetGenImage spotubeScreenshot =
-      AssetGenImage('assets/spotube-screenshot.png');
-  static const AssetGenImage spotubeTallCapsule =
-      AssetGenImage('assets/spotube-tall-capsule.png');
-  static const AssetGenImage spotubeWideCapsuleLarge =
-      AssetGenImage('assets/spotube-wide-capsule-large.png');
-  static const AssetGenImage spotubeWideCapsuleSmall =
-      AssetGenImage('assets/spotube-wide-capsule-small.png');
-  static const AssetGenImage spotubeBanner =
-      AssetGenImage('assets/spotube_banner.png');
-  static const AssetGenImage success = AssetGenImage('assets/success.png');
-  static const $AssetsTutorialGen tutorial = $AssetsTutorialGen();
-  static const AssetGenImage userPlaceholder =
-      AssetGenImage('assets/user-placeholder.png');
+  static const $AssetsBrandingGen branding = $AssetsBrandingGen();
+  static const $AssetsImagesGen images = $AssetsImagesGen();
+  static const $AssetsPluginsGen plugins = $AssetsPluginsGen();
 
   /// List of all assets
-  static List<dynamic> get values => [
-        license,
-        albumPlaceholder,
-        bengaliPatternsBg,
-        branding,
-        emptyBox,
-        invidious,
-        jiosaavn,
-        likedTracks,
-        placeholder,
-        spotubeHeroBanner,
-        spotubeLogoForeground,
-        spotubeLogoBmp,
-        spotubeLogoIco,
-        spotubeLogoPng,
-        spotubeLogoSvg,
-        spotubeLogoAndroid12,
-        spotubeNightlyLogoForeground,
-        spotubeNightlyLogoPng,
-        spotubeNightlyLogoSvg,
-        spotubeNightlyLogoAndroid12,
-        spotubeScreenshot,
-        spotubeTallCapsule,
-        spotubeWideCapsuleLarge,
-        spotubeWideCapsuleSmall,
-        spotubeBanner,
-        success,
-        userPlaceholder
-      ];
+  static List<String> get values => [license];
 }
 
 class AssetGenImage {
@@ -128,12 +137,14 @@ class AssetGenImage {
     this._assetName, {
     this.size,
     this.flavors = const {},
+    this.animation,
   });
 
   final String _assetName;
 
   final Size? size;
   final Set<String> flavors;
+  final AssetGenImageAnimation? animation;
 
   Image image({
     Key? key,
@@ -156,7 +167,7 @@ class AssetGenImage {
     bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
   }) {
@@ -202,4 +213,16 @@ class AssetGenImage {
   String get path => _assetName;
 
   String get keyName => _assetName;
+}
+
+class AssetGenImageAnimation {
+  const AssetGenImageAnimation({
+    required this.isAnimation,
+    required this.duration,
+    required this.frames,
+  });
+
+  final bool isAnimation;
+  final Duration duration;
+  final int frames;
 }

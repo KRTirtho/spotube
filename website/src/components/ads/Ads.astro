@@ -1,0 +1,38 @@
+---
+interface Props {
+  adSlot: number;
+  adFormat: "auto" | "fluid";
+  fullWidthResponsive?: boolean;
+  style?: string;
+  adLayout?: "in-article" | "in-feed" | "in-page";
+  adLayoutKey?: string;
+}
+
+const {
+  adSlot,
+  adFormat,
+  fullWidthResponsive = true,
+  style = "display:block",
+  adLayout,
+  adLayoutKey,
+} = Astro.props;
+
+const AD_CLIENT = "ca-pub-6419300932495863";
+---
+
+<ins
+  class="adsbygoogle"
+  style={style}
+  data-ad-layout={adLayout}
+  data-ad-client={AD_CLIENT}
+  data-ad-slot={adSlot}
+  data-ad-format={adFormat}
+  data-full-width-responsive={fullWidthResponsive}
+  data-ad-layout-key={adLayoutKey}></ins>
+
+<script is:inline type="text/javascript">
+  // When the DOM is ready, push the ad request to the adsbygoogle array
+  document.addEventListener("DOMContentLoaded", function () {
+    (window.adsbygoogle = window.adsbygoogle || []).push({});
+  });
+</script>

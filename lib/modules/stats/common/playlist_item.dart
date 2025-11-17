@@ -1,21 +1,21 @@
-import 'package:flutter/material.dart';
-import 'package:spotify/spotify.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/extensions/image.dart';
+import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/string.dart';
-import 'package:spotube/pages/playlist/playlist.dart';
-import 'package:spotube/utils/service_utils.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
 class StatsPlaylistItem extends StatelessWidget {
-  final PlaylistSimple playlist;
+  final SpotubeSimplePlaylistObject playlist;
   final Widget info;
   const StatsPlaylistItem(
       {super.key, required this.playlist, required this.info});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      horizontalTitleGap: 8,
+    return ButtonTile(
+      style: ButtonVariance.ghost,
       leading: ClipRRect(
         borderRadius: BorderRadius.circular(4),
         child: UniversalImage(
@@ -26,20 +26,15 @@ class StatsPlaylistItem extends StatelessWidget {
           height: 40,
         ),
       ),
-      title: Text(playlist.name!),
+      title: Text(playlist.name),
       subtitle: Text(
-        playlist.description?.unescapeHtml() ?? '',
+        playlist.description.unescapeHtml(),
         maxLines: 1,
         overflow: TextOverflow.ellipsis,
       ),
       trailing: info,
-      onTap: () {
-        ServiceUtils.pushNamed(
-          context,
-          PlaylistPage.name,
-          pathParameters: {"id": playlist.id!},
-          extra: playlist,
-        );
+      onPressed: () {
+        context.navigateTo(PlaylistRoute(id: playlist.id, playlist: playlist));
       },
     );
   }

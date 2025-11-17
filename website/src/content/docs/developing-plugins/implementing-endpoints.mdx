@@ -1,0 +1,493 @@
+---
+layout: "layouts/DocLayout.astro"
+title: Implementing Endpoints
+description: ""
+order: 2
+---
+
+## AuthEndpoint
+
+> If your plugin doesn't need authentication support, you can skip this section.
+
+In the `src/segments/auth.ht` file you can find all the required method definition. These are the necessary
+methods Spotube calls in it's lifecycle.
+
+```hetu_script
+class AuthEndpoint {
+  var client: HttpClient
+  final controller: StreamController
+
+  get authStateStream -> Stream => controller.stream
+
+  construct (this.client){
+    controller = StreamController.broadcast()
+  }
+
+  fun isAuthenticated() -> bool {
+    // TODO: Implement method
+    return false
+  }
+
+  fun authenticate() -> Future {
+    // TODO: Implement method
+  }
+
+	fun logout() -> Future {
+		// TODO: Implement method
+	}
+}
+```
+
+For this specific endpoint, you may need `WebView` or `Forms` to get user inputs. The [`hetu_spotube_plugin`][hetu_spotube_plugin] provides
+such APIs.
+
+> Learn more about it in the [Spotube Plugin API][spotube_plugin_api] section
+
+### The `.authStateStream` property
+
+The `AuthEndpoint.authStateStream` property is also necessary to notify Spotube about the authentication status. [`hetu_std`][hetu_std] is a built-in
+module and it exports `StreamController` which basically 1:1 copy of the Dart's [StreamController][dart_stream_controller].
+If the status of authentication changes you need to add a new event using the `controller.add`
+Following events are respected by Spotube:
+
+| Name        | Description                                                  |
+| ----------- | ------------------------------------------------------------ |
+| `login`     | When user successfully completes login                       |
+| `logout`    | When user logs out of the service                            |
+| `recovered` | When user's cached/saved credentials are recovered from disk |
+| `refreshed` | When user's session is refreshed                             |
+
+Example of adding a new authentication event:
+
+```hetu_script
+controller.add({ type: "login" }.toJson())
+```
+
+By the way, the event type is a `Map<String, dynamic>` in the Dart side, so make sure to always convert hetu_script's [structs into Maps][hetu_struct_into_map]
+
+## UserEndpoint
+
+The UserEndpoint is used to fetch user information and manage user-related actions.
+In the `src/segments/user.ht` file you can find all the required method definitions. These are the necessary
+methods Spotube calls in its lifecycle.
+
+> Most of these methods should be just a mapping to an API call with minimum latency. Avoid calling plugin APIs like WebView or Forms
+> in these methods. User interactions should be avoided here generally.
+
+```hetu_script
+class UserEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  fun me() {
+    // TODO: Implement method
+  }
+
+  fun savedTracks({ offset: int, limit: int }) {
+    // TODO: Implement method
+  }
+
+  fun savedPlaylists({ offset: int, limit: int }) {
+    // TODO: Implement method
+  }
+
+  fun savedAlbums({ offset: int, limit: int }) {
+    // TODO: Implement method
+  }
+
+  fun savedArtists({ offset: int, limit: int }) {
+    // TODO: Implement method
+  }
+
+  fun isSavedPlaylist(playlistId: string) { // Future<bool>
+    // TODO: Implement method
+  }
+
+  fun isSavedTracks(trackIds: List) { // Future<List<bool>>
+    // TODO: Implement method
+  }
+
+  fun isSavedAlbums(albumIds: List) { // Future<List<bool>>
+    // TODO: Implement method
+  }
+
+  fun isSavedArtists(artistIds: List) { // Future<List<bool>>
+    // TODO: Implement method
+  }
+}
+```
+
+These methods are pretty self-explanatory. You need to implement them to fetch user information from your service.
+
+| Method              | Description                                                              | Returns                                                                                                                          |
+| ------------------- | ------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `me()`              | Fetches the current user's information.                                  | [`SpotubeUserObject`][SpotubeUserObject]                                                                                         |
+| `savedTracks()`     | Fetches the user's saved tracks with pagination support.                 | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullTrackObject`][SpotubeFullTrackObject]       |
+| `savedPlaylists()`  | Fetches the user's saved playlists with pagination support.              | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullPlaylistObject`][SpotubeFullPlaylistObject] |
+| `savedAlbums()`     | Fetches the user's saved albums with pagination support.                 | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]       |
+| `savedArtists()`    | Fetches the user's saved artists with pagination support.                | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullArtistObject`][SpotubeFullArtistObject]     |
+| `isSavedPlaylist()` | Checks if a playlist is saved by the user. Returns a `Future<bool>`.     | `bool`                                                                                                                           |
+| `isSavedTracks()`   | Checks if tracks are saved by the user. Returns a `Future<List<bool>>`.  | `List<bool>` (each boolean corresponds to a track ID)                                                                            |
+| `isSavedAlbums()`   | Checks if albums are saved by the user. Returns a `Future<List<bool>>`.  | `List<bool>` (each boolean corresponds to an album ID)                                                                           |
+| `isSavedArtists()`  | Checks if artists are saved by the user. Returns a `Future<List<bool>>`. | `List<bool>` (each boolean corresponds to an artist ID)                                                                          |
+
+> Note: The `isSavedTracks`, `isSavedAlbums`, and `isSavedArtists` methods accept a list of IDs and return a list of booleans
+> indicating whether each item is saved by the user. The order of the booleans in the list corresponds to the order of the IDs
+> in the input list.
+
+## TrackEndpoint
+
+The TrackEndpoint is used to fetch track information and do track-related actions. In the `src/segments/track.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class TrackEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  fun getTrack(id: string) {
+    // TODO: Implement method
+  }
+
+  fun save(trackIds: List) { // List<String>
+    // TODO: Implement method
+  }
+
+  fun unsave(trackIds: List) { // List<String>
+    // TODO: Implement method
+  }
+
+  fun radio(id: string) {
+    // TODO: Implement method
+  }
+}
+```
+
+| Method       | Description                                                                          | Returns                                                  |
+| ------------ | ------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| `getTrack()` | Fetches track information by ID.                                                     | [SpotubeFullTrackObject][SpotubeFullTrackObject]         |
+| `save()`     | Saves the specified tracks. Accepts a list of track IDs.                             | void                                                     |
+| `unsave()`   | Removes the specified tracks from saved tracks. Accepts a list of track IDs.         | void                                                     |
+| `radio()`    | Fetches related tracks based on specified tracks. Try to return a List of 50 tracks. | [List\<SpotubeFullTrackObject\>][SpotubeFullTrackObject] |
+
+{/* Urls */}
+
+## AlbumEndpoint
+
+The AlbumEndpoint is used to fetch album information and do album-related actions. In the `src/segments/album.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class AlbumEndpoint {
+  construct (this.client)
+
+  fun getAlbum(id: string) {
+    // TODO: Implement method
+  }
+
+  fun tracks(id: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun releases({offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun save(albumIds: List) { // List<String>
+    // TODO: Implement method
+  }
+
+  fun unsave(albumIds: List) { // List<String>
+    // TODO: Implement method
+  }
+}
+```
+
+| Method       | Description                                                                              | Returns                                                                                                                    |
+| ------------ | ---------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `getAlbum()` | Fetches album information by ID.                                                         | [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]                                                                         |
+| `tracks()`   | Fetches tracks of the specified album. Accepts an ID and optional pagination parameters. | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullTrackObject`][SpotubeFullTrackObject] |
+| `releases()` | Fetches new album releases user followed artists or globally                             | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject] |
+| `save()`     | Saves the specified albums. Accepts a list of album IDs.                                 | `void`                                                                                                                     |
+| `unsave()`   | Removes the specified albums from saved albums. Accepts a list of album IDs.             | `void`                                                                                                                     |
+
+## ArtistEndpoint
+
+The ArtistEndpoint is used to fetch artist information and do artist-related actions. In the `src/segments/artist.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class ArtistEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  fun getArtist(id: string) {
+    // TODO: Implement method
+  }
+
+  fun related(id: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun topTracks(id: string, {limit: int, offset: int}) {
+    // TODO: Implement method
+  }
+
+  fun albums(id: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun save(artistIds: List) {
+    // TODO: Implement method
+  }
+
+  fun unsave(artistIds: List) {
+    // TODO: Implement method
+  }
+}
+```
+
+| Method        | Description                                                                            | Returns                                                                                                                      |
+| ------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `getArtist()` | Fetches artist information by ID.                                                      | [`SpotubeFullArtistObject`][SpotubeFullArtistObject]                                                                         |
+| `related()`   | Fetches related artists based on the specified artist ID. Accepts optional pagination. | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullArtistObject`][SpotubeFullArtistObject] |
+| `topTracks()` | Fetches top tracks of the specified artist. Accepts optional pagination.               | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullTrackObject`][SpotubeFullTrackObject]   |
+| `albums()`    | Fetches albums of the specified artist. Accepts optional pagination.                   | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]   |
+| `save()`      | Saves the specified artists. Accepts a list of artist IDs.                             | `void`                                                                                                                       |
+| `unsave()`    | Removes the specified artists from saved artists. Accepts a list of artist IDs.        | `void`                                                                                                                       |
+
+## PlaylistEndpoint
+
+The PlaylistEndpoint is used to fetch playlist information and do track-related actions. In the `src/segments/playlist.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class PlaylistEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  fun getPlaylist(id: string) {
+    // TODO: Implement method
+  }
+
+  fun tracks(id: string, { offset: int, limit: int }) {
+    // TODO: Implement method
+  }
+
+  fun create(userId: string, {
+    name: string,
+    description: string,
+    public: bool,
+    collaborative: bool
+  }) {
+    // TODO: Implement method
+  }
+
+  fun update(playlistId: string, {
+    name: string,
+    description: string,
+    public: bool,
+    collaborative: bool
+  }) {
+    // TODO: Implement method
+  }
+
+  fun deletePlaylist(playlistId: string) {
+    // TODO: Implement method
+  }
+
+  fun addTracks(playlistId: string, { trackIds: List, position: int }) {
+    // TODO: Implement method
+  }
+
+
+  fun removeTracks(playlistId: string, { trackIds: List }) {
+    // TODO: Implement method
+  }
+
+  fun save(playlistId: string) {
+    // TODO: Implement method
+  }
+
+  fun unsave(playlistId: string) {
+    // TODO: Implement method
+  }
+}
+```
+
+| Method           | Description                                 | Returns                                                                                                                    |
+| ---------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `getPlaylist`    | Fetches a playlist by its ID.               | [`SpotubeFullPlaylistObject`][SpotubeFullPlaylistObject]                                                                   |
+| `tracks`         | Fetches tracks in a playlist.               | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullTrackObject`][SpotubeFullTrackObject] |
+| `create`         | Creates a new playlist and returns          | [`SpotubeFullPlaylistObject`][SpotubeFullPlaylistObject]                                                                   |
+| `update`         | Updates an existing playlist.               | `void`                                                                                                                     |
+| `deletePlaylist` | Deletes a playlist.                         | `void`                                                                                                                     |
+| `addTracks`      | Adds tracks to a playlist.                  | `void`                                                                                                                     |
+| `removeTracks`   | Removes tracks from a playlist.             | `void`                                                                                                                     |
+| `save`           | Saves a playlist to the user's library.     | `void`                                                                                                                     |
+| `unsave`         | Removes a playlist from the user's library. | `void`                                                                                                                     |
+
+## SearchEndpoint
+
+The SearchEndpoint is used to fetch search playlist, tracks, album and artists. In the `src/segments/search.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class SearchEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  get chips -> List { // Set<string>
+    // can be tracks, playlists, artists, albums and all
+    return ["all", "tracks", "albums", "artists", "playlists"]
+  }
+
+  fun all(query: string) {
+    // TODO: Implement method
+  }
+
+  fun albums(query: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun artists(query: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun tracks(query: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+
+  fun playlists(query: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+}
+```
+
+| Method        | Description                         | Returns                                                                                                                          |
+| ------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `chips`       | Returns the available search chips. | `List<string>`                                                                                                                   |
+| `all()`       | Searches for all types of content.  | [`SpotubeSearchResponseObject`][SpotubeSearchResponseObject]                                                                     |
+| `albums()`    | Searches only for albums.           | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]       |
+| `artists()`   | Searches only for artists.          | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullArtistObject`][SpotubeFullArtistObject]     |
+| `tracks()`    | Searches only for tracks.           | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullTrackObject`][SpotubeFullTrackObject]       |
+| `playlists()` | Searches only for playlists.        | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeFullPlaylistObject`][SpotubeFullPlaylistObject] |
+
+## BrowseEndpoint
+
+The BrowseEndpoint is used to fetch recommendations and catalogs of playlists, albums and artists. In the `src/segments/browse.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class BrowseEndpoint {
+  var client: HttpClient
+
+  construct (this.client)
+
+  fun sections({offset: int, limit: int}) {
+   // TODO: Implement method
+  }
+
+  fun sectionItems(id: string, {offset: int, limit: int}) {
+    // TODO: Implement method
+  }
+}
+```
+
+| Method           | Description                              | Returns                                                                                                                                        |
+| ---------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `sections()`     | Returns the sections of the home page.   | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of [`SpotubeBrowseSectionObject`][SpotubeBrowseSectionObject] of `Object` |
+| `sectionItems()` | Returns the items of a specific section. | [`SpotubePaginationResponseObject`][SpotubePaginationResponseObject] of `Object`                                                               |
+
+> In `sectionItems()` The `id` it takes comes from `sections()`. It is basically used in an expanded screen to show the browse section items with pagination.
+>
+> For sections returned by `sections()` if `browseMore` is `true` that's when `sectionItems()` is used to fetch the items of that section.
+
+By the way, the `Object` can be any of the following types:
+
+- [`SpotubeFullPlaylistObject`][SpotubeFullPlaylistObject]
+- [`SpotubeFullArtistObject`][SpotubeFullArtistObject]
+- [`SpotubeFullAlbumObject`][SpotubeFullAlbumObject]
+
+## CoreEndpoint
+
+The CoreEndpoint is a special subclass which is used to check update and scrobbling and to get support text. In the `src/segments/core.ht` file you can find all the
+required method definitions.
+
+```hetu_script
+class CorePlugin {
+  var client: HttpClient
+
+  construct (this.client)
+
+  /// Checks for updates to the plugin.
+  /// [currentConfig] is just plugin.json's file content.
+  ///
+  /// If there's an update available, it will return a map of:
+  /// - [downloadUrl] -> direct download url to the new plugin.smplug file.
+  /// - [version] of the new plugin.
+  /// - [changelog] Optionally, a changelog for the update (markdown supported).
+  ///
+  /// If no update is available, it will return null.
+  fun checkUpdate(currentConfig: Map) -> Future {
+    // TODO: Check for updates
+  }
+
+  /// Returns the support information for the plugin in Markdown or plain text.
+  /// Supports images and links.
+  get support -> string {
+    // TODO: Return support information
+    return ""
+  }
+
+  /// Scrobble the provided details to the scrobbling service supported by the plugin.
+  /// "scrobbling" must be set as an ability in the plugin.json
+  /// [details] is a map containing the scrobble information, such as:
+  /// - [id] -> The unique identifier of the track.
+  /// - [title] -> The title of the track.
+  /// - [artists] -> List of artists
+  ///   - [id] -> The unique identifier of the artist.
+  ///   - [name] -> The name of the artist.
+  /// - [album] -> The album of the track
+  ///   - [id] -> The unique identifier of the album.
+  ///   - [name] -> The name of the album.
+  /// - [timestamp] -> The timestamp of the scrobble (optional).
+  /// - [duration_ms] -> The duration of the track in milliseconds (optional).
+  /// - [isrc] -> The ISRC code of the track (optional).
+  fun scrobble(details: Map) {
+    // TODO: Implement scrobbling
+  }
+}
+```
+
+| Method          | Description                                                                                                                              | Returns                                                                                                                         |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `checkUpdate()` | Checks for updates to the plugin.                                                                                                        | `Future` with a map containing `downloadUrl`, `version`, and optionally `changelog`. If no update is available, returns `null`. |
+| `support`       | Returns support information.                                                                                                             | `string` containing the support information in Markdown or plain text.                                                          |
+| `scrobble()`    | [Scrobbles][scrobbling_wiki] the provided track details. This is only called if your plugin.json has scrobbling in the `abilities` field | `void`                                                                                                                          |
+
+> In the `checkUpdate()` method the `plugin.json`'s content will be passed as map. You can use that to check updates using the `version` field.
+>
+> Also, the `downloadUrl` it provides should be a direct binary download link (redirect is supported) for the `.smplug` file
+
+{/* Urls */}
+[scrobbling_wiki]: https://en.wikipedia.org/wiki/Last.fm
+[hetu_script_import_export_docs]: https://hetu-script.github.io/docs/en-US/grammar/import/
+[hetu_spotube_plugin]: https://github.com/KRTirtho/hetu_spotube_plugin
+[hetu_std]: https://github.com/hetu-community/hetu_std
+[dart_stream_controller]: https://api.flutter.dev/flutter/dart-async/StreamController-class.html
+[hetu_struct_into_map]: https://hetu-script.github.io/docs/en-US/api_reference/hetu/#struct
+[spotube_plugin_api]: /docs/plugin-apis
+[SpotubeUserObject]: /docs/reference/models#user
+[SpotubePaginationResponseObject]: /docs/reference/models#pagination-response
+[SpotubeFullAlbumObject]: /docs/reference/models#spotubefullalbumobject
+[SpotubeFullArtistObject]: /docs/reference/models#spotubefullartistobject
+[SpotubeFullTrackObject]: /docs/reference/models#track
+[SpotubeFullPlaylistObject]: /docs/reference/models#spotubefullplaylistobject
+[SpotubeSearchResponseObject]: /docs/reference/models#search-response
+[SpotubeBrowseSectionObject]: /docs/reference/models#browse-section

@@ -1,5 +1,5 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/material.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:simple_icons/simple_icons.dart';
 
@@ -37,6 +37,7 @@ abstract class SpotubeIcons {
   static const share = FeatherIcons.share2;
   static const playlistAdd = Icons.playlist_add_rounded;
   static const playlistRemove = Icons.playlist_remove_rounded;
+  static const playlist = Icons.playlist_play_rounded;
   static const trash = FeatherIcons.trash2;
   static const clock = FeatherIcons.clock;
   static const lyrics = Icons.lyrics_rounded;
@@ -79,6 +80,7 @@ abstract class SpotubeIcons {
   static const hoverOff = Icons.back_hand_outlined;
   static const dragHandle = Icons.drag_indicator;
   static const lightning = Icons.flash_on_rounded;
+  static const lightningOutlined = FeatherIcons.zap;
   static const colorSync = FeatherIcons.activity;
   static const language = FeatherIcons.globe;
   static const error = FeatherIcons.alertTriangle;
@@ -104,7 +106,6 @@ abstract class SpotubeIcons {
   static const file = FeatherIcons.file;
   static const stream = Icons.stream_rounded;
   static const lastFm = SimpleIcons.lastdotfm;
-  static const spotify = SimpleIcons.spotify;
   static const eye = FeatherIcons.eye;
   static const noEye = FeatherIcons.eyeOff;
   static const normalize = FeatherIcons.barChart2;
@@ -127,4 +128,16 @@ abstract class SpotubeIcons {
   static const cache = FeatherIcons.hardDrive;
   static const export = Icons.file_open_outlined;
   static const delete = FeatherIcons.trash2;
+  static const open = FeatherIcons.externalLink;
+  static const radioChecked = Icons.radio_button_on_rounded;
+  static const radioUnchecked = Icons.radio_button_off_rounded;
+  static const grid = FeatherIcons.grid;
+  static const list = FeatherIcons.list;
+  static const device = FeatherIcons.smartphone;
+  static const engine = FeatherIcons.server;
+  static const extensions = Icons.extension_rounded;
+  static const message = FeatherIcons.send;
+  static const upload = FeatherIcons.uploadCloud;
+  static const plugin = Icons.extension_outlined;
+  static const warning = FeatherIcons.alertTriangle;
 }

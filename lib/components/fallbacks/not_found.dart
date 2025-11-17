@@ -1,32 +1,27 @@
-import 'package:flutter/material.dart';
-import 'package:spotube/collections/assets.gen.dart';
+import 'package:flutter_undraw/flutter_undraw.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/extensions/context.dart';
 
 class NotFound extends StatelessWidget {
-  final bool vertical;
-  const NotFound({super.key, this.vertical = false});
+  const NotFound({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final widgets = [
-      SizedBox(
-        height: 150,
-        width: 150,
-        child: Assets.emptyBox.image(),
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(context.l10n.nothing_found, style: theme.textTheme.titleLarge),
-          Text(
-            context.l10n.the_box_is_empty,
-            style: theme.textTheme.titleMedium,
-          ),
-        ],
-      ),
-    ];
-    return vertical ? Column(children: widgets) : Row(children: widgets);
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Undraw(
+          illustration: UndrawIllustration.empty,
+          height: 200 * context.theme.scaling,
+          color: context.theme.colorScheme.primary,
+        ),
+        const Gap(10),
+        Text(
+          context.l10n.nothing_found,
+          textAlign: TextAlign.center,
+        ).muted().small()
+      ],
+    );
   }
 }

@@ -21,7 +21,7 @@ class MacosBuildCommand extends Command with BuildCommandCommonSteps {
       """
       flutter build macos
       appdmg appdmg.json ${join(cwd.path, "build", "Spotube-macos-universal.dmg")}
-      flutter_distributor package --platform=macos --targets pkg --skip-clean
+      fastforge package --platform=macos --targets pkg --skip-clean
       """,
     );
 

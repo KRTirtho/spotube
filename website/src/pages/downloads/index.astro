@@ -1,0 +1,51 @@
+---
+import type { IconType } from "react-icons";
+import { LuDownload, LuHistory, LuPackage, LuSparkles } from "react-icons/lu";
+import { ADS_SLOTS, extendedDownloadLinks } from "~/collections/app";
+import Ads from "~/components/ads/Ads.astro";
+import RootLayout from "~/layouts/RootLayout.astro";
+import DownloadItems from "~/modules/downloads/download-item.astro";
+
+const otherDownloads: [string, string, IconType][] = [
+  ["/downloads/packages", "CLI Packages Managers", LuPackage],
+  ["/downloads/older", "Older Versions", LuHistory],
+  ["/downloads/nightly", "Nightly Builds", LuSparkles],
+];
+---
+
+<RootLayout>
+  <section class="p-4 md:p-16 md:pb-4">
+    <h2 class="h2 flex items-center gap-4">
+      Download
+      <LuDownload className="inline" size={30} />
+    </h2>
+    <br /><br />
+    <h5 class="h5">Spotube is available for every platform</h5>
+    <br />
+    <DownloadItems links={extendedDownloadLinks} />
+    <br />
+    <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
+    <br />
+
+    <h2 class="h2">Other Downloads</h2>
+    <br /><br />
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-w-3xl">
+      {
+        otherDownloads.map((download) => {
+          const Icon = download[2];
+
+          return (
+            <a href={download[0]}>
+              <div class="btn preset-filled-primary-100-900 flex flex-col items-center p-4 gap-4">
+                <Icon />
+                <h5 class="h5">{download[1]}</h5>
+              </div>
+            </a>
+          );
+        })
+      }
+    </div>
+    <br />
+    <Ads adSlot={ADS_SLOTS.downloadPageDisplay} adFormat="auto" />
+  </section>
+</RootLayout>

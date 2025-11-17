@@ -1,21 +1,20 @@
-import 'package:flutter/material.dart';
+import 'package:auto_route/auto_route.dart';
+
+import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:spotify/spotify.dart';
 
 import 'package:spotube/collections/assets.gen.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/links/artist_link.dart';
 import 'package:spotube/components/links/link_text.dart';
-import 'package:spotube/extensions/artist_simple.dart';
 import 'package:spotube/extensions/constrains.dart';
-import 'package:spotube/extensions/image.dart';
-import 'package:spotube/pages/track/track.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
-import 'package:spotube/utils/service_utils.dart';
 
 class PlayerTrackDetails extends HookConsumerWidget {
   final Color? color;
-  final Track? track;
+  final SpotubeTrackObject? track;
   const PlayerTrackDetails({super.key, this.color, this.track});
 
   @override
@@ -36,9 +35,9 @@ class PlayerTrackDetails extends HookConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(4),
               child: UniversalImage(
-                path: (track?.album?.images)
+                path: (track?.album.images)
                     .asUrlString(placeholder: ImagePlaceholder.albumArt),
-                placeholder: Assets.albumPlaceholder.path,
+                placeholder: Assets.images.albumPlaceholder.path,
               ),
             ),
           ),
@@ -48,19 +47,17 @@ class PlayerTrackDetails extends HookConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 4),
-                LinkText(
+                Text(
                   playback.activeTrack?.name ?? "",
-                  "/track/${playback.activeTrack?.id}",
-                  push: true,
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium!.copyWith(
+                  style: theme.typography.normal.copyWith(
                     color: color,
                   ),
                 ),
                 Text(
-                  playback.activeTrack?.artists?.asString() ?? "",
+                  playback.activeTrack?.artists.asString() ?? "",
                   overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall!.copyWith(color: color),
+                  style: theme.typography.small.copyWith(color: color),
                 )
               ],
             ),
@@ -72,7 +69,7 @@ class PlayerTrackDetails extends HookConsumerWidget {
               children: [
                 LinkText(
                   playback.activeTrack?.name ?? "",
-                  "/track/${playback.activeTrack?.id}",
+                  TrackRoute(trackId: playback.activeTrack?.id ?? ""),
                   push: true,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(fontWeight: FontWeight.bold, color: color),
@@ -80,15 +77,10 @@ class PlayerTrackDetails extends HookConsumerWidget {
                 ArtistLink(
                   artists: playback.activeTrack?.artists ?? [],
                   onRouteChange: (route) {
-                    ServiceUtils.push(context, route);
+                    context.router.navigateNamed(route);
                   },
-                  onOverflowArtistClick: () => ServiceUtils.pushNamed(
-                    context,
-                    TrackPage.name,
-                    pathParameters: {
-                      "id": track!.id!,
-                    },
-                  ),
+                  onOverflowArtistClick: () =>
+                      context.navigateTo(TrackRoute(trackId: track!.id)),
                 )
               ],
             ),

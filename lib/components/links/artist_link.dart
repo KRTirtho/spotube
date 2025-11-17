@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:spotify/spotify.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:shadcn_flutter/shadcn_flutter.dart';
+import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/links/anchor_button.dart';
 import 'package:spotube/extensions/context.dart';
-import 'package:spotube/pages/artist/artist.dart';
-import 'package:spotube/utils/service_utils.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 
 class ArtistLink extends StatelessWidget {
-  final List<ArtistSimple> artists;
+  final List<SpotubeSimpleArtistObject> artists;
   final WrapCrossAlignment crossAxisAlignment;
   final WrapAlignment mainAxisAlignment;
   final TextStyle textStyle;
@@ -38,24 +38,16 @@ class ArtistLink extends StatelessWidget {
             .entries
             .map(
               (artist) => Builder(builder: (context) {
-                if (artist.value.name == null) {
-                  return Text("Spotify", style: textStyle);
-                }
                 return AnchorButton(
                   (artist.key != artists.length - 1)
                       ? "${artist.value.name}, "
-                      : artist.value.name!,
+                      : artist.value.name,
                   onTap: () {
                     if (onRouteChange != null) {
                       onRouteChange?.call("/artist/${artist.value.id}");
                     } else {
-                      ServiceUtils.pushNamed(
-                        context,
-                        ArtistPage.name,
-                        pathParameters: {
-                          "id": artist.value.id!,
-                        },
-                      );
+                      context
+                          .navigateTo(ArtistRoute(artistId: artist.value.id));
                     }
                   },
                   overflow: TextOverflow.ellipsis,

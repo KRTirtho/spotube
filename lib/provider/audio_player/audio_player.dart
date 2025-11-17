@@ -1,23 +1,39 @@
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:drift/drift.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:media_kit/media_kit.dart' hide Track;
-import 'package:spotify/spotify.dart' hide Playlist;
+import 'package:media_kit/media_kit.dart';
 import 'package:spotube/extensions/list.dart';
-import 'package:spotube/extensions/track.dart';
 import 'package:spotube/models/database/database.dart';
-import 'package:spotube/models/local_track.dart';
+import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/discord_provider.dart';
-import 'package:spotube/provider/server/sourced_track.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 
 class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
   BlackListNotifier get _blacklist => ref.read(blacklistProvider.notifier);
+
+  void _assertAllowedTracks(Iterable<SpotubeTrackObject> tracks) {
+    assert(
+      tracks.every(
+        (track) =>
+            track is SpotubeFullTrackObject || track is SpotubeLocalTrackObject,
+      ),
+      'All tracks must be either SpotubeFullTrackObject or SpotubeLocalTrackObject',
+    );
+  }
+
+  void _assertAllowedTrack(SpotubeTrackObject tracks) {
+    assert(
+      tracks is SpotubeFullTrackObject || tracks is SpotubeLocalTrackObject,
+      'Track must be either SpotubeFullTrackObject or SpotubeLocalTrackObject',
+    );
+  }
 
   Future<void> _syncSavedState() async {
     final database = ref.read(databaseProvider);
@@ -32,6 +48,8 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
               loopMode: audioPlayer.loopMode,
               shuffled: audioPlayer.isShuffled,
               collections: <String>[],
+              tracks: const Value(<SpotubeTrackObject>[]),
+              currentIndex: const Value(0),
               id: const Value(0),
             ),
           );
@@ -43,51 +61,24 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       await audioPlayer.setShuffle(playerState.shuffled);
     }
 
-    var playlist =
-        await database.select(database.playlistTable).getSingleOrNull();
-    var medias = await database.select(database.playlistMediaTable).get();
+    final tracks = playerState.tracks;
+    final currentIndex = playerState.currentIndex;
 
-    if (playlist == null) {
-      await database.into(database.playlistTable).insert(
-            PlaylistTableCompanion.insert(
-              audioPlayerStateId: 0,
-              index: audioPlayer.playlist.index,
-              id: const Value(0),
-            ),
-          );
-
-      playlist = await database.select(database.playlistTable).getSingle();
-    }
-
-    if (medias.isEmpty && audioPlayer.playlist.medias.isNotEmpty) {
-      await database.batch((batch) {
-        batch.insertAll(
-          database.playlistMediaTable,
-          [
-            for (final media in audioPlayer.playlist.medias)
-              PlaylistMediaTableCompanion.insert(
-                playlistId: playlist!.id,
-                uri: media.uri,
-                extras: Value(media.extras),
-                httpHeaders: Value(media.httpHeaders),
-              ),
-          ],
-        );
-      });
-    } else if (medias.isNotEmpty) {
+    if (tracks.isEmpty && state.tracks.isNotEmpty) {
+      await _updatePlayerState(
+        AudioPlayerStateTableCompanion(
+          tracks: Value(state.tracks),
+          currentIndex: Value(currentIndex),
+        ),
+      );
+    } else if (tracks.isNotEmpty) {
+      state = state.copyWith(
+        tracks: tracks,
+        currentIndex: currentIndex,
+      );
       await audioPlayer.openPlaylist(
-        medias
-            .map(
-              (media) => SpotubeMedia.fromMedia(
-                Media(
-                  media.uri,
-                  extras: media.extras,
-                  httpHeaders: media.httpHeaders,
-                ),
-              ),
-            )
-            .toList(),
-        initialIndex: playlist.index,
+        tracks.asMediaList(),
+        initialIndex: currentIndex,
         autoPlay: false,
       );
     }
@@ -107,36 +98,6 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     await (database.update(database.audioPlayerStateTable)
           ..where((tb) => tb.id.equals(0)))
         .write(companion);
-  }
-
-  Future<void> _updatePlaylist(
-    Playlist playlist,
-  ) async {
-    final database = ref.read(databaseProvider);
-
-    await database.batch((batch) {
-      batch.update(
-        database.playlistTable,
-        PlaylistTableCompanion(index: Value(playlist.index)),
-        where: (tb) => tb.id.equals(0),
-      );
-
-      batch.deleteAll(database.playlistMediaTable);
-
-      if (playlist.medias.isEmpty) return;
-      batch.insertAll(
-        database.playlistMediaTable,
-        [
-          for (final media in playlist.medias)
-            PlaylistMediaTableCompanion.insert(
-              playlistId: 0,
-              uri: media.uri,
-              extras: Value(media.extras),
-              httpHeaders: Value(media.httpHeaders),
-            ),
-        ],
-      );
-    });
   }
 
   @override
@@ -183,9 +144,20 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
       }),
       audioPlayer.playlistStream.listen((playlist) async {
         try {
-          state = state.copyWith(playlist: playlist);
+          final tracks =
+              playlist.medias.map((e) => SpotubeMedia.media(e).track).toList();
 
-          await _updatePlaylist(playlist);
+          state = state.copyWith(
+            tracks: tracks,
+            currentIndex: playlist.index,
+          );
+
+          await _updatePlayerState(
+            AudioPlayerStateTableCompanion(
+              currentIndex: Value(state.currentIndex),
+              tracks: Value(state.tracks),
+            ),
+          );
         } catch (e, stack) {
           AppLogger.reportError(e, stack);
         }
@@ -203,8 +175,8 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     return AudioPlayerState(
       loopMode: audioPlayer.loopMode,
       playing: audioPlayer.isPlaying,
-      playlist: audioPlayer.playlist,
       shuffled: audioPlayer.isShuffled,
+      tracks: [],
       collections: [],
     );
   }
@@ -245,44 +217,83 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
     await removeCollections([collectionId]);
   }
 
-  // Tracks related methods
-
   Future<void> addTracksAtFirst(
-    Iterable<Track> tracks, {
+    Iterable<SpotubeTrackObject> tracks, {
     bool allowDuplicates = false,
   }) async {
+    _assertAllowedTracks(tracks);
     if (state.tracks.length == 1) {
       return addTracks(tracks);
     }
 
-    tracks = _blacklist.filter(tracks).toList() as List<Track>;
+    final addableTracks = _blacklist
+        .filter(tracks)
+        .where(
+          (track) =>
+              allowDuplicates ||
+              !state.tracks.any((element) => _compareTracks(element, track)),
+        )
+        .toList();
 
-    for (int i = 0; i < tracks.length; i++) {
-      final track = tracks.elementAt(i);
+    state = state.copyWith(
+      tracks: [...addableTracks, ...state.tracks],
+    );
 
-      if (!allowDuplicates &&
-          state.tracks.any((element) => _compareTracks(element, track))) {
-        continue;
-      }
+    for (int i = 0; i < addableTracks.length; i++) {
+      final track = addableTracks.elementAt(i);
 
       await audioPlayer.addTrackAt(
         SpotubeMedia(track),
-        max(state.playlist.index, 0) + i + 1,
+        max(state.currentIndex, 0) + i + 1,
       );
     }
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
-  Future<void> addTrack(Track track) async {
+  Future<void> addTrack(SpotubeTrackObject track) async {
+    _assertAllowedTrack(track);
+
     if (_blacklist.contains(track)) return;
     if (state.tracks.any((element) => _compareTracks(element, track))) return;
+
+    state = state.copyWith(
+      tracks: [...state.tracks, track],
+    );
+
     await audioPlayer.addTrack(SpotubeMedia(track));
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
-  Future<void> addTracks(Iterable<Track> tracks) async {
-    tracks = _blacklist.filter(tracks).toList() as List<Track>;
+  Future<void> addTracks(Iterable<SpotubeTrackObject> tracks) async {
+    _assertAllowedTracks(tracks);
+
+    tracks = _blacklist.filter(tracks).toList();
+    state = state.copyWith(
+      tracks: [...state.tracks, ...tracks],
+    );
+
     for (final track in tracks) {
       await audioPlayer.addTrack(SpotubeMedia(track));
     }
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
   Future<void> removeTrack(String trackId) async {
@@ -290,52 +301,135 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
     if (index == -1) return;
 
+    state = state.copyWith(
+      tracks: List.of(state.tracks)..removeAt(index),
+    );
+
     await audioPlayer.removeTrack(index);
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
   Future<void> removeTracks(Iterable<String> trackIds) async {
-    for (final trackId in trackIds) {
-      await removeTrack(trackId);
+    final trackIndexes = state.tracks
+        .where((element) => trackIds.any((trackId) => trackId == element.id))
+        .mapIndexed((index, element) => index);
+
+    final tracks = state.tracks.where(
+      (element) => !trackIds.contains(element.id),
+    );
+
+    state = state.copyWith(
+      tracks: tracks.toList(),
+    );
+
+    for (final index in trackIndexes) {
+      await audioPlayer.removeTrack(index);
     }
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
-  bool _compareTracks(Track a, Track b) {
-    if ((a is LocalTrack && b is! LocalTrack) ||
-        (a is! LocalTrack && b is LocalTrack)) return false;
+  bool _compareTracks(SpotubeTrackObject a, SpotubeTrackObject b) {
+    if (a.runtimeType != b.runtimeType) {
+      return false;
+    }
 
-    return a is LocalTrack && b is LocalTrack
-        ? (a).path == (b).path
+    return a is SpotubeLocalTrackObject && b is SpotubeLocalTrackObject
+        ? a.path == b.path
         : a.id == b.id;
   }
 
   Future<void> load(
-    List<Track> tracks, {
+    List<SpotubeTrackObject> tracks, {
     int initialIndex = 0,
     bool autoPlay = false,
   }) async {
-    final medias = (_blacklist.filter(tracks).toList() as List<Track>)
+    _assertAllowedTracks(tracks);
+
+    final medias = _blacklist
+        .filter(tracks)
+        .toList()
         .asMediaList()
-        .unique((a, b) => _compareTracks(a.track, b.track));
+        .unique((a, b) => a.uri == b.uri);
 
     // Giving the initial track a boost so MediaKit won't skip
     // because of timeout
     final intendedActiveTrack = medias.elementAt(initialIndex);
-    if (intendedActiveTrack.track is! LocalTrack) {
-      await ref.read(sourcedTrackProvider(intendedActiveTrack).future);
+    if (intendedActiveTrack.track is! SpotubeLocalTrackObject) {
+      ref.read(
+        sourcedTrackProvider(
+          intendedActiveTrack.track as SpotubeFullTrackObject,
+        ).future,
+      );
     }
 
     if (medias.isEmpty) return;
 
-    await removeCollections(state.collections);
+    state = state.copyWith(
+      // These are filtered tracks as well
+      tracks: medias.map((media) => media.track).toList(),
+      currentIndex: initialIndex,
+      collections: [],
+    );
 
     await audioPlayer.openPlaylist(
-      medias.map((s) => s as Media).toList(),
+      medias,
       initialIndex: initialIndex,
       autoPlay: autoPlay,
     );
+
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(max(state.currentIndex, 0)),
+      ),
+    );
   }
 
-  Future<void> jumpToTrack(Track track) async {
+  Future<void> swapActiveSource() async {
+    if (state.tracks.isEmpty || state.activeTrack is! SpotubeFullTrackObject) {
+      return;
+    }
+
+    final oldState = state;
+    await audioPlayer.stop();
+
+    await load(
+      oldState.tracks,
+      initialIndex: oldState.currentIndex,
+      autoPlay: true,
+    );
+    state = state.copyWith(
+      collections: oldState.collections,
+      loopMode: oldState.loopMode,
+      playing: oldState.playing,
+      shuffled: false,
+    );
+    await audioPlayer.setLoopMode(oldState.loopMode);
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: Value(state.currentIndex),
+        collections: Value(state.collections),
+        loopMode: Value(state.loopMode),
+        playing: Value(state.playing),
+        shuffled: Value(state.shuffled),
+      ),
+    );
+  }
+
+  Future<void> jumpToTrack(SpotubeTrackObject track) async {
     final index =
         state.tracks.toList().indexWhere((element) => element.id == track.id);
     if (index == -1) return;
@@ -347,14 +441,33 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         newIndex < 0 ||
         oldIndex < 0 ||
         newIndex > state.tracks.length - 1 ||
-        oldIndex > state.tracks.length - 1) return;
+        oldIndex > state.tracks.length - 1) {
+      return;
+    }
 
     await audioPlayer.moveTrack(oldIndex, newIndex);
   }
 
   Future<void> stop() async {
+    state = state.copyWith(
+      tracks: [],
+      currentIndex: 0,
+      collections: [],
+      loopMode: PlaylistMode.none,
+      playing: false,
+      shuffled: false,
+    );
     await audioPlayer.stop();
-    await removeCollections(state.collections);
+    await _updatePlayerState(
+      AudioPlayerStateTableCompanion(
+        tracks: Value(state.tracks),
+        currentIndex: const Value(0),
+        collections: const Value(<String>[]),
+        loopMode: const Value(PlaylistMode.none),
+        playing: const Value(false),
+        shuffled: const Value(false),
+      ),
+    );
     ref.read(discordProvider.notifier).clear();
   }
 }

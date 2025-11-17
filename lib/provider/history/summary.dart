@@ -53,7 +53,7 @@ class PlaybackHistorySummaryNotifier
         database.historyTable.itemId.count(distinct: true);
     final itemIdCountingCol = database.historyTable.itemId.count();
     final durationSumJsonColumn =
-        database.historyTable.data.jsonExtract<int>(r"$.duration_ms").sum();
+        database.historyTable.data.jsonExtract<int>(r"$.durationMs").sum();
     final artistCountingCol =
         database.historyTable.data.jsonExtract<String>(r"$.artists");
 
