@@ -102,7 +102,7 @@ class TrackOptions extends HookConsumerWidget {
             },
             leading: const Icon(SpotubeIcons.queueAdd),
             title: Text(context.l10n.add_to_queue),
-          ),
+          )
         else
           ButtonTile(
             style: ButtonVariance.menu,
