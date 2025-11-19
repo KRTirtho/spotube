@@ -230,21 +230,10 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
         .filter(tracks)
         .toList();
 
-    final remainingTracks = state.tracks.where(
-        (track) =>
-            allowDuplicates ||
-            !addableTracks.any((element) => _compareTracks(element, track))
-    )
-    .toList();
-
-    state = state.copyWith(
-      tracks: [...addableTracks, ...remainingTracks],
-    );
-
     for (int i = 0; i < addableTracks.length; i++) {
       final track = addableTracks.elementAt(i);
 
-      final (currentIndex, _) = remainingTracks
+      final (currentTrackIndex, _) = state.tracks
           .indexed
           .cast<(int, SpotubeTrackObject?)>()
           .firstWhere(
@@ -257,13 +246,13 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
       final newIndex = max(state.currentIndex, 0) + i + 1;
 
-      if (allowDuplicates || newIndex < 0) {
+      if (allowDuplicates || currentTrackIndex < 0) {
         await audioPlayer.addTrackAt(
           SpotubeMedia(track),
           newIndex
         );
       } else {
-        await audioPlayer.moveTrack(currentIndex, newIndex);
+        await audioPlayer.moveTrack(currentTrackIndex, newIndex);
       }
     }
 
