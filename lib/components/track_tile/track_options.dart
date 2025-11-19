@@ -89,7 +89,7 @@ class TrackOptions extends HookConsumerWidget {
               ],
             ),
           ),
-        if (!isInQueue) ...[
+        if (!isInQueue)
           ButtonTile(
             style: ButtonVariance.menu,
             onPressed: () async {
@@ -102,21 +102,8 @@ class TrackOptions extends HookConsumerWidget {
             },
             leading: const Icon(SpotubeIcons.queueAdd),
             title: Text(context.l10n.add_to_queue),
-          ),
-          ButtonTile(
-            style: ButtonVariance.menu,
-            onPressed: () async {
-              await trackOptionActions.action(
-                rootNavigatorKey.currentContext!,
-                TrackOptionValue.playNext,
-                playlistId,
-              );
-              onTapItem?.call();
-            },
-            leading: const Icon(SpotubeIcons.lightning),
-            title: Text(context.l10n.play_next),
-          ),
-        ] else
+          )
+        else
           ButtonTile(
             style: ButtonVariance.menu,
             onPressed: () async {
@@ -131,6 +118,19 @@ class TrackOptions extends HookConsumerWidget {
             leading: const Icon(SpotubeIcons.queueRemove),
             title: Text(context.l10n.remove_from_queue),
           ),
+        ButtonTile(
+          style: ButtonVariance.menu,
+          onPressed: () async {
+            await trackOptionActions.action(
+                rootNavigatorKey.currentContext!,
+                TrackOptionValue.playNext,
+                playlistId,
+            );
+            onTapItem?.call();
+          },
+          leading: const Icon(SpotubeIcons.lightning),
+          title: Text(context.l10n.play_next),
+        ),
         if (isAuthenticated && !isLocalTrack)
           ButtonTile(
             style: ButtonVariance.menu,

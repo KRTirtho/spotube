@@ -228,24 +228,32 @@ class AudioPlayerNotifier extends Notifier<AudioPlayerState> {
 
     final addableTracks = _blacklist
         .filter(tracks)
-        .where(
-          (track) =>
-              allowDuplicates ||
-              !state.tracks.any((element) => _compareTracks(element, track)),
-        )
         .toList();
-
-    state = state.copyWith(
-      tracks: [...addableTracks, ...state.tracks],
-    );
 
     for (int i = 0; i < addableTracks.length; i++) {
       final track = addableTracks.elementAt(i);
 
-      await audioPlayer.addTrackAt(
-        SpotubeMedia(track),
-        max(state.currentIndex, 0) + i + 1,
-      );
+      final (currentTrackIndex, _) = state.tracks
+          .indexed
+          .cast<(int, SpotubeTrackObject?)>()
+          .firstWhere(
+              (record) {
+                final (idx, element) = record;
+                return _compareTracks(element!, track);
+              },
+              orElse: () => (-1, null)
+          );
+
+      final newIndex = max(state.currentIndex, 0) + i + 1;
+
+      if (allowDuplicates || currentTrackIndex < 0) {
+        await audioPlayer.addTrackAt(
+          SpotubeMedia(track),
+          newIndex
+        );
+      } else {
+        await audioPlayer.moveTrack(currentTrackIndex, newIndex);
+      }
     }
 
     await _updatePlayerState(
