@@ -270,7 +270,6 @@ flutter_gen:
   output: lib/collections
 
 flutter_native_splash:
-  background_image: assets/bengali-patterns-bg.jpg
   image: assets/spotube-logo.png
   branding: assets/branding.png
   android_12:

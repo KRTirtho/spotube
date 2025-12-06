@@ -7,7 +7,7 @@ class MetadataPluginRepositoriesNotifier
     extends PaginatedAsyncNotifier<MetadataPluginRepository> {
   MetadataPluginRepositoriesNotifier() : super();
 
-  Map<String, bool> _hasMore = {};
+  final Map<String, bool> _hasMore = {};
 
   @override
   fetch(int offset, int limit) async {

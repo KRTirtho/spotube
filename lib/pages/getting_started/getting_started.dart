@@ -1,7 +1,6 @@
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:spotube/collections/assets.gen.dart';
 import 'package:spotube/components/titlebar/titlebar.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/pages/getting_started/sections/greeting.dart';
@@ -70,9 +69,13 @@ class GettingStartedPage extends HookConsumerWidget {
       floatingHeader: true,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          image: DecorationImage(
-            image: Assets.images.bengaliPatternsBg.provider(),
-            fit: BoxFit.cover,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              Theme.of(context).colorScheme.background,
+            ],
           ),
         ),
         child: PageView(

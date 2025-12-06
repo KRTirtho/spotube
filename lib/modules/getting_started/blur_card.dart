@@ -10,7 +10,14 @@ class BlurCard extends HookConsumerWidget {
     return Container(
       margin: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 20,
+            offset: const Offset(0, 10),
+          ),
+        ],
       ),
       constraints: const BoxConstraints(maxWidth: 400),
       clipBehavior: Clip.antiAlias,
@@ -18,7 +25,7 @@ class BlurCard extends HookConsumerWidget {
         width: double.infinity,
         child: SurfaceCard(
           child: Padding(
-            padding: const EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(24.0),
             child: child,
           ),
         ),

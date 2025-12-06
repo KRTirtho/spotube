@@ -84,8 +84,8 @@ class WindowsAudioService {
         title: track.name,
         albumArtist: track.artists.firstOrNull?.name ?? "Unknown",
         artist: track.artists.asString(),
-        album: track.album?.name ?? "Unknown",
-        thumbnail: (track.album?.images).asUrlString(
+        album: track.album.name ?? "Unknown",
+        thumbnail: (track.album.images).asUrlString(
           placeholder: ImagePlaceholder.albumArt,
         ),
       ),

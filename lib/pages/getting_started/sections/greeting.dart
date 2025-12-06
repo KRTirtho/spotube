@@ -17,7 +17,7 @@ class GettingStartedPageGreetingSection extends HookConsumerWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Assets.branding.spotubeLogoPng.image(height: 200),
+            Assets.branding.spotubeLogoPng.image(height: 220),
             const Gap(24),
             const Text("Spotube").semiBold().h4(),
             const Gap(4),
@@ -27,7 +27,7 @@ class GettingStartedPageGreetingSection extends HookConsumerWidget {
                   : context.l10n.freedom_of_music,
               textAlign: TextAlign.center,
             ).light().large().italic(),
-            const Gap(84),
+            const Gap(48),
             Button.primary(
               onPressed: onNext,
               trailing: const Icon(SpotubeIcons.angleRight),
