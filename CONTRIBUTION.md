@@ -123,9 +123,9 @@ Do the following:
 - Install Development dependencies in linux
   - Debian (>=12/Bookworm)/Ubuntu
     ```bash
-    $ apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev avahi-daemon avahi-discover avahi-utils libnss-mdns mdns-scan libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libsoup-3.0-0 libsoup-3.0-dev
+     sudo apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev avahi-daemon avahi-discover avahi-utils libnss-mdns mdns-scan libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libsoup-3.0-0 libsoup-3.0-dev
     ```
-    - Use `libjsoncpp1` instead of `libjsoncpp25` (for Ubuntu < 22.04)
+    - For Ubuntu < 22.04, install `libjsoncpp1` instead of `libjsoncpp-dev`.
   - Arch/Manjaro
     ```bash
     yay -S mpv libappindicator-gtk3 libsecret jsoncpp libnotify avahi nss-mdns mdns-scan webkit2gtk-4.1 libsoup3
