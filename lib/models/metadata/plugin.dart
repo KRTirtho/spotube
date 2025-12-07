@@ -8,6 +8,7 @@ enum PluginAbilities {
   metadata,
   @JsonValue('audio-source')
   audioSource,
+  lyrics,
 }
 
 @freezed
