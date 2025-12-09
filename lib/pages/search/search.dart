@@ -225,15 +225,19 @@ class SearchPage extends HookConsumerWidget {
                   ],
                 ),
                 Expanded(
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: switch (selectedChip.value) {
-                      "tracks" => const SearchPageTracksTab(),
-                      "albums" => const SearchPageAlbumsTab(),
-                      "artists" => const SearchPageArtistsTab(),
-                      "playlists" => const SearchPagePlaylistsTab(),
-                      _ => const SearchPageAllTab(),
-                    },
+                  child: GestureDetector(
+                    onTap: () => FocusScope.of(context).unfocus(),
+                    behavior: HitTestBehavior.translucent,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: switch (selectedChip.value) {
+                        "tracks" => const SearchPageTracksTab(),
+                        "albums" => const SearchPageAlbumsTab(),
+                        "artists" => const SearchPageArtistsTab(),
+                        "playlists" => const SearchPagePlaylistsTab(),
+                        _ => const SearchPageAllTab(),
+                      },
+                    ),
                   ),
                 ),
               ],

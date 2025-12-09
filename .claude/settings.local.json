@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter build:*)",
+      "Bash(curl:*)",
+      "Bash(/c/tools/nuget.exe help:*)",
+      "Bash(rustc:*)",
+      "Bash(ls:*)"
+    ]
+  }
+}
