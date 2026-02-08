@@ -16,6 +16,7 @@
   <url type="bugtracker">https://github.com/krtirtho/spotube/issues</url>
   <url type="homepage">https://spotube.krtirtho.dev</url>
   <url type="donation">https://opencollective.com/spotube</url>
+  <url type="vcs-browser">https://github.com/KRTirtho/spotube</url>
   <description>
     <p>Open source music client that doesn't require Premium nor uses Electron! Available for
       both desktop &amp; mobile!</p>
