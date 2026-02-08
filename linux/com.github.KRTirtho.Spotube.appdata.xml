@@ -12,6 +12,9 @@
     <control>keyboard</control>
     <control>touch</control>
   </recommends>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
   <developer_name>Kingkor Roy Tirtho</developer_name>
   <url type="bugtracker">https://github.com/krtirtho/spotube/issues</url>
   <url type="homepage">https://spotube.krtirtho.dev</url>
