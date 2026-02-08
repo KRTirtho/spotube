@@ -197,7 +197,7 @@ If you are curious, you can [read the reason of choosing this license](https://d
 1. [Flutter](https://flutter.dev) - Flutter transforms the app development process. Build, test, and deploy beautiful mobile, web, desktop, and embedded apps from a single codebase
 1. [MPV](https://mpv.io) - mpv is a free (as in freedom) media player for the command line. It supports a wide variety of media file formats, audio and video codecs, and subtitle types.
 1. [Musicbrainz](https://musicbrainz.org) - MusicBrainz is a MetaBrainz project that aims to create a collaborative music database that is similar to the freedb project.
-1. [Listenbrainz](https://listenbrainz.org) - ListenBrainz is a open-source project by the MetaBrainz Foundation that allows users to crowdsource and publicly store their digital music listening data.
+1. [Listenbrainz](https://listenbrainz.org) - ListenBrainz is an open-source project by the MetaBrainz Foundation that allows users to crowdsource and publicly store their digital music listening data.
 1. [Piped](https://piped-docs.kavin.rocks/) - Piped is a privacy friendly alternative YouTube frontend, which is efficient and scalable by design.
 1. [Invidious](https://invidious.io/) - Invidious is an open source alternative front-end to YouTube.
 1. [yt-dlp](https://github.com/yt-dlp/yt-dlp) - A feature-rich command-line audio/video downloader.
@@ -239,7 +239,7 @@ If you are curious, you can [read the reason of choosing this license](https://d
 1. [flutter_feather_icons](https://github.com/muj-programmer/flutter_feather_icons) - Feather is a collection of simply beautiful open source icons. Each icon is designed on a 24x24 grid with an emphasis on simplicity, consistency and usability.
 1. [flutter_form_builder](https://github.com/flutter-form-builder-ecosystem) - This package helps in creation of forms in Flutter by removing the boilerplate code, reusing validation, react to changes, and collect final user input.
 1. [flutter_hooks](https://github.com/rrousselGit/flutter_hooks) - A flutter implementation of React hooks. It adds a new kind of widget with enhanced code reuse.
-1. [flutter_inappwebview](https://inappwebview.dev/) - A Flutter plugin that allows you to add an inline webview, to use an headless webview, and to open an in-app browser window.
+1. [flutter_inappwebview](https://inappwebview.dev/) - A Flutter plugin that allows you to add an inline webview, to use a headless webview, and to open an in-app browser window.
 1. [flutter_native_splash](https://pub.dev/packages/flutter_native_splash) - Customize Flutter's default white native splash screen with background color and splash image. Supports dark mode, full screen, and more.
 1. [flutter_riverpod](https://riverpod.dev) - A reactive caching and data-binding framework. Riverpod makes working with asynchronous code a breeze.
 1. [flutter_sharing_intent](https://github.com/bhagat-techind/flutter_sharing_intent.git) - A flutter plugin that allow flutter apps to receive photos, videos, text, urls or any other file types from another app.
