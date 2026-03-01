@@ -745,11 +745,11 @@ packages:
     dependency: transitive
     description:
       path: "."
-      ref: master
-      resolved-ref: "922f9f9eafd8b501da83dca67d56b2887fa8f916"
-      url: "https://github.com/TiffApps/fk_user_agent.git"
+      ref: HEAD
+      resolved-ref: "458046cd9a88924e5074d96ba45397219d53b230"
+      url: "https://github.com/maeltoukap/fk_user_agent.git"
     source: git
-    version: "2.1.1"
+    version: "2.1.0"
   fluentui_system_icons:
     dependency: "direct main"
     description:
@@ -947,8 +947,8 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "898fd4ebcef77f5177b08aa6f9b9047bd02c6b9b"
-      url: "https://github.com/KRTirtho/flutter_new_pipe_extractor.git"
+      resolved-ref: ab3ff415114b7b43593e6ee718ad3d760af18350
+      url: "https://github.com/KRTirtho/flutter_new_pipe_extractor"
     source: git
     version: "0.1.0"
   flutter_plugin_android_lifecycle:
@@ -1189,7 +1189,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "32828156bc111d147709f8d644804227bbdfe8f1"
+      resolved-ref: d85dd429241d464a8b5b0c2b3d870143eeba8b46
       url: "https://github.com/KRTirtho/hetu_spotube_plugin.git"
     source: git
     version: "0.0.2"
@@ -2376,26 +2376,26 @@ packages:
     dependency: "direct dev"
     description:
       name: test
-      sha256: "65e29d831719be0591f7b3b1a32a3cda258ec98c58c7b25f7b84241bc31215bb"
+      sha256: "75906bf273541b676716d1ca7627a17e4c4070a3a16272b7a3dc7da3b9f3f6b7"
       url: "https://pub.dev"
     source: hosted
-    version: "1.26.2"
+    version: "1.26.3"
   test_api:
     dependency: transitive
     description:
       name: test_api
-      sha256: "522f00f556e73044315fa4585ec3270f1808a4b186c936e612cab0b565ff1e00"
+      sha256: ab2726c1a94d3176a45960b6234466ec367179b87dd74f1611adb1f3b5fb9d55
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.6"
+    version: "0.7.7"
   test_core:
     dependency: transitive
     description:
       name: test_core
-      sha256: "80bf5a02b60af04b09e14f6fe68b921aad119493e26e490deaca5993fef1b05a"
+      sha256: "0cc24b5ff94b38d2ae73e1eb43cc302b77964fbf67abad1e296025b78deb53d0"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.11"
+    version: "0.6.12"
   time:
     dependency: transitive
     description:
@@ -2728,10 +2728,10 @@ packages:
     dependency: "direct main"
     description:
       name: youtube_explode_dart
-      sha256: add33de45d80c7f71a5e3dd464dd82fafd7fb5ab875fd303c023f30f76618325
+      sha256: "3d731d71df9901b1915bae806781df519cff32517e36db279f844ae619669e45"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.0"
+    version: "3.0.5"
   yt_dlp_dart:
     dependency: "direct main"
     description:

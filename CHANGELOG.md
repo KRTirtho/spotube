@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.1.1](https://github.com/KRTirtho/spotube/compare/v5.1.0...v5.1.1) (2026-02-24)
+
+### Bug Fixes
+
+- Upgrade NewPipeExtractor to latest version fixing playback issue
+- Lyrics not working
+
 ## [5.1.0](https://github.com/KRTirtho/spotube/compare/v5.0.0...v5.1.0) (2025-11-14)
 
 ### Features

@@ -3,7 +3,7 @@ description: Open source extensible music streaming platform and app, based on B
 
 publish_to: "none"
 
-version: 5.1.0+43
+version: 5.1.1+44
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -114,14 +114,14 @@ dependencies:
   wikipedia_api: ^0.1.0
   win32_registry: ^1.1.5
   window_manager: ^0.4.3
-  youtube_explode_dart: ^3.0.0
+  youtube_explode_dart: ^3.0.5
   yt_dlp_dart:
     git:
       url: https://github.com/KRTirtho/yt_dlp_dart.git
       ref: 4e5310e14af74bdbb51e2a4766e66d6c6a2562a8
   flutter_new_pipe_extractor:
     git:
-      url: https://github.com/KRTirtho/flutter_new_pipe_extractor.git
+      url: https://github.com/KRTirtho/flutter_new_pipe_extractor
   http_parser: ^4.1.2
   collection: any
   archive: ^4.0.7
@@ -239,6 +239,8 @@ flutter:
     - packages/hetu_std/assets/bytecode/std.out
     - packages/hetu_otp_util/assets/bytecode/otp_util.out
     - packages/hetu_spotube_plugin/assets/bytecode/spotube_plugin.out
+    # NewPipe binaries (desktop only)
+    # - packages/flutter_new_pipe_extractor/assets/
   fonts:
     - family: RadixIcons
       fonts:

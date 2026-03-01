@@ -27,6 +27,7 @@
 -keep class org.schabi.newpipe.extractor.timeago.patterns.** { *; }
 -keep class org.mozilla.javascript.** { *; }
 -keep class org.mozilla.classfile.ClassFileWriter
+-dontwarn com.google.re2j.**
 -dontwarn org.mozilla.javascript.tools.**
 
 -dontwarn javax.script.AbstractScriptEngine

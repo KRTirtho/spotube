@@ -30,7 +30,8 @@ class SyncedLyricsNotifier
           "artist_name": _track.artists.first.name,
           "track_name": _track.name,
           "album_name": _track.album.name,
-          "duration": (_track.durationMs / 1000).toInt().toString(),
+          if (_track.durationMs > 0)
+            "duration": (_track.durationMs / 1000).toInt().toString(),
         },
       ),
       options: Options(

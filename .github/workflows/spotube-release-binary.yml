@@ -78,14 +78,14 @@ jobs:
           cache: true
           git-source: https://github.com/flutter/flutter.git
 
-      - name: free disk space
-        if: ${{ matrix.platform == 'android' }}
-        run: |
-          sudo swapoff -a
-          sudo rm -f /swapfile
-          sudo apt clean
-          docker rmi $(docker image ls -aq)
-          df -h
+      # - name: free disk space
+      #   if: ${{ matrix.platform == 'android' }}
+      #   run: |
+      #     sudo swapoff -a
+      #     sudo rm -f /swapfile
+      #     sudo apt clean
+      #     docker rmi $(docker image ls -aq)
+      #     df -h
       - name: Setup Java
         if: ${{matrix.platform == 'android'}}
         uses: actions/setup-java@v4
