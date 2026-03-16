@@ -25,7 +25,9 @@ import 'package:spotube/services/metadata/endpoints/search.dart';
 import 'package:spotube/services/metadata/endpoints/track.dart';
 import 'package:spotube/services/metadata/endpoints/core.dart';
 import 'package:spotube/services/metadata/endpoints/user.dart';
+import 'package:spotube/services/metadata/endpoints/lyrics.dart';
 import 'package:spotube/services/youtube_engine/youtube_engine.dart';
+import 'package:spotube/models/lyrics.dart';
 
 const defaultMetadataLimit = "20";
 
@@ -164,6 +166,7 @@ class MetadataPlugin {
   late final MetadataPluginTrackEndpoint track;
   late final MetadataPluginUserEndpoint user;
   late final MetadataPluginCore core;
+  late final MetadataPluginLyricsEndpoint lyrics;
 
   MetadataPlugin._(this.hetu) {
     auth = MetadataAuthEndpoint(hetu);
@@ -177,5 +180,6 @@ class MetadataPlugin {
     track = MetadataPluginTrackEndpoint(hetu);
     user = MetadataPluginUserEndpoint(hetu);
     core = MetadataPluginCore(hetu);
+    lyrics = MetadataPluginLyricsEndpoint(hetu);
   }
 }
