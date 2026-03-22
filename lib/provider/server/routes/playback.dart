@@ -247,7 +247,11 @@ class ServerPlaybackRoutes {
 
         await trackPartialCacheFile.rename(trackCacheFile.path);
 
-        if (track.qualityPreset!.getFileExtension() == "weba") return;
+        // Skip metadata writing for weba and flac to prevent file corruption
+        // FLAC files have strict header requirements and writing metadata after
+        // download can corrupt the sync code and make files unplayable
+        final extension = track.qualityPreset!.getFileExtension();
+        if (extension == "weba" || extension == "flac") return;
 
         final imageBytes = await ServiceUtils.downloadImage(
           track.query.album.images.asUrlString(

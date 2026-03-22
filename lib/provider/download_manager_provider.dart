@@ -239,7 +239,11 @@ class DownloadManagerNotifier extends Notifier<List<DownloadTask>> {
         return;
       }
 
-      if (container.getFileExtension() == "weba") return;
+      // Skip metadata writing for weba and flac to prevent file corruption
+      // FLAC files have strict header requirements and writing metadata after
+      // download can corrupt the sync code and make files unplayable
+      final extension = container.getFileExtension();
+      if (extension == "weba" || extension == "flac") return;
 
       final imageBytes = await ServiceUtils.downloadImage(
         (task.track.album.images).asUrlString(
