@@ -1,0 +1,74 @@
+name: Build and Publish Android
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      track:
+        description: 'Play store track to deploy to'
+        required: false
+        default: 'internal'
+
+jobs:
+  build-and-publish:
+    name: Build AAB and publish to Google Play
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Restore keystore (if provided)
+        if: secrets.KEYSTORE_BASE64 != ''
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/key.jks
+          echo "storePassword=$KEYSTORE_PASSWORD" > android/key.properties
+          echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
+          echo "keyAlias=$KEY_ALIAS" >> android/key.properties
+          echo "storeFile=key.jks" >> android/key.properties
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+
+      - name: Build AppBundle (stable flavor)
+        run: flutter build appbundle --flavor stable --release
+
+      - name: Find generated AAB
+        id: find_aab
+        run: |
+          echo "Looking for .aab files..."
+          aab=$(find build -type f -name "*.aab" | head -n 1)
+          echo "aab=$aab" >> $GITHUB_OUTPUT
+
+      - name: Upload to Google Play
+        if: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: oss.krtirtho.spotube
+          releaseFiles: ${{ steps.find_aab.outputs.aab }}
+          track: ${{ github.event.inputs.track || 'internal' }}
+
+      - name: Upload artifact (AAB)
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-bundle
+          path: ${{ steps.find_aab.outputs.aab }}
