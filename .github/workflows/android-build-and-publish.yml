@@ -58,17 +58,29 @@ jobs:
           aab=$(find build -type f -name "*.aab" | head -n 1)
           echo "aab=$aab" >> $GITHUB_OUTPUT
 
-      - name: Upload to Google Play
-        if: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
-        uses: r0adkll/upload-google-play@v1
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
         with:
-          serviceAccountJson: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
-          packageName: oss.krtirtho.spotube
-          releaseFiles: ${{ steps.find_aab.outputs.aab }}
-          track: ${{ github.event.inputs.track || 'internal' }}
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: 'Automated AAB build uploaded by CI'
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload AAB to Release
+        uses: actions/upload-release-asset@v1
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ${{ steps.find_aab.outputs.aab }}
+          asset_name: app-bundle-${{ github.ref_name }}.aab
+          asset_content_type: application/octet-stream
 
       - name: Upload artifact (AAB)
         uses: actions/upload-artifact@v4
         with:
           name: app-bundle
+
           path: ${{ steps.find_aab.outputs.aab }}
