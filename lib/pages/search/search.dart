@@ -59,6 +59,7 @@ class SearchPage extends HookConsumerWidget {
 
     void onSubmitted(String value) {
       ref.read(searchTermStateProvider.notifier).state = value;
+      focusNode.unfocus();
       if (value.trim().isEmpty) {
         return;
       }
@@ -127,61 +128,47 @@ class SearchPage extends HookConsumerWidget {
                                       )
                                       .toList();
 
-                              return KeyboardListener(
-                                focusNode: focusNode,
-                                autofocus: true,
-                                onKeyEvent: (value) {
-                                  final isEnter = value.logicalKey ==
-                                      LogicalKeyboardKey.enter;
-
-                                  if (isEnter) {
-                                    onSubmitted(controller.text);
-                                    focusNode.unfocus();
-                                  }
-                                },
-                                child: AutoComplete(
-                                  suggestions: suggestions.length <= 2
-                                      ? [
-                                          ...suggestions,
-                                          "Twenty One Pilots",
-                                          "Linkin Park",
-                                          "d4vd"
-                                        ]
-                                      : suggestions,
-                                  completer: (suggestion) => suggestion,
-                                  mode: AutoCompleteMode.replaceAll,
-                                  child: TextField(
-                                    autofocus: true,
-                                    controller: controller,
-                                    features: [
-                                      const InputFeature.leading(
-                                        Icon(SpotubeIcons.search),
-                                      ),
-                                      InputFeature.trailing(
-                                        AnimatedCrossFade(
-                                          duration:
-                                              const Duration(milliseconds: 300),
-                                          crossFadeState:
-                                              controller.text.isNotEmpty
-                                                  ? CrossFadeState.showFirst
-                                                  : CrossFadeState.showSecond,
-                                          firstChild: IconButton.ghost(
-                                            size: ButtonSize.small,
-                                            icon:
-                                                const Icon(SpotubeIcons.close),
-                                            onPressed: () {
-                                              controller.clear();
-                                            },
-                                          ),
-                                          secondChild: const SizedBox.square(
-                                              dimension: 28),
+                              return AutoComplete(
+                                suggestions: suggestions.length <= 2
+                                    ? [
+                                        ...suggestions,
+                                        "Twenty One Pilots",
+                                        "Linkin Park",
+                                      ]
+                                    : suggestions,
+                                completer: (suggestion) => suggestion,
+                                mode: AutoCompleteMode.replaceAll,
+                                child: TextField(
+                                  autofocus: true,
+                                  controller: controller,
+                                  focusNode: focusNode,
+                                  features: [
+                                    const InputFeature.leading(
+                                      Icon(SpotubeIcons.search),
+                                    ),
+                                    InputFeature.trailing(
+                                      AnimatedCrossFade(
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        crossFadeState:
+                                            controller.text.isNotEmpty
+                                                ? CrossFadeState.showFirst
+                                                : CrossFadeState.showSecond,
+                                        firstChild: IconButton.ghost(
+                                          size: ButtonSize.small,
+                                          icon: const Icon(SpotubeIcons.close),
+                                          onPressed: () {
+                                            controller.clear();
+                                          },
                                         ),
-                                      )
-                                    ],
-                                    textInputAction: TextInputAction.search,
-                                    placeholder: Text(context.l10n.search),
-                                    onSubmitted: onSubmitted,
-                                  ),
+                                        secondChild: const SizedBox.square(
+                                            dimension: 28),
+                                      ),
+                                    )
+                                  ],
+                                  textInputAction: TextInputAction.search,
+                                  placeholder: Text(context.l10n.search),
+                                  onSubmitted: onSubmitted,
                                 ),
                               );
                             }),

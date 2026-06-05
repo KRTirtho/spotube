@@ -3,7 +3,7 @@ description: Open source extensible music streaming platform and app, based on B
 
 publish_to: "none"
 
-version: 5.1.1+44
+version: 5.1.2+45
 
 homepage: https://spotube.krtirtho.dev
 repository: https://github.com/KRTirtho/spotube
@@ -90,7 +90,7 @@ dependencies:
       ref: dart-3-support
       url: https://github.com/KRTirtho/scrobblenaut.git
   scroll_to_index: ^3.0.1
-  shadcn_flutter: ^0.0.47
+  shadcn_flutter: 0.0.47
   shared_preferences: ^2.2.3
   shelf: ^1.4.1
   shelf_router: ^1.1.4
@@ -114,7 +114,7 @@ dependencies:
   wikipedia_api: ^0.1.0
   win32_registry: ^1.1.5
   window_manager: ^0.4.3
-  youtube_explode_dart: ^3.0.5
+  youtube_explode_dart: ^3.1.0
   yt_dlp_dart:
     git:
       url: https://github.com/KRTirtho/yt_dlp_dart.git
@@ -171,7 +171,7 @@ dev_dependencies:
   pub_api_client: ^3.0.0
   io: ^1.0.4
   drift_dev: ^2.21.0
-  test: ^1.25.7
+  test: any
   auto_route_generator: ^9.0.0
 
 dependency_overrides:

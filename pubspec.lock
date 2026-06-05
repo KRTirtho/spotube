@@ -486,10 +486,10 @@ packages:
     dependency: transitive
     description:
       name: data_widget
-      sha256: "95388df890189014f702b7e93f9de6bcf7d45143a99f6288f31899f10be441ba"
+      sha256: "4947aae3c50635496d56f94ad18de98e19015c5ebf01abee0f39a2c098c7021a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.2"
+    version: "0.0.3"
   dbus:
     dependency: transitive
     description:
@@ -947,7 +947,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: ab3ff415114b7b43593e6ee718ad3d760af18350
+      resolved-ref: "41cbd821ce49b9343136f67d83d3117e582dad75"
       url: "https://github.com/KRTirtho/flutter_new_pipe_extractor"
     source: git
     version: "0.1.0"
@@ -2728,10 +2728,10 @@ packages:
     dependency: "direct main"
     description:
       name: youtube_explode_dart
-      sha256: "3d731d71df9901b1915bae806781df519cff32517e36db279f844ae619669e45"
+      sha256: "10134a53989b2f3dc576121735aec8fc6d88784956f4a2ad1a2525b006373a76"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.5"
+    version: "3.1.0"
   yt_dlp_dart:
     dependency: "direct main"
     description:
