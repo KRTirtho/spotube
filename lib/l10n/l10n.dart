@@ -15,6 +15,7 @@
 /// llama3, vishnumur777@github => Tamil
 /// Microsoft Copilot, Tutislav@github => Czech
 /// 510208@github => Traditional Chinese
+/// alisheraxmedov@github => Uzbek
 
 library l10n;
 
@@ -46,6 +47,7 @@ class L10n {
     const Locale('ru', 'RU'),
     const Locale('tl', 'PH'),
     const Locale('uk', 'UA'),
+    const Locale('uz', 'UZ'),
     const Locale('th', 'TH'),
     const Locale('ta', 'IN'),
     const Locale('tr', 'TR'),

@@ -701,10 +701,10 @@ abstract class LanguageLocals {
     //   name: "Urdu",
     //   nativeName: "اردو",
     // ),
-    // "uz": const ISOLanguageName(
-    //   name: "Uzbek",
-    //   nativeName: "zbek, Ўзбек, أۇزبېك‎",
-    // ),
+    "uz": const ISOLanguageName(
+      name: "Uzbek",
+      nativeName: "Oʻzbekcha",
+    ),
     // "ve": const ISOLanguageName(
     //   name: "Venda",
     //   nativeName: "Tshivenḓa",
