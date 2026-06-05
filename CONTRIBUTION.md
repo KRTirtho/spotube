@@ -120,7 +120,7 @@ Enhancement suggestions are tracked as [GitHub issues](https://github.com/KRTirt
 Do the following:
 
 - Install [Dart](https://dart.dev/get-dart) and [fvm](https://fvm.app/documentation/getting-started/installation)
-- Install Development dependencies in linux
+- Install Development dependencies in linux and MacOS
   - Debian (>=12/Bookworm)/Ubuntu
     ```bash
     $ apt-get install mpv libmpv-dev libappindicator3-1 gir1.2-appindicator3-0.1 libappindicator3-dev libsecret-1-0 libjsoncpp25 libsecret-1-dev libjsoncpp-dev libnotify-bin libnotify-dev avahi-daemon avahi-discover avahi-utils libnss-mdns mdns-scan libwebkit2gtk-4.1-0 libwebkit2gtk-4.1-dev libsoup-3.0-0 libsoup-3.0-dev
@@ -133,6 +133,10 @@ Do the following:
   - Fedora
     ```bash
     dnf install mpv mpv-devel libappindicator-gtk3 libappindicator-gtk3-devel libsecret libsecret-devel jsoncpp jsoncpp-devel libnotify libnotify-devel avahi mdns-scan nss-mdns webkit2gtk4.1 webkit2gtk4.1-devel libsoup3 libsoup3-devel
+    ```
+  - MacOS (using brew):
+    ```bash
+    brew tap leoafarias/fvm && brew install fvm
     ```
 - Clone the Repo
 - Create a `.env` in root of the project following the `.env.example` template
