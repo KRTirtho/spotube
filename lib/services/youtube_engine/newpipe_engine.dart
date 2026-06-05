@@ -28,6 +28,26 @@ class NewPipeEngine implements YouTubeEngine {
     );
   }
 
+  AudioOnlyStreamInfo _parseVideoStream(VideoStream stream, String videoId) {
+    return AudioOnlyStreamInfo(
+      VideoId(videoId),
+      stream.itag,
+      Uri.parse(stream.content),
+      StreamContainer.parse(stream.mediaFormat!.mimeType.split("/").last),
+      FileSize.unknown,
+      Bitrate(stream.bitrate),
+      stream.codec,
+      switch (stream.bitrate) {
+        > 130 * 1024 => "high",
+        > 64 * 1024 => "medium",
+        _ => "low",
+      },
+      [],
+      MediaType.parse(stream.mediaFormat!.mimeType),
+      null,
+    );
+  }
+
   Video _parseVideo(VideoInfo info) {
     return Video(
       VideoId(info.id),
@@ -76,6 +96,14 @@ class NewPipeEngine implements YouTubeEngine {
     final streams =
         video.audioStreams.map((stream) => _parseAudioStream(stream, videoId));
 
+    if (streams.isEmpty) {
+      final videoStreams = video.videoStreams
+          .map((stream) => _parseVideoStream(stream, videoId));
+      if (videoStreams.isNotEmpty) {
+        return StreamManifest(videoStreams);
+      }
+    }
+
     return StreamManifest(streams);
   }
 
@@ -92,6 +120,14 @@ class NewPipeEngine implements YouTubeEngine {
 
     final streams =
         video.audioStreams.map((stream) => _parseAudioStream(stream, videoId));
+
+    if (streams.isEmpty) {
+      final videoStreams = video.videoStreams
+          .map((stream) => _parseVideoStream(stream, videoId));
+      if (videoStreams.isNotEmpty) {
+        return (_parseVideo(video), StreamManifest(videoStreams));
+      }
+    }
 
     return (_parseVideo(video), StreamManifest(streams));
   }
