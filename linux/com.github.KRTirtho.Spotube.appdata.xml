@@ -70,4 +70,11 @@
   </releases>
   <content_rating type="oars-1.1" />
   <update_contact>krtirtho@gmail.com</update_contact>
+  <keywords>
+    <keyword>music player</keyword>
+    <keyword>open source music client</keyword>
+    <keyword>lightweight music app</keyword>
+    <keyword>free music streaming</keyword>
+    <keyword>ad free music</keyword>
+  </keywords>
 </component>
