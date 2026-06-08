@@ -9,7 +9,7 @@ import 'package:spotube/provider/history/recent.dart';
 
 class HomeRecentlyPlayedSection extends HookConsumerWidget {
   const HomeRecentlyPlayedSection({super.key});
-
+    
   @override
   Widget build(BuildContext context, ref) {
     final history = ref.watch(recentlyPlayedItems);
@@ -20,17 +20,20 @@ class HomeRecentlyPlayedSection extends HookConsumerWidget {
       return const SizedBox();
     }
 
+    final uniqueItems = <dynamic>{};
+    final filteredItems = [
+      for (final item in historyData)
+        if (item.playlist != null && item.playlist?.id != null && uniqueItems.add(item.playlist!.id!))
+          item.playlist
+        else if (item.album != null && item.album?.id != null && uniqueItems.add(item.album?.id))
+          item.album
+    ];
+
     return Skeletonizer(
       enabled: history.isLoading,
       child: HorizontalPlaybuttonCardView(
         title: Text(context.l10n.recently_played),
-        items: [
-          for (final item in historyData)
-            if (item.playlist != null)
-              item.playlist
-            else if (item.album != null)
-              item.album
-        ],
+        items: filteredItems,
         hasNextPage: false,
         isLoadingNextPage: false,
         onFetchMore: () {},
