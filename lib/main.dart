@@ -82,7 +82,16 @@ Future<void> main(List<String> rawArgs) async {
 
     // force High Refresh Rate on some Android devices (like One Plus)
     if (kIsAndroid) {
-      await FlutterDisplayMode.setHighRefreshRate();
+      try {
+        await FlutterDisplayMode.setHighRefreshRate();
+      } catch (e, stack) {
+        // When the app is cold-started headless (e.g. by Android Auto's
+        // MediaBrowserService) there is no attached Activity, so this throws
+        // PlatformException(noActivity). Refresh-rate tuning is non-essential
+        // and must not abort bootstrap — otherwise runApp() never runs and the
+        // audio handler is never registered, hanging media browsers forever.
+        AppLogger.reportError(e, stack);
+      }
     }
     if (kIsAndroid || kIsDesktop) {
       await NewPipeExtractor.init();
