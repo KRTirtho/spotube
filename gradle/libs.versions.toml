@@ -67,7 +67,6 @@ material3-window-size = "1.9.0"
 kotlinx-datetime = "0.7.1"
 media3 = "1.8.0"
 androidx-datastore = "1.2.1"
-kmpgen = "1.3.0"
 ksp = "2.3.5"
 spotube-gradle = "0.1.0"
 cryptography = "0.6.0"
@@ -127,6 +126,8 @@ ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "k
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
 ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
@@ -171,7 +172,6 @@ kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", versio
 jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 zipline-gradle-plugin = { id = "app.cash.zipline", version.ref = "ziplineVersion" }
-kmpgen = { id = "com.kroegerama.openapi-kmp-gen", version.ref = "kmpgen" }
 mavenPublish = { id = "maven-publish" }
 spotubeGradle = { id = "dev.krtirtho.spotube.gradle-plugin", version.ref = "spotube-gradle" }
 vlcjBundler = { id = "dev.krtirtho.vlcj-bundler.gradle-plugin", version.ref = "vlcjBundler" }

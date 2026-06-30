@@ -22,7 +22,6 @@
 - Kotlin: `2.3.0`, JVM target: `11` (compile/target compatibility in both `composeApp/build.gradle.kts` and `plugin_interfaces/build.gradle.kts`).
 
 ## Codegen and plugin packaging
-- OpenAPI client generated from `composeApp/specs/listenbrainz-openapi.yaml` via KMPGen tasks (`kmpgenPrepare`, `kmpgenGenerateAll`) in `:composeApp`.
 - JS plugin bundles: `:js_plugin_example:packageDevelopmentPlugin` and `:js_plugin_example:packageProductionPlugin`. Output is `.smplug` files in `js_plugin_example/build/distributions/`.
 - Zipline plugin entrypoint: `mainFunction = "dev.krtirtho.js_plugin_example.main"` in `js_plugin_example/build.gradle.kts`. Plugin metadata from `js_plugin_example/plugin.json`.
 

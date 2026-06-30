@@ -29,21 +29,12 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.zipline.gradle.plugin)
-    alias(libs.plugins.kmpgen)
     alias(libs.plugins.vlcjBundler)
 }
 
 vlcjBundler {
     packageName = "dev.krtirtho.spotube.core.generated"   // choose a different package
     objectName = "VLCBundleLoaderGenerated"               // or rename the object
-}
-
-kmpgen {
-    spec(
-        packageName = "dev.krtirtho.spotube.listenbrainz"
-    ) {
-        specFile = file("./specs/listenbrainz-openapi.yaml")
-    }
 }
 
 kotlin {
@@ -103,6 +94,8 @@ kotlin {
                 // ktor
                 implementation(libs.ktor.client.core)
                 implementation(libs.ktor.client.logging)
+                implementation(libs.ktor.client.content.negotiation)
+                implementation(libs.ktor.client.serialization.kotlinx.json)
                 implementation(libs.ktor.client.cio)
                 implementation(libs.ktor.server.core)
                 implementation(libs.ktor.server.cio)

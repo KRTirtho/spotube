@@ -103,8 +103,8 @@ class PluginManager(
         .map { p ->
             val json = p[DatabaseKeys.PLUGINS_STATE_KEY]
             val defaultSelectedPlugins = mapOf(
-                PluginAbility.METADATA to MUSICBRAINZ_LISTENBRAINZ_BUILT_IN_PLUGIN,
                 PluginAbility.AUDIO to NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN,
+                PluginAbility.SCROBBLE to LRCLIB_BUILT_IN_PLUGIN,
             )
             if (json == null) {
                 PluginManagerStates.Data(

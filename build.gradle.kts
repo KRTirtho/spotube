@@ -29,6 +29,5 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.zipline.gradle.plugin) apply false
     alias(libs.plugins.spotubeGradle) apply false
-    alias(libs.plugins.kmpgen) apply false
     alias(libs.plugins.vlcjBundler) apply false
 }

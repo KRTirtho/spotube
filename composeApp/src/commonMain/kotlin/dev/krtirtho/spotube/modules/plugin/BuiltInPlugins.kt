@@ -29,20 +29,6 @@ val NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN = PluginEntry(
     ),
     abilities = listOf(PluginAbility.AUDIO)
 )
-val MUSICBRAINZ_LISTENBRAINZ_BUILT_IN_PLUGIN = PluginEntry(
-    name = "MusicBrainz ListenBrainz",
-    version = "0.1.0",
-    apiVersion = PLUGIN_API_VERSION,
-    description = "MusicBrainz ListenBrainz plugin for scrobbling tracks and fetching metadata.",
-    author = "Spotube Team",
-    capabilities = listOf(
-        PluginCapability.NETWORK_REQUESTS,
-        PluginCapability.PERSISTENT_STORAGE,
-        PluginCapability.WEBVIEW,
-    ),
-    abilities = listOf(PluginAbility.METADATA, PluginAbility.SCROBBLE)
-)
-
 val LRCLIB_BUILT_IN_PLUGIN = PluginEntry(
     name = "LRCLib Lyrics",
     version = "0.1.0",
@@ -55,7 +41,6 @@ val LRCLIB_BUILT_IN_PLUGIN = PluginEntry(
     abilities = listOf(PluginAbility.LYRICS)
 )
 val BUILT_IN_PLUGINS = listOf(
-    MUSICBRAINZ_LISTENBRAINZ_BUILT_IN_PLUGIN,
     NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN,
     LRCLIB_BUILT_IN_PLUGIN,
 )

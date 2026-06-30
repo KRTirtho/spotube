@@ -21,27 +21,20 @@ import app.cash.zipline.ZiplineService
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioAPI
 import dev.krtirtho.plugin_interfaces.plugin_apis.core.CoreAPI
 import dev.krtirtho.plugin_interfaces.plugin_apis.lyrics.LyricsAPI
-import dev.krtirtho.spotube.core.webview.WebViewController
-import dev.krtirtho.spotube.core.zipline.host_apis.RealPersistedStorageAPI
 import dev.krtirtho.spotube.core.zipline.plugin_apis.common.RealCoreAPI
 import dev.krtirtho.spotube.core.zipline.plugin_apis.lrclib.RealLRCLibLyricsAPI
-import dev.krtirtho.spotube.core.zipline.plugin_apis.musicbrainz_listenbrainz.createMusicbrainzListenbrainzPluginAPIs
 import dev.krtirtho.spotube.core.zipline.plugin_apis.newpipe_yt.RealNewPipeAudioAPI
 import dev.krtirtho.spotube.modules.plugin.LRCLIB_BUILT_IN_PLUGIN
-import dev.krtirtho.spotube.modules.plugin.MUSICBRAINZ_LISTENBRAINZ_BUILT_IN_PLUGIN
 import dev.krtirtho.spotube.modules.plugin.NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN
 import dev.krtirtho.spotube.modules.plugin.PluginEntry
-import io.ktor.client.HttpClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import kotlin.reflect.KClass
 
 class BuiltInPluginService(
@@ -52,10 +45,10 @@ class BuiltInPluginService(
     override val loggedInFlow = loggedInStateFlow.asStateFlow()
     val servicesRegistry = mutableMapOf<KClass<*>, ZiplineService>()
 
-    val webViewController: WebViewController by inject()
+//    val webViewController: WebViewController by inject()
+//    val persistedStorage by lazy { RealPersistedStorageAPI(pluginInfo) }
 
     val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-    val persistedStorage by lazy { RealPersistedStorageAPI(pluginInfo) }
 
     private fun runLogInFlowObservers() = scope.launch {
         val coreAPI = servicesRegistry[CoreAPI::class] as CoreAPI?
@@ -70,17 +63,6 @@ class BuiltInPluginService(
             NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN -> {
                 servicesRegistry[CoreAPI::class] = RealCoreAPI()
                 servicesRegistry[AudioAPI::class] = RealNewPipeAudioAPI()
-            }
-
-            MUSICBRAINZ_LISTENBRAINZ_BUILT_IN_PLUGIN -> {
-                servicesRegistry.putAll(
-                    createMusicbrainzListenbrainzPluginAPIs(
-                        scope = scope,
-                        httpClient = HttpClient(),
-                        webViewController = webViewController,
-                        persistedStorage = persistedStorage
-                    )
-                )
             }
 
             LRCLIB_BUILT_IN_PLUGIN -> {
