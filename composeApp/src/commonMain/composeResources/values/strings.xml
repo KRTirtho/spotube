@@ -1,0 +1,163 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="settings_screen_title">Settings</string>
+
+    <string name="settings_section_plugins">Plugins</string>
+    <string name="settings_section_language_region">Language and Region</string>
+    <string name="settings_section_appearance">Appearance</string>
+    <string name="settings_section_playback">Playback</string>
+    <string name="settings_section_downloads">Downloads</string>
+    <string name="settings_section_caching">Caching</string>
+    <string name="settings_section_desktop">Desktop</string>
+    <string name="settings_section_updates">Updates</string>
+
+    <string name="settings_action_close">Close</string>
+    <string name="settings_action_save">Save</string>
+    <string name="settings_action_cancel">Cancel</string>
+
+    <string name="settings_language_title">Language</string>
+    <string name="settings_language_subtitle_current">Language for the app interface. Current: %1$s</string>
+    <string name="settings_country_title">Country</string>
+    <string name="settings_country_subtitle_current">Regional country for content and availability. Current: %1$s</string>
+    <string name="settings_option_name_and_code">%1$s (%2$s)</string>
+
+    <string name="settings_theme_title">Theme</string>
+    <string name="settings_theme_subtitle_current">Choose how Spotube matches your system appearance. Current: %1$s</string>
+    <string name="settings_theme_light">Light</string>
+    <string name="settings_theme_dark">Dark</string>
+    <string name="settings_theme_system">System</string>
+
+    <string name="settings_accent_title">Accent color</string>
+    <string name="settings_accent_subtitle_current">Current palette: %1$s</string>
+    <string name="settings_accent_dialog_title">Accent color</string>
+    <string name="settings_accent_dialog_description">Choose an accent palette and preview it in both light and dark themes.</string>
+    <string name="settings_preview_light">Light</string>
+    <string name="settings_preview_dark">Dark</string>
+    <string name="settings_preview_label">Preview</string>
+    <string name="settings_preview_button">Button</string>
+    <string name="settings_accent_green_goblin">Green Goblin</string>
+    <string name="settings_accent_electric_violet">Electric Violet</string>
+    <string name="settings_accent_oceanic_cyan">Oceanic Cyan</string>
+    <string name="settings_accent_sunset_orange">Sunset Orange</string>
+    <string name="settings_accent_rose_garden">Rose Garden</string>
+    <string name="settings_accent_midnight_blue">Midnight Blue</string>
+    <string name="settings_accent_metallic_slate">Metallic Slate</string>
+
+    <string name="settings_download_folder_title">Download folder override</string>
+    <string name="settings_download_folder_current">Current folder: %1$s</string>
+    <string name="settings_download_folder_default">Current folder: default music folder</string>
+    <string name="settings_download_folder_description">Leave this empty to use the default music folder.</string>
+    <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
+    <string name="settings_local_media_folders_title">Local media folders</string>
+    <string name="settings_local_media_folders_subtitle_current">Custom folders to scan on desktop. Added: %1$d</string>
+    <string name="settings_local_media_folders_subtitle_empty">No custom folder added yet</string>
+    <string name="settings_local_media_folders_description">Use the picker to add folders. Download folder override is included automatically.</string>
+    <string name="settings_local_media_folders_manage">Manage</string>
+    <string name="settings_local_media_folders_add_action">Add folder</string>
+    <string name="settings_local_media_folders_remove_action">Remove folder</string>
+    <string name="settings_local_media_folders_none_added">No custom folders added.</string>
+    <string name="settings_download_format_title">Download music format</string>
+    <string name="settings_download_format_subtitle_current">Preferred codec and container for downloads. Current: %1$s</string>
+    <string name="settings_download_quality_title">Download music quality</string>
+
+    <string name="settings_streaming_format_title">Streaming music format</string>
+    <string name="settings_streaming_format_subtitle_current">Preferred codec and container for music streaming. Current: %1$s</string>
+    <string name="settings_streaming_quality_title">Streaming music quality</string>
+    <string name="settings_subtitle_current">Current: %1$s</string>
+    <string name="settings_enable_music_caching_title">Enable music caching</string>
+    <string name="settings_enable_music_caching_subtitle">Store streamed audio locally to speed up repeat playback.</string>
+    <string name="settings_cache_folder_title">Cache folder</string>
+    <string name="settings_cache_folder_current">Current: %1$s</string>
+    <string name="settings_cache_folder_default">Current: default application cache</string>
+    <string name="settings_cache_size_limit_title">Cache size limit</string>
+    <string name="settings_cache_size_limit_unlimited">No limit</string>
+    <string name="settings_cache_size_limit_current">Current limit: %1$d MB</string>
+    <string name="settings_cache_size_limit_description">Set the maximum cache size in MB. Enter 0 or leave blank for no limit.</string>
+    <string name="settings_cache_size_limit_placeholder">500</string>
+    <string name="settings_error_cache_size_range">Size must be 0 or a positive number.</string>
+    <string name="settings_enable_endless_playback_title">Enable endless playback</string>
+    <string name="settings_enable_endless_playback_subtitle">Keep playback going with recommended tracks when your queue ends.</string>
+    <string name="settings_enable_connect_title">Enable Connect</string>
+    <string name="settings_enable_connect_subtitle">Expose remote playback controls through the Spotube Connect feature.</string>
+    <string name="settings_playback_port_title">Playback proxy server port</string>
+    <string name="settings_playback_port_subtitle_current">Port used by the playback proxy server. Current: %1$d</string>
+    <string name="settings_playback_port_description">Choose a port between 1 and 65535.</string>
+    <string name="settings_playback_port_placeholder">14769</string>
+    <string name="settings_error_whole_number">Enter a valid whole number.</string>
+    <string name="settings_error_port_range">Port must be between 1 and 65535.</string>
+
+    <string name="settings_desktop_minimize_title">Minimize to tray</string>
+    <string name="settings_desktop_minimize_subtitle">Keep Spotube running in the system tray when the window is minimized.</string>
+    <string name="settings_desktop_discord_title">Discord rich presence</string>
+    <string name="settings_desktop_discord_subtitle">Show your current playback status in Discord on desktop.</string>
+
+    <string name="settings_updates_auto_check_title">Automatically check for updates</string>
+    <string name="settings_updates_auto_check_subtitle">Look for new Spotube releases in the background.</string>
+
+    <string name="settings_plugins_manage_title">Manage Plugins</string>
+    <string name="settings_plugins_manage_subtitle">Manage your plugins</string>
+    <string name="settings_plugins_default_ability_title">Default %1$s Plugin</string>
+    <string name="settings_plugins_ability_metadata">Metadata</string>
+    <string name="settings_plugins_ability_audio">Audio</string>
+    <string name="settings_plugins_ability_lyrics">Lyrics</string>
+    <string name="settings_plugins_ability_scrobble">Scrobble</string>
+    <string name="settings_plugins_no_selection">No plugin selected</string>
+    <string name="settings_plugins_action_change">Change</string>
+    <string name="settings_plugins_action_select">Select</string>
+    <string name="settings_plugins_selected">Selected</string>
+    <string name="settings_plugins_clear">Clear selection</string>
+    <string name="settings_plugins_no_plugins">No plugins available</string>
+    <string name="settings_plugins_plugin_content_description">%1$s plugin</string>
+    <string name="settings_plugins_clear_content_description">Clear</string>
+
+    <string name="plugin_screen_title">Plugin Manager</string>
+    <string name="plugin_error_enter_url">Please enter a URL</string>
+    <string name="plugin_error_url_scheme">URL must start with http:// or https://</string>
+    <string name="plugin_error_download_failed">Failed to download plugin</string>
+    <string name="plugin_empty_title">No plugins installed yet</string>
+    <string name="plugin_empty_subtitle">Paste a download URL or pick a file above.</string>
+    <string name="plugin_installed_count">%1$d %2$s installed</string>
+    <string name="plugin_installed_singular">plugin</string>
+    <string name="plugin_installed_plural">plugins</string>
+    <string name="plugin_install_section_title">Install a Plugin</string>
+    <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
+    <string name="plugin_action_download">Download</string>
+    <string name="plugin_action_install_from_file">Install from file (.smplug)</string>
+    <string name="plugin_state_active">Active</string>
+    <string name="plugin_version_label">v%1$s</string>
+    <string name="plugin_state_builtin">Built-in</string>
+    <string name="plugin_action_remove">Remove plugin</string>
+    <string name="plugin_action_login">Login</string>
+    <string name="plugin_action_logout">Logout</string>
+
+    <string name="plugin_permissions_author_version">• %1$s</string>
+    <string name="plugin_permissions_requested_title">Permissions requested</string>
+    <string name="plugin_permissions_none">This plugin requires no special permissions.</string>
+    <string name="plugin_permissions_compare_title">Installed vs supplied</string>
+    <string name="plugin_permissions_installed_label">Installed</string>
+    <string name="plugin_permissions_supplied_label">Supplied</string>
+    <string name="plugin_permissions_api_diff">API %1$s → %2$s</string>
+    <string name="plugin_permissions_capability_storage_title">Persistent Storage</string>
+    <string name="plugin_permissions_capability_storage_desc">Read and write data to disk</string>
+    <string name="plugin_permissions_capability_network_title">Network Requests</string>
+    <string name="plugin_permissions_capability_network_desc">Send and receive data over the internet</string>
+    <string name="plugin_permissions_capability_webview_title">WebView</string>
+    <string name="plugin_permissions_capability_webview_desc">Display web content inside the app</string>
+</resources>
+

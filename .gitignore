@@ -1,9 +1,34 @@
+*.iml
+.kotlin
+.gradle
+**/build/
+xcuserdata
+!src/**/build/
+local.properties
+.idea
+.DS_Store
+captures
+.externalNativeBuild
+.cxx
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+!*.xcodeproj/project.xcworkspace/
+!*.xcworkspace/contents.xcworkspacedata
+**/xcshareddata/WorkspaceSettings.xcsettings
+node_modules/
+composeApp/release/
+
+**/*.log
+
+/composeApp/vlc-natives/
+
+
 # Miscellaneous
 *.class
 *.log
 *.pyc
 *.swp
-.DS_Store
 .atom/
 .buildlog/
 .history
@@ -11,7 +36,6 @@
 
 
 # IntelliJ related
-*.iml
 *.ipr
 *.iws
 .idea/

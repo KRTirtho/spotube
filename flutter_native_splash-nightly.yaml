@@ -1,9 +1,0 @@
-flutter_native_splash:
-  background_image: assets/images/bengali-patterns-bg.jpg
-  image: assets/branding/spotube-nightly-logo.png
-  branding: assets/branding/branding.png
-  android_12:
-    image: assets/branding/spotube-nightly-logo_android12.png
-    branding: assets/branding/branding.png
-    color: "#000000"
-    icon_background_color: "#000000"

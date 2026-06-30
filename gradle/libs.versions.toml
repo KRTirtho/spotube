@@ -1,0 +1,177 @@
+# Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Affero General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Affero General Public License for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+[versions]
+agp = "8.13.2"
+android-compileSdk = "37"
+android-minSdk = "28"
+android-targetSdk = "36"
+androidx-activity = "1.13.0"
+androidx-appcompat = "1.7.1"
+androidx-core = "1.18.0"
+androidx-espresso = "3.7.0"
+androidx-lifecycle = "2.10.0"
+androidx-testExt = "1.3.0"
+appdirs = "1.5.0"
+cache4k = "0.14.0"
+carApp = "1.7.0"
+composeHotReload = "1.1.0"
+composeMultiplatform = "1.10.3"
+coil = "3.4.0"
+composePlaceholderMaterial3 = "1.0.12"
+composeShimmer = "1.5.0-beta02"
+desugar_jdk_libs = "2.1.5"
+haze = "2.0.0-alpha01"
+jna = "5.18.1"
+junit = "4.13.2"
+kermit = "2.1.0"
+kmpZip = "0.10.0"
+kotlin = "2.3.21"
+kotlinx-coroutines = "1.10.2"
+kotlinx-io = "0.9.0"
+material3 = "1.10.0-alpha05"
+kotlinx-serialization-json = "1.11.0"
+materialKolor = "4.1.1"
+murmurhash = "0.4.2"
+newpipeextractor = "v0.26.2"
+newpipeExtractorKmp = "1.2.1"
+semver = "2.1.0"
+vlcj = "4.12.1"
+vlcjNative = "4.12.0"
+ziplineVersion = "1.27.0"
+ktor = "3.4.3"
+jetbrainsKotlinJvm = "2.3.21"
+kotlinStdlib = "2.3.21"
+runner = "1.7.0"
+core = "1.7.0"
+filekit = "0.13.0"
+compose-webview = "0.1.0-SNAPSHOT"
+koin = "4.2.1"
+multiplatform-nav3-ui = "1.0.0-alpha06"
+compose-multiplatform-adaptive = "1.3.0-alpha02"
+compose-multiplatform-lifecycle = "2.10.0-alpha05"
+feather-icons = "1.1.1"
+material3-window-size = "1.9.0"
+kotlinx-datetime = "0.7.1"
+media3 = "1.8.0"
+androidx-datastore = "1.2.1"
+kmpgen = "1.3.0"
+ksp = "2.3.5"
+spotube-gradle = "0.1.0"
+cryptography = "0.6.0"
+reorderable = "3.1.0"
+vlcjBundler = "0.1.0"
+
+[libraries]
+appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
+cache4k = { module = "io.github.reactivecircus.cache4k:cache4k", version.ref = "cache4k" }
+androidx-car-app = { module = "androidx.car.app:app", version.ref = "carApp" }
+compose-placeholder-material3 = { module = "com.eygraber:compose-placeholder-material3", version.ref = "composePlaceholderMaterial3" }
+compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
+haze-materials = { module = "dev.chrisbanes.haze:haze-blur-materials", version.ref = "haze" }
+haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }
+jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
+kermit-koin = { module = "co.touchlab:kermit-koin", version.ref = "kermit" }
+kmp-zip = { module = "no.synth:kmp-zip", version.ref = "kmpZip" }
+kmp-zip-kotlinx = { module = "no.synth:kmp-zip-kotlinx", version.ref = "kmpZip" }
+kmp-zip-okio = { module = "no.synth:kmp-zip-okio", version.ref = "kmpZip" }
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-testExt-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso" }
+androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
+compose-uiTooling = { module = "org.jetbrains.compose.ui:ui-tooling", version.ref = "composeMultiplatform" }
+androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
+androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "material3" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMultiplatform" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+coil-network-ktor3 = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
+compose-uiToolingPreview = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "composeMultiplatform" }
+kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
+murmurhash = { module = "com.goncalossilva:murmurhash", version.ref = "murmurhash" }
+newpipe-extractor-kmp = { module = "io.github.yushosei:newpipe-extractor-kmp", version.ref = "newpipeExtractorKmp" }
+newpipeextractor = { module = "com.github.teamnewpipe:NewPipeExtractor", version.ref = "newpipeextractor" }
+semver = { module = "net.swiftzer.semver:semver", version.ref = "semver" }
+vlcj = { module = "uk.co.caprica:vlcj", version.ref = "vlcj" }
+vlcj-natives = { module = "uk.co.caprica:vlcj-natives", version.ref = "vlcjNative" }
+zipline-core = { module = "app.cash.zipline:zipline", version.ref = "ziplineVersion" }
+zipline-loader = { module = "app.cash.zipline:zipline-loader", version.ref = "ziplineVersion" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
+filekit-core = { group = "io.github.vinceglb", name = "filekit-core", version.ref = "filekit" }
+filekit-dialogs = { group = "io.github.vinceglb", name = "filekit-dialogs", version.ref = "filekit" }
+filekit-dialogs-compose = { group = "io.github.vinceglb", name = "filekit-dialogs-compose", version.ref = "filekit" }
+compose-webview = { module = "io.github.kdroidfilter:composewebview", version.ref = "compose-webview" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
+koin-compose-navigation3 = { module = "io.insert-koin:koin-compose-navigation3", version.ref = "koin" }
+jetbrains-navigation3-ui = { module = "org.jetbrains.androidx.navigation3:navigation3-ui", version.ref = "multiplatform-nav3-ui" }
+jetbrains-material3-adaptiveNavigation3 = { module = "org.jetbrains.compose.material3.adaptive:adaptive-navigation3", version.ref = "compose-multiplatform-adaptive" }
+jetbrains-lifecycle-viewmodelNavigation3 = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-navigation3", version.ref = "compose-multiplatform-lifecycle" }
+jetbrains-material3-window-size = { module = "org.jetbrains.compose.material3:material3-window-size-class", version.ref = "material3-window-size" }
+jetbrains-material3-adaptive-suite = { module = "org.jetbrains.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3-window-size" }
+jetbrains-material3-adaptive = { module = "org.jetbrains.compose.material3.adaptive:adaptive", version.ref = "compose-multiplatform-adaptive" }
+jetbrains-material3-adaptive-layout = { module = "org.jetbrains.compose.material3.adaptive:adaptive-layout", version.ref = "compose-multiplatform-adaptive" }
+feather-icons = { module = "br.com.devsrsouza.compose.icons:feather", version.ref = "feather-icons" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+androidx-datastore = { module = "androidx.datastore:datastore", version.ref = "androidx-datastore" }
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "androidx-datastore" }
+kotlinx-io-okio = { module = "org.jetbrains.kotlinx:kotlinx-io-okio", version.ref = "kotlinx-io" }
+cryptography-core = { module = "dev.whyoleg.cryptography:cryptography-core", version.ref = "cryptography" }
+cryptography-provider-optimal = { module = "dev.whyoleg.cryptography:cryptography-provider-optimal", version.ref = "cryptography" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
+media3-common = { group = "androidx.media3", name = "media3-common", version.ref = "media3" }
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", version.ref = "media3" }
+media3-session = { module = "androidx.media3:media3-session", version.ref = "media3" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
+composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+zipline-gradle-plugin = { id = "app.cash.zipline", version.ref = "ziplineVersion" }
+kmpgen = { id = "com.kroegerama.openapi-kmp-gen", version.ref = "kmpgen" }
+mavenPublish = { id = "maven-publish" }
+spotubeGradle = { id = "dev.krtirtho.spotube.gradle-plugin", version.ref = "spotube-gradle" }
+vlcjBundler = { id = "dev.krtirtho.vlcj-bundler.gradle-plugin", version.ref = "vlcjBundler" }

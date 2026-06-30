@@ -1,0 +1,383 @@
+/*
+ * Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.krtirtho.spotube.modules.plugin.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.Database
+import compose.icons.feathericons.Eye
+import compose.icons.feathericons.Package
+import compose.icons.feathericons.User
+import compose.icons.feathericons.Wifi
+import dev.krtirtho.spotube.modules.plugin.PluginCapability
+import dev.krtirtho.spotube.modules.plugin.PluginEntry
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.plugin_permissions_api_diff
+import spotube.composeapp.generated.resources.plugin_permissions_author_version
+import spotube.composeapp.generated.resources.plugin_permissions_capability_network_desc
+import spotube.composeapp.generated.resources.plugin_permissions_capability_network_title
+import spotube.composeapp.generated.resources.plugin_permissions_capability_storage_desc
+import spotube.composeapp.generated.resources.plugin_permissions_capability_storage_title
+import spotube.composeapp.generated.resources.plugin_permissions_capability_webview_desc
+import spotube.composeapp.generated.resources.plugin_permissions_capability_webview_title
+import spotube.composeapp.generated.resources.plugin_permissions_compare_title
+import spotube.composeapp.generated.resources.plugin_permissions_installed_label
+import spotube.composeapp.generated.resources.plugin_permissions_none
+import spotube.composeapp.generated.resources.plugin_permissions_requested_title
+import spotube.composeapp.generated.resources.plugin_permissions_supplied_label
+import spotube.composeapp.generated.resources.plugin_version_label
+import spotube.composeapp.generated.resources.settings_action_cancel
+import spotube.composeapp.generated.resources.settings_action_close
+
+@Composable
+fun PluginPermissionDialog(
+    pluginInfo: PluginEntry,
+    title: String,
+    message: String,
+    confirmLabel: String?,
+    existingPlugin: PluginEntry? = null,
+    onConfirm: (() -> Unit)? = null,
+    onDismiss: () -> Unit,
+) {
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        Card(
+            modifier = Modifier
+                .widthIn(min = 320.dp, max = 480.dp)
+                .padding(horizontal = 16.dp),
+            shape = RoundedCornerShape(20.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            )
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.4f))
+                        .padding(24.dp)
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(14.dp)
+                        ) {
+                            Surface(
+                                modifier = Modifier
+                                    .size(48.dp)
+                                    .clip(RoundedCornerShape(12.dp)),
+                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    Icon(
+                                        imageVector = FeatherIcons.Package,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                        modifier = Modifier.size(24.dp)
+                                    )
+                                }
+                            }
+                            Column {
+                                Text(
+                                    title,
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
+                                Text(
+                                    pluginInfo.name,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            Icon(
+                                FeatherIcons.User,
+                                contentDescription = null,
+                                modifier = Modifier.size(13.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                pluginInfo.author,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                stringResource(
+                                    Res.string.plugin_permissions_author_version,
+                                    stringResource(Res.string.plugin_version_label, pluginInfo.version)
+                                ),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+
+                        if (pluginInfo.description.isNotBlank()) {
+                            Text(
+                                pluginInfo.description,
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                maxLines = 3,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider()
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(12.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f)
+                    ) {
+                        Text(
+                            message,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.padding(14.dp)
+                        )
+                    }
+
+                    existingPlugin?.let {
+                        InstalledComparisonCard(
+                            installedPlugin = it,
+                            incomingPlugin = pluginInfo
+                        )
+                    }
+
+                    Text(
+                        stringResource(Res.string.plugin_permissions_requested_title),
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    if (pluginInfo.capabilities.isEmpty()) {
+                        Text(
+                            stringResource(Res.string.plugin_permissions_none),
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        pluginInfo.capabilities.forEach { capability ->
+                            CapabilityRow(capability)
+                        }
+                    }
+                }
+
+                HorizontalDivider()
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.End)
+                ) {
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Text(
+                            if (confirmLabel == null) {
+                                stringResource(Res.string.settings_action_close)
+                            } else {
+                                stringResource(Res.string.settings_action_cancel)
+                            }
+                        )
+                    }
+                    if (confirmLabel != null && onConfirm != null) {
+                        Button(
+                            onClick = onConfirm,
+                            shape = RoundedCornerShape(10.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            Text(confirmLabel)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun InstalledComparisonCard(
+    installedPlugin: PluginEntry,
+    incomingPlugin: PluginEntry,
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.45f)
+    ) {
+        Column(
+            modifier = Modifier.padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                stringResource(Res.string.plugin_permissions_compare_title),
+                style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                VersionStat(
+                    label = stringResource(Res.string.plugin_permissions_installed_label),
+                    value = installedPlugin.version,
+                )
+                VersionStat(
+                    label = stringResource(Res.string.plugin_permissions_supplied_label),
+                    value = incomingPlugin.version,
+                )
+            }
+            Text(
+                stringResource(
+                    Res.string.plugin_permissions_api_diff,
+                    installedPlugin.apiVersion,
+                    incomingPlugin.apiVersion
+                ),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun VersionStat(label: String, value: String) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        Text(
+            label,
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Text(
+            stringResource(Res.string.plugin_version_label, value),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Medium
+        )
+    }
+}
+
+@Composable
+private fun CapabilityRow(capability: PluginCapability) {
+    val (icon, label, description) = when (capability) {
+        PluginCapability.PERSISTENT_STORAGE -> Triple(
+            FeatherIcons.Database,
+            stringResource(Res.string.plugin_permissions_capability_storage_title),
+            stringResource(Res.string.plugin_permissions_capability_storage_desc)
+        )
+        PluginCapability.NETWORK_REQUESTS -> Triple(
+            FeatherIcons.Wifi,
+            stringResource(Res.string.plugin_permissions_capability_network_title),
+            stringResource(Res.string.plugin_permissions_capability_network_desc)
+        )
+        PluginCapability.WEBVIEW -> Triple(
+            FeatherIcons.Eye,
+            stringResource(Res.string.plugin_permissions_capability_webview_title),
+            stringResource(Res.string.plugin_permissions_capability_webview_desc)
+        )
+    }
+
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(10.dp))
+            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            .padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(34.dp)
+                .clip(CircleShape)
+                .background(MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.6f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.colorScheme.error
+            )
+        }
+        Column {
+            Text(
+                label,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium
+            )
+            Text(
+                description,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
