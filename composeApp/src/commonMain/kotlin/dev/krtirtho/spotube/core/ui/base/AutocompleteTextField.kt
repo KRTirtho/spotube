@@ -29,6 +29,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -64,10 +65,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.input.key.KeyEvent
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.input.key.onPreviewKeyEvent
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -95,8 +100,6 @@ fun <T> AutocompleteTextField(
     items: List<T>,
     itemContent: @Composable (item: T, isSelected: Boolean) -> Unit,
     modifier: Modifier = Modifier,
-    expanded: Boolean = false,
-    onExpandedChange: (Boolean) -> Unit = {},
     onItemSelected: (T) -> Unit = {},
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -125,29 +128,40 @@ fun <T> AutocompleteTextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
 
+    var isMenuOpen by remember { mutableStateOf(false) }
+    var isMovingFocusToPopup by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(-1) }
     var textFieldSize by remember { mutableStateOf(IntSize.Zero) }
     val menuListState = rememberLazyListState()
+    val popupFocusRequester = remember { FocusRequester() }
+    val textFieldFocusRequester = remember { FocusRequester() }
 
-    val effectiveExpanded = expanded && items.isNotEmpty()
+    val menuExpanded = isMenuOpen && items.isNotEmpty()
+
+    LaunchedEffect(isFocused) {
+        if (isFocused) {
+            isMenuOpen = true
+            isMovingFocusToPopup = false
+        }
+    }
 
     LaunchedEffect(value) {
         if (selectedIndex != -1) selectedIndex = -1
     }
 
     LaunchedEffect(selectedIndex) {
-        if (selectedIndex >= 0 && effectiveExpanded) {
+        if (selectedIndex >= 0 && menuExpanded) {
             menuListState.scrollToItem(selectedIndex)
         }
     }
 
-    val wrappedKeyboardActions = remember(keyboardActions, effectiveExpanded, selectedIndex, items) {
+    val wrappedKeyboardActions = remember(keyboardActions, menuExpanded, selectedIndex, items) {
         KeyboardActions(
             onSearch = {
-                if (effectiveExpanded && selectedIndex in items.indices) {
+                if (menuExpanded && selectedIndex in items.indices) {
                     onItemSelected(items[selectedIndex])
                     selectedIndex = -1
-                    onExpandedChange(false)
+                    isMenuOpen = false
                 } else {
                     keyboardActions.onSearch?.invoke(this)
                 }
@@ -231,33 +245,46 @@ fun <T> AutocompleteTextField(
                                     interactionSource = interactionSource,
                                     enabled = enabled,
                                 )
-                                .onKeyEvent { event ->
-                                    if (onKeyEvent?.invoke(event) == true) {
-                                        return@onKeyEvent true
+                                .focusRequester(textFieldFocusRequester)
+                                .onFocusChanged { state ->
+                                    if (!state.isFocused && !isMovingFocusToPopup) {
+                                        isMenuOpen = false
+                                        selectedIndex = -1
                                     }
-                                    if (!effectiveExpanded) return@onKeyEvent false
+                                }
+                                .onPreviewKeyEvent { event ->
+                                    if (onKeyEvent?.invoke(event) == true) {
+                                        return@onPreviewKeyEvent true
+                                    }
+                                    if (!menuExpanded) return@onPreviewKeyEvent false
                                     when (event.key) {
                                         Key.DirectionDown -> {
-                                            navigate(1); true
+                                            isMovingFocusToPopup = true
+                                            popupFocusRequester.requestFocus()
+                                            navigate(1)
+                                            true
                                         }
 
                                         Key.DirectionUp -> {
-                                            navigate(-1); true
+                                            if (selectedIndex >= 0) {
+                                                navigate(-1)
+                                                true
+                                            } else false
                                         }
 
                                         Key.Enter -> {
                                             if (selectedIndex in items.indices) {
                                                 onItemSelected(items[selectedIndex])
                                                 selectedIndex = -1
-                                                onExpandedChange(false)
-                                                return@onKeyEvent true
+                                                isMenuOpen = false
+                                                return@onPreviewKeyEvent true
                                             }
                                             false
                                         }
 
                                         Key.Escape -> {
                                             selectedIndex = -1
-                                            onExpandedChange(false)
+                                            isMenuOpen = false
                                             true
                                         }
 
@@ -295,7 +322,7 @@ fun <T> AutocompleteTextField(
             }
         }
 
-        if (effectiveExpanded && textFieldSize.width > 0) {
+        if (menuExpanded && textFieldSize.width > 0) {
             val textFieldHeightPx = textFieldSize.height
             val menuOffsetPx = with(density) { menuOffset.roundToPx() }
             val textFieldWidthDp = with(density) { textFieldSize.width.toDp() }
@@ -306,7 +333,7 @@ fun <T> AutocompleteTextField(
                 properties = PopupProperties(focusable = true),
                 onDismissRequest = {
                     selectedIndex = -1
-                    onExpandedChange(false)
+                    isMenuOpen = false
                 },
             ) {
                 Box(
@@ -315,7 +342,45 @@ fun <T> AutocompleteTextField(
                         .heightIn(max = menuMaxHeight)
                         .shadow(menuShadowElevation, menuShape)
                         .background(menuContainerColor, menuShape)
-                        .clip(menuShape),
+                        .clip(menuShape)
+                        .focusRequester(popupFocusRequester)
+                        .focusable()
+                        .onFocusChanged { state ->
+                            if (state.isFocused) {
+                                isMovingFocusToPopup = false
+                            }
+                        }
+                        .onKeyEvent { event ->
+                            when (event.key) {
+                                Key.DirectionDown -> {
+                                    navigate(1); true
+                                }
+
+                                Key.DirectionUp -> {
+                                    navigate(-1); true
+                                }
+
+                                Key.Enter -> {
+                                    if (selectedIndex in items.indices) {
+                                        onItemSelected(items[selectedIndex])
+                                        selectedIndex = -1
+                                        isMenuOpen = false
+                                        textFieldFocusRequester.requestFocus()
+                                        return@onKeyEvent true
+                                    }
+                                    false
+                                }
+
+                                Key.Escape -> {
+                                    selectedIndex = -1
+                                    isMenuOpen = false
+                                    textFieldFocusRequester.requestFocus()
+                                    true
+                                }
+
+                                else -> false
+                            }
+                        },
                 ) {
                     LazyColumn(
                         state = menuListState,
@@ -329,7 +394,8 @@ fun <T> AutocompleteTextField(
                                     .clickable {
                                         onItemSelected(items[index])
                                         selectedIndex = -1
-                                        onExpandedChange(false)
+                                        isMenuOpen = false
+                                        textFieldFocusRequester.requestFocus()
                                     },
                             ) {
                                 itemContent(items[index], selectedIndex == index)
@@ -362,23 +428,18 @@ private fun AutocompleteTextFieldPreview() {
                 )
             }
             var value by remember { mutableStateOf("") }
-            var expanded by remember { mutableStateOf(false) }
 
             AutocompleteTextField(
                 value = value,
                 onValueChange = {
                     value = it
-                    expanded = it.isNotEmpty()
                 },
                 items = artists.filter {
                     it.contains(value, ignoreCase = true) && value.isNotEmpty()
                 },
                 onItemSelected = { selected ->
                     value = selected
-                    expanded = false
                 },
-                expanded = expanded,
-                onExpandedChange = { expanded = it },
                 placeholder = { Text("Search artists...") },
                 leadingIcon = {
                     androidx.compose.material3.Icon(

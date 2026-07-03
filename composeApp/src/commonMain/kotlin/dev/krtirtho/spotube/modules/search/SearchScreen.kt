@@ -57,18 +57,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
@@ -125,9 +120,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     val scope = rememberCoroutineScope()
     val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
 
-    var isSearchFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
-    val focusRequester = remember { FocusRequester() }
 
     fun playSingleTrack(track: MetadataTrack) {
         scope.launch {
@@ -231,9 +224,6 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
         }
     }
 
-    val showDropdown =
-        isSearchFocused && state.query.isBlank() && state.recentSearches.isNotEmpty()
-
     Scaffold(
         topBar = { ApplicationMainBar(backButton = false) }
     ) { innerPadding ->
@@ -249,24 +239,17 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                     query = state.query,
                     onQueryChange = viewModel::onQueryChange,
                     onClear = viewModel::clearQuery,
-                    isFocused = isSearchFocused,
-                    onFocusChanged = { isSearchFocused = it },
-                    focusRequester = focusRequester,
                     onSearch = {
                         focusManager.clearFocus()
-                        isSearchFocused = false
                     },
-                    showDropdown = showDropdown,
                     recentSearches = state.recentSearches,
                     onRecentSearchClick = { search ->
                         viewModel.applyRecentSearch(search)
-                        isSearchFocused = false
                         focusManager.clearFocus()
                     },
                     onRecentSearchRemove = viewModel::removeRecentSearch,
                     onClearAllRecentSearches = {
                         viewModel.clearAllRecentSearches()
-                        isSearchFocused = false
                         focusManager.clearFocus()
                     },
                 )
@@ -393,19 +376,16 @@ private fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
     onClear: () -> Unit,
-    isFocused: Boolean,
-    onFocusChanged: (Boolean) -> Unit,
-    focusRequester: FocusRequester,
     onSearch: () -> Unit,
-    showDropdown: Boolean,
     recentSearches: List<String>,
     onRecentSearchClick: (String) -> Unit,
     onRecentSearchRemove: (String) -> Unit,
     onClearAllRecentSearches: () -> Unit,
 ) {
-    val dropdownItems = remember(showDropdown, recentSearches) {
+    val showRecentSearches = query.isBlank() && recentSearches.isNotEmpty()
+    val dropdownItems = remember(showRecentSearches, recentSearches) {
         buildList {
-            if (showDropdown) {
+            if (showRecentSearches) {
                 add(SearchDropdownEntry.ClearAll(onClick = onClearAllRecentSearches))
                 recentSearches.forEach { search ->
                     add(
@@ -420,8 +400,6 @@ private fun SearchBar(
         }
     }
 
-    val focusManager = LocalFocusManager.current
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -433,13 +411,6 @@ private fun SearchBar(
             onValueChange = onQueryChange,
             items = dropdownItems,
             onItemSelected = { entry -> entry.onClick() },
-            expanded = showDropdown,
-            onExpandedChange = { expanded ->
-                if (!expanded) {
-                    onFocusChanged(false)
-                    focusManager.clearFocus()
-                }
-            },
             placeholder = {
                 Text(
                     "Search songs, artists, albums...",
@@ -470,10 +441,7 @@ private fun SearchBar(
                 }
             },
             singleLine = true,
-            modifier = Modifier
-                .fillMaxWidth()
-                .onFocusChanged { onFocusChanged(it.isFocused) }
-                .focusRequester(focusRequester),
+            modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = { onSearch() }),
             itemContent = { entry, isSelected ->
