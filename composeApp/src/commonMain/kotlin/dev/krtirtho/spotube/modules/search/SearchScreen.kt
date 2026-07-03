@@ -37,7 +37,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.LinearProgressIndicator
@@ -50,8 +49,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,7 +57,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,21 +65,17 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.PopupProperties
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.X
@@ -96,12 +88,12 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.user.MetadataUser
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.share.ShareService
+import dev.krtirtho.spotube.core.ui.base.AutocompleteTextField
 import dev.krtirtho.spotube.core.ui.base.ChipTab
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.ArtistCard
 import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
-import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.core.ui.component.PlaylistCard
 import dev.krtirtho.spotube.core.ui.component.TrackList
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
@@ -122,8 +114,6 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 private val GridMinCellSize = 180.dp
-private val SearchFieldShape = RoundedCornerShape(6.dp)
-private val TabShape = RoundedCornerShape(6.dp)
 
 @Composable
 fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
@@ -138,7 +128,6 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     var isSearchFocused by remember { mutableStateOf(false) }
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
-    var keyboardSelectedIndex by remember { mutableIntStateOf(-1) }
 
     fun playSingleTrack(track: MetadataTrack) {
         scope.launch {
@@ -242,29 +231,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
         }
     }
 
-    val showRecentSearches =
+    val showDropdown =
         isSearchFocused && state.query.isBlank() && state.recentSearches.isNotEmpty()
-    val dropdownItems = if (showRecentSearches) state.recentSearches else emptyList()
-    val totalDropdownItems = if (showRecentSearches) dropdownItems.size + 1 else 0
-
-    fun navigateDropdown(delta: Int) {
-        if (totalDropdownItems == 0) return
-        keyboardSelectedIndex =
-            (keyboardSelectedIndex + delta + totalDropdownItems) % totalDropdownItems
-    }
-
-    fun selectDropdownItem() {
-        if (keyboardSelectedIndex < 0 || !showRecentSearches) return
-        if (keyboardSelectedIndex == 0) {
-            viewModel.clearAllRecentSearches()
-        } else {
-            val item = dropdownItems[keyboardSelectedIndex - 1]
-            viewModel.applyRecentSearch(item)
-        }
-        keyboardSelectedIndex = -1
-        isSearchFocused = false
-        focusManager.clearFocus()
-    }
 
     Scaffold(
         topBar = { ApplicationMainBar(backButton = false) }
@@ -279,60 +247,26 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
             ) {
                 SearchBar(
                     query = state.query,
-                    onQueryChange = {
-                        viewModel.onQueryChange(it)
-                        keyboardSelectedIndex = -1
-                    },
+                    onQueryChange = viewModel::onQueryChange,
                     onClear = viewModel::clearQuery,
                     isFocused = isSearchFocused,
                     onFocusChanged = { isSearchFocused = it },
                     focusRequester = focusRequester,
-                    onKeyEvent = { event ->
-                        when (event.key) {
-                            Key.DirectionDown -> {
-                                navigateDropdown(1); true
-                            }
-
-                            Key.DirectionUp -> {
-                                navigateDropdown(-1); true
-                            }
-
-                            Key.Enter -> {
-                                selectDropdownItem(); true
-                            }
-
-                            Key.Escape -> {
-                                isSearchFocused = false
-                                keyboardSelectedIndex = -1
-                                focusManager.clearFocus()
-                                true
-                            }
-
-                            else -> false
-                        }
-                    },
                     onSearch = {
                         focusManager.clearFocus()
                         isSearchFocused = false
                     },
-                    showDropdown = showRecentSearches,
-                    onDismissDropdown = {
-                        isSearchFocused = false
-                        keyboardSelectedIndex = -1
-                    },
+                    showDropdown = showDropdown,
                     recentSearches = state.recentSearches,
-                    keyboardSelectedIndex = keyboardSelectedIndex,
                     onRecentSearchClick = { search ->
                         viewModel.applyRecentSearch(search)
                         isSearchFocused = false
-                        keyboardSelectedIndex = -1
                         focusManager.clearFocus()
                     },
                     onRecentSearchRemove = viewModel::removeRecentSearch,
                     onClearAllRecentSearches = {
                         viewModel.clearAllRecentSearches()
                         isSearchFocused = false
-                        keyboardSelectedIndex = -1
                         focusManager.clearFocus()
                     },
                 )
@@ -443,6 +377,17 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     }
 }
 
+private sealed interface SearchDropdownEntry {
+    val onClick: () -> Unit
+
+    data class ClearAll(override val onClick: () -> Unit) : SearchDropdownEntry
+    data class RecentSearch(
+        val query: String,
+        override val onClick: () -> Unit,
+        val onRemove: () -> Unit,
+    ) : SearchDropdownEntry
+}
+
 @Composable
 private fun SearchBar(
     query: String,
@@ -451,27 +396,50 @@ private fun SearchBar(
     isFocused: Boolean,
     onFocusChanged: (Boolean) -> Unit,
     focusRequester: FocusRequester,
-    onKeyEvent: (androidx.compose.ui.input.key.KeyEvent) -> Boolean,
     onSearch: () -> Unit,
     showDropdown: Boolean,
-    onDismissDropdown: () -> Unit,
     recentSearches: List<String>,
-    keyboardSelectedIndex: Int,
     onRecentSearchClick: (String) -> Unit,
     onRecentSearchRemove: (String) -> Unit,
     onClearAllRecentSearches: () -> Unit,
 ) {
+    val dropdownItems = remember(showDropdown, recentSearches) {
+        buildList {
+            if (showDropdown) {
+                add(SearchDropdownEntry.ClearAll(onClick = onClearAllRecentSearches))
+                recentSearches.forEach { search ->
+                    add(
+                        SearchDropdownEntry.RecentSearch(
+                            query = search,
+                            onClick = { onRecentSearchClick(search) },
+                            onRemove = { onRecentSearchRemove(search) },
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    val focusManager = LocalFocusManager.current
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .padding(bottom = 8.dp)
     ) {
-        TextField(
+        AutocompleteTextField(
             value = query,
             onValueChange = onQueryChange,
-            singleLine = true,
-            maxLines = 1,
+            items = dropdownItems,
+            onItemSelected = { entry -> entry.onClick() },
+            expanded = showDropdown,
+            onExpandedChange = { expanded ->
+                if (!expanded) {
+                    onFocusChanged(false)
+                    focusManager.clearFocus()
+                }
+            },
             placeholder = {
                 Text(
                     "Search songs, artists, albums...",
@@ -501,77 +469,80 @@ private fun SearchBar(
                     }
                 }
             },
+            singleLine = true,
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged { onFocusChanged(it.isFocused) }
-                .focusRequester(focusRequester)
-                .onKeyEvent(onKeyEvent),
+                .focusRequester(focusRequester),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
             keyboardActions = KeyboardActions(onSearch = { onSearch() }),
-        )
-
-        DropdownMenu(
-            expanded = showDropdown,
-            onDismissRequest = onDismissDropdown,
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(max = 300.dp),
-            offset = DpOffset(x = 0.dp, y = 4.dp),
-            properties = PopupProperties(focusable = false),
-            containerColor = MaterialTheme.colorScheme.surface,
-            shape = RoundedCornerShape(8.dp),
-            shadowElevation = 8.dp,
-        ) {
-            Box(modifier = Modifier.padding(vertical = 4.dp)) {
-                Column {
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                "Clear all history",
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        },
-                        onClick = onClearAllRecentSearches,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Iconsax.IconsaxTrash,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.error,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        },
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp, vertical = 2.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(
-                                if (keyboardSelectedIndex == 0) MaterialTheme.colorScheme.surfaceVariant
-                                else MaterialTheme.colorScheme.surface
-                            )
-                    )
-
-                    recentSearches.forEachIndexed { index, search ->
-                        val isSelected = keyboardSelectedIndex == index + 1
-                        DropdownMenuItem(
-                            text = {
+            itemContent = { entry, isSelected ->
+                when (entry) {
+                    is SearchDropdownEntry.ClearAll -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(
+                                    if (isSelected) MaterialTheme.colorScheme.surfaceVariant
+                                    else Color.Transparent
+                                )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            ) {
+                                Icon(
+                                    imageVector = Iconsax.IconsaxTrash,
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.error,
+                                    modifier = Modifier.size(16.dp)
+                                )
                                 Text(
-                                    search,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
+                                    "Clear all history",
+                                    color = MaterialTheme.colorScheme.error,
                                     style = MaterialTheme.typography.bodyMedium
                                 )
-                            },
-                            leadingIcon = {
+                            }
+                        }
+                    }
+                    is SearchDropdownEntry.RecentSearch -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 4.dp, vertical = 2.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(
+                                    if (isSelected) MaterialTheme.colorScheme.surfaceVariant
+                                    else Color.Transparent
+                                )
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            ) {
                                 Icon(
                                     imageVector = Iconsax.InconsaxClock,
                                     contentDescription = null,
                                     modifier = Modifier.size(16.dp),
                                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
-                            },
-                            trailingIcon = {
+                                Text(
+                                    entry.query,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    modifier = Modifier.weight(1f)
+                                )
                                 IconButton(
-                                    onClick = { onRecentSearchRemove(search) },
+                                    onClick = entry.onRemove,
                                     modifier = Modifier.size(24.dp)
                                 ) {
                                     Icon(
@@ -581,20 +552,12 @@ private fun SearchBar(
                                         tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
                                     )
                                 }
-                            },
-                            onClick = { onRecentSearchClick(search) },
-                            modifier = Modifier
-                                .padding(horizontal = 4.dp, vertical = 2.dp)
-                                .clip(RoundedCornerShape(4.dp))
-                                .background(
-                                    if (isSelected) MaterialTheme.colorScheme.surfaceVariant
-                                    else MaterialTheme.colorScheme.surface
-                                )
-                        )
+                            }
+                        }
                     }
                 }
-            }
-        }
+            },
+        )
     }
 }
 

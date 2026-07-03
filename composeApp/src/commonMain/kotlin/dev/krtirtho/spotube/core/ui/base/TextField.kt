@@ -65,7 +65,7 @@ private val TextFieldShape = RoundedCornerShape(14.dp)
 private val TextFieldMinHeight = 44.dp
 
 @Composable
-private fun textFieldShadow(
+internal fun textFieldShadow(
     shape: androidx.compose.ui.graphics.Shape,
     focused: Boolean,
     colors: ButtonColors,
