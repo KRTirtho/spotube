@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.core.audioplayer
 
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import dev.krtirtho.spotube.core.di.injectLogger
+import dev.krtirtho.spotube.modules.plugin.PluginManager
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -36,12 +37,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
 class DeviceAudioPlayerQueue(
     private val audioPlayer: AudioPlayer,
     private val settingsViewModel: SettingsViewModel,
     private val repository: AudioPlayerQueueRepository,
+    private val pluginManager: PluginManager,
 ) : AudioPlayerQueue, KoinComponent {
 
     private val logger by injectLogger<DeviceAudioPlayerQueue>()
@@ -96,6 +99,27 @@ class DeviceAudioPlayerQueue(
             audioPlayer.currentMediaItemFlow.collect {
                 logger.d { "Current media item changed, persisting queue state" }
                 persistQueueStateIfReady()
+            }
+        }
+
+        scope.launch {
+            combine(
+                audioPlayer.currentMediaItemFlow,
+                audioPlayer.playlistFlow,
+                audioPlayer.loopStateFlow,
+            ) { currentMedia, playlist, loopState ->
+                Triple(currentMedia, playlist, loopState)
+            }.collect { (currentMedia, playlist, loopState) ->
+                if (currentMedia == null || playlist.isEmpty()) return@collect
+                if (loopState == LoopState.ALL) return@collect
+
+                val currentIndex = playlist.indexOfFirst { it.url == currentMedia.url }
+                if (currentIndex < 0) return@collect
+
+                val tracksAfterCurrent = playlist.size - currentIndex - 1
+                if (tracksAfterCurrent <= 0) {
+                    handleQueueCompletion()
+                }
             }
         }
     }
@@ -279,6 +303,61 @@ class DeviceAudioPlayerQueue(
 
     override suspend fun getCollectionHistory(): List<QueueCollectionEntry> {
         return collectionHistoryState.value
+    }
+
+    private var isFetchingRecommendations = false
+
+    private suspend fun handleQueueCompletion() {
+        if (isFetchingRecommendations) return
+
+        val settings = settingsViewModel.settingsState.value ?: return
+        if (!settings.enableEndlessPlayback) return
+
+        val queue = queueFlow.value
+        val streamingTracks = queue.filterIsInstance<QueueEntry.StreamingTrack>()
+        if (streamingTracks.isEmpty()) return
+
+        val seedTracks = if (streamingTracks.size <= 5) {
+            streamingTracks
+        } else {
+            val shuffled = streamingTracks.shuffled(Random)
+            shuffled.take(5)
+        }
+
+        val seedTrackIds = seedTracks.map { it.track.id }
+        if (seedTrackIds.isEmpty()) return
+
+        isFetchingRecommendations = true
+        logger.i { "Endless playback: fetching recommendations with ${seedTrackIds.size} seed tracks" }
+
+        val metadataService = pluginManager.selectedMetadataPlugin.value ?: run {
+            logger.w { "Endless playback: no metadata plugin available" }
+            isFetchingRecommendations = false
+            return
+        }
+
+        try {
+            val recommendations = metadataService.use {
+                metadataTrackAPI.recommendationsBasedOnTracks(seedTrackIds, limit = 20)
+            }
+
+            if (recommendations.isEmpty()) {
+                logger.w { "Endless playback: no recommendations returned" }
+                isFetchingRecommendations = false
+                return
+            }
+
+            val newEntries = recommendations.map { track ->
+                QueueEntry.StreamingTrack(track = track, url = "")
+            }
+
+            logger.i { "Endless playback: adding ${newEntries.size} recommended tracks to queue" }
+            addAllToQueue(newEntries)
+        } catch (e: Exception) {
+            logger.e(e) { "Endless playback: failed to fetch recommendations" }
+        } finally {
+            isFetchingRecommendations = false
+        }
     }
 
     private suspend fun restorePersistedState() {

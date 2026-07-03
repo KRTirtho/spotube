@@ -163,7 +163,7 @@ val sharedModules = module {
     }
     singleOf(::AudioPlayerQueueRepository)
     single<AudioPlayerQueue> {
-        DeviceAudioPlayerQueue(get(), get(), get())
+        DeviceAudioPlayerQueue(get(), get(), get(), get())
     }
 
     factory { (tag: String?) ->
