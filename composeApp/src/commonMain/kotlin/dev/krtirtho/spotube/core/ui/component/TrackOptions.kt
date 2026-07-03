@@ -38,6 +38,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
+import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
@@ -86,7 +87,7 @@ fun TrackOptions(
             onAlbumClick = onAlbumClick,
         ),
         trigger = { onClick ->
-            IconButton(onClick = onClick) {
+            GhostIconButton(onClick = onClick) {
                 Icon(
                     imageVector = Iconsax.Iconsax3DotsMore,
                     contentDescription = "Track options",

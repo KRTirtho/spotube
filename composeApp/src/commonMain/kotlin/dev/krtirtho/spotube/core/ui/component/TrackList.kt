@@ -21,13 +21,16 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,12 +44,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -58,11 +62,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.focus.focusModifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,9 +88,12 @@ import dev.krtirtho.spotube.core.ui.base.ButtonGroup
 import dev.krtirtho.spotube.core.ui.base.ButtonGroupDivider
 import dev.krtirtho.spotube.core.ui.base.CheckBox
 import dev.krtirtho.spotube.core.ui.base.CheckBoxState
-import dev.krtirtho.spotube.core.ui.base.TextField
+import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.GroupIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
+import dev.krtirtho.spotube.core.ui.base.TextField
+import dev.krtirtho.spotube.core.ui.base.buttonShadow
+import dev.krtirtho.spotube.core.ui.base.rememberButtonColors
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
@@ -171,12 +183,15 @@ fun TrackList(
     }
 
     val listState = rememberLazyListState()
-    val shouldLoadMore = remember {
+    val density = LocalDensity.current
+    val shouldLoadMore = remember(density) {
         derivedStateOf {
-            val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.lastOrNull()
-            // Note: totalItemsCount includes headers/footers, so this safely triggers
-            // a few items before the absolute bottom without index-shifting bugs.
-            lastVisibleItem != null && lastVisibleItem.index >= listState.layoutInfo.totalItemsCount - 5
+            val loadMoreThreshold = with(density) { 200.dp.toPx() }
+            val cardItem = listState.layoutInfo.visibleItemsInfo.find { it.key == "track-card" }
+            // Trigger when the bottom of the track card is close to/inside the viewport,
+            // which means the user has scrolled through (or is about to scroll through)
+            // all loaded tracks.
+            cardItem != null && cardItem.offset + cardItem.size <= listState.layoutInfo.viewportEndOffset + loadMoreThreshold
         }
     }
 
@@ -187,7 +202,6 @@ fun TrackList(
     }
 
     val windowInfo = LocalWindowInfo.current
-    val density = LocalDensity.current
     val maxWidth = with(density) { windowInfo.containerSize.width.toDp() }
     val isCompact = maxWidth < CompactTrackListBreakpoint
     val isDesktop = remember { getPlatform().isDesktop() }
@@ -333,90 +347,139 @@ fun TrackList(
                     }
                 }
 
-            itemsIndexed(
-                items = visibleTracks,
-                key = { _, indexedTrack -> "${indexedTrack.id}-${indexedTrack.title}-${indexedTrack.album?.title ?: ""}" },
-            ) { displayedIndex, track ->
-                TrackListRow(
-                    index = displayedIndex + 1,
-                    track = track,
-                    showIndex = showIndex,
-                    showAlbum = showAlbum,
-                    useDropdownForOptions = useDropdownForOptions,
-                    isCurrentTrack = track.id == currentTrackId,
-                    isCurrentTrackPlaying = isCurrentTrackPlaying,
-                    isSelectionMode = isSelectionMode,
-                    isSelected = selectedTrackIds.contains(track.id),
-                    onTrackClick = {
-                        if (isSelectionMode) {
-                            selectedTrackIds = if (selectedTrackIds.contains(track.id)) {
-                                selectedTrackIds - track.id
-                            } else {
-                                selectedTrackIds + track.id
+            item(key = "track-card") {
+                val colors = rememberButtonColors()
+                val trackListShape = MaterialTheme.shapes.large
+
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .then(
+                            buttonShadow(
+                                trackListShape,
+                                pressed = false,
+                                primary = false,
+                                colors,
+                                hovered = false
+                            )
+                        )
+                        .clip(trackListShape)
+                        .background(MaterialTheme.colorScheme.surfaceContainer, trackListShape)
+                        .border(BorderStroke(0.5.dp, colors.border), trackListShape)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 12.dp, bottom = 12.dp)
+                    ) {
+                        visibleTracks.forEachIndexed { displayedIndex, track ->
+                            if (displayedIndex > 0) {
+                                HorizontalDivider(
+                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                )
                             }
-                        } else {
-                            onTrackClick(track)
+                            TrackListRow(
+                                index = displayedIndex + 1,
+                                track = track,
+                                showIndex = showIndex,
+                                showAlbum = showAlbum,
+                                useDropdownForOptions = useDropdownForOptions,
+                                isCurrentTrack = track.id == currentTrackId,
+                                isCurrentTrackPlaying = isCurrentTrackPlaying,
+                                isSelectionMode = isSelectionMode,
+                                isSelected = selectedTrackIds.contains(track.id),
+                                onTrackClick = {
+                                    if (isSelectionMode) {
+                                        selectedTrackIds =
+                                            if (selectedTrackIds.contains(track.id)) {
+                                                selectedTrackIds - track.id
+                                            } else {
+                                                selectedTrackIds + track.id
+                                            }
+                                    } else {
+                                        onTrackClick(track)
+                                    }
+                                },
+                                onLongClick = {
+                                    if (!useDropdownForOptions && !isSelectionMode) {
+                                        isSelectionMode = true
+                                        selectedTrackIds = setOf(track.id)
+                                    } else if (!useDropdownForOptions) {
+                                        selectedTrackForOptions = track
+                                    }
+                                },
+                                onSelectionToggle = { checked ->
+                                    isSelectionMode = true
+                                    selectedTrackIds = if (checked) {
+                                        selectedTrackIds + track.id
+                                    } else {
+                                        selectedTrackIds - track.id
+                                    }
+                                },
+                                onTrackOptionsAction = { action ->
+                                    onTrackOptionsAction(
+                                        track,
+                                        action
+                                    )
+                                },
+                                trackOptionsState = trackOptionsState(track),
+                                onShowOptionsClick = { selectedTrackForOptions = track },
+                                onArtistClick = onArtistClick,
+                                onAlbumClick = onAlbumClick,
+                                onArtistsOverflowClick = { onArtistsOverflowClick(track) },
+                            )
                         }
-                    },
-                    onLongClick = {
-                        if (!useDropdownForOptions && !isSelectionMode) {
-                            isSelectionMode = true
-                            selectedTrackIds = setOf(track.id)
-                        } else if (!useDropdownForOptions) {
-                            selectedTrackForOptions = track
+
+                        if (isLoading && tracks.isEmpty()) {
+                            repeat(ShimmerRowCount) { shimmerIndex ->
+                                if (visibleTracks.isNotEmpty() || shimmerIndex > 0) {
+                                    HorizontalDivider(
+                                        modifier = Modifier.padding(horizontal = 8.dp),
+                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                    )
+                                }
+                                ShimmerTrackListRow(
+                                    index = shimmerIndex + 1,
+                                    showIndex = showIndex,
+                                    showAlbum = showAlbum,
+                                    useDropdownForOptions = useDropdownForOptions,
+                                )
+                            }
                         }
-                    },
-                    onSelectionToggle = { checked ->
-                        isSelectionMode = true
-                        selectedTrackIds = if (checked) {
-                            selectedTrackIds + track.id
-                        } else {
-                            selectedTrackIds - track.id
+
+                        if (error != null) {
+                            if (visibleTracks.isNotEmpty()) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                )
+                            }
+                            TrackListFeedbackRow(
+                                message = error,
+                                isError = true,
+                            )
                         }
-                    },
-                    onTrackOptionsAction = { action -> onTrackOptionsAction(track, action) },
-                    trackOptionsState = trackOptionsState(track),
-                    onShowOptionsClick = { selectedTrackForOptions = track },
-                    onArtistClick = onArtistClick,
-                    onAlbumClick = onAlbumClick,
-                    onArtistsOverflowClick = { onArtistsOverflowClick(track) },
-                )
-            }
 
-            if (isLoading && tracks.isEmpty()) {
-                items(ShimmerRowCount) { shimmerIndex ->
-                    ShimmerTrackListRow(
-                        index = shimmerIndex + 1,
-                        showIndex = showIndex,
-                        showAlbum = showAlbum,
-                        useDropdownForOptions = useDropdownForOptions,
-                    )
-                }
-            }
+                        if (showEmptyMessage && !isLoading && visibleTracks.isEmpty() && error == null) {
+                            TrackListFeedbackRow("No tracks found")
+                        }
 
-            if (error != null) {
-                item {
-                    TrackListFeedbackRow(
-                        message = error,
-                        isError = true,
-                    )
-                }
-            }
-
-            if (showEmptyMessage && !isLoading && visibleTracks.isEmpty() && error == null) {
-                item {
-                    TrackListFeedbackRow("No tracks found")
-                }
-            }
-
-            if (isLoadingNextPage) {
-                item {
-                    ShimmerTrackListRow(
-                        index = visibleTracks.size + 1,
-                        showIndex = showIndex,
-                        showAlbum = showAlbum,
-                        useDropdownForOptions = useDropdownForOptions,
-                    )
+                        if (isLoadingNextPage) {
+                            if (visibleTracks.isNotEmpty()) {
+                                HorizontalDivider(
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                )
+                            }
+                            ShimmerTrackListRow(
+                                index = visibleTracks.size + 1,
+                                showIndex = showIndex,
+                                showAlbum = showAlbum,
+                                useDropdownForOptions = useDropdownForOptions,
+                            )
+                        }
+                    }
                 }
             }
 
@@ -469,6 +532,7 @@ private fun TrackListRow(
     onArtistsOverflowClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val rowColors = rememberButtonColors()
     val artworkInteractionSource = remember { MutableInteractionSource() }
     val isArtworkHovered by artworkInteractionSource.collectIsHoveredAsState()
     val rowInteractionSource = remember { MutableInteractionSource() }
@@ -483,14 +547,32 @@ private fun TrackListRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(MaterialTheme.shapes.small)
-            .background(rowBackgroundColor)
             .hoverable(rowInteractionSource)
             .combinedClickable(
                 onClick = onTrackClick,
                 onLongClick = onLongClick,
             )
-            .padding(horizontal = 8.dp, vertical = 6.dp),
+            .background(rowBackgroundColor)
+            .drawWithCache {
+                val highlightBrush = Brush.verticalGradient(
+                    colors = listOf(rowColors.highlight, Color.Transparent),
+                    startY = 0f,
+                    endY = size.height * 0.5f,
+                )
+                onDrawWithContent {
+                    drawContent()
+                    if (isRowHovered || isSelected || (isCurrentTrack && isCurrentTrackPlaying)) {
+                        drawRect(
+                            brush = highlightBrush,
+                            topLeft = Offset.Zero,
+                            size = size,
+                        )
+                    }
+                }
+            }
+            .clip(MaterialTheme.shapes.small)
+            .padding(horizontal = 8.dp, vertical = 6.dp)
+            .padding(end = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(10.dp),
     ) {
@@ -587,16 +669,47 @@ private fun TrackListRow(
         }
 
         if (showAlbum && track.album != null) {
-            TextWithShimmer(
-                text = track.album!!.title,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.primary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier
-                    .weight(1f)
-                    .clickable { onAlbumClick(track.album!!) },
-            )
+            val interactionSource = remember { MutableInteractionSource() }
+            val isHovered by interactionSource.collectIsHoveredAsState()
+            val isPressed by interactionSource.collectIsPressedAsState()
+            val colorScheme = MaterialTheme.colorScheme
+
+            Row(
+                modifier = Modifier.weight(1f)
+            ) {
+                TextWithShimmer(
+                    text = track.album!!.title,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier
+                        .hoverable(interactionSource)
+                        .clickable(
+                            indication = null,
+                            interactionSource = interactionSource
+                        ) { onAlbumClick(track.album!!) }
+                        // Hide ripple and show underline on hover/click
+                        .then(
+                            if (isHovered || isPressed) {
+                                Modifier.drawWithCache {
+                                    val underlineHeight = 1.dp.toPx()
+                                    onDrawWithContent {
+                                        drawContent()
+                                        drawLine(
+                                            color = colorScheme.primary,
+                                            start = Offset(0f, size.height - underlineHeight),
+                                            end = Offset(size.width, size.height - underlineHeight),
+                                            strokeWidth = underlineHeight,
+                                        )
+                                    }
+                                }
+                            } else {
+                                Modifier
+                            }
+                        )
+                )
+            }
         }
 
         TextWithShimmer(
@@ -615,7 +728,7 @@ private fun TrackListRow(
                 onAlbumClick = { track.album?.let { onAlbumClick(it) } },
             )
         } else {
-            IconButton(onClick = onShowOptionsClick) {
+            GhostIconButton(onClick = onShowOptionsClick) {
                 Icon(
                     imageVector = Iconsax.Iconsax3DotsMore,
                     contentDescription = "Track options",
@@ -637,15 +750,35 @@ private fun ArtistChips(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth(),
     ) {
-        visibleArtists.forEach { artist ->
-            TextWithShimmer(
-                text = artist.name,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.clickable { onArtistClick(artist) },
-            )
+        visibleArtists.forEachIndexed { index, artist ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                val interactionSource = remember { MutableInteractionSource() }
+                val isHovered by interactionSource.collectIsHoveredAsState()
+                val isPressed by interactionSource.collectIsPressedAsState()
+
+                TextWithShimmer(
+                    text = artist.name,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textDecoration = if (isHovered || isPressed) TextDecoration.Underline else null,
+                    modifier = Modifier
+                        .clickable(
+                        indication = null,
+                        interactionSource = interactionSource
+                    ) { onArtistClick(artist) }
+                    ,
+                )
+                if (index < visibleArtists.size - 1)
+                    Text(
+                        ",",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+            }
         }
 
         val remaining = artists.size - visibleArtists.size

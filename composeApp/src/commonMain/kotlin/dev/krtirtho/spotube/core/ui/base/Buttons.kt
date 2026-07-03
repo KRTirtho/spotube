@@ -237,6 +237,7 @@ fun OutlineButton(
     enabled: Boolean = true,
     shape: androidx.compose.ui.graphics.Shape = ButtonShape,
     contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+    hoverOnly: Boolean = false,
     content: @Composable RowScope.() -> Unit,
 ) {
     val colors = rememberButtonColors()
@@ -252,17 +253,27 @@ fun OutlineButton(
             .defaultMinSize(minHeight = ButtonMinHeight)
             .hoverable(interactionSource = interactionSource, enabled = enabled)
             .graphicsLayer { translationY = lift.toPx() }
-            .then(buttonShadow(shape, isPressed, primary = false, colors, hovered = isHovered))
+            .then(
+                if (hoverOnly && !isHovered) Modifier else buttonShadow(
+                    shape,
+                    isPressed,
+                    primary = false,
+                    colors,
+                    hovered = isHovered
+                )
+            )
             .clip(shape)
-            .background(gradient, shape)
-            .border(BorderStroke(0.5.dp, border), shape)
+            .then(
+                if (hoverOnly && !isHovered) Modifier else Modifier.background(gradient, shape)
+                    .border(BorderStroke(0.5.dp, border), shape)
+            )
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
                 indication = ripple(),
                 onClick = onClick,
             )
-            .drawWithCache {
+            .then(if (hoverOnly && !isHovered) Modifier else Modifier.drawWithCache {
                 val highlightBrush = Brush.verticalGradient(
                     colors = listOf(colors.highlight, Color.Transparent),
                     startY = 0f,
@@ -276,7 +287,7 @@ fun OutlineButton(
                         size = size,
                     )
                 }
-            }
+            })
             .padding(contentPadding),
         contentAlignment = Alignment.Center,
     ) {
@@ -423,6 +434,26 @@ fun IconButton(
         enabled = enabled,
         shape = shape,
         contentPadding = PaddingValues(8.dp),
+    ) {
+        content()
+    }
+}
+@Composable
+
+fun GhostIconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
+    content: @Composable () -> Unit,
+) {
+    OutlineButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        shape = shape,
+        contentPadding = PaddingValues(8.dp),
+        hoverOnly = true,
     ) {
         content()
     }
@@ -579,7 +610,15 @@ fun ButtonGroup(
     Surface(
         modifier = modifier
             .defaultMinSize(minHeight = ButtonMinHeight)
-            .then(buttonShadow(GroupShape, pressed = false, primary = false, colors, hovered = false)),
+            .then(
+                buttonShadow(
+                    GroupShape,
+                    pressed = false,
+                    primary = false,
+                    colors,
+                    hovered = false
+                )
+            ),
         shape = GroupShape,
         color = Color.Transparent,
         border = BorderStroke(0.5.dp, colors.border),
