@@ -27,7 +27,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,7 +37,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -58,7 +56,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -99,6 +96,7 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.user.MetadataUser
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.share.ShareService
+import dev.krtirtho.spotube.core.ui.base.ChipTab
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.ArtistCard
@@ -613,49 +611,12 @@ private fun SearchTabs(
     ) {
         items(types) { type ->
             val isSelected = selectedType == type
-            SearchTab(
-                label = type.tabTitle(),
+            ChipTab(
                 selected = isSelected,
                 onClick = { onTabSelected(type) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun SearchTab(
-    label: String,
-    selected: Boolean,
-    onClick: () -> Unit,
-) {
-    Surface(
-        onClick = onClick,
-        shape = TabShape,
-        color = if (selected)
-            MaterialTheme.colorScheme.primaryContainer
-        else
-            MaterialTheme.colorScheme.surface,
-        contentColor = if (selected)
-            MaterialTheme.colorScheme.onPrimaryContainer
-        else
-            MaterialTheme.colorScheme.onSurfaceVariant,
-        border = if (selected)
-            null
-        else
-            BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-        modifier = Modifier.height(32.dp)
-    ) {
-        Box(
-            modifier = Modifier
-                .padding(horizontal = 14.dp, vertical = 6.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelLarge,
-                fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
-                maxLines = 1
-            )
+            ) {
+                Text(type.tabTitle())
+            }
         }
     }
 }

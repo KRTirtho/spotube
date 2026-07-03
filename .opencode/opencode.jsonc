@@ -1,17 +1,5 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "mcp": {
-    "gradle": {
-      "type": "local",
-      "command": [
-        "jbang",
-        "run",
-        "--java",
-        "25",
-        "--quiet",
-        "--fresh",
-        "gradle-mcp@rnett"
-      ]
-    }
   }
 }

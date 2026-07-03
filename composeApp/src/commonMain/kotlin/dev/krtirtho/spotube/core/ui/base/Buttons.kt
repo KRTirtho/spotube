@@ -176,7 +176,7 @@ private fun badgeGradient(colors: ButtonColors): Brush = remember(colors) {
 }
 
 @Composable
-private fun buttonShadow(
+internal fun buttonShadow(
     shape: androidx.compose.ui.graphics.Shape,
     pressed: Boolean,
     primary: Boolean,

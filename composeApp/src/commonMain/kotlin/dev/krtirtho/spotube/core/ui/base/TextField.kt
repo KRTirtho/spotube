@@ -107,7 +107,7 @@ fun TextField(
     keyboardActions: KeyboardActions = KeyboardActions.Default,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    textStyle: TextStyle = LocalTextStyle.current,
+    textStyle: TextStyle = TextStyle.Default,
     cursorBrush: Color = MaterialTheme.colorScheme.primary,
 ) {
     val colors = rememberButtonColors()
@@ -167,7 +167,6 @@ fun TextField(
                 if (leadingIcon != null) {
                     leadingIcon()
                 }
-
                 Box(modifier = Modifier.weight(1f)) {
                     BasicTextField(
                         value = value,
