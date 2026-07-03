@@ -96,7 +96,7 @@ fun CheckBox(
         isFilled -> colors.accent
         else -> colors.border
     }
-    val borderWidth = if (isFilled) 1.5.dp else 1.5.dp
+    val borderWidth = 0.5.dp
 
     val shadowElevation = when {
         isPressed -> 1.dp

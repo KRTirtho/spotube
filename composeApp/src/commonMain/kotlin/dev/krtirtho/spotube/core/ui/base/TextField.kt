@@ -142,7 +142,7 @@ fun TextField(
                 .then(textFieldShadow(TextFieldShape, isFocused, colors))
                 .clip(TextFieldShape)
                 .background(gradient, TextFieldShape)
-                .border(BorderStroke(1.5.dp, border), TextFieldShape)
+                .border(BorderStroke(0.5.dp, border), TextFieldShape)
                 .drawWithCache {
                     val highlightBrush = Brush.verticalGradient(
                         colors = listOf(colors.highlight, Color.Transparent),

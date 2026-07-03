@@ -255,7 +255,7 @@ fun OutlineButton(
             .then(buttonShadow(shape, isPressed, primary = false, colors, hovered = isHovered))
             .clip(shape)
             .background(gradient, shape)
-            .border(BorderStroke(1.5.dp, border), shape)
+            .border(BorderStroke(0.5.dp, border), shape)
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
@@ -312,7 +312,7 @@ fun PrimaryButton(
             .then(buttonShadow(shape, isPressed, primary = true, colors, hovered = isHovered))
             .clip(shape)
             .background(gradient, shape)
-            .border(BorderStroke(1.5.dp, colors.accent), shape)
+            .border(BorderStroke(0.5.dp, colors.accent), shape)
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
@@ -372,7 +372,7 @@ fun SecondaryButton(
             .clip(shape)
             .background(gradient, shape)
             .border(
-                BorderStroke(1.5.dp, colors.secondaryContainer.copy(alpha = 0.5f)),
+                BorderStroke(0.5.dp, colors.secondaryContainer.copy(alpha = 0.5f)),
                 shape,
             )
             .clickable(
@@ -582,7 +582,7 @@ fun ButtonGroup(
             .then(buttonShadow(GroupShape, pressed = false, primary = false, colors, hovered = false)),
         shape = GroupShape,
         color = Color.Transparent,
-        border = BorderStroke(1.5.dp, colors.border),
+        border = BorderStroke(0.5.dp, colors.border),
     ) {
         Box(
             modifier = Modifier.background(outlinedGradient(colors, false), GroupShape),
@@ -599,7 +599,7 @@ fun ButtonGroupDivider() {
     val colors = rememberButtonColors()
     Box(
         modifier = Modifier
-            .width(1.5.dp)
+            .width(1.dp)
             .heightIn(min = 20.dp)
             .background(colors.border),
     )

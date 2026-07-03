@@ -272,8 +272,8 @@ private fun HomeSection(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Text(
-            text = subtitle ?: "",
+        if (!subtitle.isNullOrEmpty()) Text(
+            text = subtitle,
             style = MaterialTheme.typography.labelMedium.copy(
                 color =  MaterialTheme.colorScheme.secondary,
                 fontWeight = FontWeight.Medium,

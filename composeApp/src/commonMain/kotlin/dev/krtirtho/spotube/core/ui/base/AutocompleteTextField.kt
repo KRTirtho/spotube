@@ -210,7 +210,7 @@ fun <T> AutocompleteTextField(
                     .then(textFieldShadow(AutocompleteTextFieldShape, isFocused, colors))
                     .clip(AutocompleteTextFieldShape)
                     .background(gradient, AutocompleteTextFieldShape)
-                    .border(BorderStroke(1.5.dp, border), AutocompleteTextFieldShape)
+                    .border(BorderStroke(.5.dp, border), AutocompleteTextFieldShape)
                     .drawWithCache {
                         val highlightBrush = Brush.verticalGradient(
                             colors = listOf(colors.highlight, Color.Transparent),
