@@ -20,8 +20,11 @@ package dev.krtirtho.spotube
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
+import dev.krtirtho.spotube.core.ui.base.rememberBaseUITheme
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -100,15 +103,18 @@ fun App(
     }
 
     SpotubeTheme(settings = userSettings) {
-        AppShell(navigator, navigationState) {
-            Column {
-                NavDisplay(
-                    modifier = Modifier.fillMaxSize(),
-                    onBack = navigator::pop,
-                    entries = navigationState.toEntries(koinEntryProvider())
-                )
+        val baseUITheme = rememberBaseUITheme()
+        CompositionLocalProvider(LocalBaseUITheme provides baseUITheme) {
+            AppShell(navigator, navigationState) {
+                Column {
+                    NavDisplay(
+                        modifier = Modifier.fillMaxSize(),
+                        onBack = navigator::pop,
+                        entries = navigationState.toEntries(koinEntryProvider())
+                    )
+                }
             }
+            content()
         }
-        content()
     }
 }

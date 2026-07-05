@@ -44,7 +44,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,8 +53,8 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -71,163 +70,45 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShare
 import dev.krtirtho.spotube.resources.iconsax.User
 
-private val ButtonShape = RoundedCornerShape(14.dp)
-private val GroupShape = RoundedCornerShape(14.dp)
 private val BadgeShape = RoundedCornerShape(11.dp)
 private val ButtonMinHeight = 40.dp
 private val SquareButtonSize = 40.dp
 
-@Immutable
-data class ButtonColors(
-    val containerLighter: Color,
-    val containerDarker: Color,
-    val containerPressed: Color,
-    val onContainer: Color,
-    val border: Color,
-    val accent: Color,
-    val onAccent: Color,
-    val secondaryContainer: Color,
-    val onSecondaryContainer: Color,
-    val secondaryContainerPressed: Color,
-    val secondaryHighlight: Color,
-    val shadow: Color,
-    val highlight: Color,
+private data class ResolvedButtonState(
+    val colors: BaseUITheme.ButtonColors,
+    val shape: Shape,
+    val shadow: BaseUITheme.Shadow,
+    val border: BaseUITheme.Border,
+    val padding: PaddingValues,
 )
 
 @Composable
-fun rememberButtonColors(): ButtonColors {
-    val scheme = MaterialTheme.colorScheme
-    val isLight = scheme.surface.luminance() > 0.5f
-
-    return remember(scheme) {
-        ButtonColors(
-            containerLighter = if (isLight) {
-                Color.White
-            } else {
-                scheme.surfaceContainerHigh
-            },
-            containerDarker = if (isLight) {
-                Color(0xFFF2F2F4)
-            } else {
-                scheme.surfaceContainer
-            },
-            containerPressed = if (isLight) {
-                Color(0xFFE0E0E3)
-            } else {
-                scheme.surfaceContainerHighest
-            },
-            onContainer = scheme.onSurface,
-            border = scheme.outlineVariant,
-            accent = scheme.primary,
-            onAccent = scheme.onPrimary,
-            secondaryContainer = scheme.secondaryContainer,
-            onSecondaryContainer = scheme.onSecondaryContainer,
-            secondaryContainerPressed = scheme.secondaryContainer.copy(
-                alpha = if (isLight) 0.85f else 0.92f
-            ),
-            secondaryHighlight = if (isLight) {
-                Color.White.copy(alpha = 0.5f)
-            } else {
-                Color.White.copy(alpha = 0.08f)
-            },
-            shadow = scheme.onSurface.copy(alpha = 0.12f),
-            highlight = if (isLight) {
-                Color.White.copy(alpha = 0.9f)
-            } else {
-                Color.White.copy(alpha = 0.06f)
-            },
-        )
+private fun resolveButtonState(
+    style: BaseUITheme.ButtonStyle,
+    isPressed: Boolean,
+    isHovered: Boolean,
+): ResolvedButtonState {
+    return when {
+        isPressed -> ResolvedButtonState(style.colors.pressed, style.shape.pressed, style.shadow.pressed, style.border.pressed, style.padding.pressed)
+        isHovered -> ResolvedButtonState(style.colors.hovered, style.shape.hovered, style.shadow.hovered, style.border.hovered, style.padding.hovered)
+        else -> ResolvedButtonState(style.colors.focused, style.shape.focused, style.shadow.focused, style.border.focused, style.padding.focused)
     }
 }
 
-@Composable
-fun outlinedGradient(colors: ButtonColors, pressed: Boolean): Brush {
-    val top = if (pressed) colors.containerPressed else colors.containerLighter
-    val bottom = if (pressed) colors.containerPressed else colors.containerDarker
-    return remember(colors, pressed) { Brush.verticalGradient(listOf(top, bottom)) }
-}
-
-@Composable
-fun primaryGradient(colors: ButtonColors, pressed: Boolean): Brush {
-    val alpha = if (pressed) 0.85f else 1f
-    return remember(colors, pressed) {
-        Brush.verticalGradient(
-            listOf(colors.accent.copy(alpha = alpha), colors.accent)
-        )
-    }
-}
-
-@Composable
-private fun secondaryGradient(colors: ButtonColors, pressed: Boolean): Brush {
-    val top = if (pressed) colors.secondaryContainerPressed else colors.secondaryContainer
-    val bottom = if (pressed) {
-        colors.secondaryContainerPressed
-    } else {
-        colors.secondaryContainer.copy(
-            alpha = if (top.luminance() > 0.5f) 0.92f else 1f
-        )
-    }
-    return remember(colors, pressed) { Brush.verticalGradient(listOf(top, bottom)) }
-}
-
-@Composable
-private fun badgeGradient(colors: ButtonColors): Brush = remember(colors) {
-    Brush.verticalGradient(listOf(colors.containerLighter, colors.containerDarker))
-}
-
-@Composable
-internal fun buttonShadow(
-    shape: androidx.compose.ui.graphics.Shape,
-    pressed: Boolean,
-    primary: Boolean,
-    colors: ButtonColors,
-    hovered: Boolean = false,
+private fun Modifier.applyShadow(
+    shadow: BaseUITheme.Shadow,
+    shape: Shape,
 ): Modifier {
-    val elevation = when {
-        pressed -> 1.dp
-        hovered -> 9.dp
-        else -> 6.dp
-    }
-    val ambient = if (primary) {
-        colors.accent.copy(
-            alpha = when {
-                pressed -> 0.2f
-                hovered -> 0.45f
-                else -> 0.35f
-            }
+    return if (shadow.elevation > 0.dp) {
+        this.shadow(
+            elevation = shadow.elevation,
+            shape = shape,
+            ambientColor = shadow.ambientColor,
+            spotColor = shadow.spotColor,
         )
     } else {
-        colors.shadow.copy(
-            alpha = when {
-                pressed -> 0.08f
-                hovered -> 0.22f
-                else -> 0.15f
-            }
-        )
+        this
     }
-    val spot = if (primary) {
-        colors.accent.copy(
-            alpha = when {
-                pressed -> 0.25f
-                hovered -> 0.5f
-                else -> 0.4f
-            }
-        )
-    } else {
-        colors.shadow.copy(
-            alpha = when {
-                pressed -> 0.1f
-                hovered -> 0.26f
-                else -> 0.18f
-            }
-        )
-    }
-    return Modifier.shadow(
-        elevation = elevation,
-        shape = shape,
-        ambientColor = ambient,
-        spotColor = spot,
-    )
 }
 
 @Composable
@@ -235,18 +116,16 @@ fun OutlineButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
     hoverOnly: Boolean = false,
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = colors ?: rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.outline
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val gradient = outlinedGradient(colors, isPressed)
-    val border = colors.border.copy(alpha = if (isPressed) 0.7f else 1f)
+    val state = resolveButtonState(style, isPressed, isHovered)
     val lift = if (isHovered && !isPressed) (-1).dp else 0.dp
 
     Box(
@@ -255,18 +134,12 @@ fun OutlineButton(
             .hoverable(interactionSource = interactionSource, enabled = enabled)
             .graphicsLayer { translationY = lift.toPx() }
             .then(
-                if (hoverOnly && !isHovered) Modifier else buttonShadow(
-                    shape,
-                    isPressed,
-                    primary = false,
-                    colors,
-                    hovered = isHovered
-                )
+                if (hoverOnly && !isHovered) Modifier else Modifier.applyShadow(state.shadow, state.shape)
             )
-            .clip(shape)
+            .clip(state.shape)
             .then(
-                if (hoverOnly && !isHovered) Modifier else Modifier.background(gradient, shape)
-                    .border(BorderStroke(0.5.dp, border), shape)
+                if (hoverOnly && !isHovered) Modifier else Modifier.background(state.colors.background, state.shape)
+                    .border(BorderStroke(state.border.width, state.border.color), state.shape)
             )
             .clickable(
                 enabled = enabled,
@@ -276,7 +149,7 @@ fun OutlineButton(
             )
             .then(if (hoverOnly && !isHovered) Modifier else Modifier.drawWithCache {
                 val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(colors.highlight, Color.Transparent),
+                    colors = listOf(state.colors.highlight, Color.Transparent),
                     startY = 0f,
                     endY = size.height * 0.5f,
                 )
@@ -289,7 +162,7 @@ fun OutlineButton(
                     )
                 }
             })
-            .padding(contentPadding),
+            .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -305,16 +178,15 @@ fun PrimaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = colors ?: rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.primary
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val gradient = primaryGradient(colors, isPressed)
+    val state = resolveButtonState(style, isPressed, isHovered)
     val lift = if (isHovered && !isPressed) (-1).dp else 0.dp
 
     Box(
@@ -322,10 +194,10 @@ fun PrimaryButton(
             .defaultMinSize(minHeight = ButtonMinHeight)
             .hoverable(interactionSource = interactionSource, enabled = enabled)
             .graphicsLayer { translationY = lift.toPx() }
-            .then(buttonShadow(shape, isPressed, primary = true, colors, hovered = isHovered))
-            .clip(shape)
-            .background(gradient, shape)
-            .border(BorderStroke(0.5.dp, colors.accent), shape)
+            .applyShadow(state.shadow, state.shape)
+            .clip(state.shape)
+            .background(state.colors.background, state.shape)
+            .border(BorderStroke(state.border.width, state.border.color), state.shape)
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
@@ -334,7 +206,7 @@ fun PrimaryButton(
             )
             .drawWithCache {
                 val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(Color.White.copy(alpha = 0.25f), Color.Transparent),
+                    colors = listOf(state.colors.highlight, Color.Transparent),
                     startY = 0f,
                     endY = size.height * 0.5f,
                 )
@@ -347,10 +219,10 @@ fun PrimaryButton(
                     )
                 }
             }
-            .padding(contentPadding),
+            .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {
-        CompositionLocalProvider(LocalContentColor provides colors.onAccent) {
+        CompositionLocalProvider(LocalContentColor provides state.colors.foreground) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -365,16 +237,15 @@ fun SecondaryButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = colors ?: rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.secondary
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val gradient = secondaryGradient(colors, isPressed)
+    val state = resolveButtonState(style, isPressed, isHovered)
     val lift = if (isHovered && !isPressed) (-1).dp else 0.dp
 
     Box(
@@ -382,13 +253,10 @@ fun SecondaryButton(
             .defaultMinSize(minHeight = ButtonMinHeight)
             .hoverable(interactionSource = interactionSource, enabled = enabled)
             .graphicsLayer { translationY = lift.toPx() }
-            .then(buttonShadow(shape, isPressed, primary = false, colors, hovered = isHovered))
-            .clip(shape)
-            .background(gradient, shape)
-            .border(
-                BorderStroke(0.5.dp, colors.secondaryContainer.copy(alpha = 0.5f)),
-                shape,
-            )
+            .applyShadow(state.shadow, state.shape)
+            .clip(state.shape)
+            .background(state.colors.background, state.shape)
+            .border(BorderStroke(state.border.width, state.border.color), state.shape)
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
@@ -397,7 +265,7 @@ fun SecondaryButton(
             )
             .drawWithCache {
                 val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(colors.secondaryHighlight, Color.Transparent),
+                    colors = listOf(state.colors.highlight, Color.Transparent),
                     startY = 0f,
                     endY = size.height * 0.5f,
                 )
@@ -410,10 +278,10 @@ fun SecondaryButton(
                     )
                 }
             }
-            .padding(contentPadding),
+            .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {
-        CompositionLocalProvider(LocalContentColor provides colors.onSecondaryContainer) {
+        CompositionLocalProvider(LocalContentColor provides state.colors.foreground) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -428,40 +296,54 @@ fun IconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable () -> Unit,
 ) {
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.iconButtons.outline
     OutlineButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = shape,
-        contentPadding = PaddingValues(8.dp),
-        colors = colors,
+        theme = style,
     ) {
         content()
     }
 }
 
 @Composable
-
 fun GhostIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable () -> Unit,
 ) {
-    OutlineButton(
-        onClick = onClick,
-        modifier = modifier,
-        enabled = enabled,
-        shape = shape,
-        contentPadding = PaddingValues(8.dp),
-        hoverOnly = true,
-        colors = colors,
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.ghost
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val isHovered by interactionSource.collectIsHoveredAsState()
+    val state = resolveButtonState(style, isPressed, isHovered)
+    val lift = if (isHovered && !isPressed) (-1).dp else 0.dp
+
+    Box(
+        modifier = modifier
+            .defaultMinSize(minHeight = ButtonMinHeight)
+            .hoverable(interactionSource = interactionSource, enabled = enabled)
+            .graphicsLayer { translationY = lift.toPx() }
+            .clip(state.shape)
+            .then(
+                if (!isHovered && !isPressed) Modifier else Modifier.background(state.colors.background, state.shape)
+            )
+            .clickable(
+                enabled = enabled,
+                interactionSource = interactionSource,
+                indication = ripple(),
+                onClick = onClick,
+            )
+            .padding(state.padding),
+        contentAlignment = Alignment.Center,
     ) {
         content()
     }
@@ -472,17 +354,16 @@ fun PrimaryIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable () -> Unit,
 ) {
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.iconButtons.primary
     PrimaryButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = shape,
-        contentPadding = PaddingValues(8.dp),
-        colors = colors,
+        theme = style,
     ) {
         content()
     }
@@ -493,17 +374,16 @@ fun SecondaryIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable () -> Unit,
 ) {
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.iconButtons.secondary
     SecondaryButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        shape = shape,
-        contentPadding = PaddingValues(8.dp),
-        colors = colors,
+        theme = style,
     ) {
         content()
     }
@@ -513,15 +393,17 @@ fun SecondaryIconButton(
 fun ButtonBadge(
     count: Int,
     modifier: Modifier = Modifier,
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
 ) {
-    val colors = colors ?: rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.outline
+    val state = resolveButtonState(style, isPressed = false, isHovered = false)
     Box(
         modifier = modifier
             .heightIn(min = 22.dp)
             .defaultMinSize(minWidth = 22.dp)
-            .background(badgeGradient(colors), BadgeShape)
-            .border(1.dp, colors.border, BadgeShape)
+            .background(state.colors.background, BadgeShape)
+            .border(1.dp, state.border.color, BadgeShape)
             .padding(horizontal = 7.dp),
         contentAlignment = Alignment.Center,
     ) {
@@ -531,7 +413,7 @@ fun ButtonBadge(
             fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
             maxLines = 1,
             softWrap = false,
-            color = colors.onContainer.copy(alpha = 0.7f),
+            color = state.colors.foreground.copy(alpha = 0.7f),
         )
     }
 }
@@ -541,18 +423,19 @@ fun GroupButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 14.dp, vertical = 11.dp),
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = colors ?: rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.outline
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
+    val state = resolveButtonState(style, isPressed, isHovered)
     val overlay = when {
-        isPressed -> colors.containerPressed
-        isHovered -> colors.containerPressed.copy(alpha = 0.5f)
-        else -> Color.Transparent
+        isPressed -> state.colors.background
+        isHovered -> state.colors.background
+        else -> Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent))
     }
     val lift = if (isHovered && !isPressed) (-1).dp else 0.dp
 
@@ -568,7 +451,7 @@ fun GroupButton(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .padding(contentPadding),
+            .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -584,17 +467,19 @@ fun GroupIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable () -> Unit,
 ) {
-    val colors = colors ?: rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.outline
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
+    val state = resolveButtonState(style, isPressed, isHovered)
     val overlay = when {
-        isPressed -> colors.containerPressed
-        isHovered -> colors.containerPressed.copy(alpha = 0.5f)
-        else -> Color.Transparent
+        isPressed -> state.colors.background
+        isHovered -> state.colors.background
+        else -> Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent))
     }
     val lift = if (isHovered && !isPressed) (-1).dp else 0.dp
 
@@ -619,28 +504,23 @@ fun GroupIconButton(
 @Composable
 fun ButtonGroup(
     modifier: Modifier = Modifier,
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable () -> Unit,
 ) {
-    val colors = colors ?: rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.outline
+    val state = resolveButtonState(style, isPressed = false, isHovered = false)
+    val groupShape = state.shape
     Surface(
         modifier = modifier
             .defaultMinSize(minHeight = ButtonMinHeight)
-            .then(
-                buttonShadow(
-                    GroupShape,
-                    pressed = false,
-                    primary = false,
-                    colors,
-                    hovered = false
-                )
-            ),
-        shape = GroupShape,
+            .applyShadow(state.shadow, groupShape),
+        shape = groupShape,
         color = Color.Transparent,
-        border = BorderStroke(0.5.dp, colors.border),
+        border = BorderStroke(state.border.width, state.border.color),
     ) {
         Box(
-            modifier = Modifier.background(outlinedGradient(colors, false), GroupShape),
+            modifier = Modifier.background(state.colors.background, groupShape),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 content()
@@ -651,14 +531,16 @@ fun ButtonGroup(
 
 @Composable
 fun ButtonGroupDivider(
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
 ) {
-    val colors = colors ?: rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.outline
+    val state = resolveButtonState(style, isPressed = false, isHovered = false)
     Box(
         modifier = Modifier
             .width(1.dp)
             .heightIn(min = 20.dp)
-            .background(colors.border),
+            .background(state.border.color),
     )
 }
 
@@ -666,46 +548,49 @@ fun ButtonGroupDivider(
 @Composable
 private fun ButtonsRow1Preview() {
     MaterialTheme {
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.padding(24.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+        val theme = rememberBaseUITheme()
+        CompositionLocalProvider(LocalBaseUITheme provides theme) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier.padding(24.dp),
             ) {
-                OutlineButton(onClick = {}) {
-                    Icon(
-                        imageVector = Iconsax.IconsaxShare,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                    Text(
-                        "Copy link",
-                        maxLines = 1,
-                        softWrap = false,
-                    )
-                }
-                OutlineButton(onClick = {}) {
-                    Icon(
-                        imageVector = Iconsax.User,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                    Text("Login", maxLines = 1, softWrap = false)
-                }
-                PrimaryButton(onClick = {}) {
-                    Icon(
-                        imageVector = Iconsax.IconsaxAddSquare,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                    Text(
-                        "Sign Up",
-                        maxLines = 1,
-                        softWrap = false,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    OutlineButton(onClick = {}) {
+                        Icon(
+                            imageVector = Iconsax.IconsaxShare,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Text(
+                            "Copy link",
+                            maxLines = 1,
+                            softWrap = false,
+                        )
+                    }
+                    OutlineButton(onClick = {}) {
+                        Icon(
+                            imageVector = Iconsax.User,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Text("Login", maxLines = 1, softWrap = false)
+                    }
+                    PrimaryButton(onClick = {}) {
+                        Icon(
+                            imageVector = Iconsax.IconsaxAddSquare,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Text(
+                            "Sign Up",
+                            maxLines = 1,
+                            softWrap = false,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                        )
+                    }
                 }
             }
         }
@@ -716,56 +601,59 @@ private fun ButtonsRow1Preview() {
 @Composable
 private fun ButtonsRow2Preview() {
     MaterialTheme {
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.padding(24.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+        val theme = rememberBaseUITheme()
+        CompositionLocalProvider(LocalBaseUITheme provides theme) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier.padding(24.dp),
             ) {
-                ButtonGroup {
-                    GroupButton(onClick = {}) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxDocumentText,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Text("Documents", maxLines = 1, softWrap = false)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    ButtonGroup {
+                        GroupButton(onClick = {}) {
+                            Icon(
+                                imageVector = Iconsax.IconsaxDocumentText,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Text("Documents", maxLines = 1, softWrap = false)
+                        }
+                        ButtonGroupDivider()
+                        GroupButton(onClick = {}) {
+                            Icon(
+                                imageVector = Iconsax.IconsaxShare,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                            Text("Export", maxLines = 1, softWrap = false)
+                        }
+                        ButtonGroupDivider()
+                        GroupIconButton(onClick = {}) {
+                            Icon(
+                                imageVector = Iconsax.Iconsax3DotsMore,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
                     }
-                    ButtonGroupDivider()
-                    GroupButton(onClick = {}) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxShare,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                        Text("Export", maxLines = 1, softWrap = false)
-                    }
-                    ButtonGroupDivider()
-                    GroupIconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Iconsax.Iconsax3DotsMore,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                    }
-                }
-                ButtonGroup {
-                    GroupIconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Iconsax.ArrowLeft3,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                    }
-                    ButtonGroupDivider()
-                    GroupIconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxNext,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
+                    ButtonGroup {
+                        GroupIconButton(onClick = {}) {
+                            Icon(
+                                imageVector = Iconsax.ArrowLeft3,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                        ButtonGroupDivider()
+                        GroupIconButton(onClick = {}) {
+                            Icon(
+                                imageVector = Iconsax.IconsaxNext,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
                     }
                 }
             }
@@ -777,40 +665,43 @@ private fun ButtonsRow2Preview() {
 @Composable
 private fun ButtonsRow3Preview() {
     MaterialTheme {
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.padding(24.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+        val theme = rememberBaseUITheme()
+        CompositionLocalProvider(LocalBaseUITheme provides theme) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier.padding(24.dp),
             ) {
-                OutlineButton(onClick = {}) {
-                    Text("Cancel", maxLines = 1, softWrap = false)
-                }
-                PrimaryButton(onClick = {}) {
-                    Text(
-                        "Done",
-                        maxLines = 1,
-                        softWrap = false,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
-                    )
-                }
-                IconButton(onClick = {}) {
-                    Icon(
-                        imageVector = Iconsax.IconsaxMagic,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-                OutlineButton(onClick = {}) {
-                    Icon(
-                        imageVector = Iconsax.IconsaxHeart,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
-                    Text("Like", maxLines = 1, softWrap = false)
-                    ButtonBadge(count = 2)
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    OutlineButton(onClick = {}) {
+                        Text("Cancel", maxLines = 1, softWrap = false)
+                    }
+                    PrimaryButton(onClick = {}) {
+                        Text(
+                            "Done",
+                            maxLines = 1,
+                            softWrap = false,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                        )
+                    }
+                    IconButton(onClick = {}) {
+                        Icon(
+                            imageVector = Iconsax.IconsaxMagic,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+                    OutlineButton(onClick = {}) {
+                        Icon(
+                            imageVector = Iconsax.IconsaxHeart,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Text("Like", maxLines = 1, softWrap = false)
+                        ButtonBadge(count = 2)
+                    }
                 }
             }
         }
@@ -821,38 +712,41 @@ private fun ButtonsRow3Preview() {
 @Composable
 private fun ButtonsRow4Preview() {
     MaterialTheme {
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.padding(24.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+        val theme = rememberBaseUITheme()
+        CompositionLocalProvider(LocalBaseUITheme provides theme) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier.padding(24.dp),
             ) {
-                ButtonGroup {
-                    GroupIconButton(onClick = {}) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    ButtonGroup {
+                        GroupIconButton(onClick = {}) {
+                            Icon(
+                                imageVector = Iconsax.ArrowLeft3,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                        ButtonGroupDivider()
+                        GroupIconButton(onClick = {}) {
+                            Icon(
+                                imageVector = Iconsax.IconsaxNext,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp),
+                            )
+                        }
+                    }
+                    OutlineButton(onClick = {}) {
+                        Text("Forward", maxLines = 1, softWrap = false)
                         Icon(
-                            imageVector = Iconsax.ArrowLeft3,
+                            imageVector = Iconsax.IconsaxArrowSquareUp,
                             contentDescription = null,
                             modifier = Modifier.size(18.dp),
                         )
                     }
-                    ButtonGroupDivider()
-                    GroupIconButton(onClick = {}) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxNext,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp),
-                        )
-                    }
-                }
-                OutlineButton(onClick = {}) {
-                    Text("Forward", maxLines = 1, softWrap = false)
-                    Icon(
-                        imageVector = Iconsax.IconsaxArrowSquareUp,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                    )
                 }
             }
         }
@@ -863,27 +757,30 @@ private fun ButtonsRow4Preview() {
 @Composable
 private fun ButtonStylesPreview() {
     MaterialTheme {
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.padding(24.dp),
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
+        val theme = rememberBaseUITheme()
+        CompositionLocalProvider(LocalBaseUITheme provides theme) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier.padding(24.dp),
             ) {
-                OutlineButton(onClick = {}) {
-                    Text("Outline", maxLines = 1, softWrap = false)
-                }
-                SecondaryButton(onClick = {}) {
-                    Text("Secondary", maxLines = 1, softWrap = false)
-                }
-                PrimaryButton(onClick = {}) {
-                    Text(
-                        "Primary",
-                        maxLines = 1,
-                        softWrap = false,
-                        fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    OutlineButton(onClick = {}) {
+                        Text("Outline", maxLines = 1, softWrap = false)
+                    }
+                    SecondaryButton(onClick = {}) {
+                        Text("Secondary", maxLines = 1, softWrap = false)
+                    }
+                    PrimaryButton(onClick = {}) {
+                        Text(
+                            "Primary",
+                            maxLines = 1,
+                            softWrap = false,
+                            fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold,
+                        )
+                    }
                 }
             }
         }
@@ -903,8 +800,7 @@ fun VariableIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
-    colors: ButtonColors? = null,
+    theme: BaseUITheme.ButtonStyle? = null,
     content: @Composable () -> Unit,
 ) {
     when (variant) {
@@ -912,8 +808,7 @@ fun VariableIconButton(
             onClick = onClick,
             modifier = modifier,
             enabled = enabled,
-            shape = shape,
-            colors = colors,
+            theme = theme,
             content = content,
         )
 
@@ -921,8 +816,7 @@ fun VariableIconButton(
             onClick = onClick,
             modifier = modifier,
             enabled = enabled,
-            shape = shape,
-            colors = colors,
+            theme = theme,
             content = content,
         )
 
@@ -930,8 +824,7 @@ fun VariableIconButton(
             onClick = onClick,
             modifier = modifier,
             enabled = enabled,
-            shape = shape,
-            colors = colors,
+            theme = theme,
             content = content,
         )
 
@@ -939,8 +832,7 @@ fun VariableIconButton(
             onClick = onClick,
             modifier = modifier,
             enabled = enabled,
-            shape = shape,
-            colors = colors,
+            theme = theme,
             content = content,
         )
     }

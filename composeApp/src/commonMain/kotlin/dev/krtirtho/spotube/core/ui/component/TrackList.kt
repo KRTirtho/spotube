@@ -21,10 +21,8 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.hoverable
@@ -63,10 +61,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalWindowInfo
@@ -86,14 +84,13 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.Thumbnail
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.ui.base.ButtonGroup
 import dev.krtirtho.spotube.core.ui.base.ButtonGroupDivider
+import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.CheckBox
 import dev.krtirtho.spotube.core.ui.base.CheckBoxState
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.GroupIconButton
-import dev.krtirtho.spotube.core.ui.base.IconButton
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.TextField
-import dev.krtirtho.spotube.core.ui.base.buttonShadow
-import dev.krtirtho.spotube.core.ui.base.rememberButtonColors
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
@@ -348,30 +345,14 @@ fun TrackList(
                 }
 
             item(key = "track-card") {
-                val colors = rememberButtonColors()
-                val trackListShape = MaterialTheme.shapes.large
-
-                Box(
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
-                        .then(
-                            buttonShadow(
-                                trackListShape,
-                                pressed = false,
-                                primary = false,
-                                colors,
-                                hovered = false
-                            )
-                        )
-                        .clip(trackListShape)
-                        .background(MaterialTheme.colorScheme.surfaceContainer, trackListShape)
-                        .border(BorderStroke(0.5.dp, colors.border), trackListShape)
+                        .padding(vertical = 8.dp),
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top = 12.dp, bottom = 12.dp)
                     ) {
                         visibleTracks.forEachIndexed { displayedIndex, track ->
                             if (displayedIndex > 0) {
@@ -532,17 +513,20 @@ private fun TrackListRow(
     onArtistsOverflowClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val rowColors = rememberButtonColors()
+    val rowTheme = LocalBaseUITheme.current.listRowTile
     val artworkInteractionSource = remember { MutableInteractionSource() }
     val isArtworkHovered by artworkInteractionSource.collectIsHoveredAsState()
     val rowInteractionSource = remember { MutableInteractionSource() }
     val isRowHovered by rowInteractionSource.collectIsHoveredAsState()
     val rowBackgroundColor = when {
-        isSelected -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-        isCurrentTrack && isCurrentTrackPlaying -> MaterialTheme.colorScheme.primary.copy(alpha = 0.14f)
-        isCurrentTrack -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.06f)
-        else -> Color.Transparent
+        isSelected -> rowTheme.background.selected
+        isCurrentTrack && isCurrentTrackPlaying -> rowTheme.background.hovered
+        isCurrentTrack -> rowTheme.background.focused
+        else -> Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent))
     }
+    val highlightColor = Color.White.copy(
+        alpha = if (rowTheme.foreground.hovered.luminance() > 0.5f) 0.9f else 0.06f
+    )
 
     Row(
         modifier = modifier
@@ -555,7 +539,7 @@ private fun TrackListRow(
             .background(rowBackgroundColor)
             .drawWithCache {
                 val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(rowColors.highlight, Color.Transparent),
+                    colors = listOf(highlightColor, Color.Transparent),
                     startY = 0f,
                     endY = size.height * 0.5f,
                 )

@@ -59,7 +59,8 @@ import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.Slider
 import dev.krtirtho.spotube.core.ui.base.VariableIconButton
 import dev.krtirtho.spotube.core.ui.base.VariableIconButtonVariant
-import dev.krtirtho.spotube.core.ui.base.rememberButtonColors
+import dev.krtirtho.spotube.core.ui.base.copyShape
+import dev.krtirtho.spotube.core.ui.base.invertedButtonStyle
 import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
@@ -279,21 +280,13 @@ fun AppLargePlayer(
                     }
                     IconButton(
                         onClick = ::onPlayPause,
-                        colors = rememberButtonColors().copy(
-                            containerDarker = MaterialTheme.colorScheme.onSurface,
-                            containerLighter = MaterialTheme.colorScheme.onSurface,
-                            containerPressed = MaterialTheme.colorScheme.onSurfaceVariant,
-                            shadow = MaterialTheme.colorScheme.onSurfaceVariant,
-                            border = MaterialTheme.colorScheme.onSurfaceVariant
-                        ),
+                        theme = invertedButtonStyle().copyShape(CircleShape),
                         modifier = Modifier
                             .size(50.dp),
-                        shape = CircleShape,
                     ) {
                         Icon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = if (playerUiState.isPlaying) "Pause" else "Play or pause",
-                            tint = MaterialTheme.colorScheme.surface,
                         )
                     }
                     GhostIconButton(onClick = ::onSkipNext) {

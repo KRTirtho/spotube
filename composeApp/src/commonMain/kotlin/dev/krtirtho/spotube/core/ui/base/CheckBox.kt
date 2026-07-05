@@ -39,6 +39,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,6 +51,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -65,8 +67,27 @@ enum class CheckBoxState {
     CLEAR;
 }
 
-private val CheckBoxShape = RoundedCornerShape(6.dp)
 private val CheckBoxSize = 22.dp
+
+private data class ResolvedCheckBoxState(
+    val colors: BaseUITheme.ButtonColors,
+    val shape: Shape,
+    val shadow: BaseUITheme.Shadow,
+    val border: BaseUITheme.Border,
+)
+
+@Composable
+private fun resolveCheckBoxState(
+    style: BaseUITheme.ButtonStyle,
+    isPressed: Boolean,
+    isHovered: Boolean,
+): ResolvedCheckBoxState {
+    return when {
+        isPressed -> ResolvedCheckBoxState(style.colors.pressed, style.shape.pressed, style.shadow.pressed, style.border.pressed)
+        isHovered -> ResolvedCheckBoxState(style.colors.hovered, style.shape.hovered, style.shadow.hovered, style.border.hovered)
+        else -> ResolvedCheckBoxState(style.colors.focused, style.shape.focused, style.shadow.focused, style.border.focused)
+    }
+}
 
 @Composable
 fun CheckBox(
@@ -75,69 +96,25 @@ fun CheckBox(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     interactionSource: MutableInteractionSource? = null,
+    theme: BaseUITheme.CheckBoxTheme? = null,
 ) {
-    val colors = rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current.checkBox
+    val checkBoxTheme = theme ?: baseTheme
     val source = interactionSource ?: remember { MutableInteractionSource() }
     val isPressed by source.collectIsPressedAsState()
     val isHovered by source.collectIsHoveredAsState()
-    val lift = if (isHovered && !isPressed && onClick != null) (-1).dp else 0.dp
 
     val isSelected = state == CheckBoxState.SELECTED
     val isIndeterminate = state == CheckBoxState.INDETERMINATE
     val isFilled = isSelected || isIndeterminate
 
-    val backgroundBrush = if (isFilled) {
-        primaryGradient(colors, isPressed)
-    } else {
-        outlinedGradient(colors, false)
-    }
-    val borderColor = when {
-        !enabled -> colors.onContainer.copy(alpha = 0.38f)
-        isFilled -> colors.accent
-        else -> colors.border
-    }
-    val borderWidth = 0.5.dp
+    val style = if (isFilled) checkBoxTheme.selected else checkBoxTheme.unselected
+    val resolved = resolveCheckBoxState(style, isPressed, isHovered)
+    val lift = if (isHovered && !isPressed && onClick != null) (-1).dp else 0.dp
 
-    val shadowElevation = when {
-        isPressed -> 1.dp
-        isFilled && isHovered -> 8.dp
-        isFilled -> 6.dp
-        isHovered -> 5.dp
-        else -> 3.dp
-    }
-    val shadowAmbient = if (isFilled) {
-        colors.accent.copy(
-            alpha = when {
-                isPressed -> 0.2f
-                isHovered -> 0.4f
-                else -> 0.3f
-            }
-        )
-    } else {
-        colors.shadow.copy(
-            alpha = when {
-                isPressed -> 0.08f
-                isHovered -> 0.2f
-                else -> 0.15f
-            }
-        )
-    }
-    val shadowSpot = if (isFilled) {
-        colors.accent.copy(
-            alpha = when {
-                isPressed -> 0.25f
-                isHovered -> 0.45f
-                else -> 0.35f
-            }
-        )
-    } else {
-        colors.shadow.copy(
-            alpha = when {
-                isPressed -> 0.1f
-                isHovered -> 0.24f
-                else -> 0.18f
-            }
-        )
+    val borderColor = when {
+        !enabled -> resolved.colors.foreground.copy(alpha = 0.38f)
+        else -> resolved.border.color
     }
 
     val checkProgress by animateFloatAsState(
@@ -155,28 +132,29 @@ fun CheckBox(
         modifier = modifier
             .size(CheckBoxSize)
             .graphicsLayer { translationY = lift.toPx() }
-            .shadow(
-                elevation = shadowElevation,
-                shape = CheckBoxShape,
-                ambientColor = shadowAmbient,
-                spotColor = shadowSpot,
+            .then(
+                if (resolved.shadow.elevation > 0.dp) {
+                    Modifier.shadow(
+                        elevation = resolved.shadow.elevation,
+                        shape = resolved.shape,
+                        ambientColor = resolved.shadow.ambientColor,
+                        spotColor = resolved.shadow.spotColor,
+                    )
+                } else Modifier
             )
-            .clip(CheckBoxShape)
-            .background(backgroundBrush, CheckBoxShape)
-            .border(BorderStroke(borderWidth, borderColor), CheckBoxShape)
+            .clip(resolved.shape)
+            .background(resolved.colors.background, resolved.shape)
+            .border(BorderStroke(0.5.dp, borderColor), resolved.shape)
             .drawWithCache {
-                val highlight = Brush.verticalGradient(
-                    colors = listOf(
-                        if (isFilled) Color.White.copy(alpha = 0.25f) else colors.highlight,
-                        Color.Transparent,
-                    ),
+                val highlightBrush = Brush.verticalGradient(
+                    colors = listOf(resolved.colors.highlight, Color.Transparent),
                     startY = 0f,
                     endY = size.height * 0.5f,
                 )
                 onDrawWithContent {
                     drawContent()
                     drawRect(
-                        brush = highlight,
+                        brush = highlightBrush,
                         topLeft = Offset.Zero,
                         size = size,
                     )
@@ -215,7 +193,7 @@ fun CheckBox(
                     }
                     drawPath(
                         path = path,
-                        color = colors.onAccent,
+                        color = checkBoxTheme.checkmarkColor,
                         style = Stroke(
                             width = stroke,
                             cap = StrokeCap.Round,
@@ -233,8 +211,8 @@ fun CheckBox(
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
-                                colors.onAccent,
-                                colors.onAccent.copy(alpha = 0.92f),
+                                checkBoxTheme.checkmarkColor,
+                                checkBoxTheme.checkmarkColor.copy(alpha = 0.92f),
                             )
                         ),
                     ),
@@ -247,38 +225,41 @@ fun CheckBox(
 @Composable
 fun CheckBoxPreview() {
     MaterialTheme {
-        Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.padding(24.dp),
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CheckBox(state = CheckBoxState.SELECTED, onClick = {})
-                    Text("Selected", style = MaterialTheme.typography.bodyMedium)
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CheckBox(state = CheckBoxState.UNSELECTED, onClick = {})
-                    Text("Unselected", style = MaterialTheme.typography.bodyMedium)
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CheckBox(state = CheckBoxState.INDETERMINATE, onClick = {})
-                    Text("Indeterminate", style = MaterialTheme.typography.bodyMedium)
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CheckBox(state = CheckBoxState.SELECTED, onClick = {}, enabled = false)
-                    Text("Disabled", style = MaterialTheme.typography.bodyMedium)
+        val theme = rememberBaseUITheme()
+        CompositionLocalProvider(LocalBaseUITheme provides theme) {
+            Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier.padding(24.dp),
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        CheckBox(state = CheckBoxState.SELECTED, onClick = {})
+                        Text("Selected", style = MaterialTheme.typography.bodyMedium)
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        CheckBox(state = CheckBoxState.UNSELECTED, onClick = {})
+                        Text("Unselected", style = MaterialTheme.typography.bodyMedium)
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        CheckBox(state = CheckBoxState.INDETERMINATE, onClick = {})
+                        Text("Indeterminate", style = MaterialTheme.typography.bodyMedium)
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        CheckBox(state = CheckBoxState.SELECTED, onClick = {}, enabled = false)
+                        Text("Disabled", style = MaterialTheme.typography.bodyMedium)
+                    }
                 }
             }
         }

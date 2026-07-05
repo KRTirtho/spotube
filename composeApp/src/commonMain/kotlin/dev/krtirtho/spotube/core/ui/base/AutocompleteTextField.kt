@@ -28,8 +28,8 @@ import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.focusable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -41,7 +41,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -87,11 +86,54 @@ import androidx.compose.ui.window.PopupProperties
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
 
-private val AutocompleteTextFieldShape = RoundedCornerShape(14.dp)
-private val AutocompleteMenuShape = RoundedCornerShape(12.dp)
 private val AutocompleteTextFieldMinHeight = 44.dp
 private val AutocompleteMenuDefaultMaxHeight = 300.dp
 private val AutocompleteMenuDefaultOffset = 4.dp
+
+private data class ResolvedAutoCompleteTextFieldState(
+    val background: Brush,
+    val highlight: Color,
+    val shape: Shape,
+    val border: BaseUITheme.Border,
+    val shadow: BaseUITheme.Shadow,
+    val foreground: Color,
+)
+
+@Composable
+private fun resolveTextFieldState(
+    theme: BaseUITheme.TextFieldTheme,
+    isFocused: Boolean,
+    isHovered: Boolean,
+): ResolvedAutoCompleteTextFieldState {
+    return when {
+        isFocused -> ResolvedAutoCompleteTextFieldState(
+            theme.background.focused,
+            theme.highlight.focused,
+            theme.shape.focused,
+            theme.border.focused,
+            theme.shadow.focused,
+            theme.foreground.focused
+        )
+
+        isHovered -> ResolvedAutoCompleteTextFieldState(
+            theme.background.hovered,
+            theme.highlight.hovered,
+            theme.shape.hovered,
+            theme.border.hovered,
+            theme.shadow.hovered,
+            theme.foreground.hovered
+        )
+
+        else -> ResolvedAutoCompleteTextFieldState(
+            theme.background.pressed,
+            theme.highlight.pressed,
+            theme.shape.pressed,
+            theme.border.pressed,
+            theme.shadow.pressed,
+            theme.foreground.pressed
+        )
+    }
+}
 
 @Composable
 fun <T> AutocompleteTextField(
@@ -115,16 +157,18 @@ fun <T> AutocompleteTextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     textStyle: TextStyle = TextStyle.Default,
-    cursorBrush: Color = MaterialTheme.colorScheme.primary,
+    cursorBrush: Color? = null,
     onKeyEvent: ((KeyEvent) -> Boolean)? = null,
     menuMaxHeight: Dp = AutocompleteMenuDefaultMaxHeight,
     menuOffset: Dp = AutocompleteMenuDefaultOffset,
-    menuShape: Shape = AutocompleteMenuShape,
-    menuShadowElevation: Dp = 8.dp,
-    menuContainerColor: Color = MaterialTheme.colorScheme.surfaceContainerHigh,
+    textFieldTheme: BaseUITheme.TextFieldTheme? = null,
+    menuTheme: BaseUITheme.AutoCompleteMenuTheme? = null,
 ) {
     val density = LocalDensity.current
-    val colors = rememberButtonColors()
+    val baseTextFieldTheme = LocalBaseUITheme.current.textField
+    val baseMenuTheme = LocalBaseUITheme.current.autoCompleteMenuTheme
+    val resolvedTextFieldTheme = textFieldTheme ?: baseTextFieldTheme
+    val resolvedMenuTheme = menuTheme ?: baseMenuTheme
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
 
@@ -174,18 +218,20 @@ fun <T> AutocompleteTextField(
         )
     }
 
-    val gradient = outlinedGradient(colors, false)
-    val border = when {
-        isError -> MaterialTheme.colorScheme.error
-        isFocused -> MaterialTheme.colorScheme.primary
-        isHovered -> colors.border.copy(alpha = 0.85f)
-        else -> colors.border
+    val fieldState = resolveTextFieldState(resolvedTextFieldTheme, isFocused, isHovered)
+
+    val resolvedBorder = if (isError) {
+        BaseUITheme.Border(MaterialTheme.colorScheme.error, fieldState.border.width)
+    } else {
+        fieldState.border
     }
 
     val contentColor = when {
-        !enabled -> colors.onContainer.copy(alpha = 0.38f)
-        else -> colors.onContainer
+        !enabled -> fieldState.foreground.copy(alpha = 0.38f)
+        else -> fieldState.foreground
     }
+
+    val cursor = cursorBrush?.let { SolidColor(it) } ?: resolvedTextFieldTheme.cursor
 
     fun navigate(delta: Int) {
         if (items.isEmpty()) return
@@ -207,13 +253,25 @@ fun <T> AutocompleteTextField(
                     .fillMaxWidth()
                     .onSizeChanged { textFieldSize = it }
                     .defaultMinSize(minHeight = AutocompleteTextFieldMinHeight)
-                    .then(textFieldShadow(AutocompleteTextFieldShape, isFocused, colors))
-                    .clip(AutocompleteTextFieldShape)
-                    .background(gradient, AutocompleteTextFieldShape)
-                    .border(BorderStroke(.5.dp, border), AutocompleteTextFieldShape)
+                    .then(
+                        if (fieldState.shadow.elevation > 0.dp) {
+                            Modifier.shadow(
+                                elevation = fieldState.shadow.elevation,
+                                shape = fieldState.shape,
+                                ambientColor = fieldState.shadow.ambientColor,
+                                spotColor = fieldState.shadow.spotColor,
+                            )
+                        } else Modifier
+                    )
+                    .clip(fieldState.shape)
+                    .background(fieldState.background, fieldState.shape)
+                    .border(
+                        BorderStroke(resolvedBorder.width, resolvedBorder.color),
+                        fieldState.shape
+                    )
                     .drawWithCache {
                         val highlightBrush = Brush.verticalGradient(
-                            colors = listOf(colors.highlight, Color.Transparent),
+                            colors = listOf(fieldState.highlight, Color.Transparent),
                             startY = 0f,
                             endY = size.height * 0.5f,
                         )
@@ -226,7 +284,7 @@ fun <T> AutocompleteTextField(
                             )
                         }
                     }
-                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                    .padding(resolvedTextFieldTheme.padding),
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -294,7 +352,7 @@ fun <T> AutocompleteTextField(
                             enabled = enabled,
                             readOnly = readOnly,
                             textStyle = textStyle.copy(color = contentColor),
-                            cursorBrush = SolidColor(cursorBrush),
+                            cursorBrush = cursor,
                             keyboardOptions = keyboardOptions,
                             keyboardActions = wrappedKeyboardActions,
                             singleLine = singleLine,
@@ -340,9 +398,9 @@ fun <T> AutocompleteTextField(
                     modifier = Modifier
                         .width(textFieldWidthDp)
                         .heightIn(max = menuMaxHeight)
-                        .shadow(menuShadowElevation, menuShape)
-                        .background(menuContainerColor, menuShape)
-                        .clip(menuShape)
+                        .shadow(resolvedMenuTheme.shadowElevation, resolvedMenuTheme.shape)
+                        .background(resolvedMenuTheme.background, resolvedMenuTheme.shape)
+                        .clip(resolvedMenuTheme.shape)
                         .focusRequester(popupFocusRequester)
                         .focusable()
                         .onFocusChanged { state ->
@@ -412,70 +470,73 @@ fun <T> AutocompleteTextField(
 @Composable
 private fun AutocompleteTextFieldPreview() {
     MaterialTheme {
-        androidx.compose.material3.Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.padding(24.dp),
-        ) {
-            val artists = remember {
-                listOf(
-                    "Twenty One Pilots",
-                    "The Beatles",
-                    "Adele",
-                    "Drake",
-                    "Taylor Swift",
-                    "Arctic Monkeys",
-                    "Billie Eilish",
-                )
-            }
-            var value by remember { mutableStateOf("") }
-
-            AutocompleteTextField(
-                value = value,
-                onValueChange = {
-                    value = it
-                },
-                items = artists.filter {
-                    it.contains(value, ignoreCase = true) && value.isNotEmpty()
-                },
-                onItemSelected = { selected ->
-                    value = selected
-                },
-                placeholder = { Text("Search artists...") },
-                leadingIcon = {
-                    androidx.compose.material3.Icon(
-                        imageVector = Iconsax.IconsaxSearchBroken,
-                        contentDescription = "Search",
+        val theme = rememberBaseUITheme()
+        CompositionLocalProvider(LocalBaseUITheme provides theme) {
+            androidx.compose.material3.Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier.padding(24.dp),
+            ) {
+                val artists = remember {
+                    listOf(
+                        "Twenty One Pilots",
+                        "The Beatles",
+                        "Adele",
+                        "Drake",
+                        "Taylor Swift",
+                        "Arctic Monkeys",
+                        "Billie Eilish",
                     )
-                },
-                modifier = Modifier.fillMaxWidth(),
-                itemContent = { item, isSelected ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(
-                                color = if (isSelected) {
-                                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
-                                } else {
-                                    Color.Transparent
-                                },
-                            )
-                            .padding(horizontal = 14.dp, vertical = 10.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
+                }
+                var value by remember { mutableStateOf("") }
+
+                AutocompleteTextField(
+                    value = value,
+                    onValueChange = {
+                        value = it
+                    },
+                    items = artists.filter {
+                        it.contains(value, ignoreCase = true) && value.isNotEmpty()
+                    },
+                    onItemSelected = { selected ->
+                        value = selected
+                    },
+                    placeholder = { Text("Search artists...") },
+                    leadingIcon = {
                         androidx.compose.material3.Icon(
                             imageVector = Iconsax.IconsaxSearchBroken,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            contentDescription = "Search",
                         )
-                        Text(
-                            text = item,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                    }
-                },
-            )
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    itemContent = { item, isSelected ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(
+                                    color = if (isSelected) {
+                                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
+                                    } else {
+                                        Color.Transparent
+                                    },
+                                )
+                                .padding(horizontal = 14.dp, vertical = 10.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        ) {
+                            androidx.compose.material3.Icon(
+                                imageVector = Iconsax.IconsaxSearchBroken,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                text = item,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    },
+                )
+            }
         }
     }
 }

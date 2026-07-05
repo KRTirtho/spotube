@@ -27,6 +27,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.ui.base.IconButton
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
+import dev.krtirtho.spotube.core.ui.base.copyShape
 import dev.krtirtho.spotube.modules.saved_tracks.SavedState
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.rememberIsSavedTracks
@@ -69,7 +71,7 @@ fun PlayerHeartButton(
     IconButton(
         onClick = ::onLike,
         enabled = isSavedTrackState is SavedState.Success,
-        shape = CircleShape,
+        theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(CircleShape),
     ) {
         Icon(
             imageVector = if (isLiked) Iconsax.IconsaxHeart2 else Iconsax.IconsaxHeart,

@@ -83,10 +83,13 @@ import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
+import dev.krtirtho.spotube.core.ui.base.BaseUITheme
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.Slider
-import dev.krtirtho.spotube.core.ui.base.rememberButtonColors
+import dev.krtirtho.spotube.core.ui.base.copyShape
+import dev.krtirtho.spotube.core.ui.base.invertedButtonStyle
 import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
 import dev.krtirtho.spotube.modules.downloads.DownloadStatus
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
@@ -466,7 +469,10 @@ fun AppExpandedPlayer(
                         textAlign = TextAlign.Center,
                     )
                 }
-                IconButton(onClick = onQueue, shape = CircleShape) {
+                IconButton(
+                    onClick = onQueue,
+                    theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(CircleShape)
+                ) {
                     Icon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
                 }
             }
@@ -526,22 +532,14 @@ fun AppExpandedPlayer(
                     }
                     IconButton(
                         onClick = ::onPlayPause,
-                        colors = rememberButtonColors().copy(
-                            containerDarker = MaterialTheme.colorScheme.onSurface,
-                            containerLighter = MaterialTheme.colorScheme.onSurface,
-                            containerPressed = MaterialTheme.colorScheme.onSurfaceVariant,
-                            shadow = MaterialTheme.colorScheme.onSurfaceVariant,
-                            border = MaterialTheme.colorScheme.onSurfaceVariant
-                        ),
+                        theme = invertedButtonStyle().copyShape(CircleShape),
                         modifier = Modifier
                             .size(72.dp),
-                        shape = CircleShape,
                     ) {
                         Icon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = if (playerUiState.isPlaying) "Pause" else "Play",
                             modifier = Modifier.size(30.dp),
-                            tint = MaterialTheme.colorScheme.surface,
                         )
                     }
                     GhostIconButton(onClick = ::onSkipNext) {

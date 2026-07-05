@@ -34,7 +34,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -52,6 +51,7 @@ import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.VisualTransformation
@@ -61,32 +61,28 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
 
-private val TextFieldShape = RoundedCornerShape(14.dp)
 private val TextFieldMinHeight = 44.dp
 
+private data class ResolvedTextFieldState(
+    val background: Brush,
+    val highlight: Color,
+    val shape: Shape,
+    val border: BaseUITheme.Border,
+    val shadow: BaseUITheme.Shadow,
+    val foreground: Color,
+)
+
 @Composable
-internal fun textFieldShadow(
-    shape: androidx.compose.ui.graphics.Shape,
-    focused: Boolean,
-    colors: ButtonColors,
-): Modifier {
-    val elevation = if (focused) 9.dp else 6.dp
-    val ambient = if (focused) {
-        colors.accent.copy(alpha = 0.2f)
-    } else {
-        colors.shadow.copy(alpha = 0.15f)
+private fun resolveTextFieldState(
+    theme: BaseUITheme.TextFieldTheme,
+    isFocused: Boolean,
+    isHovered: Boolean,
+): ResolvedTextFieldState {
+    return when {
+        isFocused -> ResolvedTextFieldState(theme.background.focused, theme.highlight.focused, theme.shape.focused, theme.border.focused, theme.shadow.focused, theme.foreground.focused)
+        isHovered -> ResolvedTextFieldState(theme.background.hovered, theme.highlight.hovered, theme.shape.hovered, theme.border.hovered, theme.shadow.hovered, theme.foreground.hovered)
+        else -> ResolvedTextFieldState(theme.background.pressed, theme.highlight.pressed, theme.shape.pressed, theme.border.pressed, theme.shadow.pressed, theme.foreground.pressed)
     }
-    val spot = if (focused) {
-        colors.accent.copy(alpha = 0.25f)
-    } else {
-        colors.shadow.copy(alpha = 0.18f)
-    }
-    return Modifier.shadow(
-        elevation = elevation,
-        shape = shape,
-        ambientColor = ambient,
-        spotColor = spot,
-    )
 }
 
 @Composable
@@ -108,24 +104,28 @@ fun TextField(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     textStyle: TextStyle = TextStyle.Default,
-    cursorBrush: Color = MaterialTheme.colorScheme.primary,
+    cursorBrush: Color? = null,
+    theme: BaseUITheme.TextFieldTheme? = null,
 ) {
-    val colors = rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current.textField
+    val textFieldTheme = theme ?: baseTheme
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
 
-    val gradient = outlinedGradient(colors, false)
-    val border = when {
-        isError -> MaterialTheme.colorScheme.error
-        isFocused -> MaterialTheme.colorScheme.primary
-        isHovered -> colors.border.copy(alpha = 0.85f)
-        else -> colors.border
+    val state = resolveTextFieldState(textFieldTheme, isFocused, isHovered)
+
+    val resolvedBorder = if (isError) {
+        BaseUITheme.Border(MaterialTheme.colorScheme.error, state.border.width)
+    } else {
+        state.border
     }
 
     val contentColor = when {
-        !enabled -> colors.onContainer.copy(alpha = 0.38f)
-        else -> colors.onContainer
+        !enabled -> state.foreground.copy(alpha = 0.38f)
+        else -> state.foreground
     }
+
+    val cursor = cursorBrush?.let { SolidColor(it) } ?: textFieldTheme.cursor
 
     Column(modifier = modifier) {
         AnimatedVisibility(
@@ -139,13 +139,22 @@ fun TextField(
         Box(
             modifier = Modifier
                 .defaultMinSize(minHeight = TextFieldMinHeight)
-                .then(textFieldShadow(TextFieldShape, isFocused, colors))
-                .clip(TextFieldShape)
-                .background(gradient, TextFieldShape)
-                .border(BorderStroke(0.5.dp, border), TextFieldShape)
+                .then(
+                    if (state.shadow.elevation > 0.dp) {
+                        Modifier.shadow(
+                            elevation = state.shadow.elevation,
+                            shape = state.shape,
+                            ambientColor = state.shadow.ambientColor,
+                            spotColor = state.shadow.spotColor,
+                        )
+                    } else Modifier
+                )
+                .clip(state.shape)
+                .background(state.background, state.shape)
+                .border(BorderStroke(resolvedBorder.width, resolvedBorder.color), state.shape)
                 .drawWithCache {
                     val highlightBrush = Brush.verticalGradient(
-                        colors = listOf(colors.highlight, Color.Transparent),
+                        colors = listOf(state.highlight, Color.Transparent),
                         startY = 0f,
                         endY = size.height * 0.5f,
                     )
@@ -158,7 +167,7 @@ fun TextField(
                         )
                     }
                 }
-                .padding(horizontal = 14.dp, vertical = 10.dp),
+                .padding(textFieldTheme.padding),
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -177,7 +186,7 @@ fun TextField(
                         enabled = enabled,
                         readOnly = readOnly,
                         textStyle = textStyle.copy(color = contentColor),
-                        cursorBrush = SolidColor(cursorBrush),
+                        cursorBrush = cursor,
                         keyboardOptions = keyboardOptions,
                         keyboardActions = keyboardActions,
                         singleLine = singleLine,
@@ -210,36 +219,39 @@ fun TextField(
 @Composable
 fun TextFieldPreview() {
     MaterialTheme {
-        androidx.compose.material3.Surface(
-            color = MaterialTheme.colorScheme.background,
-            modifier = Modifier.padding(24.dp),
-        ) {
-            TextField(
-                modifier = Modifier.padding(top = 4.dp),
-                value = "Twenty One Pilots",
-                onValueChange = {},
-                placeholder = { Text("Placeholder") },
-                label = {
-                    Text(
-                        "Search Field",
-                        modifier = Modifier.padding(bottom = 6.dp),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
-                    )
-                },
-                leadingIcon = {
-                    androidx.compose.material3.Icon(
-                        imageVector = Iconsax.IconsaxSearchBroken,
-                        contentDescription = "Search Icon",
-                    )
-                },
-                trailingIcon = {
-                    androidx.compose.material3.Icon(
-                        imageVector = Iconsax.IconsaxTrash,
-                        contentDescription = "Clear Icon",
-                    )
-                },
-            )
+        val theme = rememberBaseUITheme()
+        CompositionLocalProvider(LocalBaseUITheme provides theme) {
+            androidx.compose.material3.Surface(
+                color = MaterialTheme.colorScheme.background,
+                modifier = Modifier.padding(24.dp),
+            ) {
+                TextField(
+                    modifier = Modifier.padding(top = 4.dp),
+                    value = "Twenty One Pilots",
+                    onValueChange = {},
+                    placeholder = { Text("Placeholder") },
+                    label = {
+                        Text(
+                            "Search Field",
+                            modifier = Modifier.padding(bottom = 6.dp),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        )
+                    },
+                    leadingIcon = {
+                        androidx.compose.material3.Icon(
+                            imageVector = Iconsax.IconsaxSearchBroken,
+                            contentDescription = "Search Icon",
+                        )
+                    },
+                    trailingIcon = {
+                        androidx.compose.material3.Icon(
+                            imageVector = Iconsax.IconsaxTrash,
+                            contentDescription = "Clear Icon",
+                        )
+                    },
+                )
+            }
         }
     }
 }

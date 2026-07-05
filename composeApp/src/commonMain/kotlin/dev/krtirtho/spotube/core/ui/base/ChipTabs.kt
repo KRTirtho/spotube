@@ -27,12 +27,10 @@ import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Text
@@ -45,15 +43,52 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val ChipTabShape = RoundedCornerShape(10.dp)
 private val ChipTabMinHeight = 36.dp
+
+private data class ResolvedChipState(
+    val colors: BaseUITheme.ButtonColors,
+    val shape: Shape,
+    val shadow: BaseUITheme.Shadow,
+    val border: BaseUITheme.Border,
+    val padding: androidx.compose.foundation.layout.PaddingValues,
+)
+
+@Composable
+private fun resolveChipState(
+    style: BaseUITheme.ButtonStyle,
+    isPressed: Boolean,
+    isHovered: Boolean,
+): ResolvedChipState {
+    return when {
+        isPressed -> ResolvedChipState(style.colors.pressed, style.shape.pressed, style.shadow.pressed, style.border.pressed, style.padding.pressed)
+        isHovered -> ResolvedChipState(style.colors.hovered, style.shape.hovered, style.shadow.hovered, style.border.hovered, style.padding.hovered)
+        else -> ResolvedChipState(style.colors.focused, style.shape.focused, style.shadow.focused, style.border.focused, style.padding.focused)
+    }
+}
+
+private fun Modifier.applyChipShadow(
+    shadow: BaseUITheme.Shadow,
+    shape: Shape,
+): Modifier {
+    return if (shadow.elevation > 0.dp) {
+        this.shadow(
+            elevation = shadow.elevation,
+            shape = shape,
+            ambientColor = shadow.ambientColor,
+            spotColor = shadow.spotColor,
+        )
+    } else {
+        this
+    }
+}
 
 @Composable
 fun ChipTab(
@@ -61,41 +96,25 @@ fun ChipTab(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 14.dp, vertical = 4.dp),
+    theme: BaseUITheme.ChipTabTheme? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current.chipTab
+    val chipTheme = theme ?: baseTheme
+    val style = if (selected) chipTheme.selected else chipTheme.unselected
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
-    val gradient = if (selected) {
-        primaryGradient(colors, isPressed)
-    } else {
-        outlinedGradient(colors, isPressed)
-    }
-    val borderColor = if (selected) {
-        colors.accent
-    } else {
-        colors.border.copy(alpha = if (isPressed) 0.7f else 1f)
-    }
-    val contentColor = if (selected) colors.onAccent else colors.onContainer
+    val state = resolveChipState(style, isPressed, isHovered)
 
     Box(
         modifier = modifier
             .defaultMinSize(minHeight = ChipTabMinHeight)
             .hoverable(interactionSource = interactionSource, enabled = enabled)
-            .then(
-                buttonShadow(
-                    shape = ChipTabShape,
-                    pressed = isPressed,
-                    primary = selected,
-                    colors = colors,
-                    hovered = isHovered,
-                )
-            )
-            .clip(ChipTabShape)
-            .background(gradient, ChipTabShape)
-            .border(BorderStroke(0.5.dp, borderColor), ChipTabShape)
+            .applyChipShadow(state.shadow, state.shape)
+            .clip(state.shape)
+            .background(state.colors.background, state.shape)
+            .border(BorderStroke(state.border.width, state.border.color), state.shape)
             .clickable(
                 enabled = enabled,
                 interactionSource = interactionSource,
@@ -103,13 +122,8 @@ fun ChipTab(
                 onClick = onClick,
             )
             .drawWithCache {
-                val highlight = if (selected) {
-                    Color.White.copy(alpha = 0.25f)
-                } else {
-                    colors.highlight
-                }
                 val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(highlight, Color.Transparent),
+                    colors = listOf(state.colors.highlight, Color.Transparent),
                     startY = 0f,
                     endY = size.height * 0.5f,
                 )
@@ -122,11 +136,11 @@ fun ChipTab(
                     )
                 }
             }
-            .padding(contentPadding),
+            .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {
         CompositionLocalProvider(
-            LocalContentColor provides contentColor,
+            LocalContentColor provides state.colors.foreground,
             LocalTextStyle provides LocalTextStyle.current.copy(
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 14.sp,
@@ -149,14 +163,14 @@ fun ChipTab(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     leadingIcon: @Composable (() -> Unit)? = null,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+    theme: BaseUITheme.ChipTabTheme? = null,
 ) {
     ChipTab(
         selected = selected,
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
-        contentPadding = contentPadding,
+        theme = theme,
     ) {
         if (leadingIcon != null) {
             leadingIcon()

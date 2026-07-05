@@ -62,8 +62,10 @@ import compose.icons.feathericons.MoreVertical
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.rememberLogger
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.base.TextField
+import dev.krtirtho.spotube.core.ui.base.copyShape
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
@@ -188,7 +190,7 @@ fun PlayerQueueContent(
                 )
                 SecondaryIconButton(
                     onClick = viewModel::clearQueue,
-                    shape = MaterialTheme.shapes.small,
+                    theme = LocalBaseUITheme.current.iconButtons.secondary.copyShape(MaterialTheme.shapes.small),
                 ) {
                     Icon(Iconsax.IconsaxTrash, contentDescription = "Clear Queue")
                 }

@@ -49,6 +49,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.krtirtho.spotube.core.ui.base.BaseUITheme
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.PrimaryIconButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
@@ -108,7 +110,11 @@ fun PlayableCard(
                                     SecondaryIconButton(
                                         onClick = onAddToQueue,
                                         modifier = Modifier.size(30.dp),
-                                        shape = CircleShape,
+                                        theme = LocalBaseUITheme.current.iconButtons.secondary.copy(
+                                            shape = BaseUITheme.InteractionState.fromSingleValue(
+                                                CircleShape
+                                            )
+                                        )
                                     ) {
                                         Icon(
                                             imageVector = Iconsax.IconsaxAddSquare,
@@ -121,7 +127,12 @@ fun PlayableCard(
                                     PrimaryIconButton(
                                         onClick = onPlay,
                                         modifier = Modifier.size(30.dp),
-                                        shape = CircleShape,
+                                        theme = LocalBaseUITheme.current.iconButtons.secondary.copy(
+                                            shape = BaseUITheme.InteractionState.fromSingleValue(
+                                                CircleShape
+                                            )
+                                        )
+
                                     ) {
                                         Icon(
                                             imageVector = if (isPlaying) {

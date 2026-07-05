@@ -21,14 +21,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
-import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,34 +36,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryButton
-import dev.krtirtho.spotube.core.ui.base.buttonShadow
-import dev.krtirtho.spotube.core.ui.base.outlinedGradient
-import dev.krtirtho.spotube.core.ui.base.rememberButtonColors
+import dev.krtirtho.spotube.core.ui.base.copyPadding
 import dev.krtirtho.spotube.modules.downloads.DownloadBadgeIndicator
 import dev.krtirtho.spotube.modules.library.LibraryState
 import dev.krtirtho.spotube.modules.library.LibraryTab
@@ -215,66 +201,16 @@ fun SidebarItem(
         SecondaryButton(
             onClick = onClick,
             modifier = buttonModifier,
-            contentPadding = contentPadding,
+            theme = LocalBaseUITheme.current.buttons.secondary.copyPadding(contentPadding),
             content = itemContent,
         )
     } else {
-        val colors = rememberButtonColors()
-        val interactionSource = remember { MutableInteractionSource() }
-        val isHovered by interactionSource.collectIsHoveredAsState()
-        val isPressed by interactionSource.collectIsPressedAsState()
-        val gradient = outlinedGradient(colors, isPressed)
-        val border = colors.border.copy(alpha = if (isPressed) 0.7f else 1f)
-        val lift = if (isHovered && !isPressed) (-1).dp else 0.dp
-        val shape = RoundedCornerShape(14.dp)
-
-        Box(
-            modifier = buttonModifier
-                .hoverable(interactionSource = interactionSource)
-                .graphicsLayer { translationY = lift.toPx() }
-                .clip(shape)
-                .then(
-                    if (isHovered || isPressed) {
-                        buttonShadow(
-                            shape,
-                            isPressed,
-                            primary = false,
-                            colors,
-                            hovered = isHovered
-                        ).background(gradient, shape)
-                            .border(BorderStroke(0.5.dp, border), shape)
-                            .drawWithCache {
-                                val highlightBrush = Brush.verticalGradient(
-                                    colors = listOf(colors.highlight, Color.Transparent),
-                                    startY = 0f,
-                                    endY = size.height * 0.5f,
-                                )
-                                onDrawWithContent {
-                                    drawContent()
-                                    drawRect(
-                                        brush = highlightBrush,
-                                        topLeft = androidx.compose.ui.geometry.Offset.Zero,
-                                        size = size,
-                                    )
-                                }
-                            }
-                    } else {
-                        Modifier
-                    }
-                )
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = ripple(),
-                    onClick = onClick,
-                )
-                .padding(contentPadding),
-            contentAlignment = Alignment.Center,
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                content = itemContent,
-            )
-        }
+        OutlineButton(
+            onClick = onClick,
+            modifier = buttonModifier,
+            theme = LocalBaseUITheme.current.buttons.outline.copyPadding(contentPadding),
+            hoverOnly = true,
+            content = itemContent,
+        )
     }
 }

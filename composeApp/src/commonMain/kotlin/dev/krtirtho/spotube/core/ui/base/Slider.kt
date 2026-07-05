@@ -43,6 +43,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -79,8 +80,10 @@ fun Slider(
     steps: Int = 0,
     interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
     onValueChangeFinished: () -> Unit = {},
+    theme: BaseUITheme.SliderTheme? = null,
 ) {
-    val colors = rememberButtonColors()
+    val baseTheme = LocalBaseUITheme.current.slider
+    val sliderTheme = theme ?: baseTheme
     val isHovered by interactionSource.collectIsHoveredAsState()
     val isPressed by interactionSource.collectIsPressedAsState()
     val density = LocalDensity.current
@@ -89,13 +92,30 @@ fun Slider(
     val range = valueRange.endInclusive - valueRange.start
     val fraction = if (range > 0f) ((value - valueRange.start) / range).coerceIn(0f, 1f) else 0f
 
-    val trackActiveColor = if (enabled) colors.accent else colors.onContainer.copy(alpha = 0.38f)
-    val trackInactiveColor = if (enabled) {
-        colors.border.copy(alpha = 0.6f)
-    } else {
-        colors.onContainer.copy(alpha = 0.2f)
+    val stateColor = when {
+        isPressed -> sliderTheme.trackActiveColor.pressed
+        isHovered -> sliderTheme.trackActiveColor.hovered
+        else -> sliderTheme.trackActiveColor.focused
     }
-    val thumbColor = if (enabled) colors.accent else colors.onContainer.copy(alpha = 0.38f)
+    val inactiveColor = when {
+        isPressed -> sliderTheme.trackInactiveColor.pressed
+        isHovered -> sliderTheme.trackInactiveColor.hovered
+        else -> sliderTheme.trackInactiveColor.focused
+    }
+    val thumbColor = when {
+        isPressed -> sliderTheme.thumbColor.pressed
+        isHovered -> sliderTheme.thumbColor.hovered
+        else -> sliderTheme.thumbColor.focused
+    }
+    val thumbShadowState = when {
+        isPressed -> sliderTheme.thumbShadow.pressed
+        isHovered -> sliderTheme.thumbShadow.hovered
+        else -> sliderTheme.thumbShadow.focused
+    }
+
+    val trackActiveColor = if (enabled) stateColor else stateColor.copy(alpha = 0.38f)
+    val trackInactiveColor = if (enabled) inactiveColor else inactiveColor.copy(alpha = 0.38f)
+    val resolvedThumbColor = if (enabled) thumbColor else thumbColor.copy(alpha = 0.38f)
 
     val thumbScale by animateFloatAsState(
         targetValue = when {
@@ -106,12 +126,6 @@ fun Slider(
         animationSpec = tween(durationMillis = 150),
         label = "thumbScale",
     )
-
-    val thumbElevation = when {
-        isPressed -> 2.dp
-        isHovered -> 8.dp
-        else -> 5.dp
-    }
 
     Box(
         modifier = modifier
@@ -241,9 +255,9 @@ fun Slider(
                         val x = trackStart + stepSpacing * i
                         drawCircle(
                             color = if (x <= activeEnd) {
-                                colors.onAccent.copy(alpha = 0.5f)
+                                sliderTheme.stepActiveColor
                             } else {
-                                colors.onContainer.copy(alpha = 0.25f)
+                                sliderTheme.stepInactiveColor
                             },
                             radius = 2.dp.toPx(),
                             center = Offset(x, trackY),
@@ -267,17 +281,17 @@ fun Slider(
                     scaleY = thumbScale
                 }
                 .shadow(
-                    elevation = thumbElevation,
+                    elevation = thumbShadowState.elevation,
                     shape = CircleShape,
-                    ambientColor = colors.accent.copy(alpha = 0.35f),
-                    spotColor = colors.accent.copy(alpha = 0.5f),
+                    ambientColor = thumbShadowState.ambientColor,
+                    spotColor = thumbShadowState.spotColor,
                 )
                 .background(
                     brush = Brush.radialGradient(
                         colors = listOf(
                             Color.White.copy(alpha = 0.6f),
-                            thumbColor.copy(alpha = 0.95f),
-                            thumbColor,
+                            resolvedThumbColor.copy(alpha = 0.95f),
+                            resolvedThumbColor,
                         ),
                         center = Offset(0f, -0.55f),
                         radius = 1.1f,
