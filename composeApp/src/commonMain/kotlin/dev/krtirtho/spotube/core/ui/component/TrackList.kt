@@ -353,6 +353,7 @@ fun TrackList(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .padding(top = 12.dp, bottom = 12.dp)
                     ) {
                         visibleTracks.forEachIndexed { displayedIndex, track ->
                             if (displayedIndex > 0) {
@@ -514,6 +515,7 @@ private fun TrackListRow(
     modifier: Modifier = Modifier,
 ) {
     val rowTheme = LocalBaseUITheme.current.listRowTile
+    val isLight = MaterialTheme.colorScheme.surface.luminance() > 0.5f
     val artworkInteractionSource = remember { MutableInteractionSource() }
     val isArtworkHovered by artworkInteractionSource.collectIsHoveredAsState()
     val rowInteractionSource = remember { MutableInteractionSource() }
@@ -525,7 +527,7 @@ private fun TrackListRow(
         else -> Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent))
     }
     val highlightColor = Color.White.copy(
-        alpha = if (rowTheme.foreground.hovered.luminance() > 0.5f) 0.9f else 0.06f
+        alpha = if (isLight) 0.9f else 0.06f
     )
 
     Row(
