@@ -238,9 +238,10 @@ fun OutlineButton(
     shape: androidx.compose.ui.graphics.Shape = ButtonShape,
     contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
     hoverOnly: Boolean = false,
+    colors: ButtonColors? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = rememberButtonColors()
+    val colors = colors ?: rememberButtonColors()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -306,9 +307,10 @@ fun PrimaryButton(
     enabled: Boolean = true,
     shape: androidx.compose.ui.graphics.Shape = ButtonShape,
     contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+    colors: ButtonColors? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = rememberButtonColors()
+    val colors = colors ?: rememberButtonColors()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -365,9 +367,10 @@ fun SecondaryButton(
     enabled: Boolean = true,
     shape: androidx.compose.ui.graphics.Shape = ButtonShape,
     contentPadding: PaddingValues = PaddingValues(horizontal = 20.dp, vertical = 10.dp),
+    colors: ButtonColors? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = rememberButtonColors()
+    val colors = colors ?: rememberButtonColors()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -426,6 +429,7 @@ fun IconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: androidx.compose.ui.graphics.Shape = ButtonShape,
+    colors: ButtonColors? = null,
     content: @Composable () -> Unit,
 ) {
     OutlineButton(
@@ -434,10 +438,12 @@ fun IconButton(
         enabled = enabled,
         shape = shape,
         contentPadding = PaddingValues(8.dp),
+        colors = colors,
     ) {
         content()
     }
 }
+
 @Composable
 
 fun GhostIconButton(
@@ -445,6 +451,7 @@ fun GhostIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: androidx.compose.ui.graphics.Shape = ButtonShape,
+    colors: ButtonColors? = null,
     content: @Composable () -> Unit,
 ) {
     OutlineButton(
@@ -454,6 +461,7 @@ fun GhostIconButton(
         shape = shape,
         contentPadding = PaddingValues(8.dp),
         hoverOnly = true,
+        colors = colors,
     ) {
         content()
     }
@@ -465,6 +473,7 @@ fun PrimaryIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: androidx.compose.ui.graphics.Shape = ButtonShape,
+    colors: ButtonColors? = null,
     content: @Composable () -> Unit,
 ) {
     PrimaryButton(
@@ -473,6 +482,7 @@ fun PrimaryIconButton(
         enabled = enabled,
         shape = shape,
         contentPadding = PaddingValues(8.dp),
+        colors = colors,
     ) {
         content()
     }
@@ -484,6 +494,7 @@ fun SecondaryIconButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     shape: androidx.compose.ui.graphics.Shape = ButtonShape,
+    colors: ButtonColors? = null,
     content: @Composable () -> Unit,
 ) {
     SecondaryButton(
@@ -492,6 +503,7 @@ fun SecondaryIconButton(
         enabled = enabled,
         shape = shape,
         contentPadding = PaddingValues(8.dp),
+        colors = colors,
     ) {
         content()
     }
@@ -501,8 +513,9 @@ fun SecondaryIconButton(
 fun ButtonBadge(
     count: Int,
     modifier: Modifier = Modifier,
+    colors: ButtonColors? = null,
 ) {
-    val colors = rememberButtonColors()
+    val colors = colors ?: rememberButtonColors()
     Box(
         modifier = modifier
             .heightIn(min = 22.dp)
@@ -529,9 +542,10 @@ fun GroupButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     contentPadding: PaddingValues = PaddingValues(horizontal = 14.dp, vertical = 11.dp),
+    colors: ButtonColors? = null,
     content: @Composable RowScope.() -> Unit,
 ) {
-    val colors = rememberButtonColors()
+    val colors = colors ?: rememberButtonColors()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -570,9 +584,10 @@ fun GroupIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    colors: ButtonColors? = null,
     content: @Composable () -> Unit,
 ) {
-    val colors = rememberButtonColors()
+    val colors = colors ?: rememberButtonColors()
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -604,9 +619,10 @@ fun GroupIconButton(
 @Composable
 fun ButtonGroup(
     modifier: Modifier = Modifier,
+    colors: ButtonColors? = null,
     content: @Composable () -> Unit,
 ) {
-    val colors = rememberButtonColors()
+    val colors = colors ?: rememberButtonColors()
     Surface(
         modifier = modifier
             .defaultMinSize(minHeight = ButtonMinHeight)
@@ -634,8 +650,10 @@ fun ButtonGroup(
 }
 
 @Composable
-fun ButtonGroupDivider() {
-    val colors = rememberButtonColors()
+fun ButtonGroupDivider(
+    colors: ButtonColors? = null,
+) {
+    val colors = colors ?: rememberButtonColors()
     Box(
         modifier = Modifier
             .width(1.dp)
@@ -869,5 +887,61 @@ private fun ButtonStylesPreview() {
                 }
             }
         }
+    }
+}
+
+enum class VariableIconButtonVariant {
+    Outline,
+    Ghost,
+    Primary,
+    Secondary,
+}
+
+@Composable
+fun VariableIconButton(
+    variant: VariableIconButtonVariant = VariableIconButtonVariant.Outline,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    shape: androidx.compose.ui.graphics.Shape = ButtonShape,
+    colors: ButtonColors? = null,
+    content: @Composable () -> Unit,
+) {
+    when (variant) {
+        VariableIconButtonVariant.Outline -> IconButton(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            shape = shape,
+            colors = colors,
+            content = content,
+        )
+
+        VariableIconButtonVariant.Ghost -> GhostIconButton(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            shape = shape,
+            colors = colors,
+            content = content,
+        )
+
+        VariableIconButtonVariant.Primary -> PrimaryIconButton(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            shape = shape,
+            colors = colors,
+            content = content,
+        )
+
+        VariableIconButtonVariant.Secondary -> SecondaryIconButton(
+            onClick = onClick,
+            modifier = modifier,
+            enabled = enabled,
+            shape = shape,
+            colors = colors,
+            content = content,
+        )
     }
 }

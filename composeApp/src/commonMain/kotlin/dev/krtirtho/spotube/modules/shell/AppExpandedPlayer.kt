@@ -45,11 +45,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
@@ -68,12 +66,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
@@ -81,42 +83,41 @@ import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
+import dev.krtirtho.spotube.core.ui.base.GhostIconButton
+import dev.krtirtho.spotube.core.ui.base.IconButton
+import dev.krtirtho.spotube.core.ui.base.Slider
+import dev.krtirtho.spotube.core.ui.base.rememberButtonColors
+import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
+import dev.krtirtho.spotube.modules.downloads.DownloadStatus
+import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.lyrics.LyricsViewModel
-import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
+import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowSquareUp
-import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
-import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCloseSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicFilter
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPause
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPrevious
+import dev.krtirtho.spotube.resources.iconsax.IconsaxRefreshRight
 import dev.krtirtho.spotube.resources.iconsax.IconsaxRepeatMusic
 import dev.krtirtho.spotube.resources.iconsax.IconsaxRepeateMusic
 import dev.krtirtho.spotube.resources.iconsax.IconsaxRepeateOne
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShuffle
+import dev.krtirtho.spotube.resources.iconsax.InconsaxClock
 import dev.krtirtho.spotube.resources.iconsax.SwapHorizontal2
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.milliseconds
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.krtirtho.spotube.modules.saved_tracks.rememberIsSavedTracks
-import dev.krtirtho.spotube.modules.saved_tracks.SavedState
-import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
-import dev.krtirtho.spotube.modules.downloads.DownloadStatus
-import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
-import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
-import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
-import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
-import dev.krtirtho.spotube.resources.iconsax.IconsaxCloseSquare
-import dev.krtirtho.spotube.resources.iconsax.IconsaxRefreshRight
-import dev.krtirtho.spotube.resources.iconsax.InconsaxClock
 
 
 // The expanded player on small screens
@@ -278,15 +279,18 @@ fun AppExpandedPlayer(
                                                 snackbarHostState.showSnackbar("Already downloaded")
                                             }
                                         }
+
                                         is DownloadStatus.Failed, is DownloadStatus.Cancelled -> {
                                             download?.let { downloadsViewModel.retry(it.id) }
                                             scope.launch {
                                                 snackbarHostState.showSnackbar("Retrying download...")
                                             }
                                         }
+
                                         is DownloadStatus.Downloading, is DownloadStatus.Queued -> {
                                             // already in progress
                                         }
+
                                         null -> {
                                             val track = currentTrack
                                             if (track != null) {
@@ -393,7 +397,7 @@ fun AppExpandedPlayer(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onCollapse) {
+                GhostIconButton(onClick = onCollapse) {
                     Icon(Iconsax.IconsaxArrowDown4, contentDescription = "Collapse player")
                 }
                 Text(
@@ -403,7 +407,7 @@ fun AppExpandedPlayer(
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                 )
-                IconButton(onClick = { showMoreOptionsSheet = true }) {
+                GhostIconButton(onClick = { showMoreOptionsSheet = true }) {
                     Icon(Iconsax.Iconsax3DotsMore, contentDescription = "Player options")
                 }
             }
@@ -462,7 +466,7 @@ fun AppExpandedPlayer(
                         textAlign = TextAlign.Center,
                     )
                 }
-                IconButton(onClick = onQueue) {
+                IconButton(onClick = onQueue, shape = CircleShape) {
                     Icon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
                 }
             }
@@ -506,7 +510,7 @@ fun AppExpandedPlayer(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    IconButton(onClick = ::onShuffleToggle) {
+                    GhostIconButton(onClick = ::onShuffleToggle) {
                         Icon(
                             Iconsax.IconsaxShuffle,
                             contentDescription = if (playerUiState.isShuffling) "Disable shuffle" else "Enable shuffle",
@@ -517,28 +521,31 @@ fun AppExpandedPlayer(
                             }
                         )
                     }
-                    IconButton(onClick = ::onSkipPrevious) {
+                    GhostIconButton(onClick = ::onSkipPrevious) {
                         Icon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
                     }
-                    Surface(
+                    IconButton(
+                        onClick = ::onPlayPause,
+                        colors = rememberButtonColors().copy(
+                            containerDarker = MaterialTheme.colorScheme.onSurface,
+                            containerLighter = MaterialTheme.colorScheme.onSurface,
+                            containerPressed = MaterialTheme.colorScheme.onSurfaceVariant,
+                        ),
+                        modifier = Modifier
+                            .size(72.dp),
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        contentColor = MaterialTheme.colorScheme.surface,
-                        shadowElevation = 8.dp,
-                        modifier = Modifier.size(72.dp),
                     ) {
-                        IconButton(onClick = ::onPlayPause, modifier = Modifier.fillMaxSize()) {
-                            Icon(
-                                if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                                contentDescription = if (playerUiState.isPlaying) "Pause" else "Play",
-                                modifier = Modifier.size(30.dp),
-                            )
-                        }
+                        Icon(
+                            if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
+                            contentDescription = if (playerUiState.isPlaying) "Pause" else "Play",
+                            modifier = Modifier.size(30.dp),
+                            tint = MaterialTheme.colorScheme.surface,
+                        )
                     }
-                    IconButton(onClick = ::onSkipNext) {
+                    GhostIconButton(onClick = ::onSkipNext) {
                         Icon(Iconsax.IconsaxNext, contentDescription = "Next")
                     }
-                    IconButton(onClick = ::onLoopToggle) {
+                    GhostIconButton(onClick = ::onLoopToggle) {
                         Icon(
                             imageVector = when (playerUiState.loopState) {
                                 LoopState.NONE -> Iconsax.IconsaxRepeateMusic
@@ -639,14 +646,13 @@ private fun LyricsPreviewCard(
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                IconButton(
+                GhostIconButton(
                     onClick = onExpand,
-                    modifier = Modifier.size(24.dp),
+                    modifier = Modifier.size(28.dp),
                 ) {
                     Icon(
                         Iconsax.IconsaxArrowSquareUp,
                         contentDescription = "Expand lyrics",
-                        modifier = Modifier.size(16.dp),
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }

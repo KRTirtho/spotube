@@ -22,15 +22,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -53,6 +53,10 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.ui.base.GhostIconButton
+import dev.krtirtho.spotube.core.ui.base.Slider
+import dev.krtirtho.spotube.core.ui.base.VariableIconButton
+import dev.krtirtho.spotube.core.ui.base.VariableIconButtonVariant
 import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
@@ -93,7 +97,6 @@ import kotlin.time.Duration.Companion.milliseconds
 fun AppLargePlayer(
     modifier: Modifier = Modifier,
     onQueue: () -> Unit = {},
-    onDownload: () -> Unit = {},
     onAlternativeSource: () -> Unit = {},
     onMoreOptions: () -> Unit = {},
     onLyrics: () -> Unit = {},
@@ -167,8 +170,8 @@ fun AppLargePlayer(
     Surface(
         modifier = modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.78f),
-        tonalElevation = 4.dp,
-        shadowElevation = 14.dp
+        tonalElevation = 0.dp,
+        shadowElevation = 0.dp
     ) {
         Row(
             modifier = Modifier
@@ -209,6 +212,7 @@ fun AppLargePlayer(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
+                Spacer(modifier = Modifier.width(10.dp))
                 PlayerHeartButton(
                     audioPlayerQueue = audioPlayerQueue,
                     savedTracksViewModel = savedTracksViewModel,
@@ -253,7 +257,10 @@ fun AppLargePlayer(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    IconButton(onClick = ::onShuffleToggle) {
+                    VariableIconButton(
+                        onClick = ::onShuffleToggle,
+                        variant = if (playerUiState.isShuffling) VariableIconButtonVariant.Outline else VariableIconButtonVariant.Ghost
+                    ) {
                         Icon(
                             Iconsax.IconsaxShuffle,
                             contentDescription = if (playerUiState.isShuffling) "Disable shuffle" else "Enable shuffle",
@@ -264,19 +271,22 @@ fun AppLargePlayer(
                             }
                         )
                     }
-                    IconButton(onClick = ::onSkipPrevious) {
+                    GhostIconButton(onClick = ::onSkipPrevious) {
                         Icon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
                     }
-                    IconButton(onClick = ::onPlayPause, modifier = Modifier.size(44.dp)) {
+                    GhostIconButton(onClick = ::onPlayPause, modifier = Modifier.size(44.dp)) {
                         Icon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = if (playerUiState.isPlaying) "Pause" else "Play or pause",
                         )
                     }
-                    IconButton(onClick = ::onSkipNext) {
+                    GhostIconButton(onClick = ::onSkipNext) {
                         Icon(Iconsax.IconsaxNext, contentDescription = "Next")
                     }
-                    IconButton(onClick = ::onLoopToggle) {
+                    VariableIconButton(
+                        onClick = ::onLoopToggle,
+                        variant = if (playerUiState.loopState == LoopState.NONE) VariableIconButtonVariant.Ghost else VariableIconButtonVariant.Outline
+                    ) {
                         Icon(
                             imageVector = when (playerUiState.loopState) {
                                 LoopState.NONE -> Iconsax.IconsaxRepeateMusic
@@ -299,10 +309,10 @@ fun AppLargePlayer(
                 horizontalAlignment = Alignment.End
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onQueue) {
+                    GhostIconButton(onClick = onQueue) {
                         Icon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
                     }
-                    IconButton(onClick = {
+                    GhostIconButton(onClick = {
                         val track = (currentEntry as? QueueEntry.StreamingTrack)?.track
                         if (track != null) {
                             downloadsViewModel.downloadTrack(track)
@@ -314,18 +324,18 @@ fun AppLargePlayer(
                             contentDescription = "Download",
                         )
                     }
-                    IconButton(onClick = onAlternativeSource) {
+                    GhostIconButton(onClick = onAlternativeSource) {
                         Icon(Iconsax.SwapHorizontal2, contentDescription = "Alternative source")
                     }
-                    IconButton(onClick = onLyrics) {
+                    GhostIconButton(onClick = onLyrics) {
                         Icon(Iconsax.IconsaxMusic, contentDescription = "Lyrics")
                     }
-                    IconButton(onClick = onMoreOptions) {
+                    GhostIconButton(onClick = onMoreOptions) {
                         Icon(Iconsax.Iconsax3DotsMore, contentDescription = "More options")
                     }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(
+                    GhostIconButton(
                         onClick = {
                             scope.launch {
                                 if (playerUiState.volume <= 0f) {

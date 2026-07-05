@@ -17,8 +17,8 @@
 
 package dev.krtirtho.spotube.modules.shell
 
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,6 +26,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.modules.saved_tracks.SavedState
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.rememberIsSavedTracks
@@ -67,7 +68,8 @@ fun PlayerHeartButton(
     }
     IconButton(
         onClick = ::onLike,
-        enabled = isSavedTrackState is SavedState.Success
+        enabled = isSavedTrackState is SavedState.Success,
+        shape = CircleShape,
     ) {
         Icon(
             imageVector = if (isLiked) Iconsax.IconsaxHeart2 else Iconsax.IconsaxHeart,
