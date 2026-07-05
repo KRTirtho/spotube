@@ -37,21 +37,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -63,6 +61,8 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.MoreVertical
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.rememberLogger
+import dev.krtirtho.spotube.core.ui.base.GhostIconButton
+import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
@@ -186,7 +186,7 @@ fun PlayerQueueContent(
                     singleLine = true,
                     modifier = Modifier.weight(1f),
                 )
-                FilledTonalIconButton(
+                SecondaryIconButton(
                     onClick = viewModel::clearQueue,
                     shape = MaterialTheme.shapes.small,
                 ) {
@@ -333,7 +333,7 @@ private fun QueueItemRow(
             Spacer(modifier = Modifier.width(4.dp))
 
             Box {
-                IconButton(
+                GhostIconButton(
                     onClick = { showMenu = true },
                     modifier = Modifier.size(36.dp),
                 ) {

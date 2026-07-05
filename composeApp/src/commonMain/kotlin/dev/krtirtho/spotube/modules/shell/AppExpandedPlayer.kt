@@ -530,6 +530,8 @@ fun AppExpandedPlayer(
                             containerDarker = MaterialTheme.colorScheme.onSurface,
                             containerLighter = MaterialTheme.colorScheme.onSurface,
                             containerPressed = MaterialTheme.colorScheme.onSurfaceVariant,
+                            shadow = MaterialTheme.colorScheme.onSurfaceVariant,
+                            border = MaterialTheme.colorScheme.onSurfaceVariant
                         ),
                         modifier = Modifier
                             .size(72.dp),

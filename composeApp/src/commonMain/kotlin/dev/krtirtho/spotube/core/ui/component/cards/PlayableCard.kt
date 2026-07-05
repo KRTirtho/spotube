@@ -33,9 +33,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import dev.krtirtho.spotube.core.ui.base.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -55,8 +55,8 @@ import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
-import dev.krtirtho.spotube.resources.iconsax.IconsaxPauseCircle
-import dev.krtirtho.spotube.resources.iconsax.Play
+import dev.krtirtho.spotube.resources.iconsax.IconsaxPause
+import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
 
 @Composable
 fun PlayableCard(
@@ -108,7 +108,7 @@ fun PlayableCard(
                                     SecondaryIconButton(
                                         onClick = onAddToQueue,
                                         modifier = Modifier.size(30.dp),
-                                        shape = RoundedCornerShape(6.dp)
+                                        shape = CircleShape,
                                     ) {
                                         Icon(
                                             imageVector = Iconsax.IconsaxAddSquare,
@@ -121,12 +121,12 @@ fun PlayableCard(
                                     PrimaryIconButton(
                                         onClick = onPlay,
                                         modifier = Modifier.size(30.dp),
-                                        shape = RoundedCornerShape(6.dp)
+                                        shape = CircleShape,
                                     ) {
                                         Icon(
                                             imageVector = if (isPlaying) {
-                                                Iconsax.IconsaxPauseCircle
-                                            } else Iconsax.Play,
+                                                Iconsax.IconsaxPause
+                                            } else Iconsax.IconsaxPlay,
                                             contentDescription = "Play",
                                         )
                                     }
