@@ -121,21 +121,7 @@ fun ChipTab(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .drawWithCache {
-                val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(state.colors.highlight, Color.Transparent),
-                    startY = 0f,
-                    endY = size.height * 0.5f,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(
-                        brush = highlightBrush,
-                        topLeft = androidx.compose.ui.geometry.Offset.Zero,
-                        size = size,
-                    )
-                }
-            }
+            .highlight(state.colors.highlight)
             .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {

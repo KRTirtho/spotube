@@ -91,6 +91,7 @@ import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.GroupIconButton
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.TextField
+import dev.krtirtho.spotube.core.ui.base.highlight
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
@@ -539,23 +540,13 @@ private fun TrackListRow(
                 onLongClick = onLongClick,
             )
             .background(rowBackgroundColor)
-            .drawWithCache {
-                val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(highlightColor, Color.Transparent),
-                    startY = 0f,
-                    endY = size.height * 0.5f,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    if (isRowHovered || isSelected || (isCurrentTrack && isCurrentTrackPlaying)) {
-                        drawRect(
-                            brush = highlightBrush,
-                            topLeft = Offset.Zero,
-                            size = size,
-                        )
-                    }
+            .then(
+                if (isRowHovered || isSelected || (isCurrentTrack && isCurrentTrackPlaying)) {
+                    Modifier.highlight(highlightColor)
+                } else {
+                    Modifier
                 }
-            }
+            )
             .clip(MaterialTheme.shapes.small)
             .padding(horizontal = 8.dp, vertical = 6.dp)
             .padding(end = 6.dp),

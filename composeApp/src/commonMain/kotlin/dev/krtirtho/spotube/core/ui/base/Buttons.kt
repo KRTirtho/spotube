@@ -89,9 +89,29 @@ private fun resolveButtonState(
     isHovered: Boolean,
 ): ResolvedButtonState {
     return when {
-        isPressed -> ResolvedButtonState(style.colors.pressed, style.shape.pressed, style.shadow.pressed, style.border.pressed, style.padding.pressed)
-        isHovered -> ResolvedButtonState(style.colors.hovered, style.shape.hovered, style.shadow.hovered, style.border.hovered, style.padding.hovered)
-        else -> ResolvedButtonState(style.colors.focused, style.shape.focused, style.shadow.focused, style.border.focused, style.padding.focused)
+        isPressed -> ResolvedButtonState(
+            style.colors.pressed,
+            style.shape.pressed,
+            style.shadow.pressed,
+            style.border.pressed,
+            style.padding.pressed
+        )
+
+        isHovered -> ResolvedButtonState(
+            style.colors.hovered,
+            style.shape.hovered,
+            style.shadow.hovered,
+            style.border.hovered,
+            style.padding.hovered
+        )
+
+        else -> ResolvedButtonState(
+            style.colors.focused,
+            style.shape.focused,
+            style.shadow.focused,
+            style.border.focused,
+            style.padding.focused
+        )
     }
 }
 
@@ -134,11 +154,17 @@ fun OutlineButton(
             .hoverable(interactionSource = interactionSource, enabled = enabled)
             .graphicsLayer { translationY = lift.toPx() }
             .then(
-                if (hoverOnly && !isHovered) Modifier else Modifier.applyShadow(state.shadow, state.shape)
+                if (hoverOnly && !isHovered) Modifier else Modifier.applyShadow(
+                    state.shadow,
+                    state.shape
+                )
             )
             .clip(state.shape)
             .then(
-                if (hoverOnly && !isHovered) Modifier else Modifier.background(state.colors.background, state.shape)
+                if (hoverOnly && !isHovered) Modifier else Modifier.background(
+                    state.colors.background,
+                    state.shape
+                )
                     .border(BorderStroke(state.border.width, state.border.color), state.shape)
             )
             .clickable(
@@ -147,21 +173,7 @@ fun OutlineButton(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .then(if (hoverOnly && !isHovered) Modifier else Modifier.drawWithCache {
-                val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(state.colors.highlight, Color.Transparent),
-                    startY = 0f,
-                    endY = size.height * 0.5f,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(
-                        brush = highlightBrush,
-                        topLeft = androidx.compose.ui.geometry.Offset.Zero,
-                        size = size,
-                    )
-                }
-            })
+            .then(if (hoverOnly && !isHovered) Modifier else Modifier.highlight(state.colors.highlight))
             .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {
@@ -208,21 +220,7 @@ fun PrimaryButton(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .drawWithCache {
-                val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(state.colors.highlight, Color.Transparent),
-                    startY = 0f,
-                    endY = size.height * 0.5f,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(
-                        brush = highlightBrush,
-                        topLeft = androidx.compose.ui.geometry.Offset.Zero,
-                        size = size,
-                    )
-                }
-            }
+            .highlight(state.colors.highlight)
             .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {
@@ -267,21 +265,7 @@ fun SecondaryButton(
                 indication = ripple(),
                 onClick = onClick,
             )
-            .drawWithCache {
-                val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(state.colors.highlight, Color.Transparent),
-                    startY = 0f,
-                    endY = size.height * 0.5f,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(
-                        brush = highlightBrush,
-                        topLeft = androidx.compose.ui.geometry.Offset.Zero,
-                        size = size,
-                    )
-                }
-            }
+            .highlight(state.colors.highlight)
             .padding(state.padding),
         contentAlignment = Alignment.Center,
     ) {

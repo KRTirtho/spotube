@@ -269,21 +269,7 @@ fun <T> AutocompleteTextField(
                         BorderStroke(resolvedBorder.width, resolvedBorder.color),
                         fieldState.shape
                     )
-                    .drawWithCache {
-                        val highlightBrush = Brush.verticalGradient(
-                            colors = listOf(fieldState.highlight, Color.Transparent),
-                            startY = 0f,
-                            endY = size.height * 0.5f,
-                        )
-                        onDrawWithContent {
-                            drawContent()
-                            drawRect(
-                                brush = highlightBrush,
-                                topLeft = androidx.compose.ui.geometry.Offset.Zero,
-                                size = size,
-                            )
-                        }
-                    }
+                    .highlight(fieldState.highlight)
                     .padding(resolvedTextFieldTheme.padding),
             ) {
                 Row(

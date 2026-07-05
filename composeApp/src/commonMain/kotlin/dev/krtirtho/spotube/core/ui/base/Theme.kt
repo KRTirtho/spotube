@@ -23,6 +23,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -651,15 +653,30 @@ fun rememberBaseUITheme(): BaseUITheme {
             shape = RoundedCornerShape(16.dp),
             border = BaseUITheme.Border(border, 0.5.dp),
             padding = PaddingValues(0.dp),
-            shadow = BaseUITheme.Shadow(6.dp, true, shadowColor.copy(alpha = 0.15f), shadowColor.copy(alpha = 0.18f)),
+            shadow = BaseUITheme.Shadow(
+                6.dp,
+                true,
+                shadowColor.copy(alpha = 0.15f),
+                shadowColor.copy(alpha = 0.18f)
+            ),
         ),
         listRowTile = BaseUITheme.ListRowTheme(
             background = BaseUITheme.AdvancedInteractionState(
                 hovered = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
                 pressed = Brush.verticalGradient(listOf(containerPressed, containerPressed)),
                 focused = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
-                selected = Brush.verticalGradient(listOf(scheme.primaryContainer.copy(alpha = 0.3f), scheme.primaryContainer.copy(alpha = 0.3f))),
-                disabled = Brush.verticalGradient(listOf(containerLighter.copy(alpha = 0.5f), containerDarker.copy(alpha = 0.5f))),
+                selected = Brush.verticalGradient(
+                    listOf(
+                        scheme.primaryContainer.copy(alpha = 0.3f),
+                        scheme.primaryContainer.copy(alpha = 0.3f)
+                    )
+                ),
+                disabled = Brush.verticalGradient(
+                    listOf(
+                        containerLighter.copy(alpha = 0.5f),
+                        containerDarker.copy(alpha = 0.5f)
+                    )
+                ),
             ),
             shape = BaseUITheme.AdvancedInteractionState(
                 hovered = RoundedCornerShape(8.dp),
@@ -730,7 +747,12 @@ fun invertedButtonStyle(): BaseUITheme.ButtonStyle {
         highlight = if (isLight) Color.White.copy(alpha = 0.15f) else Color.White.copy(alpha = 0.08f),
     )
     val pressedColors = BaseUITheme.ButtonColors(
-        background = Brush.verticalGradient(listOf(scheme.onSurfaceVariant, scheme.onSurfaceVariant)),
+        background = Brush.verticalGradient(
+            listOf(
+                scheme.onSurfaceVariant,
+                scheme.onSurfaceVariant
+            )
+        ),
         foreground = scheme.surface,
         highlight = if (isLight) Color.White.copy(alpha = 0.1f) else Color.White.copy(alpha = 0.05f),
     )

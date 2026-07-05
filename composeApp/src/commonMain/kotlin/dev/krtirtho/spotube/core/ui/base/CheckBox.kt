@@ -145,21 +145,7 @@ fun CheckBox(
             .clip(resolved.shape)
             .background(resolved.colors.background, resolved.shape)
             .border(BorderStroke(0.5.dp, borderColor), resolved.shape)
-            .drawWithCache {
-                val highlightBrush = Brush.verticalGradient(
-                    colors = listOf(resolved.colors.highlight, Color.Transparent),
-                    startY = 0f,
-                    endY = size.height * 0.5f,
-                )
-                onDrawWithContent {
-                    drawContent()
-                    drawRect(
-                        brush = highlightBrush,
-                        topLeft = Offset.Zero,
-                        size = size,
-                    )
-                }
-            }
+            .highlight(resolved.colors.highlight)
             .then(
                 if (onClick != null) {
                     Modifier

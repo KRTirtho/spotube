@@ -152,21 +152,7 @@ fun TextField(
                 .clip(state.shape)
                 .background(state.background, state.shape)
                 .border(BorderStroke(resolvedBorder.width, resolvedBorder.color), state.shape)
-                .drawWithCache {
-                    val highlightBrush = Brush.verticalGradient(
-                        colors = listOf(state.highlight, Color.Transparent),
-                        startY = 0f,
-                        endY = size.height * 0.5f,
-                    )
-                    onDrawWithContent {
-                        drawContent()
-                        drawRect(
-                            brush = highlightBrush,
-                            topLeft = androidx.compose.ui.geometry.Offset.Zero,
-                            size = size,
-                        )
-                    }
-                }
+                .highlight(state.highlight)
                 .padding(textFieldTheme.padding),
         ) {
             Row(
