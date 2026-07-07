@@ -1,0 +1,307 @@
+name: Build All Platforms
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  COMPOSE_WEBVIEW_REPO: kdroidFilter/ComposeNativeWebview
+  COMPOSE_WEBVIEW_COMMIT: 5aeb268a2c37ff4dbfb76924573344a7c4f763ce
+  GRADLE_PLUGIN_REPO: team-spotube/gradle-plugin
+
+jobs:
+  prepare-deps:
+    name: Prepare Dependencies
+    runs-on: macos-latest
+    steps:
+      - name: Checkout ComposeNativeWebview
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.COMPOSE_WEBVIEW_REPO }}
+          ref: ${{ env.COMPOSE_WEBVIEW_COMMIT }}
+          path: compose-webview
+
+      - name: Checkout gradle-plugin
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GRADLE_PLUGIN_REPO }}
+          token: ${{ secrets.GH_PAT }}
+          path: gradle-plugin
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Publish compose-webview to mavenLocal
+        working-directory: compose-webview
+        run: |
+          chmod +x gradlew
+          ./gradlew publishToMavenLocal
+
+      - name: Publish gradle-plugin to mavenLocal
+        working-directory: gradle-plugin
+        run: |
+          chmod +x gradlew
+          ./gradlew publishToMavenLocal
+
+      - name: Upload compose-webview artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: maven-local-composewebview
+          path: ~/.m2/repository/io/github/kdroidfilter/
+
+      - name: Upload gradle-plugin artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: maven-local-gradle-plugin
+          path: ~/.m2/repository/dev/krtirtho/spotube/
+
+  build-android:
+    name: Android
+    needs: prepare-deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download compose-webview artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-composewebview
+          path: ~/.m2/repository/io/github/kdroidfilter/
+
+      - name: Download gradle-plugin artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-gradle-plugin
+          path: ~/.m2/repository/dev/krtirtho/spotube/
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+      - name: Assemble Release
+        run: ./gradlew :composeApp:assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: composeApp/build/outputs/apk/release/*.apk
+
+      - name: Upload AAB
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-aab
+          path: composeApp/build/outputs/bundle/release/*.aab
+
+  build-linux:
+    name: Linux Desktop
+    needs: prepare-deps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download compose-webview artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-composewebview
+          path: ~/.m2/repository/io/github/kdroidfilter/
+
+      - name: Download gradle-plugin artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-gradle-plugin
+          path: ~/.m2/repository/dev/krtirtho/spotube/
+
+      - name: Install packaging tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm fuse
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Package DEB
+        run: ./gradlew :composeApp:packageReleaseDeb
+
+      - name: Package RPM
+        run: ./gradlew :composeApp:packageReleaseRpm
+
+      - name: Package AppImage
+        run: ./gradlew :composeApp:packageReleaseAppImage
+
+      - name: Upload DEB
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-deb
+          path: composeApp/build/compose/binaries/main-release/**/*.deb
+
+      - name: Upload RPM
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-rpm
+          path: composeApp/build/compose/binaries/main-release/**/*.rpm
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-appimage
+          path: composeApp/build/compose/binaries/main-release/**/*.AppImage
+
+  build-windows:
+    name: Windows Desktop
+    needs: prepare-deps
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download compose-webview artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-composewebview
+          path: ~/.m2/repository/io/github/kdroidfilter/
+
+      - name: Download gradle-plugin artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-gradle-plugin
+          path: ~/.m2/repository/dev/krtirtho/spotube/
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Package MSI
+        run: ./gradlew :composeApp:packageReleaseMsi
+
+      - name: Package EXE
+        run: ./gradlew :composeApp:packageReleaseExe
+
+      - name: Upload MSI
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-msi
+          path: composeApp/build/compose/binaries/main-release/**/*.msi
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-exe
+          path: composeApp/build/compose/binaries/main-release/**/*.exe
+
+  build-macos:
+    name: macOS Desktop
+    needs: prepare-deps
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download compose-webview artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-composewebview
+          path: ~/.m2/repository/io/github/kdroidfilter/
+
+      - name: Download gradle-plugin artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-gradle-plugin
+          path: ~/.m2/repository/dev/krtirtho/spotube/
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Package DMG
+        run: ./gradlew :composeApp:packageReleaseDmg
+
+      - name: Upload DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: macos-dmg
+          path: composeApp/build/compose/binaries/main-release/**/*.dmg
+
+  build-ios:
+    name: iOS
+    needs: prepare-deps
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download compose-webview artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-composewebview
+          path: ~/.m2/repository/io/github/kdroidfilter/
+
+      - name: Download gradle-plugin artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: maven-local-gradle-plugin
+          path: ~/.m2/repository/dev/krtirtho/spotube/
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build Kotlin framework
+        run: ./gradlew :composeApp:linkReleaseFrameworkIosArm64
+
+      - name: Build iOS app
+        run: |
+          xcodebuild \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -sdk iphoneos \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            CONFIGURATION_BUILD_DIR="${{ github.workspace }}/build/ios" \
+            build
+
+      - name: Upload .app
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app
+          path: build/ios/*.app

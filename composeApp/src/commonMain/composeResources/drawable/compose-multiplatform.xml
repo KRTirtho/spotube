@@ -1,0 +1,61 @@
+<!--
+  ~ Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU Affero General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU Affero General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU Affero General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<vector
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="450dp"
+    android:height="450dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+  <path
+      android:pathData="M56.25,18V46L32,60 7.75,46V18L32,4Z"
+      android:fillColor="#6075f2"/>
+  <path
+      android:pathData="m41.5,26.5v11L32,43V60L56.25,46V18Z"
+      android:fillColor="#6b57ff"/>
+  <path
+      android:pathData="m32,43 l-9.5,-5.5v-11L7.75,18V46L32,60Z">
+    <aapt:attr name="android:fillColor">
+      <gradient
+          android:centerX="23.131"
+          android:centerY="18.441"
+          android:gradientRadius="42.132"
+          android:type="radial">
+        <item android:offset="0" android:color="#FF5383EC"/>
+        <item android:offset="0.867" android:color="#FF7F52FF"/>
+      </gradient>
+    </aapt:attr>
+  </path>
+  <path
+      android:pathData="M22.5,26.5 L32,21 41.5,26.5 56.25,18 32,4 7.75,18Z">
+    <aapt:attr name="android:fillColor">
+      <gradient
+          android:startX="44.172"
+          android:startY="4.377"
+          android:endX="17.973"
+          android:endY="34.035"
+          android:type="linear">
+        <item android:offset="0" android:color="#FF33C3FF"/>
+        <item android:offset="0.878" android:color="#FF5383EC"/>
+      </gradient>
+    </aapt:attr>
+  </path>
+  <path
+      android:pathData="m32,21 l9.526,5.5v11L32,43 22.474,37.5v-11z"
+      android:fillColor="#000000"/>
+</vector>

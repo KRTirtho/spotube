@@ -1,0 +1,124 @@
+/*
+ * Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.krtirtho.spotube.core.ui.component
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.window.WindowDraggableArea
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.TopAppBar
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.ApplicationScope
+import androidx.compose.ui.window.WindowPlacement
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.Maximize2
+import compose.icons.feathericons.Minimize2
+import compose.icons.feathericons.Minus
+import compose.icons.feathericons.X
+
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
+@Composable
+actual fun ApplicationMainBar(
+    title: @Composable (() -> Unit),
+    subtitle: @Composable () -> Unit,
+    actions: @Composable (RowScope.() -> Unit),
+    backButton: Boolean,
+) {
+    LocalWindowScope.current.WindowDraggableArea {
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            TopAppBar(
+                title = title,
+                actions = {
+                    actions()
+                },
+                navigationIcon = {
+                    if (backButton) {
+                        ApplicationBackButton()
+                    }
+                },
+                subtitle = subtitle,
+                modifier = Modifier.padding(end = 125.dp) // To avoid overlap with window buttons
+            )
+            WindowButtons(
+                modifier = Modifier.align(Alignment.TopEnd)
+            )
+        }
+    }
+}
+
+@Composable
+private fun WindowButtons(modifier: Modifier = Modifier) {
+    val window = LocalWindowScope.current.window
+    val applicationScope = LocalApplicationScope.current
+
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        IconButton(
+            onClick = {
+                window.isMinimized = true
+            }) {
+            Icon(
+                FeatherIcons.Minus, "Minimize", modifier = Modifier.size(14.dp)
+            )
+        }
+        IconButton(
+            onClick = {
+                window.placement = if (window.placement == WindowPlacement.Maximized) {
+                    WindowPlacement.Floating
+                } else {
+                    WindowPlacement.Maximized
+                }
+            }) {
+            if (window.placement == WindowPlacement.Floating) {
+                Icon(
+                    FeatherIcons.Maximize2, "Maximize", modifier = Modifier.size(14.dp)
+                )
+            } else {
+                Icon(
+                    FeatherIcons.Minimize2, "Restore", modifier = Modifier.size(14.dp)
+                )
+            }
+        }
+        IconButton(
+            onClick = {
+                applicationScope.exitApplication()
+            }) {
+            Icon(
+                FeatherIcons.X, "Close", modifier = Modifier.size(14.dp)
+            )
+        }
+    }
+}

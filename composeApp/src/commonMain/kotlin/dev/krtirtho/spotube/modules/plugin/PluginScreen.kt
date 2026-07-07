@@ -1,0 +1,316 @@
+/*
+ * Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package dev.krtirtho.spotube.modules.plugin
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.Package
+import dev.krtirtho.spotube.PlatformType
+import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.core.webview.WebViewController
+import dev.krtirtho.spotube.getPlatform
+import dev.krtirtho.spotube.modules.plugin.components.InstallSection
+import dev.krtirtho.spotube.modules.plugin.components.PluginCard
+import dev.krtirtho.spotube.modules.plugin.components.PluginPermissionDialog
+import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
+import io.github.vinceglb.filekit.dialogs.FileKitType
+import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
+import io.github.vinceglb.filekit.readBytes
+import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.plugin_empty_subtitle
+import spotube.composeapp.generated.resources.plugin_empty_title
+import spotube.composeapp.generated.resources.plugin_error_download_failed
+import spotube.composeapp.generated.resources.plugin_error_enter_url
+import spotube.composeapp.generated.resources.plugin_error_url_scheme
+import spotube.composeapp.generated.resources.plugin_installed_count
+import spotube.composeapp.generated.resources.plugin_installed_plural
+import spotube.composeapp.generated.resources.plugin_installed_singular
+import spotube.composeapp.generated.resources.plugin_screen_title
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PluginScreen(
+    pluginManager: PluginManager,
+    webviewController: WebViewController = koinInject()
+) {
+    val scope = rememberCoroutineScope()
+    val platform = remember { getPlatform() }
+    val pendingPlugin by pluginManager.pendingPlugin.collectAsStateWithLifecycle()
+    val pluginsState by pluginManager.state.collectAsStateWithLifecycle()
+    val activeServices by pluginManager.ziplineServices.collectAsStateWithLifecycle()
+    val shellBottomInset = LocalAppShellBottomInset.current
+
+    var urlInput by remember { mutableStateOf("") }
+    var urlError by remember { mutableStateOf<String?>(null) }
+    var isLoadingUrl by remember { mutableStateOf(false) }
+
+    val pleaseEnterUrl = stringResource(Res.string.plugin_error_enter_url)
+    val urlSchemeError = stringResource(Res.string.plugin_error_url_scheme)
+    val downloadFailed = stringResource(Res.string.plugin_error_download_failed)
+
+    val launcher = rememberFilePickerLauncher(
+        type = FileKitType.File(
+            extensions = if (platform.type == PlatformType.Android) listOf() else listOf("smplug")
+        )
+    ) { file ->
+        if (file != null) {
+            scope.launch { pluginManager.preparePlugin(file.readBytes()) }
+        }
+    }
+
+    fun submitUrl() {
+        val url = urlInput.trim()
+        if (url.isBlank()) {
+            urlError = pleaseEnterUrl
+            return
+        }
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            urlError = urlSchemeError
+            return
+        }
+        urlError = null
+        isLoadingUrl = true
+        scope.launch {
+            try {
+                pluginManager.addPluginFromURL(url)
+                urlInput = ""
+            } catch (e: Exception) {
+                urlError = e.message ?: downloadFailed
+            } finally {
+                isLoadingUrl = false
+            }
+        }
+    }
+
+    pendingPlugin?.let { pending ->
+        PluginPermissionDialog(
+            pluginInfo = pending.entry,
+            title = pending.title,
+            message = pending.message,
+            confirmLabel = pending.confirmLabel,
+            existingPlugin = pending.existingEntry,
+            onConfirm = if (pending.kind != PluginManager.InstallPromptKind.INFO && pending.confirmLabel != null) {
+                { pluginManager.confirmInstall() }
+            } else {
+                null
+            },
+            onDismiss = { pluginManager.dismissInstall() }
+        )
+    }
+
+    Scaffold(
+        topBar = {
+            ApplicationMainBar(title = { Text(stringResource(Res.string.plugin_screen_title)) })
+        }
+    ) { innerPadding ->
+        when (val state = pluginsState) {
+            is PluginManagerStates.Loading -> {
+                Box(
+                    modifier = Modifier.fillMaxSize().padding(innerPadding),
+                    contentAlignment = Alignment.Center
+                ) { CircularProgressIndicator() }
+            }
+
+            is PluginManagerStates.Data -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                ) {
+                    LazyColumn(
+                        modifier = Modifier.widthIn(max = 1280.dp).align(Alignment.TopCenter),
+                        contentPadding = PaddingValues(
+                            start = 12.dp,
+                            end = 12.dp,
+                            top = 8.dp,
+                            bottom = 24.dp + shellBottomInset
+                        ),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    )
+                    {
+                        // ── Install section ───────────────────────────────────
+                        item {
+                            InstallSection(
+                                urlInput = urlInput,
+                                onUrlChange = { urlInput = it; urlError = null },
+                                urlError = urlError,
+                                isLoadingUrl = isLoadingUrl,
+                                onSubmitUrl = { submitUrl() },
+                                onPickFile = { launcher.launch() }
+                            )
+                        }
+
+                        if (state.plugins.isEmpty()) {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 48.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Column(
+                                        horizontalAlignment = Alignment.CenterHorizontally,
+                                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        Surface(
+                                            modifier = Modifier.size(72.dp)
+                                                .clip(RoundedCornerShape(18.dp)),
+                                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                                        ) {
+                                            Box(contentAlignment = Alignment.Center) {
+                                                Icon(
+                                                    FeatherIcons.Package,
+                                                    contentDescription = null,
+                                                    modifier = Modifier.size(32.dp),
+                                                    tint = MaterialTheme.colorScheme.primary
+                                                )
+                                            }
+                                        }
+                                        Text(
+                                            stringResource(Res.string.plugin_empty_title),
+                                            style = MaterialTheme.typography.titleSmall,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                        Text(
+                                            stringResource(Res.string.plugin_empty_subtitle),
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
+                            }
+                        } else {
+                            // ── Plugin list ───────────────────────────────────
+                            item {
+                                val noun = if (state.plugins.size == 1) {
+                                    stringResource(Res.string.plugin_installed_singular)
+                                } else {
+                                    stringResource(Res.string.plugin_installed_plural)
+                                }
+                                Text(
+                                    stringResource(
+                                        Res.string.plugin_installed_count,
+                                        state.plugins.size,
+                                        noun
+                                    ),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
+                                )
+                            }
+                            items(state.plugins) { plugin ->
+                                val isSelected = state.selectedPlugins.containsValue(plugin)
+                                val selectedAbility = state.selectedPlugins
+                                    .entries
+                                    .firstOrNull { (_, selectedPlugin) -> selectedPlugin.id == plugin.id }
+                                    ?.key
+                                val selectedService = selectedAbility?.let { ability ->
+                                    activeServices?.get(ability)
+                                }
+
+                                var requiresAuth by remember(plugin.id, selectedService) {
+                                    mutableStateOf(false)
+                                }
+                                var isLoggedIn by remember(plugin.id, selectedService) {
+                                    mutableStateOf(false)
+                                }
+
+                                LaunchedEffect(plugin.id, selectedService) {
+                                    requiresAuth = false
+                                    isLoggedIn = false
+                                    val service = selectedService ?: return@LaunchedEffect
+
+
+                                    service.use {
+                                        val pluginRequiresAuth = coreAPI.requiresAuthentication
+                                        requiresAuth = pluginRequiresAuth
+                                        if (!pluginRequiresAuth) return@use
+
+                                        coreAPI.loggedInFlow.collect { loggedIn ->
+                                            isLoggedIn = loggedIn
+                                        }
+                                    }
+                                }
+
+                                PluginCard(
+                                    plugin = plugin,
+                                    isSelected = isSelected,
+                                    onRemove = { scope.launch { pluginManager.removePlugin(plugin) } },
+                                    isLoggedIn = isLoggedIn,
+                                    onLogin = if (requiresAuth && selectedService != null) {
+                                        {
+                                            pluginManager.launchTask {
+                                                selectedService.use { coreAPI.login() }
+                                            }
+                                        }
+                                    } else {
+                                        null
+                                    },
+                                    onLogout = if (requiresAuth && selectedService != null) {
+                                        {
+                                            pluginManager.launchTask {
+                                                selectedService.use { coreAPI.logout() }
+                                            }
+                                            // should clear webview data after logout
+                                            scope.launch { webviewController.clearData() }
+                                        }
+                                    } else {
+                                        null
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
