@@ -54,3 +54,9 @@ data class MetadataBrowseSection(
     val items: List<MetadataBrowseItem>,
     val moreLink: String? = null
 )
+
+@Serializable
+data class MetadataBrowseGenre(
+    val id: String,
+    val name: String,
+)

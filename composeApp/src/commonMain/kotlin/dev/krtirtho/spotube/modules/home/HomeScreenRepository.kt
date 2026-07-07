@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.modules.home
 
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseGenre
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseItem
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseSection
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationResult
@@ -45,8 +46,10 @@ class HomeScreenRepository(
         get() = pluginManager.selectedMetadataPlugin.value
 
     private val featuredItemCache = Cache.Builder<String, List<MetadataBrowseItem>>().build()
+    private val genresCache = Cache.Builder<String, List<MetadataBrowseGenre>>().build()
     private val browseItemCache =
-        Cache.Builder<PaginationStrategy, PaginationResult<MetadataBrowseSection>>().build()
+        Cache.Builder<Pair<String, PaginationStrategy>, PaginationResult<MetadataBrowseSection>>()
+            .build()
     private val sublistItemCache =
         Cache.Builder<Pair<String, PaginationStrategy>, PaginationResult<MetadataBrowseItem>>()
             .build()
@@ -65,6 +68,7 @@ class HomeScreenRepository(
 
     fun invalidateCaches() {
         featuredItemCache.invalidateAll()
+        genresCache.invalidateAll()
         browseItemCache.invalidateAll()
         sublistItemCache.invalidateAll()
     }
@@ -79,32 +83,43 @@ class HomeScreenRepository(
         }
     }
 
-    suspend fun list(paginationStrategy: PaginationStrategy? = null) =
+    suspend fun genres() = plugin?.let { plugin ->
+        genresCache.get("genres") {
+            pluginManager.withScope {
+                plugin.use {
+                    metadataBrowseAPI.genres()
+                }
+            }
+        }
+    }
+
+    suspend fun list(genreId: String, paginationStrategy: PaginationStrategy? = null) =
         plugin?.let { plugin ->
             browseItemCache.get(
-                key = paginationStrategy ?: PaginationStrategy.Offset(0, 20)
+                key = genreId to (paginationStrategy ?: PaginationStrategy.Offset(0, 20))
             ) {
                 pluginManager.withScope {
                     plugin.use {
-                        metadataBrowseAPI.list(paginationStrategy)
+                        metadataBrowseAPI.list(genreId, paginationStrategy)
                     }
                 }
             }
         }
 
     suspend fun sublist(
+        genreId: String,
         parentId: String,
         paginationStrategy: PaginationStrategy? = null
     ) = plugin?.let { plugin ->
         sublistItemCache.get(
-            parentId to (paginationStrategy ?: PaginationStrategy.Offset(
+            "$genreId/$parentId" to (paginationStrategy ?: PaginationStrategy.Offset(
                 0,
                 20
             ))
         ) {
             pluginManager.withScope {
                 plugin.use {
-                    metadataBrowseAPI.sublist(parentId, paginationStrategy)
+                    metadataBrowseAPI.sublist(genreId, parentId, paginationStrategy)
                 }
             }
         }

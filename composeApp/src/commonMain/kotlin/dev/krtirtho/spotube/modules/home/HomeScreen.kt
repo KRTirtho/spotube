@@ -49,8 +49,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseGenre
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseItem
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseSection
 import dev.krtirtho.spotube.PlatformType
+import dev.krtirtho.spotube.core.ui.base.ChipTab
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.ArtistCard
@@ -79,6 +82,15 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
+
+    val selectedGenreId = when (val s = state) {
+        is HomeScreenState.Data -> s.selectedGenreId
+        else -> null
+    }
+
+    LaunchedEffect(selectedGenreId) {
+        listState.scrollToItem(0)
+    }
 
     LaunchedEffect(listState) {
         snapshotFlow { listState.layoutInfo }
@@ -119,6 +131,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     listState = listState,
                     state = state,
                     onRetry = { viewModel.refresh() },
+                    onGenreSelected = { viewModel.selectGenre(it) },
                 )
             } else {
                 PullToRefreshBox(
@@ -132,6 +145,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                         listState = listState,
                         state = state,
                         onRetry = { viewModel.refresh() },
+                        onGenreSelected = { viewModel.selectGenre(it) },
                     )
                 }
             }
@@ -150,6 +164,7 @@ private fun HomeContent(
     listState: androidx.compose.foundation.lazy.LazyListState,
     state: HomeScreenState,
     onRetry: () -> Unit,
+    onGenreSelected: (String) -> Unit,
 ) {
     val shellBottomInset = LocalAppShellBottomInset.current
     val contentPadding = remember(shellBottomInset) {
@@ -216,12 +231,54 @@ private fun HomeContent(
                     }
                 }
 
-                items(state.browseSections) { section ->
-                    HomeSection(
-                        title = section.title,
-                        subtitle = section.description,
-                        items = section.items,
-                    )
+                if (state.genres.isNotEmpty()) {
+                    item {
+                        GenreTabs(
+                            genres = state.genres,
+                            selectedGenreId = state.selectedGenreId,
+                            onGenreSelected = onGenreSelected,
+                        )
+                    }
+                }
+
+                val currentSections = state.selectedGenreId?.let { state.browseSections[it] }
+
+                if (currentSections == null) {
+                    item {
+                        SkeletonTree(true) {
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(180.dp)
+                                        .padding(horizontal = 16.dp),
+                                )
+                                LazyRow(
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    contentPadding = PaddingValues(horizontal = 16.dp),
+                                ) {
+                                    items(4) {
+                                        PlayableCard(
+                                            title = "Item Title",
+                                            subtitle = "Subtitle",
+                                            imageURL = "https://placehold.co/600x400",
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    items(currentSections) { section ->
+                        HomeSection(
+                            title = section.title,
+                            subtitle = section.description,
+                            items = section.items,
+                        )
+                    }
                 }
 
                 if (state is HomeScreenState.Data.LoadingMore) {
@@ -307,3 +364,26 @@ private fun HomeSection(
     }
 }
 
+@Composable
+private fun GenreTabs(
+    genres: List<MetadataBrowseGenre>,
+    selectedGenreId: String?,
+    onGenreSelected: (String) -> Unit,
+) {
+    val rowState = rememberLazyListState()
+
+    LazyRow(
+        state = rowState,
+        modifier = Modifier.dragScrollable(rowState),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+    ) {
+        items(genres) { genre ->
+            ChipTab(
+                text = genre.name,
+                selected = selectedGenreId == genre.id,
+                onClick = { onGenreSelected(genre.id) },
+            )
+        }
+    }
+}

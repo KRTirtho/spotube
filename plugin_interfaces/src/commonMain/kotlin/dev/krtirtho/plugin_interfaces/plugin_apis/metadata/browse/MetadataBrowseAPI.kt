@@ -24,6 +24,7 @@ const val MetadataBrowseAPI_SERVICE_NAME = "MetadataBrowseAPI"
 
 interface MetadataBrowseAPI: ZiplineService {
     suspend fun featured(): List<MetadataBrowseItem>
-    suspend fun list(pagination: PaginationStrategy? = null): PaginationResult<MetadataBrowseSection>
-    suspend fun sublist(sectionId: String, pagination: PaginationStrategy? = null): PaginationResult<MetadataBrowseItem>
+    suspend fun genres(): List<MetadataBrowseGenre>
+    suspend fun list(genreId: String, pagination: PaginationStrategy? = null): PaginationResult<MetadataBrowseSection>
+    suspend fun sublist(genreId: String, sectionId: String, pagination: PaginationStrategy? = null): PaginationResult<MetadataBrowseItem>
 }
