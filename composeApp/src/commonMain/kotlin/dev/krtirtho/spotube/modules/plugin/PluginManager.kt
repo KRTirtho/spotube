@@ -34,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
@@ -147,9 +148,13 @@ class PluginManager(
     @OptIn(ExperimentalCoroutinesApi::class)
     val ziplineServices = state
         .filterIsInstance<PluginManagerStates.Data>()
-        .map { it.selectedPlugins }
+        .map { it.selectedPlugins to it.generation }
+        // Paired with generation so same-version replaces (structurally equal
+        // PluginEntry) still trigger a restart. Without it the DataStore skips
+        // the emission (identical JSON) and the flow stays alive with stale code.
         .distinctUntilChanged()
-        .flatMapLatest { plugins ->
+        .flatMapLatest { (plugins, gen) ->
+            logger.d { "ziplineServices: flow restarting with generation=$gen, selectedPlugins=${plugins.keys}" }
             flow {
                 val ziplineServices: MutableMap<PluginAbility, PluginService?> =
                     mutableMapOf()
@@ -166,6 +171,7 @@ class PluginManager(
                             ziplineServicesByPluginID[plugin.id] = service
                             service.start()
                         } else {
+                            logger.d { "ziplineServices: creating new ZiplinePluginService for ${plugin.name} (${plugin.id})" }
                             val service = ZiplinePluginService(
                                 applicationName = plugin.name,
                                 manifestUrl = "http://localhost?path=${(pluginsDir / plugin.id.toPath() / "manifest.zipline.json")}",
@@ -180,12 +186,16 @@ class PluginManager(
                     // Keep the flow alive until the next plugin is selected.
                     awaitCancellation()
                 } finally {
-                    // Stop services that are no longer selected
-                    val selectedPluginIDs = plugins.values.map { it.id }.toSet()
-                    ziplineServicesByPluginID.forEach { (pluginID, service) ->
-                        if (!selectedPluginIDs.contains(pluginID)) {
-                            service.stop()
+                    withContext(NonCancellable) {
+                        logger.d { "ziplineServices: finally block stopping ${ziplineServicesByPluginID.size} services" }
+                        ziplineServicesByPluginID.forEach { (_, service) ->
+                            try {
+                                service.stop()
+                            } catch (_: Exception) {
+                                logger.e { "ziplineServices: error stopping service" }
+                            }
                         }
+                        logger.d { "ziplineServices: all services stopped" }
                     }
                 }
             }
@@ -495,7 +505,12 @@ class PluginManager(
                 currentState.selectedPlugins.mapValues { (_, selectedPlugin) ->
                     if (selectedPlugin.id == plugin.id) plugin else selectedPlugin
                 }
-            val newState = PluginManagerStates.Data(updatedPlugins, updatedSelectedPlugins)
+            val newState = PluginManagerStates.Data(
+                plugins = updatedPlugins,
+                selectedPlugins = updatedSelectedPlugins,
+                generation = currentState.generation + 1
+            )
+            logger.d { "addPlugin: bumped generation to ${newState.generation} for plugin ${plugin.id}" }
             updatePluginsState(newState)
         }
     }
@@ -510,7 +525,11 @@ class PluginManager(
             val updatedPlugins = currentState.plugins.filterNot { it.id == plugin.id }
             val updatedSelectedPlugins =
                 currentState.selectedPlugins.filterValues { it.id != plugin.id }
-            val newState = PluginManagerStates.Data(updatedPlugins, updatedSelectedPlugins)
+            val newState = PluginManagerStates.Data(
+                plugins = updatedPlugins,
+                selectedPlugins = updatedSelectedPlugins,
+                generation = currentState.generation
+            )
 
             withContext(Dispatchers.IO) {
                 val pluginDir = pluginsDir / plugin.id.toPath()

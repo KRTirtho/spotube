@@ -55,7 +55,12 @@ sealed class PluginManagerStates {
     @Serializable
     data class Data(
         val plugins: List<PluginEntry>,
-        val selectedPlugins: Map<PluginAbility, PluginEntry> = emptyMap()
+        val selectedPlugins: Map<PluginAbility, PluginEntry> = emptyMap(),
+        // Bumped on every addPlugin so the DataStore always detects a structural
+        // change — without it, same-version replaces produce identical JSON and
+        // the DataStore's internal distinctUntilChanged blocks the state emission,
+        // leaving the ziplineServices flow stuck with the old code.
+        val generation: Long = 0L
     ) : PluginManagerStates()
 
     data object Loading : PluginManagerStates()

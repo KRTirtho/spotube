@@ -125,6 +125,7 @@ open class ZiplinePluginService(
     }
     private val lifecycleMutex = Mutex()
     private var ziplineLoader: ZiplineLoader
+    private var ziplineInstance: Zipline? = null
     private val serviceRegistry = mutableMapOf<KClass<*>, ZiplineService>()
 
     init {
@@ -271,6 +272,7 @@ open class ZiplinePluginService(
                 return
             }
 
+            logger.d { "[$applicationName] start(): loading plugin from $manifestUrl" }
             withContext(ziplineDispatcher.dispatcher) {
                 trace("start(): inside zipline dispatcher before loadOnce")
                 val result = ziplineLoader.loadOnce(
@@ -280,6 +282,8 @@ open class ZiplinePluginService(
                 )
                 when (result) {
                     is LoadResult.Success -> {
+                        logger.d { "[$applicationName] start(): loadOnce succeeded, consuming services" }
+                        ziplineInstance = result.zipline
                         // Now we consume the initializer
                         val initializer = result.zipline.take<Initializer>(Initializer_SERVICE_NAME)
                         // Bind host services before initialization, so plugins can use them in their initializer
@@ -310,10 +314,19 @@ open class ZiplinePluginService(
     override suspend fun stop() {
         lifecycleMutex.withLock {
             trace("stop(): entered")
-            for (service in serviceRegistry.values) {
-                trace("stop(): closing service ${service::class.simpleName}")
-                service.close()
+            withContext(ziplineDispatcher.dispatcher) {
+                ziplineInstance?.close()
+                ziplineInstance = null
+                for (service in serviceRegistry.values) {
+                    try {
+                        trace("stop(): closing service ${service::class.simpleName}")
+                        service.close()
+                    } catch (_: Exception) {
+                        trace("stop(): error closing service ${service::class.simpleName}")
+                    }
+                }
             }
+            serviceRegistry.clear()
             scope.cancel()
             loggedInStateFlow.value = false
             ziplineDispatcher.close()
