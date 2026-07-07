@@ -146,6 +146,7 @@ fun TrackList(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(bottom = LocalAppShellBottomInset.current),
     simplified: Boolean = false,
+    scrollable: Boolean = true,
 ) {
     var filterQuery by rememberSaveable { mutableStateOf("") }
     var sortBy by rememberSaveable { mutableStateOf(TrackSortOption.None) }
@@ -207,269 +208,307 @@ fun TrackList(
     val showAlbum = !isCompact
     val useDropdownForOptions = isDesktop && !isCompact
 
-
-    Box(modifier = modifier.fillMaxWidth()) {
-        LazyColumn(
-            state = listState,
+    val trackCardContent: @Composable () -> Unit = {
+        Card(
             modifier = Modifier
-                .widthIn(max = 1280.dp)
-                .align(Alignment.TopCenter)
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp, bottom = 12.dp)
+            ) {
+                visibleTracks.forEachIndexed { displayedIndex, track ->
+                    if (displayedIndex > 0) {
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        )
+                    }
+                    TrackListRow(
+                        index = displayedIndex + 1,
+                        track = track,
+                        showIndex = showIndex,
+                        showAlbum = showAlbum,
+                        useDropdownForOptions = useDropdownForOptions,
+                        isCurrentTrack = track.id == currentTrackId,
+                        isCurrentTrackPlaying = isCurrentTrackPlaying,
+                        isSelectionMode = isSelectionMode,
+                        isSelected = selectedTrackIds.contains(track.id),
+                        onTrackClick = {
+                            if (isSelectionMode) {
+                                selectedTrackIds =
+                                    if (selectedTrackIds.contains(track.id)) {
+                                        selectedTrackIds - track.id
+                                    } else {
+                                        selectedTrackIds + track.id
+                                    }
+                            } else {
+                                onTrackClick(track)
+                            }
+                        },
+                        onLongClick = {
+                            if (!useDropdownForOptions && !isSelectionMode) {
+                                isSelectionMode = true
+                                selectedTrackIds = setOf(track.id)
+                            } else if (!useDropdownForOptions) {
+                                selectedTrackForOptions = track
+                            }
+                        },
+                        onSelectionToggle = { checked ->
+                            isSelectionMode = true
+                            selectedTrackIds = if (checked) {
+                                selectedTrackIds + track.id
+                            } else {
+                                selectedTrackIds - track.id
+                            }
+                        },
+                        onTrackOptionsAction = { action ->
+                            onTrackOptionsAction(
+                                track,
+                                action
+                            )
+                        },
+                        trackOptionsState = trackOptionsState(track),
+                        onShowOptionsClick = { selectedTrackForOptions = track },
+                        onArtistClick = onArtistClick,
+                        onAlbumClick = onAlbumClick,
+                        onArtistsOverflowClick = { onArtistsOverflowClick(track) },
+                    )
+                }
+
+                if (isLoading && tracks.isEmpty()) {
+                    repeat(ShimmerRowCount) { shimmerIndex ->
+                        if (visibleTracks.isNotEmpty() || shimmerIndex > 0) {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            )
+                        }
+                        ShimmerTrackListRow(
+                            index = shimmerIndex + 1,
+                            showIndex = showIndex,
+                            showAlbum = showAlbum,
+                            useDropdownForOptions = useDropdownForOptions,
+                        )
+                    }
+                }
+
+                if (error != null) {
+                    if (visibleTracks.isNotEmpty()) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        )
+                    }
+                    TrackListFeedbackRow(
+                        message = error,
+                        isError = true,
+                    )
+                }
+
+                if (showEmptyMessage && !isLoading && visibleTracks.isEmpty() && error == null) {
+                    TrackListFeedbackRow("No tracks found")
+                }
+
+                if (isLoadingNextPage) {
+                    if (visibleTracks.isNotEmpty()) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        )
+                    }
+                    ShimmerTrackListRow(
+                        index = visibleTracks.size + 1,
+                        showIndex = showIndex,
+                        showAlbum = showAlbum,
+                        useDropdownForOptions = useDropdownForOptions,
+                    )
+                }
+            }
+        }
+    }
+
+    val filterSortRow: @Composable () -> Unit = {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                .heightIn(max = 60.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End),
+        ) {
+            if (showIndex || isSelectionMode) {
+                val allSelected =
+                    visibleTracks.isNotEmpty() && selectedTrackIds.size == visibleTracks.size
+                val anySelected = selectedTrackIds.isNotEmpty()
+                val headerState = when {
+                    allSelected -> CheckBoxState.SELECTED
+                    anySelected -> CheckBoxState.INDETERMINATE
+                    else -> CheckBoxState.UNSELECTED
+                }
+                CheckBox(
+                    state = headerState,
+                    onClick = {
+                        if (allSelected) {
+                            isSelectionMode = false
+                            selectedTrackIds = emptySet()
+                        } else {
+                            isSelectionMode = true
+                            selectedTrackIds = visibleTracks.map { it.id }.toSet()
+                        }
+                    },
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                TextField(
+                    value = filterQuery,
+                    onValueChange = { filterQuery = it },
+                    modifier = Modifier
+                        .widthIn(max = 400.dp)
+                        .align(Alignment.CenterEnd),
+                    placeholder = { TextWithShimmer("Filter") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Iconsax.IconsaxFilterSearch,
+                            contentDescription = "Filter",
+                        )
+                    },
+                    singleLine = true,
+                )
+            }
+
+            ButtonGroup {
+                Box(
+                    contentAlignment = Alignment.Center,
+                ) {
+                    AdaptiveDropdownBottomSheet(
+                        items = TrackSortOption.entries.map { option ->
+                            AdaptiveMenuItem(
+                                label = option.label,
+                                onClick = { sortBy = option },
+                                selected = sortBy == option,
+                            )
+                        },
+                        trigger = { onClick ->
+                            GroupIconButton(
+                                onClick = onClick,
+                            ) {
+                                Icon(
+                                    imageVector = Iconsax.IconsaxSort,
+                                    contentDescription = "Sort",
+                                )
+                            }
+                        },
+                    )
+                }
+                ButtonGroupDivider()
+                Box(
+                    contentAlignment = Alignment.Center,
+                ) {
+                    val targetTracks = if (selectedTrackIds.isNotEmpty()) {
+                        visibleTracks.filter { selectedTrackIds.contains(it.id) }
+                    } else {
+                        visibleTracks
+                    }
+                    val trackCount = targetTracks.size
+                    val isAll =
+                        selectedTrackIds.isEmpty() || trackCount == visibleTracks.size
+                    AdaptiveDropdownBottomSheet(
+                        items = listOf(
+                            AdaptiveMenuItem(
+                                icon = Iconsax.IconsaxDirectboxReceive,
+                                label = if (isAll) "Download All" else "Download $trackCount",
+                                onClick = { onBulkDownload(targetTracks) },
+                            ),
+                            AdaptiveMenuItem(
+                                icon = Iconsax.IconsaxAddSquare,
+                                label = if (isAll) "Add All to Queue" else "Add $trackCount to Queue",
+                                onClick = { onBulkAddToQueue(targetTracks) },
+                            ),
+                            AdaptiveMenuItem(
+                                icon = Iconsax.IconsaxNext,
+                                label = if (isAll) "Play All Next" else "Play $trackCount Next",
+                                onClick = { onBulkPlayNext(targetTracks) },
+                            ),
+                        ),
+                        trigger = { onClick ->
+                            GroupIconButton(
+                                onClick = onClick,
+                            ) {
+                                Icon(
+                                    imageVector = Iconsax.Iconsax3DotsMore,
+                                    contentDescription = "Bulk actions",
+                                )
+                            }
+                        },
+                    )
+                }
+            }
+        }
+    }
+
+    if (scrollable) {
+        Box(modifier = modifier.fillMaxWidth()) {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .widthIn(max = 1280.dp)
+                    .align(Alignment.TopCenter)
+                    .padding(horizontal = if (isCompact) 6.dp else 16.dp, vertical = 8.dp),
+                contentPadding = contentPadding,
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                if (headerContent != null) {
+                    item {
+                        headerContent()
+                    }
+                }
+                if (!simplified) {
+                    item { filterSortRow() }
+                }
+                item(key = "track-card") { trackCardContent() }
+                if (footerContent != null) {
+                    item {
+                        footerContent()
+                    }
+                }
+            }
+
+            if (!useDropdownForOptions) {
+                selectedTrackForOptions?.let { track ->
+                    TrackOptionsBottomSheet(
+                        track = track,
+                        state = trackOptionsState(track),
+                        onDismiss = { selectedTrackForOptions = null },
+                        onAction = { action ->
+                            onTrackOptionsAction(track, action)
+                            selectedTrackForOptions = null
+                        },
+                        onAlbumClick = { track.album?.let { onAlbumClick(it) } },
+                    )
+                }
+            }
+            VerticalScrollbar(listState, modifier = Modifier.align(Alignment.CenterEnd))
+        }
+    } else {
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
                 .padding(horizontal = if (isCompact) 6.dp else 16.dp, vertical = 8.dp),
-            contentPadding = contentPadding,
             verticalArrangement = Arrangement.spacedBy(2.dp),
         ) {
             if (headerContent != null) {
-                item {
-                    headerContent()
-                }
+                headerContent()
             }
-            if (!simplified)
-                item {
-                    Row(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
-                            .heightIn(max = 60.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End),
-                    ) {
-                        if (showIndex || isSelectionMode) {
-                            val allSelected =
-                                visibleTracks.isNotEmpty() && selectedTrackIds.size == visibleTracks.size
-                            val anySelected = selectedTrackIds.isNotEmpty()
-                            val headerState = when {
-                                allSelected -> CheckBoxState.SELECTED
-                                anySelected -> CheckBoxState.INDETERMINATE
-                                else -> CheckBoxState.UNSELECTED
-                            }
-                            CheckBox(
-                                state = headerState,
-                                onClick = {
-                                    if (allSelected) {
-                                        isSelectionMode = false
-                                        selectedTrackIds = emptySet()
-                                    } else {
-                                        isSelectionMode = true
-                                        selectedTrackIds = visibleTracks.map { it.id }.toSet()
-                                    }
-                                },
-                            )
-                        }
-
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                        ) {
-                            TextField(
-                                value = filterQuery,
-                                onValueChange = { filterQuery = it },
-                                modifier = Modifier
-                                    .widthIn(max = 400.dp)
-                                    .align(Alignment.CenterEnd),
-                                placeholder = { TextWithShimmer("Filter") },
-                                leadingIcon = {
-                                    Icon(
-                                        imageVector = Iconsax.IconsaxFilterSearch,
-                                        contentDescription = "Filter",
-                                    )
-                                },
-                                singleLine = true,
-                            )
-                        }
-
-                        ButtonGroup {
-                            Box(
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                AdaptiveDropdownBottomSheet(
-                                    items = TrackSortOption.entries.map { option ->
-                                        AdaptiveMenuItem(
-                                            label = option.label,
-                                            onClick = { sortBy = option },
-                                            selected = sortBy == option,
-                                        )
-                                    },
-                                    trigger = { onClick ->
-                                        GroupIconButton(
-                                            onClick = onClick,
-                                        ) {
-                                            Icon(
-                                                imageVector = Iconsax.IconsaxSort,
-                                                contentDescription = "Sort",
-                                            )
-                                        }
-                                    },
-                                )
-                            }
-                            ButtonGroupDivider()
-                            Box(
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                val targetTracks = if (selectedTrackIds.isNotEmpty()) {
-                                    visibleTracks.filter { selectedTrackIds.contains(it.id) }
-                                } else {
-                                    visibleTracks
-                                }
-                                val trackCount = targetTracks.size
-                                val isAll =
-                                    selectedTrackIds.isEmpty() || trackCount == visibleTracks.size
-                                AdaptiveDropdownBottomSheet(
-                                    items = listOf(
-                                        AdaptiveMenuItem(
-                                            icon = Iconsax.IconsaxDirectboxReceive,
-                                            label = if (isAll) "Download All" else "Download $trackCount",
-                                            onClick = { onBulkDownload(targetTracks) },
-                                        ),
-                                        AdaptiveMenuItem(
-                                            icon = Iconsax.IconsaxAddSquare,
-                                            label = if (isAll) "Add All to Queue" else "Add $trackCount to Queue",
-                                            onClick = { onBulkAddToQueue(targetTracks) },
-                                        ),
-                                        AdaptiveMenuItem(
-                                            icon = Iconsax.IconsaxNext,
-                                            label = if (isAll) "Play All Next" else "Play $trackCount Next",
-                                            onClick = { onBulkPlayNext(targetTracks) },
-                                        ),
-                                    ),
-                                    trigger = { onClick ->
-                                        GroupIconButton(
-                                            onClick = onClick,
-                                        ) {
-                                            Icon(
-                                                imageVector = Iconsax.Iconsax3DotsMore,
-                                                contentDescription = "Bulk actions",
-                                            )
-                                        }
-                                    },
-                                )
-                            }
-                        }
-                    }
-                }
-
-            item(key = "track-card") {
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 12.dp, bottom = 12.dp)
-                    ) {
-                        visibleTracks.forEachIndexed { displayedIndex, track ->
-                            if (displayedIndex > 0) {
-                                HorizontalDivider(
-                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                                )
-                            }
-                            TrackListRow(
-                                index = displayedIndex + 1,
-                                track = track,
-                                showIndex = showIndex,
-                                showAlbum = showAlbum,
-                                useDropdownForOptions = useDropdownForOptions,
-                                isCurrentTrack = track.id == currentTrackId,
-                                isCurrentTrackPlaying = isCurrentTrackPlaying,
-                                isSelectionMode = isSelectionMode,
-                                isSelected = selectedTrackIds.contains(track.id),
-                                onTrackClick = {
-                                    if (isSelectionMode) {
-                                        selectedTrackIds =
-                                            if (selectedTrackIds.contains(track.id)) {
-                                                selectedTrackIds - track.id
-                                            } else {
-                                                selectedTrackIds + track.id
-                                            }
-                                    } else {
-                                        onTrackClick(track)
-                                    }
-                                },
-                                onLongClick = {
-                                    if (!useDropdownForOptions && !isSelectionMode) {
-                                        isSelectionMode = true
-                                        selectedTrackIds = setOf(track.id)
-                                    } else if (!useDropdownForOptions) {
-                                        selectedTrackForOptions = track
-                                    }
-                                },
-                                onSelectionToggle = { checked ->
-                                    isSelectionMode = true
-                                    selectedTrackIds = if (checked) {
-                                        selectedTrackIds + track.id
-                                    } else {
-                                        selectedTrackIds - track.id
-                                    }
-                                },
-                                onTrackOptionsAction = { action ->
-                                    onTrackOptionsAction(
-                                        track,
-                                        action
-                                    )
-                                },
-                                trackOptionsState = trackOptionsState(track),
-                                onShowOptionsClick = { selectedTrackForOptions = track },
-                                onArtistClick = onArtistClick,
-                                onAlbumClick = onAlbumClick,
-                                onArtistsOverflowClick = { onArtistsOverflowClick(track) },
-                            )
-                        }
-
-                        if (isLoading && tracks.isEmpty()) {
-                            repeat(ShimmerRowCount) { shimmerIndex ->
-                                if (visibleTracks.isNotEmpty() || shimmerIndex > 0) {
-                                    HorizontalDivider(
-                                        modifier = Modifier.padding(horizontal = 8.dp),
-                                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                                    )
-                                }
-                                ShimmerTrackListRow(
-                                    index = shimmerIndex + 1,
-                                    showIndex = showIndex,
-                                    showAlbum = showAlbum,
-                                    useDropdownForOptions = useDropdownForOptions,
-                                )
-                            }
-                        }
-
-                        if (error != null) {
-                            if (visibleTracks.isNotEmpty()) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(horizontal = 8.dp),
-                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                                )
-                            }
-                            TrackListFeedbackRow(
-                                message = error,
-                                isError = true,
-                            )
-                        }
-
-                        if (showEmptyMessage && !isLoading && visibleTracks.isEmpty() && error == null) {
-                            TrackListFeedbackRow("No tracks found")
-                        }
-
-                        if (isLoadingNextPage) {
-                            if (visibleTracks.isNotEmpty()) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(horizontal = 8.dp),
-                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                                )
-                            }
-                            ShimmerTrackListRow(
-                                index = visibleTracks.size + 1,
-                                showIndex = showIndex,
-                                showAlbum = showAlbum,
-                                useDropdownForOptions = useDropdownForOptions,
-                            )
-                        }
-                    }
-                }
+            if (!simplified) {
+                filterSortRow()
             }
-
+            trackCardContent()
             if (footerContent != null) {
-                item {
-                    footerContent()
-                }
+                footerContent()
             }
         }
 
@@ -487,9 +526,7 @@ fun TrackList(
                 )
             }
         }
-        VerticalScrollbar(listState, modifier = Modifier.align(Alignment.CenterEnd))
     }
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)

@@ -20,13 +20,26 @@ import app.cash.zipline.ZiplineService
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationStrategy
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationResult
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 
 const val MetadataArtistAPI_SERVICE_NAME = "MetadataArtistAPI"
 
 interface MetadataArtistAPI : ZiplineService {
     suspend fun getArtist(id: String): MetadataArtist.Detailed
+    suspend fun artistOverview(id: String): MetadataArtistOverview
     suspend fun getArtistTop10Tracks(id: String): List<MetadataTrack>
+
+    suspend fun relatedArtists(
+        id: String,
+        pagination: PaginationStrategy? = null
+    ): PaginationResult<MetadataArtist.Basic>
+
+    suspend fun featuredPlaylists(
+        id: String,
+        pagination: PaginationStrategy? = null
+    ): PaginationResult<MetadataPlaylist>
+
     suspend fun getArtistAlbums(
         id: String,
         pagination: PaginationStrategy? = null

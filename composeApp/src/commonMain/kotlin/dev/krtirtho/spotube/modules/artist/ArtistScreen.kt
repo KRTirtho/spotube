@@ -24,12 +24,13 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -45,9 +46,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -59,12 +62,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import compose.icons.FeatherIcons
-import compose.icons.feathericons.Heart
 import compose.icons.feathericons.Play
 import compose.icons.feathericons.PlusSquare
 import compose.icons.feathericons.User
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
@@ -75,15 +78,19 @@ import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.core.ui.component.ArtistCard
+import dev.krtirtho.spotube.core.ui.component.PlaylistCard
 import dev.krtirtho.spotube.core.ui.component.TrackList
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
+import dev.krtirtho.spotube.core.ui.component.dragScrollable
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
-import dev.krtirtho.spotube.modules.library.LibraryRepository
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -101,9 +108,7 @@ fun ArtistScreen(artistId: String) {
     )
     val navigationCommands = koinInject<NavigationCommands>()
 
-    val artistInfo by viewModel.artistInfo.collectAsStateWithLifecycle()
-    val topTracksState by viewModel.topTracks.collectAsStateWithLifecycle()
-    val albumsState by viewModel.albums.collectAsStateWithLifecycle()
+    val state by viewModel.state.collectAsStateWithLifecycle()
     val queue by audioPlayerQueue.queueFlow.collectAsStateWithLifecycle()
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
@@ -123,8 +128,6 @@ fun ArtistScreen(artistId: String) {
         )
     }
 
-    val artist = artistInfo.artist
-
     fun handleTrackOptionsAction(track: MetadataTrack, action: TrackOptionsAction) {
         viewModel.handleTrackOptionsAction(track, action)
         if (action is TrackOptionsAction.Share) {
@@ -141,153 +144,285 @@ fun ArtistScreen(artistId: String) {
     Scaffold(
         topBar = { ApplicationMainBar() }
     ) { innerPadding ->
-        TrackList(
-            modifier = Modifier.padding(innerPadding),
-            headerContent = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(20.dp),
+        when (val currentState = state) {
+            is ArtistScreenState.Loading -> {
+                ArtistLoadingContent(innerPadding)
+            }
+
+            is ArtistScreenState.Error -> {
+                ArtistErrorContent(
+                    innerPadding = innerPadding,
+                    message = currentState.message,
+                    onRetry = { viewModel.refresh() }
+                )
+            }
+
+            is ArtistScreenState.Loaded -> {
+                val listState = rememberLazyListState()
+
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    verticalArrangement = Arrangement.spacedBy(24.dp),
                 ) {
-                    ArtistHeaderCard(
-                        artist = artist,
-                        isSaved = savedArtistIds.contains(artistId),
-                        isLoading = artistInfo.isLoading,
-                        isSaving = artistInfo.isSaving,
-                        error = artistInfo.error,
-                        onFollowClick = viewModel::toggleSavedArtist,
-                    )
+                    item {
+                        ArtistHeaderCard(
+                            artist = currentState.artist,
+                            isSaved = savedArtistIds.contains(currentState.artist.id),
+                            onFollowClick = viewModel::toggleSavedArtist,
+                        )
+                    }
 
-                    ArtistAlbumsSection(
-                        albums = albumsState.items,
-                        isLoading = albumsState.isLoading,
-                        error = albumsState.error,
-                        hasMore = albumsState.hasNextPage,
-                        onViewAll = viewModel::loadNextAlbumsPage,
-                    )
+                    item {
+                        TopTracksHeader(
+                            onPlay = viewModel::playTopTracks,
+                            onAddToQueue = viewModel::addTopTracksToQueue,
+                        )
+                    }
 
-                    TopTracksHeader(
-                        onPlay = viewModel::playTopTracks,
-                        onAddToQueue = viewModel::addTopTracksToQueue,
+                    item {
+                        TrackList(
+                            tracks = currentState.topTracks,
+                            error = null,
+                            hasMore = false,
+                            isLoading = false,
+                            isLoadingNextPage = false,
+                            currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
+                            isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
+                            onTrackClick = viewModel::playTopTracksFromTrack,
+                            onTrackOptionsAction = ::handleTrackOptionsAction,
+                            trackOptionsState = ::getTrackOptionsState,
+                            onArtistClick = { trackArtist ->
+                                navigationCommands.navigateTo(
+                                    Routes.Artist(
+                                        trackArtist.id
+                                    )
+                                )
+                            },
+                            onAlbumClick = { album ->
+                                navigationCommands.navigateTo(
+                                    Routes.Album(
+                                        album.id
+                                    )
+                                )
+                            },
+                            onLoadNextPage = {},
+                            simplified = true,
+                            scrollable = false,
+                            onBulkDownload = { tracks -> downloadsViewModel.downloadTracks(tracks) },
+                            onBulkAddToQueue = { tracks -> viewModel.addTracksToQueue(tracks) },
+                            onBulkPlayNext = { tracks -> viewModel.playTracksNext(tracks) },
+                        )
+                    }
+
+                    if (currentState.albums.isNotEmpty() || currentState.albumsNextPagination != null) {
+                        item {
+                            AlbumsSection(
+                                albums = currentState.albums,
+                                onAlbumClick = { album ->
+                                    navigationCommands.navigateTo(
+                                        Routes.Album(
+                                            album.id
+                                        )
+                                    )
+                                },
+                                onLoadMore = { viewModel.loadMoreAlbums() },
+                            )
+                        }
+                    }
+
+                    if (currentState.relatedArtists.isNotEmpty() || currentState.relatedArtistsNextPagination != null) {
+                        item {
+                            RelatedArtistsSection(
+                                artists = currentState.relatedArtists,
+                                onArtistClick = { artist ->
+                                    navigationCommands.navigateTo(
+                                        Routes.Artist(
+                                            artist.id
+                                        )
+                                    )
+                                },
+                                onLoadMore = { viewModel.loadMoreRelatedArtists() },
+                            )
+                        }
+                    }
+
+                    if (currentState.featuredPlaylists.isNotEmpty() || currentState.featuredPlaylistsNextPagination != null) {
+                        item {
+                            FeaturedPlaylistsSection(
+                                playlists = currentState.featuredPlaylists,
+                                onPlaylistClick = { playlist ->
+                                    navigationCommands.navigateTo(
+                                        Routes.Playlist(
+                                            playlist.id
+                                        )
+                                    )
+                                },
+                                onLoadMore = { viewModel.loadMoreFeaturedPlaylists() },
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ArtistLoadingContent(innerPadding: PaddingValues) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding),
+        contentAlignment = Alignment.Center,
+    ) {
+        SkeletonTree(true) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(24.dp),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(200.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
                     )
                 }
-            },
-            tracks = topTracksState.items,
-            error = topTracksState.error,
-            hasMore = false,
-            isLoading = topTracksState.isLoading && topTracksState.items.isEmpty(),
-            isLoadingNextPage = false,
-            currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
-            isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
-            onTrackClick = viewModel::playTopTracksFromTrack,
-            onTrackOptionsAction = ::handleTrackOptionsAction,
-            trackOptionsState = ::getTrackOptionsState,
-            onArtistClick = { trackArtist -> navigationCommands.navigateTo(Routes.Artist(trackArtist.id)) },
-            onAlbumClick = { album -> navigationCommands.navigateTo(Routes.Album(album.id)) },
-            onLoadNextPage = { },
-            simplified = true,
-            onBulkDownload = { tracks ->
-                downloadsViewModel.downloadTracks(tracks)
-            },
-            onBulkAddToQueue = { tracks ->
-                viewModel.addTracksToQueue(tracks)
-            },
-            onBulkPlayNext = { tracks ->
-                viewModel.playTracksNext(tracks)
-            },
-        )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                        )
+                    }
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(horizontal = 16.dp),
+                    ) {
+                        items(4) {
+                            PlayableCard(
+                                title = "Item Title",
+                                subtitle = "Subtitle",
+                                imageURL = "https://placehold.co/600x400",
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ArtistErrorContent(
+    innerPadding: PaddingValues,
+    message: String,
+    onRetry: () -> Unit,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            Text(
+                text = message,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+            Button(onClick = onRetry) {
+                Text("Retry")
+            }
+        }
     }
 }
 
 @Composable
 private fun ArtistHeaderCard(
-    artist: MetadataArtist.Detailed?,
+    artist: MetadataArtist.Detailed,
     isSaved: Boolean,
-    isLoading: Boolean,
-    isSaving: Boolean,
-    error: String?,
     onFollowClick: () -> Unit,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val isCompact = maxWidth < 600.dp
 
-        SkeletonTree(isLoading = isLoading) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                ),
-                shape = RoundedCornerShape(20.dp),
-            ) {
-                if (isCompact) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(14.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        ArtistAvatar(
-                            artist = artist,
-                            size = 180.dp,
-                        )
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+            ),
+            shape = RoundedCornerShape(20.dp),
+        ) {
+            if (isCompact) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(14.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    ArtistAvatar(
+                        artist = artist,
+                        size = 180.dp,
+                    )
 
+                    ArtistMeta(
+                        artist = artist,
+                        isCompact = true,
+                    )
+
+                    ArtistHeaderActions(
+                        isSaved = isSaved,
+                        onFollowClick = onFollowClick,
+                    )
+                }
+            } else {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                    verticalAlignment = Alignment.Top,
+                ) {
+                    ArtistAvatar(
+                        artist = artist,
+                        size = 220.dp,
+                    )
+
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(14.dp),
+                    ) {
                         ArtistMeta(
                             artist = artist,
-                            isCompact = true,
+                            isCompact = false,
                         )
 
                         ArtistHeaderActions(
                             isSaved = isSaved,
-                            isSaving = isSaving,
                             onFollowClick = onFollowClick,
                         )
-
-                        error?.let {
-                            TextWithShimmer(
-                                text = it,
-                                color = MaterialTheme.colorScheme.error,
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
-                        }
-                    }
-                } else {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp),
-                        horizontalArrangement = Arrangement.spacedBy(20.dp),
-                        verticalAlignment = Alignment.Top,
-                    ) {
-                        ArtistAvatar(
-                            artist = artist,
-                            size = 220.dp,
-                        )
-
-                        Column(
-                            modifier = Modifier.weight(1f),
-                            verticalArrangement = Arrangement.spacedBy(14.dp),
-                        ) {
-                            ArtistMeta(
-                                artist = artist,
-                                isCompact = false,
-                            )
-
-                            ArtistHeaderActions(
-                                isSaved = isSaved,
-                                isSaving = isSaving,
-                                onFollowClick = onFollowClick,
-                            )
-
-                            error?.let {
-                                TextWithShimmer(
-                                    text = it,
-                                    color = MaterialTheme.colorScheme.error,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                )
-                            }
-                        }
                     }
                 }
             }
@@ -297,29 +432,28 @@ private fun ArtistHeaderCard(
 
 @Composable
 private fun ArtistAvatar(
-    artist: MetadataArtist.Detailed?,
+    artist: MetadataArtist.Detailed,
     size: androidx.compose.ui.unit.Dp,
 ) {
     Box(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-            .shimmerApply(),
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
         contentAlignment = Alignment.Center,
     ) {
-        val imageUrl = artist?.thumbnails?.firstOrNull()?.url.orEmpty()
+        val imageUrl = artist.thumbnails.firstOrNull()?.url.orEmpty()
         if (imageUrl.isNotBlank()) {
             AsyncImage(
                 model = imageUrl,
-                contentDescription = artist?.name ?: "Artist",
+                contentDescription = artist.name,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
             )
         } else {
             Icon(
                 imageVector = FeatherIcons.User,
-                contentDescription = artist?.name ?: "Artist",
+                contentDescription = artist.name,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(size * 0.4f),
             )
@@ -329,7 +463,7 @@ private fun ArtistAvatar(
 
 @Composable
 private fun ArtistMeta(
-    artist: MetadataArtist.Detailed?,
+    artist: MetadataArtist.Detailed,
     isCompact: Boolean,
 ) {
     Column(
@@ -337,38 +471,36 @@ private fun ArtistMeta(
         horizontalAlignment = if (isCompact) Alignment.CenterHorizontally else Alignment.Start,
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        TextWithShimmer(
-            text = artist?.name ?: "Loading artist...",
+        Text(
+            text = artist.name,
             style = if (isCompact) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.headlineLarge,
             fontWeight = FontWeight.SemiBold,
-            textAlign = if (isCompact) androidx.compose.ui.text.style.TextAlign.Center else androidx.compose.ui.text.style.TextAlign.Start,
+            textAlign = if (isCompact) TextAlign.Center else TextAlign.Start,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
 
-        artist?.let {
-            TextWithShimmer(
-                text = buildString {
-                    append(formatFollowers(it.followersCount))
-                    if (it.genres.isNotEmpty()) {
-                        append(" • ")
-                        append(it.genres.joinToString(", "))
-                    }
-                },
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = if (isCompact) androidx.compose.ui.text.style.TextAlign.Center else androidx.compose.ui.text.style.TextAlign.Start,
-            )
-        }
+        Text(
+            text = buildString {
+                append(formatFollowers(artist.followersCount))
+                if (artist.genres.isNotEmpty()) {
+                    append(" • ")
+                    append(artist.genres.joinToString(", "))
+                }
+            },
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = if (isCompact) TextAlign.Center else TextAlign.Start,
+        )
 
-        artist?.biography?.takeIf { it.isNotBlank() }?.let {
-            TextWithShimmer(
+        artist.biography?.takeIf { it.isNotBlank() }?.let {
+            Text(
                 text = it,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = if (isCompact) 4 else 6,
                 overflow = TextOverflow.Ellipsis,
-                textAlign = if (isCompact) androidx.compose.ui.text.style.TextAlign.Center else androidx.compose.ui.text.style.TextAlign.Start,
+                textAlign = if (isCompact) TextAlign.Center else TextAlign.Start,
             )
         }
     }
@@ -377,7 +509,6 @@ private fun ArtistMeta(
 @Composable
 private fun ArtistHeaderActions(
     isSaved: Boolean,
-    isSaving: Boolean,
     onFollowClick: () -> Unit,
 ) {
     Row(
@@ -385,91 +516,12 @@ private fun ArtistHeaderActions(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (isSaved) {
-            FilledTonalButton(onClick = onFollowClick, enabled = !isSaving) {
-                TextWithShimmer("Following", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
+            FilledTonalButton(onClick = onFollowClick) {
+                Text("Following", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
             }
         } else {
-            Button(onClick = onFollowClick, enabled = !isSaving) {
-                TextWithShimmer("Follow", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
-            }
-        }
-    }
-}
-
-@Composable
-private fun ArtistAlbumsSection(
-    albums: List<MetadataAlbum.Detailed>,
-    isLoading: Boolean,
-    error: String?,
-    hasMore: Boolean,
-    onViewAll: () -> Unit,
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            TextWithShimmer(
-                text = "Albums",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-
-            TextButton(
-                onClick = onViewAll,
-                enabled = hasMore && !isLoading,
-            ) {
-                TextWithShimmer("View all")
-            }
-        }
-
-        if (isLoading && albums.isEmpty()) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.Top,
-            ) {
-                items(4) {
-                    SkeletonTree(true) {
-                        PlayableCard(
-                            title = "Album Title",
-                            subtitle = "Artist Name",
-                            imageURL = "https://placehold.co/600x400",
-                        )
-                    }
-                }
-            }
-        } else if (error != null && albums.isEmpty()) {
-            TextWithShimmer(
-                text = error,
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.error,
-            )
-        } else if (albums.isEmpty()) {
-            TextWithShimmer(
-                text = "No albums found",
-                modifier = Modifier.padding(horizontal = 16.dp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        } else {
-            val rowState = rememberLazyListState()
-            LazyRow(
-                state = rowState,
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.Top,
-            ) {
-                items(albums, key = { it.id }) { album ->
-                    AlbumCard(album = album)
-                }
+            Button(onClick = onFollowClick) {
+                Text("Follow", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
             }
         }
     }
@@ -487,7 +539,7 @@ private fun TopTracksHeader(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        TextWithShimmer(
+        Text(
             text = "Top Tracks",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
@@ -510,6 +562,130 @@ private fun TopTracksHeader(
     }
 }
 
+@Composable
+private fun AlbumsSection(
+    albums: List<MetadataAlbum.Detailed>,
+    onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
+    onLoadMore: () -> Unit,
+) {
+    val rowState = rememberLazyListState()
+
+    LaunchedEffect(rowState) {
+        snapshotFlow { rowState.layoutInfo }
+            .map { layoutInfo ->
+                val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                val totalItems = layoutInfo.totalItemsCount
+                Pair(lastVisibleIndex, totalItems)
+            }
+            .distinctUntilChanged()
+            .collect { (lastVisibleIndex, totalItems) ->
+                if (lastVisibleIndex != null && totalItems > 0 && lastVisibleIndex >= totalItems - 2) {
+                    onLoadMore()
+                }
+            }
+    }
+
+    SectionHeader(title = "Albums")
+    Spacer(modifier = Modifier.size(8.dp))
+    LazyRow(
+        state = rowState,
+        modifier = Modifier.dragScrollable(rowState),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.Top,
+    ) {
+        items(albums, key = { it.id }) { album ->
+            AlbumCard(album = album)
+        }
+    }
+}
+
+@Composable
+private fun RelatedArtistsSection(
+    artists: List<MetadataArtist.Basic>,
+    onArtistClick: (MetadataArtist.Basic) -> Unit,
+    onLoadMore: () -> Unit,
+) {
+    val rowState = rememberLazyListState()
+
+    LaunchedEffect(rowState) {
+        snapshotFlow { rowState.layoutInfo }
+            .map { layoutInfo ->
+                val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                val totalItems = layoutInfo.totalItemsCount
+                Pair(lastVisibleIndex, totalItems)
+            }
+            .distinctUntilChanged()
+            .collect { (lastVisibleIndex, totalItems) ->
+                if (lastVisibleIndex != null && totalItems > 0 && lastVisibleIndex >= totalItems - 2) {
+                    onLoadMore()
+                }
+            }
+    }
+
+    SectionHeader(title = "Related Artists")
+    Spacer(modifier = Modifier.size(8.dp))
+    LazyRow(
+        state = rowState,
+        modifier = Modifier.dragScrollable(rowState),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.Top,
+    ) {
+        items(artists, key = { it.id }) { artist ->
+            ArtistCard(artist = artist)
+        }
+    }
+}
+
+@Composable
+private fun FeaturedPlaylistsSection(
+    playlists: List<MetadataPlaylist>,
+    onPlaylistClick: (MetadataPlaylist) -> Unit,
+    onLoadMore: () -> Unit,
+) {
+    val rowState = rememberLazyListState()
+
+    LaunchedEffect(rowState) {
+        snapshotFlow { rowState.layoutInfo }
+            .map { layoutInfo ->
+                val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                val totalItems = layoutInfo.totalItemsCount
+                Pair(lastVisibleIndex, totalItems)
+            }
+            .distinctUntilChanged()
+            .collect { (lastVisibleIndex, totalItems) ->
+                if (lastVisibleIndex != null && totalItems > 0 && lastVisibleIndex >= totalItems - 2) {
+                    onLoadMore()
+                }
+            }
+    }
+
+    SectionHeader(title = "Featured Playlists")
+    Spacer(modifier = Modifier.size(8.dp))
+    LazyRow(
+        state = rowState,
+        modifier = Modifier.dragScrollable(rowState),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.Top,
+    ) {
+        items(playlists, key = { it.id }) { playlist ->
+            PlaylistCard(playlist = playlist)
+        }
+    }
+}
+
+@Composable
+private fun SectionHeader(title: String) {
+    Text(
+        text = title,
+        style = MaterialTheme.typography.titleLarge,
+        fontWeight = FontWeight.SemiBold,
+        modifier = Modifier.padding(horizontal = 16.dp),
+    )
+}
+
 private fun formatFollowers(count: Int?): String {
     if (count == null) return "Followers unavailable"
     return when {
@@ -529,4 +705,3 @@ private fun formatAbbreviatedCount(count: Int, divisor: Int): String {
         rounded.toString()
     }
 }
-

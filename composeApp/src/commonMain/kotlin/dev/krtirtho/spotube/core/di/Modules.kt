@@ -29,6 +29,7 @@ import dev.krtirtho.spotube.core.server.MatchedTracksRepository
 import dev.krtirtho.spotube.core.server.StreamingUrlRepository
 import dev.krtirtho.spotube.core.server.AlternativeTracksRepository
 import dev.krtirtho.spotube.core.webview.WebViewController
+import dev.krtirtho.spotube.modules.artist.ArtistRepository
 import dev.krtirtho.spotube.modules.artist.ArtistViewModel
 import dev.krtirtho.spotube.modules.album.AlbumRepository
 import dev.krtirtho.spotube.modules.album.AlbumViewModel
@@ -127,12 +128,13 @@ val sharedModules = module {
     viewModelOf(::SavedTracksViewModel)
 
     // Artist
+    singleOf(::ArtistRepository)
     viewModel { (artistId: String) ->
         ArtistViewModel(
             artistId = artistId,
-            pluginManager = get(),
-            savedTracksRepository = get(),
+            repository = get(),
             libraryRepository = get(),
+            savedTracksRepository = get(),
             audioPlayerQueue = get(),
         )
     }

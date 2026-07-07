@@ -22,106 +22,77 @@ import androidx.lifecycle.viewModelScope
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationStrategy
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
 import dev.krtirtho.spotube.modules.library.LibraryRepository
-import dev.krtirtho.spotube.modules.plugin.PluginManager
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 
-data class ArtistInfoState(
-    val artist: MetadataArtist.Detailed? = null,
-    val isSaved: Boolean = false,
-    val isLoading: Boolean = false,
-    val isSaving: Boolean = false,
-    val error: String? = null,
-)
+sealed interface ArtistScreenState {
+    data object Loading : ArtistScreenState
 
-data class ArtistTopTracksState(
-    val items: List<MetadataTrack> = emptyList(),
-    val isLoading: Boolean = false,
-    val error: String? = null,
-)
+    data class Loaded(
+        val artist: MetadataArtist.Detailed,
+        val isArtistSaved: Boolean,
+        val topTracks: List<MetadataTrack>,
+        val albums: List<MetadataAlbum.Detailed>,
+        val albumsNextPagination: PaginationStrategy?,
+        val relatedArtists: List<MetadataArtist.Basic>,
+        val relatedArtistsNextPagination: PaginationStrategy?,
+        val featuredPlaylists: List<MetadataPlaylist>,
+        val featuredPlaylistsNextPagination: PaginationStrategy?,
+    ) : ArtistScreenState
 
-data class ArtistAlbumsState(
-    val items: List<MetadataAlbum.Detailed> = emptyList(),
-    val nextPagination: PaginationStrategy? = null,
-    val hasNextPage: Boolean = true,
-    val isLoading: Boolean = false,
-    val error: String? = null,
-)
+    data class Error(val message: String) : ArtistScreenState
+}
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalStdlibApi::class)
 class ArtistViewModel(
     private val artistId: String,
-    private val pluginManager: PluginManager,
-    private val savedTracksRepository: SavedTracksRepository,
+    private val repository: ArtistRepository,
     private val libraryRepository: LibraryRepository,
+    private val savedTracksRepository: SavedTracksRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
-) : ViewModel() {
-    companion object {
-        private const val ALBUMS_PAGE_SIZE = 20
-    }
+) : ViewModel(), KoinComponent {
+    private val logger by injectLogger<ArtistViewModel>()
 
-    private val _artistInfo = MutableStateFlow(ArtistInfoState())
-    val artistInfo: StateFlow<ArtistInfoState> = _artistInfo.asStateFlow()
+    private val _state = MutableStateFlow<ArtistScreenState>(ArtistScreenState.Loading)
+    val state: StateFlow<ArtistScreenState> = _state.asStateFlow()
 
-    private val _topTracks = MutableStateFlow(ArtistTopTracksState())
-    val topTracks: StateFlow<ArtistTopTracksState> = _topTracks.asStateFlow()
-
-    private val _albums = MutableStateFlow(ArtistAlbumsState())
-    val albums: StateFlow<ArtistAlbumsState> = _albums.asStateFlow()
     val savedArtistIds
         get() = libraryRepository.savedArtistIdsFlow
 
+    val savedTrackIds
+        get() = savedTracksRepository.savedTracksIdsFlow
+
     init {
         viewModelScope.launch {
-            pluginManager.selectedMetadataPlugin
-                .filterNotNull()
-                .distinctUntilChanged()
-                .flatMapLatest { it.loggedInFlow }
-                .collect {
-                    _artistInfo.value = ArtistInfoState()
-                    _topTracks.value = ArtistTopTracksState()
-                    _albums.value = ArtistAlbumsState()
-
-                    loadArtistInfo()
-                    loadTopTracks()
-                    loadAlbumsPage(reset = true)
+            libraryRepository.savedArtistIdsFlow.collect {
+                val currentState = _state.value
+                if (currentState is ArtistScreenState.Loaded) {
+                    _state.value = currentState.copy(isArtistSaved = it.contains(artistId))
                 }
+            }
         }
+        loadOverview()
     }
 
-    fun refreshArtist() {
-        viewModelScope.launch {
-            loadArtistInfo()
-            loadTopTracks()
-            loadAlbumsPage(reset = true)
-        }
-    }
-
-    fun loadNextAlbumsPage() {
-        val current = _albums.value
-        if (current.isLoading || !current.hasNextPage || current.nextPagination == null) return
-
-        viewModelScope.launch {
-            loadAlbumsPage(reset = false)
-        }
+    fun refresh() {
+        repository.invalidateCaches()
+        loadOverview()
     }
 
     fun toggleSavedArtist() {
         viewModelScope.launch {
-            val isLiked =
-                libraryRepository.isSavedArtists(listOf(artistId)).firstOrNull() ?: false
+            val isLiked = libraryRepository.isSavedArtists(listOf(artistId)).firstOrNull() ?: false
             if (isLiked) {
                 libraryRepository.removeSavedArtists(listOf(artistId))
             } else {
@@ -130,11 +101,73 @@ class ArtistViewModel(
         }
     }
 
+    fun loadMoreAlbums() {
+        val currentState = _state.value
+        if (currentState !is ArtistScreenState.Loaded) return
+        val pagination = currentState.albumsNextPagination ?: return
+
+        viewModelScope.launch {
+            runCatching {
+                repository.albums(artistId, pagination)
+            }.onSuccess { result ->
+                if (result != null) {
+                    _state.value = currentState.copy(
+                        albums = currentState.albums + result.items,
+                        albumsNextPagination = result.nextPagination,
+                    )
+                }
+            }.onFailure { e ->
+                logger.e(e) { "Failed to load more albums" }
+            }
+        }
+    }
+
+    fun loadMoreRelatedArtists() {
+        val currentState = _state.value
+        if (currentState !is ArtistScreenState.Loaded) return
+        val pagination = currentState.relatedArtistsNextPagination ?: return
+
+        viewModelScope.launch {
+            runCatching {
+                repository.relatedArtists(artistId, pagination)
+            }.onSuccess { result ->
+                if (result != null) {
+                    _state.value = currentState.copy(
+                        relatedArtists = currentState.relatedArtists + result.items,
+                        relatedArtistsNextPagination = result.nextPagination,
+                    )
+                }
+            }.onFailure { e ->
+                logger.e(e) { "Failed to load more related artists" }
+            }
+        }
+    }
+
+    fun loadMoreFeaturedPlaylists() {
+        val currentState = _state.value
+        if (currentState !is ArtistScreenState.Loaded) return
+        val pagination = currentState.featuredPlaylistsNextPagination ?: return
+
+        viewModelScope.launch {
+            runCatching {
+                repository.featuredPlaylists(artistId, pagination)
+            }.onSuccess { result ->
+                if (result != null) {
+                    _state.value = currentState.copy(
+                        featuredPlaylists = currentState.featuredPlaylists + result.items,
+                        featuredPlaylistsNextPagination = result.nextPagination,
+                    )
+                }
+            }.onFailure { e ->
+                logger.e(e) { "Failed to load more featured playlists" }
+            }
+        }
+    }
+
     fun addTopTracksToQueue() {
         viewModelScope.launch {
             val entries = resolveTopTrackEntries()
             if (entries.isEmpty()) return@launch
-
             audioPlayerQueue.addAllToQueue(entries)
         }
     }
@@ -143,7 +176,6 @@ class ArtistViewModel(
         viewModelScope.launch {
             val entries = resolveTopTrackEntries()
             if (entries.isEmpty()) return@launch
-
             audioPlayerQueue.load(
                 entries = entries,
                 autoPlay = true,
@@ -180,128 +212,17 @@ class ArtistViewModel(
         }
     }
 
-    private suspend fun loadArtistInfo() {
-        val plugin = pluginManager.selectedMetadataPlugin.value
-
-        if (plugin == null) {
-            _artistInfo.value = ArtistInfoState(
-                artist = null,
-                isSaved = false,
-                isLoading = false,
-                isSaving = false,
-                error = null,
-            )
-            return
-        }
-
-        _artistInfo.value = _artistInfo.value.copy(isLoading = true, error = null)
-
-        runCatching {
-            pluginManager.asyncTask {
-                plugin.use {
-                    val artist = metadataArtistAPI.getArtist(artistId)
-                    val isSaved =
-                        metadataArtistAPI.isSavedArtists(listOf(artistId)).firstOrNull() ?: false
-                    artist to isSaved
-                }
-            }.await()
-        }.onSuccess { (artist, isSaved) ->
-            _artistInfo.value = _artistInfo.value.copy(
-                artist = artist,
-                isSaved = isSaved,
-                isLoading = false,
-                error = null,
-            )
-            libraryRepository.isSavedArtists(listOf(artistId))
-        }.onFailure { throwable ->
-            _artistInfo.value = _artistInfo.value.copy(
-                isLoading = false,
-                error = throwable.message ?: "Failed to load artist",
-            )
+    fun addTracksToQueue(tracks: List<MetadataTrack>) {
+        viewModelScope.launch {
+            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
+            audioPlayerQueue.addAllToQueue(entries)
         }
     }
 
-    private suspend fun loadTopTracks() {
-        val plugin = pluginManager.selectedMetadataPlugin.value
-
-        if (plugin == null) {
-            _topTracks.value =
-                ArtistTopTracksState(items = emptyList(), isLoading = false, error = null)
-            return
-        }
-
-        _topTracks.value = _topTracks.value.copy(isLoading = true, error = null)
-
-        runCatching {
-            pluginManager.asyncTask {
-                plugin.use {
-                    metadataArtistAPI.getArtistTop10Tracks(artistId)
-                }
-            }.await()
-        }.onSuccess { tracks ->
-            savedTracksRepository.isSavedTracks(tracks.map { item -> item.id })
-            _topTracks.value = ArtistTopTracksState(
-                items = tracks,
-                isLoading = false,
-                error = null,
-            )
-        }.onFailure { throwable ->
-            _topTracks.value = _topTracks.value.copy(
-                isLoading = false,
-                error = throwable.message ?: "Failed to load artist top tracks",
-            )
-        }
-    }
-
-    private suspend fun loadAlbumsPage(reset: Boolean) {
-        val plugin = pluginManager.selectedMetadataPlugin.value
-
-        if (plugin == null) {
-            _albums.value = ArtistAlbumsState(
-                items = emptyList(),
-                nextPagination = null,
-                hasNextPage = false,
-                isLoading = false,
-                error = null,
-            )
-            return
-        }
-
-        val current = _albums.value
-        val offset = if (reset) 0 else current.nextPagination ?: return
-
-        _albums.value = if (reset) {
-            current.copy(items = emptyList(), isLoading = true, error = null)
-        } else {
-            current.copy(isLoading = true, error = null)
-        }
-
-        runCatching {
-            pluginManager.asyncTask {
-                plugin.use {
-                    metadataArtistAPI.getArtistAlbums(artistId)
-                }
-            }.await()
-        }.onSuccess { page ->
-            val mergedItems = if (reset) page.items else _albums.value.items + page.items
-            _albums.value = ArtistAlbumsState(
-                items = mergedItems,
-                nextPagination = page.nextPagination,
-                hasNextPage = page.nextPagination != null,
-                isLoading = false,
-                error = null,
-            )
-        }.onFailure { throwable ->
-            _albums.value = _albums.value.copy(
-                isLoading = false,
-                error = throwable.message ?: "Failed to load artist albums",
-            )
-        }
-    }
-
-    private fun resolveTopTrackEntries(): List<QueueEntry> {
-        return _topTracks.value.items.map { track ->
-            QueueEntry.StreamingTrack(track = track, url = "")
+    fun playTracksNext(tracks: List<MetadataTrack>) {
+        viewModelScope.launch {
+            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
+            audioPlayerQueue.addAllAfterCurrent(entries)
         }
     }
 
@@ -352,28 +273,47 @@ class ArtistViewModel(
         }
     }
 
-    fun addTracksToQueue(tracks: List<MetadataTrack>) {
+    private fun loadOverview() {
+        _state.value = ArtistScreenState.Loading
         viewModelScope.launch {
-            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
-            audioPlayerQueue.addAllToQueue(entries)
+            runCatching {
+                repository.artistOverview(artistId)
+            }.onSuccess { overview ->
+                if (overview != null) {
+                    savedTracksRepository.isSavedTracks(overview.top10Tracks.map { it.id })
+                    _state.value = ArtistScreenState.Loaded(
+                        artist = overview.artist,
+                        isArtistSaved = libraryRepository.savedArtistIdsFlow.value.contains(artistId),
+                        topTracks = overview.top10Tracks,
+                        albums = overview.albums.items,
+                        albumsNextPagination = overview.albums.nextPagination,
+                        relatedArtists = overview.relatedArtists.items,
+                        relatedArtistsNextPagination = overview.relatedArtists.nextPagination,
+                        featuredPlaylists = overview.featuredPlaylists.items,
+                        featuredPlaylistsNextPagination = overview.featuredPlaylists.nextPagination,
+                    )
+                } else {
+                    _state.value = ArtistScreenState.Error("Failed to load artist overview")
+                }
+            }.onFailure { e ->
+                logger.e(e) { "Failed to load artist overview" }
+                _state.value = ArtistScreenState.Error(e.message ?: "Unknown error")
+            }
         }
     }
 
-    fun playTracksNext(tracks: List<MetadataTrack>) {
-        viewModelScope.launch {
-            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
-            audioPlayerQueue.addAllAfterCurrent(entries)
+    private fun resolveTopTrackEntries(): List<QueueEntry> {
+        val currentState = _state.value
+        if (currentState !is ArtistScreenState.Loaded) return emptyList()
+        return currentState.topTracks.map { track ->
+            QueueEntry.StreamingTrack(track = track, url = "")
         }
     }
-
-    val savedTrackIds
-        get() = savedTracksRepository.savedTracksIdsFlow
 
     private fun MetadataTrack.matchesTrack(other: MetadataTrack): Boolean {
         if (id.isNotBlank() && other.id.isNotBlank()) {
             return id == other.id
         }
-
         return title == other.title &&
                 durationMs == other.durationMs &&
                 album?.id == other.album?.id &&

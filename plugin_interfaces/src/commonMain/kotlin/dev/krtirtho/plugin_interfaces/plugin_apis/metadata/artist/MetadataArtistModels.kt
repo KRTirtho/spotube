@@ -16,7 +16,11 @@
 
 package dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist
 
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationResult
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.Thumbnail
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -48,3 +52,12 @@ sealed class MetadataArtist {
         override val externalUri: String?
     ) : MetadataArtist()
 }
+
+@Serializable
+data class MetadataArtistOverview(
+    val artist: MetadataArtist.Detailed,
+    val top10Tracks: List<MetadataTrack>,
+    val albums: PaginationResult<MetadataAlbum.Detailed>,
+    val relatedArtists: PaginationResult<MetadataArtist.Basic>,
+    val featuredPlaylists: PaginationResult<MetadataPlaylist>
+)

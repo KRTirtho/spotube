@@ -19,8 +19,10 @@ package dev.krtirtho.js_plugin_example.plugin_apis.metadata
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtistAPI
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtistOverview
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationStrategy
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationResult
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 
 class RealMetadataArtistAPI : MetadataArtistAPI {
@@ -29,8 +31,26 @@ class RealMetadataArtistAPI : MetadataArtistAPI {
         return FakeMetadataStore.getArtist(id)
     }
 
+    override suspend fun artistOverview(id: String): MetadataArtistOverview {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun getArtistTop10Tracks(id: String): List<MetadataTrack> {
         return FakeMetadataStore.getArtistTopTracks(id)
+    }
+
+    override suspend fun relatedArtists(
+        id: String,
+        pagination: PaginationStrategy?
+    ): PaginationResult<MetadataArtist.Basic> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun featuredPlaylists(
+        id: String,
+        pagination: PaginationStrategy?
+    ): PaginationResult<MetadataPlaylist> {
+        TODO("Not yet implemented")
     }
 
     override suspend fun getArtistAlbums(
