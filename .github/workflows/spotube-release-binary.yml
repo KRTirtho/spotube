@@ -83,7 +83,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/spotube/
+          path: ~/.m2/repository/dev/krtirtho/
 
   build-android:
     name: Android
@@ -104,7 +104,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/spotube/
+          path: ~/.m2/repository/dev/krtirtho/
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -114,6 +114,9 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
 
       - name: Decode keystore
         run: |
@@ -163,7 +166,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/spotube/
+          path: ~/.m2/repository/dev/krtirtho/
 
       - name: Install packaging tools
         run: |
@@ -178,6 +181,9 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
 
       - name: Package DEB
         run: ./gradlew :composeApp:packageReleaseDeb ${{ env.GRADLE_FLAGS }}
@@ -225,7 +231,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/spotube/
+          path: ~/.m2/repository/dev/krtirtho/
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -273,7 +279,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/spotube/
+          path: ~/.m2/repository/dev/krtirtho/
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -283,6 +289,9 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x gradlew
 
       - name: Package DMG
         run: ./gradlew :composeApp:packageReleaseDmg ${{ env.GRADLE_FLAGS }}
