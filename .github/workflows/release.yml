@@ -1,7 +1,21 @@
-name: Build All Platforms
+name: Release
 
 on:
   workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type'
+        required: true
+        type: choice
+        default: 'stable'
+        options:
+          - stable
+          - nightly
+      dry_run:
+        description: 'Dry run (build & upload artifacts only, skip creating release)'
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -74,6 +88,8 @@ jobs:
     name: Android
     needs: prepare-deps
     runs-on: ubuntu-latest
+    env:
+      GRADLE_FLAGS: ${{ inputs.release_type == 'nightly' && '-PversionName=nightly' || '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -97,8 +113,23 @@ jobs:
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
+
+      - name: Decode keystore
+        run: |
+          echo '${{ secrets.KEYSTORE }}' | base64 --decode > "${{ github.workspace }}/composeApp/upload-keystore.jks"
+
+      - name: Configure Android signing
+        working-directory: composeApp
+        run: |
+          cat >> local.properties <<EOF
+          release.signing.storeFile=${{ github.workspace }}/composeApp/upload-keystore.jks
+          release.signing.storePassword=${{ secrets.KEYSTORE_PASSWORD }}
+          release.signing.keyAlias=${{ secrets.KEYSTORE_KEY_ALIAS }}
+          release.signing.keyPassword=${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          EOF
+
       - name: Assemble Release
-        run: ./gradlew :composeApp:assembleRelease
+        run: ./gradlew :composeApp:assembleRelease ${{ env.GRADLE_FLAGS }}
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -116,6 +147,8 @@ jobs:
     name: Linux Desktop
     needs: prepare-deps
     runs-on: ubuntu-latest
+    env:
+      GRADLE_FLAGS: ${{ inputs.release_type == 'nightly' && '-PversionName=nightly' || '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -146,13 +179,13 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Package DEB
-        run: ./gradlew :composeApp:packageReleaseDeb
+        run: ./gradlew :composeApp:packageReleaseDeb ${{ env.GRADLE_FLAGS }}
 
       - name: Package RPM
-        run: ./gradlew :composeApp:packageReleaseRpm
+        run: ./gradlew :composeApp:packageReleaseRpm ${{ env.GRADLE_FLAGS }}
 
       - name: Package AppImage
-        run: ./gradlew :composeApp:packageReleaseAppImage
+        run: ./gradlew :composeApp:packageReleaseAppImage ${{ env.GRADLE_FLAGS }}
 
       - name: Upload DEB
         uses: actions/upload-artifact@v4
@@ -176,6 +209,8 @@ jobs:
     name: Windows Desktop
     needs: prepare-deps
     runs-on: windows-latest
+    env:
+      GRADLE_FLAGS: ${{ inputs.release_type == 'nightly' && '-PversionName=nightly' || '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -201,10 +236,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Package MSI
-        run: ./gradlew :composeApp:packageReleaseMsi
+        run: ./gradlew :composeApp:packageReleaseMsi ${{ env.GRADLE_FLAGS }}
 
       - name: Package EXE
-        run: ./gradlew :composeApp:packageReleaseExe
+        run: ./gradlew :composeApp:packageReleaseExe ${{ env.GRADLE_FLAGS }}
 
       - name: Upload MSI
         uses: actions/upload-artifact@v4
@@ -222,6 +257,8 @@ jobs:
     name: macOS Desktop
     needs: prepare-deps
     runs-on: macos-latest
+    env:
+      GRADLE_FLAGS: ${{ inputs.release_type == 'nightly' && '-PversionName=nightly' || '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -247,7 +284,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Package DMG
-        run: ./gradlew :composeApp:packageReleaseDmg
+        run: ./gradlew :composeApp:packageReleaseDmg ${{ env.GRADLE_FLAGS }}
 
       - name: Upload DMG
         uses: actions/upload-artifact@v4
@@ -255,53 +292,67 @@ jobs:
           name: macos-dmg
           path: composeApp/build/compose/binaries/main-release/**/*.dmg
 
-  build-ios:
-    name: iOS
-    needs: prepare-deps
-    runs-on: macos-latest
+  create-release:
+    name: Create GitHub Release
+    if: ${{ !inputs.dry_run }}
+    needs:
+      - build-android
+      - build-linux
+      - build-windows
+      - build-macos
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download compose-webview artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: maven-local-composewebview
-          path: ~/.m2/repository/io/github/kdroidfilter/
-
-      - name: Download gradle-plugin artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/spotube/
-
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Build Kotlin framework
-        run: ./gradlew :composeApp:linkReleaseFrameworkIosArm64
-
-      - name: Build iOS app
+      - name: Set release variables
+        id: vars
         run: |
-          xcodebuild \
-            -project iosApp/iosApp.xcodeproj \
-            -scheme iosApp \
-            -sdk iphoneos \
-            -configuration Release \
-            -destination 'generic/platform=iOS' \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            CONFIGURATION_BUILD_DIR="${{ github.workspace }}/build/ios" \
-            build
+          if [ "${{ inputs.release_type }}" = "stable" ]; then
+            VERSION=$(grep 'versionName' composeApp/build.gradle.kts | head -1 | sed 's/.*"\(.*\)".*/\1/')
+            TAG="v${VERSION}"
+            echo "is_prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "is_draft=true" >> "$GITHUB_OUTPUT"
+            echo "release_name=Spotube ${TAG}" >> "$GITHUB_OUTPUT"
+          else
+            TAG="nightly"
+            VERSION="$(date +%Y-%m-%d)"
+            echo "is_prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "is_draft=false" >> "$GITHUB_OUTPUT"
+            echo "release_name=Nightly ${VERSION}" >> "$GITHUB_OUTPUT"
+          fi
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
 
-      - name: Upload .app
-        uses: actions/upload-artifact@v4
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+
+      - name: Generate release notes
+        run: |
+          echo "## Downloads" > release-notes.md
+          echo "" >> release-notes.md
+          for dir in android-apk android-aab linux-deb linux-rpm linux-appimage windows-msi windows-exe macos-dmg; do
+            if [ -d "$dir" ]; then
+              echo "### $dir" >> release-notes.md
+              for f in "$dir"/*; do
+                echo "- \`$(basename "$f")\`" >> release-notes.md
+              done
+              echo "" >> release-notes.md
+            fi
+          done
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
         with:
-          name: ios-app
-          path: build/ios/*.app
+          tag_name: ${{ steps.vars.outputs.tag }}
+          name: ${{ steps.vars.outputs.release_name }}
+          body_path: release-notes.md
+          draft: ${{ steps.vars.outputs.is_draft }}
+          prerelease: ${{ steps.vars.outputs.is_prerelease }}
+          files: |
+            android-apk/*.apk
+            android-aab/*.aab
+            linux-deb/*.deb
+            linux-rpm/*.rpm
+            linux-appimage/*.AppImage
+            windows-msi/*.msi
+            windows-exe/*.exe
+            macos-dmg/*.dmg

@@ -228,7 +228,7 @@ android {
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
-        versionName = "1.0"
+        versionName = project.findProperty("versionName") as String? ?: "1.0"
     }
     packaging {
         resources {
@@ -289,7 +289,7 @@ compose.desktop {
 
         nativeDistributions {
             packageName = "dev.krtirtho.spotube"
-            packageVersion = "6.0.0"
+            packageVersion = project.findProperty("versionName") as String? ?: "6.0.0"
             licenseFile = project.file("../LICENSE")
 
             targetFormats(

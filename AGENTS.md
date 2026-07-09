@@ -41,3 +41,14 @@
 
 ## Current testing reality
 - No committed `*Test*.kt` files; test tasks may run zero tests unless new tests are added.
+
+## Release workflow (`.github/workflows/release.yml`)
+- Triggered by `workflow_dispatch` with a `release_type` choice input (`stable` | `nightly`).
+- `prepare-deps` job checks out & publishes to `mavenLocal`:
+  - `kdroidFilter/ComposeNativeWebview` (compose-webview)
+  - `team-spotube/gradle-plugin` (spotubeGradle + vlcjBundler plugins)
+- Build jobs per platform (Android, Linux, Windows, macOS), all `needs: prepare-deps`.
+- **Stable**: reads `versionName` from `composeApp/build.gradle.kts`, tag = `v{version}`, draft release.
+- **Nightly**: builds with `-PversionName=nightly`, tag = `nightly` (updates existing), prerelease.
+- **Android signing**: decodes `secrets.KEYSTORE` (base64) → `composeApp/upload-keystore.jks`, writes signing config into `local.properties` from secrets.
+- `create-release` job (depends on all builds) uses `softprops/action-gh-release@v2` to create the GitHub release with all artifacts attached.
