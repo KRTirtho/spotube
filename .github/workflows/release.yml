@@ -1,9 +1,6 @@
 name: Release
 
 on:
-  push:
-    branches:
-      - dev
   workflow_dispatch:
     inputs:
       release_type:
