@@ -36,13 +36,14 @@ jobs:
         with:
           repository: ${{ env.COMPOSE_WEBVIEW_REPO }}
           ref: ${{ env.COMPOSE_WEBVIEW_COMMIT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           path: compose-webview
 
       - name: Checkout gradle-plugin
         uses: actions/checkout@v4
         with:
           repository: ${{ env.GRADLE_PLUGIN_REPO }}
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           path: gradle-plugin
 
       - name: Set up JDK 21
