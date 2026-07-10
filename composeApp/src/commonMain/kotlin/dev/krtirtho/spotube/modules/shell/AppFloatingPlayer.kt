@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,10 +34,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -69,6 +68,9 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.krtirtho.spotube.core.ui.base.BaseUITheme
+import dev.krtirtho.spotube.core.ui.base.IconButton
+import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 
 // The floating player on small screens that appears above the floating AppBottombar
 //
@@ -185,15 +187,17 @@ fun AppFloatingPlayer(
                         audioPlayerQueue = audioPlayerQueue,
                         savedTracksViewModel = savedTracksViewModel,
                     )
-                    OutlinedIconButton(
+                    Spacer(modifier = Modifier.size(8.dp))
+                    IconButton(
                         onClick = ::onPlayPause,
-                        enabled = playerUiState.queue.isNotEmpty()
+                        enabled = playerUiState.queue.isNotEmpty(),
+                        theme = LocalBaseUITheme.current.iconButtons.outline.copy(
+                            shape = BaseUITheme.InteractionState.fromSingleValue(CircleShape)
+                        )
                     ) {
                         Icon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = if (playerUiState.isPlaying) "Pause" else "Play",
-                            modifier = Modifier.size(20.dp),
-                            tint = MaterialTheme.colorScheme.inverseOnSurface,
                         )
                     }
                 }

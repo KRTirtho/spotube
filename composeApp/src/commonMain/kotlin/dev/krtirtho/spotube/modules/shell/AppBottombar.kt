@@ -91,7 +91,7 @@ fun AppBottombar(
                             contentDescription = label,
                             tint = if (selected) MaterialTheme.colorScheme.primary
                             else MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(20.dp),
+                            modifier = Modifier.size(20.dp)
                         )
                         if (screen == Routes.Library) {
                             DownloadBadgeIndicator(

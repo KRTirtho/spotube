@@ -22,7 +22,6 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,18 +39,22 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
+import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryButton
@@ -63,7 +66,10 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSidebarLeftBroken
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSidebarRightBroken
 import dev.krtirtho.spotube.tabs
+import org.jetbrains.compose.resources.Font
 import org.koin.compose.koinInject
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.cookie_regular
 
 @Composable
 fun AppSidebar(
@@ -93,18 +99,25 @@ fun AppSidebar(
             AnimatedVisibility(visible = expanded, enter = fadeIn(), exit = fadeOut()) {
                 Text(
                     text = "Spotube",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        fontFamily = FontFamily(
+                            listOf(
+                                Font(Res.font.cookie_regular, weight = FontWeight.Normal)
+                            )
+                        )
+                    ),
                     color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Icon(
-                imageVector = if (expanded) Iconsax.IconsaxSidebarLeftBroken else Iconsax.IconsaxSidebarRightBroken,
-                contentDescription = if (expanded) "Collapse sidebar" else "Expand sidebar",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .size(22.dp)
-                    .clickable { expanded = !expanded }
-            )
+            GhostIconButton(
+                onClick = { expanded = !expanded }
+            ) {
+                Icon(
+                    imageVector = if (expanded) Iconsax.IconsaxSidebarLeftBroken else Iconsax.IconsaxSidebarRightBroken,
+                    contentDescription = if (expanded) "Collapse sidebar" else "Expand sidebar",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
@@ -189,7 +202,7 @@ fun SidebarItem(
                 },
             )
         }
-        Spacer(modifier = Modifier.weight(if (expanded) 1f else 0f))
+        Spacer(modifier = if (expanded) Modifier.weight(1f) else Modifier)
     }
 
     val buttonModifier = Modifier
