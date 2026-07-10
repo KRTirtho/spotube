@@ -47,6 +47,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -372,7 +373,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         }
     }
 
-    private fun buildCurrentMediaItemList(): List<Media3MediaItem> {
+    private suspend fun buildCurrentMediaItemList(): List<Media3MediaItem> = withContext(Dispatchers.Main) {
         val count = audioPlayer.player.mediaItemCount
         val items = mutableListOf<Media3MediaItem>()
         for (i in 0 until count) {
@@ -381,7 +382,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
                 items.add(item)
             }
         }
-        return items
+        items
     }
 
     companion object {
