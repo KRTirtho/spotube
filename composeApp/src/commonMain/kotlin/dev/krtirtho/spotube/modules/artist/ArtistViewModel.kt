@@ -269,6 +269,7 @@ class ArtistViewModel(
                 is TrackOptionsAction.Download -> {}
                 is TrackOptionsAction.ToggleBlacklist -> {}
                 is TrackOptionsAction.Share -> {}
+                is TrackOptionsAction.AddToPlaylist -> {}
             }
         }
     }

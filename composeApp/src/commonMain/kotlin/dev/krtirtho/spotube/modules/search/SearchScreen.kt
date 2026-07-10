@@ -57,8 +57,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -97,6 +99,8 @@ import dev.krtirtho.spotube.core.ui.component.UserCard
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
+import dev.krtirtho.spotube.modules.library.LibraryRepository
+import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
@@ -115,10 +119,18 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     val audioPlayerQueue: AudioPlayerQueue = koinInject()
     val shareService: ShareService = koinInject()
     val downloadsViewModel: DownloadsViewModel = koinViewModel()
+    val libraryRepository: LibraryRepository = koinInject()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val selectedType = state.selectedSearchType
     val scope = rememberCoroutineScope()
     val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
+    var showAddToPlaylistPicker by remember { mutableStateOf(false) }
+    var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
+    var currentUserId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        currentUserId = libraryRepository.currentUser()?.id
+    }
 
     val focusManager = LocalFocusManager.current
 
@@ -174,6 +186,10 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                     if (uri != null) {
                         shareService.share(uri, track.title)
                     }
+                }
+                is TrackOptionsAction.AddToPlaylist -> {
+                    tracksToAddToPlaylist = listOf(track)
+                    showAddToPlaylistPicker = true
                 }
             }
         }
@@ -295,6 +311,10 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                         onBulkDownload = { tracks -> downloadsViewModel.downloadTracks(tracks) },
                         onBulkAddToQueue = ::bulkAddToQueue,
                         onBulkPlayNext = ::bulkPlayNext,
+                        onBulkAddToPlaylist = { tracks ->
+                            tracksToAddToPlaylist = tracks
+                            showAddToPlaylistPicker = true
+                        },
                         modifier = Modifier
                             .fillMaxSize(),
                     )
@@ -311,6 +331,10 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                         onBulkDownload = { tracks -> downloadsViewModel.downloadTracks(tracks) },
                         onBulkAddToQueue = ::bulkAddToQueue,
                         onBulkPlayNext = ::bulkPlayNext,
+                        onBulkAddToPlaylist = { tracks ->
+                            tracksToAddToPlaylist = tracks
+                            showAddToPlaylistPicker = true
+                        },
                         modifier = Modifier
                             .fillMaxSize(),
                     )
@@ -357,6 +381,20 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                 }
             }
         }
+
+        AddToPlaylistPicker(
+            visible = showAddToPlaylistPicker,
+            currentUserId = currentUserId,
+            onDismiss = { showAddToPlaylistPicker = false },
+            onPlaylistSelected = { playlistId ->
+                scope.launch {
+                    libraryRepository.addTracksToPlaylist(
+                        playlistId,
+                        tracksToAddToPlaylist.map { it.id }
+                    )
+                }
+            },
+        )
     }
 }
 
@@ -568,6 +606,7 @@ private fun SearchAllTab(
     onBulkDownload: (List<MetadataTrack>) -> Unit,
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit,
     onBulkPlayNext: (List<MetadataTrack>) -> Unit,
+    onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (query.isBlank()) {
@@ -621,6 +660,7 @@ private fun SearchAllTab(
         onBulkDownload = onBulkDownload,
         onBulkAddToQueue = onBulkAddToQueue,
         onBulkPlayNext = onBulkPlayNext,
+        onBulkAddToPlaylist = onBulkAddToPlaylist,
         contentPadding = PaddingValues(top = 12.dp, bottom = 16.dp + bottomInset),
         headerContent = {
             if (showTracks) {
@@ -704,6 +744,7 @@ private fun SearchTracksTab(
     onBulkDownload: (List<MetadataTrack>) -> Unit,
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit,
     onBulkPlayNext: (List<MetadataTrack>) -> Unit,
+    onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (query.isBlank()) {
@@ -729,6 +770,7 @@ private fun SearchTracksTab(
         onBulkDownload = onBulkDownload,
         onBulkAddToQueue = onBulkAddToQueue,
         onBulkPlayNext = onBulkPlayNext,
+        onBulkAddToPlaylist = onBulkAddToPlaylist,
         simplified = true,
         modifier = modifier,
     )

@@ -36,7 +36,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -50,6 +49,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
+import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.core.ui.base.TextField
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
@@ -141,7 +142,7 @@ fun PlaylistFormSheet(
                 )
             },
             confirmButton = {
-                TextButton(
+                PrimaryButton(
                     onClick = {
                         onSubmit(currentData)
                         onDismiss()
@@ -152,7 +153,7 @@ fun PlaylistFormSheet(
                 }
             },
             dismissButton = {
-                TextButton(onClick = onDismiss) {
+                OutlineButton(onClick = onDismiss) {
                     Text("Cancel")
                 }
             },
@@ -190,10 +191,10 @@ fun PlaylistFormSheet(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
                 ) {
-                    TextButton(onClick = onDismiss) {
+                    OutlineButton(onClick = onDismiss) {
                         Text("Cancel")
                     }
-                    TextButton(
+                    PrimaryButton(
                         onClick = {
                             onSubmit(currentData)
                             onDismiss()
@@ -325,7 +326,7 @@ private fun PlaylistFormFields(
                         }
                     }
                 }
-                TextButton(onClick = onPickImage) {
+                PrimaryButton(onClick = onPickImage) {
                     Text(if (imageBase64.isNotBlank() || imagePreviewUrl != null) "Change Image" else "Pick Image")
                 }
             }

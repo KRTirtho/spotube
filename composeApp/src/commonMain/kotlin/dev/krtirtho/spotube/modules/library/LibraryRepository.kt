@@ -342,4 +342,15 @@ class LibraryRepository(
             }
         }
     }
+
+    suspend fun addTracksToPlaylist(playlistId: String, trackIds: List<String>) {
+        plugin?.let { plugin ->
+            pluginManager.withScope {
+                plugin.use {
+                    metadataPlaylistAPI.addTracksToPlaylist(playlistId, trackIds)
+                }
+            }
+            playlistCache.invalidateAll()
+        }
+    }
 }

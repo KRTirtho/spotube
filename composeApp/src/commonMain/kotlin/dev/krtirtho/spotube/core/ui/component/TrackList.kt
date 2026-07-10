@@ -103,6 +103,7 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlaylist
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPause
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
@@ -140,6 +141,7 @@ fun TrackList(
     onBulkDownload: (List<MetadataTrack>) -> Unit = {},
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit = {},
     onBulkPlayNext: (List<MetadataTrack>) -> Unit = {},
+    onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit = {},
     currentTrackId: String? = null,
     isCurrentTrackPlaying: Boolean = false,
     trackOptionsState: (MetadataTrack) -> TrackOptionsState = { TrackOptionsState() },
@@ -432,6 +434,11 @@ fun TrackList(
                                 icon = Iconsax.IconsaxNext,
                                 label = if (isAll) "Play All Next" else "Play $trackCount Next",
                                 onClick = { onBulkPlayNext(targetTracks) },
+                            ),
+                            AdaptiveMenuItem(
+                                icon = Iconsax.IconsaxMusicPlaylist,
+                                label = if (isAll) "Add All to Playlist" else "Add $trackCount to Playlist",
+                                onClick = { onBulkAddToPlaylist(targetTracks) },
                             ),
                         ),
                         trigger = { onClick ->

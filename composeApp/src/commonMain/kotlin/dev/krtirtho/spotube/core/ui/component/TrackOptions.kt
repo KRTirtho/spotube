@@ -49,6 +49,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicCircle
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlaylist
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShare
@@ -59,6 +60,7 @@ sealed interface TrackOptionsAction {
     data object AddToQueue : TrackOptionsAction
     data object RemoveFromQueue : TrackOptionsAction
     data object ToggleFavorite : TrackOptionsAction
+    data object AddToPlaylist : TrackOptionsAction
     data object Download : TrackOptionsAction
     data object ToggleBlacklist : TrackOptionsAction
     data object Share : TrackOptionsAction
@@ -271,6 +273,14 @@ private fun buildTrackMenuItems(
             icon = if (state.isFavorite) Iconsax.IconsaxHeart2 else Iconsax.IconsaxHeart,
             label = if (state.isFavorite) "Remove from favorites" else "Save as favorite",
             onClick = { onAction(TrackOptionsAction.ToggleFavorite) },
+        ),
+    )
+
+    add(
+        AdaptiveMenuItem(
+            icon = Iconsax.IconsaxMusicPlaylist,
+            label = "Add to playlist",
+            onClick = { onAction(TrackOptionsAction.AddToPlaylist) },
         ),
     )
 

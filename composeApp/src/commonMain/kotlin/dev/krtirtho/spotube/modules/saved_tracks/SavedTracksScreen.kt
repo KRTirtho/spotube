@@ -20,7 +20,12 @@ package dev.krtirtho.spotube.modules.saved_tracks
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
@@ -40,6 +45,9 @@ import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
+import dev.krtirtho.spotube.modules.library.LibraryRepository
+import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.DrawableResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -53,6 +61,8 @@ fun SavedTracksScreen() {
     val audioPlayer: AudioPlayer = koinInject()
     val shareService: ShareService = koinInject()
     val downloadsViewModel: DownloadsViewModel = koinViewModel()
+    val libraryRepository: LibraryRepository = koinInject()
+    val scope = rememberCoroutineScope()
     val viewModel = koinViewModel<SavedTracksViewModel>(
         key = SAVED_TRACKS_COLLECTION_ID,
         parameters = { parametersOf() }
@@ -63,6 +73,13 @@ fun SavedTracksScreen() {
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
+    var showAddToPlaylistPicker by remember { mutableStateOf(false) }
+    var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
+    var currentUserId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        currentUserId = libraryRepository.currentUser()?.id
+    }
 
     fun getTrackOptionsState(track: MetadataTrack): TrackOptionsState {
         val currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id
@@ -87,6 +104,10 @@ fun SavedTracksScreen() {
         }
         if (action is TrackOptionsAction.Download) {
             downloadsViewModel.downloadTrack(track)
+        }
+        if (action is TrackOptionsAction.AddToPlaylist) {
+            tracksToAddToPlaylist = listOf(track)
+            showAddToPlaylistPicker = true
         }
     }
 
@@ -187,8 +208,26 @@ fun SavedTracksScreen() {
                     onBulkPlayNext = { tracks ->
                         viewModel.playTracksNext(tracks)
                     },
+                    onBulkAddToPlaylist = { tracks ->
+                        tracksToAddToPlaylist = tracks
+                        showAddToPlaylistPicker = true
+                    },
                 )
             }
         }
+
+        AddToPlaylistPicker(
+            visible = showAddToPlaylistPicker,
+            currentUserId = currentUserId,
+            onDismiss = { showAddToPlaylistPicker = false },
+            onPlaylistSelected = { playlistId ->
+                scope.launch {
+                    libraryRepository.addTracksToPlaylist(
+                        playlistId,
+                        tracksToAddToPlaylist.map { it.id }
+                    )
+                }
+            },
+        )
     }
 }

@@ -17,14 +17,21 @@
 
 package dev.krtirtho.spotube.modules.playlist
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
@@ -34,6 +41,7 @@ import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.share.ShareService
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.CollectionDetails
 import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
@@ -43,8 +51,13 @@ import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
+import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormData
 import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormSheet
+import dev.krtirtho.spotube.modules.playlist.AddTracksToPlaylistDialog
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -55,6 +68,8 @@ fun PlaylistScreen(playlistId: String) {
     val audioPlayer: AudioPlayer = koinInject()
     val shareService: ShareService = koinInject()
     val downloadsViewModel: DownloadsViewModel = koinViewModel()
+    val libraryRepository: LibraryRepository = koinInject()
+    val scope = rememberCoroutineScope()
     val viewModel = koinViewModel<PlaylistViewModel>(
         key = playlistId,
         parameters = { parametersOf(playlistId) }
@@ -68,6 +83,9 @@ fun PlaylistScreen(playlistId: String) {
     val savedPlaylistIds by viewModel.savedPlaylistIds.collectAsStateWithLifecycle()
     val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
     var showEditPlaylist by remember { mutableStateOf(false) }
+    var showAddToPlaylistPicker by remember { mutableStateOf(false) }
+    var showAddTracksDialog by remember { mutableStateOf(false) }
+    var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
 
     fun handleTrackOptionsAction(track: MetadataTrack, action: TrackOptionsAction) {
         viewModel.handleTrackOptionsAction(track, action)
@@ -79,6 +97,10 @@ fun PlaylistScreen(playlistId: String) {
         }
         if (action is TrackOptionsAction.Download) {
             downloadsViewModel.downloadTrack(track)
+        }
+        if (action is TrackOptionsAction.AddToPlaylist) {
+            tracksToAddToPlaylist = listOf(track)
+            showAddToPlaylistPicker = true
         }
     }
 
@@ -178,6 +200,24 @@ fun PlaylistScreen(playlistId: String) {
                             onEdit = if (isOwner) { { showEditPlaylist = true } } else null,
                         )
                     },
+                    footerContent = if (isOwner) {
+                        {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                horizontalArrangement = Arrangement.Center,
+                            ) {
+                                OutlineButton(onClick = { showAddTracksDialog = true }) {
+                                    Icon(
+                                        imageVector = Iconsax.IconsaxAddSquare,
+                                        contentDescription = null,
+                                    )
+                                    Text("Add Tracks", modifier = Modifier.padding(start = 8.dp))
+                                }
+                            }
+                        }
+                    } else null,
                     tracks = dataState.tracks,
                     error = null,
                     hasMore = dataState.nextPagination != null,
@@ -199,6 +239,10 @@ fun PlaylistScreen(playlistId: String) {
                     },
                     onBulkPlayNext = { tracks ->
                         viewModel.playTracksNext(tracks)
+                    },
+                    onBulkAddToPlaylist = { tracks ->
+                        tracksToAddToPlaylist = tracks
+                        showAddToPlaylistPicker = true
                     },
                 )
             }
@@ -227,6 +271,29 @@ fun PlaylistScreen(playlistId: String) {
                     isCollaborating = data.isCollaborating,
                     imageBase64 = data.imageBase64.ifBlank { null },
                 )
+            },
+        )
+
+        AddToPlaylistPicker(
+            visible = showAddToPlaylistPicker,
+            currentUserId = currentUserId,
+            onDismiss = { showAddToPlaylistPicker = false },
+            onPlaylistSelected = { selectedPlaylistId ->
+                scope.launch {
+                    libraryRepository.addTracksToPlaylist(
+                        selectedPlaylistId,
+                        tracksToAddToPlaylist.map { it.id }
+                    )
+                }
+            },
+        )
+
+        AddTracksToPlaylistDialog(
+            visible = showAddTracksDialog,
+            playlistId = playlistId,
+            onDismiss = {
+                showAddTracksDialog = false
+                viewModel.refresh()
             },
         )
     }

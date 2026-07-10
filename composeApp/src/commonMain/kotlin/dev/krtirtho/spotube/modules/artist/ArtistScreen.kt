@@ -45,6 +45,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -84,12 +88,15 @@ import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
+import dev.krtirtho.spotube.modules.library.LibraryRepository
+import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
 import dev.krtirtho.spotube.resources.iconsax.User
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -101,6 +108,8 @@ fun ArtistScreen(artistId: String) {
     val audioPlayer: AudioPlayer = koinInject()
     val shareService: ShareService = koinInject()
     val downloadsViewModel: DownloadsViewModel = koinViewModel()
+    val libraryRepository: LibraryRepository = koinInject()
+    val scope = rememberCoroutineScope()
     val viewModel = koinViewModel<ArtistViewModel>(
         key = artistId,
         parameters = { parametersOf(artistId) }
@@ -113,6 +122,13 @@ fun ArtistScreen(artistId: String) {
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
     val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
     val savedArtistIds by viewModel.savedArtistIds.collectAsStateWithLifecycle()
+    var showAddToPlaylistPicker by remember { mutableStateOf(false) }
+    var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
+    var currentUserId by remember { mutableStateOf<String?>(null) }
+
+    LaunchedEffect(Unit) {
+        currentUserId = libraryRepository.currentUser()?.id
+    }
 
     fun getTrackOptionsState(track: MetadataTrack): TrackOptionsState {
         val currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id
@@ -137,6 +153,10 @@ fun ArtistScreen(artistId: String) {
         }
         if (action is TrackOptionsAction.Download) {
             downloadsViewModel.downloadTrack(track)
+        }
+        if (action is TrackOptionsAction.AddToPlaylist) {
+            tracksToAddToPlaylist = listOf(track)
+            showAddToPlaylistPicker = true
         }
     }
 
@@ -213,6 +233,10 @@ fun ArtistScreen(artistId: String) {
                             onBulkDownload = { tracks -> downloadsViewModel.downloadTracks(tracks) },
                             onBulkAddToQueue = { tracks -> viewModel.addTracksToQueue(tracks) },
                             onBulkPlayNext = { tracks -> viewModel.playTracksNext(tracks) },
+                            onBulkAddToPlaylist = { tracks ->
+                                tracksToAddToPlaylist = tracks
+                                showAddToPlaylistPicker = true
+                            },
                         )
                     }
 
@@ -266,6 +290,20 @@ fun ArtistScreen(artistId: String) {
                 }
             }
         }
+
+        AddToPlaylistPicker(
+            visible = showAddToPlaylistPicker,
+            currentUserId = currentUserId,
+            onDismiss = { showAddToPlaylistPicker = false },
+            onPlaylistSelected = { playlistId ->
+                scope.launch {
+                    libraryRepository.addTracksToPlaylist(
+                        playlistId,
+                        tracksToAddToPlaylist.map { it.id }
+                    )
+                }
+            },
+        )
     }
 }
 

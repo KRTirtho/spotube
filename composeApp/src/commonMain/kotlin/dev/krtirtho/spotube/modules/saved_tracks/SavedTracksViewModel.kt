@@ -197,6 +197,7 @@ class SavedTracksViewModel(
                 is TrackOptionsAction.Download -> {}
                 is TrackOptionsAction.ToggleBlacklist -> {}
                 is TrackOptionsAction.Share -> {}
+                is TrackOptionsAction.AddToPlaylist -> {}
             }
         }
     }
