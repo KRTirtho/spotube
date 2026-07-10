@@ -97,8 +97,6 @@ jobs:
     name: Android
     needs: prepare-deps
     runs-on: ubuntu-latest
-    env:
-      GRADLE_FLAGS: ${{ inputs.release_type == 'nightly' && '-PversionName=nightly' || '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -135,7 +133,7 @@ jobs:
           EOF
 
       - name: Assemble Release
-        run: ./gradlew :composeApp:assembleRelease ${{ env.GRADLE_FLAGS }}
+        run: ./gradlew :composeApp:assembleRelease
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
@@ -153,8 +151,6 @@ jobs:
     name: Linux Desktop
     needs: prepare-deps
     runs-on: ubuntu-latest
-    env:
-      GRADLE_FLAGS: ${{ inputs.release_type == 'nightly' && '-PversionName=nightly' || '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -182,13 +178,13 @@ jobs:
         run: chmod +x gradlew
 
       - name: Package DEB
-        run: ./gradlew :composeApp:packageReleaseDeb ${{ env.GRADLE_FLAGS }}
+        run: ./gradlew :composeApp:packageReleaseDeb
 
       - name: Package RPM
-        run: ./gradlew :composeApp:packageReleaseRpm ${{ env.GRADLE_FLAGS }}
+        run: ./gradlew :composeApp:packageReleaseRpm
 
       - name: Package AppImage
-        run: ./gradlew :composeApp:packageReleaseAppImage ${{ env.GRADLE_FLAGS }}
+        run: ./gradlew :composeApp:packageReleaseAppImage
 
       - name: Upload DEB
         uses: actions/upload-artifact@v4
@@ -212,8 +208,6 @@ jobs:
     name: Windows Desktop
     needs: prepare-deps
     runs-on: windows-latest
-    env:
-      GRADLE_FLAGS: ${{ inputs.release_type == 'nightly' && '-PversionName=nightly' || '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -233,10 +227,10 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
 
       - name: Package MSI
-        run: ./gradlew :composeApp:packageReleaseMsi ${{ env.GRADLE_FLAGS }}
+        run: ./gradlew :composeApp:packageReleaseMsi
 
       - name: Package EXE
-        run: ./gradlew :composeApp:packageReleaseExe ${{ env.GRADLE_FLAGS }}
+        run: ./gradlew :composeApp:packageReleaseExe
 
       - name: Upload MSI
         uses: actions/upload-artifact@v4
@@ -254,8 +248,6 @@ jobs:
     name: macOS Desktop
     needs: prepare-deps
     runs-on: macos-latest
-    env:
-      GRADLE_FLAGS: ${{ inputs.release_type == 'nightly' && '-PversionName=nightly' || '' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -278,7 +270,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Package DMG
-        run: ./gradlew :composeApp:packageReleaseDmg ${{ env.GRADLE_FLAGS }}
+        run: ./gradlew :composeApp:packageReleaseDmg
 
       - name: Upload DMG
         uses: actions/upload-artifact@v4
