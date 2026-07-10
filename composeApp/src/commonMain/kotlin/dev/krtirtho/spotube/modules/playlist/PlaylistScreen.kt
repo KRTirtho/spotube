@@ -21,6 +21,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
@@ -40,6 +43,8 @@ import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
+import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormData
+import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormSheet
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -61,6 +66,8 @@ fun PlaylistScreen(playlistId: String) {
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
     val savedPlaylistIds by viewModel.savedPlaylistIds.collectAsStateWithLifecycle()
+    val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
+    var showEditPlaylist by remember { mutableStateOf(false) }
 
     fun handleTrackOptionsAction(track: MetadataTrack, action: TrackOptionsAction) {
         viewModel.handleTrackOptionsAction(track, action)
@@ -131,6 +138,8 @@ fun PlaylistScreen(playlistId: String) {
                 val ownerName = owner?.displayName ?: owner?.username ?: "Unknown"
                 val ownerImageURL = owner?.thumbnails?.firstOrNull()?.url
 
+                val isOwner = currentUserId != null && playlist?.owner?.id == currentUserId
+
                 val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
 
 
@@ -166,6 +175,7 @@ fun PlaylistScreen(playlistId: String) {
                             isFollowing = savedPlaylistIds.contains(playlistId),
                             onFollowClick = viewModel::toggleSavedPlaylist,
                             showFollowButton = playlistId != "saved_tracks",
+                            onEdit = if (isOwner) { { showEditPlaylist = true } } else null,
                         )
                     },
                     tracks = dataState.tracks,
@@ -193,5 +203,31 @@ fun PlaylistScreen(playlistId: String) {
                 )
             }
         }
+
+        val dataState = state as? PlaylistScreenState.Data
+        val playlist = (dataState as? PlaylistScreenState.Data.Loaded)?.playlist
+        PlaylistFormSheet(
+            visible = showEditPlaylist,
+            onDismiss = { showEditPlaylist = false },
+            isEditing = true,
+            initialData = playlist?.let {
+                PlaylistFormData(
+                    name = it.title,
+                    description = it.description.orEmpty(),
+                    isPublic = true,
+                    isCollaborating = false,
+                    imagePreviewUrl = it.thumbnails.firstOrNull()?.url,
+                )
+            },
+            onSubmit = { data ->
+                viewModel.updatePlaylist(
+                    name = data.name,
+                    description = data.description.ifBlank { null },
+                    isPublic = data.isPublic,
+                    isCollaborating = data.isCollaborating,
+                    imageBase64 = data.imageBase64.ifBlank { null },
+                )
+            },
+        )
     }
 }

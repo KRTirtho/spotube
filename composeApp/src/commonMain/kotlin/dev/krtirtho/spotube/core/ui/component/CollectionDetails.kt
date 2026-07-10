@@ -53,6 +53,7 @@ import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxEdit
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPauseCircle
@@ -80,6 +81,7 @@ fun CollectionDetails(
     isFollowing: Boolean = false,
     onFollowClick: () -> Unit = { },
     showFollowButton: Boolean = true,
+    onEdit: (() -> Unit)? = null,
 ) {
 
 
@@ -149,6 +151,15 @@ fun CollectionDetails(
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
+                    }
+                }
+                if (onEdit != null) {
+                    ButtonGroupDivider()
+                    GroupIconButton(onClick = onEdit) {
+                        Icon(
+                            imageVector = Iconsax.IconsaxEdit,
+                            contentDescription = "Edit playlist",
+                        )
                     }
                 }
             }

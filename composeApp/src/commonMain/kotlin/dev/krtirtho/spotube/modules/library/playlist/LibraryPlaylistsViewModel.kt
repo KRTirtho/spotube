@@ -152,4 +152,31 @@ class LibraryPlaylistsViewModel(
             loadInitialData()
         }
     }
+
+    fun createPlaylist(
+        name: String,
+        description: String?,
+        isPublic: Boolean,
+        isCollaborating: Boolean,
+        imageBase64: String,
+        trackIds: List<String>,
+    ) {
+        viewModelScope.launch {
+            runCatching {
+                repository.createPlaylist(
+                    name = name,
+                    description = description,
+                    isPublic = isPublic,
+                    isCollaborating = isCollaborating,
+                    imageBase64 = imageBase64,
+                    trackIds = trackIds,
+                )
+            }.onFailure { e ->
+                logger.e(e) { "Failed to create playlist" }
+            }.onSuccess {
+                repository.invalidateCaches()
+                loadInitialData()
+            }
+        }
+    }
 }

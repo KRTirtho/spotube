@@ -104,6 +104,8 @@ object FakeMetadataStore {
 
     fun getUser(id: String): MetadataUser? = users[id]?.toModel()
 
+    fun getCurrentUser(): MetadataUser? = users[CURRENT_USER_ID]?.toModel()
+
     fun getTrack(id: String): MetadataTrack = tracks[id]?.toModel()
         ?: error("Track not found: $id")
 

@@ -94,6 +94,9 @@ class PlaylistViewModel(
     val savedPlaylistIds
         get() = libraryRepository.savedPlaylistIdsFlow
 
+    private val _currentUserId = MutableStateFlow<String?>(null)
+    val currentUserId: StateFlow<String?> = _currentUserId.asStateFlow()
+
     init {
         viewModelScope.launch {
             repository.pluginManager.selectedMetadataPlugin
@@ -102,8 +105,13 @@ class PlaylistViewModel(
                 .distinctUntilChanged()
                 .collect {
                     loadInitialData()
+                    loadCurrentUser()
                 }
         }
+    }
+
+    private suspend fun loadCurrentUser() {
+        _currentUserId.value = libraryRepository.currentUser()?.id
     }
 
     private suspend fun loadInitialData() = runCatching {
@@ -176,6 +184,33 @@ class PlaylistViewModel(
         viewModelScope.launch {
             repository.invalidateCaches()
             loadInitialData()
+        }
+    }
+
+    fun updatePlaylist(
+        name: String?,
+        description: String?,
+        isPublic: Boolean?,
+        isCollaborating: Boolean?,
+        imageBase64: String?,
+    ) {
+        viewModelScope.launch {
+            runCatching {
+                libraryRepository.updatePlaylist(
+                    id = playlistId,
+                    name = name,
+                    description = description,
+                    isPublic = isPublic,
+                    isCollaborating = isCollaborating,
+                    imageBase64 = imageBase64,
+                    trackIds = null,
+                )
+            }.onFailure { e ->
+                logger.e(e) { "Failed to update playlist" }
+            }.onSuccess {
+                repository.invalidateCaches()
+                loadInitialData()
+            }
         }
     }
 

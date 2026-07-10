@@ -22,6 +22,7 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationResult
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationStrategy
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.user.MetadataUser
 import dev.krtirtho.spotube.modules.plugin.PluginManager
 import io.github.reactivecircus.cache4k.Cache
 import kotlinx.coroutines.CoroutineScope
@@ -274,6 +275,71 @@ class LibraryRepository(
             }
             artistCache.invalidateAll()
             savedArtistIds.value -= ids.toSet()
+        }
+    }
+
+    suspend fun currentUser(): MetadataUser? {
+        return plugin?.let { plugin ->
+            pluginManager.withScope {
+                plugin.use {
+                    metadataUserAPI.getUser("")
+                }
+            }
+        }
+    }
+
+    suspend fun createPlaylist(
+        name: String,
+        description: String?,
+        isPublic: Boolean,
+        isCollaborating: Boolean,
+        imageBase64: String,
+        trackIds: List<String>,
+    ): MetadataPlaylist? {
+        return plugin?.let { plugin ->
+            pluginManager.withScope {
+                plugin.use {
+                    val result = metadataPlaylistAPI.createPlaylist(
+                        name = name,
+                        description = description,
+                        isPublic = isPublic,
+                        isCollaborating = isCollaborating,
+                        imageBase64 = imageBase64,
+                        trackIds = trackIds,
+                    )
+                    playlistCache.invalidateAll()
+                    savedPlaylistIds.value += result.id
+                    result
+                }
+            }
+        }
+    }
+
+    suspend fun updatePlaylist(
+        id: String,
+        name: String?,
+        description: String?,
+        isPublic: Boolean?,
+        isCollaborating: Boolean?,
+        imageBase64: String?,
+        trackIds: List<String>?,
+    ): MetadataPlaylist? {
+        return plugin?.let { plugin ->
+            pluginManager.withScope {
+                plugin.use {
+                    val result = metadataPlaylistAPI.updatePlaylist(
+                        id = id,
+                        name = name,
+                        description = description,
+                        isPublic = isPublic,
+                        isCollaborating = isCollaborating,
+                        imageBase64 = imageBase64,
+                        trackIds = trackIds,
+                    )
+                    playlistCache.invalidateAll()
+                    result
+                }
+            }
         }
     }
 }
