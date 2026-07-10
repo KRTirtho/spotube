@@ -20,6 +20,8 @@ package dev.krtirtho.spotube.modules.shell.player_queue
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -60,7 +62,10 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.rememberLogger
+import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
+import dev.krtirtho.spotube.core.ui.base.IconButton
+import dev.krtirtho.spotube.core.ui.base.ListRowTile
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.base.TextField
@@ -191,9 +196,9 @@ fun PlayerQueueContent(
                     singleLine = true,
                     modifier = Modifier.weight(1f),
                 )
-                SecondaryIconButton(
+                IconButton(
                     onClick = viewModel::clearQueue,
-                    theme = LocalBaseUITheme.current.iconButtons.secondary.copyShape(MaterialTheme.shapes.small),
+                    theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(MaterialTheme.shapes.small),
                 ) {
                     Icon(Iconsax.IconsaxTrash, contentDescription = "Clear Queue")
                 }
@@ -206,24 +211,23 @@ fun PlayerQueueContent(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             } else {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = lazyListState,
-                    contentPadding = PaddingValues(bottom = 8.dp),
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                ) {
-                    items(displayList, key = { item -> item.id }) { item ->
-                        ReorderableItem(reorderableLazyListState, key = item.id) { isDragging ->
-                            val elevation by animateDpAsState(if (isDragging) 8.dp else 0.dp)
-                            QueueItemRow(
-                                item = item,
-                                isDragging = isDragging,
-                                elevation = elevation,
-                                reorderScope = if (isFiltered) null else this,
-                                onPlayClick = { viewModel.playQueueItem(item.originalIndex) },
-                                onRemoveClick = { viewModel.removeQueueItem(item.originalIndex) },
-                                onDragStopped = ::finalizeReorder,
-                            )
+                Card {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = lazyListState,
+                        contentPadding = PaddingValues(bottom = 8.dp),
+                    ) {
+                        items(displayList, key = { item -> item.id }) { item ->
+                            ReorderableItem(reorderableLazyListState, key = item.id) { isDragging ->
+                                val elevation by animateDpAsState(if (isDragging) 8.dp else 0.dp)
+                                QueueItemRow(
+                                    item = item,
+                                    reorderScope = if (isFiltered) null else this,
+                                    onPlayClick = { viewModel.playQueueItem(item.originalIndex) },
+                                    onRemoveClick = { viewModel.removeQueueItem(item.originalIndex) },
+                                    onDragStopped = ::finalizeReorder,
+                                )
+                            }
                         }
                     }
                 }
@@ -235,8 +239,6 @@ fun PlayerQueueContent(
 @Composable
 private fun QueueItemRow(
     item: QueueItemUi,
-    isDragging: Boolean,
-    elevation: androidx.compose.ui.unit.Dp,
     reorderScope: sh.calvin.reorderable.ReorderableCollectionItemScope?,
     onPlayClick: () -> Unit,
     onRemoveClick: () -> Unit,
@@ -244,92 +246,78 @@ private fun QueueItemRow(
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
-    val rowColor = if (item.isCurrent) {
-        MaterialTheme.colorScheme.secondaryContainer
-    } else {
-        MaterialTheme.colorScheme.surfaceContainerHigh
-    }
-
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .highlight(LocalBaseUITheme.current.buttons.secondary.colors.normal.highlight)
-            .clickable(onClick = onPlayClick),
-        shadowElevation = elevation,
-        tonalElevation = if (item.isCurrent) 2.dp else 0.dp,
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(72.dp)
-                .background(rowColor)
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                Iconsax.IconsaxDragHandle,
-                contentDescription = if (reorderScope != null) "Reorder" else null,
+    ListRowTile(
+        onClick = onPlayClick,
+        selected = item.isCurrent,
+        modifier = Modifier,
+        leading = {
+            Row(
                 modifier = Modifier
-                    .size(24.dp)
-                    .then(
-                        if (reorderScope != null) {
-                            with(reorderScope) { Modifier.draggableHandle(onDragStopped = onDragStopped) }
-                        } else {
-                            Modifier
-                        },
-                    ),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(MaterialTheme.shapes.small)
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center,
+                    .height(72.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                if (item.imageUrl != null) {
-                    AsyncImage(
-                        model = item.imageUrl,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                    )
-                } else {
-                    Text(
-                        text = "${item.originalIndex + 1}",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                Icon(
+                    Iconsax.IconsaxDragHandle,
+                    contentDescription = if (reorderScope != null) "Reorder" else null,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .then(
+                            if (reorderScope != null) {
+                                with(reorderScope) { Modifier.draggableHandle(onDragStopped = onDragStopped) }
+                            } else {
+                                Modifier
+                            },
+                        ),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                Box(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(MaterialTheme.shapes.small)
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    if (item.imageUrl != null) {
+                        AsyncImage(
+                            model = item.imageUrl,
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
+                        )
+                    } else {
+                        Text(
+                            text = "${item.originalIndex + 1}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
             }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = item.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = if (item.isCurrent) {
-                        MaterialTheme.colorScheme.onSecondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    },
-                )
-                Text(
-                    text = item.subtitle,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
-            }
-
-            Spacer(modifier = Modifier.width(8.dp))
-
+        },
+        title = {
+            Text(
+                text = item.title,
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                color = if (item.isCurrent) {
+                    MaterialTheme.colorScheme.onSecondaryContainer
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
+            )
+        },
+        subtitle = {
+            Text(
+                text = item.subtitle,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+            )
+        },
+        trailing = {
             Text(
                 text = item.durationMs.toDurationString(),
                 style = MaterialTheme.typography.bodySmall,
@@ -366,7 +354,7 @@ private fun QueueItemRow(
                 }
             }
         }
-    }
+    )
 }
 
 private fun QueueEntry.toQueueDisplayData(): Tuple4<String, String, Long, String?> {

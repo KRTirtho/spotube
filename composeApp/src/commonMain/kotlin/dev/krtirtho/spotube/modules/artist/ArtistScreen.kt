@@ -36,12 +36,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -49,7 +45,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,10 +56,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Play
-import compose.icons.feathericons.PlusSquare
-import compose.icons.feathericons.User
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
@@ -76,6 +67,10 @@ import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.share.ShareService
+import dev.krtirtho.spotube.core.ui.base.PrimaryButton
+import dev.krtirtho.spotube.core.ui.base.PrimaryIconButton
+import dev.krtirtho.spotube.core.ui.base.SecondaryButton
+import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.ArtistCard
@@ -89,6 +84,10 @@ import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
+import dev.krtirtho.spotube.resources.iconsax.User
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.koin.compose.koinInject
@@ -349,7 +348,7 @@ private fun ArtistErrorContent(
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyLarge,
             )
-            Button(onClick = onRetry) {
+            PrimaryButton(onClick = onRetry) {
                 Text("Retry")
             }
         }
@@ -452,7 +451,7 @@ private fun ArtistAvatar(
             )
         } else {
             Icon(
-                imageVector = FeatherIcons.User,
+                imageVector = Iconsax.User,
                 contentDescription = artist.name,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(size * 0.4f),
@@ -516,11 +515,11 @@ private fun ArtistHeaderActions(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (isSaved) {
-            FilledTonalButton(onClick = onFollowClick) {
+            SecondaryButton(onClick = onFollowClick) {
                 Text("Following", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
             }
         } else {
-            Button(onClick = onFollowClick) {
+            PrimaryButton(onClick = onFollowClick) {
                 Text("Follow", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
             }
         }
@@ -546,15 +545,15 @@ private fun TopTracksHeader(
         )
 
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            FilledIconButton(onClick = onPlay) {
+            PrimaryIconButton(onClick = onPlay) {
                 Icon(
-                    imageVector = FeatherIcons.Play,
+                    imageVector = Iconsax.IconsaxPlay,
                     contentDescription = "Play top tracks",
                 )
             }
-            FilledTonalIconButton(onClick = onAddToQueue) {
+            SecondaryIconButton(onClick = onAddToQueue) {
                 Icon(
-                    imageVector = FeatherIcons.PlusSquare,
+                    imageVector = Iconsax.IconsaxAddSquare,
                     contentDescription = "Add top tracks to queue",
                 )
             }
