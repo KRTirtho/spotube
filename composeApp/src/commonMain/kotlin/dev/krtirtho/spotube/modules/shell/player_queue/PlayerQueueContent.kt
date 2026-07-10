@@ -53,12 +53,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.MoreVertical
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.rememberLogger
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
@@ -66,9 +65,13 @@ import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.core.ui.base.copyShape
+import dev.krtirtho.spotube.core.ui.base.highlight
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
+import dev.krtirtho.spotube.resources.iconsax.IconsaxDragHandle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
+import dev.krtirtho.spotube.resources.iconsax.IconsaxSetting
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
 import org.koin.compose.viewmodel.koinViewModel
 import sh.calvin.reorderable.ReorderableItem
@@ -127,7 +130,7 @@ fun PlayerQueueContent(
         val filtered = if (isFiltered) {
             sourceItems.filter { item ->
                 item.title.lowercase().contains(normalizedFilter) ||
-                    item.subtitle.lowercase().contains(normalizedFilter)
+                        item.subtitle.lowercase().contains(normalizedFilter)
             }
         } else {
             sourceItems
@@ -251,6 +254,7 @@ private fun QueueItemRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(MaterialTheme.shapes.medium)
+            .highlight(LocalBaseUITheme.current.buttons.secondary.colors.normal.highlight)
             .clickable(onClick = onPlayClick),
         shadowElevation = elevation,
         tonalElevation = if (item.isCurrent) 2.dp else 0.dp,
@@ -264,7 +268,7 @@ private fun QueueItemRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                FeatherIcons.MoreVertical,
+                Iconsax.IconsaxDragHandle,
                 contentDescription = if (reorderScope != null) "Reorder" else null,
                 modifier = Modifier
                     .size(24.dp)
@@ -340,7 +344,7 @@ private fun QueueItemRow(
                     modifier = Modifier.size(36.dp),
                 ) {
                     Icon(
-                        FeatherIcons.MoreVertical,
+                        Iconsax.Iconsax3DotsMore,
                         contentDescription = "More options",
                         modifier = Modifier.size(18.dp),
                     )

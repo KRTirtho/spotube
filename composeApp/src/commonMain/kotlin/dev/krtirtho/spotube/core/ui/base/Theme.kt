@@ -54,19 +54,21 @@ data class BaseUITheme(
 
     @Stable
     data class InteractionState<T>(
+        val normal: T,
         val hovered: T,
         val pressed: T,
         val focused: T,
     ) {
         companion object {
             fun <T> fromSingleValue(value: T): InteractionState<T> {
-                return InteractionState(value, value, value)
+                return InteractionState(value, value, value, value)
             }
         }
     }
 
     @Stable
     data class AdvancedInteractionState<T>(
+        val normal: T,
         val hovered: T,
         val pressed: T,
         val focused: T,
@@ -75,7 +77,7 @@ data class BaseUITheme(
     ) {
         companion object {
             fun <T> fromSingleValue(value: T): AdvancedInteractionState<T> {
-                return AdvancedInteractionState(value, value, value, value, value)
+                return AdvancedInteractionState(value, value, value, value, value, value)
             }
         }
     }
@@ -200,12 +202,13 @@ fun rememberBaseUITheme(): BaseUITheme {
 
     val defaultShape = RoundedCornerShape(14.dp)
     val defaultShapeState =
-        BaseUITheme.InteractionState<Shape>(defaultShape, defaultShape, defaultShape)
+        BaseUITheme.InteractionState<Shape>(defaultShape, defaultShape, defaultShape, defaultShape)
     val noBorder = BaseUITheme.Border(Color.Transparent, 0.dp)
-    val noBorderState = BaseUITheme.InteractionState(noBorder, noBorder, noBorder)
+    val noBorderState = BaseUITheme.InteractionState(noBorder, noBorder, noBorder, noBorder)
     val noShadow = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent)
-    val noShadowState = BaseUITheme.InteractionState(noShadow, noShadow, noShadow)
+    val noShadowState = BaseUITheme.InteractionState(noShadow, noShadow, noShadow, noShadow)
     val defaultButtonPadding = BaseUITheme.InteractionState(
+        PaddingValues(horizontal = 20.dp, vertical = 10.dp),
         PaddingValues(horizontal = 20.dp, vertical = 10.dp),
         PaddingValues(horizontal = 20.dp, vertical = 10.dp),
         PaddingValues(horizontal = 20.dp, vertical = 10.dp),
@@ -214,9 +217,15 @@ fun rememberBaseUITheme(): BaseUITheme {
         PaddingValues(8.dp),
         PaddingValues(8.dp),
         PaddingValues(8.dp),
+        PaddingValues(8.dp),
     )
 
     val outlineColors = BaseUITheme.InteractionState(
+        normal = BaseUITheme.ButtonColors(
+            background = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
+            foreground = scheme.onSurface,
+            highlight = highlight,
+        ),
         hovered = BaseUITheme.ButtonColors(
             background = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
             foreground = scheme.onSurface,
@@ -234,6 +243,12 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
     )
     val outlineShadow = BaseUITheme.InteractionState(
+        normal = BaseUITheme.Shadow(
+            6.dp,
+            true,
+            shadowColor.copy(alpha = 0.15f),
+            shadowColor.copy(alpha = 0.18f)
+        ),
         hovered = BaseUITheme.Shadow(
             9.dp,
             true,
@@ -254,12 +269,18 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
     )
     val outlineBorder = BaseUITheme.InteractionState(
+        normal = BaseUITheme.Border(border, 0.5.dp),
         hovered = BaseUITheme.Border(border, 0.5.dp),
         pressed = BaseUITheme.Border(border.copy(alpha = 0.7f), 0.5.dp),
         focused = BaseUITheme.Border(border, 0.5.dp),
     )
 
     val primaryColors = BaseUITheme.InteractionState(
+        normal = BaseUITheme.ButtonColors(
+            background = Brush.verticalGradient(listOf(scheme.primary, scheme.primary)),
+            foreground = scheme.onPrimary,
+            highlight = Color.White.copy(alpha = 0.25f),
+        ),
         hovered = BaseUITheme.ButtonColors(
             background = Brush.verticalGradient(listOf(scheme.primary, scheme.primary)),
             foreground = scheme.onPrimary,
@@ -282,6 +303,12 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
     )
     val primaryShadow = BaseUITheme.InteractionState(
+        normal = BaseUITheme.Shadow(
+            6.dp,
+            true,
+            scheme.primary.copy(alpha = 0.35f),
+            scheme.primary.copy(alpha = 0.4f)
+        ),
         hovered = BaseUITheme.Shadow(
             9.dp,
             true,
@@ -302,12 +329,23 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
     )
     val primaryBorder = BaseUITheme.InteractionState(
+        normal = BaseUITheme.Border(scheme.primary, 0.5.dp),
         hovered = BaseUITheme.Border(scheme.primary, 0.5.dp),
         pressed = BaseUITheme.Border(scheme.primary, 0.5.dp),
         focused = BaseUITheme.Border(scheme.primary, 0.5.dp),
     )
 
     val secondaryColors = BaseUITheme.InteractionState(
+        normal = BaseUITheme.ButtonColors(
+            background = Brush.verticalGradient(
+                listOf(
+                    secondaryContainer,
+                    secondaryContainer.copy(alpha = if (secondaryContainer.luminance() > 0.5f) 0.92f else 1f)
+                )
+            ),
+            foreground = scheme.onSecondaryContainer,
+            highlight = secondaryHighlight,
+        ),
         hovered = BaseUITheme.ButtonColors(
             background = Brush.verticalGradient(
                 listOf(
@@ -340,6 +378,12 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
     )
     val secondaryShadow = BaseUITheme.InteractionState(
+        normal = BaseUITheme.Shadow(
+            6.dp,
+            true,
+            shadowColor.copy(alpha = 0.15f),
+            shadowColor.copy(alpha = 0.18f)
+        ),
         hovered = BaseUITheme.Shadow(
             9.dp,
             true,
@@ -360,12 +404,18 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
     )
     val secondaryBorder = BaseUITheme.InteractionState(
+        normal = BaseUITheme.Border(secondaryContainer.copy(alpha = 0.5f), 0.5.dp),
         hovered = BaseUITheme.Border(secondaryContainer.copy(alpha = 0.5f), 0.5.dp),
         pressed = BaseUITheme.Border(secondaryContainer.copy(alpha = 0.5f), 0.5.dp),
         focused = BaseUITheme.Border(secondaryContainer.copy(alpha = 0.5f), 0.5.dp),
     )
 
     val ghostColors = BaseUITheme.InteractionState(
+        normal = BaseUITheme.ButtonColors(
+            background = Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent)),
+            foreground = scheme.onSurface,
+            highlight = Color.Transparent,
+        ),
         hovered = BaseUITheme.ButtonColors(
             background = Brush.verticalGradient(
                 listOf(
@@ -447,6 +497,7 @@ fun rememberBaseUITheme(): BaseUITheme {
     )
 
     val textFieldForeground = BaseUITheme.InteractionState(
+        normal = scheme.onSurface,
         hovered = scheme.onSurface,
         pressed = scheme.onSurface,
         focused = scheme.onSurface,
@@ -454,14 +505,15 @@ fun rememberBaseUITheme(): BaseUITheme {
 
     val checkBoxShape = RoundedCornerShape(6.dp)
     val checkBoxShapeState =
-        BaseUITheme.InteractionState<Shape>(checkBoxShape, checkBoxShape, checkBoxShape)
+        BaseUITheme.InteractionState<Shape>(checkBoxShape, checkBoxShape, checkBoxShape, checkBoxShape)
     val noPadding =
-        BaseUITheme.InteractionState(PaddingValues(0.dp), PaddingValues(0.dp), PaddingValues(0.dp))
+        BaseUITheme.InteractionState(PaddingValues(0.dp), PaddingValues(0.dp), PaddingValues(0.dp), PaddingValues(0.dp))
 
     val chipTabShape = RoundedCornerShape(10.dp)
     val chipTabShapeState =
-        BaseUITheme.InteractionState<Shape>(chipTabShape, chipTabShape, chipTabShape)
+        BaseUITheme.InteractionState<Shape>(chipTabShape, chipTabShape, chipTabShape, chipTabShape)
     val chipTabPadding = BaseUITheme.InteractionState(
+        PaddingValues(horizontal = 14.dp, vertical = 4.dp),
         PaddingValues(horizontal = 14.dp, vertical = 4.dp),
         PaddingValues(horizontal = 14.dp, vertical = 4.dp),
         PaddingValues(horizontal = 14.dp, vertical = 4.dp),
@@ -482,26 +534,36 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
         textField = TextFieldTheme(
             background = BaseUITheme.InteractionState(
+                normal = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
                 hovered = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
                 pressed = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
                 focused = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
             ),
             highlight = BaseUITheme.InteractionState(
+                normal = highlight,
                 hovered = highlight,
                 pressed = highlight,
                 focused = highlight,
             ),
             shape = BaseUITheme.InteractionState(
+                normal = defaultShape,
                 hovered = defaultShape,
                 pressed = defaultShape,
                 focused = defaultShape,
             ),
             border = BaseUITheme.InteractionState(
+                normal = BaseUITheme.Border(border.copy(alpha = 0.85f), 0.5.dp),
                 hovered = BaseUITheme.Border(border.copy(alpha = 0.85f), 0.5.dp),
                 pressed = BaseUITheme.Border(border, 0.5.dp),
                 focused = BaseUITheme.Border(scheme.primary, 0.5.dp),
             ),
             shadow = BaseUITheme.InteractionState(
+                normal = BaseUITheme.Shadow(
+                    9.dp,
+                    true,
+                    shadowColor.copy(alpha = 0.22f),
+                    shadowColor.copy(alpha = 0.26f)
+                ),
                 hovered = BaseUITheme.Shadow(
                     9.dp,
                     true,
@@ -540,21 +602,30 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
         slider = SliderTheme(
             trackActiveColor = BaseUITheme.InteractionState(
+                normal = scheme.primary,
                 hovered = scheme.primary,
                 pressed = scheme.primary,
                 focused = scheme.primary,
             ),
             trackInactiveColor = BaseUITheme.InteractionState(
+                normal = border.copy(alpha = 0.6f),
                 hovered = border.copy(alpha = 0.6f),
                 pressed = border.copy(alpha = 0.6f),
                 focused = border.copy(alpha = 0.6f),
             ),
             thumbColor = BaseUITheme.InteractionState(
+                normal = scheme.primary,
                 hovered = scheme.primary,
                 pressed = scheme.primary,
                 focused = scheme.primary,
             ),
             thumbShadow = BaseUITheme.InteractionState(
+                normal = BaseUITheme.Shadow(
+                    5.dp,
+                    true,
+                    scheme.primary.copy(alpha = 0.35f),
+                    scheme.primary.copy(alpha = 0.4f)
+                ),
                 hovered = BaseUITheme.Shadow(
                     8.dp,
                     true,
@@ -582,6 +653,12 @@ fun rememberBaseUITheme(): BaseUITheme {
                 colors = primaryColors,
                 shape = checkBoxShapeState,
                 shadow = BaseUITheme.InteractionState(
+                    normal = BaseUITheme.Shadow(
+                        6.dp,
+                        true,
+                        scheme.primary.copy(alpha = 0.3f),
+                        scheme.primary.copy(alpha = 0.35f)
+                    ),
                     hovered = BaseUITheme.Shadow(
                         8.dp,
                         true,
@@ -608,6 +685,12 @@ fun rememberBaseUITheme(): BaseUITheme {
                 colors = outlineColors,
                 shape = checkBoxShapeState,
                 shadow = BaseUITheme.InteractionState(
+                    normal = BaseUITheme.Shadow(
+                        3.dp,
+                        true,
+                        shadowColor.copy(alpha = 0.15f),
+                        shadowColor.copy(alpha = 0.18f)
+                    ),
                     hovered = BaseUITheme.Shadow(
                         5.dp,
                         true,
@@ -662,6 +745,7 @@ fun rememberBaseUITheme(): BaseUITheme {
         ),
         listRowTile = BaseUITheme.ListRowTheme(
             background = BaseUITheme.AdvancedInteractionState(
+                normal = Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent)),
                 hovered = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
                 pressed = Brush.verticalGradient(listOf(containerPressed, containerPressed)),
                 focused = Brush.verticalGradient(listOf(containerLighter, containerDarker)),
@@ -679,6 +763,7 @@ fun rememberBaseUITheme(): BaseUITheme {
                 ),
             ),
             shape = BaseUITheme.AdvancedInteractionState(
+                normal = RoundedCornerShape(8.dp),
                 hovered = RoundedCornerShape(8.dp),
                 pressed = RoundedCornerShape(8.dp),
                 focused = RoundedCornerShape(8.dp),
@@ -686,6 +771,7 @@ fun rememberBaseUITheme(): BaseUITheme {
                 disabled = RoundedCornerShape(8.dp),
             ),
             border = BaseUITheme.AdvancedInteractionState(
+                normal = BaseUITheme.Border(Color.Transparent, 0.dp),
                 hovered = BaseUITheme.Border(Color.Transparent, 0.dp),
                 pressed = BaseUITheme.Border(Color.Transparent, 0.dp),
                 focused = BaseUITheme.Border(Color.Transparent, 0.dp),
@@ -693,6 +779,7 @@ fun rememberBaseUITheme(): BaseUITheme {
                 disabled = BaseUITheme.Border(Color.Transparent, 0.dp),
             ),
             shadow = BaseUITheme.AdvancedInteractionState(
+                normal = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
                 hovered = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
                 pressed = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
                 focused = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
@@ -701,6 +788,7 @@ fun rememberBaseUITheme(): BaseUITheme {
             ),
             padding = PaddingValues(horizontal = 8.dp, vertical = 6.dp),
             textStyle = BaseUITheme.AdvancedInteractionState(
+                normal = TextStyle.Default,
                 hovered = TextStyle.Default,
                 pressed = TextStyle.Default,
                 focused = TextStyle.Default,
@@ -708,6 +796,7 @@ fun rememberBaseUITheme(): BaseUITheme {
                 disabled = TextStyle.Default,
             ),
             foreground = BaseUITheme.AdvancedInteractionState(
+                normal = scheme.onSurface,
                 hovered = scheme.onSurface,
                 pressed = scheme.onSurface,
                 focused = scheme.onSurface,
@@ -766,6 +855,7 @@ fun invertedButtonStyle(): BaseUITheme.ButtonStyle {
 
     return BaseUITheme.ButtonStyle(
         colors = BaseUITheme.InteractionState(
+            normal = invertedColors,
             hovered = invertedColors,
             pressed = pressedColors,
             focused = invertedColors,

@@ -85,7 +85,7 @@ private fun resolveCheckBoxState(
     return when {
         isPressed -> ResolvedCheckBoxState(style.colors.pressed, style.shape.pressed, style.shadow.pressed, style.border.pressed)
         isHovered -> ResolvedCheckBoxState(style.colors.hovered, style.shape.hovered, style.shadow.hovered, style.border.hovered)
-        else -> ResolvedCheckBoxState(style.colors.focused, style.shape.focused, style.shadow.focused, style.border.focused)
+        else -> ResolvedCheckBoxState(style.colors.normal, style.shape.normal, style.shadow.normal, style.border.normal)
     }
 }
 

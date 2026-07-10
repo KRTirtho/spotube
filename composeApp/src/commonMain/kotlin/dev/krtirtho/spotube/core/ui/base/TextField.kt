@@ -81,7 +81,7 @@ private fun resolveTextFieldState(
     return when {
         isFocused -> ResolvedTextFieldState(theme.background.focused, theme.highlight.focused, theme.shape.focused, theme.border.focused, theme.shadow.focused, theme.foreground.focused)
         isHovered -> ResolvedTextFieldState(theme.background.hovered, theme.highlight.hovered, theme.shape.hovered, theme.border.hovered, theme.shadow.hovered, theme.foreground.hovered)
-        else -> ResolvedTextFieldState(theme.background.pressed, theme.highlight.pressed, theme.shape.pressed, theme.border.pressed, theme.shadow.pressed, theme.foreground.pressed)
+        else -> ResolvedTextFieldState(theme.background.normal, theme.highlight.normal, theme.shape.normal, theme.border.normal, theme.shadow.normal, theme.foreground.normal)
     }
 }
 

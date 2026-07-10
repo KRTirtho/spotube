@@ -95,22 +95,22 @@ fun Slider(
     val stateColor = when {
         isPressed -> sliderTheme.trackActiveColor.pressed
         isHovered -> sliderTheme.trackActiveColor.hovered
-        else -> sliderTheme.trackActiveColor.focused
+        else -> sliderTheme.trackActiveColor.normal
     }
     val inactiveColor = when {
         isPressed -> sliderTheme.trackInactiveColor.pressed
         isHovered -> sliderTheme.trackInactiveColor.hovered
-        else -> sliderTheme.trackInactiveColor.focused
+        else -> sliderTheme.trackInactiveColor.normal
     }
     val thumbColor = when {
         isPressed -> sliderTheme.thumbColor.pressed
         isHovered -> sliderTheme.thumbColor.hovered
-        else -> sliderTheme.thumbColor.focused
+        else -> sliderTheme.thumbColor.normal
     }
     val thumbShadowState = when {
         isPressed -> sliderTheme.thumbShadow.pressed
         isHovered -> sliderTheme.thumbShadow.hovered
-        else -> sliderTheme.thumbShadow.focused
+        else -> sliderTheme.thumbShadow.normal
     }
 
     val trackActiveColor = if (enabled) stateColor else stateColor.copy(alpha = 0.38f)

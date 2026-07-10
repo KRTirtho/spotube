@@ -70,7 +70,7 @@ private fun resolveChipState(
     return when {
         isPressed -> ResolvedChipState(style.colors.pressed, style.shape.pressed, style.shadow.pressed, style.border.pressed, style.padding.pressed)
         isHovered -> ResolvedChipState(style.colors.hovered, style.shape.hovered, style.shadow.hovered, style.border.hovered, style.padding.hovered)
-        else -> ResolvedChipState(style.colors.focused, style.shape.focused, style.shadow.focused, style.border.focused, style.padding.focused)
+        else -> ResolvedChipState(style.colors.normal, style.shape.normal, style.shadow.normal, style.border.normal, style.padding.normal)
     }
 }
 

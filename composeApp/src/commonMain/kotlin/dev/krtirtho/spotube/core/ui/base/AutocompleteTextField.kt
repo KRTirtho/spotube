@@ -125,12 +125,12 @@ private fun resolveTextFieldState(
         )
 
         else -> ResolvedAutoCompleteTextFieldState(
-            theme.background.pressed,
-            theme.highlight.pressed,
-            theme.shape.pressed,
-            theme.border.pressed,
-            theme.shadow.pressed,
-            theme.foreground.pressed
+            theme.background.normal,
+            theme.highlight.normal,
+            theme.shape.normal,
+            theme.border.normal,
+            theme.shadow.normal,
+            theme.foreground.normal
         )
     }
 }

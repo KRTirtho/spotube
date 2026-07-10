@@ -562,7 +562,7 @@ private fun TrackListRow(
         isSelected -> rowTheme.background.selected
         isCurrentTrack && isCurrentTrackPlaying -> rowTheme.background.hovered
         isCurrentTrack -> rowTheme.background.focused
-        else -> Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent))
+        else -> rowTheme.background.normal
     }
     val highlightColor = Color.White.copy(
         alpha = if (isLight) 0.9f else 0.06f
