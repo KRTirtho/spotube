@@ -57,6 +57,8 @@ class MediaBrowseHelper(
     companion object {
         const val MEDIA_ID_ROOT = "root"
         const val MEDIA_ID_BROWSE = "browse"
+        const val MEDIA_ID_BROWSE_GENRE = "browse:genre"
+        const val MEDIA_ID_BROWSE_FEATURED = "browse:featured"
         const val MEDIA_ID_LIBRARY = "library"
         const val MEDIA_ID_SAVED_PLAYLISTS = "library:playlists"
         const val MEDIA_ID_SAVED_ALBUMS = "library:albums"
@@ -93,6 +95,11 @@ class MediaBrowseHelper(
         return when {
             parentId == MEDIA_ID_ROOT -> buildRootChildren()
             parentId == MEDIA_ID_BROWSE -> buildBrowseItems()
+            parentId == MEDIA_ID_BROWSE_FEATURED -> buildFeaturedItems()
+            parentId.startsWith("$MEDIA_ID_BROWSE_GENRE:") -> {
+                val genreId = parentId.removePrefix("$MEDIA_ID_BROWSE_GENRE:")
+                buildBrowseGenreItems(genreId)
+            }
             parentId == MEDIA_ID_LIBRARY -> buildLibraryRootChildren()
             parentId == MEDIA_ID_SAVED_PLAYLISTS -> buildSavedPlaylistsItems()
             parentId == MEDIA_ID_SAVED_ALBUMS -> buildSavedAlbumsItems()
@@ -214,7 +221,6 @@ class MediaBrowseHelper(
     }
 
     private fun buildRootChildren(): List<MediaItem> {
-        val gridExtras = Bundle().apply { putInt(CONTENT_STYLE_BROWSABLE, CONTENT_STYLE_GRID) }
         return listOf(
             MediaItem.Builder()
                 .setMediaId(MEDIA_ID_BROWSE)
@@ -223,7 +229,6 @@ class MediaBrowseHelper(
                         .setTitle("Browse")
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
-                        .setExtras(gridExtras)
                         .build()
                 )
                 .build(),
@@ -251,26 +256,66 @@ class MediaBrowseHelper(
     }
 
     private suspend fun buildBrowseItems(): List<MediaItem> {
+        val gridExtras = Bundle().apply { putInt(CONTENT_STYLE_BROWSABLE, CONTENT_STYLE_GRID) }
+        val items = mutableListOf<MediaItem>()
+
+        items.add(
+            MediaItem.Builder()
+                .setMediaId(MEDIA_ID_BROWSE_FEATURED)
+                .setMediaMetadata(
+                    MediaMetadata.Builder()
+                        .setTitle("Featured")
+                        .setIsBrowsable(true)
+                        .setIsPlayable(false)
+                        .setExtras(gridExtras)
+                        .build()
+                )
+                .build()
+        )
+
+        val genres = try {
+            homeScreenRepository.genres() ?: emptyList()
+        } catch (_: Exception) {
+            emptyList()
+        }
+
+        for (genre in genres) {
+            items.add(
+                MediaItem.Builder()
+                    .setMediaId("$MEDIA_ID_BROWSE_GENRE:${genre.id}")
+                    .setMediaMetadata(
+                        MediaMetadata.Builder()
+                            .setTitle(genre.name)
+                            .setIsBrowsable(true)
+                            .setIsPlayable(false)
+                            .setExtras(gridExtras)
+                            .build()
+                    )
+                    .build()
+            )
+        }
+
+        return items
+    }
+
+    private suspend fun buildFeaturedItems(): List<MediaItem> {
         val featured = try {
             homeScreenRepository.featuredItems() ?: emptyList()
         } catch (_: Exception) {
             emptyList()
         }
 
+        return featured.mapNotNull { item -> browseItemToMediaItem(item) }
+    }
+
+    private suspend fun buildBrowseGenreItems(genreId: String): List<MediaItem> {
         val sections = try {
-            homeScreenRepository.list()?.items ?: emptyList()
+            homeScreenRepository.list(genreId)?.items ?: emptyList()
         } catch (_: Exception) {
             emptyList()
         }
 
         val items = mutableListOf<MediaItem>()
-
-        if (featured.isNotEmpty()) {
-            for (item in featured) {
-                val mediaItem = browseItemToMediaItem(item) ?: continue
-                items.add(mediaItem.withGroupTitle("Featured"))
-            }
-        }
 
         for (section in sections) {
             for (item in section.items) {
