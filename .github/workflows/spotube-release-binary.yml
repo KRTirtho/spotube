@@ -25,6 +25,7 @@ env:
   COMPOSE_WEBVIEW_REPO: kdroidFilter/ComposeNativeWebview
   COMPOSE_WEBVIEW_COMMIT: 5aeb268a2c37ff4dbfb76924573344a7c4f763ce
   GRADLE_PLUGIN_REPO: team-spotube/gradle-plugin
+  VLCJ_BUNDLER_REPO: team-spotube/vlcj-bundler-gradle-plugin
 
 jobs:
   prepare-deps:
@@ -45,6 +46,13 @@ jobs:
           repository: ${{ env.GRADLE_PLUGIN_REPO }}
           token: ${{ secrets.GITHUB_TOKEN }}
           path: gradle-plugin
+
+      - name: Checkout vlcj-bundler
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.VLCJ_BUNDLER_REPO }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: vlcj-bundler
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -73,17 +81,17 @@ jobs:
           chmod +x gradlew
           ./gradlew publishToMavenLocal
 
-      - name: Upload compose-webview artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: maven-local-composewebview
-          path: ~/.m2/repository/io/github/kdroidfilter/
+      - name: Publish vlcj-bundler to mavenLocal
+        working-directory: vlcj-bundler
+        run: |
+          chmod +x gradlew
+          ./gradlew publishToMavenLocal
 
-      - name: Upload gradle-plugin artifacts
+      - name: Upload maven local
         uses: actions/upload-artifact@v4
         with:
-          name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/
+          name: maven-local
+          path: ~/.m2/repository/
 
   build-android:
     name: Android
@@ -94,17 +102,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download compose-webview artifacts
+      - name: Download maven local
         uses: actions/download-artifact@v4
         with:
-          name: maven-local-composewebview
-          path: ~/.m2/repository/io/github/kdroidfilter/
-
-      - name: Download gradle-plugin artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/
+          name: maven-local
+          path: ~/.m2/repository/
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -156,17 +158,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download compose-webview artifacts
+      - name: Download maven local
         uses: actions/download-artifact@v4
         with:
-          name: maven-local-composewebview
-          path: ~/.m2/repository/io/github/kdroidfilter/
-
-      - name: Download gradle-plugin artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/
+          name: maven-local
+          path: ~/.m2/repository/
 
       - name: Install packaging tools
         run: |
@@ -221,17 +217,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download compose-webview artifacts
+      - name: Download maven local
         uses: actions/download-artifact@v4
         with:
-          name: maven-local-composewebview
-          path: ~/.m2/repository/io/github/kdroidfilter/
-
-      - name: Download gradle-plugin artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/
+          name: maven-local
+          path: ~/.m2/repository/
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
@@ -269,17 +259,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download compose-webview artifacts
+      - name: Download maven local
         uses: actions/download-artifact@v4
         with:
-          name: maven-local-composewebview
-          path: ~/.m2/repository/io/github/kdroidfilter/
-
-      - name: Download gradle-plugin artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: maven-local-gradle-plugin
-          path: ~/.m2/repository/dev/krtirtho/
+          name: maven-local
+          path: ~/.m2/repository/
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
