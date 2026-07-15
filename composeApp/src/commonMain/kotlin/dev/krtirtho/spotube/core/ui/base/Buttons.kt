@@ -300,6 +300,26 @@ fun IconButton(
 }
 
 @Composable
+fun GhostButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    theme: BaseUITheme.ButtonStyle? = null,
+    content: @Composable RowScope.() -> Unit,
+) {
+    val baseTheme = LocalBaseUITheme.current
+    val style = theme ?: baseTheme.buttons.ghost
+    OutlineButton(
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        hoverOnly = true,
+        theme = style,
+        content = content,
+    )
+}
+
+@Composable
 fun GhostIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -308,43 +328,13 @@ fun GhostIconButton(
     content: @Composable () -> Unit,
 ) {
     val baseTheme = LocalBaseUITheme.current
-    val outlineStyle = baseTheme.iconButtons.outline
-    val ghostStyle = theme ?: BaseUITheme.ButtonStyle(
-        colors = BaseUITheme.InteractionState(
-            normal = BaseUITheme.ButtonColors(
-                background = Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent)),
-                foreground = outlineStyle.colors.normal.foreground,
-                highlight = outlineStyle.colors.normal.highlight,
-            ),
-            hovered = outlineStyle.colors.hovered,
-            pressed = outlineStyle.colors.pressed,
-            focused = BaseUITheme.ButtonColors(
-                background = Brush.verticalGradient(listOf(Color.Transparent, Color.Transparent)),
-                foreground = outlineStyle.colors.normal.foreground,
-                highlight = outlineStyle.colors.normal.highlight,
-            ),
-        ),
-        shape = outlineStyle.shape,
-        shadow = BaseUITheme.InteractionState(
-            normal = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
-            hovered = outlineStyle.shadow.hovered,
-            pressed = outlineStyle.shadow.pressed,
-            focused = BaseUITheme.Shadow(0.dp, false, Color.Transparent, Color.Transparent),
-        ),
-        border = BaseUITheme.InteractionState(
-            normal = BaseUITheme.Border(Color.Transparent, 0.dp),
-            hovered = outlineStyle.border.hovered,
-            pressed = outlineStyle.border.pressed,
-            focused = BaseUITheme.Border(Color.Transparent, 0.dp),
-        ),
-        padding = outlineStyle.padding,
-    )
+    val style = theme ?: baseTheme.iconButtons.ghost
     OutlineButton(
         onClick = onClick,
         modifier = modifier,
         enabled = enabled,
         hoverOnly = true,
-        theme = ghostStyle,
+        theme = style,
     ) {
         content()
     }

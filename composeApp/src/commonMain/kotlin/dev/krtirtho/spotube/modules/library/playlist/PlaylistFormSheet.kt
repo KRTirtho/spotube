@@ -34,7 +34,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
@@ -52,6 +51,7 @@ import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.core.ui.base.TextField
+import dev.krtirtho.spotube.core.ui.base.Toggle
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.readBytes
@@ -265,7 +265,7 @@ private fun PlaylistFormFields(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Switch(checked = isPublic, onCheckedChange = onIsPublicChange)
+            Toggle(checked = isPublic, onCheckedChange = onIsPublicChange)
         }
 
         Row(
@@ -285,7 +285,7 @@ private fun PlaylistFormFields(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-            Switch(checked = isCollaborating, onCheckedChange = onIsCollaboratingChange)
+            Toggle(checked = isCollaborating, onCheckedChange = onIsCollaboratingChange)
         }
 
         Column(
