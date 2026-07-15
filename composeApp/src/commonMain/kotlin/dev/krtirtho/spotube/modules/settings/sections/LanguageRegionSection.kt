@@ -34,59 +34,61 @@ internal fun LazyListScope.languageRegionSection(
     settingsViewModel: SettingsViewModel,
 ) {
     settingsSectionHeader(Res.string.settings_section_language_region)
-
-    item {
-        SelectionSettingCard(
-            title = stringResource(Res.string.settings_language_title),
-            subtitle = stringResource(
-                Res.string.settings_language_subtitle_current,
-                settings.language.displayName
-            ),
-            icon = {
-                SettingsItemIcon(
-                    FeatherIcons.Globe,
-                    stringResource(Res.string.settings_language_title)
+    settingsSectionCard(
+        items = listOf(
+            {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_language_title),
+                    subtitle = stringResource(
+                        Res.string.settings_language_subtitle_current,
+                        settings.language.displayName
+                    ),
+                    icon = {
+                        SettingsItemIcon(
+                            FeatherIcons.Globe,
+                            stringResource(Res.string.settings_language_title)
+                        )
+                    },
+                    selectedOption = settings.language,
+                    options = SupportedLanguages.entries,
+                    optionLabel = {
+                        stringResource(Res.string.settings_option_name_and_code, it.displayName, it.locale)
+                    },
+                    onOptionSelected = { value ->
+                        settingsViewModel.updateSettings {
+                            copy(language = value)
+                        }
+                    },
+                    filter = { item, query -> item.label.contains(query, ignoreCase = true) },
                 )
             },
-            selectedOption = settings.language,
-            options = SupportedLanguages.entries,
-            optionLabel = {
-                stringResource(Res.string.settings_option_name_and_code, it.displayName, it.locale)
-            },
-            onOptionSelected = { value ->
-                settingsViewModel.updateSettings {
-                    copy(language = value)
-                }
-            },
-            filter = { item, query -> item.label.contains(query, ignoreCase = true) },
-        )
-    }
-
-    item {
-        SelectionSettingCard(
-            title = stringResource(Res.string.settings_country_title),
-            subtitle = stringResource(
-                Res.string.settings_country_subtitle_current,
-                settings.country.displayName
-            ),
-            icon = {
-                SettingsItemIcon(
-                    FeatherIcons.MapPin,
-                    stringResource(Res.string.settings_country_title)
+            {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_country_title),
+                    subtitle = stringResource(
+                        Res.string.settings_country_subtitle_current,
+                        settings.country.displayName
+                    ),
+                    icon = {
+                        SettingsItemIcon(
+                            FeatherIcons.MapPin,
+                            stringResource(Res.string.settings_country_title)
+                        )
+                    },
+                    selectedOption = settings.country,
+                    options = CountryCode.entries,
+                    optionLabel = {
+                        stringResource(Res.string.settings_option_name_and_code, it.displayName, it.code)
+                    },
+                    onOptionSelected = { value ->
+                        settingsViewModel.updateSettings {
+                            copy(country = value)
+                        }
+                    },
+                    filter = { item, query -> item.label.contains(query, ignoreCase = true) },
                 )
             },
-            selectedOption = settings.country,
-            options = CountryCode.entries,
-            optionLabel = {
-                stringResource(Res.string.settings_option_name_and_code, it.displayName, it.code)
-            },
-            onOptionSelected = { value ->
-                settingsViewModel.updateSettings {
-                    copy(country = value)
-                }
-            },
-            filter = { item, query -> item.label.contains(query, ignoreCase = true) },
         )
-    }
+    )
 }
 

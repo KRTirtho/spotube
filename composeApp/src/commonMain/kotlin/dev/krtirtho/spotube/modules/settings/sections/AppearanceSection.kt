@@ -27,19 +27,14 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,6 +48,10 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.Droplet
 import compose.icons.feathericons.Monitor
 import spotube.composeapp.generated.resources.*
+import dev.krtirtho.spotube.core.ui.base.ThemedDialog
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
+import dev.krtirtho.spotube.core.ui.base.PrimaryButton
+import dev.krtirtho.spotube.core.ui.base.Radio
 import dev.krtirtho.spotube.modules.settings.AccentColors
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.Theme
@@ -67,41 +66,43 @@ internal fun LazyListScope.appearanceSection(
     settingsViewModel: SettingsViewModel,
 ) {
     settingsSectionHeader(Res.string.settings_section_appearance)
-
-    item {
-        SelectionSettingCard(
-            title = stringResource(Res.string.settings_theme_title),
-            subtitle = stringResource(
-                Res.string.settings_theme_subtitle_current,
-                settings.theme.displayLabel()
-            ),
-            icon = {
-                SettingsItemIcon(FeatherIcons.Monitor, stringResource(Res.string.settings_theme_title))
+    settingsSectionCard(
+        items = listOf(
+            {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_theme_title),
+                    subtitle = stringResource(
+                        Res.string.settings_theme_subtitle_current,
+                        settings.theme.displayLabel()
+                    ),
+                    icon = {
+                        SettingsItemIcon(FeatherIcons.Monitor, stringResource(Res.string.settings_theme_title))
+                    },
+                    selectedOption = settings.theme,
+                    options = Theme.entries,
+                    optionLabel = { it.displayLabel() },
+                    onOptionSelected = { theme ->
+                        settingsViewModel.updateSettings {
+                            copy(theme = theme)
+                        }
+                    }
+                )
             },
-            selectedOption = settings.theme,
-            options = Theme.entries,
-            optionLabel = { it.displayLabel() },
-            onOptionSelected = { theme ->
-                settingsViewModel.updateSettings {
-                    copy(theme = theme)
-                }
-            }
-        )
-    }
-
-    item {
-        AccentColorSettingCard(
-            selectedAccent = settings.accentColor,
-            icon = {
-                SettingsItemIcon(FeatherIcons.Droplet, stringResource(Res.string.settings_accent_title))
+            {
+                AccentColorSettingCard(
+                    selectedAccent = settings.accentColor,
+                    icon = {
+                        SettingsItemIcon(FeatherIcons.Droplet, stringResource(Res.string.settings_accent_title))
+                    },
+                    onColorSaved = { accent ->
+                        settingsViewModel.updateSettings {
+                            copy(accentColor = accent)
+                        }
+                    }
+                )
             },
-            onColorSaved = { accent ->
-                settingsViewModel.updateSettings {
-                    copy(accentColor = accent)
-                }
-            }
         )
-    }
+    )
 }
 
 @Composable
@@ -155,75 +156,13 @@ private fun AccentColorSettingCard(
     if (isDialogOpen) {
         var draftAccent by remember(selectedAccent, isDialogOpen) { mutableStateOf(selectedAccent) }
 
-        AlertDialog(
+        ThemedDialog(
             onDismissRequest = { isDialogOpen = false },
             title = {
-                Text(stringResource(Res.string.settings_accent_dialog_title))
+                Text(stringResource(Res.string.settings_accent_dialog_title), style = MaterialTheme.typography.titleLarge)
             },
-            text = {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 420.dp)
-                        .verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = stringResource(Res.string.settings_accent_dialog_description),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        AccentThemePreview(
-                            title = stringResource(Res.string.settings_preview_light),
-                            accent = draftAccent.toLightColor(),
-                            background = Color(0xFFFFFFFF),
-                            textColor = Color(0xFF121212),
-                            modifier = Modifier.weight(1f)
-                        )
-                        AccentThemePreview(
-                            title = stringResource(Res.string.settings_preview_dark),
-                            accent = draftAccent.toDarkColor(),
-                            background = Color(0xFF121212),
-                            textColor = Color(0xFFEDEDED),
-                            modifier = Modifier.weight(1f)
-                        )
-                    }
-
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        AccentColors.entries.forEach { option ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { draftAccent = option }
-                                    .padding(horizontal = 4.dp, vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                RadioButton(
-                                    selected = option == draftAccent,
-                                    onClick = { draftAccent = option }
-                                )
-                                Text(
-                                    text = option.displayLabel(),
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    modifier = Modifier.weight(1f)
-                                )
-                                AccentDualPreview(
-                                    lightAccent = option.toLightColor(),
-                                    darkAccent = option.toDarkColor(),
-                                )
-                            }
-                        }
-                    }
-                }
-            },
-            confirmButton = {
-                TextButton(
+            actions = {
+                PrimaryButton(
                     onClick = {
                         onColorSaved(draftAccent)
                         isDialogOpen = false
@@ -231,13 +170,66 @@ private fun AccentColorSettingCard(
                 ) {
                     Text(stringResource(Res.string.settings_action_save))
                 }
-            },
-            dismissButton = {
-                TextButton(onClick = { isDialogOpen = false }) {
+                OutlineButton(onClick = { isDialogOpen = false }) {
                     Text(stringResource(Res.string.settings_action_cancel))
                 }
+            },
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    text = stringResource(Res.string.settings_accent_dialog_description),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    AccentThemePreview(
+                        title = stringResource(Res.string.settings_preview_light),
+                        accent = draftAccent.toLightColor(),
+                        background = Color(0xFFFFFFFF),
+                        textColor = Color(0xFF121212),
+                        modifier = Modifier.weight(1f)
+                    )
+                    AccentThemePreview(
+                        title = stringResource(Res.string.settings_preview_dark),
+                        accent = draftAccent.toDarkColor(),
+                        background = Color(0xFF121212),
+                        textColor = Color(0xFFEDEDED),
+                        modifier = Modifier.weight(1f)
+                    )
+                }
+
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    AccentColors.entries.forEach { option ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable { draftAccent = option }
+                                .padding(horizontal = 4.dp, vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Radio(
+                                selected = option == draftAccent,
+                                onClick = { draftAccent = option }
+                            )
+                            Text(
+                                text = option.displayLabel(),
+                                style = MaterialTheme.typography.bodyMedium,
+                                modifier = Modifier.weight(1f)
+                            )
+                            AccentDualPreview(
+                                lightAccent = option.toLightColor(),
+                                darkAccent = option.toDarkColor(),
+                            )
+                        }
+                    }
+                }
             }
-        )
+        }
     }
 }
 

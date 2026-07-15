@@ -51,6 +51,8 @@ data class BaseUITheme(
     val toggle: ToggleTheme,
     val card: CardTheme,
     val listRowTile: ListRowTheme,
+    val dialog: DialogTheme,
+    val dropdownMenu: DropdownMenuTheme,
 ) {
 
     @Stable
@@ -157,6 +159,27 @@ data class BaseUITheme(
         val border: Border,
         val padding: PaddingValues,
         val shadowElevation: Dp,
+    )
+
+    data class DialogTheme(
+        val background: Brush,
+        val scrim: Color,
+        val shape: Shape,
+        val border: Border,
+        val shadow: Shadow,
+        val padding: PaddingValues,
+    )
+
+    data class DropdownMenuTheme(
+        val background: Brush,
+        val shape: Shape,
+        val border: Border,
+        val shadow: Shadow,
+        val itemHoverBackground: Brush,
+        val itemForeground: Color,
+        val itemHighlight: Color,
+        val padding: PaddingValues,
+        val itemPadding: PaddingValues,
     )
 
     data class SliderTheme(
@@ -976,6 +999,47 @@ fun rememberBaseUITheme(): BaseUITheme {
                 selected = scheme.onSurface,
                 disabled = scheme.onSurface.copy(alpha = 0.38f),
             ),
+        ),
+        dialog = BaseUITheme.DialogTheme(
+            background = Brush.verticalGradient(
+                listOf(
+                    scheme.surface,
+                    scheme.surfaceContainerHigh,
+                )
+            ),
+            scrim = Color.Black.copy(alpha = 0.42f),
+            shape = RoundedCornerShape(16.dp),
+            border = BaseUITheme.Border(border, 0.5.dp),
+            shadow = BaseUITheme.Shadow(
+                24.dp,
+                true,
+                shadowColor.copy(alpha = 0.3f),
+                shadowColor.copy(alpha = 0.4f)
+            ),
+            padding = PaddingValues(24.dp),
+        ),
+        dropdownMenu = BaseUITheme.DropdownMenuTheme(
+            background = Brush.verticalGradient(
+                listOf(
+                    scheme.surfaceContainerHigh,
+                    scheme.surfaceContainer,
+                )
+            ),
+            shape = RoundedCornerShape(12.dp),
+            border = BaseUITheme.Border(border, 0.5.dp),
+            shadow = BaseUITheme.Shadow(
+                12.dp,
+                true,
+                shadowColor.copy(alpha = 0.2f),
+                shadowColor.copy(alpha = 0.25f)
+            ),
+            itemHoverBackground = Brush.verticalGradient(
+                listOf(containerLighter, containerDarker)
+            ),
+            itemForeground = scheme.onSurface,
+            itemHighlight = highlight,
+            padding = PaddingValues(4.dp),
+            itemPadding = PaddingValues(horizontal = 14.dp, vertical = 10.dp),
         ),
     )
 }

@@ -43,118 +43,117 @@ internal fun LazyListScope.playbackSection(
     )
 
     settingsSectionHeader(Res.string.settings_section_playback)
-
-    item {
-        SelectionSettingCard(
-            title = stringResource(Res.string.settings_streaming_format_title),
-            subtitle = stringResource(
-                Res.string.settings_streaming_format_subtitle_current,
-                settings.streamingMusicFormat.displayLabel()
-            ),
-            icon = {
-                SettingsItemIcon(FeatherIcons.Radio, stringResource(Res.string.settings_streaming_format_title))
-            },
-            selectedOption = settings.streamingMusicFormat,
-            options = streamingFormats,
-            optionLabel = { it.displayLabel() },
-            onOptionSelected = { format ->
-                settingsViewModel.updateSettings {
-                    copy(
-                        streamingMusicFormat = format,
-                        streamingMusicQuality = format.resolveQuality(streamingMusicQuality),
-                    )
-                }
-            }
-        )
-    }
-
-    item {
-        SelectionSettingCard(
-            title = stringResource(Res.string.settings_streaming_quality_title),
-            subtitle = stringResource(
-                Res.string.settings_subtitle_current,
-                settings.streamingMusicQuality.displayLabel()
-            ),
-            icon = {
-                SettingsItemIcon(FeatherIcons.Sliders, stringResource(Res.string.settings_streaming_quality_title))
-            },
-            selectedOption = settings.streamingMusicQuality,
-            options = streamingQualities,
-            optionLabel = { it.displayLabel() },
-            onOptionSelected = { quality ->
-                settingsViewModel.updateSettings {
-                    copy(streamingMusicQuality = quality)
-                }
-            }
-        )
-    }
-
-    item {
-        SwitchSettingCard(
-            title = stringResource(Res.string.settings_enable_endless_playback_title),
-            subtitle = stringResource(Res.string.settings_enable_endless_playback_subtitle),
-            icon = {
-                SettingsItemIcon(
-                    FeatherIcons.Repeat,
-                    stringResource(Res.string.settings_enable_endless_playback_title)
+    settingsSectionCard(
+        items = listOf(
+            {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_streaming_format_title),
+                    subtitle = stringResource(
+                        Res.string.settings_streaming_format_subtitle_current,
+                        settings.streamingMusicFormat.displayLabel()
+                    ),
+                    icon = {
+                        SettingsItemIcon(FeatherIcons.Radio, stringResource(Res.string.settings_streaming_format_title))
+                    },
+                    selectedOption = settings.streamingMusicFormat,
+                    options = streamingFormats,
+                    optionLabel = { it.displayLabel() },
+                    onOptionSelected = { format ->
+                        settingsViewModel.updateSettings {
+                            copy(
+                                streamingMusicFormat = format,
+                                streamingMusicQuality = format.resolveQuality(streamingMusicQuality),
+                            )
+                        }
+                    }
                 )
             },
-            checked = settings.enableEndlessPlayback,
-            onCheckedChange = { enabled ->
-                settingsViewModel.updateSettings {
-                    copy(enableEndlessPlayback = enabled)
-                }
-            }
-        )
-    }
-
-    item {
-        SwitchSettingCard(
-            title = stringResource(Res.string.settings_enable_connect_title),
-            subtitle = stringResource(Res.string.settings_enable_connect_subtitle),
-            icon = {
-                SettingsItemIcon(FeatherIcons.Cast, stringResource(Res.string.settings_enable_connect_title))
+            {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_streaming_quality_title),
+                    subtitle = stringResource(
+                        Res.string.settings_subtitle_current,
+                        settings.streamingMusicQuality.displayLabel()
+                    ),
+                    icon = {
+                        SettingsItemIcon(FeatherIcons.Sliders, stringResource(Res.string.settings_streaming_quality_title))
+                    },
+                    selectedOption = settings.streamingMusicQuality,
+                    options = streamingQualities,
+                    optionLabel = { it.displayLabel() },
+                    onOptionSelected = { quality ->
+                        settingsViewModel.updateSettings {
+                            copy(streamingMusicQuality = quality)
+                        }
+                    }
+                )
             },
-            checked = settings.enableConnect,
-            onCheckedChange = { enabled ->
-                settingsViewModel.updateSettings {
-                    copy(enableConnect = enabled)
-                }
-            }
-        )
-    }
-
-    item {
-        val error_whole_number = stringResource(Res.string.settings_error_whole_number)
-        val error_port_range = stringResource(Res.string.settings_error_port_range)
-
-        TextInputSettingCard(
-            title = stringResource(Res.string.settings_playback_port_title),
-            subtitle = stringResource(
-                Res.string.settings_playback_port_subtitle_current,
-                settings.playbackProxyServerPort
-            ),
-            icon = {
-                SettingsItemIcon(FeatherIcons.Server, stringResource(Res.string.settings_playback_port_title))
+            {
+                SwitchSettingCard(
+                    title = stringResource(Res.string.settings_enable_endless_playback_title),
+                    subtitle = stringResource(Res.string.settings_enable_endless_playback_subtitle),
+                    icon = {
+                        SettingsItemIcon(
+                            FeatherIcons.Repeat,
+                            stringResource(Res.string.settings_enable_endless_playback_title)
+                        )
+                    },
+                    checked = settings.enableEndlessPlayback,
+                    onCheckedChange = { enabled ->
+                        settingsViewModel.updateSettings {
+                            copy(enableEndlessPlayback = enabled)
+                        }
+                    }
+                )
             },
-            value = settings.playbackProxyServerPort.toString(),
-            dialogDescription = stringResource(Res.string.settings_playback_port_description),
-            placeholder = stringResource(Res.string.settings_playback_port_placeholder),
-            normalize = { it.trim() },
-            validate = { value ->
-                val port = value.toIntOrNull()
-                when {
-                    port == null -> error_whole_number
-                    port !in 1..65535 -> error_port_range
-                    else -> null
-                }
+            {
+                SwitchSettingCard(
+                    title = stringResource(Res.string.settings_enable_connect_title),
+                    subtitle = stringResource(Res.string.settings_enable_connect_subtitle),
+                    icon = {
+                        SettingsItemIcon(FeatherIcons.Cast, stringResource(Res.string.settings_enable_connect_title))
+                    },
+                    checked = settings.enableConnect,
+                    onCheckedChange = { enabled ->
+                        settingsViewModel.updateSettings {
+                            copy(enableConnect = enabled)
+                        }
+                    }
+                )
             },
-            onValueSaved = { value ->
-                settingsViewModel.updateSettings {
-                    copy(playbackProxyServerPort = value.toInt())
-                }
-            }
+            {
+                val error_whole_number = stringResource(Res.string.settings_error_whole_number)
+                val error_port_range = stringResource(Res.string.settings_error_port_range)
+
+                TextInputSettingCard(
+                    title = stringResource(Res.string.settings_playback_port_title),
+                    subtitle = stringResource(
+                        Res.string.settings_playback_port_subtitle_current,
+                        settings.playbackProxyServerPort
+                    ),
+                    icon = {
+                        SettingsItemIcon(FeatherIcons.Server, stringResource(Res.string.settings_playback_port_title))
+                    },
+                    value = settings.playbackProxyServerPort.toString(),
+                    dialogDescription = stringResource(Res.string.settings_playback_port_description),
+                    placeholder = stringResource(Res.string.settings_playback_port_placeholder),
+                    normalize = { it.trim() },
+                    validate = { value ->
+                        val port = value.toIntOrNull()
+                        when {
+                            port == null -> error_whole_number
+                            port !in 1..65535 -> error_port_range
+                            else -> null
+                        }
+                    },
+                    onValueSaved = { value ->
+                        settingsViewModel.updateSettings {
+                            copy(playbackProxyServerPort = value.toInt())
+                        }
+                    }
+                )
+            },
         )
-    }
+    )
 }
 

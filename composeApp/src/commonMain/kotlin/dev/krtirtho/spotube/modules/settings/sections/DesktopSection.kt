@@ -32,43 +32,45 @@ internal fun LazyListScope.desktopSection(
     settingsViewModel: SettingsViewModel,
 ) {
     settingsSectionHeader(Res.string.settings_section_desktop)
-
-    item {
-        SwitchSettingCard(
-            title = stringResource(Res.string.settings_desktop_minimize_title),
-            subtitle = stringResource(Res.string.settings_desktop_minimize_subtitle),
-            icon = {
-                SettingsItemIcon(
-                    FeatherIcons.Minimize2,
-                    stringResource(Res.string.settings_desktop_minimize_title)
+    settingsSectionCard(
+        items = listOf(
+            {
+                SwitchSettingCard(
+                    title = stringResource(Res.string.settings_desktop_minimize_title),
+                    subtitle = stringResource(Res.string.settings_desktop_minimize_subtitle),
+                    icon = {
+                        SettingsItemIcon(
+                            FeatherIcons.Minimize2,
+                            stringResource(Res.string.settings_desktop_minimize_title)
+                        )
+                    },
+                    checked = settings.minimizeToTray,
+                    onCheckedChange = { enabled ->
+                        settingsViewModel.updateSettings {
+                            copy(minimizeToTray = enabled)
+                        }
+                    }
                 )
             },
-            checked = settings.minimizeToTray,
-            onCheckedChange = { enabled ->
-                settingsViewModel.updateSettings {
-                    copy(minimizeToTray = enabled)
-                }
-            }
-        )
-    }
-
-    item {
-        SwitchSettingCard(
-            title = stringResource(Res.string.settings_desktop_discord_title),
-            subtitle = stringResource(Res.string.settings_desktop_discord_subtitle),
-            icon = {
-                SettingsItemIcon(
-                    FeatherIcons.Activity,
-                    stringResource(Res.string.settings_desktop_discord_title)
+            {
+                SwitchSettingCard(
+                    title = stringResource(Res.string.settings_desktop_discord_title),
+                    subtitle = stringResource(Res.string.settings_desktop_discord_subtitle),
+                    icon = {
+                        SettingsItemIcon(
+                            FeatherIcons.Activity,
+                            stringResource(Res.string.settings_desktop_discord_title)
+                        )
+                    },
+                    checked = settings.discordRichPresence,
+                    onCheckedChange = { enabled ->
+                        settingsViewModel.updateSettings {
+                            copy(discordRichPresence = enabled)
+                        }
+                    }
                 )
             },
-            checked = settings.discordRichPresence,
-            onCheckedChange = { enabled ->
-                settingsViewModel.updateSettings {
-                    copy(discordRichPresence = enabled)
-                }
-            }
         )
-    }
+    )
 }
 

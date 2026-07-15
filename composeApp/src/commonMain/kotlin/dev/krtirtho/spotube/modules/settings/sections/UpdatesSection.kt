@@ -33,24 +33,25 @@ internal fun LazyListScope.updatesSection(
     settingsViewModel: SettingsViewModel,
 ) {
     settingsSectionHeader(Res.string.settings_section_updates)
-
-    item {
-        SwitchSettingCard(
-            title = stringResource(Res.string.settings_updates_auto_check_title),
-            subtitle = stringResource(Res.string.settings_updates_auto_check_subtitle),
-            icon = {
-                SettingsItemIcon(
-                    FeatherIcons.RefreshCw,
-                    stringResource(Res.string.settings_updates_auto_check_title)
-                )
-            },
-            checked = settings.autoCheckForUpdates,
-            onCheckedChange = { enabled ->
-                settingsViewModel.updateSettings {
-                    copy(autoCheckForUpdates = enabled)
+    settingsSectionCard(
+        items = listOf {
+            SwitchSettingCard(
+                title = stringResource(Res.string.settings_updates_auto_check_title),
+                subtitle = stringResource(Res.string.settings_updates_auto_check_subtitle),
+                icon = {
+                    SettingsItemIcon(
+                        FeatherIcons.RefreshCw,
+                        stringResource(Res.string.settings_updates_auto_check_title)
+                    )
+                },
+                checked = settings.autoCheckForUpdates,
+                onCheckedChange = { enabled ->
+                    settingsViewModel.updateSettings {
+                        copy(autoCheckForUpdates = enabled)
+                    }
                 }
-            }
-        )
-    }
+            )
+        }
+    )
 }
 

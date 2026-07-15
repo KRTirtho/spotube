@@ -27,13 +27,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -48,6 +44,8 @@ import compose.icons.feathericons.Package
 import compose.icons.feathericons.Tag
 import compose.icons.feathericons.Trash2
 import compose.icons.feathericons.User
+import dev.krtirtho.spotube.core.ui.base.GhostIconButton
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.modules.plugin.BUILT_IN_PLUGINS
 import dev.krtirtho.spotube.modules.plugin.PluginAbility
 import dev.krtirtho.spotube.modules.plugin.PluginEntry
@@ -73,24 +71,10 @@ internal fun PluginCard(
     onLogin: (() -> Unit)? = null,
     onLogout: (() -> Unit)? = null,
 ) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        ),
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (isSelected)
-                MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
-            else
-                MaterialTheme.colorScheme.outlineVariant
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(14.dp),
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(14.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
@@ -247,7 +231,7 @@ internal fun PluginCard(
                             .padding(horizontal = 6.dp, vertical = 2.dp)
                     )
                 } else {
-                    IconButton(onClick = onRemove) {
+                    GhostIconButton(onClick = onRemove) {
                         Icon(
                             FeatherIcons.Trash2,
                             contentDescription = stringResource(Res.string.plugin_action_remove),
@@ -263,12 +247,11 @@ internal fun PluginCard(
                     else -> null
                 }
                 authAction?.let { (action, label) ->
-                    TextButton(onClick = action) {
+                    OutlineButton(onClick = action) {
                         Text(
                             text = stringResource(label),
                             style = MaterialTheme.typography.labelLarge
                         )
-                    }
                 }
             }
         }
@@ -284,4 +267,3 @@ private fun PluginAbility.displayLabel(): String {
         PluginAbility.SCROBBLE -> stringResource(Res.string.settings_plugins_ability_scrobble)
     }
 }
-

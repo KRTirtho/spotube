@@ -24,18 +24,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
-import dev.krtirtho.spotube.core.ui.base.Toggle
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,8 +41,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
+import dev.krtirtho.spotube.core.ui.base.PrimaryButton
+import dev.krtirtho.spotube.core.ui.base.Radio
+import dev.krtirtho.spotube.core.ui.base.TextField
+import dev.krtirtho.spotube.core.ui.base.ThemedDialog
+import dev.krtirtho.spotube.core.ui.base.Toggle
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import spotube.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
@@ -107,8 +110,13 @@ internal fun <T> SelectionSettingCard(
                         )
                     },
                     trigger = { onClick ->
-                        TextButton(onClick = onClick) {
+                        OutlineButton(onClick = onClick) {
                             Text(optionLabel(selectedOption))
+                            Icon(
+                                imageVector = Iconsax.IconsaxArrowDown4,
+                                contentDescription = null,
+                                modifier = Modifier.size(14.dp),
+                            )
                         }
                     },
                     filter = filter,
@@ -122,51 +130,47 @@ internal fun <T> SelectionSettingCard(
         )
 
         if (!isWideLayout && isDialogOpen) {
-            AlertDialog(
+            ThemedDialog(
                 onDismissRequest = { isDialogOpen = false },
                 title = {
-                    Text(dialogTitle)
+                    Text(dialogTitle, style = MaterialTheme.typography.titleLarge)
                 },
-                text = {
-                    Column(
-                        modifier = Modifier.verticalScroll(rememberScrollState()),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        options.forEach { option ->
-                            val isSelected = option == selectedOption
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clip(RoundedCornerShape(10.dp))
-                                    .clickable {
-                                        onOptionSelected(option)
-                                        isDialogOpen = false
-                                    }
-                                    .padding(vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
-                            ) {
-                                RadioButton(
-                                    selected = isSelected,
-                                    onClick = {
-                                        onOptionSelected(option)
-                                        isDialogOpen = false
-                                    }
-                                )
-                                Text(
-                                    text = optionLabel(option),
-                                    style = MaterialTheme.typography.bodyMedium
-                                )
-                            }
-                        }
-                    }
-                },
-                confirmButton = {
-                    TextButton(onClick = { isDialogOpen = false }) {
+                actions = {
+                    OutlineButton(onClick = { isDialogOpen = false }) {
                         Text(stringResource(Res.string.settings_action_close))
                     }
+                },
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    options.forEach { option ->
+                        val isSelected = option == selectedOption
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(10.dp))
+                                .clickable {
+                                    onOptionSelected(option)
+                                    isDialogOpen = false
+                                }
+                                .padding(vertical = 4.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Radio(
+                                selected = isSelected,
+                                onClick = {
+                                    onOptionSelected(option)
+                                    isDialogOpen = false
+                                }
+                            )
+                            Text(
+                                text = optionLabel(option),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
                 }
-            )
+            }
         }
     }
 }
@@ -234,39 +238,13 @@ internal fun TextInputSettingCard(
             val normalizedValue = normalize(draft)
             val errorMessage = validate(normalizedValue)
 
-            AlertDialog(
+            ThemedDialog(
                 onDismissRequest = { isDialogOpen = false },
                 title = {
-                    Text(dialogTitle)
+                    Text(dialogTitle, style = MaterialTheme.typography.titleLarge)
                 },
-                text = {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        dialogDescription?.let {
-                            Text(
-                                text = it,
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        OutlinedTextField(
-                            value = draft,
-                            onValueChange = { draft = it },
-                            modifier = Modifier.fillMaxWidth(),
-                            placeholder = if (placeholder.isNotEmpty()) {
-                                { Text(placeholder) }
-                            } else {
-                                null
-                            },
-                            isError = errorMessage != null,
-                            supportingText = errorMessage?.let { message ->
-                                { Text(message) }
-                            },
-                            singleLine = true,
-                        )
-                    }
-                },
-                confirmButton = {
-                    TextButton(
+                actions = {
+                    PrimaryButton(
                         onClick = {
                             if (errorMessage == null) {
                                 onValueSaved(normalizedValue)
@@ -276,13 +254,36 @@ internal fun TextInputSettingCard(
                     ) {
                         Text(stringResource(Res.string.settings_action_save))
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = { isDialogOpen = false }) {
+                    OutlineButton(onClick = { isDialogOpen = false }) {
                         Text(stringResource(Res.string.settings_action_cancel))
                     }
+                },
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    dialogDescription?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    OutlinedTextField(
+                        value = draft,
+                        onValueChange = { draft = it },
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = if (placeholder.isNotEmpty()) {
+                            { Text(placeholder) }
+                        } else {
+                            null
+                        },
+                        isError = errorMessage != null,
+                        supportingText = errorMessage?.let { message ->
+                            { Text(message) }
+                        },
+                        singleLine = true,
+                    )
                 }
-            )
+            }
         }
     }
 }

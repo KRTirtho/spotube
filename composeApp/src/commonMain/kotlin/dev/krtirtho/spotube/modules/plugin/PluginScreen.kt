@@ -17,7 +17,6 @@
 
 package dev.krtirtho.spotube.modules.plugin
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,14 +28,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -64,6 +59,8 @@ import compose.icons.feathericons.ExternalLink
 import compose.icons.feathericons.FileText
 import compose.icons.feathericons.Music
 import compose.icons.feathericons.Package
+import dev.krtirtho.spotube.core.ui.base.Card
+import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
@@ -219,23 +216,41 @@ fun PluginScreen(
                         }
 
                         // ── Default ability plugin selectors ─────────────────
-                        items(PluginAbility.entries.size) { index ->
-                            val ability = PluginAbility.entries[index]
-                            val selectedPlugin = state.selectedPlugins[ability]
-                            DefaultAbilityPluginSelector(
-                                ability = ability,
-                                selectedPlugin = selectedPlugin,
-                                state = when (ability) {
-                                    PluginAbility.METADATA -> pluginManager.metadataPlugins
-                                    PluginAbility.AUDIO -> pluginManager.audioPlugins
-                                    PluginAbility.LYRICS -> pluginManager.lyricsPlugins
-                                    PluginAbility.SCROBBLE -> pluginManager.scrobblePlugins
-                                },
-                                onSelected = { plugin ->
-                                    pluginManager.setSelectedPlugin(ability, plugin)
-                                },
-                                onManagePlugins = { }
-                            )
+                        item {
+                            Card(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 4.dp, bottom = 4.dp)
+                                ) {
+                                    PluginAbility.entries.forEachIndexed { index, ability ->
+                                        if (index > 0) {
+                                            HorizontalDivider(
+                                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                            )
+                                        }
+                                        val selectedPlugin = state.selectedPlugins[ability]
+                                        DefaultAbilityPluginSelector(
+                                            ability = ability,
+                                            selectedPlugin = selectedPlugin,
+                                            state = when (ability) {
+                                                PluginAbility.METADATA -> pluginManager.metadataPlugins
+                                                PluginAbility.AUDIO -> pluginManager.audioPlugins
+                                                PluginAbility.LYRICS -> pluginManager.lyricsPlugins
+                                                PluginAbility.SCROBBLE -> pluginManager.scrobblePlugins
+                                            },
+                                            onSelected = { plugin ->
+                                                pluginManager.setSelectedPlugin(ability, plugin)
+                                            },
+                                            onManagePlugins = { }
+                                        )
+                                    }
+                                }
+                            }
                         }
 
                         if (state.plugins.isEmpty()) {
@@ -294,66 +309,85 @@ fun PluginScreen(
                                     modifier = Modifier.padding(horizontal = 4.dp, vertical = 4.dp)
                                 )
                             }
-                            items(state.plugins) { plugin ->
-                                val isSelected = state.selectedPlugins.containsValue(plugin)
-                                val selectedAbility = state.selectedPlugins
-                                    .entries
-                                    .firstOrNull { (_, selectedPlugin) -> selectedPlugin.id == plugin.id }
-                                    ?.key
-                                val selectedService = selectedAbility?.let { ability ->
-                                    activeServices?.get(ability)
-                                }
+                            item {
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp),
+                                ) {
+                                    Column(
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        state.plugins.forEachIndexed { index, plugin ->
+                                            if (index > 0) {
+                                                HorizontalDivider(
+                                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                                )
+                                            }
+                                            val isSelected = state.selectedPlugins.containsValue(plugin)
+                                            val selectedAbility = state.selectedPlugins
+                                                .entries
+                                                .firstOrNull { (_, selectedPlugin) -> selectedPlugin.id == plugin.id }
+                                                ?.key
+                                            val selectedService = selectedAbility?.let { ability ->
+                                                activeServices?.get(ability)
+                                            }
 
-                                var requiresAuth by remember(plugin.id, selectedService) {
-                                    mutableStateOf(false)
-                                }
-                                var isLoggedIn by remember(plugin.id, selectedService) {
-                                    mutableStateOf(false)
-                                }
+                                            var requiresAuth by remember(plugin.id, selectedService) {
+                                                mutableStateOf(false)
+                                            }
+                                            var isLoggedIn by remember(plugin.id, selectedService) {
+                                                mutableStateOf(false)
+                                            }
 
-                                LaunchedEffect(plugin.id, selectedService) {
-                                    requiresAuth = false
-                                    isLoggedIn = false
-                                    val service = selectedService ?: return@LaunchedEffect
+                                            LaunchedEffect(plugin.id, selectedService) {
+                                                requiresAuth = false
+                                                isLoggedIn = false
+                                                val service = selectedService ?: return@LaunchedEffect
 
 
-                                    service.use {
-                                        val pluginRequiresAuth = coreAPI.requiresAuthentication
-                                        requiresAuth = pluginRequiresAuth
-                                        if (!pluginRequiresAuth) return@use
+                                                service.use {
+                                                    val pluginRequiresAuth = coreAPI.requiresAuthentication
+                                                    requiresAuth = pluginRequiresAuth
+                                                    if (!pluginRequiresAuth) return@use
 
-                                        coreAPI.loggedInFlow.collect { loggedIn ->
-                                            isLoggedIn = loggedIn
+                                                    coreAPI.loggedInFlow.collect { loggedIn ->
+                                                        isLoggedIn = loggedIn
+                                                    }
+                                                }
+                                            }
+
+                                            PluginCard(
+                                                plugin = plugin,
+                                                isSelected = isSelected,
+                                                onRemove = {
+                                                    scope.launch { pluginManager.removePlugin(plugin) }
+                                                },
+                                                isLoggedIn = isLoggedIn,
+                                                onLogin = if (requiresAuth && selectedService != null) {
+                                                    {
+                                                        pluginManager.launchTask {
+                                                            selectedService.use { coreAPI.login() }
+                                                        }
+                                                    }
+                                                } else {
+                                                    null
+                                                },
+                                                onLogout = if (requiresAuth && selectedService != null) {
+                                                    {
+                                                        pluginManager.launchTask {
+                                                            selectedService.use { coreAPI.logout() }
+                                                        }
+                                                        // should clear webview data after logout
+                                                        scope.launch { webviewController.clearData() }
+                                                    }
+                                                } else {
+                                                    null
+                                                }
+                                            )
                                         }
                                     }
                                 }
-
-                                PluginCard(
-                                    plugin = plugin,
-                                    isSelected = isSelected,
-                                    onRemove = { scope.launch { pluginManager.removePlugin(plugin) } },
-                                    isLoggedIn = isLoggedIn,
-                                    onLogin = if (requiresAuth && selectedService != null) {
-                                        {
-                                            pluginManager.launchTask {
-                                                selectedService.use { coreAPI.login() }
-                                            }
-                                        }
-                                    } else {
-                                        null
-                                    },
-                                    onLogout = if (requiresAuth && selectedService != null) {
-                                        {
-                                            pluginManager.launchTask {
-                                                selectedService.use { coreAPI.logout() }
-                                            }
-                                            // should clear webview data after logout
-                                            scope.launch { webviewController.clearData() }
-                                        }
-                                    } else {
-                                        null
-                                    }
-                                )
                             }
                         }
                     }
@@ -419,187 +453,150 @@ fun DefaultAbilityPluginSelector(
         )
     }
 
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .padding(12.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            ),
-            border = BorderStroke(
-                width = 1.dp,
-                color = if (selectedPlugin != null) {
-                    MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-                } else {
-                    MaterialTheme.colorScheme.outlineVariant
-                }
-            )
+        Row(
+            modifier = Modifier.weight(1f),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp)
+            Surface(
+                modifier = Modifier.clip(RoundedCornerShape(8.dp)),
+                color = when (ability) {
+                    PluginAbility.METADATA -> Color(0xFF4CAF50).copy(alpha = 0.1f)
+                    PluginAbility.AUDIO -> Color(0xFF2196F3).copy(alpha = 0.1f)
+                    PluginAbility.LYRICS -> Color(0xFFFFC107).copy(alpha = 0.1f)
+                    PluginAbility.SCROBBLE -> Color(0xFF9C27B0).copy(alpha = 0.1f)
+                }
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(
-                        modifier = Modifier.weight(1f),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        Surface(
-                            modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                            color = when (ability) {
-                                PluginAbility.METADATA -> Color(0xFF4CAF50).copy(alpha = 0.1f)
-                                PluginAbility.AUDIO -> Color(0xFF2196F3).copy(alpha = 0.1f)
-                                PluginAbility.LYRICS -> Color(0xFFFFC107).copy(alpha = 0.1f)
-                                PluginAbility.SCROBBLE -> Color(0xFF9C27B0).copy(alpha = 0.1f)
-                            }
-                        ) {
-                            Icon(
-                                imageVector = when (ability) {
-                                    PluginAbility.METADATA -> FeatherIcons.FileText
-                                    PluginAbility.AUDIO -> FeatherIcons.Music
-                                    PluginAbility.LYRICS -> FeatherIcons.AlignLeft
-                                    PluginAbility.SCROBBLE -> FeatherIcons.Activity
-                                },
-                                contentDescription = stringResource(
-                                    Res.string.settings_plugins_plugin_content_description,
-                                    ability.displayLabel()
-                                ),
-                                modifier = Modifier.padding(8.dp),
-                                tint = when (ability) {
-                                    PluginAbility.METADATA -> Color(0xFF4CAF50)
-                                    PluginAbility.AUDIO -> Color(0xFF2196F3)
-                                    PluginAbility.LYRICS -> Color(0xFFFFC107)
-                                    PluginAbility.SCROBBLE -> Color(0xFF9C27B0)
-                                }
-                            )
-                        }
-
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(
-                                stringResource(
-                                    Res.string.settings_plugins_default_ability_title,
-                                    ability.displayLabel()
-                                ),
-                                style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            if (selectedPlugin != null) {
-                                Text(
-                                    selectedPlugin.name,
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.primary,
-                                    modifier = Modifier.padding(top = 4.dp)
-                                )
-                            } else {
-                                Text(
-                                    stringResource(Res.string.settings_plugins_no_selection),
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = Color.Gray,
-                                    modifier = Modifier.padding(top = 4.dp)
-                                )
-                            }
-                        }
+                Icon(
+                    imageVector = when (ability) {
+                        PluginAbility.METADATA -> FeatherIcons.FileText
+                        PluginAbility.AUDIO -> FeatherIcons.Music
+                        PluginAbility.LYRICS -> FeatherIcons.AlignLeft
+                        PluginAbility.SCROBBLE -> FeatherIcons.Activity
+                    },
+                    contentDescription = stringResource(
+                        Res.string.settings_plugins_plugin_content_description,
+                        ability.displayLabel()
+                    ),
+                    modifier = Modifier.padding(8.dp),
+                    tint = when (ability) {
+                        PluginAbility.METADATA -> Color(0xFF4CAF50)
+                        PluginAbility.AUDIO -> Color(0xFF2196F3)
+                        PluginAbility.LYRICS -> Color(0xFFFFC107)
+                        PluginAbility.SCROBBLE -> Color(0xFF9C27B0)
                     }
+                )
+            }
 
-                    AdaptiveDropdownBottomSheet(
-                        items = menuItems,
-                        headerDisplayMode = HeaderDisplayMode.OnlyInBottomSheet,
-                        header = {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            ) {
-                                Surface(
-                                    modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                                    color = when (ability) {
-                                        PluginAbility.METADATA -> Color(0xFF4CAF50).copy(alpha = 0.1f)
-                                        PluginAbility.AUDIO -> Color(0xFF2196F3).copy(alpha = 0.1f)
-                                        PluginAbility.LYRICS -> Color(0xFFFFC107).copy(alpha = 0.1f)
-                                        PluginAbility.SCROBBLE -> Color(0xFF9C27B0).copy(alpha = 0.1f)
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = when (ability) {
-                                            PluginAbility.METADATA -> FeatherIcons.FileText
-                                            PluginAbility.AUDIO -> FeatherIcons.Music
-                                            PluginAbility.LYRICS -> FeatherIcons.AlignLeft
-                                            PluginAbility.SCROBBLE -> FeatherIcons.Activity
-                                        },
-                                        contentDescription = null,
-                                        modifier = Modifier.padding(8.dp),
-                                        tint = when (ability) {
-                                            PluginAbility.METADATA -> Color(0xFF4CAF50)
-                                            PluginAbility.AUDIO -> Color(0xFF2196F3)
-                                            PluginAbility.LYRICS -> Color(0xFFFFC107)
-                                            PluginAbility.SCROBBLE -> Color(0xFF9C27B0)
-                                        }
-                                    )
-                                }
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        stringResource(
-                                            Res.string.settings_plugins_default_ability_title,
-                                            ability.displayLabel()
-                                        ),
-                                        style = MaterialTheme.typography.titleMedium,
-                                    )
-                                    selectedPlugin?.let {
-                                        Text(
-                                            it.name,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = MaterialTheme.colorScheme.primary,
-                                        )
-                                    }
-                                }
-                            }
-                        },
-                        trigger = { onClick ->
-                            Button(
-                                onClick = onClick,
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
-                                    contentColor = MaterialTheme.colorScheme.primary
-                                ),
-                                modifier = Modifier.clip(RoundedCornerShape(8.dp))
-                            ) {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        imageVector = FeatherIcons.Check,
-                                        contentDescription = null,
-                                        modifier = Modifier.padding(0.dp),
-                                        tint = MaterialTheme.colorScheme.primary
-                                    )
-                                    Text(
-                                        if (selectedPlugin != null) {
-                                            stringResource(Res.string.settings_plugins_action_change)
-                                        } else {
-                                            stringResource(Res.string.settings_plugins_action_select)
-                                        },
-                                        style = MaterialTheme.typography.labelSmall
-                                    )
-                                }
-                            }
-                        },
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    stringResource(
+                        Res.string.settings_plugins_default_ability_title,
+                        ability.displayLabel()
+                    ),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                if (selectedPlugin != null) {
+                    Text(
+                        selectedPlugin.name,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(top = 4.dp)
+                    )
+                } else {
+                    Text(
+                        stringResource(Res.string.settings_plugins_no_selection),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
             }
         }
+
+        AdaptiveDropdownBottomSheet(
+            items = menuItems,
+            headerDisplayMode = HeaderDisplayMode.OnlyInBottomSheet,
+            header = {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Surface(
+                        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
+                        color = when (ability) {
+                            PluginAbility.METADATA -> Color(0xFF4CAF50).copy(alpha = 0.1f)
+                            PluginAbility.AUDIO -> Color(0xFF2196F3).copy(alpha = 0.1f)
+                            PluginAbility.LYRICS -> Color(0xFFFFC107).copy(alpha = 0.1f)
+                            PluginAbility.SCROBBLE -> Color(0xFF9C27B0).copy(alpha = 0.1f)
+                        }
+                    ) {
+                        Icon(
+                            imageVector = when (ability) {
+                                PluginAbility.METADATA -> FeatherIcons.FileText
+                                PluginAbility.AUDIO -> FeatherIcons.Music
+                                PluginAbility.LYRICS -> FeatherIcons.AlignLeft
+                                PluginAbility.SCROBBLE -> FeatherIcons.Activity
+                            },
+                            contentDescription = null,
+                            modifier = Modifier.padding(8.dp),
+                            tint = when (ability) {
+                                PluginAbility.METADATA -> Color(0xFF4CAF50)
+                                PluginAbility.AUDIO -> Color(0xFF2196F3)
+                                PluginAbility.LYRICS -> Color(0xFFFFC107)
+                                PluginAbility.SCROBBLE -> Color(0xFF9C27B0)
+                            }
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            stringResource(
+                                Res.string.settings_plugins_default_ability_title,
+                                ability.displayLabel()
+                            ),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        selectedPlugin?.let {
+                            Text(
+                                it.name,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                        }
+                    }
+                }
+            },
+            trigger = { onClick ->
+                PrimaryButton(
+                    onClick = onClick,
+                ) {
+                    Icon(
+                        imageVector = FeatherIcons.Check,
+                        contentDescription = null,
+                        modifier = Modifier.padding(0.dp),
+                    )
+                    Text(
+                        if (selectedPlugin != null) {
+                            stringResource(Res.string.settings_plugins_action_change)
+                        } else {
+                            stringResource(Res.string.settings_plugins_action_select)
+                        },
+                        style = MaterialTheme.typography.labelSmall
+                    )
+                }
+            },
+        )
     }
 }
 

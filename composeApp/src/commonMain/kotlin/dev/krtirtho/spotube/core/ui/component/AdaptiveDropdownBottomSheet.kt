@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,10 +34,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -64,6 +65,9 @@ import androidx.compose.ui.unit.dp
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Check
 import dev.krtirtho.spotube.core.ui.base.TextField
+import dev.krtirtho.spotube.core.ui.base.DropdownMenu
+import dev.krtirtho.spotube.core.ui.base.DropdownMenuItem
+import dev.krtirtho.spotube.core.ui.base.DropdownMenuDivider
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
@@ -105,10 +109,9 @@ fun AdaptiveDropdownBottomSheet(
         trigger { expanded = true }
 
         if (isLargeScreen) {
-            ShadcnDropdownMenu(
+            DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                minWidth = menuMinWidth,
             ) {
                 if (header != null && (headerDisplayMode == HeaderDisplayMode.Always || headerDisplayMode == HeaderDisplayMode.OnlyInDropdown)) {
                     header()
@@ -137,28 +140,24 @@ fun AdaptiveDropdownBottomSheet(
                     )
                 }
 
-                val hasSelection = items.any { it.selected }
-
-                items
-                    .forEach { item ->
-                        if (query.isNotBlank() && filter != null && !filter(item, query)) {
-                            return@forEach
-                        }
-                        if (item.dividerBefore) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(vertical = 4.dp),
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                            )
-                        }
-                        ShadcnDropdownMenuItem(
-                            item = item,
-                            onClick = {
-                                item.onClick()
-                                expanded = false
-                            },
-                            hasSelection = hasSelection,
-                        )
+                items.forEach { item ->
+                    if (query.isNotBlank() && filter != null && !filter(item, query)) {
+                        return@forEach
                     }
+                    if (item.dividerBefore) {
+                        DropdownMenuDivider()
+                    }
+                    DropdownMenuItem(
+                        text = item.label,
+                        onClick = {
+                            item.onClick()
+                            expanded = false
+                        },
+                        enabled = item.enabled,
+                        selected = item.selected,
+                        leadingIcon = item.icon,
+                    )
+                }
             }
         } else {
             if (expanded) {
@@ -173,117 +172,6 @@ fun AdaptiveDropdownBottomSheet(
                     filter = filter,
                 )
             }
-        }
-    }
-}
-
-@Composable
-private fun ShadcnDropdownMenu(
-    expanded: Boolean,
-    onDismissRequest: () -> Unit,
-    minWidth: Dp,
-    content: @Composable () -> Unit,
-) {
-    val shape = RoundedCornerShape(6.dp)
-    DropdownMenu(
-        expanded = expanded,
-        onDismissRequest = onDismissRequest,
-        offset = DpOffset(x = 0.dp, y = 4.dp),
-        modifier = Modifier
-            .width(minWidth)
-            .shadow(
-                elevation = 2.dp,
-                shape = shape,
-                ambientColor = Color.Black.copy(alpha = 0.06f),
-                spotColor = Color.Black.copy(alpha = 0.1f),
-            )
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                shape = shape,
-            )
-            .background(
-                color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                shape = shape,
-            )
-            .clip(shape),
-    ) {
-        Column(
-            modifier = Modifier.padding(vertical = 4.dp),
-        ) {
-            content()
-        }
-    }
-}
-
-@Composable
-private fun ShadcnDropdownMenuItem(
-    item: AdaptiveMenuItem,
-    onClick: () -> Unit,
-    hasSelection: Boolean,
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
-
-    val hoverColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f)
-
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .hoverable(interactionSource)
-            .background(
-                color = if (isHovered && item.enabled) hoverColor else Color.Transparent,
-            )
-            .clickable(
-                enabled = item.enabled,
-                interactionSource = interactionSource,
-                indication = null,
-                onClick = onClick,
-            )
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        if (item.icon != null) {
-            Icon(
-                imageVector = item.icon,
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = if (item.enabled) {
-                    MaterialTheme.colorScheme.onSurface
-                } else {
-                    MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-                },
-            )
-        } else if (item.selected) {
-            Icon(
-                imageVector = FeatherIcons.Check,
-                contentDescription = "Selected",
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        } else if (hasSelection) {
-            Spacer(modifier = Modifier.size(16.dp))
-        }
-
-        Text(
-            text = item.label,
-            style = MaterialTheme.typography.bodyMedium,
-            color = if (item.enabled) {
-                MaterialTheme.colorScheme.onSurface
-            } else {
-                MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
-            },
-            modifier = Modifier.weight(1f),
-        )
-
-        if (item.selected && item.icon != null) {
-            Icon(
-                imageVector = FeatherIcons.Check,
-                contentDescription = "Selected",
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
         }
     }
 }

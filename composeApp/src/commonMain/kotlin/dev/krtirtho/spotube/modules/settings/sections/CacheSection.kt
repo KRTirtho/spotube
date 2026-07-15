@@ -19,14 +19,12 @@ package dev.krtirtho.spotube.modules.settings.sections
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Folder
 import compose.icons.feathericons.HardDrive
 import spotube.composeapp.generated.resources.*
+import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
@@ -41,83 +39,84 @@ internal fun LazyListScope.cacheSection(
     settingsViewModel: SettingsViewModel,
 ) {
     settingsSectionHeader(Res.string.settings_section_caching)
-
-    item {
-        SwitchSettingCard(
-            title = stringResource(Res.string.settings_enable_music_caching_title),
-            subtitle = stringResource(Res.string.settings_enable_music_caching_subtitle),
-            icon = {
-                SettingsItemIcon(
-                    FeatherIcons.HardDrive,
-                    stringResource(Res.string.settings_enable_music_caching_title)
-                )
-            },
-            checked = settings.enableMusicCaching,
-            onCheckedChange = { enabled ->
-                settingsViewModel.updateSettings {
-                    copy(enableMusicCaching = enabled)
-                }
-            }
-        )
-    }
-
-    item {
-        CacheFolderSettingCard(
-            enabled = settings.enableMusicCaching,
-            folder = settings.cacheFolder,
-            onFolderSelected = { folder ->
-                settingsViewModel.updateSettings {
-                    copy(cacheFolder = folder)
-                }
-            }
-        )
-    }
-
-    item {
-        val error_whole_number = stringResource(Res.string.settings_error_whole_number)
-        val error_cache_range = stringResource(Res.string.settings_error_cache_size_range)
-
-        TextInputSettingCard(
-            enabled = settings.enableMusicCaching,
-            title = stringResource(Res.string.settings_cache_size_limit_title),
-            subtitle = when {
-                settings.cacheSizeLimitMB <= 0L -> stringResource(Res.string.settings_cache_size_limit_unlimited)
-                else -> stringResource(
-                    Res.string.settings_cache_size_limit_current,
-                    settings.cacheSizeLimitMB
-                )
-            },
-            icon = {
-                SettingsItemIcon(
-                    FeatherIcons.HardDrive,
-                    stringResource(Res.string.settings_cache_size_limit_title)
-                )
-            },
-            value = when {
-                settings.cacheSizeLimitMB <= 0L -> ""
-                else -> settings.cacheSizeLimitMB.toString()
-            },
-            dialogDescription = stringResource(Res.string.settings_cache_size_limit_description),
-            placeholder = stringResource(Res.string.settings_cache_size_limit_placeholder),
-            normalize = { it.trim() },
-            validate = { value ->
-                if (value.isBlank()) null
-                else {
-                    val mb = value.toLongOrNull()
-                    when {
-                        mb == null -> error_whole_number
-                        mb < 0L -> error_cache_range
-                        else -> null
+    settingsSectionCard(
+        items = listOf(
+            {
+                SwitchSettingCard(
+                    title = stringResource(Res.string.settings_enable_music_caching_title),
+                    subtitle = stringResource(Res.string.settings_enable_music_caching_subtitle),
+                    icon = {
+                        SettingsItemIcon(
+                            FeatherIcons.HardDrive,
+                            stringResource(Res.string.settings_enable_music_caching_title)
+                        )
+                    },
+                    checked = settings.enableMusicCaching,
+                    onCheckedChange = { enabled ->
+                        settingsViewModel.updateSettings {
+                            copy(enableMusicCaching = enabled)
+                        }
                     }
-                }
+                )
             },
-            onValueSaved = { value ->
-                settingsViewModel.updateSettings {
-                    copy(cacheSizeLimitMB = value.toLongOrNull()?.coerceAtLeast(0L) ?: 0L)
-                }
-            }
+            {
+                CacheFolderSettingCard(
+                    enabled = settings.enableMusicCaching,
+                    folder = settings.cacheFolder,
+                    onFolderSelected = { folder ->
+                        settingsViewModel.updateSettings {
+                            copy(cacheFolder = folder)
+                        }
+                    }
+                )
+            },
+            {
+                val error_whole_number = stringResource(Res.string.settings_error_whole_number)
+                val error_cache_range = stringResource(Res.string.settings_error_cache_size_range)
+
+                TextInputSettingCard(
+                    enabled = settings.enableMusicCaching,
+                    title = stringResource(Res.string.settings_cache_size_limit_title),
+                    subtitle = when {
+                        settings.cacheSizeLimitMB <= 0L -> stringResource(Res.string.settings_cache_size_limit_unlimited)
+                        else -> stringResource(
+                            Res.string.settings_cache_size_limit_current,
+                            settings.cacheSizeLimitMB
+                        )
+                    },
+                    icon = {
+                        SettingsItemIcon(
+                            FeatherIcons.HardDrive,
+                            stringResource(Res.string.settings_cache_size_limit_title)
+                        )
+                    },
+                    value = when {
+                        settings.cacheSizeLimitMB <= 0L -> ""
+                        else -> settings.cacheSizeLimitMB.toString()
+                    },
+                    dialogDescription = stringResource(Res.string.settings_cache_size_limit_description),
+                    placeholder = stringResource(Res.string.settings_cache_size_limit_placeholder),
+                    normalize = { it.trim() },
+                    validate = { value ->
+                        if (value.isBlank()) null
+                        else {
+                            val mb = value.toLongOrNull()
+                            when {
+                                mb == null -> error_whole_number
+                                mb < 0L -> error_cache_range
+                                else -> null
+                            }
+                        }
+                    },
+                    onValueSaved = { value ->
+                        settingsViewModel.updateSettings {
+                            copy(cacheSizeLimitMB = value.toLongOrNull()?.coerceAtLeast(0L) ?: 0L)
+                        }
+                    }
+                )
+            },
         )
-    }
+    )
 }
 
 @Composable
@@ -147,7 +146,7 @@ private fun CacheFolderSettingCard(
             )
         },
         trailingContent = {
-            IconButton(
+            GhostIconButton(
                 onClick = { pickerLauncher.launch() },
                 enabled = enabled,
             ) {

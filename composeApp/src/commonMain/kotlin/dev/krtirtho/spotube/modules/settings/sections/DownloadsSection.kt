@@ -26,12 +26,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
@@ -49,6 +46,10 @@ import compose.icons.feathericons.PlusSquare
 import compose.icons.feathericons.Sliders
 import compose.icons.feathericons.Trash2
 import spotube.composeapp.generated.resources.*
+import dev.krtirtho.spotube.core.ui.base.ThemedDialog
+import dev.krtirtho.spotube.core.ui.base.GhostIconButton
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
+import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
@@ -68,73 +69,73 @@ internal fun LazyListScope.downloadsSection(
     )
 
     settingsSectionHeader(Res.string.settings_section_downloads)
-
-    item {
-        DownloadFolderSettingCard(
-            folder = settings.overloadedDownloadFolder,
-            onFolderSelected = { folder ->
-                settingsViewModel.updateSettings {
-                    copy(overloadedDownloadFolder = folder)
-                }
-            }
-        )
-    }
-
-    item {
-        LocalMediaFoldersSettingCard(
-            folders = settings.localMediaFolders,
-            onFoldersSaved = { folders ->
-                settingsViewModel.updateSettings {
-                    copy(localMediaFolders = folders)
-                }
-            }
-        )
-    }
-
-    item {
-        SelectionSettingCard(
-            title = stringResource(Res.string.settings_download_format_title),
-            subtitle = stringResource(
-                Res.string.settings_download_format_subtitle_current,
-                settings.downloadMusicFormat.displayLabel()
-            ),
-            icon = {
-                SettingsItemIcon(FeatherIcons.Disc, stringResource(Res.string.settings_download_format_title))
+    settingsSectionCard(
+        items = listOf(
+            {
+                DownloadFolderSettingCard(
+                    folder = settings.overloadedDownloadFolder,
+                    onFolderSelected = { folder ->
+                        settingsViewModel.updateSettings {
+                            copy(overloadedDownloadFolder = folder)
+                        }
+                    }
+                )
             },
-            selectedOption = settings.downloadMusicFormat,
-            options = downloadFormats,
-            optionLabel = { it.displayLabel() },
-            onOptionSelected = { format ->
-                settingsViewModel.updateSettings {
-                    copy(
-                        downloadMusicFormat = format,
-                        downloadMusicQuality = format.resolveQuality(downloadMusicQuality),
-                    )
-                }
-            }
-        )
-    }
-
-    item {
-        SelectionSettingCard(
-            title = stringResource(Res.string.settings_download_quality_title),
-            subtitle = stringResource(
-                Res.string.settings_subtitle_current,
-                settings.downloadMusicQuality.displayLabel()
-            ),
-            icon = {
-                SettingsItemIcon(FeatherIcons.Sliders, stringResource(Res.string.settings_download_quality_title))
+            {
+                LocalMediaFoldersSettingCard(
+                    folders = settings.localMediaFolders,
+                    onFoldersSaved = { folders ->
+                        settingsViewModel.updateSettings {
+                            copy(localMediaFolders = folders)
+                        }
+                    }
+                )
             },
-            selectedOption = settings.downloadMusicQuality,
-            options = downloadQualities,
-            optionLabel = { it.displayLabel() },
-            onOptionSelected = { quality ->
-                settingsViewModel.updateSettings {
-                    copy(downloadMusicQuality = quality)
-                }
-            }
+            {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_download_format_title),
+                    subtitle = stringResource(
+                        Res.string.settings_download_format_subtitle_current,
+                        settings.downloadMusicFormat.displayLabel()
+                    ),
+                    icon = {
+                        SettingsItemIcon(FeatherIcons.Disc, stringResource(Res.string.settings_download_format_title))
+                    },
+                    selectedOption = settings.downloadMusicFormat,
+                    options = downloadFormats,
+                    optionLabel = { it.displayLabel() },
+                    onOptionSelected = { format ->
+                        settingsViewModel.updateSettings {
+                            copy(
+                                downloadMusicFormat = format,
+                                downloadMusicQuality = format.resolveQuality(downloadMusicQuality),
+                            )
+                        }
+                    }
+                )
+            },
+            {
+                SelectionSettingCard(
+                    title = stringResource(Res.string.settings_download_quality_title),
+                    subtitle = stringResource(
+                        Res.string.settings_subtitle_current,
+                        settings.downloadMusicQuality.displayLabel()
+                    ),
+                    icon = {
+                        SettingsItemIcon(FeatherIcons.Sliders, stringResource(Res.string.settings_download_quality_title))
+                    },
+                    selectedOption = settings.downloadMusicQuality,
+                    options = downloadQualities,
+                    optionLabel = { it.displayLabel() },
+                    onOptionSelected = { quality ->
+                        settingsViewModel.updateSettings {
+                            copy(downloadMusicQuality = quality)
+                        }
+                    }
+                )
+            },
         )
-    }
+    )
 }
 
 @Composable
@@ -160,7 +161,7 @@ private fun DownloadFolderSettingCard(
             SettingsItemIcon(FeatherIcons.Folder, stringResource(Res.string.settings_download_folder_title))
         },
         trailingContent = {
-            IconButton(onClick = { pickerLauncher.launch() }) {
+            GhostIconButton(onClick = { pickerLauncher.launch() }) {
                 Icon(
                     FeatherIcons.Folder,
                     contentDescription = stringResource(Res.string.settings_download_folder_title)
@@ -199,7 +200,7 @@ private fun LocalMediaFoldersSettingCard(
             )
         },
         trailingContent = {
-            TextButton(onClick = { isDialogOpen = true }) {
+            OutlineButton(onClick = { isDialogOpen = true }) {
                 Text(stringResource(Res.string.settings_local_media_folders_manage))
             }
         },
@@ -235,76 +236,16 @@ private fun LocalMediaFoldersDialog(
         }
     }
 
-    AlertDialog(
+    ThemedDialog(
         onDismissRequest = onDismiss,
         title = {
-            Text(stringResource(Res.string.settings_local_media_folders_title))
+            Text(
+                text = stringResource(Res.string.settings_local_media_folders_title),
+                style = MaterialTheme.typography.titleLarge,
+            )
         },
-        text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.verticalScroll(rememberScrollState()),
-            ) {
-                Text(
-                    text = stringResource(Res.string.settings_local_media_folders_description),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-
-                TextButton(onClick = { pickerLauncher.launch() }) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Icon(FeatherIcons.PlusSquare, contentDescription = null)
-                        Text(stringResource(Res.string.settings_local_media_folders_add_action))
-                    }
-                }
-
-                if (draftFolders.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-                        Text(
-                            text = stringResource(Res.string.settings_local_media_folders_none_added),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                } else {
-                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        draftFolders.forEachIndexed { index, folder ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                            ) {
-                                Text(
-                                    text = folder,
-                                    modifier = Modifier.weight(1f),
-                                    maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis,
-                                    style = MaterialTheme.typography.bodySmall,
-                                )
-                                IconButton(
-                                    onClick = {
-                                        if (index in draftFolders.indices) {
-                                            draftFolders.removeAt(index)
-                                        }
-                                    }
-                                ) {
-                                    Icon(
-                                        imageVector = FeatherIcons.Trash2,
-                                        contentDescription = stringResource(
-                                            Res.string.settings_local_media_folders_remove_action,
-                                        ),
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            TextButton(
+        actions = {
+            PrimaryButton(
                 onClick = {
                     onFoldersSaved(draftFolders.map(::normalizePath).filter { it.isNotBlank() }.distinct())
                     onDismiss()
@@ -312,12 +253,69 @@ private fun LocalMediaFoldersDialog(
             ) {
                 Text(stringResource(Res.string.settings_action_save))
             }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
+            OutlineButton(onClick = onDismiss) {
                 Text(stringResource(Res.string.settings_action_cancel))
             }
+        },
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(
+                text = stringResource(Res.string.settings_local_media_folders_description),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+
+            OutlineButton(onClick = { pickerLauncher.launch() }) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(FeatherIcons.PlusSquare, contentDescription = null)
+                    Text(stringResource(Res.string.settings_local_media_folders_add_action))
+                }
+            }
+
+            if (draftFolders.isEmpty()) {
+                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
+                    Text(
+                        text = stringResource(Res.string.settings_local_media_folders_none_added),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            } else {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    draftFolders.forEachIndexed { index, folder ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = folder,
+                                modifier = Modifier.weight(1f),
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                            GhostIconButton(
+                                onClick = {
+                                    if (index in draftFolders.indices) {
+                                        draftFolders.removeAt(index)
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    imageVector = FeatherIcons.Trash2,
+                                    contentDescription = stringResource(
+                                        Res.string.settings_local_media_folders_remove_action,
+                                    ),
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
-    )
+    }
 }
 

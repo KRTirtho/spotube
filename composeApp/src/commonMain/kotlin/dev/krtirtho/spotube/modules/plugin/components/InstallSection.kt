@@ -17,7 +17,6 @@
 
 package dev.krtirtho.spotube.modules.plugin.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,14 +27,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,6 +42,9 @@ import compose.icons.FeatherIcons
 import compose.icons.feathericons.Download
 import compose.icons.feathericons.Link
 import compose.icons.feathericons.Upload
+import dev.krtirtho.spotube.core.ui.base.Card
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
+import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_action_download
@@ -65,11 +63,6 @@ internal fun InstallSection(
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        ),
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
     ) {
         Column(
             modifier = Modifier.padding(16.dp),
@@ -121,11 +114,9 @@ internal fun InstallSection(
                     shape = RoundedCornerShape(10.dp),
                     textStyle = MaterialTheme.typography.bodySmall
                 )
-                Button(
+                PrimaryButton(
                     onClick = onSubmitUrl,
                     enabled = !isLoadingUrl,
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier.height(56.dp)
                 ) {
                     if (isLoadingUrl) {
                         CircularProgressIndicator(
@@ -146,10 +137,9 @@ internal fun InstallSection(
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
             // File picker
-            OutlinedButton(
+            OutlineButton(
                 onClick = onPickFile,
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(10.dp)
             ) {
                 Icon(
                     FeatherIcons.Upload,
@@ -162,4 +152,3 @@ internal fun InstallSection(
         }
     }
 }
-

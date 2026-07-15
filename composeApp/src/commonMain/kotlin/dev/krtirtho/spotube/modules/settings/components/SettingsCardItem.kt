@@ -17,26 +17,11 @@
 
 package dev.krtirtho.spotube.modules.settings.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
+import dev.krtirtho.spotube.core.ui.base.ListRowTile
 
 /**
  * Reusable setting card item component for consistent styling
@@ -48,54 +33,32 @@ fun SettingCardItem(
     title: String,
     subtitle: String? = null,
     icon: (@Composable () -> Unit)? = null,
-    trailingContent: (@Composable RowScope.() -> Unit)? = null,
+    trailingContent: (@Composable () -> Unit)? = null,
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(onClick = onClick, enabled = enabled)
-            .then(if (!enabled) Modifier.alpha(0.5f) else Modifier),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-        ),
-        border = BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.outlineVariant
-        ),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (icon != null) {
-                icon()
-            }
-
-            Column(modifier = Modifier.weight(1f)) {
+    ListRowTile(
+        selected = false,
+        enabled = enabled,
+        onClick = onClick,
+        modifier = modifier,
+        leading = icon,
+        title = {
+            Text(
+                title,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        },
+        subtitle = subtitle?.let {
+            {
                 Text(
-                    title,
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
-                if (subtitle != null) {
-                    Text(
-                        subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray,
-                        modifier = Modifier.padding(top = 4.dp)
-                    )
-                }
             }
-
-            trailingContent?.invoke(this)
-        }
-    }
+        },
+        trailing = trailingContent,
+    )
 }

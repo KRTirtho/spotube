@@ -18,10 +18,12 @@
 package dev.krtirtho.spotube.modules.settings.sections
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -35,6 +37,7 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioFormat
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioQuality
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import dev.krtirtho.spotube.core.ui.base.Card
 
 private val standardLossyQualities = listOf(
     AudioQuality.Lossy(bitrate = 44_000),
@@ -170,5 +173,32 @@ internal fun AudioQuality.displayLabel(): String {
 
 internal fun normalizePath(path: String): String {
     return path.trim().trimEnd('/', '\\')
+}
+
+internal fun LazyListScope.settingsSectionCard(
+    items: List<@Composable () -> Unit>,
+) {
+    item {
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp, bottom = 4.dp)
+            ) {
+                items.forEachIndexed { index, content ->
+                    if (index > 0) {
+                        HorizontalDivider(
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                        )
+                    }
+                    content()
+                }
+            }
+        }
+    }
 }
 
