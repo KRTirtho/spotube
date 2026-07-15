@@ -37,7 +37,6 @@ import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
-import dev.krtirtho.spotube.modules.plugin.PluginManager
 import spotube.composeapp.generated.resources.*
 import dev.krtirtho.spotube.modules.settings.sections.appearanceSection
 import dev.krtirtho.spotube.modules.settings.sections.cacheSection
@@ -54,9 +53,8 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsScreen(pluginManager: PluginManager, settingsViewModel: SettingsViewModel) {
+fun SettingsScreen(settingsViewModel: SettingsViewModel) {
     val navigatorCommands = koinInject<NavigationCommands>()
-    val pluginState by pluginManager.state.collectAsStateWithLifecycle()
     val settingsState by settingsViewModel.settingsState.collectAsStateWithLifecycle()
     val platformType = remember { getPlatform().type }
     val isDesktopPlatform = platformType == PlatformType.Windows ||
@@ -90,8 +88,6 @@ fun SettingsScreen(pluginManager: PluginManager, settingsViewModel: SettingsView
                 contentPadding = contentPadding,
             ) {
                 pluginsSection(
-                    pluginManager = pluginManager,
-                    pluginState = pluginState,
                     navigatorCommands = navigatorCommands,
                 )
                 if (settingsState != null) {

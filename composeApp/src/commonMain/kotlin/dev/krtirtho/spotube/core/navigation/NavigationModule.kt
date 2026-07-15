@@ -85,7 +85,7 @@ val navigationModule = module {
         LibraryScreen()
     }
     navigation<Routes.Settings> {
-        SettingsScreen(pluginManager = get(), settingsViewModel = koinViewModel())
+        SettingsScreen(settingsViewModel = koinViewModel())
     }
     navigation<Routes.Plugins> {
         PluginScreen(pluginManager = get())
