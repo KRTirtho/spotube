@@ -30,6 +30,12 @@ import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SelectionSettingCard
 import dev.krtirtho.spotube.modules.settings.components.SwitchSettingCard
 import dev.krtirtho.spotube.modules.settings.components.TextInputSettingCard
+import dev.krtirtho.spotube.resources.iconsax.CustomServer
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlay
+import dev.krtirtho.spotube.resources.iconsax.IconsaxRepeatArrow
+import dev.krtirtho.spotube.resources.iconsax.IconsaxVerticalSetting
 import org.jetbrains.compose.resources.stringResource
 
 internal fun LazyListScope.playbackSection(
@@ -53,7 +59,7 @@ internal fun LazyListScope.playbackSection(
                         settings.streamingMusicFormat.displayLabel()
                     ),
                     icon = {
-                        SettingsItemIcon(FeatherIcons.Radio, stringResource(Res.string.settings_streaming_format_title))
+                        SettingsItemIcon(Iconsax.IconsaxMusicPlay, stringResource(Res.string.settings_streaming_format_title))
                     },
                     selectedOption = settings.streamingMusicFormat,
                     options = streamingFormats,
@@ -76,7 +82,7 @@ internal fun LazyListScope.playbackSection(
                         settings.streamingMusicQuality.displayLabel()
                     ),
                     icon = {
-                        SettingsItemIcon(FeatherIcons.Sliders, stringResource(Res.string.settings_streaming_quality_title))
+                        SettingsItemIcon(Iconsax.IconsaxVerticalSetting, stringResource(Res.string.settings_streaming_quality_title))
                     },
                     selectedOption = settings.streamingMusicQuality,
                     options = streamingQualities,
@@ -94,7 +100,7 @@ internal fun LazyListScope.playbackSection(
                     subtitle = stringResource(Res.string.settings_enable_endless_playback_subtitle),
                     icon = {
                         SettingsItemIcon(
-                            FeatherIcons.Repeat,
+                            Iconsax.IconsaxRepeatArrow,
                             stringResource(Res.string.settings_enable_endless_playback_title)
                         )
                     },
@@ -111,7 +117,7 @@ internal fun LazyListScope.playbackSection(
                     title = stringResource(Res.string.settings_enable_connect_title),
                     subtitle = stringResource(Res.string.settings_enable_connect_subtitle),
                     icon = {
-                        SettingsItemIcon(FeatherIcons.Cast, stringResource(Res.string.settings_enable_connect_title))
+                        SettingsItemIcon(Iconsax.IconsaxMirroringScreen, stringResource(Res.string.settings_enable_connect_title))
                     },
                     checked = settings.enableConnect,
                     onCheckedChange = { enabled ->
@@ -132,7 +138,7 @@ internal fun LazyListScope.playbackSection(
                         settings.playbackProxyServerPort
                     ),
                     icon = {
-                        SettingsItemIcon(FeatherIcons.Server, stringResource(Res.string.settings_playback_port_title))
+                        SettingsItemIcon(Iconsax.CustomServer, stringResource(Res.string.settings_playback_port_title))
                     },
                     value = settings.playbackProxyServerPort.toString(),
                     dialogDescription = stringResource(Res.string.settings_playback_port_description),

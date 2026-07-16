@@ -18,13 +18,13 @@
 package dev.krtirtho.spotube.modules.settings.sections
 
 import androidx.compose.foundation.lazy.LazyListScope
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Activity
-import compose.icons.feathericons.Minimize2
 import spotube.composeapp.generated.resources.*
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SwitchSettingCard
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxImportArrow2
+import dev.krtirtho.spotube.resources.iconsax.LineDiscord
 import org.jetbrains.compose.resources.stringResource
 
 internal fun LazyListScope.desktopSection(
@@ -40,7 +40,7 @@ internal fun LazyListScope.desktopSection(
                     subtitle = stringResource(Res.string.settings_desktop_minimize_subtitle),
                     icon = {
                         SettingsItemIcon(
-                            FeatherIcons.Minimize2,
+                            Iconsax.IconsaxImportArrow2,
                             stringResource(Res.string.settings_desktop_minimize_title)
                         )
                     },
@@ -58,7 +58,7 @@ internal fun LazyListScope.desktopSection(
                     subtitle = stringResource(Res.string.settings_desktop_discord_subtitle),
                     icon = {
                         SettingsItemIcon(
-                            FeatherIcons.Activity,
+                            Iconsax.LineDiscord,
                             stringResource(Res.string.settings_desktop_discord_title)
                         )
                     },

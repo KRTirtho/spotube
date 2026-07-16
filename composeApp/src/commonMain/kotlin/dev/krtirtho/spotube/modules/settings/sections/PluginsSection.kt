@@ -30,6 +30,8 @@ import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import spotube.composeapp.generated.resources.*
 import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxBoxAdd
 import org.jetbrains.compose.resources.stringResource
 
 internal fun LazyListScope.pluginsSection(
@@ -43,7 +45,7 @@ internal fun LazyListScope.pluginsSection(
                 subtitle = stringResource(Res.string.settings_plugins_manage_subtitle),
                 icon = {
                     SettingsItemIcon(
-                        FeatherIcons.Package,
+                        Iconsax.IconsaxBoxAdd,
                         stringResource(Res.string.settings_section_plugins),
                         Color(0xFFFF9800)
                     )

@@ -30,6 +30,11 @@ import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
 import dev.krtirtho.spotube.modules.settings.components.SwitchSettingCard
 import dev.krtirtho.spotube.modules.settings.components.TextInputSettingCard
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentDownload
+import dev.krtirtho.spotube.resources.iconsax.IconsaxFolder
+import dev.krtirtho.spotube.resources.iconsax.IconsaxFolderAdd
+import dev.krtirtho.spotube.resources.iconsax.IconsaxStopCircle
 import io.github.vinceglb.filekit.path
 import io.github.vinceglb.filekit.dialogs.compose.rememberDirectoryPickerLauncher
 import org.jetbrains.compose.resources.stringResource
@@ -47,7 +52,7 @@ internal fun LazyListScope.cacheSection(
                     subtitle = stringResource(Res.string.settings_enable_music_caching_subtitle),
                     icon = {
                         SettingsItemIcon(
-                            FeatherIcons.HardDrive,
+                            Iconsax.IconsaxDocumentDownload,
                             stringResource(Res.string.settings_enable_music_caching_title)
                         )
                     },
@@ -86,7 +91,7 @@ internal fun LazyListScope.cacheSection(
                     },
                     icon = {
                         SettingsItemIcon(
-                            FeatherIcons.HardDrive,
+                            Iconsax.IconsaxStopCircle,
                             stringResource(Res.string.settings_cache_size_limit_title)
                         )
                     },
@@ -141,7 +146,7 @@ private fun CacheFolderSettingCard(
         } ?: stringResource(Res.string.settings_cache_folder_default),
         icon = {
             SettingsItemIcon(
-                FeatherIcons.Folder,
+                Iconsax.IconsaxFolder,
                 stringResource(Res.string.settings_cache_folder_title)
             )
         },
@@ -151,7 +156,7 @@ private fun CacheFolderSettingCard(
                 enabled = enabled,
             ) {
                 Icon(
-                    FeatherIcons.Folder,
+                    Iconsax.IconsaxFolderAdd,
                     contentDescription = stringResource(Res.string.settings_cache_folder_title)
                 )
             }

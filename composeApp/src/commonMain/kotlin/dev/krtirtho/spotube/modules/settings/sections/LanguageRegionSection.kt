@@ -27,6 +27,9 @@ import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.SupportedLanguages
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SelectionSettingCard
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxGlobe
+import dev.krtirtho.spotube.resources.iconsax.IconsaxLanguageSquare
 import org.jetbrains.compose.resources.stringResource
 
 internal fun LazyListScope.languageRegionSection(
@@ -45,7 +48,7 @@ internal fun LazyListScope.languageRegionSection(
                     ),
                     icon = {
                         SettingsItemIcon(
-                            FeatherIcons.Globe,
+                            Iconsax.IconsaxLanguageSquare,
                             stringResource(Res.string.settings_language_title)
                         )
                     },
@@ -71,7 +74,7 @@ internal fun LazyListScope.languageRegionSection(
                     ),
                     icon = {
                         SettingsItemIcon(
-                            FeatherIcons.MapPin,
+                            Iconsax.IconsaxGlobe,
                             stringResource(Res.string.settings_country_title)
                         )
                     },

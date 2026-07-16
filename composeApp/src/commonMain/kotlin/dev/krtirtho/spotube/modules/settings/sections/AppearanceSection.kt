@@ -58,6 +58,9 @@ import dev.krtirtho.spotube.modules.settings.Theme
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SelectionSettingCard
 import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxColorSwatch
+import dev.krtirtho.spotube.resources.iconsax.IconsaxColorsSquare
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.*
 
@@ -76,7 +79,7 @@ internal fun LazyListScope.appearanceSection(
                         settings.theme.displayLabel()
                     ),
                     icon = {
-                        SettingsItemIcon(FeatherIcons.Monitor, stringResource(Res.string.settings_theme_title))
+                        SettingsItemIcon(Iconsax.IconsaxColorSwatch, stringResource(Res.string.settings_theme_title))
                     },
                     selectedOption = settings.theme,
                     options = Theme.entries,
@@ -92,7 +95,7 @@ internal fun LazyListScope.appearanceSection(
                 AccentColorSettingCard(
                     selectedAccent = settings.accentColor,
                     icon = {
-                        SettingsItemIcon(FeatherIcons.Droplet, stringResource(Res.string.settings_accent_title))
+                        SettingsItemIcon(Iconsax.IconsaxColorsSquare, stringResource(Res.string.settings_accent_title))
                     },
                     onColorSaved = { accent ->
                         settingsViewModel.updateSettings {

@@ -24,8 +24,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -39,24 +37,44 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Disc
-import compose.icons.feathericons.Folder
-import compose.icons.feathericons.PlusSquare
-import compose.icons.feathericons.Sliders
-import compose.icons.feathericons.Trash2
-import spotube.composeapp.generated.resources.*
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
+import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.UserSettings
-import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
 import dev.krtirtho.spotube.modules.settings.components.SelectionSettingCard
-import io.github.vinceglb.filekit.path
+import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
+import dev.krtirtho.spotube.resources.iconsax.IconsaxFolder
+import dev.krtirtho.spotube.resources.iconsax.IconsaxFolderAdd
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlay
+import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
+import dev.krtirtho.spotube.resources.iconsax.IconsaxVerticalSetting
 import io.github.vinceglb.filekit.dialogs.compose.rememberDirectoryPickerLauncher
+import io.github.vinceglb.filekit.path
 import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.settings_action_cancel
+import spotube.composeapp.generated.resources.settings_action_save
+import spotube.composeapp.generated.resources.settings_download_folder_current
+import spotube.composeapp.generated.resources.settings_download_folder_default
+import spotube.composeapp.generated.resources.settings_download_folder_title
+import spotube.composeapp.generated.resources.settings_download_format_subtitle_current
+import spotube.composeapp.generated.resources.settings_download_format_title
+import spotube.composeapp.generated.resources.settings_download_quality_title
+import spotube.composeapp.generated.resources.settings_local_media_folders_add_action
+import spotube.composeapp.generated.resources.settings_local_media_folders_description
+import spotube.composeapp.generated.resources.settings_local_media_folders_manage
+import spotube.composeapp.generated.resources.settings_local_media_folders_none_added
+import spotube.composeapp.generated.resources.settings_local_media_folders_remove_action
+import spotube.composeapp.generated.resources.settings_local_media_folders_subtitle_current
+import spotube.composeapp.generated.resources.settings_local_media_folders_subtitle_empty
+import spotube.composeapp.generated.resources.settings_local_media_folders_title
+import spotube.composeapp.generated.resources.settings_section_downloads
+import spotube.composeapp.generated.resources.settings_subtitle_current
 
 internal fun LazyListScope.downloadsSection(
     settings: UserSettings,
@@ -99,7 +117,7 @@ internal fun LazyListScope.downloadsSection(
                         settings.downloadMusicFormat.displayLabel()
                     ),
                     icon = {
-                        SettingsItemIcon(FeatherIcons.Disc, stringResource(Res.string.settings_download_format_title))
+                        SettingsItemIcon(Iconsax.IconsaxMusicPlay, stringResource(Res.string.settings_download_format_title))
                     },
                     selectedOption = settings.downloadMusicFormat,
                     options = downloadFormats,
@@ -122,7 +140,7 @@ internal fun LazyListScope.downloadsSection(
                         settings.downloadMusicQuality.displayLabel()
                     ),
                     icon = {
-                        SettingsItemIcon(FeatherIcons.Sliders, stringResource(Res.string.settings_download_quality_title))
+                        SettingsItemIcon(Iconsax.IconsaxVerticalSetting, stringResource(Res.string.settings_download_quality_title))
                     },
                     selectedOption = settings.downloadMusicQuality,
                     options = downloadQualities,
@@ -158,12 +176,12 @@ private fun DownloadFolderSettingCard(
             stringResource(Res.string.settings_download_folder_current, it)
         } ?: stringResource(Res.string.settings_download_folder_default),
         icon = {
-            SettingsItemIcon(FeatherIcons.Folder, stringResource(Res.string.settings_download_folder_title))
+            SettingsItemIcon(Iconsax.IconsaxDirectboxReceive, stringResource(Res.string.settings_download_folder_title))
         },
         trailingContent = {
             GhostIconButton(onClick = { pickerLauncher.launch() }) {
                 Icon(
-                    FeatherIcons.Folder,
+                    imageVector = Iconsax.IconsaxFolderAdd,
                     contentDescription = stringResource(Res.string.settings_download_folder_title)
                 )
             }
@@ -195,7 +213,7 @@ private fun LocalMediaFoldersSettingCard(
         subtitle = subtitlePreview,
         icon = {
             SettingsItemIcon(
-                FeatherIcons.Folder,
+                Iconsax.IconsaxFolder,
                 stringResource(Res.string.settings_local_media_folders_title),
             )
         },
@@ -270,7 +288,7 @@ private fun LocalMediaFoldersDialog(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Icon(FeatherIcons.PlusSquare, contentDescription = null)
+                    Icon(Iconsax.IconsaxAddSquare, contentDescription = null)
                     Text(stringResource(Res.string.settings_local_media_folders_add_action))
                 }
             }
@@ -305,7 +323,7 @@ private fun LocalMediaFoldersDialog(
                                 }
                             ) {
                                 Icon(
-                                    imageVector = FeatherIcons.Trash2,
+                                    imageVector = Iconsax.IconsaxTrash,
                                     contentDescription = stringResource(
                                         Res.string.settings_local_media_folders_remove_action,
                                     ),

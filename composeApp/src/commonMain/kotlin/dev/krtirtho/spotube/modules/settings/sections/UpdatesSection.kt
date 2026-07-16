@@ -18,15 +18,16 @@
 package dev.krtirtho.spotube.modules.settings.sections
 
 import androidx.compose.foundation.lazy.LazyListScope
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.RefreshCw
-import spotube.composeapp.generated.resources.*
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SwitchSettingCard
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxRefreshArrow2
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.settings_section_updates
+import spotube.composeapp.generated.resources.settings_updates_auto_check_subtitle
+import spotube.composeapp.generated.resources.settings_updates_auto_check_title
 
 internal fun LazyListScope.updatesSection(
     settings: UserSettings,
@@ -40,7 +41,7 @@ internal fun LazyListScope.updatesSection(
                 subtitle = stringResource(Res.string.settings_updates_auto_check_subtitle),
                 icon = {
                     SettingsItemIcon(
-                        FeatherIcons.RefreshCw,
+                        Iconsax.IconsaxRefreshArrow2,
                         stringResource(Res.string.settings_updates_auto_check_title)
                     )
                 },

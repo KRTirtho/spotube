@@ -51,17 +51,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Activity
-import compose.icons.feathericons.AlignLeft
-import compose.icons.feathericons.Check
-import compose.icons.feathericons.ExternalLink
-import compose.icons.feathericons.FileText
-import compose.icons.feathericons.Music
-import compose.icons.feathericons.Package
 import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.PlatformType
+import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
@@ -72,6 +65,15 @@ import dev.krtirtho.spotube.modules.plugin.components.InstallSection
 import dev.krtirtho.spotube.modules.plugin.components.PluginCard
 import dev.krtirtho.spotube.modules.plugin.components.PluginPermissionDialog
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
+import dev.krtirtho.spotube.resources.iconsax.IconsaxBox
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentText
+import dev.krtirtho.spotube.resources.iconsax.IconsaxEdit
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusic
+import dev.krtirtho.spotube.resources.iconsax.IconsaxSound
+import dev.krtirtho.spotube.resources.iconsax.IconsaxTextalignLeft
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.readBytes
@@ -230,7 +232,9 @@ fun PluginScreen(
                                     PluginAbility.entries.forEachIndexed { index, ability ->
                                         if (index > 0) {
                                             HorizontalDivider(
-                                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                                color = MaterialTheme.colorScheme.outlineVariant.copy(
+                                                    alpha = 0.5f
+                                                ),
                                             )
                                         }
                                         val selectedPlugin = state.selectedPlugins[ability]
@@ -246,7 +250,6 @@ fun PluginScreen(
                                             onSelected = { plugin ->
                                                 pluginManager.setSelectedPlugin(ability, plugin)
                                             },
-                                            onManagePlugins = { }
                                         )
                                     }
                                 }
@@ -270,7 +273,7 @@ fun PluginScreen(
                                         ) {
                                             Box(contentAlignment = Alignment.Center) {
                                                 Icon(
-                                                    FeatherIcons.Package,
+                                                    Iconsax.IconsaxBox,
                                                     contentDescription = null,
                                                     modifier = Modifier.size(32.dp),
                                                     tint = MaterialTheme.colorScheme.primary
@@ -321,10 +324,13 @@ fun PluginScreen(
                                         state.plugins.forEachIndexed { index, plugin ->
                                             if (index > 0) {
                                                 HorizontalDivider(
-                                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                                                    color = MaterialTheme.colorScheme.outlineVariant.copy(
+                                                        alpha = 0.5f
+                                                    ),
                                                 )
                                             }
-                                            val isSelected = state.selectedPlugins.containsValue(plugin)
+                                            val isSelected =
+                                                state.selectedPlugins.containsValue(plugin)
                                             val selectedAbility = state.selectedPlugins
                                                 .entries
                                                 .firstOrNull { (_, selectedPlugin) -> selectedPlugin.id == plugin.id }
@@ -333,7 +339,10 @@ fun PluginScreen(
                                                 activeServices?.get(ability)
                                             }
 
-                                            var requiresAuth by remember(plugin.id, selectedService) {
+                                            var requiresAuth by remember(
+                                                plugin.id,
+                                                selectedService
+                                            ) {
                                                 mutableStateOf(false)
                                             }
                                             var isLoggedIn by remember(plugin.id, selectedService) {
@@ -343,11 +352,13 @@ fun PluginScreen(
                                             LaunchedEffect(plugin.id, selectedService) {
                                                 requiresAuth = false
                                                 isLoggedIn = false
-                                                val service = selectedService ?: return@LaunchedEffect
+                                                val service =
+                                                    selectedService ?: return@LaunchedEffect
 
 
                                                 service.use {
-                                                    val pluginRequiresAuth = coreAPI.requiresAuthentication
+                                                    val pluginRequiresAuth =
+                                                        coreAPI.requiresAuthentication
                                                     requiresAuth = pluginRequiresAuth
                                                     if (!pluginRequiresAuth) return@use
 
@@ -403,12 +414,9 @@ fun DefaultAbilityPluginSelector(
     state: StateFlow<List<PluginEntry>>,
     selectedPlugin: PluginEntry? = null,
     onSelected: (PluginEntry?) -> Unit = { },
-    onManagePlugins: () -> Unit = { }
 ) {
     val plugins by state.collectAsStateWithLifecycle()
     val noPluginsText = stringResource(Res.string.settings_plugins_no_plugins)
-    val clearText = stringResource(Res.string.settings_plugins_clear)
-    val manageText = stringResource(Res.string.settings_plugins_manage_title)
 
     val menuItems = buildList {
         if (plugins.isNotEmpty()) {
@@ -422,17 +430,6 @@ fun DefaultAbilityPluginSelector(
                     )
                 )
             }
-
-            if (selectedPlugin != null) {
-                add(
-                    AdaptiveMenuItem(
-                        icon = FeatherIcons.AlignLeft,
-                        label = clearText,
-                        onClick = { onSelected(null) },
-                        dividerBefore = true,
-                    )
-                )
-            }
         } else {
             add(
                 AdaptiveMenuItem(
@@ -442,15 +439,6 @@ fun DefaultAbilityPluginSelector(
                 )
             )
         }
-
-        add(
-            AdaptiveMenuItem(
-                icon = FeatherIcons.ExternalLink,
-                label = manageText,
-                onClick = onManagePlugins,
-                dividerBefore = true,
-            )
-        )
     }
 
     Row(
@@ -476,10 +464,10 @@ fun DefaultAbilityPluginSelector(
             ) {
                 Icon(
                     imageVector = when (ability) {
-                        PluginAbility.METADATA -> FeatherIcons.FileText
-                        PluginAbility.AUDIO -> FeatherIcons.Music
-                        PluginAbility.LYRICS -> FeatherIcons.AlignLeft
-                        PluginAbility.SCROBBLE -> FeatherIcons.Activity
+                        PluginAbility.METADATA -> Iconsax.IconsaxDocumentText
+                        PluginAbility.AUDIO -> Iconsax.IconsaxMusic
+                        PluginAbility.LYRICS -> Iconsax.IconsaxTextalignLeft
+                        PluginAbility.SCROBBLE -> Iconsax.IconsaxSound
                     },
                     contentDescription = stringResource(
                         Res.string.settings_plugins_plugin_content_description,
@@ -544,10 +532,10 @@ fun DefaultAbilityPluginSelector(
                     ) {
                         Icon(
                             imageVector = when (ability) {
-                                PluginAbility.METADATA -> FeatherIcons.FileText
-                                PluginAbility.AUDIO -> FeatherIcons.Music
-                                PluginAbility.LYRICS -> FeatherIcons.AlignLeft
-                                PluginAbility.SCROBBLE -> FeatherIcons.Activity
+                                PluginAbility.METADATA -> Iconsax.IconsaxDocumentText
+                                PluginAbility.AUDIO -> Iconsax.IconsaxMusic
+                                PluginAbility.LYRICS -> Iconsax.IconsaxTextalignLeft
+                                PluginAbility.SCROBBLE -> Iconsax.IconsaxSound
                             },
                             contentDescription = null,
                             modifier = Modifier.padding(8.dp),
@@ -578,21 +566,18 @@ fun DefaultAbilityPluginSelector(
                 }
             },
             trigger = { onClick ->
-                PrimaryButton(
-                    onClick = onClick,
-                ) {
-                    Icon(
-                        imageVector = FeatherIcons.Check,
-                        contentDescription = null,
-                        modifier = Modifier.padding(0.dp),
-                    )
+                OutlineButton(onClick = onClick) {
                     Text(
                         if (selectedPlugin != null) {
                             stringResource(Res.string.settings_plugins_action_change)
                         } else {
-                            stringResource(Res.string.settings_plugins_action_select)
+                            stringResource(Res.string.settings_plugins_action_select) + "  "
                         },
-                        style = MaterialTheme.typography.labelSmall
+                    )
+                    Icon(
+                        imageVector = if (selectedPlugin != null) Iconsax.IconsaxEdit else Iconsax.IconsaxArrowDown4,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
                     )
                 }
             },

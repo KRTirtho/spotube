@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -31,20 +30,21 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Download
-import compose.icons.feathericons.Link
-import compose.icons.feathericons.Upload
 import dev.krtirtho.spotube.core.ui.base.Card
+import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
+import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxExportArrowBulk
+import dev.krtirtho.spotube.resources.iconsax.IconsaxImportArrow2Bulk
+import dev.krtirtho.spotube.resources.iconsax.IconsaxLink
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_action_download
@@ -73,7 +73,7 @@ internal fun InstallSection(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Icon(
-                    FeatherIcons.Download,
+                    Iconsax.IconsaxImportArrow2Bulk,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
                     tint = MaterialTheme.colorScheme.primary
@@ -91,7 +91,7 @@ internal fun InstallSection(
                 verticalAlignment = Alignment.Top,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                OutlinedTextField(
+                TextField(
                     value = urlInput,
                     onValueChange = onUrlChange,
                     modifier = Modifier.weight(1f),
@@ -103,18 +103,17 @@ internal fun InstallSection(
                     },
                     leadingIcon = {
                         Icon(
-                            FeatherIcons.Link,
+                            Iconsax.IconsaxLink,
                             contentDescription = null,
                             modifier = Modifier.size(16.dp)
                         )
                     },
                     isError = urlError != null,
-                    supportingText = urlError?.let { { Text(it) } },
+//                    supportingText = urlError?.let { { Text(it) } },
+//                    shape = RoundedCornerShape(10.dp),
                     singleLine = true,
-                    shape = RoundedCornerShape(10.dp),
-                    textStyle = MaterialTheme.typography.bodySmall
                 )
-                PrimaryButton(
+                SecondaryIconButton(
                     onClick = onSubmitUrl,
                     enabled = !isLoadingUrl,
                 ) {
@@ -126,9 +125,8 @@ internal fun InstallSection(
                         )
                     } else {
                         Icon(
-                            FeatherIcons.Download,
+                            Iconsax.IconsaxImportArrow2Bulk,
                             contentDescription = stringResource(Res.string.plugin_action_download),
-                            modifier = Modifier.size(16.dp)
                         )
                     }
                 }
@@ -142,9 +140,8 @@ internal fun InstallSection(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 Icon(
-                    FeatherIcons.Upload,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp)
+                    Iconsax.IconsaxExportArrowBulk,
+                    contentDescription = stringResource(Res.string.plugin_action_install_from_file)
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(Res.string.plugin_action_install_from_file))
