@@ -38,17 +38,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Check
-import compose.icons.feathericons.Package
-import compose.icons.feathericons.Tag
-import compose.icons.feathericons.Trash2
-import compose.icons.feathericons.User
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.modules.plugin.BUILT_IN_PLUGINS
 import dev.krtirtho.spotube.modules.plugin.PluginAbility
 import dev.krtirtho.spotube.modules.plugin.PluginEntry
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxBox
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxTag
+import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
+import dev.krtirtho.spotube.resources.iconsax.User
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_action_remove
@@ -87,7 +87,7 @@ internal fun PluginCard(
             ) {
                 Box(contentAlignment = Alignment.Center) {
                     Icon(
-                        FeatherIcons.Package,
+                        Iconsax.IconsaxBox,
                         contentDescription = null,
                         tint = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.size(22.dp)
@@ -124,7 +124,7 @@ internal fun PluginCard(
                                 horizontalArrangement = Arrangement.spacedBy(3.dp)
                             ) {
                                 Icon(
-                                    FeatherIcons.Check,
+                                    Iconsax.IconsaxCheckSquare,
                                     contentDescription = null,
                                     modifier = Modifier.size(10.dp),
                                     tint = MaterialTheme.colorScheme.primary
@@ -159,7 +159,7 @@ internal fun PluginCard(
                         horizontalArrangement = Arrangement.spacedBy(3.dp)
                     ) {
                         Icon(
-                            FeatherIcons.User,
+                            Iconsax.User,
                             contentDescription = null,
                             modifier = Modifier.size(11.dp),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -176,7 +176,7 @@ internal fun PluginCard(
                             horizontalArrangement = Arrangement.spacedBy(3.dp)
                         ) {
                             Icon(
-                                FeatherIcons.Tag,
+                                Iconsax.IconsaxTag,
                                 contentDescription = null,
                                 modifier = Modifier.size(11.dp),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -233,10 +233,9 @@ internal fun PluginCard(
                 } else {
                     GhostIconButton(onClick = onRemove) {
                         Icon(
-                            FeatherIcons.Trash2,
+                            Iconsax.IconsaxTrash,
                             contentDescription = stringResource(Res.string.plugin_action_remove),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(18.dp)
                         )
                     }
                 }

@@ -47,14 +47,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Database
-import compose.icons.feathericons.Eye
-import compose.icons.feathericons.Package
-import compose.icons.feathericons.User
-import compose.icons.feathericons.Wifi
 import dev.krtirtho.spotube.modules.plugin.PluginCapability
 import dev.krtirtho.spotube.modules.plugin.PluginEntry
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxBoxAdd
+import dev.krtirtho.spotube.resources.iconsax.IconsaxEye
+import dev.krtirtho.spotube.resources.iconsax.IconsaxWifiSquare
+import dev.krtirtho.spotube.resources.iconsax.PhosphorDatabaseDuotone
+import dev.krtirtho.spotube.resources.iconsax.User
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_permissions_api_diff
@@ -118,7 +118,7 @@ fun PluginPermissionDialog(
                             ) {
                                 Box(contentAlignment = Alignment.Center) {
                                     Icon(
-                                        imageVector = FeatherIcons.Package,
+                                        imageVector = Iconsax.IconsaxBoxAdd,
                                         contentDescription = null,
                                         tint = MaterialTheme.colorScheme.primary,
                                         modifier = Modifier.size(24.dp)
@@ -146,7 +146,7 @@ fun PluginPermissionDialog(
                             horizontalArrangement = Arrangement.spacedBy(6.dp)
                         ) {
                             Icon(
-                                FeatherIcons.User,
+                                Iconsax.User,
                                 contentDescription = null,
                                 modifier = Modifier.size(13.dp),
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
@@ -328,17 +328,17 @@ private fun VersionStat(label: String, value: String) {
 private fun CapabilityRow(capability: PluginCapability) {
     val (icon, label, description) = when (capability) {
         PluginCapability.PERSISTENT_STORAGE -> Triple(
-            FeatherIcons.Database,
+            Iconsax.PhosphorDatabaseDuotone,
             stringResource(Res.string.plugin_permissions_capability_storage_title),
             stringResource(Res.string.plugin_permissions_capability_storage_desc)
         )
         PluginCapability.NETWORK_REQUESTS -> Triple(
-            FeatherIcons.Wifi,
+            Iconsax.IconsaxWifiSquare,
             stringResource(Res.string.plugin_permissions_capability_network_title),
             stringResource(Res.string.plugin_permissions_capability_network_desc)
         )
         PluginCapability.WEBVIEW -> Triple(
-            FeatherIcons.Eye,
+            Iconsax.IconsaxEye,
             stringResource(Res.string.plugin_permissions_capability_webview_title),
             stringResource(Res.string.plugin_permissions_capability_webview_desc)
         )
