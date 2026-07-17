@@ -135,17 +135,16 @@ jobs:
       - name: Assemble Release
         run: ./gradlew :composeApp:assembleRelease
 
+      - name: Rename APK
+        run: |
+          APK_FILE=$(find composeApp/build/outputs/apk/release -name "*.apk" -type f | head -1)
+          cp "$APK_FILE" Spotube-android-all-arch.apk
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: android-apk
-          path: composeApp/build/outputs/apk/release/*.apk
-
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: android-aab
-          path: composeApp/build/outputs/bundle/release/*.aab
+          path: Spotube-android-all-arch.apk
 
   build-linux:
     name: Linux Desktop
@@ -186,23 +185,32 @@ jobs:
       - name: Package AppImage
         run: ./gradlew :composeApp:packageReleaseAppImage
 
+      - name: Rename Linux artifacts
+        run: |
+          DEB_FILE=$(find composeApp/build -name "*.deb" -type f | head -1)
+          RPM_FILE=$(find composeApp/build -name "*.rpm" -type f | head -1)
+          APPIMAGE_FILE=$(find composeApp/build -name "*.AppImage" -type f | head -1)
+          cp "$DEB_FILE" Spotube-linux-x86_64.deb
+          cp "$RPM_FILE" Spotube-linux-x86_64.rpm
+          cp "$APPIMAGE_FILE" Spotube-linux-x86_64.AppImage
+
       - name: Upload DEB
         uses: actions/upload-artifact@v4
         with:
           name: linux-deb
-          path: composeApp/build/compose/binaries/main-release/**/*.deb
+          path: Spotube-linux-x86_64.deb
 
       - name: Upload RPM
         uses: actions/upload-artifact@v4
         with:
           name: linux-rpm
-          path: composeApp/build/compose/binaries/main-release/**/*.rpm
+          path: Spotube-linux-x86_64.rpm
 
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
         with:
           name: linux-appimage
-          path: composeApp/build/compose/binaries/main-release/**/*.AppImage
+          path: Spotube-linux-x86_64.AppImage
 
   build-windows:
     name: Windows Desktop
@@ -226,23 +234,20 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Package MSI
-        run: ./gradlew :composeApp:packageReleaseMsi
-
       - name: Package EXE
         run: ./gradlew :composeApp:packageReleaseExe
 
-      - name: Upload MSI
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-msi
-          path: composeApp/build/compose/binaries/main-release/**/*.msi
+      - name: Rename Windows artifacts
+        shell: pwsh
+        run: |
+          $EXE_FILE = Get-ChildItem -Path composeApp/build -Filter "*.exe" -Recurse | Select-Object -First 1
+          Copy-Item $EXE_FILE.FullName Spotube-windows-x86_64-setup.exe
 
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
           name: windows-exe
-          path: composeApp/build/compose/binaries/main-release/**/*.exe
+          path: Spotube-windows-x86_64-setup.exe
 
   build-macos:
     name: macOS Desktop
@@ -272,11 +277,16 @@ jobs:
       - name: Package DMG
         run: ./gradlew :composeApp:packageReleaseDmg
 
+      - name: Rename macOS artifact
+        run: |
+          DMG_FILE=$(find composeApp/build -name "*.dmg" -type f | head -1)
+          cp "$DMG_FILE" Spotube-macos-universal.dmg
+
       - name: Upload DMG
         uses: actions/upload-artifact@v4
         with:
           name: macos-dmg
-          path: composeApp/build/compose/binaries/main-release/**/*.dmg
+          path: Spotube-macos-universal.dmg
 
   create-release:
     name: Create GitHub Release
