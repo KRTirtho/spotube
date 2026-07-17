@@ -56,11 +56,16 @@ class SavedTracksRepository(
                 .filterNotNull()
                 .flatMapLatest { it.loggedInFlow }
                 .distinctUntilChanged()
-                .collect {
+                .collect { loggedIn ->
+                    isLoggedIn = loggedIn
                     invalidateCaches()
                 }
         }
     }
+
+    private var isLoggedIn: Boolean = false
+
+    private val authPlugin get() = if (isLoggedIn) plugin else null
 
     fun invalidateCaches() {
         savedTracksCache.invalidateAll()
@@ -69,7 +74,7 @@ class SavedTracksRepository(
     }
 
     suspend fun getSavedTracks(paginationStrategy: PaginationStrategy? = null) =
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             val strategy = paginationStrategy ?: PaginationStrategy.Offset(0, 50)
             savedTracksCache.get(strategy) {
                 val tracks = pluginManager.withScope {
@@ -95,7 +100,7 @@ class SavedTracksRepository(
     }
 
     suspend fun saveTracks(ids: List<String>) {
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataTrackAPI.saveTracks(ids)
@@ -108,7 +113,7 @@ class SavedTracksRepository(
     }
 
     suspend fun removeSavedTracks(ids: List<String>) {
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataTrackAPI.removeSavedTracks(ids)

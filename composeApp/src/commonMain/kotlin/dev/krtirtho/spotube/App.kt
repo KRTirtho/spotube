@@ -17,6 +17,8 @@
 
 package dev.krtirtho.spotube
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -34,6 +36,7 @@ import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.navigation.TOP_LEVEL_ROUTES
 import dev.krtirtho.spotube.core.navigation.rememberNavigationState
 import dev.krtirtho.spotube.core.navigation.toEntries
+import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
 import dev.krtirtho.spotube.core.ui.theming.SpotubeTheme
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import dev.krtirtho.spotube.modules.settings.UserSettings
@@ -86,7 +89,7 @@ val tabs = listOf(
     )
 )
 
-@OptIn(KoinExperimentalAPI::class, ExperimentalCoroutinesApi::class)
+@OptIn(KoinExperimentalAPI::class, ExperimentalCoroutinesApi::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun App(
     content: @Composable () -> Unit = {}
@@ -106,12 +109,18 @@ fun App(
         val baseUITheme = rememberBaseUITheme()
         CompositionLocalProvider(LocalBaseUITheme provides baseUITheme) {
             AppShell(navigator, navigationState) {
-                Column {
-                    NavDisplay(
-                        modifier = Modifier.fillMaxSize(),
-                        onBack = navigator::pop,
-                        entries = navigationState.toEntries(koinEntryProvider())
-                    )
+                SharedTransitionLayout {
+                    CompositionLocalProvider(
+                        LocalSharedTransitionScope provides this@SharedTransitionLayout,
+                    ) {
+                        Column {
+                            NavDisplay(
+                                modifier = Modifier.fillMaxSize(),
+                                onBack = navigator::pop,
+                                entries = navigationState.toEntries(koinEntryProvider())
+                            )
+                        }
+                    }
                 }
             }
             content()

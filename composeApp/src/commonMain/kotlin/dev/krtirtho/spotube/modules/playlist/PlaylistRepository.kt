@@ -53,11 +53,14 @@ class PlaylistRepository(
                 .filterNotNull()
                 .flatMapLatest { it.loggedInFlow }
                 .distinctUntilChanged()
-                .collect {
+                .collect { loggedIn ->
+                    isLoggedIn = loggedIn
                     invalidateCaches()
                 }
         }
     }
+
+    private var isLoggedIn: Boolean = false
 
     fun invalidateCaches() {
         playlistInfoCache.invalidateAll()
@@ -69,12 +72,10 @@ class PlaylistRepository(
             pluginManager.withScope {
                 plugin.use {
                     val playlist = metadataPlaylistAPI.getPlaylist(playlistId)
-                    val isSaved = metadataPlaylistAPI.isSavedPlaylists(listOf(playlistId)).firstOrNull() ?: false
+                    val isSaved = libraryRepository.isSavedPlaylists(listOf(playlistId)).firstOrNull() ?: false
                     playlist to isSaved
                 }
             }
-        }.also {
-            libraryRepository.isSavedPlaylists(listOf(playlistId))
         }
     }
 

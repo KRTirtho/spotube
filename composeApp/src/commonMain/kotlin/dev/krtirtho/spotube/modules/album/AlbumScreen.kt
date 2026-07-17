@@ -18,9 +18,11 @@
 package dev.krtirtho.spotube.modules.album
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +39,7 @@ import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.core.ui.component.CollapsedCollectionHeader
 import dev.krtirtho.spotube.core.ui.component.CollectionDetails
 import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
 import dev.krtirtho.spotube.core.ui.component.TrackList
@@ -75,6 +78,14 @@ fun AlbumScreen(albumId: String) {
     var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
     var currentUserId by remember { mutableStateOf<String?>(null) }
 
+    val listState = rememberLazyListState()
+    val isCollapsedHeaderShown by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 0 ||
+                listState.firstVisibleItemScrollOffset > 400
+        }
+    }
+
     LaunchedEffect(Unit) {
         currentUserId = libraryRepository.currentUser()?.id
     }
@@ -110,7 +121,7 @@ fun AlbumScreen(albumId: String) {
     }
 
     Scaffold(
-        topBar = { ApplicationMainBar() }
+        topBar = { ApplicationMainBar(backButton = !isCollapsedHeaderShown) }
     ) { innerPadding ->
         when (state) {
             is AlbumScreenState.Loading -> {
@@ -165,14 +176,28 @@ fun AlbumScreen(albumId: String) {
                     album?.artists?.joinToString { it.name }.orEmpty().ifBlank { "Unknown artist" }
                 val ownerImageURL = album?.artists?.firstOrNull()?.thumbnails?.firstOrNull()?.url
                 val firstArtistId = album?.artists?.firstOrNull()?.id
+                val artworkUrl = album?.thumbnails?.firstOrNull()?.url.orEmpty()
+                val isAlbumPlaying = currentCollectionEntry?.id == albumId &&
+                    playerState == PlayerState.PLAYING
 
                 TrackList(
                     modifier = Modifier.padding(innerPadding),
+                    state = listState,
+                    collapsedHeader = {
+                        CollapsedCollectionHeader(
+                            title = album?.title ?: "Album",
+                            imageURL = artworkUrl,
+                            isPlaying = isAlbumPlaying,
+                            onPlay = viewModel::playAlbum,
+                            onBack = { navigationCommands.pop() },
+                        )
+                    },
+                    isCollapsedHeaderShown = isCollapsedHeaderShown,
                     headerContent = {
                         CollectionDetails(
                             title = album?.title ?: "Loading album...",
                             description = album?.description ?: "${album?.albumType?.name.orEmpty()} • ${album?.releaseDate.orEmpty()}",
-                            imageURL = album?.thumbnails?.firstOrNull()?.url.orEmpty(),
+                            imageURL = artworkUrl,
                             ownerName = ownerName,
                             ownerImageURL = ownerImageURL,
                             onOwnerClick = {
@@ -185,9 +210,7 @@ fun AlbumScreen(albumId: String) {
                             onPlay = viewModel::playAlbum,
                             onShufflePlay = {},
                             onAddToQueue = viewModel::addAlbumToQueue,
-                            isPlaying =
-                                currentCollectionEntry?.id == albumId &&
-                                        playerState == PlayerState.PLAYING,
+                            isPlaying = isAlbumPlaying,
                             isFollowing = savedAlbumIds.contains(albumId),
                             onFollowClick = viewModel::toggleSavedAlbum,
                         )

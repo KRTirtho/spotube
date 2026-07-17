@@ -23,8 +23,4 @@ class RealMetadataUserAPI : MetadataUserAPI {
     override suspend fun getUser(id: String): MetadataUser? {
         return FakeMetadataStore.getUser(id)
     }
-
-    override suspend fun me(): MetadataUser? {
-        return FakeMetadataStore.getCurrentUser()
-    }
 }

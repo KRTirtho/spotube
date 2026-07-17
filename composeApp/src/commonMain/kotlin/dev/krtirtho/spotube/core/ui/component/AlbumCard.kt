@@ -60,5 +60,6 @@ fun AlbumCard(
             scope.launch { playbackHelper.addAlbumToQueue(album.id) }
         },
         modifier = modifier.width(160.dp),
+        sharedElementKey = "album_art_${album.id}",
     )
 }

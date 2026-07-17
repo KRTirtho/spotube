@@ -68,11 +68,16 @@ class LibraryRepository(
                 .filterNotNull()
                 .flatMapLatest { it.loggedInFlow }
                 .distinctUntilChanged()
-                .collect {
+                .collect { loggedIn ->
+                    isLoggedIn = loggedIn
                     invalidateCaches()
                 }
         }
     }
+
+    private var isLoggedIn: Boolean = false
+
+    private val authPlugin get() = if (isLoggedIn) plugin else null
 
     fun invalidateCaches() {
         playlistCache.invalidateAll()
@@ -84,7 +89,7 @@ class LibraryRepository(
     }
 
     suspend fun savedPlaylists(paginationStrategy: PaginationStrategy? = null) =
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             playlistCache.get(
                 key = paginationStrategy ?: PaginationStrategy.Offset(0, 20)
             ) {
@@ -99,7 +104,7 @@ class LibraryRepository(
         }
 
     suspend fun savedAlbums(paginationStrategy: PaginationStrategy? = null) =
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             albumCache.get(
                 key = paginationStrategy ?: PaginationStrategy.Offset(0, 20)
             ) {
@@ -114,7 +119,7 @@ class LibraryRepository(
         }
 
     suspend fun savedArtists(paginationStrategy: PaginationStrategy? = null) =
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             artistCache.get(
                 key = paginationStrategy ?: PaginationStrategy.Offset(0, 20)
             ) {
@@ -131,11 +136,11 @@ class LibraryRepository(
     suspend fun isSavedPlaylists(ids: List<String>): List<Boolean> {
         val unknownIds = ids.filterNot { savedPlaylistIds.value.contains(it) }
 
-        if(unknownIds.isEmpty()) {
+        if (unknownIds.isEmpty()) {
             return ids.map { true }
         }
 
-        val unknownStates = plugin?.let { plugin ->
+        val unknownStates = authPlugin?.let { plugin ->
             val savedStates = pluginManager.withScope {
                 plugin.use {
                     metadataPlaylistAPI.isSavedPlaylists(unknownIds)
@@ -155,7 +160,7 @@ class LibraryRepository(
     }
 
     suspend fun savePlaylists(ids: List<String>) {
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataPlaylistAPI.savePlaylists(ids)
@@ -167,7 +172,7 @@ class LibraryRepository(
     }
 
     suspend fun removeSavedPlaylists(ids: List<String>) {
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataPlaylistAPI.removeSavedPlaylists(ids)
@@ -181,11 +186,11 @@ class LibraryRepository(
     suspend fun isSavedAlbums(ids: List<String>): List<Boolean> {
         val unknownIds = ids.filterNot { savedAlbumIds.value.contains(it) }
 
-        if(unknownIds.isEmpty()) {
+        if (unknownIds.isEmpty()) {
             return ids.map { true }
         }
 
-        val unknownStates = plugin?.let { plugin ->
+        val unknownStates = authPlugin?.let { plugin ->
             val savedStates = pluginManager.withScope {
                 plugin.use {
                     metadataAlbumAPI.isSavedAlbums(unknownIds)
@@ -205,7 +210,7 @@ class LibraryRepository(
     }
 
     suspend fun saveAlbums(ids: List<String>) {
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataAlbumAPI.saveAlbums(ids)
@@ -217,7 +222,7 @@ class LibraryRepository(
     }
 
     suspend fun removeSavedAlbums(ids: List<String>) {
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataAlbumAPI.removeSavedAlbums(ids)
@@ -231,11 +236,11 @@ class LibraryRepository(
     suspend fun isSavedArtists(ids: List<String>): List<Boolean> {
         val unknownIds = ids.filterNot { savedArtistIds.value.contains(it) }
 
-        if(unknownIds.isEmpty()) {
+        if (unknownIds.isEmpty()) {
             return ids.map { true }
         }
 
-        val unknownStates = plugin?.let { plugin ->
+        val unknownStates = authPlugin?.let { plugin ->
             val savedStates = pluginManager.withScope {
                 plugin.use {
                     metadataArtistAPI.isSavedArtists(unknownIds)
@@ -255,7 +260,7 @@ class LibraryRepository(
     }
 
     suspend fun saveArtists(ids: List<String>) {
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataArtistAPI.saveArtists(ids)
@@ -267,7 +272,7 @@ class LibraryRepository(
     }
 
     suspend fun removeSavedArtists(ids: List<String>) {
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataArtistAPI.removeSavedArtists(ids)
@@ -279,7 +284,7 @@ class LibraryRepository(
     }
 
     suspend fun currentUser(): MetadataUser? {
-        return plugin?.let { plugin ->
+        return authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataUserAPI.getUser("")
@@ -296,7 +301,7 @@ class LibraryRepository(
         imageBase64: String,
         trackIds: List<String>,
     ): MetadataPlaylist? {
-        return plugin?.let { plugin ->
+        return authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     val result = metadataPlaylistAPI.createPlaylist(
@@ -324,7 +329,7 @@ class LibraryRepository(
         imageBase64: String?,
         trackIds: List<String>?,
     ): MetadataPlaylist? {
-        return plugin?.let { plugin ->
+        return authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     val result = metadataPlaylistAPI.updatePlaylist(
@@ -344,7 +349,7 @@ class LibraryRepository(
     }
 
     suspend fun addTracksToPlaylist(playlistId: String, trackIds: List<String>) {
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
                     metadataPlaylistAPI.addTracksToPlaylist(playlistId, trackIds)

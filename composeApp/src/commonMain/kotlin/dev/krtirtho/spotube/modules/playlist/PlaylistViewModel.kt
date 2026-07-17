@@ -111,7 +111,11 @@ class PlaylistViewModel(
     }
 
     private suspend fun loadCurrentUser() {
-        _currentUserId.value = libraryRepository.currentUser()?.id
+        runCatching {
+            _currentUserId.value = libraryRepository.currentUser()?.id
+        }.onFailure { e ->
+            logger.e(e) { "Failed to load current user" }
+        }
     }
 
     private suspend fun loadInitialData() = runCatching {
@@ -159,11 +163,15 @@ class PlaylistViewModel(
 
     fun toggleSavedPlaylist() {
         viewModelScope.launch {
-            val isLiked = libraryRepository.isSavedPlaylists(listOf(playlistId)).firstOrNull() ?: false
-            if (isLiked) {
-                libraryRepository.removeSavedPlaylists(listOf(playlistId))
-            } else {
-                libraryRepository.savePlaylists(listOf(playlistId))
+            runCatching {
+                val isLiked = libraryRepository.isSavedPlaylists(listOf(playlistId)).firstOrNull() ?: false
+                if (isLiked) {
+                    libraryRepository.removeSavedPlaylists(listOf(playlistId))
+                } else {
+                    libraryRepository.savePlaylists(listOf(playlistId))
+                }
+            }.onFailure { e ->
+                logger.e(e) { "Failed to toggle saved playlist" }
             }
         }
     }

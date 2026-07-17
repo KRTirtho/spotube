@@ -25,6 +25,7 @@ import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.OptIn
+import androidx.core.app.NotificationCompat
 import androidx.media3.common.MediaItem as Media3MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
@@ -75,6 +76,16 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Spotube")
+            .setContentText("Playback service")
+            .setSmallIcon(android.R.drawable.ic_media_play)
+            .setContentIntent(sessionActivity)
+            .setOngoing(true)
+            .build()
+
+        startForeground(NOTIFICATION_ID, notification)
 
         librarySession = MediaLibrarySession.Builder(this, audioPlayer.player, LibrarySessionCallback())
             .setSessionActivity(sessionActivity)
@@ -388,5 +399,6 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
     companion object {
         private const val TAG = "PlaybackService"
         private const val CHANNEL_ID = "spotube_playback"
+        private const val NOTIFICATION_ID = 1
     }
 }

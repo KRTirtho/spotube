@@ -21,10 +21,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +45,7 @@ import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.core.ui.component.CollapsedCollectionHeader
 import dev.krtirtho.spotube.core.ui.component.CollectionDetails
 import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
 import dev.krtirtho.spotube.core.ui.component.TrackList
@@ -87,6 +90,14 @@ fun PlaylistScreen(playlistId: String) {
     var showAddTracksDialog by remember { mutableStateOf(false) }
     var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
 
+    val listState = rememberLazyListState()
+    val isCollapsedHeaderShown by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex > 0 ||
+                listState.firstVisibleItemScrollOffset > 400
+        }
+    }
+
     fun handleTrackOptionsAction(track: MetadataTrack, action: TrackOptionsAction) {
         viewModel.handleTrackOptionsAction(track, action)
         if (action is TrackOptionsAction.Share) {
@@ -105,7 +116,7 @@ fun PlaylistScreen(playlistId: String) {
     }
 
     Scaffold(
-        topBar = { ApplicationMainBar() }
+        topBar = { ApplicationMainBar(backButton = !isCollapsedHeaderShown) }
     ) { innerPadding ->
         when (state) {
             is PlaylistScreenState.Loading -> {
@@ -164,6 +175,9 @@ fun PlaylistScreen(playlistId: String) {
 
                 val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
 
+                val artworkUrl = playlist?.thumbnails?.firstOrNull()?.url.orEmpty()
+                val isPlaying = currentCollectionEntry?.id == playlistId &&
+                    playerState == PlayerState.PLAYING
 
                 fun getTrackOptionsState(track: MetadataTrack): TrackOptionsState {
                     val currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id
@@ -180,20 +194,29 @@ fun PlaylistScreen(playlistId: String) {
 
                 TrackList(
                     modifier = Modifier.padding(innerPadding),
+                    state = listState,
+                    collapsedHeader = {
+                        CollapsedCollectionHeader(
+                            title = playlist?.title ?: "Playlist",
+                            imageURL = artworkUrl,
+                            isPlaying = isPlaying,
+                            onPlay = viewModel::playPlaylist,
+                            onBack = { navigationCommands.pop() },
+                        )
+                    },
+                    isCollapsedHeaderShown = isCollapsedHeaderShown,
                     headerContent = {
                         CollectionDetails(
                             title = playlist?.title ?: "Loading playlist...",
                             description = playlist?.description.orEmpty(),
-                            imageURL = playlist?.thumbnails?.firstOrNull()?.url.orEmpty(),
+                            imageURL = artworkUrl,
                             ownerName = ownerName,
                             ownerImageURL = ownerImageURL,
                             onOwnerClick = {},
                             onPlay = viewModel::playPlaylist,
                             onShufflePlay = {},
                             onAddToQueue = viewModel::addPlaylistToQueue,
-                            isPlaying =
-                                currentCollectionEntry?.id == playlistId &&
-                                    playerState == PlayerState.PLAYING,
+                            isPlaying = isPlaying,
                             isFollowing = savedPlaylistIds.contains(playlistId),
                             onFollowClick = viewModel::toggleSavedPlaylist,
                             showFollowButton = playlistId != "saved_tracks",

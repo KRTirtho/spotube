@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,9 +31,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,16 +41,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.ui.base.ButtonGroup
 import dev.krtirtho.spotube.core.ui.base.ButtonGroupDivider
+import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.GroupIconButton
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
+import dev.krtirtho.spotube.resources.iconsax.ArrowLeft3
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxEdit
@@ -64,6 +65,7 @@ import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun CollectionDetails(
     modifier: Modifier = Modifier,
@@ -82,11 +84,13 @@ fun CollectionDetails(
     onFollowClick: () -> Unit = { },
     showFollowButton: Boolean = true,
     onEdit: (() -> Unit)? = null,
+    sharedElementKey: String? = null,
 ) {
-
-
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val isCompact = maxWidth < 600.dp
+
+        val sharedTransitionScope = LocalSharedTransitionScope.current
+        val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
         val playPauseButton = @Composable {
 
@@ -207,6 +211,11 @@ fun CollectionDetails(
                 modifier = Modifier
                     .size(if (isCompact) 100.dp else 200.dp)
                     .clip(RoundedCornerShape(12.dp))
+                    .sharedElementOrNone(
+                        key = sharedElementKey,
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                    )
                     .shimmerApply(),
                 contentAlignment = Alignment.Center,
             ) {
@@ -260,10 +269,6 @@ fun CollectionDetails(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            ),
-            shape = RoundedCornerShape(20.dp),
         ) {
             if (isCompact) {
                 Column(
@@ -314,8 +319,104 @@ fun CollectionDetails(
     }
 }
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-@Preview
+fun CollapsedCollectionHeader(
+    title: String,
+    imageURL: String,
+    imageResource: DrawableResource? = null,
+    isPlaying: Boolean,
+    onPlay: () -> Unit,
+    modifier: Modifier = Modifier,
+    onBack: (() -> Unit)? = null,
+    sharedElementKey: String? = null,
+) {
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            if (onBack != null) {
+                IconButton(
+                    onClick = onBack,
+                    modifier = Modifier.size(36.dp),
+                ) {
+                    Icon(
+                        imageVector = Iconsax.ArrowLeft3,
+                        contentDescription = "Back",
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+            }
+
+            Box(
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .sharedElementOrNone(
+                        key = sharedElementKey,
+                        sharedTransitionScope = sharedTransitionScope,
+                        animatedVisibilityScope = animatedVisibilityScope,
+                    )
+                    .shimmerApply(),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (imageURL.isNotBlank()) {
+                    AsyncImage(
+                        model = imageURL,
+                        contentDescription = title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                    )
+                } else if (imageResource != null) {
+                    androidx.compose.foundation.Image(
+                        painter = painterResource(imageResource),
+                        contentDescription = title,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                    )
+                } else {
+                    Text(
+                        text = title.take(1).ifBlank { "?" }.uppercase(),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+
+            TextWithShimmer(
+                text = title,
+                style = MaterialTheme.typography.titleSmall,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.weight(1f),
+            )
+
+            IconButton(
+                onClick = onPlay,
+                modifier = Modifier.size(36.dp),
+            ) {
+                Icon(
+                    imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
+                    contentDescription = if (isPlaying) "Pause" else "Play",
+                    modifier = Modifier.size(24.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+@androidx.compose.ui.tooling.preview.Preview
 fun CollectionDetailsPreview() {
     CollectionDetails(
         title = "My Playlist",

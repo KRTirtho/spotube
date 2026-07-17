@@ -18,6 +18,7 @@
 package dev.krtirtho.spotube.core.ui.component
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
@@ -55,6 +56,9 @@ import dev.krtirtho.spotube.core.audioplayer.QueueCollectionEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
+import dev.krtirtho.spotube.core.ui.component.LocalAnimatedVisibilityScope
+import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
+import dev.krtirtho.spotube.core.ui.component.sharedElementOrNone
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPauseCircle
@@ -66,6 +70,7 @@ import org.koin.compose.koinInject
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.liked_tracks
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun LikedTracksCard(
     modifier: Modifier = Modifier,
@@ -79,6 +84,9 @@ fun LikedTracksCard(
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val isPlaying = currentCollectionEntry is QueueCollectionEntry.SavedTracks
 
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
+
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
@@ -91,8 +99,15 @@ fun LikedTracksCard(
                 androidx.compose.foundation.Image(
                     painter = painterResource(Res.drawable.liked_tracks),
                     contentDescription = "Liked Tracks",
-                    modifier = Modifier.fillMaxWidth().aspectRatio(1f)
-                        .clip(RoundedCornerShape(8.dp)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .sharedElementOrNone(
+                            key = "saved_tracks_art",
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        ),
                     contentScale = ContentScale.Crop,
                 )
 

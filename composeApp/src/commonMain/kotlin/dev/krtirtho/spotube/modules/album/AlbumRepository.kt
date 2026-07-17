@@ -52,11 +52,16 @@ class AlbumRepository(
                 .filterNotNull()
                 .flatMapLatest { it.loggedInFlow }
                 .distinctUntilChanged()
-                .collect {
+                .collect { loggedIn ->
+                    isLoggedIn = loggedIn
                     invalidateCaches()
                 }
         }
     }
+
+    private var isLoggedIn: Boolean = false
+
+    private val authPlugin get() = if (isLoggedIn) plugin else null
 
     fun invalidateCaches() {
         albumInfoCache.invalidateAll()
@@ -68,17 +73,15 @@ class AlbumRepository(
             pluginManager.withScope {
                 plugin.use {
                     val album = metadataAlbumAPI.getAlbum(albumId)
-                    val isSaved = metadataAlbumAPI.isSavedAlbums(listOf(albumId)).firstOrNull() ?: false
+                    val isSaved = libraryRepository.isSavedAlbums(listOf(albumId)).firstOrNull() ?: false
                     album to isSaved
                 }
             }
-        }?.also {
-            libraryRepository.isSavedAlbums(listOf(albumId))
         }
     }
 
     suspend fun getAlbumTracks(albumId: String, paginationStrategy: PaginationStrategy? = null) =
-        plugin?.let { plugin ->
+        authPlugin?.let { plugin ->
             albumTracksCache.get(albumId to (paginationStrategy ?: PaginationStrategy.Offset(0, 20))) {
                 pluginManager.withScope {
                     plugin.use {

@@ -57,6 +57,7 @@ fun PlaylistCard(
         onAddToQueue = {
             scope.launch { playbackHelper.addPlaylistToQueue(playlist.id) }
         },
-        modifier = modifier
+        modifier = modifier,
+        sharedElementKey = "playlist_art_${playlist.id}",
     )
 }

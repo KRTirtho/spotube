@@ -18,6 +18,7 @@
 package dev.krtirtho.spotube.core.ui.component.cards
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.clickable
@@ -53,6 +54,9 @@ import dev.krtirtho.spotube.core.ui.base.BaseUITheme
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.PrimaryIconButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
+import dev.krtirtho.spotube.core.ui.component.LocalAnimatedVisibilityScope
+import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
+import dev.krtirtho.spotube.core.ui.component.sharedElementOrNone
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
@@ -60,6 +64,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPause
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
 
+@OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun PlayableCard(
     title: String,
@@ -70,8 +75,11 @@ fun PlayableCard(
     onPlay: (() -> Unit)? = null,
     onAddToQueue: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
+    sharedElementKey: String? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val sharedTransitionScope = LocalSharedTransitionScope.current
+    val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
     Box(
         modifier = modifier
@@ -85,8 +93,15 @@ fun PlayableCard(
                 AsyncImage(
                     model = imageURL,
                     contentDescription = title,
-                    modifier = Modifier.fillMaxWidth().aspectRatio(1f)
-                        .clip(RoundedCornerShape(8.dp)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f)
+                        .clip(RoundedCornerShape(8.dp))
+                        .sharedElementOrNone(
+                            key = sharedElementKey,
+                            sharedTransitionScope = sharedTransitionScope,
+                            animatedVisibilityScope = animatedVisibilityScope,
+                        ),
                     contentScale = ContentScale.Crop,
                 )
 
@@ -98,7 +113,6 @@ fun PlayableCard(
                         val isHovered by interactionSource.collectIsHoveredAsState()
                         this@Column.AnimatedVisibility(
                             visible = isHovered,
-                            //fade in/out animation when hovered
                             enter = fadeIn(),
                             exit = fadeOut(),
                         ) {

@@ -18,8 +18,11 @@
 package dev.krtirtho.spotube.core.ui.component
 
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -42,6 +45,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -149,6 +153,9 @@ fun TrackList(
     contentPadding: PaddingValues = PaddingValues(bottom = LocalAppShellBottomInset.current),
     simplified: Boolean = false,
     scrollable: Boolean = true,
+    state: LazyListState? = null,
+    collapsedHeader: (@Composable () -> Unit)? = null,
+    isCollapsedHeaderShown: Boolean = false,
 ) {
     var filterQuery by rememberSaveable { mutableStateOf("") }
     var sortBy by rememberSaveable { mutableStateOf(TrackSortOption.None) }
@@ -183,7 +190,7 @@ fun TrackList(
         }
     }
 
-    val listState = rememberLazyListState()
+    val listState = state ?: rememberLazyListState()
     val density = LocalDensity.current
     val shouldLoadMore = remember(density) {
         derivedStateOf {
@@ -481,6 +488,17 @@ fun TrackList(
                     item {
                         footerContent()
                     }
+                }
+            }
+
+            if (collapsedHeader != null) {
+                AnimatedVisibility(
+                    visible = isCollapsedHeaderShown,
+                    enter = fadeIn() + slideInVertically { -it },
+                    exit = fadeOut() + slideOutVertically { -it },
+                    modifier = Modifier.align(Alignment.TopCenter).padding(horizontal = if (isCompact) 6.dp else 16.dp),
+                ) {
+                    collapsedHeader()
                 }
             }
 
