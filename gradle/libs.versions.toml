@@ -72,6 +72,8 @@ spotube-gradle = "0.1.0"
 cryptography = "0.6.0"
 reorderable = "3.1.0"
 vlcjBundler = "0.1.0"
+uniffi = "0.3.7"
+kotlinx-atomicfu = "0.33.0"
 
 [libraries]
 appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
@@ -175,3 +177,6 @@ zipline-gradle-plugin = { id = "app.cash.zipline", version.ref = "ziplineVersion
 mavenPublish = { id = "maven-publish" }
 spotubeGradle = { id = "dev.krtirtho.spotube.gradle-plugin", version.ref = "spotube-gradle" }
 vlcjBundler = { id = "dev.krtirtho.vlcj-bundler.gradle-plugin", version.ref = "vlcjBundler" }
+kotlinxAtomicFu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
+uniffi = { id = "dev.gobley.uniffi", version.ref = "uniffi" }
+cargo = { id = "dev.gobley.cargo", version.ref = "uniffi" }

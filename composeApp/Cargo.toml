@@ -1,0 +1,12 @@
+[package]
+name = "compose-app"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+uniffi = "0.29.4"
+lofty = "0.24.0"
+
+[lib]
+crate-type = ["cdylib", "staticlib"]
+path = "src/commonMain/rust/lib.rs"

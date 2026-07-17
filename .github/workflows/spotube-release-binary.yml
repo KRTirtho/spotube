@@ -112,6 +112,9 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
@@ -169,6 +172,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -231,6 +237,9 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
@@ -267,6 +276,9 @@ jobs:
         with:
           distribution: temurin
           java-version: 21
+
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4

@@ -30,4 +30,6 @@ plugins {
     alias(libs.plugins.zipline.gradle.plugin) apply false
     alias(libs.plugins.spotubeGradle) apply false
     alias(libs.plugins.vlcjBundler) apply false
+    alias(libs.plugins.uniffi) apply false
+    alias(libs.plugins.cargo) apply false
 }

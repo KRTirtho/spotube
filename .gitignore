@@ -113,3 +113,5 @@ android/app/.cxx
 /package.json
 /package-lock.json
 /bun.lock
+
+**/target/

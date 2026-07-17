@@ -15,6 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import gobley.gradle.GobleyHost
+import gobley.gradle.cargo.dsl.jvm
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -30,6 +32,9 @@ plugins {
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.zipline.gradle.plugin)
     alias(libs.plugins.vlcjBundler)
+    alias(libs.plugins.uniffi)
+    alias(libs.plugins.cargo)
+    kotlin("plugin.atomicfu") version libs.versions.kotlin
 }
 
 vlcjBundler {
@@ -333,4 +338,10 @@ tasks.withType<ComposeHotRun>().configureEach {
         "compose.application.resources.dir",
         project.layout.buildDirectory.dir("compose/tmp/prepareAppResources").get()
     )
+}
+
+cargo {
+    builds.jvm {
+        embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
+    }
 }

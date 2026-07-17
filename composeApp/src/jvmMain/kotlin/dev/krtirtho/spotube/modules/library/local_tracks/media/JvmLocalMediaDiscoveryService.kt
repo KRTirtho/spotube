@@ -54,16 +54,23 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                             if (scanned.incrementAndGet() > MAX_FILES_PER_SCAN) return@forEach
                             val parent = filePath.parent?.absolutePathString() ?: return@forEach
                             val trackPath = filePath.toAbsolutePath().toString()
-                            println("Debug: Found track path = $trackPath")
+
+                            val metadata = try {
+                                uniffi.compose_app.readAudioMetadata(trackPath)
+                            } catch (_: Exception) {
+                                null
+                            }
+
                             val track = LocalMediaTrack(
                                 path = trackPath,
-                                name = filePath.nameWithoutExtension.ifBlank {
-                                    filePath.fileName.toString()
-                                },
-                                artists = emptyList(),
-                                durationMs = 0L,
-                                album = null,
-                                coverBytes = null,
+                                name = metadata?.title?.takeIf { it.isNotBlank() }
+                                    ?: filePath.nameWithoutExtension.ifBlank {
+                                        filePath.fileName.toString()
+                                    },
+                                artists = metadata?.artists?.takeIf { it.isNotEmpty() } ?: emptyList(),
+                                durationMs = metadata?.durationMs ?: 0L,
+                                album = metadata?.album,
+                                coverBytes = metadata?.coverBytes,
                             )
                             folders.getOrPut(parent) { mutableListOf() }.add(track)
                         }

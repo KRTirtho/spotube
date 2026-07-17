@@ -392,25 +392,42 @@ class DownloadManager(
         }
     }
 
-    private fun applyMetadata(item: DownloadItem, filename: String, downloadDir: Path) {
+    private suspend fun applyMetadata(item: DownloadItem, filename: String, downloadDir: Path) {
         val filePath = downloadDir / filename.toPath()
         if (!fileSystem.exists(filePath)) return
 
-        // TODO: Write metadata/audio tags to the downloaded file.
-        // This is the dedicated placeholder for metadata tagging.
-        // Implementation should use a platform-specific audio tagging library
-        // to write ID3 tags (MP3), MP4 atoms (M4A/AAC), Vorbis comments (OGG/FLAC), etc.
-        //
-        // Tags to write from the track metadata:
-        //   - Title: item.title
-        //   - Artist: item.artists
-        //   - Album: item.album
-        //   - Track number: item.track?.trackNumber
-        //   - Disc number: item.track?.discNumber
-        //   - Duration: item.track?.durationMs
-        //   - Album art: item.track?.thumbnails (download and embed)
-        //   - ISRC: item.track?.isrcCode
-        //   - External URI: item.track?.externalUri
+        val track = item.track ?: return
+
+        val coverBytes = try {
+            val thumbnail = track.thumbnails?.maxByOrNull { it.width * it.height }
+            if (thumbnail != null) {
+                val response = httpClient.get(thumbnail.url)
+                val channel = response.bodyAsChannel()
+                val packet = channel.readRemaining()
+                val bytes = packet.readByteArray()
+                packet.close()
+                bytes
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            logger.w(e) { "Failed to download cover art for ${item.title}" }
+            null
+        }
+
+        try {
+            uniffi.compose_app.writeAudioMetadata(
+                filePath = filePath.toString(),
+                title = item.title,
+                artists = item.artists,
+                album = item.album,
+                trackNumber = track.trackNumber,
+                discNumber = track.discNumber,
+                coverBytes = coverBytes,
+            )
+        } catch (e: Exception) {
+            logger.w(e) { "Failed to write audio metadata for ${item.title}" }
+        }
     }
 
     private fun resolveDownloadDir(): Path {
