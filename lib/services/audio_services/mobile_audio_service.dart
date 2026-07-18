@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/foundation.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
@@ -72,6 +73,29 @@ class MobileAudioService extends BaseAudioHandler {
     audioPlayer.bufferedPositionStream.listen((pos) async {
       playbackState.add(await _transformEvent());
     });
+
+    // Tracks coming from album/playlist metadata may carry an unknown
+    // (zero) duration, so the [MediaItem] sent to the OS initially has no
+    // duration. Once the player has loaded the source and discovered the
+    // real duration, propagate it to the active [MediaItem] so the
+    // MediaSession/Now Playing UI shows duration, progress and seeking.
+    audioPlayer.durationStream.listen((duration) {
+      final updatedItem =
+          mediaItemWithDuration(mediaItem.valueOrNull, duration);
+      if (updatedItem != null) {
+        mediaItem.add(updatedItem);
+      }
+    });
+  }
+
+  /// Returns [item] updated with the player-discovered [duration], or `null`
+  /// when no update should be published (no active item, unknown duration or
+  /// the item already has that exact duration).
+  @visibleForTesting
+  static MediaItem? mediaItemWithDuration(MediaItem? item, Duration duration) {
+    if (item == null || duration <= Duration.zero) return null;
+    if (item.duration == duration) return null;
+    return item.copyWith(duration: duration);
   }
 
   void addItem(MediaItem item) {

@@ -47,17 +47,31 @@ class AudioServices with WidgetsBindingObserver {
 
   Future<void> addTrack(SpotubeTrackObject track) async {
     await smtc?.addTrack(track);
-    mobile?.addItem(MediaItem(
+    mobile?.addItem(mediaItemFromTrack(track));
+  }
+
+  /// Maps a track to the [MediaItem] published to the OS media session.
+  ///
+  /// Album/playlist tracks can carry an unknown (zero) duration depending on
+  /// the metadata source. Report it as `null` (unknown) instead of
+  /// [Duration.zero] so the OS doesn't render a bogus `0:00 / 0:00` progress
+  /// bar. The real duration is propagated by [MobileAudioService] once the
+  /// player discovers it.
+  @visibleForTesting
+  static MediaItem mediaItemFromTrack(SpotubeTrackObject track) {
+    return MediaItem(
       id: track.id,
       album: track.album.name,
       title: track.name,
       artist: track.artists.asString(),
-      duration: Duration(milliseconds: track.durationMs),
+      duration: track.durationMs > 0
+          ? Duration(milliseconds: track.durationMs)
+          : null,
       artUri: (track.album.images).asUri(
         placeholder: ImagePlaceholder.albumArt,
       ),
       playable: true,
-    ));
+    );
   }
 
   void activateSession() {
