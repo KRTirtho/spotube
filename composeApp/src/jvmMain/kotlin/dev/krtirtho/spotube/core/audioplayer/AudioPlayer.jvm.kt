@@ -466,8 +466,10 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             if (disposed || currentPlaylist.isEmpty()) return
             val nextIndex = (currentIndex + 1).coerceAtMost(currentPlaylist.lastIndex)
             logger.d { "skipToNext: currentIndex=$currentIndex, targetIndex=$nextIndex" }
+            currentIndex = nextIndex
+            _currentMediaItem.value = currentPlaylist[nextIndex]
             pendingNextIndex = nextIndex
-            mediaListPlayer.controls().playNext()
+            mediaListPlayer.controls().play(nextIndex)
         }
     }
 
@@ -476,8 +478,10 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             if (disposed || currentPlaylist.isEmpty()) return
             val prevIndex = (currentIndex - 1).coerceAtLeast(0)
             logger.d { "skipToPrevious: currentIndex=$currentIndex, targetIndex=$prevIndex" }
+            currentIndex = prevIndex
+            _currentMediaItem.value = currentPlaylist[prevIndex]
             pendingNextIndex = prevIndex
-            mediaListPlayer.controls().playPrevious()
+            mediaListPlayer.controls().play(prevIndex)
         }
     }
 
