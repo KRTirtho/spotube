@@ -17,22 +17,29 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.ThemedDialog
+import dev.krtirtho.spotube.resources.iconsax.FluentDismiss
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,7 +57,25 @@ fun AdaptiveDialogBottomSheet(
     if (isLargeScreen) {
         ThemedDialog(
             onDismissRequest = onDismiss,
-            title = title,
+            title = if (title != null) {
+                {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(Modifier.weight(1f)) { title() }
+                        IconButton(onClick = onDismiss) {
+                            Icon(
+                                Iconsax.FluentDismiss,
+                                contentDescription = "Close dialog",
+                            )
+                        }
+                    }
+                }
+            } else {
+                null
+            },
             actions = actions,
             modifier = modifier,
         ) {
@@ -65,11 +90,24 @@ fun AdaptiveDialogBottomSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
+                    .padding(horizontal = 16.dp)
+                    .padding(top = 16.dp),
                 horizontalAlignment = Alignment.Start,
             ) {
                 title?.let {
-                    it()
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(Modifier.weight(1f)) { it() }
+                        IconButton(onClick = onDismiss) {
+                            Icon(
+                                Iconsax.FluentDismiss,
+                                contentDescription = "Close dialog",
+                            )
+                        }
+                    }
                     Spacer(Modifier.height(12.dp))
                 }
                 content()

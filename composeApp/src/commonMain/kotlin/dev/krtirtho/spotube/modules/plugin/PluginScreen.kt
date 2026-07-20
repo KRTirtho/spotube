@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -53,29 +53,26 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.krtirtho.spotube.core.ui.base.Card
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.PlatformType
+import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
+import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.base.TextField
-import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
+import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.HeaderDisplayMode
 import dev.krtirtho.spotube.core.webview.WebViewController
 import dev.krtirtho.spotube.getPlatform
-
 import dev.krtirtho.spotube.modules.plugin.components.PluginCard
 import dev.krtirtho.spotube.modules.plugin.components.PluginPermissionDialog
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAdd
-import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import dev.krtirtho.spotube.resources.iconsax.IconsaxBox
-import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentText
 import dev.krtirtho.spotube.resources.iconsax.IconsaxEdit
 import dev.krtirtho.spotube.resources.iconsax.IconsaxExportArrowBulk
@@ -87,34 +84,34 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxTextalignLeft
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.readBytes
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
-import kotlinx.coroutines.flow.StateFlow
 import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.plugin_empty_subtitle
 import spotube.composeapp.generated.resources.plugin_action_download
 import spotube.composeapp.generated.resources.plugin_action_install_from_file
 import spotube.composeapp.generated.resources.plugin_configure_title
+import spotube.composeapp.generated.resources.plugin_empty_subtitle
 import spotube.composeapp.generated.resources.plugin_empty_title
 import spotube.composeapp.generated.resources.plugin_error_download_failed
 import spotube.composeapp.generated.resources.plugin_error_enter_url
 import spotube.composeapp.generated.resources.plugin_error_url_scheme
+import spotube.composeapp.generated.resources.plugin_install_section_title
 import spotube.composeapp.generated.resources.plugin_installed_count
 import spotube.composeapp.generated.resources.plugin_installed_plural
 import spotube.composeapp.generated.resources.plugin_installed_singular
-import spotube.composeapp.generated.resources.plugin_install_section_title
 import spotube.composeapp.generated.resources.plugin_screen_title
+import spotube.composeapp.generated.resources.plugin_section_file_title
+import spotube.composeapp.generated.resources.plugin_section_url_title
 import spotube.composeapp.generated.resources.plugin_url_placeholder
-import spotube.composeapp.generated.resources.settings_plugins_action_change
-import spotube.composeapp.generated.resources.settings_plugins_action_select
 import spotube.composeapp.generated.resources.settings_plugins_ability_audio
 import spotube.composeapp.generated.resources.settings_plugins_ability_lyrics
 import spotube.composeapp.generated.resources.settings_plugins_ability_metadata
 import spotube.composeapp.generated.resources.settings_plugins_ability_scrobble
-import spotube.composeapp.generated.resources.settings_plugins_clear
+import spotube.composeapp.generated.resources.settings_plugins_action_change
+import spotube.composeapp.generated.resources.settings_plugins_action_select
 import spotube.composeapp.generated.resources.settings_plugins_default_ability_title
-import spotube.composeapp.generated.resources.settings_plugins_manage_title
 import spotube.composeapp.generated.resources.settings_plugins_no_plugins
 import spotube.composeapp.generated.resources.settings_plugins_no_selection
 import spotube.composeapp.generated.resources.settings_plugins_plugin_content_description
@@ -214,6 +211,11 @@ fun PluginScreen(
             },
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    stringResource(Res.string.plugin_section_url_title),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.Top,
@@ -260,6 +262,11 @@ fun PluginScreen(
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
+                Text(
+                    stringResource(Res.string.plugin_section_file_title),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
                 OutlineButton(
                     onClick = { launcher.launch() },
                     modifier = Modifier.fillMaxWidth(),
@@ -316,7 +323,7 @@ fun PluginScreen(
                             ) {
                                 Text(
                                     stringResource(Res.string.plugin_configure_title),
-                                    style = MaterialTheme.typography.titleMedium,
+                                    style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 PrimaryButton(onClick = { showInstallSheet = true }) {
