@@ -20,7 +20,7 @@ package dev.krtirtho.spotube.modules.lyrics
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.krtirtho.plugin_interfaces.plugin_apis.lyrics.LyricsLine
-import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.modules.plugin.PluginManager
@@ -50,7 +50,7 @@ data class LyricsUiState(
 
 class LyricsViewModel(
     private val pluginManager: PluginManager,
-    audioPlayer: AudioPlayer,
+    audioPlayer: AudioPlayerInterface,
     private val audioPlayerQueue: AudioPlayerQueue,
 ) : ViewModel() {
 

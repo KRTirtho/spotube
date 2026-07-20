@@ -182,14 +182,8 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Package DEB
-        run: ./gradlew :composeApp:packageReleaseDeb
-
-      - name: Package RPM
-        run: ./gradlew :composeApp:packageReleaseRpm
-
-      - name: Package AppImage
-        run: ./gradlew :composeApp:packageReleaseAppImage
+      - name: Package Linux
+        run: ./gradlew :composeApp:packageReleaseDeb :composeApp:packageReleaseRpm :composeApp:packageReleaseAppImage
 
       - name: Rename Linux artifacts
         run: |
