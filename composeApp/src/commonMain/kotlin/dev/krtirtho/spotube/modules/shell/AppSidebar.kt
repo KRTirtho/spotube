@@ -22,6 +22,7 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,7 +36,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -59,6 +62,7 @@ import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryButton
 import dev.krtirtho.spotube.core.ui.base.copyPadding
+import dev.krtirtho.spotube.core.ui.base.copyShape
 import dev.krtirtho.spotube.modules.downloads.DownloadBadgeIndicator
 import dev.krtirtho.spotube.modules.library.LibraryState
 import dev.krtirtho.spotube.modules.library.LibraryTab
@@ -85,8 +89,7 @@ fun AppSidebar(
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .width(width)
-            .background(MaterialTheme.colorScheme.surfaceContainer),
+            .width(width),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
@@ -174,12 +177,12 @@ fun SidebarItem(
     showDownloadBadge: Boolean = false,
 ) {
     val itemContent: @Composable RowScope.() -> Unit = {
-        Box(modifier = Modifier.size(24.dp)) {
+        Box(modifier = Modifier.size(20.dp)) {
             Icon(
                 imageVector = activeIcon,
                 contentDescription = label,
                 tint = if (selected) {
-                    MaterialTheme.colorScheme.onSecondaryContainer
+                    MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 },
@@ -195,11 +198,15 @@ fun SidebarItem(
                 text = label,
                 maxLines = 1,
                 softWrap = false,
-                color = if (selected) {
-                    MaterialTheme.colorScheme.onSecondaryContainer
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
+                style = LocalTextStyle.current.copy(
+                    fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                    color = if (selected) {
+                        MaterialTheme.colorScheme.onSecondaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    }
+                )
             )
         }
         Spacer(modifier = if (expanded) Modifier.weight(1f) else Modifier)
@@ -208,20 +215,24 @@ fun SidebarItem(
     val buttonModifier = Modifier
         .fillMaxWidth()
         .padding(horizontal = 10.dp, vertical = 4.dp)
-    val contentPadding = PaddingValues(horizontal = 14.dp, vertical = 12.dp)
+    val contentPadding = PaddingValues(horizontal = 7.dp, vertical = 6.dp)
 
     if (selected) {
         SecondaryButton(
             onClick = onClick,
             modifier = buttonModifier,
-            theme = LocalBaseUITheme.current.buttons.secondary.copyPadding(contentPadding),
+            theme = LocalBaseUITheme.current.buttons.secondary
+                .copyPadding(contentPadding)
+                .copyShape(RoundedCornerShape(8.dp)),
             content = itemContent,
         )
     } else {
         OutlineButton(
             onClick = onClick,
             modifier = buttonModifier,
-            theme = LocalBaseUITheme.current.buttons.outline.copyPadding(contentPadding),
+            theme = LocalBaseUITheme.current.buttons.outline
+                .copyPadding(contentPadding)
+                .copyShape(RoundedCornerShape(8.dp)),
             hoverOnly = true,
             content = itemContent,
         )

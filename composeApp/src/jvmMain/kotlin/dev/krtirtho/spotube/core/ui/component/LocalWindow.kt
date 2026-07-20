@@ -19,8 +19,12 @@ package dev.krtirtho.spotube.core.ui.component
 
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.window.FrameWindowScope
+import androidx.compose.ui.window.WindowState
 
 // LocalWindow is a LocalComposition that provides access to the current Window instance in the composition hierarchy.
 val LocalWindowScope = compositionLocalOf<FrameWindowScope> {
     error("No Window found in LocalWindowScope")
+}
+val LocalWindowState = compositionLocalOf<WindowState> {
+    error("No WindowState found in LocalWindowState")
 }

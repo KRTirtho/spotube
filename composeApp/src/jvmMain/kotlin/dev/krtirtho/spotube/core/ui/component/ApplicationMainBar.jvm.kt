@@ -22,8 +22,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.window.WindowDraggableArea
@@ -36,13 +34,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.WindowPlacement
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Maximize2
-import compose.icons.feathericons.Minimize2
-import compose.icons.feathericons.Minus
-import compose.icons.feathericons.X
+import dev.krtirtho.spotube.resources.iconsax.FluentDismiss
+import dev.krtirtho.spotube.resources.iconsax.FluentMaximize
+import dev.krtirtho.spotube.resources.iconsax.FluentMinus
+import dev.krtirtho.spotube.resources.iconsax.FluentSquareMultiple
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -79,7 +76,7 @@ actual fun ApplicationMainBar(
 
 @Composable
 private fun WindowButtons(modifier: Modifier = Modifier) {
-    val window = LocalWindowScope.current.window
+    val windowState = LocalWindowState.current
     val applicationScope = LocalApplicationScope.current
 
     Row(
@@ -88,27 +85,27 @@ private fun WindowButtons(modifier: Modifier = Modifier) {
     ) {
         IconButton(
             onClick = {
-                window.isMinimized = true
+                windowState.isMinimized = true
             }) {
             Icon(
-                FeatherIcons.Minus, "Minimize", modifier = Modifier.size(14.dp)
+                Iconsax.FluentMinus, "Minimize", modifier = Modifier.size(14.dp)
             )
         }
         IconButton(
             onClick = {
-                window.placement = if (window.placement == WindowPlacement.Maximized) {
+                windowState.placement = if (windowState.placement == WindowPlacement.Maximized) {
                     WindowPlacement.Floating
                 } else {
                     WindowPlacement.Maximized
                 }
             }) {
-            if (window.placement == WindowPlacement.Floating) {
+            if (windowState.placement == WindowPlacement.Floating) {
                 Icon(
-                    FeatherIcons.Maximize2, "Maximize", modifier = Modifier.size(14.dp)
+                    Iconsax.FluentMaximize, "Maximize", modifier = Modifier.size(14.dp)
                 )
             } else {
                 Icon(
-                    FeatherIcons.Minimize2, "Restore", modifier = Modifier.size(14.dp)
+                    Iconsax.FluentSquareMultiple, "Restore", modifier = Modifier.size(14.dp)
                 )
             }
         }
@@ -117,7 +114,7 @@ private fun WindowButtons(modifier: Modifier = Modifier) {
                 applicationScope.exitApplication()
             }) {
             Icon(
-                FeatherIcons.X, "Close", modifier = Modifier.size(14.dp)
+                Iconsax.FluentDismiss, "Close", modifier = Modifier.size(14.dp)
             )
         }
     }

@@ -173,7 +173,6 @@ fun AppLargePlayer(
 
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.78f),
         tonalElevation = 0.dp,
         shadowElevation = 0.dp
     ) {

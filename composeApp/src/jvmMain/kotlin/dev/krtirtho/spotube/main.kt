@@ -29,6 +29,7 @@ import dev.krtirtho.spotube.core.newpipe.NewPipeDownloader
 import dev.krtirtho.spotube.core.paths.Paths
 import dev.krtirtho.spotube.core.ui.component.LocalApplicationScope
 import dev.krtirtho.spotube.core.ui.component.LocalWindowScope
+import dev.krtirtho.spotube.core.ui.component.LocalWindowState
 import io.github.vinceglb.filekit.FileKit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -66,6 +67,7 @@ fun main() {
             CompositionLocalProvider(
                 LocalApplicationScope provides this@application,
                 LocalWindowScope provides this@Window,
+                LocalWindowState provides windowState
             ) {
                 App()
             }

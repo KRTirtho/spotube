@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
@@ -36,7 +37,9 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
 import androidx.compose.runtime.Composable
@@ -119,7 +122,11 @@ fun AppShell(
                             AppSidebar(
                                 navigator = navigator, navigationState = navigationState
                             )
-
+                            VerticalDivider(
+                                modifier = Modifier.fillMaxHeight(),
+                                color = Color.Gray.copy(alpha = 0.2f),
+                                thickness = 1.dp,
+                            )
                             Box(modifier = Modifier.weight(1f)) {
                                 content()
                             }
@@ -167,6 +174,11 @@ fun AppShell(
                             )
                         }
                     }
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = Color.Gray.copy(alpha = 0.2f),
+                        thickness = 1.dp,
+                    )
                     AppLargePlayer(
                         modifier = Modifier.fillMaxWidth(),
                         onQueue = queueViewModel::toggleQueueVisibility,

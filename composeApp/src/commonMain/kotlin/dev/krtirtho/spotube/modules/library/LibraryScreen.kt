@@ -19,8 +19,6 @@ package dev.krtirtho.spotube.modules.library
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,19 +32,17 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.krtirtho.spotube.core.ui.base.ChipTab
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.modules.downloads.DownloadsScreen
 import dev.krtirtho.spotube.modules.library.album.LibraryAlbumsScreen
 import dev.krtirtho.spotube.modules.library.artist.LibraryArtistsScreen
 import dev.krtirtho.spotube.modules.library.local_tracks.LibraryLocalTracksScreen
 import dev.krtirtho.spotube.modules.library.playlist.LibraryPlaylistsScreen
-import dev.krtirtho.spotube.modules.downloads.DownloadsScreen
 import dev.krtirtho.spotube.modules.shell.AppShellViewModel
-import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
-import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -94,11 +90,12 @@ fun LibraryScreen(
                         ) {
                             items(LibraryTab.entries.size) { index ->
                                 val tab = LibraryTab.entries[index]
-                                FilterChip(
-                                    label = { Text(tab.title) },
+                                ChipTab(
                                     selected = currentTab == tab,
                                     onClick = { libraryState.onTabSelected(tab) },
-                                )
+                                ) {
+                                    Text(tab.title)
+                                }
                             }
                         }
                         Spacer(modifier = Modifier.height(12.dp))
