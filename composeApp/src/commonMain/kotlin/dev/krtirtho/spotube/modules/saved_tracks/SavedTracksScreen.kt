@@ -17,18 +17,13 @@
 
 package dev.krtirtho.spotube.modules.saved_tracks
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
@@ -39,19 +34,13 @@ import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.share.ShareService
-import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
-import dev.krtirtho.spotube.core.ui.component.CollapsedCollectionHeader
-import dev.krtirtho.spotube.core.ui.component.CollectionDetails
-import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
-import dev.krtirtho.spotube.core.ui.component.TrackList
+import dev.krtirtho.spotube.core.ui.component.CollectionView
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
-import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.DrawableResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -79,14 +68,6 @@ fun SavedTracksScreen() {
     var showAddToPlaylistPicker by remember { mutableStateOf(false) }
     var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
     var currentUserId by remember { mutableStateOf<String?>(null) }
-
-    val listState = rememberLazyListState()
-    val isCollapsedHeaderShown by remember {
-        derivedStateOf {
-            listState.firstVisibleItemIndex > 0 ||
-                listState.firstVisibleItemScrollOffset > 400
-        }
-    }
 
     LaunchedEffect(Unit) {
         currentUserId = libraryRepository.currentUser()?.id
@@ -122,137 +103,69 @@ fun SavedTracksScreen() {
         }
     }
 
-    Scaffold(
-        topBar = { ApplicationMainBar(backButton = !isCollapsedHeaderShown) }
-    ) { innerPadding ->
-        when (state) {
-            is SavedTracksScreenState.Loading -> {
-                TrackList(
-                    modifier = Modifier.padding(innerPadding),
-                    headerContent = {
-                        SkeletonTree(true) {
-                            CollectionDetails(
-                                title = "Loading saved tracks...",
-                                description = "",
-                                imageURL = "",
-                                imageResource = Res.drawable.liked_tracks,
-                                ownerName = "You",
-                                ownerImageURL = null,
-                                onOwnerClick = {},
-                                onPlay = {},
-                                onShufflePlay = {},
-                                onAddToQueue = {},
-                                isPlaying = false,
-                                isFollowing = false,
-                                onFollowClick = {},
-                                showFollowButton = false,
-                            )
-                        }
-                    },
-                    tracks = emptyList(),
-                    error = null,
-                    hasMore = false,
-                    isLoading = true,
-                    isLoadingNextPage = false,
-                    currentTrackId = null,
-                    isCurrentTrackPlaying = false,
-                    onTrackClick = {},
-                    onLoadNextPage = {},
-                    onArtistClick = { navigationCommands.navigateTo(Routes.Artist(it.id)) },
-                    onAlbumClick = { navigationCommands.navigateTo(Routes.Album(it.id)) },
-                    onTrackOptionsAction = { _, _ -> },
-                    trackOptionsState = { TrackOptionsState() },
-                )
-            }
+    val dataState = state as? SavedTracksScreenState.Data
+    val isPlaying = currentCollectionEntry is QueueCollectionEntry.SavedTracks &&
+        playerState == PlayerState.PLAYING
 
-            is SavedTracksScreenState.Error -> {
-                ErrorDisplay(
-                    errorMessage = (state as SavedTracksScreenState.Error).message,
-                    onRetry = { viewModel.refresh() },
-                    modifier = Modifier.padding(innerPadding),
-                )
-            }
+    val errorMessage = (state as? SavedTracksScreenState.Error)?.message
+    val isLoading = state is SavedTracksScreenState.Loading && (dataState == null || dataState.tracks.isEmpty())
 
-            is SavedTracksScreenState.Data -> {
-                val dataState = state as SavedTracksScreenState.Data
-
-                val isPlaying = currentCollectionEntry is QueueCollectionEntry.SavedTracks &&
-                    playerState == PlayerState.PLAYING
-
-                TrackList(
-                    modifier = Modifier.padding(innerPadding),
-                    state = listState,
-                    collapsedHeader = {
-                        CollapsedCollectionHeader(
-                            title = "Saved Tracks",
-                            imageURL = "",
-                            imageResource = Res.drawable.liked_tracks,
-                            isPlaying = isPlaying,
-                            onPlay = viewModel::playSavedTracks,
-                            onBack = { navigationCommands.pop() },
+    CollectionView(
+        title = "Saved Tracks",
+        description = dataState?.let { "${it.totalCount} tracks" } ?: "",
+        imageURL = "",
+        imageResource = Res.drawable.liked_tracks,
+        ownerName = "You",
+        ownerImageURL = null,
+        onOwnerClick = {},
+        onPlay = viewModel::playSavedTracks,
+        onShufflePlay = {},
+        onAddToQueue = viewModel::addSavedTracksToQueue,
+        isPlaying = isPlaying,
+        isFollowing = false,
+        onFollowClick = {},
+        showFollowButton = false,
+        isLoading = isLoading,
+        error = errorMessage,
+        onRetry = { viewModel.refresh() },
+        tracks = dataState?.tracks ?: emptyList(),
+        hasMore = dataState?.nextPagination != null,
+        isLoadingNextPage = state is SavedTracksScreenState.Data.LoadingMore,
+        currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
+        isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
+        onTrackClick = viewModel::playSavedTracksFromTrack,
+        onLoadNextPage = viewModel::loadNextTracksPage,
+        onArtistClick = { navigationCommands.navigateTo(Routes.Artist(it.id)) },
+        onAlbumClick = { navigationCommands.navigateTo(Routes.Album(it.id)) },
+        onTrackOptionsAction = ::handleTrackOptionsAction,
+        trackOptionsState = ::getTrackOptionsState,
+        onBulkDownload = { tracks ->
+            downloadsViewModel.downloadTracks(tracks)
+        },
+        onBulkAddToQueue = { tracks ->
+            viewModel.addTracksToQueue(tracks)
+        },
+        onBulkPlayNext = { tracks ->
+            viewModel.playTracksNext(tracks)
+        },
+        onBulkAddToPlaylist = { tracks ->
+            tracksToAddToPlaylist = tracks
+            showAddToPlaylistPicker = true
+        },
+        trailingContent = {
+            AddToPlaylistPicker(
+                visible = showAddToPlaylistPicker,
+                currentUserId = currentUserId,
+                onDismiss = { showAddToPlaylistPicker = false },
+                onPlaylistSelected = { playlistId ->
+                    scope.launch {
+                        libraryRepository.addTracksToPlaylist(
+                            playlistId,
+                            tracksToAddToPlaylist.map { it.id }
                         )
-                    },
-                    isCollapsedHeaderShown = isCollapsedHeaderShown,
-                    headerContent = {
-                        CollectionDetails(
-                            title = "Saved Tracks",
-                            description = "${dataState.totalCount} tracks",
-                            imageURL = "",
-                            imageResource = Res.drawable.liked_tracks,
-                            ownerName = "You",
-                            ownerImageURL = null,
-                            onOwnerClick = {},
-                            onPlay = viewModel::playSavedTracks,
-                            onShufflePlay = {},
-                            onAddToQueue = viewModel::addSavedTracksToQueue,
-                            isPlaying = isPlaying,
-                            isFollowing = false,
-                            onFollowClick = {},
-                            showFollowButton = false,
-                        )
-                    },
-                    tracks = dataState.tracks,
-                    error = null,
-                    hasMore = dataState.nextPagination != null,
-                    isLoading = state is SavedTracksScreenState.Loading && dataState.tracks.isEmpty(),
-                    isLoadingNextPage = state is SavedTracksScreenState.Data.LoadingMore,
-                    currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
-                    isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
-                    onTrackClick = viewModel::playSavedTracksFromTrack,
-                    onLoadNextPage = viewModel::loadNextTracksPage,
-                    onArtistClick = { navigationCommands.navigateTo(Routes.Artist(it.id)) },
-                    onAlbumClick = { navigationCommands.navigateTo(Routes.Album(it.id)) },
-                    onTrackOptionsAction = ::handleTrackOptionsAction,
-                    trackOptionsState = ::getTrackOptionsState,
-                    onBulkDownload = { tracks ->
-                        downloadsViewModel.downloadTracks(tracks)
-                    },
-                    onBulkAddToQueue = { tracks ->
-                        viewModel.addTracksToQueue(tracks)
-                    },
-                    onBulkPlayNext = { tracks ->
-                        viewModel.playTracksNext(tracks)
-                    },
-                    onBulkAddToPlaylist = { tracks ->
-                        tracksToAddToPlaylist = tracks
-                        showAddToPlaylistPicker = true
-                    },
-                )
-            }
-        }
-
-        AddToPlaylistPicker(
-            visible = showAddToPlaylistPicker,
-            currentUserId = currentUserId,
-            onDismiss = { showAddToPlaylistPicker = false },
-            onPlaylistSelected = { playlistId ->
-                scope.launch {
-                    libraryRepository.addTracksToPlaylist(
-                        playlistId,
-                        tracksToAddToPlaylist.map { it.id }
-                    )
-                }
-            },
-        )
-    }
+                    }
+                },
+            )
+        },
+    )
 }

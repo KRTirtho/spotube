@@ -18,11 +18,8 @@
 package dev.krtirtho.spotube.core.ui.component
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -154,8 +151,6 @@ fun TrackList(
     simplified: Boolean = false,
     scrollable: Boolean = true,
     state: LazyListState? = null,
-    collapsedHeader: (@Composable () -> Unit)? = null,
-    isCollapsedHeaderShown: Boolean = false,
 ) {
     var filterQuery by rememberSaveable { mutableStateOf("") }
     var sortBy by rememberSaveable { mutableStateOf(TrackSortOption.None) }
@@ -488,17 +483,6 @@ fun TrackList(
                     item {
                         footerContent()
                     }
-                }
-            }
-
-            if (collapsedHeader != null) {
-                AnimatedVisibility(
-                    visible = isCollapsedHeaderShown,
-                    enter = fadeIn() + slideInVertically { -it },
-                    exit = fadeOut() + slideOutVertically { -it },
-                    modifier = Modifier.align(Alignment.TopCenter).padding(horizontal = if (isCompact) 6.dp else 16.dp),
-                ) {
-                    collapsedHeader()
                 }
             }
 

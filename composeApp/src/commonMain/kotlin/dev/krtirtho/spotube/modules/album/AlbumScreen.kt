@@ -17,18 +17,13 @@
 
 package dev.krtirtho.spotube.modules.album
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
@@ -38,14 +33,9 @@ import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.share.ShareService
-import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
-import dev.krtirtho.spotube.core.ui.component.CollapsedCollectionHeader
-import dev.krtirtho.spotube.core.ui.component.CollectionDetails
-import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
-import dev.krtirtho.spotube.core.ui.component.TrackList
+import dev.krtirtho.spotube.core.ui.component.CollectionView
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
-import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
@@ -77,14 +67,6 @@ fun AlbumScreen(albumId: String) {
     var showAddToPlaylistPicker by remember { mutableStateOf(false) }
     var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
     var currentUserId by remember { mutableStateOf<String?>(null) }
-
-    val listState = rememberLazyListState()
-    val isCollapsedHeaderShown by remember {
-        derivedStateOf {
-            listState.firstVisibleItemIndex > 0 ||
-                listState.firstVisibleItemScrollOffset > 400
-        }
-    }
 
     LaunchedEffect(Unit) {
         currentUserId = libraryRepository.currentUser()?.id
@@ -120,143 +102,77 @@ fun AlbumScreen(albumId: String) {
         }
     }
 
-    Scaffold(
-        topBar = { ApplicationMainBar(backButton = !isCollapsedHeaderShown) }
-    ) { innerPadding ->
-        when (state) {
-            is AlbumScreenState.Loading -> {
-                TrackList(
-                    modifier = Modifier.padding(innerPadding),
-                    headerContent = {
-                        SkeletonTree(true) {
-                            CollectionDetails(
-                                title = "Loading album...",
-                                description = "",
-                                imageURL = "",
-                                ownerName = "Unknown artist",
-                                ownerImageURL = null,
-                                onOwnerClick = {},
-                                onPlay = {},
-                                onShufflePlay = {},
-                                onAddToQueue = {},
-                                isPlaying = false,
-                                isFollowing = false,
-                                onFollowClick = {},
-                            )
-                        }
-                    },
-                    tracks = emptyList(),
-                    error = null,
-                    hasMore = false,
-                    isLoading = true,
-                    isLoadingNextPage = false,
-                    currentTrackId = null,
-                    isCurrentTrackPlaying = false,
-                    onTrackClick = {},
-                    onLoadNextPage = {},
-                    onArtistClick = { navigationCommands.navigateTo(Routes.Artist(it.id)) },
-                    onAlbumClick = { navigationCommands.navigateTo(Routes.Album(it.id)) },
-                    onTrackOptionsAction = { _, _ -> },
-                    trackOptionsState = { TrackOptionsState() },
-                )
+    val dataState = state as? AlbumScreenState.Data
+    val album = dataState?.album
+    val ownerName =
+        album?.artists?.joinToString { it.name }.orEmpty().ifBlank { "Unknown artist" }
+    val ownerImageURL = album?.artists?.firstOrNull()?.thumbnails?.firstOrNull()?.url
+    val firstArtistId = album?.artists?.firstOrNull()?.id
+    val artworkUrl = album?.thumbnails?.firstOrNull()?.url.orEmpty()
+    val isAlbumPlaying = currentCollectionEntry?.id == albumId &&
+        playerState == PlayerState.PLAYING
+
+    val errorMessage = (state as? AlbumScreenState.Error)?.message
+    val isLoading = state is AlbumScreenState.Loading && (dataState == null || dataState.tracks.isEmpty())
+
+    CollectionView(
+        title = album?.title ?: "Loading album...",
+        description = album?.description ?: "${album?.albumType?.name.orEmpty()} • ${album?.releaseDate.orEmpty()}",
+        imageURL = artworkUrl,
+        ownerName = ownerName,
+        ownerImageURL = ownerImageURL,
+        onOwnerClick = {
+            firstArtistId?.let {
+                navigationCommands.navigateTo(Routes.Artist(it))
             }
-
-            is AlbumScreenState.Error -> {
-                ErrorDisplay(
-                    errorMessage = (state as AlbumScreenState.Error).message,
-                    onRetry = { viewModel.refresh() },
-                    modifier = Modifier.padding(innerPadding),
-                )
-            }
-
-            is AlbumScreenState.Data -> {
-                val dataState = state as AlbumScreenState.Data
-                val album = dataState.album
-                val ownerName =
-                    album?.artists?.joinToString { it.name }.orEmpty().ifBlank { "Unknown artist" }
-                val ownerImageURL = album?.artists?.firstOrNull()?.thumbnails?.firstOrNull()?.url
-                val firstArtistId = album?.artists?.firstOrNull()?.id
-                val artworkUrl = album?.thumbnails?.firstOrNull()?.url.orEmpty()
-                val isAlbumPlaying = currentCollectionEntry?.id == albumId &&
-                    playerState == PlayerState.PLAYING
-
-                TrackList(
-                    modifier = Modifier.padding(innerPadding),
-                    state = listState,
-                    collapsedHeader = {
-                        CollapsedCollectionHeader(
-                            title = album?.title ?: "Album",
-                            imageURL = artworkUrl,
-                            isPlaying = isAlbumPlaying,
-                            onPlay = viewModel::playAlbum,
-                            onBack = { navigationCommands.pop() },
+        },
+        onPlay = viewModel::playAlbum,
+        onShufflePlay = {},
+        onAddToQueue = viewModel::addAlbumToQueue,
+        isPlaying = isAlbumPlaying,
+        isFollowing = savedAlbumIds.contains(albumId),
+        onFollowClick = viewModel::toggleSavedAlbum,
+        isLoading = isLoading,
+        error = errorMessage,
+        onRetry = { viewModel.refresh() },
+        tracks = dataState?.tracks ?: emptyList(),
+        hasMore = dataState?.nextPagination != null,
+        isLoadingNextPage = state is AlbumScreenState.Data.LoadingMore,
+        currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
+        isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
+        onTrackClick = viewModel::playAlbumFromTrack,
+        onLoadNextPage = viewModel::loadNextTracksPage,
+        onArtistClick = { navigationCommands.navigateTo(Routes.Artist(it.id)) },
+        onAlbumClick = { navigationCommands.navigateTo(Routes.Album(it.id)) },
+        onTrackOptionsAction = ::handleTrackOptionsAction,
+        trackOptionsState = ::getTrackOptionsState,
+        onBulkDownload = { tracks ->
+            downloadsViewModel.downloadTracks(tracks)
+        },
+        onBulkAddToQueue = { tracks ->
+            viewModel.addTracksToQueue(tracks)
+        },
+        onBulkPlayNext = { tracks ->
+            viewModel.playTracksNext(tracks)
+        },
+        onBulkAddToPlaylist = { tracks ->
+            tracksToAddToPlaylist = tracks
+            showAddToPlaylistPicker = true
+        },
+        trailingContent = {
+            AddToPlaylistPicker(
+                visible = showAddToPlaylistPicker,
+                currentUserId = currentUserId,
+                onDismiss = { showAddToPlaylistPicker = false },
+                onPlaylistSelected = { playlistId ->
+                    scope.launch {
+                        libraryRepository.addTracksToPlaylist(
+                            playlistId,
+                            tracksToAddToPlaylist.map { it.id }
                         )
-                    },
-                    isCollapsedHeaderShown = isCollapsedHeaderShown,
-                    headerContent = {
-                        CollectionDetails(
-                            title = album?.title ?: "Loading album...",
-                            description = album?.description ?: "${album?.albumType?.name.orEmpty()} • ${album?.releaseDate.orEmpty()}",
-                            imageURL = artworkUrl,
-                            ownerName = ownerName,
-                            ownerImageURL = ownerImageURL,
-                            onOwnerClick = {
-                                firstArtistId?.let {
-                                    navigationCommands.navigateTo(
-                                        Routes.Artist(it)
-                                    )
-                                }
-                            },
-                            onPlay = viewModel::playAlbum,
-                            onShufflePlay = {},
-                            onAddToQueue = viewModel::addAlbumToQueue,
-                            isPlaying = isAlbumPlaying,
-                            isFollowing = savedAlbumIds.contains(albumId),
-                            onFollowClick = viewModel::toggleSavedAlbum,
-                        )
-                    },
-                    tracks = dataState.tracks,
-                    error = null,
-                    hasMore = dataState.nextPagination != null,
-                    isLoading = state is AlbumScreenState.Loading && dataState.tracks.isEmpty(),
-                    isLoadingNextPage = state is AlbumScreenState.Data.LoadingMore,
-                    currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
-                    isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
-                    onTrackClick = viewModel::playAlbumFromTrack,
-                    onLoadNextPage = viewModel::loadNextTracksPage,
-                    onArtistClick = { navigationCommands.navigateTo(Routes.Artist(it.id)) },
-                    onAlbumClick = { navigationCommands.navigateTo(Routes.Album(it.id)) },
-                    onTrackOptionsAction = ::handleTrackOptionsAction,
-                    trackOptionsState = ::getTrackOptionsState,
-                    onBulkDownload = { tracks ->
-                        downloadsViewModel.downloadTracks(tracks)
-                    },
-                    onBulkAddToQueue = { tracks ->
-                        viewModel.addTracksToQueue(tracks)
-                    },
-                    onBulkPlayNext = { tracks ->
-                        viewModel.playTracksNext(tracks)
-                    },
-                    onBulkAddToPlaylist = { tracks ->
-                        tracksToAddToPlaylist = tracks
-                        showAddToPlaylistPicker = true
-                    },
-                )
-            }
-        }
-
-        AddToPlaylistPicker(
-            visible = showAddToPlaylistPicker,
-            currentUserId = currentUserId,
-            onDismiss = { showAddToPlaylistPicker = false },
-            onPlaylistSelected = { playlistId ->
-                scope.launch {
-                    libraryRepository.addTracksToPlaylist(
-                        playlistId,
-                        tracksToAddToPlaylist.map { it.id }
-                    )
-                }
-            },
-        )
-    }
+                    }
+                },
+            )
+        },
+    )
 }
