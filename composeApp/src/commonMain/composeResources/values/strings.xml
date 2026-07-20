@@ -126,6 +126,7 @@
     <string name="settings_plugins_plugin_content_description">%1$s plugin</string>
     <string name="settings_plugins_clear_content_description">Clear</string>
 
+    <string name="plugin_configure_title">Configure</string>
     <string name="plugin_screen_title">Plugin Manager</string>
     <string name="plugin_error_enter_url">Please enter a URL</string>
     <string name="plugin_error_url_scheme">URL must start with http:// or https://</string>

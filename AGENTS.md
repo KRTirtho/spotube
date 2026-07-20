@@ -29,7 +29,10 @@
 - `plugin_interfaces` exports `zipline.core` and `semver` as API. `composeApp` depends on it for the plugin system.
 - `plugin_interfaces` also has a JS target (`browser()`), used by the plugin system.
 
-## Desktop JVM specifics
+## UI component patterns
+- **AdaptiveDropdownBottomSheet** (`commonMain/.../core/ui/component/AdaptiveDropdownBottomSheet.kt`): switches between `DropdownMenu` (large screen) and `ModalBottomSheet` (small screen) via `currentWindowAdaptiveInfo()`. Do NOT use expect/actual — all adaptive components that rely ONLY on Compose/Material3 APIs belong in commonMain.
+- **AdaptiveDialogBottomSheet** (`commonMain/.../core/ui/component/AdaptiveDialogBottomSheet.kt`): switches between `ThemedDialog` (large screen) and `ModalBottomSheet` (small screen) via `currentWindowAdaptiveInfo()`. Same rule — keep in commonMain unless platform-specific APIs are required.
+- Use `expect`/`actual` only when the component MUST use platform-specific APIs (e.g. `WindowState` for desktop window controls, native scrollbars). Pure Compose/Material3 adaptivity stays in commonMain.
 - JavaFX is required; `--add-opens` flags in `compose.desktop.application.jvmArgs` must be preserved: `javafx.graphics/javafx.scene`, `javafx.graphics/com.sun.javafx.sg.prism`, `javafx.graphics/com.sun.javafx.scene`, `javafx.web/com.sun.webkit`, `javafx.media/com.sun.media.jfxmedia`, `javafx.media/com.sun.media.jfxmedia.events`.
 - JavaFX dependencies are loaded from OpenJFX with platform classifiers (win/mac/linux) resolved at configuration time via `System.getProperty("os.name")`.
 

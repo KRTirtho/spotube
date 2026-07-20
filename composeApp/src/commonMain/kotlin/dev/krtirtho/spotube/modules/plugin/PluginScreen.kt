@@ -26,9 +26,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -55,22 +57,30 @@ import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
+import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
+import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
+import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.HeaderDisplayMode
 import dev.krtirtho.spotube.core.webview.WebViewController
 import dev.krtirtho.spotube.getPlatform
-import dev.krtirtho.spotube.modules.plugin.components.InstallSection
+
 import dev.krtirtho.spotube.modules.plugin.components.PluginCard
 import dev.krtirtho.spotube.modules.plugin.components.PluginPermissionDialog
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxAdd
+import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import dev.krtirtho.spotube.resources.iconsax.IconsaxBox
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentText
 import dev.krtirtho.spotube.resources.iconsax.IconsaxEdit
+import dev.krtirtho.spotube.resources.iconsax.IconsaxExportArrowBulk
+import dev.krtirtho.spotube.resources.iconsax.IconsaxImportArrow2Bulk
+import dev.krtirtho.spotube.resources.iconsax.IconsaxLink
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusic
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSound
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTextalignLeft
@@ -83,6 +93,9 @@ import org.koin.compose.koinInject
 import kotlinx.coroutines.flow.StateFlow
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_empty_subtitle
+import spotube.composeapp.generated.resources.plugin_action_download
+import spotube.composeapp.generated.resources.plugin_action_install_from_file
+import spotube.composeapp.generated.resources.plugin_configure_title
 import spotube.composeapp.generated.resources.plugin_empty_title
 import spotube.composeapp.generated.resources.plugin_error_download_failed
 import spotube.composeapp.generated.resources.plugin_error_enter_url
@@ -90,7 +103,9 @@ import spotube.composeapp.generated.resources.plugin_error_url_scheme
 import spotube.composeapp.generated.resources.plugin_installed_count
 import spotube.composeapp.generated.resources.plugin_installed_plural
 import spotube.composeapp.generated.resources.plugin_installed_singular
+import spotube.composeapp.generated.resources.plugin_install_section_title
 import spotube.composeapp.generated.resources.plugin_screen_title
+import spotube.composeapp.generated.resources.plugin_url_placeholder
 import spotube.composeapp.generated.resources.settings_plugins_action_change
 import spotube.composeapp.generated.resources.settings_plugins_action_select
 import spotube.composeapp.generated.resources.settings_plugins_ability_audio
@@ -120,6 +135,7 @@ fun PluginScreen(
     var urlInput by remember { mutableStateOf("") }
     var urlError by remember { mutableStateOf<String?>(null) }
     var isLoadingUrl by remember { mutableStateOf(false) }
+    var showInstallSheet by remember { mutableStateOf(false) }
 
     val pleaseEnterUrl = stringResource(Res.string.plugin_error_enter_url)
     val urlSchemeError = stringResource(Res.string.plugin_error_url_scheme)
@@ -175,6 +191,90 @@ fun PluginScreen(
         )
     }
 
+    if (showInstallSheet) {
+        AdaptiveDialogBottomSheet(
+            onDismiss = { showInstallSheet = false },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Icon(
+                        Iconsax.IconsaxImportArrow2Bulk,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        stringResource(Res.string.plugin_install_section_title),
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            },
+        ) {
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    TextField(
+                        value = urlInput,
+                        onValueChange = { urlInput = it; urlError = null },
+                        modifier = Modifier.weight(1f),
+                        placeholder = {
+                            Text(
+                                stringResource(Res.string.plugin_url_placeholder),
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                Iconsax.IconsaxLink,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp)
+                            )
+                        },
+                        isError = urlError != null,
+                        singleLine = true,
+                    )
+                    SecondaryIconButton(
+                        onClick = { submitUrl() },
+                        enabled = !isLoadingUrl,
+                    ) {
+                        if (isLoadingUrl) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp),
+                                strokeWidth = 2.dp,
+                                color = MaterialTheme.colorScheme.onPrimary
+                            )
+                        } else {
+                            Icon(
+                                Iconsax.IconsaxImportArrow2Bulk,
+                                contentDescription = stringResource(Res.string.plugin_action_download),
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+
+                OutlineButton(
+                    onClick = { launcher.launch() },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(
+                        Iconsax.IconsaxExportArrowBulk,
+                        contentDescription = stringResource(Res.string.plugin_action_install_from_file)
+                    )
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(Res.string.plugin_action_install_from_file))
+                }
+            }
+        }
+    }
+
     Scaffold(
         topBar = {
             ApplicationMainBar(title = { Text(stringResource(Res.string.plugin_screen_title)) })
@@ -205,16 +305,28 @@ fun PluginScreen(
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     )
                     {
-                        // ── Install section ───────────────────────────────────
+                        // ── Configure header ──────────────────────────────
                         item {
-                            InstallSection(
-                                urlInput = urlInput,
-                                onUrlChange = { urlInput = it; urlError = null },
-                                urlError = urlError,
-                                isLoadingUrl = isLoadingUrl,
-                                onSubmitUrl = { submitUrl() },
-                                onPickFile = { launcher.launch() }
-                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 4.dp, vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    stringResource(Res.string.plugin_configure_title),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.SemiBold
+                                )
+                                PrimaryButton(onClick = { showInstallSheet = true }) {
+                                    Icon(
+                                        Iconsax.IconsaxAdd,
+                                        contentDescription = "Install a plugin",
+                                    )
+                                    Text(stringResource(Res.string.plugin_install_section_title))
+                                }
+                            }
                         }
 
                         // ── Default ability plugin selectors ─────────────────
