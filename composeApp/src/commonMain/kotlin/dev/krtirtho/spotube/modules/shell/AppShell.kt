@@ -39,6 +39,7 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
@@ -57,6 +58,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
@@ -116,8 +119,13 @@ fun AppShell(
 
         CompositionLocalProvider(LocalAppShellBottomInset provides bottomOverlayInset) {
             if (useSidebar) {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Box(modifier = Modifier.fillMaxSize().weight(1f)) {
+                val hazeState = rememberHazeState()
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .hazeSource(hazeState)
+                    ) {
                         Row(modifier = Modifier.fillMaxSize()) {
                             AppSidebar(
                                 navigator = navigator, navigationState = navigationState
@@ -174,13 +182,11 @@ fun AppShell(
                             )
                         }
                     }
-                    HorizontalDivider(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = Color.Gray.copy(alpha = 0.2f),
-                        thickness = 1.dp,
-                    )
                     AppLargePlayer(
-                        modifier = Modifier.fillMaxWidth(),
+                        hazeState = hazeState,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter),
                         onQueue = queueViewModel::toggleQueueVisibility,
                         onAlternativeSource = alternativeViewModel::toggleAlternativeVisibility,
                         onLyrics = { navigatorCommands.navigateTo(Routes.Lyrics) },

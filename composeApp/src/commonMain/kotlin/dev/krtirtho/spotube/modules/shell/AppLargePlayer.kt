@@ -18,18 +18,23 @@
 package dev.krtirtho.spotube.modules.shell
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -45,9 +50,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.blur.HazeColorEffect
+import dev.chrisbanes.haze.blur.blurEffect
+import dev.chrisbanes.haze.hazeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
@@ -100,6 +110,7 @@ import kotlin.time.Duration.Companion.milliseconds
 @Composable
 fun AppLargePlayer(
     modifier: Modifier = Modifier,
+    hazeState: HazeState,
     onQueue: () -> Unit = {},
     onAlternativeSource: () -> Unit = {},
     onMoreOptions: () -> Unit = {},
@@ -171,210 +182,231 @@ fun AppLargePlayer(
         }
     }
 
+    val surfaceTint = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)
+
     Surface(
-        modifier = modifier.fillMaxWidth(),
-        tonalElevation = 0.dp,
-        shadowElevation = 0.dp
+        modifier = modifier
+            .windowInsetsPadding(WindowInsets.navigationBars),
+        color = Color.Transparent,
+        shadowElevation = 0.dp,
     ) {
-        Row(
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            color = Color.Gray,
+            thickness = 1.dp,
+        )
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .hazeEffect(state = hazeState) {
+                    blurEffect {
+                        blurRadius = 20.dp
+                        colorEffects = listOf(
+                            HazeColorEffect.tint(surfaceTint)
+                        )
+                    }
+                }
         ) {
             Row(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Box(
-                    modifier = Modifier
-                        .size(52.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                ) {
-                    AsyncImage(
-                        model = coverModel,
-                        contentDescription = playerUiState.title,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                    )
-                }
-                Column(modifier = Modifier.padding(start = 12.dp)) {
-                    Text(
-                        text = playerUiState.title,
-                        style = MaterialTheme.typography.bodyLarge,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    Text(
-                        text = playerUiState.artists,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                PlayerHeartButton(
-                    audioPlayerQueue = audioPlayerQueue,
-                    savedTracksViewModel = savedTracksViewModel,
-                )
-            }
-
-            Column(
-                modifier = Modifier.weight(1.1f),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Slider(
-                    value = seekProgress,
-                    onValueChange = {
-                        seekProgress = it
-                        isSeeking = true
-                    },
-                    onValueChangeFinished = {
-                        isSeeking = false
-                        onSeekFinished()
-                    },
-                    enabled = playerUiState.seekDuration.inWholeMilliseconds > 0L,
-                    modifier = Modifier.fillMaxWidth(),
-                )
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.weight(1f),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = formatPlayerTime(playerUiState.position),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    Text(
-                        text = formatPlayerTime(playerUiState.displayDuration),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    VariableIconButton(
-                        onClick = ::onShuffleToggle,
-                        variant = if (playerUiState.isShuffling) VariableIconButtonVariant.Outline else VariableIconButtonVariant.Ghost
-                    ) {
-                        Icon(
-                            Iconsax.IconsaxShuffle,
-                            contentDescription = if (playerUiState.isShuffling) "Disable shuffle" else "Enable shuffle",
-                            tint = if (playerUiState.isShuffling) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            }
-                        )
-                    }
-                    GhostIconButton(onClick = ::onSkipPrevious) {
-                        Icon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
-                    }
-                    IconButton(
-                        onClick = ::onPlayPause,
-                        theme = invertedButtonStyle().copyShape(CircleShape),
+                    Box(
                         modifier = Modifier
-                            .size(50.dp),
+                            .size(52.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
                     ) {
-                        Icon(
-                            if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                            contentDescription = if (playerUiState.isPlaying) "Pause" else "Play or pause",
+                        AsyncImage(
+                            model = coverModel,
+                            contentDescription = playerUiState.title,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop,
                         )
                     }
-                    GhostIconButton(onClick = ::onSkipNext) {
-                        Icon(Iconsax.IconsaxNext, contentDescription = "Next")
-                    }
-                    VariableIconButton(
-                        onClick = ::onLoopToggle,
-                        variant = if (playerUiState.loopState == LoopState.NONE) VariableIconButtonVariant.Ghost else VariableIconButtonVariant.Outline
-                    ) {
-                        Icon(
-                            imageVector = when (playerUiState.loopState) {
-                                LoopState.NONE -> Iconsax.IconsaxRepeateMusic
-                                LoopState.ONE -> Iconsax.IconsaxRepeateOne
-                                LoopState.ALL -> Iconsax.IconsaxRepeatMusic
-                            },
-                            contentDescription = "Loop mode ${playerUiState.loopState.name}",
-                            tint = if (playerUiState.loopState == LoopState.NONE) {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            } else {
-                                MaterialTheme.colorScheme.primary
-                            }
+                    Column(modifier = Modifier.padding(start = 12.dp)) {
+                        Text(
+                            text = playerUiState.title,
+                            style = MaterialTheme.typography.bodyLarge,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = playerUiState.artists,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
                     }
+                    Spacer(modifier = Modifier.width(10.dp))
+                    PlayerHeartButton(
+                        audioPlayerQueue = audioPlayerQueue,
+                        savedTracksViewModel = savedTracksViewModel,
+                    )
                 }
-            }
 
-            Column(
-                modifier = Modifier.weight(1f),
-                horizontalAlignment = Alignment.End
-            ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    GhostIconButton(onClick = onQueue) {
-                        Icon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
-                    }
-                    GhostIconButton(onClick = {
-                        val track = (currentEntry as? QueueEntry.StreamingTrack)?.track
-                        if (track != null) {
-                            downloadsViewModel.downloadTrack(track)
-                        }
-                    }) {
-                        DownloadProgressIcon(
-                            track = (currentEntry as? QueueEntry.StreamingTrack)?.track,
-                            icon = Iconsax.IconsaxDirectboxReceive,
-                            contentDescription = "Download",
+                Column(
+                    modifier = Modifier.weight(1.1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Slider(
+                        value = seekProgress,
+                        onValueChange = {
+                            seekProgress = it
+                            isSeeking = true
+                        },
+                        onValueChangeFinished = {
+                            isSeeking = false
+                            onSeekFinished()
+                        },
+                        enabled = playerUiState.seekDuration.inWholeMilliseconds > 0L,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = formatPlayerTime(playerUiState.position),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Text(
+                            text = formatPlayerTime(playerUiState.displayDuration),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
-                    GhostIconButton(onClick = onAlternativeSource) {
-                        Icon(Iconsax.SwapHorizontal2, contentDescription = "Alternative source")
-                    }
-                    GhostIconButton(onClick = onLyrics) {
-                        Icon(Iconsax.IconsaxMusic, contentDescription = "Lyrics")
-                    }
-                    GhostIconButton(onClick = onMoreOptions) {
-                        Icon(Iconsax.Iconsax3DotsMore, contentDescription = "More options")
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        VariableIconButton(
+                            onClick = ::onShuffleToggle,
+                            variant = if (playerUiState.isShuffling) VariableIconButtonVariant.Outline else VariableIconButtonVariant.Ghost
+                        ) {
+                            Icon(
+                                Iconsax.IconsaxShuffle,
+                                contentDescription = if (playerUiState.isShuffling) "Disable shuffle" else "Enable shuffle",
+                                tint = if (playerUiState.isShuffling) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                }
+                            )
+                        }
+                        GhostIconButton(onClick = ::onSkipPrevious) {
+                            Icon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
+                        }
+                        IconButton(
+                            onClick = ::onPlayPause,
+                            theme = invertedButtonStyle().copyShape(CircleShape),
+                            modifier = Modifier
+                                .size(50.dp),
+                        ) {
+                            Icon(
+                                if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
+                                contentDescription = if (playerUiState.isPlaying) "Pause" else "Play or pause",
+                            )
+                        }
+                        GhostIconButton(onClick = ::onSkipNext) {
+                            Icon(Iconsax.IconsaxNext, contentDescription = "Next")
+                        }
+                        VariableIconButton(
+                            onClick = ::onLoopToggle,
+                            variant = if (playerUiState.loopState == LoopState.NONE) VariableIconButtonVariant.Ghost else VariableIconButtonVariant.Outline
+                        ) {
+                            Icon(
+                                imageVector = when (playerUiState.loopState) {
+                                    LoopState.NONE -> Iconsax.IconsaxRepeateMusic
+                                    LoopState.ONE -> Iconsax.IconsaxRepeateOne
+                                    LoopState.ALL -> Iconsax.IconsaxRepeatMusic
+                                },
+                                contentDescription = "Loop mode ${playerUiState.loopState.name}",
+                                tint = if (playerUiState.loopState == LoopState.NONE) {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                } else {
+                                    MaterialTheme.colorScheme.primary
+                                }
+                            )
+                        }
                     }
                 }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    GhostIconButton(
-                        onClick = {
-                            scope.launch {
-                                if (playerUiState.volume <= 0f) {
-                                    audioPlayer.setVolume(lastNonZeroVolume)
-                                } else {
-                                    lastNonZeroVolume = playerUiState.volume
-                                    audioPlayer.setVolume(0f)
+
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.End
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        GhostIconButton(onClick = onQueue) {
+                            Icon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
+                        }
+                        GhostIconButton(onClick = {
+                            val track = (currentEntry as? QueueEntry.StreamingTrack)?.track
+                            if (track != null) {
+                                downloadsViewModel.downloadTrack(track)
+                            }
+                        }) {
+                            DownloadProgressIcon(
+                                track = (currentEntry as? QueueEntry.StreamingTrack)?.track,
+                                icon = Iconsax.IconsaxDirectboxReceive,
+                                contentDescription = "Download",
+                            )
+                        }
+                        GhostIconButton(onClick = onAlternativeSource) {
+                            Icon(Iconsax.SwapHorizontal2, contentDescription = "Alternative source")
+                        }
+                        GhostIconButton(onClick = onLyrics) {
+                            Icon(Iconsax.IconsaxMusic, contentDescription = "Lyrics")
+                        }
+                        GhostIconButton(onClick = onMoreOptions) {
+                            Icon(Iconsax.Iconsax3DotsMore, contentDescription = "More options")
+                        }
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        GhostIconButton(
+                            onClick = {
+                                scope.launch {
+                                    if (playerUiState.volume <= 0f) {
+                                        audioPlayer.setVolume(lastNonZeroVolume)
+                                    } else {
+                                        lastNonZeroVolume = playerUiState.volume
+                                        audioPlayer.setVolume(0f)
+                                    }
                                 }
                             }
+                        ) {
+                            val volumeIcon = when {
+                                playerUiState.volume <= 0f -> Iconsax.IconsaxVolumeCross
+                                playerUiState.volume < 0.5f -> Iconsax.IconsaxVolumeLow
+                                else -> Iconsax.IconsaxVolumeHigh
+                            }
+                            Icon(
+                                imageVector = volumeIcon,
+                                contentDescription = if (playerUiState.volume <= 0f) "Unmute" else "Mute"
+                            )
                         }
-                    ) {
-                        val volumeIcon = when {
-                            playerUiState.volume <= 0f -> Iconsax.IconsaxVolumeCross
-                            playerUiState.volume < 0.5f -> Iconsax.IconsaxVolumeLow
-                            else -> Iconsax.IconsaxVolumeHigh
-                        }
-                        Icon(
-                            imageVector = volumeIcon,
-                            contentDescription = if (playerUiState.volume <= 0f) "Unmute" else "Mute"
+                        Slider(
+                            value = playerUiState.volume,
+                            onValueChange = {
+                                lastNonZeroVolume = it
+                                scope.launch {
+                                    audioPlayer.setVolume(it)
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(0.62f)
                         )
                     }
-                    Slider(
-                        value = playerUiState.volume,
-                        onValueChange = {
-                            lastNonZeroVolume = it
-                            scope.launch {
-                                audioPlayer.setVolume(it)
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth(0.62f)
-                    )
                 }
             }
         }
