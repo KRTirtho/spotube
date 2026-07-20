@@ -309,6 +309,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
             val wasPlaying = _playerState.value == PlayerState.PLAYING
             val wasPaused = _playerState.value == PlayerState.PAUSED
             val currentItem = _currentMediaItem.value
+            val currentTimeMs = mediaPlayer.status().time().coerceAtLeast(0)
 
             val rebuilt = if (enabled) {
                 if (currentItem != null) {
@@ -331,7 +332,6 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
 
             val nextIndex = when {
                 currentItem == null -> if (currentPlaylist.isEmpty()) -1 else 0
-                enabled -> 0
                 else -> currentPlaylist.indexOfFirst { it.url == currentItem.url }
                     .takeIf { it >= 0 } ?: 0
             }
@@ -341,6 +341,9 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
 
             if (nextIndex >= 0 && (wasPlaying || wasPaused)) {
                 mediaListPlayer.controls().play(nextIndex)
+                if (currentTimeMs > 0) {
+                    mediaPlayer.controls().setTime(currentTimeMs)
+                }
                 if (wasPaused) {
                     mediaListPlayer.controls().setPause(true)
                 }
