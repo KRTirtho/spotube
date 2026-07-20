@@ -48,7 +48,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
+actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface, KoinComponent {
     actual val context: Any = context
 
     private val logger by injectLogger<AudioPlayer>()
@@ -86,18 +86,18 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
     private val _completion = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     private val _error = MutableSharedFlow<Throwable>(extraBufferCapacity = 1)
 
-    actual val playerStateFlow: StateFlow<PlayerState> = _playerState.asStateFlow()
-    actual val currentMediaItemFlow: StateFlow<MediaItem?> = _currentMediaItem.asStateFlow()
-    actual val playlistFlow: StateFlow<List<MediaItem>> = _playlist.asStateFlow()
-    actual val durationFlow: StateFlow<Duration> = _duration.asStateFlow()
-    actual val positionFlow: StateFlow<Duration> = _position.asStateFlow()
-    actual val bufferingPositionFlow: StateFlow<Duration> = _bufferingPosition.asStateFlow()
-    actual val loopStateFlow: StateFlow<LoopState> = _loopState.asStateFlow()
-    actual val shuffleModeFlow: StateFlow<Boolean> = _shuffleMode.asStateFlow()
-    actual val playbackSpeedFlow: StateFlow<Float> = _playbackSpeed.asStateFlow()
-    actual val volumeFlow: StateFlow<Float> = _volume.asStateFlow()
-    actual val completionFlow: Flow<Unit> = _completion.asSharedFlow()
-    actual val errorFlow: Flow<Throwable> = _error.asSharedFlow()
+    actual override val playerStateFlow: StateFlow<PlayerState> = _playerState.asStateFlow()
+    actual override val currentMediaItemFlow: StateFlow<MediaItem?> = _currentMediaItem.asStateFlow()
+    actual override val playlistFlow: StateFlow<List<MediaItem>> = _playlist.asStateFlow()
+    actual override val durationFlow: StateFlow<Duration> = _duration.asStateFlow()
+    actual override val positionFlow: StateFlow<Duration> = _position.asStateFlow()
+    actual override val bufferingPositionFlow: StateFlow<Duration> = _bufferingPosition.asStateFlow()
+    actual override val loopStateFlow: StateFlow<LoopState> = _loopState.asStateFlow()
+    actual override val shuffleModeFlow: StateFlow<Boolean> = _shuffleMode.asStateFlow()
+    actual override val playbackSpeedFlow: StateFlow<Float> = _playbackSpeed.asStateFlow()
+    actual override val volumeFlow: StateFlow<Float> = _volume.asStateFlow()
+    actual override val completionFlow: Flow<Unit> = _completion.asSharedFlow()
+    actual override val errorFlow: Flow<Throwable> = _error.asSharedFlow()
 
     init {
         VLCBundleLoaderGenerated.getVerifiedPath()
@@ -241,7 +241,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         startPositionPolling()
     }
 
-    actual suspend fun play() {
+    actual override suspend fun play() {
         lock.withLock {
             if (disposed || currentPlaylist.isEmpty()) return
             if (currentIndex !in currentPlaylist.indices) {
@@ -255,14 +255,14 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun pause() {
+    actual override suspend fun pause() {
         lock.withLock {
             if (disposed) return
             mediaListPlayer.controls().pause()
         }
     }
 
-    actual suspend fun stop() {
+    actual override suspend fun stop() {
         lock.withLock {
             if (disposed) return
             mediaListPlayer.controls().stop()
@@ -271,7 +271,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun seekTo(position: Duration) {
+    actual override suspend fun seekTo(position: Duration) {
         lock.withLock {
             if (disposed) return
             val maxMs = _duration.value.inWholeMilliseconds
@@ -289,7 +289,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun loop(state: LoopState) {
+    actual override suspend fun loop(state: LoopState) {
         lock.withLock {
             if (disposed) return
             val vlcMode = when (state) {
@@ -302,7 +302,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun shuffle(enabled: Boolean) {
+    actual override suspend fun shuffle(enabled: Boolean) {
         lock.withLock {
             if (disposed || currentPlaylist.isEmpty() || shuffleEnabled == enabled) return
 
@@ -338,7 +338,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun load(playlist: List<MediaItem>, autoPlay: Boolean, startPosition: Int) {
+    actual override suspend fun load(playlist: List<MediaItem>, autoPlay: Boolean, startPosition: Int) {
         lock.withLock {
             if (disposed) return
 
@@ -375,7 +375,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun addMediaItem(mediaItem: MediaItem) {
+    actual override suspend fun addMediaItem(mediaItem: MediaItem) {
         lock.withLock {
             if (disposed) return
             originalPlaylist.add(mediaItem)
@@ -389,7 +389,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun insertMediaItemAtNextIndex(mediaItem: MediaItem) {
+    actual override suspend fun insertMediaItemAtNextIndex(mediaItem: MediaItem) {
         lock.withLock {
             if (disposed) return
             val insertIndex = if (currentIndex >= 0) currentIndex + 1 else 0
@@ -407,7 +407,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun removeMediaItem(mediaItem: MediaItem) {
+    actual override suspend fun removeMediaItem(mediaItem: MediaItem) {
         lock.withLock {
             if (disposed || currentPlaylist.isEmpty()) return
 
@@ -437,7 +437,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun moveMediaItem(fromIndex: Int, toIndex: Int) {
+    actual override suspend fun moveMediaItem(fromIndex: Int, toIndex: Int) {
         lock.withLock {
             if (disposed) return
             if (fromIndex !in currentPlaylist.indices || toIndex !in currentPlaylist.indices || fromIndex == toIndex) return
@@ -461,7 +461,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun skipToNext() {
+    actual override suspend fun skipToNext() {
         lock.withLock {
             if (disposed || currentPlaylist.isEmpty()) return
             val nextIndex = (currentIndex + 1).coerceAtMost(currentPlaylist.lastIndex)
@@ -471,7 +471,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun skipToPrevious() {
+    actual override suspend fun skipToPrevious() {
         lock.withLock {
             if (disposed || currentPlaylist.isEmpty()) return
             val prevIndex = (currentIndex - 1).coerceAtLeast(0)
@@ -481,7 +481,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun jumpTo(index: Int) {
+    actual override suspend fun jumpTo(index: Int) {
         lock.withLock {
             if (disposed || index !in currentPlaylist.indices) return
             currentIndex = index
@@ -490,7 +490,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun setVolume(volume: Float) {
+    actual override suspend fun setVolume(volume: Float) {
         lock.withLock {
             if (disposed) return
             val clamped = volume.coerceIn(0f, 1f)
@@ -499,7 +499,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual suspend fun setPlaybackSpeed(speed: Float) {
+    actual override suspend fun setPlaybackSpeed(speed: Float) {
         lock.withLock {
             if (disposed) return
             val clamped = speed.coerceIn(0.25f, 4f)
@@ -512,9 +512,9 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         }
     }
 
-    actual fun isDisposed(): Boolean = disposed
+    actual override fun isDisposed(): Boolean = disposed
 
-    actual fun dispose() {
+    actual override fun dispose() {
         lock.withLock {
             if (disposed) return
             disposed = true
@@ -544,10 +544,13 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
     }
 
     private fun rebuildVlcMediaListLocked() {
-        mediaList.media().clear()
+        val oldList = mediaList
+        mediaList = mediaPlayerFactory.media().newMediaList()
         currentPlaylist.forEach { mediaItem ->
             mediaList.media().add(mediaItem.toMrl())
         }
+        mediaListPlayer.list().setMediaList(mediaList.newMediaListRef())
+        oldList.release()
     }
 
     private fun startPositionPolling() {
@@ -569,8 +572,9 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
                     delay(250.milliseconds)
                 }
             } catch (e: Throwable) {
-                logger.e(e) { "Error in position polling loop" }
-                _error.tryEmit(e)
+                if (!disposed) {
+                    logger.e(e) { "Error in position polling loop" }
+                }
             }
         }
     }

@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.core.di
 
 import android.content.Context
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.paths.Paths
 import dev.krtirtho.spotube.core.share.AndroidShareService
 import dev.krtirtho.spotube.core.share.ShareService
@@ -29,7 +30,7 @@ import org.koin.dsl.module
 
 actual val platformModules = module {
     single { Paths(get()) }
-    single { AudioPlayer(get<Context>()) }
+    single<AudioPlayerInterface> { AudioPlayer(get<Context>()) }
     single<LocalMediaDiscoveryService> { AndroidLocalMediaDiscoveryService(get()) }
     single<ShareService> { AndroidShareService(get()) }
     single {

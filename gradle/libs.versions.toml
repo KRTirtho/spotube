@@ -74,6 +74,7 @@ reorderable = "3.1.0"
 vlcjBundler = "0.1.0"
 uniffi = "0.3.7"
 kotlinx-atomicfu = "0.33.0"
+mokkery = "3.3.0"
 
 [libraries]
 appdirs = { module = "net.harawata:appdirs", version.ref = "appdirs" }
@@ -180,3 +181,4 @@ vlcjBundler = { id = "dev.krtirtho.vlcj-bundler.gradle-plugin", version.ref = "v
 kotlinxAtomicFu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
 uniffi = { id = "dev.gobley.uniffi", version.ref = "uniffi" }
 cargo = { id = "dev.gobley.cargo", version.ref = "uniffi" }
+mokkery = { id = "dev.mokkery", version.ref = "mokkery" }

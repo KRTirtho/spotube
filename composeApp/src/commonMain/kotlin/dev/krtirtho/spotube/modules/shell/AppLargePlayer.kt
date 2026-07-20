@@ -61,6 +61,7 @@ import dev.chrisbanes.haze.hazeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
@@ -115,7 +116,7 @@ fun AppLargePlayer(
     onAlternativeSource: () -> Unit = {},
     onMoreOptions: () -> Unit = {},
     onLyrics: () -> Unit = {},
-    audioPlayer: AudioPlayer = koinInject(),
+    audioPlayer: AudioPlayerInterface = koinInject(),
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     downloadsViewModel: DownloadsViewModel = koinViewModel(),
     savedTracksViewModel: SavedTracksViewModel = koinViewModel<SavedTracksViewModel>(

@@ -21,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
@@ -72,7 +73,7 @@ internal data class PlayerUiState(
 
 @Composable
 internal fun rememberPlayerUiState(
-    audioPlayer: AudioPlayer,
+    audioPlayer: AudioPlayerInterface,
     audioPlayerQueue: AudioPlayerQueue,
 ): PlayerUiState {
     val queue by audioPlayerQueue.queueFlow.collectAsState(initial = emptyList())

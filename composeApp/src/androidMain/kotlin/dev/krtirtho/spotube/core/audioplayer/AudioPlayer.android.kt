@@ -44,7 +44,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-actual class AudioPlayer actual constructor(context: Any) {
+actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface {
 
     actual val context: Any = context
 
@@ -90,18 +90,18 @@ actual class AudioPlayer actual constructor(context: Any) {
     private val _completion = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     private val _error = MutableSharedFlow<Throwable>(extraBufferCapacity = 1)
 
-    actual val playerStateFlow: StateFlow<PlayerState> = _playerState.asStateFlow()
-    actual val currentMediaItemFlow: StateFlow<MediaItem?> = _currentMediaItem.asStateFlow()
-    actual val playlistFlow: StateFlow<List<MediaItem>> = _playlist.asStateFlow()
-    actual val durationFlow: StateFlow<Duration> = _duration.asStateFlow()
-    actual val positionFlow: StateFlow<Duration> = _position.asStateFlow()
-    actual val bufferingPositionFlow: StateFlow<Duration> = _bufferingPosition.asStateFlow()
-    actual val loopStateFlow: StateFlow<LoopState> = _loopState.asStateFlow()
-    actual val shuffleModeFlow: StateFlow<Boolean> = _shuffleMode.asStateFlow()
-    actual val playbackSpeedFlow: StateFlow<Float> = _playbackSpeed.asStateFlow()
-    actual val volumeFlow: StateFlow<Float> = _volume.asStateFlow()
-    actual val completionFlow: Flow<Unit> = _completion.asSharedFlow()
-    actual val errorFlow: Flow<Throwable> = _error.asSharedFlow()
+    actual override val playerStateFlow: StateFlow<PlayerState> = _playerState.asStateFlow()
+    actual override val currentMediaItemFlow: StateFlow<MediaItem?> = _currentMediaItem.asStateFlow()
+    actual override val playlistFlow: StateFlow<List<MediaItem>> = _playlist.asStateFlow()
+    actual override val durationFlow: StateFlow<Duration> = _duration.asStateFlow()
+    actual override val positionFlow: StateFlow<Duration> = _position.asStateFlow()
+    actual override val bufferingPositionFlow: StateFlow<Duration> = _bufferingPosition.asStateFlow()
+    actual override val loopStateFlow: StateFlow<LoopState> = _loopState.asStateFlow()
+    actual override val shuffleModeFlow: StateFlow<Boolean> = _shuffleMode.asStateFlow()
+    actual override val playbackSpeedFlow: StateFlow<Float> = _playbackSpeed.asStateFlow()
+    actual override val volumeFlow: StateFlow<Float> = _volume.asStateFlow()
+    actual override val completionFlow: Flow<Unit> = _completion.asSharedFlow()
+    actual override val errorFlow: Flow<Throwable> = _error.asSharedFlow()
 
     private var lastPlaybackState = Player.STATE_IDLE
 
@@ -204,27 +204,27 @@ actual class AudioPlayer actual constructor(context: Any) {
             .build()
     }
 
-    actual suspend fun play() {
+    actual override suspend fun play() {
         withContext(Dispatchers.Main) {
             ensureServiceStarted()
             exoPlayer.play()
         }
     }
 
-    actual suspend fun pause() {
+    actual override suspend fun pause() {
         withContext(Dispatchers.Main) {
             exoPlayer.pause()
         }
     }
 
-    actual suspend fun stop() {
+    actual override suspend fun stop() {
         withContext(Dispatchers.Main) {
             exoPlayer.stop()
             _playerState.tryEmit(PlayerState.IDLE)
         }
     }
 
-    actual suspend fun seekTo(position: Duration) {
+    actual override suspend fun seekTo(position: Duration) {
         withContext(Dispatchers.Main) {
             val targetMs = position.inWholeMilliseconds.coerceIn(0, exoPlayer.duration)
             exoPlayer.seekTo(targetMs)
@@ -232,7 +232,7 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual suspend fun loop(state: LoopState) {
+    actual override suspend fun loop(state: LoopState) {
         withContext(Dispatchers.Main) {
             val repeatMode = when (state) {
                 LoopState.NONE -> Player.REPEAT_MODE_OFF
@@ -244,14 +244,14 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual suspend fun shuffle(enabled: Boolean) {
+    actual override suspend fun shuffle(enabled: Boolean) {
         withContext(Dispatchers.Main) {
             exoPlayer.shuffleModeEnabled = enabled
             _shuffleMode.tryEmit(enabled)
         }
     }
 
-    actual suspend fun load(
+    actual override suspend fun load(
         playlist: List<MediaItem>,
         autoPlay: Boolean,
         startPosition: Int
@@ -288,7 +288,7 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual suspend fun addMediaItem(mediaItem: MediaItem) {
+    actual override suspend fun addMediaItem(mediaItem: MediaItem) {
         withContext(Dispatchers.Main) {
             currentPlaylist.add(mediaItem)
             urlIndexMap[mediaItem.url] = currentPlaylist.lastIndex
@@ -297,7 +297,7 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual suspend fun insertMediaItemAtNextIndex(mediaItem: MediaItem) {
+    actual override suspend fun insertMediaItemAtNextIndex(mediaItem: MediaItem) {
         withContext(Dispatchers.Main) {
             val currentIndex = exoPlayer.currentMediaItemIndex
             val insertIndex = (currentIndex + 1).coerceAtMost(currentPlaylist.size)
@@ -313,7 +313,7 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual suspend fun removeMediaItem(mediaItem: MediaItem) {
+    actual override suspend fun removeMediaItem(mediaItem: MediaItem) {
         withContext(Dispatchers.Main) {
             val index = urlIndexMap[mediaItem.url] ?: return@withContext
             currentPlaylist.removeAt(index)
@@ -326,7 +326,7 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual suspend fun moveMediaItem(fromIndex: Int, toIndex: Int) {
+    actual override suspend fun moveMediaItem(fromIndex: Int, toIndex: Int) {
         withContext(Dispatchers.Main) {
             if (fromIndex !in currentPlaylist.indices || toIndex !in currentPlaylist.indices || fromIndex == toIndex) return@withContext
 
@@ -342,19 +342,19 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual suspend fun skipToNext() {
+    actual override suspend fun skipToNext() {
         withContext(Dispatchers.Main) {
             exoPlayer.seekToNextMediaItem()
         }
     }
 
-    actual suspend fun skipToPrevious() {
+    actual override suspend fun skipToPrevious() {
         withContext(Dispatchers.Main) {
             exoPlayer.seekToPreviousMediaItem()
         }
     }
 
-    actual suspend fun jumpTo(index: Int) {
+    actual override suspend fun jumpTo(index: Int) {
         withContext(Dispatchers.Main) {
             if (index in currentPlaylist.indices) {
                 exoPlayer.seekToDefaultPosition(index)
@@ -362,7 +362,7 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual suspend fun setVolume(volume: Float) {
+    actual override suspend fun setVolume(volume: Float) {
         withContext(Dispatchers.Main) {
             val clamped = volume.coerceIn(0f, 1f)
             exoPlayer.setVolume(clamped)
@@ -370,7 +370,7 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual suspend fun setPlaybackSpeed(speed: Float) {
+    actual override suspend fun setPlaybackSpeed(speed: Float) {
         withContext(Dispatchers.Main) {
             val clamped = speed.coerceIn(0.25f, 4f)
             exoPlayer.setPlaybackSpeed(clamped)
@@ -378,9 +378,9 @@ actual class AudioPlayer actual constructor(context: Any) {
         }
     }
 
-    actual fun isDisposed(): Boolean = disposed
+    actual override fun isDisposed(): Boolean = disposed
 
-    actual fun dispose() {
+    actual override fun dispose() {
         disposed = true
         exoPlayer.release()
         currentPlaylist.clear()

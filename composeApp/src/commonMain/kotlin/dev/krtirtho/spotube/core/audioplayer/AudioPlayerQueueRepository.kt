@@ -24,12 +24,18 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.serialization.json.Json
 
-class AudioPlayerQueueRepository(private val database: Database) {
+interface QueueStateRepository {
+    suspend fun getPersistedState(): PersistedQueueState?
+    suspend fun saveState(state: PersistedQueueState)
+    suspend fun clearState()
+}
+
+class AudioPlayerQueueRepository(private val database: Database) : QueueStateRepository {
     private val json = Json {
         ignoreUnknownKeys = true
     }
 
-    suspend fun getPersistedState(): PersistedQueueState? {
+    override suspend fun getPersistedState(): PersistedQueueState? {
         return database.audioPlayerQueueDataStore.data.map { preferences ->
             val payload = preferences[DatabaseKeys.AUDIO_PLAYER_QUEUE_STATE_KEY]
             payload?.let {
@@ -39,13 +45,13 @@ class AudioPlayerQueueRepository(private val database: Database) {
         }.first()
     }
 
-    suspend fun saveState(state: PersistedQueueState) {
+    override suspend fun saveState(state: PersistedQueueState) {
         database.audioPlayerQueueDataStore.edit { preferences ->
             preferences[DatabaseKeys.AUDIO_PLAYER_QUEUE_STATE_KEY] = json.encodeToString(state)
         }
     }
 
-    suspend fun clearState() {
+    override suspend fun clearState() {
         database.audioPlayerQueueDataStore.edit { preferences ->
             preferences.remove(DatabaseKeys.AUDIO_PLAYER_QUEUE_STATE_KEY)
         }

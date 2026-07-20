@@ -32,4 +32,5 @@ plugins {
     alias(libs.plugins.vlcjBundler) apply false
     alias(libs.plugins.uniffi) apply false
     alias(libs.plugins.cargo) apply false
+    alias(libs.plugins.mokkery) apply false
 }

@@ -62,15 +62,18 @@ import okio.SYSTEM
 import okio.buffer
 import okio.use
 import org.koin.core.component.KoinComponent
-import kotlin.collections.set
-import kotlin.getValue
 
 const val PLUGIN_API_VERSION = "0.0.1"
+
+interface PluginProvider {
+    val selectedMetadataPlugin: StateFlow<PluginService?>
+}
+
 
 class PluginManager(
     val database: Database,
     val paths: Paths,
-) : KoinComponent {
+) : KoinComponent, PluginProvider {
     private val logger by injectLogger<PluginManager>()
     private val pluginExceptionHandler = CoroutineExceptionHandler { _, exception ->
         logger.e(exception) { "Plugin runtime threw an unhandled exception. Intercepted safely." }
@@ -239,7 +242,7 @@ class PluginManager(
     val lyricsPlugins = filterPluginByType(PluginAbility.LYRICS)
     val scrobblePlugins = filterPluginByType(PluginAbility.SCROBBLE)
 
-    val selectedMetadataPlugin =
+    override val selectedMetadataPlugin =
         filterSelectedPluginByType(PluginAbility.METADATA)
     val selectedAudioPlugin =
         filterSelectedPluginByType(PluginAbility.AUDIO)

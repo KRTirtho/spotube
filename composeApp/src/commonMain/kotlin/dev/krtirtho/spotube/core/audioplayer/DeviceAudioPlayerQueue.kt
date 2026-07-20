@@ -19,8 +19,8 @@ package dev.krtirtho.spotube.core.audioplayer
 
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import dev.krtirtho.spotube.core.di.injectLogger
-import dev.krtirtho.spotube.modules.plugin.PluginManager
-import dev.krtirtho.spotube.modules.settings.SettingsViewModel
+import dev.krtirtho.spotube.modules.plugin.PluginProvider
+import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -30,7 +30,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
@@ -41,10 +40,10 @@ import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
 class DeviceAudioPlayerQueue(
-    private val audioPlayer: AudioPlayer,
-    private val settingsViewModel: SettingsViewModel,
-    private val repository: AudioPlayerQueueRepository,
-    private val pluginManager: PluginManager,
+    private val audioPlayer: AudioPlayerInterface,
+    private val settingsProvider: SettingsProvider,
+    private val repository: QueueStateRepository,
+    private val pluginProvider: PluginProvider,
 ) : AudioPlayerQueue, KoinComponent {
 
     private val logger by injectLogger<DeviceAudioPlayerQueue>()
@@ -310,7 +309,7 @@ class DeviceAudioPlayerQueue(
     private suspend fun handleQueueCompletion() {
         if (isFetchingRecommendations) return
 
-        val settings = settingsViewModel.settingsState.value ?: return
+        val settings = settingsProvider.settingsState.value ?: return
         if (!settings.enableEndlessPlayback) return
 
         val queue = queueFlow.value
@@ -330,7 +329,7 @@ class DeviceAudioPlayerQueue(
         isFetchingRecommendations = true
         logger.i { "Endless playback: fetching recommendations with ${seedTrackIds.size} seed tracks" }
 
-        val metadataService = pluginManager.selectedMetadataPlugin.value ?: run {
+        val metadataService = pluginProvider.selectedMetadataPlugin.value ?: run {
             logger.w { "Endless playback: no metadata plugin available" }
             isFetchingRecommendations = false
             return
@@ -482,7 +481,7 @@ class DeviceAudioPlayerQueue(
 
     private suspend fun buildStreamingUrl(trackId: String, protocol: StreamProtocol): String {
         val port: Int =
-            settingsViewModel.settingsState.mapNotNull { it?.playbackProxyServerPort }.first()
+            settingsProvider.settingsState.mapNotNull { it?.playbackProxyServerPort }.first()
         val baseUrl = "http://127.0.0.1:$port"
         return when (protocol) {
             StreamProtocol.HLS, StreamProtocol.DASH -> "${baseUrl.trimEnd('/')}/manifest/$trackId"

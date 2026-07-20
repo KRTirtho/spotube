@@ -18,6 +18,7 @@
 package dev.krtirtho.spotube.core.di
 
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.paths.Paths
 import dev.krtirtho.spotube.core.share.IosShareService
 import dev.krtirtho.spotube.core.share.ShareService
@@ -30,7 +31,7 @@ import org.koin.dsl.module
 actual val platformModules = module {
     singleOf(::Paths)
     singleOf(::WebViewController)
-    single { AudioPlayer(Unit) }
+    single<AudioPlayerInterface> { AudioPlayer(Unit) }
     single<LocalMediaDiscoveryService> { IosLocalMediaDiscoveryService() }
     single<ShareService> { IosShareService() }
 }

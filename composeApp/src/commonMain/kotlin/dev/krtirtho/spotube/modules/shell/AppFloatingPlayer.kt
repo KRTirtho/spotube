@@ -68,6 +68,7 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.ui.base.BaseUITheme
 import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
@@ -86,7 +87,7 @@ fun AppFloatingPlayer(
     modifier: Modifier = Modifier,
     sharedTransitionScope: SharedTransitionScope? = null,
     animatedVisibilityScope: AnimatedVisibilityScope? = null,
-    audioPlayer: AudioPlayer = koinInject(),
+    audioPlayer: AudioPlayerInterface = koinInject(),
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     savedTracksViewModel: SavedTracksViewModel = koinViewModel<SavedTracksViewModel>(
         key = SAVED_TRACKS_COLLECTION_ID,

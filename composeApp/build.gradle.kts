@@ -34,6 +34,7 @@ plugins {
     alias(libs.plugins.vlcjBundler)
     alias(libs.plugins.uniffi)
     alias(libs.plugins.cargo)
+    alias(libs.plugins.mokkery)
     kotlin("plugin.atomicfu") version libs.versions.kotlin
 }
 

@@ -21,45 +21,49 @@ import co.touchlab.kermit.Logger
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueueRepository
 import dev.krtirtho.spotube.core.audioplayer.DeviceAudioPlayerQueue
+import dev.krtirtho.spotube.core.audioplayer.QueueStateRepository
 import dev.krtirtho.spotube.core.db.Database
-import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.core.navigation.navigationModule
+import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
+import dev.krtirtho.spotube.core.server.AlternativeTracksRepository
 import dev.krtirtho.spotube.core.server.LocalServer
 import dev.krtirtho.spotube.core.server.MatchedTracksRepository
 import dev.krtirtho.spotube.core.server.StreamingUrlRepository
-import dev.krtirtho.spotube.core.server.AlternativeTracksRepository
 import dev.krtirtho.spotube.core.webview.WebViewController
-import dev.krtirtho.spotube.modules.artist.ArtistRepository
-import dev.krtirtho.spotube.modules.artist.ArtistViewModel
 import dev.krtirtho.spotube.modules.album.AlbumRepository
 import dev.krtirtho.spotube.modules.album.AlbumViewModel
-import dev.krtirtho.spotube.modules.home.HomeScreenRepository
-import dev.krtirtho.spotube.modules.home.HomeScreenViewModel
+import dev.krtirtho.spotube.modules.artist.ArtistRepository
+import dev.krtirtho.spotube.modules.artist.ArtistViewModel
 import dev.krtirtho.spotube.modules.downloads.DownloadManager
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
+import dev.krtirtho.spotube.modules.home.HomeScreenRepository
+import dev.krtirtho.spotube.modules.home.HomeScreenViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.LibraryState
-import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaCacheRepository
-import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaFoldersConfig
-import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaLibraryCoordinator
 import dev.krtirtho.spotube.modules.library.album.LibraryAlbumsViewModel
 import dev.krtirtho.spotube.modules.library.artist.LibraryArtistsViewModel
 import dev.krtirtho.spotube.modules.library.local_tracks.LibraryLocalTracksViewModel
+import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaCacheRepository
+import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaFoldersConfig
+import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaLibraryCoordinator
 import dev.krtirtho.spotube.modules.library.playlist.LibraryPlaylistsViewModel
 import dev.krtirtho.spotube.modules.lyrics.LyricsViewModel
 import dev.krtirtho.spotube.modules.playlist.PlaylistRepository
 import dev.krtirtho.spotube.modules.playlist.PlaylistViewModel
 import dev.krtirtho.spotube.modules.plugin.PluginManager
+import dev.krtirtho.spotube.modules.plugin.PluginProvider
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.modules.search.SearchRepository
 import dev.krtirtho.spotube.modules.search.SearchScreenViewModel
+import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.shell.AppShellViewModel
 import dev.krtirtho.spotube.modules.shell.alternative_track.AlternativeTrackContentViewModel
 import dev.krtirtho.spotube.modules.shell.player_queue.PlayerQueueContentViewModel
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.createdAtStart
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -100,11 +104,11 @@ val sharedModules = module {
     viewModelOf(::LibraryLocalTracksViewModel)
 
     // Plugin system
-    singleOf(::PluginManager)
+    singleOf(::PluginManager) { bind<PluginProvider>() }
 
     // Settings
     singleOf(::SettingsRepository)
-    viewModelOf(::SettingsViewModel)
+    viewModelOf(::SettingsViewModel) { bind<SettingsProvider>() }
 
     // Downloads
     singleOf(::DownloadManager)
@@ -163,7 +167,7 @@ val sharedModules = module {
     singleOf(::LocalServer) withOptions {
         createdAtStart()
     }
-    singleOf(::AudioPlayerQueueRepository)
+    singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {
         DeviceAudioPlayerQueue(get(), get(), get(), get())
     }

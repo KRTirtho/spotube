@@ -24,10 +24,15 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+interface SettingsProvider {
+    val settingsState: StateFlow<UserSettings?>
+}
+
+
 class SettingsViewModel(
     private val repository: SettingsRepository
-) : ViewModel() {
-    val settingsState: StateFlow<UserSettings?> = repository.userSettings.stateIn(
+) : ViewModel(), SettingsProvider {
+    override val settingsState: StateFlow<UserSettings?> = repository.userSettings.stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             null,

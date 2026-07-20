@@ -78,6 +78,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
@@ -149,7 +150,7 @@ fun AppExpandedPlayer(
     onDownloadTrack: () -> Unit = {},
     onGoToAlbum: () -> Unit = {},
     onSleepTimer: () -> Unit = {},
-    audioPlayer: AudioPlayer = koinInject(),
+    audioPlayer: AudioPlayerInterface = koinInject(),
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     savedTracksViewModel: SavedTracksViewModel = koinViewModel<SavedTracksViewModel>(
         key = SAVED_TRACKS_COLLECTION_ID,
@@ -593,7 +594,7 @@ private fun rememberSharedAlbumArtModifier(
 @Composable
 private fun LyricsPreviewCard(
     modifier: Modifier = Modifier,
-    audioPlayer: AudioPlayer,
+    audioPlayer: AudioPlayerInterface,
     onExpand: () -> Unit,
     viewModel: LyricsViewModel = koinViewModel()
 ) {
