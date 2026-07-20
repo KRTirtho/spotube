@@ -306,10 +306,7 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
         lock.withLock {
             if (disposed || currentPlaylist.isEmpty() || shuffleEnabled == enabled) return
 
-            val wasPlaying = _playerState.value == PlayerState.PLAYING
-            val wasPaused = _playerState.value == PlayerState.PAUSED
             val currentItem = _currentMediaItem.value
-            val currentTimeMs = mediaPlayer.status().time().coerceAtLeast(0)
 
             val rebuilt = if (enabled) {
                 if (currentItem != null) {
@@ -338,16 +335,6 @@ actual class AudioPlayer actual constructor(context: Any) : KoinComponent {
 
             currentIndex = nextIndex
             _currentMediaItem.tryEmit(currentPlaylist.getOrNull(nextIndex))
-
-            if (nextIndex >= 0 && (wasPlaying || wasPaused)) {
-                mediaListPlayer.controls().play(nextIndex)
-                if (currentTimeMs > 0) {
-                    mediaPlayer.controls().setTime(currentTimeMs)
-                }
-                if (wasPaused) {
-                    mediaListPlayer.controls().setPause(true)
-                }
-            }
         }
     }
 
