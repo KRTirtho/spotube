@@ -21,8 +21,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -50,10 +48,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.chrisbanes.haze.HazeState
+import dev.chrisbanes.haze.blur.HazeColorEffect
+import dev.chrisbanes.haze.blur.blurEffect
+import dev.chrisbanes.haze.hazeEffect
 import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
@@ -77,6 +78,7 @@ import spotube.composeapp.generated.resources.cookie_regular
 
 @Composable
 fun AppSidebar(
+    hazeState: HazeState,
     navigator: Navigator,
     navigationState: NavigationState,
     modifier: Modifier = Modifier,
@@ -85,11 +87,20 @@ fun AppSidebar(
     var expanded by rememberSaveable { mutableStateOf(true) }
     val width by animateDpAsState(targetValue = if (expanded) 236.dp else 86.dp)
     val currentLibraryTab by libraryState.currentTab.collectAsState()
+    val surfaceTint = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)
 
     Column(
         modifier = modifier
             .fillMaxHeight()
-            .width(width),
+            .width(width)
+            .hazeEffect(hazeState) {
+                blurEffect {
+                    blurRadius = 20.dp
+                    colorEffects = listOf(
+                        HazeColorEffect.tint(surfaceTint)
+                    )
+                }
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(

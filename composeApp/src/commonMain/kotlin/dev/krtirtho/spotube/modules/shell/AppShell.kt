@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.modules.shell
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
@@ -56,6 +58,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import dev.chrisbanes.haze.hazeSource
@@ -120,22 +123,31 @@ fun AppShell(
         CompositionLocalProvider(LocalAppShellBottomInset provides bottomOverlayInset) {
             if (useSidebar) {
                 val hazeState = rememberHazeState()
+                val bgHazeState = rememberHazeState()
+
                 Box(modifier = Modifier.fillMaxSize()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .hazeSource(hazeState)
                     ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.surface)
+                                .hazeSource(state = bgHazeState) // <-- Put it here!
+                        )
                         Row(modifier = Modifier.fillMaxSize()) {
                             AppSidebar(
-                                navigator = navigator, navigationState = navigationState
+                                hazeState = bgHazeState,
+                                navigator = navigator,
+                                navigationState = navigationState
                             )
                             VerticalDivider(
                                 modifier = Modifier.fillMaxHeight(),
                                 color = Color.Gray.copy(alpha = 0.2f),
                                 thickness = 1.dp,
                             )
-                            Box(modifier = Modifier.weight(1f)) {
+                            Box(modifier = Modifier.weight(1f).hazeSource(hazeState)) {
                                 content()
                             }
                         }
