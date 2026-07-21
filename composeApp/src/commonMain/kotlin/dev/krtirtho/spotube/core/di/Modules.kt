@@ -23,6 +23,7 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueueRepository
 import dev.krtirtho.spotube.core.audioplayer.DeviceAudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueStateRepository
 import dev.krtirtho.spotube.core.db.Database
+import dev.krtirtho.spotube.core.discord.DiscordRpcService
 import dev.krtirtho.spotube.core.navigation.navigationModule
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.core.server.AlternativeTracksRepository
@@ -171,6 +172,8 @@ val sharedModules = module {
     single<AudioPlayerQueue> {
         DeviceAudioPlayerQueue(get(), get(), get(), get())
     }
+
+    single { DiscordRpcService(get(), get()) } withOptions { createdAtStart() }
 
     factory { (tag: String?) ->
         if (tag != null) {

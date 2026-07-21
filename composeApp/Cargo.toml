@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 uniffi = "0.29.4"
 lofty = "0.24.0"
+discord-rich-presence = "1.1.0"
 
 [lib]
 crate-type = ["cdylib", "staticlib"]
