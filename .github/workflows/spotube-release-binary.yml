@@ -159,7 +159,6 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-        timeout-minutes: 15
 
   build-linux:
     name: Linux Desktop
@@ -195,16 +194,16 @@ jobs:
         run: chmod +x gradlew
 
       - name: Package Linux
-        run: ./gradlew :composeApp:packageReleaseDeb :composeApp:packageReleaseRpm :composeApp:packageReleaseAppImage
+        run: ./gradlew :composeApp:packageReleaseDeb :composeApp:packageReleaseRpm
 
       - name: Rename Linux artifacts
         run: |
           DEB_FILE=$(find composeApp/build -name "*.deb" -type f | head -1)
           RPM_FILE=$(find composeApp/build -name "*.rpm" -type f | head -1)
-          APPIMAGE_FILE=$(find composeApp/build -name "*.AppImage" -type f | head -1)
+#          APPIMAGE_FILE=$(find composeApp/build -name "*.AppImage" -type f | head -1)
           cp "$DEB_FILE" Spotube-linux-x86_64.deb
           cp "$RPM_FILE" Spotube-linux-x86_64.rpm
-          cp "$APPIMAGE_FILE" Spotube-linux-x86_64.AppImage
+#          cp "$APPIMAGE_FILE" Spotube-linux-x86_64.AppImage
 
       - name: Upload DEB
         uses: actions/upload-artifact@v4
@@ -218,18 +217,17 @@ jobs:
           name: linux-rpm
           path: Spotube-linux-x86_64.rpm
 
-      - name: Upload AppImage
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-appimage
-          path: Spotube-linux-x86_64.AppImage
+#      - name: Upload AppImage
+#        uses: actions/upload-artifact@v4
+#        with:
+#          name: linux-appimage
+#          path: Spotube-linux-x86_64.AppImage
 
       - name: Setup tmate session on failure
         if: ${{ inputs.debug_ssh && failure() }}
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-        timeout-minutes: 15
 
   build-windows:
     name: Windows Desktop
@@ -276,7 +274,6 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-        timeout-minutes: 15
 
   build-macos:
     name: macOS Desktop
@@ -325,7 +322,6 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-        timeout-minutes: 15
 
   create-release:
     name: Create GitHub Release
