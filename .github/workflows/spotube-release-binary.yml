@@ -16,6 +16,11 @@ on:
         required: false
         type: boolean
         default: false
+      debug_ssh:
+        description: 'Enable SSH debug session on failure (tmate)'
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -138,6 +143,13 @@ jobs:
       - name: Assemble Release
         run: ./gradlew :composeApp:assembleRelease
 
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        timeout-minutes: 15
+
       - name: Rename APK
         run: |
           APK_FILE=$(find composeApp/build/outputs/apk/release -name "*.apk" -type f | head -1)
@@ -184,6 +196,13 @@ jobs:
 
       - name: Package Linux
         run: ./gradlew :composeApp:packageReleaseDeb :composeApp:packageReleaseRpm :composeApp:packageReleaseAppImage
+
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        timeout-minutes: 15
 
       - name: Rename Linux artifacts
         run: |
@@ -240,6 +259,13 @@ jobs:
       - name: Package EXE
         run: ./gradlew :composeApp:packageReleaseExe
 
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        timeout-minutes: 15
+
       - name: Rename Windows artifacts
         shell: pwsh
         run: |
@@ -282,6 +308,13 @@ jobs:
 
       - name: Package DMG
         run: ./gradlew :composeApp:packageReleaseDmg
+
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        timeout-minutes: 15
 
       - name: Rename macOS artifact
         run: |
