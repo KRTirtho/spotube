@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import uniffi.compose_app.DiscordRpcClient
+import kotlin.time.Clock
 
 class DiscordRpcService(
     private val audioPlayer: AudioPlayerInterface,
@@ -43,6 +44,9 @@ class DiscordRpcService(
 
     private val clientId = "1176718791388975124"
     private var rpcClient: DiscordRpcClient? = null
+    private var lastConnectionAttempt: Long = 0
+    private var connectionFailed: Boolean = false
+    private val connectionCooldownMs = 30_000L // 30 seconds cooldown between connection attempts
 
     init {
         start()
@@ -106,15 +110,46 @@ class DiscordRpcService(
     }
 
     private fun ensureConnected() {
-        if (rpcClient != null) return
+        val client = rpcClient
+        if (client != null) {
+            try {
+                if (client.isConnected()) return
+                logger.w { "Discord RPC connection lost, will retry after cooldown" }
+                client.disconnect()
+                rpcClient = null
+                connectionFailed = true
+                lastConnectionAttempt = currentTimeMillis()
+                return
+            } catch (e: Exception) {
+                logger.w { "Discord RPC connection check failed, will retry after cooldown" }
+                rpcClient = null
+                connectionFailed = true
+                lastConnectionAttempt = currentTimeMillis()
+                return
+            }
+        }
+
+        // Check cooldown period
+        val now = currentTimeMillis()
+        if (connectionFailed && (now - lastConnectionAttempt) < connectionCooldownMs) {
+            return
+        }
+
+        lastConnectionAttempt = now
         try {
-            val client = DiscordRpcClient(clientId)
-            client.connect()
-            rpcClient = client
+            val newClient = DiscordRpcClient(clientId)
+            newClient.connect()
+            rpcClient = newClient
+            connectionFailed = false
             logger.i { "Connected to Discord RPC" }
         } catch (e: Exception) {
-            logger.e(e) { "Failed to connect to Discord RPC" }
+            connectionFailed = true
+            logger.d { "Discord not available, will retry in ${connectionCooldownMs / 1000}s" }
         }
+    }
+
+    private fun currentTimeMillis(): Long {
+        return Clock.System.now().toEpochMilliseconds()
     }
 
     private fun updatePresence(
@@ -125,8 +160,9 @@ class DiscordRpcService(
         positionMs: Long,
         durationMs: Long,
     ) {
+        val client = rpcClient ?: return
         try {
-            rpcClient?.updatePresence(
+            client.updatePresence(
                 title = title,
                 artist = artist,
                 album = album,
@@ -135,15 +171,22 @@ class DiscordRpcService(
                 durationMs = durationMs,
             )
         } catch (e: Exception) {
-            logger.e(e) { "Failed to update Discord RPC presence" }
+            rpcClient = null
+            connectionFailed = true
+            lastConnectionAttempt = currentTimeMillis()
+            logger.d { "Discord RPC update failed, will retry after cooldown" }
         }
     }
 
     private fun clearPresence() {
+        val client = rpcClient ?: return
         try {
-            rpcClient?.clearPresence()
+            client.clearPresence()
         } catch (e: Exception) {
-            logger.e(e) { "Failed to clear Discord RPC presence" }
+            rpcClient = null
+            connectionFailed = true
+            lastConnectionAttempt = currentTimeMillis()
+            logger.d { "Discord RPC clear failed, will retry after cooldown" }
         }
     }
 
