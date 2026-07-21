@@ -217,6 +217,23 @@ class SystemTrayService(
         val loopNone = javax.swing.JRadioButtonMenuItem("Loop: OFF", state.loopState == LoopState.NONE)
         val loopOne = javax.swing.JRadioButtonMenuItem("Loop: ONE", state.loopState == LoopState.ONE)
         val loopAll = javax.swing.JRadioButtonMenuItem("Loop: ALL", state.loopState == LoopState.ALL)
+        
+        val hoverBackground = UIManager.getColor("MenuItem.selectionBackground") ?: Color(75, 110, 175)
+        
+        listOf(loopNone, loopOne, loopAll).forEach { item ->
+            item.isOpaque = true
+            val normalBackground = item.background
+            item.addMouseListener(object : MouseAdapter() {
+                override fun mouseEntered(e: MouseEvent) {
+                    item.background = hoverBackground
+                }
+                
+                override fun mouseExited(e: MouseEvent) {
+                    item.background = normalBackground
+                }
+            })
+        }
+        
         loopGroup.add(loopNone)
         loopGroup.add(loopOne)
         loopGroup.add(loopAll)
@@ -318,15 +335,47 @@ class SystemTrayService(
     private fun createMenuItem(label: String, enabled: Boolean = true, action: () -> Unit): JMenuItem {
         return JMenuItem(label).apply {
             isEnabled = enabled
+            isOpaque = true
             maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
             addActionListener { action() }
+            
+            val normalBackground = background
+            val hoverBackground = UIManager.getColor("MenuItem.selectionBackground") ?: Color(75, 110, 175)
+            
+            addMouseListener(object : MouseAdapter() {
+                override fun mouseEntered(e: MouseEvent) {
+                    if (isEnabled) {
+                        background = hoverBackground
+                    }
+                }
+                
+                override fun mouseExited(e: MouseEvent) {
+                    background = normalBackground
+                }
+            })
         }
     }
 
     private fun createCheckBoxMenuItem(label: String, selected: Boolean, action: () -> Unit): JCheckBoxMenuItem {
         return JCheckBoxMenuItem(label, selected).apply {
+            isOpaque = true
             maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
             addActionListener { action() }
+            
+            val normalBackground = background
+            val hoverBackground = UIManager.getColor("MenuItem.selectionBackground") ?: Color(75, 110, 175)
+            
+            addMouseListener(object : MouseAdapter() {
+                override fun mouseEntered(e: MouseEvent) {
+                    if (isEnabled) {
+                        background = hoverBackground
+                    }
+                }
+                
+                override fun mouseExited(e: MouseEvent) {
+                    background = normalBackground
+                }
+            })
         }
     }
 
