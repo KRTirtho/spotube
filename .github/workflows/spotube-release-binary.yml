@@ -200,10 +200,8 @@ jobs:
         run: |
           DEB_FILE=$(find composeApp/build -name "*.deb" -type f | head -1)
           RPM_FILE=$(find composeApp/build -name "*.rpm" -type f | head -1)
-#          APPIMAGE_FILE=$(find composeApp/build -name "*.AppImage" -type f | head -1)
           cp "$DEB_FILE" Spotube-linux-x86_64.deb
           cp "$RPM_FILE" Spotube-linux-x86_64.rpm
-#          cp "$APPIMAGE_FILE" Spotube-linux-x86_64.AppImage
 
       - name: Upload DEB
         uses: actions/upload-artifact@v4
@@ -216,12 +214,6 @@ jobs:
         with:
           name: linux-rpm
           path: Spotube-linux-x86_64.rpm
-
-#      - name: Upload AppImage
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: linux-appimage
-#          path: Spotube-linux-x86_64.AppImage
 
       - name: Setup tmate session on failure
         if: ${{ inputs.debug_ssh && failure() }}
