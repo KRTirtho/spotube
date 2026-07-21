@@ -22,6 +22,7 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.paths.Paths
 import dev.krtirtho.spotube.core.share.JvmShareService
 import dev.krtirtho.spotube.core.share.ShareService
+import dev.krtirtho.spotube.core.systemtray.SystemTrayService
 import dev.krtirtho.spotube.modules.library.local_tracks.media.JvmLocalMediaDiscoveryService
 import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaDiscoveryService
 import org.koin.core.module.dsl.singleOf
@@ -32,4 +33,5 @@ actual val platformModules = module {
     single<AudioPlayerInterface> { AudioPlayer(Unit) }
     single<LocalMediaDiscoveryService> { JvmLocalMediaDiscoveryService() }
     single<ShareService> { JvmShareService() }
+    single { SystemTrayService(get(), get(), get(), get()) }
 }

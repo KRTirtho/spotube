@@ -31,15 +31,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
+import dev.krtirtho.spotube.core.systemtray.SystemTrayService
+import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import dev.krtirtho.spotube.resources.iconsax.FluentDismiss
 import dev.krtirtho.spotube.resources.iconsax.FluentMaximize
 import dev.krtirtho.spotube.resources.iconsax.FluentMinus
 import dev.krtirtho.spotube.resources.iconsax.FluentSquareMultiple
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import org.koin.compose.koinInject
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -78,6 +83,10 @@ actual fun ApplicationMainBar(
 private fun WindowButtons(modifier: Modifier = Modifier) {
     val windowState = LocalWindowState.current
     val applicationScope = LocalApplicationScope.current
+    val settingsProvider = koinInject<SettingsProvider>()
+    val systemTrayService = koinInject<SystemTrayService>()
+    val settings by settingsProvider.settingsState.collectAsState(initial = null)
+    val minimizeToTray = settings?.minimizeToTray ?: false
 
     Row(
         modifier = modifier,
@@ -111,7 +120,12 @@ private fun WindowButtons(modifier: Modifier = Modifier) {
         }
         IconButton(
             onClick = {
-                applicationScope.exitApplication()
+                if (minimizeToTray) {
+                    windowState.isMinimized = true
+                    systemTrayService.setWindowVisible(false)
+                } else {
+                    applicationScope.exitApplication()
+                }
             }) {
             Icon(
                 Iconsax.FluentDismiss, "Close", modifier = Modifier.size(14.dp)

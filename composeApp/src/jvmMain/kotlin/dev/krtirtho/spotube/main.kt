@@ -18,6 +18,8 @@
 package dev.krtirtho.spotube
 
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -27,9 +29,11 @@ import androidx.compose.ui.window.rememberWindowState
 import dev.krtirtho.spotube.core.di.initKoin
 import dev.krtirtho.spotube.core.newpipe.NewPipeDownloader
 import dev.krtirtho.spotube.core.paths.Paths
+import dev.krtirtho.spotube.core.systemtray.SystemTrayService
 import dev.krtirtho.spotube.core.ui.component.LocalApplicationScope
 import dev.krtirtho.spotube.core.ui.component.LocalWindowScope
 import dev.krtirtho.spotube.core.ui.component.LocalWindowState
+import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import io.github.vinceglb.filekit.FileKit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,6 +44,11 @@ import org.koin.core.component.get
 
 object KoinPathsProvider : KoinComponent {
     val paths: Paths get() = get()
+}
+
+private object KoinServicesProvider : KoinComponent {
+    val systemTrayService: SystemTrayService get() = get()
+    val settingsProvider: SettingsProvider get() = get()
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -55,14 +64,26 @@ fun main() {
             height = 720.dp
         )
 
+        val settingsProvider = KoinServicesProvider.settingsProvider
+        val settings by settingsProvider.settingsState.collectAsState(initial = null)
+        val minimizeToTray = settings?.minimizeToTray ?: false
+
+        val systemTrayService = KoinServicesProvider.systemTrayService
+
         Window(
             state = windowState,
             onCloseRequest = {
-                appScope.cancel()
-                exitApplication()
+                if (minimizeToTray) {
+                    windowState.isMinimized = true
+                    systemTrayService.setWindowVisible(false)
+                } else {
+                    appScope.cancel()
+                    exitApplication()
+                }
             },
             title = "Spotube",
             decoration = WindowDecoration.Undecorated(),
+            visible = true,
         ) {
             CompositionLocalProvider(
                 LocalApplicationScope provides this@application,
@@ -72,5 +93,17 @@ fun main() {
                 App()
             }
         }
+
+        systemTrayService.start(
+            onToggleWindowVisibility = {
+                windowState.isMinimized = !windowState.isMinimized
+                systemTrayService.setWindowVisible(!windowState.isMinimized)
+            },
+            onExit = {
+                systemTrayService.close()
+                appScope.cancel()
+                exitApplication()
+            }
+        )
     }
 }
