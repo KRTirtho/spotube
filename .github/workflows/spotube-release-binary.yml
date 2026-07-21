@@ -143,13 +143,6 @@ jobs:
       - name: Assemble Release
         run: ./gradlew :composeApp:assembleRelease
 
-      - name: Setup tmate session on failure
-        if: ${{ inputs.debug_ssh && failure() }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
-        timeout-minutes: 15
-
       - name: Rename APK
         run: |
           APK_FILE=$(find composeApp/build/outputs/apk/release -name "*.apk" -type f | head -1)
@@ -160,6 +153,13 @@ jobs:
         with:
           name: android-apk
           path: Spotube-android-all-arch.apk
+
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        timeout-minutes: 15
 
   build-linux:
     name: Linux Desktop
@@ -197,13 +197,6 @@ jobs:
       - name: Package Linux
         run: ./gradlew :composeApp:packageReleaseDeb :composeApp:packageReleaseRpm :composeApp:packageReleaseAppImage
 
-      - name: Setup tmate session on failure
-        if: ${{ inputs.debug_ssh && failure() }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
-        timeout-minutes: 15
-
       - name: Rename Linux artifacts
         run: |
           DEB_FILE=$(find composeApp/build -name "*.deb" -type f | head -1)
@@ -230,6 +223,13 @@ jobs:
         with:
           name: linux-appimage
           path: Spotube-linux-x86_64.AppImage
+
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        timeout-minutes: 15
 
   build-windows:
     name: Windows Desktop
@@ -259,13 +259,6 @@ jobs:
       - name: Package EXE
         run: ./gradlew :composeApp:packageReleaseExe
 
-      - name: Setup tmate session on failure
-        if: ${{ inputs.debug_ssh && failure() }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
-        timeout-minutes: 15
-
       - name: Rename Windows artifacts
         shell: pwsh
         run: |
@@ -277,6 +270,13 @@ jobs:
         with:
           name: windows-exe
           path: Spotube-windows-x86_64-setup.exe
+
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        timeout-minutes: 15
 
   build-macos:
     name: macOS Desktop
@@ -309,13 +309,6 @@ jobs:
       - name: Package DMG
         run: ./gradlew :composeApp:packageReleaseDmg
 
-      - name: Setup tmate session on failure
-        if: ${{ inputs.debug_ssh && failure() }}
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
-        timeout-minutes: 15
-
       - name: Rename macOS artifact
         run: |
           DMG_FILE=$(find composeApp/build -name "*.dmg" -type f | head -1)
@@ -326,6 +319,13 @@ jobs:
         with:
           name: macos-dmg
           path: Spotube-macos-universal.dmg
+
+      - name: Setup tmate session on failure
+        if: ${{ inputs.debug_ssh && failure() }}
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+        timeout-minutes: 15
 
   create-release:
     name: Create GitHub Release
