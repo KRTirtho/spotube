@@ -72,6 +72,7 @@ spotube-gradle = "0.1.0"
 cryptography = "0.6.0"
 reorderable = "3.1.0"
 vlcjBundler = "0.1.0"
+vanniktechMavenPublish = "0.37.0"
 uniffi = "0.3.7"
 kotlinx-atomicfu = "0.33.0"
 mokkery = "3.3.0"
@@ -182,3 +183,4 @@ kotlinxAtomicFu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlin
 uniffi = { id = "dev.gobley.uniffi", version.ref = "uniffi" }
 cargo = { id = "dev.gobley.cargo", version.ref = "uniffi" }
 mokkery = { id = "dev.mokkery", version.ref = "mokkery" }
+vanniktechMavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechMavenPublish" }

@@ -16,7 +16,7 @@
  */
 
 plugins {
-    alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.vanniktechMavenPublish)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.kotlinSerialization)
@@ -32,7 +32,7 @@ kotlin {
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "dev.krtirtho.plugin_interfaces"
+        namespace = "dev.krtirtho.spotube.plugin_interfaces"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
@@ -90,5 +90,40 @@ kotlin {
         }
 
         jsMain.dependencies {}
+    }
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+    signAllPublications()
+    coordinates(
+        group.toString(),
+        "plugin_interfaces",
+        version.toString()
+    )
+    pom {
+        name = "plugin_interfaces"
+        description = "Plugin interfaces for Spotube"
+        inceptionYear = "2026"
+        url = "https://github.com/KRTirtho/spotube"
+        licenses {
+            license {
+                name = "AGPL-3.0-or-later"
+                url = "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+                distribution = "https://spdx.org/licenses/AGPL-3.0-or-later.html"
+            }
+        }
+        developers {
+            developer {
+                id = "KRTirtho"
+                name = "Kingkor Roy Tirtho"
+                url = "https://github.com/KRTirtho/"
+            }
+        }
+        scm {
+            url = "https://github.com/KRTirtho/spotube"
+            connection = "scm:git:git://github.com/KRTirtho/spotube.git"
+            developerConnection = "scm:git:ssh://git@github.com/KRTirtho/spotube.git"
+        }
     }
 }
