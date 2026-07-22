@@ -20,6 +20,9 @@ package dev.krtirtho.spotube
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
@@ -68,22 +71,33 @@ fun main() {
         val settings by settingsProvider.settingsState.collectAsState(initial = null)
         val minimizeToTray = settings?.minimizeToTray ?: false
 
-        val systemTrayService = KoinServicesProvider.systemTrayService
+        val trayService = KoinServicesProvider.systemTrayService
+
+        var isWindowVisible by remember { mutableStateOf(true) }
+
+        trayService.setCallbacks(
+            onToggleWindowVisibility = { isWindowVisible = !isWindowVisible },
+            onExit = {
+                trayService.close()
+                appScope.cancel()
+                exitApplication()
+            }
+        )
 
         Window(
             state = windowState,
             onCloseRequest = {
                 if (minimizeToTray) {
-                    windowState.isMinimized = true
-                    systemTrayService.setWindowVisible(false)
+                    isWindowVisible = false
                 } else {
+                    trayService.close()
                     appScope.cancel()
                     exitApplication()
                 }
             },
             title = "Spotube",
             decoration = WindowDecoration.Undecorated(),
-            visible = true,
+            visible = isWindowVisible,
         ) {
             CompositionLocalProvider(
                 LocalApplicationScope provides this@application,
@@ -93,17 +107,5 @@ fun main() {
                 App()
             }
         }
-
-        systemTrayService.start(
-            onToggleWindowVisibility = {
-                windowState.isMinimized = !windowState.isMinimized
-                systemTrayService.setWindowVisible(!windowState.isMinimized)
-            },
-            onExit = {
-                systemTrayService.close()
-                appScope.cancel()
-                exitApplication()
-            }
-        )
     }
 }

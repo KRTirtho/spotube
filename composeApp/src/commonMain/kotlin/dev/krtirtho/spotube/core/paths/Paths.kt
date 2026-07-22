@@ -18,7 +18,7 @@
 package dev.krtirtho.spotube.core.paths
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-expect class Paths {
+expect class Paths() {
     fun getApplicationCacheDirPath(): String
     fun getApplicationDataDirPath(): String
     fun getUserDownloadsDirPath(): String

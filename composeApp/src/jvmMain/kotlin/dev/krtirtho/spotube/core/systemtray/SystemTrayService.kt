@@ -29,6 +29,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import java.awt.BorderLayout
@@ -38,8 +40,6 @@ import java.awt.Image
 import java.awt.SystemTray
 import java.awt.Toolkit
 import java.awt.TrayIcon
-import java.awt.event.FocusAdapter
-import java.awt.event.FocusEvent
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import java.awt.event.WindowAdapter
@@ -50,10 +50,8 @@ import javax.swing.BoxLayout
 import javax.swing.JCheckBoxMenuItem
 import javax.swing.JDialog
 import javax.swing.JLabel
-import javax.swing.JMenu
 import javax.swing.JMenuItem
 import javax.swing.JPanel
-import javax.swing.JPopupMenu
 import javax.swing.SwingUtilities
 import javax.swing.UIManager
 
@@ -71,26 +69,87 @@ class SystemTrayService(
     private var menuDialog: TrayMenuDialog? = null
 
     private var windowVisible: Boolean = true
-    private var onToggleWindowVisibility: (() -> Unit)? = null
-    private var onExit: (() -> Unit)? = null
 
-    @Volatile
-    private var started = false
+    private var onToggleWindowVisibility: () -> Unit = {}
+    private var onExit: () -> Unit = {}
 
     private val volumeStep = 0.05f
+    private var trayEnabled = false
 
-    fun start(
+    @Volatile
+    private var currentState: TrayState? = null
+
+    init {
+        scope.launch {
+            settingsProvider.settingsState
+                .map { it?.minimizeToTray ?: false }
+                .distinctUntilChanged()
+                .collect { enabled ->
+                    trayEnabled = enabled
+                    if (enabled) {
+                        ensureTrayCreated()
+                    } else {
+                        removeTray()
+                    }
+                }
+        }
+
+        scope.launch {
+            combine(
+                audioPlayer.playerStateFlow,
+                audioPlayer.currentMediaItemFlow,
+                audioPlayer.loopStateFlow,
+                audioPlayer.shuffleModeFlow,
+                audioPlayer.volumeFlow,
+                audioPlayerQueue.currentQueueEntryFlow,
+                savedTracksRepository.savedTracksIdsFlow,
+            ) { values ->
+                TrayState(
+                    playerState = values[0] as PlayerState,
+                    mediaItem = values[1] as dev.krtirtho.spotube.core.audioplayer.MediaItem?,
+                    loopState = values[2] as LoopState,
+                    shuffleEnabled = values[3] as Boolean,
+                    volume = values[4] as Float,
+                    currentEntry = values[5] as QueueEntry?,
+                    savedTrackIds = @Suppress("UNCHECKED_CAST") (values[6] as Set<String>),
+                )
+            }.collect { state ->
+                currentState = state
+                SwingUtilities.invokeLater {
+                    updateTooltip(state)
+                    menuDialog?.let { dialog ->
+                        val panel = dialog.contentPane.getComponent(0) as? JPanel
+                        if (panel != null) rebuildMenuPanel(panel, dialog)
+                    }
+                }
+            }
+        }
+    }
+
+    fun setCallbacks(
         onToggleWindowVisibility: () -> Unit,
         onExit: () -> Unit,
     ) {
         this.onToggleWindowVisibility = onToggleWindowVisibility
         this.onExit = onExit
+    }
 
-        if (started) {
-            return
+    fun hideWindow() {
+        if (windowVisible) {
+            windowVisible = false
+            onToggleWindowVisibility()
         }
-        started = true
+    }
 
+    fun showWindow() {
+        if (!windowVisible) {
+            windowVisible = true
+            onToggleWindowVisibility()
+        }
+    }
+
+    private fun ensureTrayCreated() {
+        if (trayIcon != null) return
         if (!SystemTray.isSupported()) {
             logger.w { "System tray is not supported on this platform" }
             return
@@ -104,23 +163,37 @@ class SystemTrayService(
                 icon.addMouseListener(object : MouseAdapter() {
                     override fun mouseClicked(e: MouseEvent) {
                         if (e.button == MouseEvent.BUTTON1 && e.clickCount == 2) {
-                            onToggleWindowVisibility.invoke()
+                            if (windowVisible) hideWindow() else showWindow()
                         } else if (e.button == MouseEvent.BUTTON3) {
                             showMenuDialog(icon, e.xOnScreen, e.yOnScreen)
                         }
                     }
                 })
 
-                val systemTray = SystemTray.getSystemTray()
-                systemTray.add(icon)
-                this.trayIcon = icon
-
-                logger.i { "System tray initialized" }
-                observeState()
+                SystemTray.getSystemTray().add(icon)
+                trayIcon = icon
+                logger.i { "System tray created" }
             } catch (e: Exception) {
-                logger.e(e) { "Failed to initialize system tray" }
+                logger.e(e) { "Failed to create system tray" }
             }
         }
+    }
+
+    private fun removeTray() {
+        menuDialog?.dispose()
+        menuDialog = null
+        trayIcon?.let {
+            try {
+                SystemTray.getSystemTray().remove(it)
+            } catch (e: Exception) {
+                logger.e(e) { "Failed to remove tray icon" }
+            }
+        }
+        trayIcon = null
+    }
+
+    override fun close() {
+        removeTray()
     }
 
     private fun showMenuDialog(icon: TrayIcon, x: Int, y: Int) {
@@ -135,7 +208,6 @@ class SystemTrayService(
             isUndecorated = true
             isAlwaysOnTop = true
             focusableWindowState = true
-            setAutoRequestFocus(true)
             background = Color(0, 0, 0, 0)
         }
 
@@ -190,7 +262,7 @@ class SystemTrayService(
         panel.add(createSeparator())
 
         panel.add(createMenuItem(if (windowVisible) "Hide Window" else "Show Window") {
-            onToggleWindowVisibility?.invoke()
+            if (windowVisible) hideWindow() else showWindow()
         })
         panel.add(createSeparator())
 
@@ -219,18 +291,12 @@ class SystemTrayService(
         val loopAll = javax.swing.JRadioButtonMenuItem("Loop: ALL", state.loopState == LoopState.ALL)
         
         val hoverBackground = UIManager.getColor("MenuItem.selectionBackground") ?: Color(75, 110, 175)
-        
         listOf(loopNone, loopOne, loopAll).forEach { item ->
             item.isOpaque = true
-            val normalBackground = item.background
+            val normalBg = item.background
             item.addMouseListener(object : MouseAdapter() {
-                override fun mouseEntered(e: MouseEvent) {
-                    item.background = hoverBackground
-                }
-                
-                override fun mouseExited(e: MouseEvent) {
-                    item.background = normalBackground
-                }
+                override fun mouseEntered(e: MouseEvent) { item.background = hoverBackground }
+                override fun mouseExited(e: MouseEvent) { item.background = normalBg }
             })
         }
         
@@ -279,53 +345,16 @@ class SystemTrayService(
         })
         panel.add(createSeparator())
 
-        panel.add(createMenuItem("Exit") { onExit?.invoke() })
+        panel.add(createMenuItem("Exit") { onExit() })
 
         panel.revalidate()
         panel.repaint()
         dialog.pack()
     }
 
-    @Volatile
-    private var currentState: TrayState? = null
-
-    private fun observeState() {
-        scope.launch {
-            combine(
-                audioPlayer.playerStateFlow,
-                audioPlayer.currentMediaItemFlow,
-                audioPlayer.loopStateFlow,
-                audioPlayer.shuffleModeFlow,
-                audioPlayer.volumeFlow,
-                audioPlayerQueue.currentQueueEntryFlow,
-                savedTracksRepository.savedTracksIdsFlow,
-            ) { values ->
-                TrayState(
-                    playerState = values[0] as PlayerState,
-                    mediaItem = values[1] as dev.krtirtho.spotube.core.audioplayer.MediaItem?,
-                    loopState = values[2] as LoopState,
-                    shuffleEnabled = values[3] as Boolean,
-                    volume = values[4] as Float,
-                    currentEntry = values[5] as QueueEntry?,
-                    savedTrackIds = @Suppress("UNCHECKED_CAST") (values[6] as Set<String>),
-                )
-            }.collect { state ->
-                currentState = state
-                SwingUtilities.invokeLater {
-                    updateTooltip(state)
-                    menuDialog?.let { dialog ->
-                        val panel = dialog.contentPane.getComponent(0) as? JPanel
-                        if (panel != null) rebuildMenuPanel(panel, dialog)
-                    }
-                }
-            }
-        }
-    }
-
     private fun updateTooltip(state: TrayState) {
-        val icon = trayIcon ?: return
         val media = state.mediaItem
-        icon.toolTip = if (media != null) {
+        trayIcon?.toolTip = if (media != null) {
             "Spotube - ${media.title} by ${media.artist}"
         } else {
             "Spotube"
@@ -338,20 +367,11 @@ class SystemTrayService(
             isOpaque = true
             maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
             addActionListener { action() }
-            
-            val normalBackground = background
-            val hoverBackground = UIManager.getColor("MenuItem.selectionBackground") ?: Color(75, 110, 175)
-            
+            val normalBg = background
+            val hoverBg = UIManager.getColor("MenuItem.selectionBackground") ?: Color(75, 110, 175)
             addMouseListener(object : MouseAdapter() {
-                override fun mouseEntered(e: MouseEvent) {
-                    if (isEnabled) {
-                        background = hoverBackground
-                    }
-                }
-                
-                override fun mouseExited(e: MouseEvent) {
-                    background = normalBackground
-                }
+                override fun mouseEntered(e: MouseEvent) { if (isEnabled) background = hoverBg }
+                override fun mouseExited(e: MouseEvent) { background = normalBg }
             })
         }
     }
@@ -361,20 +381,11 @@ class SystemTrayService(
             isOpaque = true
             maximumSize = Dimension(Int.MAX_VALUE, preferredSize.height)
             addActionListener { action() }
-            
-            val normalBackground = background
-            val hoverBackground = UIManager.getColor("MenuItem.selectionBackground") ?: Color(75, 110, 175)
-            
+            val normalBg = background
+            val hoverBg = UIManager.getColor("MenuItem.selectionBackground") ?: Color(75, 110, 175)
             addMouseListener(object : MouseAdapter() {
-                override fun mouseEntered(e: MouseEvent) {
-                    if (isEnabled) {
-                        background = hoverBackground
-                    }
-                }
-                
-                override fun mouseExited(e: MouseEvent) {
-                    background = normalBackground
-                }
+                override fun mouseEntered(e: MouseEvent) { if (isEnabled) background = hoverBg }
+                override fun mouseExited(e: MouseEvent) { background = normalBg }
             })
         }
     }
@@ -396,26 +407,7 @@ class SystemTrayService(
     }
 
     private fun createSeparator(): javax.swing.JSeparator {
-        return javax.swing.JSeparator().apply {
-            maximumSize = Dimension(Int.MAX_VALUE, 2)
-        }
-    }
-
-    fun setWindowVisible(visible: Boolean) {
-        windowVisible = visible
-    }
-
-    override fun close() {
-        menuDialog?.dispose()
-        menuDialog = null
-        trayIcon?.let {
-            try {
-                SystemTray.getSystemTray().remove(it)
-            } catch (e: Exception) {
-                logger.e(e) { "Failed to remove tray icon" }
-            }
-        }
-        trayIcon = null
+        return javax.swing.JSeparator().apply { maximumSize = Dimension(Int.MAX_VALUE, 2) }
     }
 
     private fun createTrayIconImage(): Image {

@@ -84,52 +84,34 @@ private fun WindowButtons(modifier: Modifier = Modifier) {
     val windowState = LocalWindowState.current
     val applicationScope = LocalApplicationScope.current
     val settingsProvider = koinInject<SettingsProvider>()
-    val systemTrayService = koinInject<SystemTrayService>()
+    val trayService = koinInject<SystemTrayService>()
     val settings by settingsProvider.settingsState.collectAsState(initial = null)
-    val minimizeToTray = settings?.minimizeToTray ?: false
 
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        IconButton(
-            onClick = {
-                windowState.isMinimized = true
-            }) {
-            Icon(
-                Iconsax.FluentMinus, "Minimize", modifier = Modifier.size(14.dp)
-            )
+        IconButton(onClick = { windowState.isMinimized = true }) {
+            Icon(Iconsax.FluentMinus, "Minimize", modifier = Modifier.size(14.dp))
         }
-        IconButton(
-            onClick = {
-                windowState.placement = if (windowState.placement == WindowPlacement.Maximized) {
-                    WindowPlacement.Floating
-                } else {
-                    WindowPlacement.Maximized
-                }
-            }) {
+        IconButton(onClick = {
+            windowState.placement = if (windowState.placement == WindowPlacement.Maximized)
+                WindowPlacement.Floating else WindowPlacement.Maximized
+        }) {
             if (windowState.placement == WindowPlacement.Floating) {
-                Icon(
-                    Iconsax.FluentMaximize, "Maximize", modifier = Modifier.size(14.dp)
-                )
+                Icon(Iconsax.FluentMaximize, "Maximize", modifier = Modifier.size(14.dp))
             } else {
-                Icon(
-                    Iconsax.FluentSquareMultiple, "Restore", modifier = Modifier.size(14.dp)
-                )
+                Icon(Iconsax.FluentSquareMultiple, "Restore", modifier = Modifier.size(14.dp))
             }
         }
-        IconButton(
-            onClick = {
-                if (minimizeToTray) {
-                    windowState.isMinimized = true
-                    systemTrayService.setWindowVisible(false)
-                } else {
-                    applicationScope.exitApplication()
-                }
-            }) {
-            Icon(
-                Iconsax.FluentDismiss, "Close", modifier = Modifier.size(14.dp)
-            )
+        IconButton(onClick = {
+            if (settings?.minimizeToTray == true) {
+                trayService.hideWindow()
+            } else {
+                applicationScope.exitApplication()
+            }
+        }) {
+            Icon(Iconsax.FluentDismiss, "Close", modifier = Modifier.size(14.dp))
         }
     }
 }
