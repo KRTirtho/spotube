@@ -105,6 +105,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                     playbackSection(
                         settings = settingsState!!,
                         settingsViewModel = settingsViewModel,
+                        navigatorCommands = navigatorCommands,
                     )
                 if (settingsState != null)
                     cacheSection(

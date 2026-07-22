@@ -55,6 +55,12 @@ class Database(val paths: Paths) {
             produceFile = { "${paths.getApplicationDataDirPath()}/spotube_local_media.preferences_pb".toPath() }
         )
     }
+
+    val blacklistDataStore: DataStore<Preferences> by lazy {
+        PreferenceDataStoreFactory.createWithPath(
+            produceFile = { "${paths.getApplicationDataDirPath()}/spotube_blacklist.preferences_pb".toPath() }
+        )
+    }
 }
 
 object DatabaseKeys {

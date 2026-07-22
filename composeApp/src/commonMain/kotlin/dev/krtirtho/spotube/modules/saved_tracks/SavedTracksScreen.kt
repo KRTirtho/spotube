@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueCollectionEntry
@@ -40,6 +41,7 @@ import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
+import dev.krtirtho.spotube.modules.playlist.PlaylistViewModel
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -48,23 +50,23 @@ import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.liked_tracks
 
 @Composable
-fun SavedTracksScreen() {
-    val audioPlayerQueue: AudioPlayerQueue = koinInject()
-    val audioPlayer: AudioPlayer = koinInject()
-    val shareService: ShareService = koinInject()
-    val downloadsViewModel: DownloadsViewModel = koinViewModel()
-    val libraryRepository: LibraryRepository = koinInject()
+fun SavedTracksScreen(
+    viewModel: SavedTracksViewModel,
+    audioPlayerQueue: AudioPlayerQueue,
+    audioPlayer: AudioPlayerInterface,
+    shareService: ShareService,
+    downloadsViewModel: DownloadsViewModel,
+    libraryRepository: LibraryRepository,
+    navigationCommands: NavigationCommands
+) {
     val scope = rememberCoroutineScope()
-    val viewModel = koinViewModel<SavedTracksViewModel>(
-        key = SAVED_TRACKS_COLLECTION_ID,
-        parameters = { parametersOf() }
-    )
-    val navigationCommands = koinInject<NavigationCommands>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val queue by audioPlayerQueue.queueFlow.collectAsStateWithLifecycle()
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
+    val blacklistedTrackIds by viewModel.blacklistedTrackIds.collectAsStateWithLifecycle()
+    val blacklistedArtistIds by viewModel.blacklistedArtistIds.collectAsStateWithLifecycle()
     var showAddToPlaylistPicker by remember { mutableStateOf(false) }
     var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
     var currentUserId by remember { mutableStateOf<String?>(null) }
@@ -78,12 +80,12 @@ fun SavedTracksScreen() {
         val queueTrackIds = queue.mapNotNull { entry ->
             (entry as? QueueEntry.StreamingTrack)?.track?.id
         }.toSet()
-        return TrackOptionsState(
-            isInQueue = queueTrackIds.contains(track.id),
-            isCurrentlyPlaying = track.id == currentTrackId,
-            isFavorite = true,
-            isBlacklisted = false,
-        )
+    return TrackOptionsState(
+        isInQueue = queueTrackIds.contains(track.id),
+        isCurrentlyPlaying = track.id == currentTrackId,
+        isFavorite = true,
+        isBlacklisted = track.id in blacklistedTrackIds || track.artists.any { it.id in blacklistedArtistIds },
+    )
     }
 
     fun handleTrackOptionsAction(track: MetadataTrack, action: TrackOptionsAction) {

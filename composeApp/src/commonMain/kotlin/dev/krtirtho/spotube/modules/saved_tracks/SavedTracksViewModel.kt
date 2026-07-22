@@ -35,6 +35,7 @@ import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
+import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +44,8 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
@@ -84,6 +87,7 @@ class SavedTracksViewModel(
     private val repository: SavedTracksRepository,
     private val playbackHelper: CollectionPlaybackHelper,
     private val audioPlayerQueue: AudioPlayerQueue,
+    private val blacklistRepository: BlacklistRepository,
 ) : ViewModel(), KoinComponent {
     private val logger by injectLogger<SavedTracksViewModel>()
 
@@ -91,6 +95,12 @@ class SavedTracksViewModel(
     val uiState: StateFlow<SavedTracksScreenState> = _state.asStateFlow()
     val savedTrackIdsFlow: StateFlow<Set<String>>
         get() = repository.savedTracksIdsFlow
+
+    private val _blacklistedTrackIds = MutableStateFlow<Set<String>>(emptySet())
+    val blacklistedTrackIds: StateFlow<Set<String>> = _blacklistedTrackIds.asStateFlow()
+
+    private val _blacklistedArtistIds = MutableStateFlow<Set<String>>(emptySet())
+    val blacklistedArtistIds: StateFlow<Set<String>> = _blacklistedArtistIds.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -104,6 +114,12 @@ class SavedTracksViewModel(
                 loadInitialData()
             }
         }
+        blacklistRepository.blacklistedTracks
+            .onEach { tracks -> _blacklistedTrackIds.value = tracks.map { it.id }.toSet() }
+            .launchIn(viewModelScope)
+        blacklistRepository.blacklistedArtists
+            .onEach { artists -> _blacklistedArtistIds.value = artists.map { it.id }.toSet() }
+            .launchIn(viewModelScope)
     }
 
     private suspend fun loadInitialData() {
@@ -195,23 +211,51 @@ class SavedTracksViewModel(
 
                 is TrackOptionsAction.ToggleFavorite -> {}
                 is TrackOptionsAction.Download -> {}
-                is TrackOptionsAction.ToggleBlacklist -> {}
+                is TrackOptionsAction.ToggleBlacklist -> toggleTrackBlacklist(track)
                 is TrackOptionsAction.Share -> {}
                 is TrackOptionsAction.AddToPlaylist -> {}
             }
         }
     }
 
+    fun isTrackBlacklisted(track: MetadataTrack): Boolean {
+        val trackIds = _blacklistedTrackIds.value
+        val artistIds = _blacklistedArtistIds.value
+        return track.id in trackIds || track.artists.any { it.id in artistIds }
+    }
+
+    fun toggleTrackBlacklist(track: MetadataTrack) {
+        viewModelScope.launch {
+            blacklistRepository.toggleTrack(track)
+        }
+    }
+
     fun addTracksToQueue(tracks: List<MetadataTrack>) {
         viewModelScope.launch {
-            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
+            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+            
+            val filteredTracks = tracks.filter { track ->
+                track.id !in blacklistedTrackIds && 
+                track.artists.none { it.id in blacklistedArtistIds }
+            }
+            
+            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
             audioPlayerQueue.addAllToQueue(entries)
         }
     }
 
     fun playTracksNext(tracks: List<MetadataTrack>) {
         viewModelScope.launch {
-            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
+            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+            
+            val filteredTracks = tracks.filter { track ->
+                track.id !in blacklistedTrackIds && 
+                track.artists.none { it.id in blacklistedArtistIds }
+            }
+            
+            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
             audioPlayerQueue.addAllAfterCurrent(entries)
         }
     }

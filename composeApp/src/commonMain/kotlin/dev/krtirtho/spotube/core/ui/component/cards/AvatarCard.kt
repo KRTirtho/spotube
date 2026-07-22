@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.core.ui.component.cards
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -56,10 +58,18 @@ fun AvatarCard(
     imageURL: String? = null,
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
+    isBlacklisted: Boolean = false,
 ) {
+    val backgroundColor = if (isBlacklisted) {
+        MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+    } else {
+        Color.Transparent
+    }
+    
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
+            .background(backgroundColor)
             .clickable(onClick = { onClick.invoke() }, enabled = true)
             .width(160.dp),
     ) {

@@ -20,11 +20,14 @@ package dev.krtirtho.spotube.core.navigation
 import androidx.navigation3.runtime.NavKey
 import dev.krtirtho.spotube.modules.artist.ArtistScreen
 import dev.krtirtho.spotube.modules.album.AlbumScreen
+import dev.krtirtho.spotube.modules.artist.ArtistViewModel
+import dev.krtirtho.spotube.modules.blacklist.BlacklistScreen
 import dev.krtirtho.spotube.modules.home.HomeScreen
 import dev.krtirtho.spotube.modules.library.LibraryScreen
 import dev.krtirtho.spotube.modules.lyrics.LyricsScreen
 import dev.krtirtho.spotube.modules.playlist.PlaylistScreen
 import dev.krtirtho.spotube.modules.plugin.PluginScreen
+import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksScreen
 import dev.krtirtho.spotube.modules.search.SearchScreen
 import dev.krtirtho.spotube.modules.settings.SettingsScreen
@@ -33,6 +36,7 @@ import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 import org.koin.dsl.navigation3.navigation
 
@@ -54,22 +58,25 @@ sealed interface Routes : NavKey {
     data object Plugins : Routes
 
     @Serializable
-    data object WebView: Routes
+    data object WebView : Routes
 
     @Serializable
-    data object Lyrics: Routes
+    data object Lyrics : Routes
 
     @Serializable
-    data class Playlist(val playlistId: String): Routes
+    data class Playlist(val playlistId: String) : Routes
 
     @Serializable
-    data class Artist(val artistId: String): Routes
+    data class Artist(val artistId: String) : Routes
 
     @Serializable
-    data class Album(val albumId: String): Routes
+    data class Album(val albumId: String) : Routes
 
     @Serializable
-    data object SavedTracks: Routes
+    data object SavedTracks : Routes
+
+    @Serializable
+    data object Blacklist : Routes
 }
 
 @OptIn(KoinExperimentalAPI::class)
@@ -94,19 +101,68 @@ val navigationModule = module {
         WebViewScreen(get())
     }
     navigation<Routes.Playlist> {
-        PlaylistScreen(it.playlistId)
+        PlaylistScreen(
+            playlistId = it.playlistId,
+            viewModel = koinViewModel(
+                key = it.playlistId,
+                parameters = { parametersOf(it.playlistId) }
+            ),
+            audioPlayerQueue = get(),
+            audioPlayer = get(),
+            shareService = get(),
+            downloadsViewModel = get(),
+            libraryRepository = get(),
+            navigationCommands = get(),
+        )
     }
     navigation<Routes.Artist> {
-        ArtistScreen(it.artistId)
+        ArtistScreen(
+            viewModel = koinViewModel(
+                key = it.artistId,
+                parameters = { parametersOf(it.artistId) }
+            ),
+            audioPlayerQueue = get(),
+            audioPlayer = get(),
+            shareService = get(),
+            downloadsViewModel = get(),
+            libraryRepository = get(),
+            navigationCommands = get(),
+        )
     }
     navigation<Routes.Album> {
-        AlbumScreen(it.albumId)
+        AlbumScreen(
+            albumId = it.albumId,
+            viewModel = koinViewModel(
+                key = it.albumId,
+                parameters = { parametersOf(it.albumId) }
+            ),
+            audioPlayerQueue = get(),
+            audioPlayer = get(),
+            shareService = get(),
+            downloadsViewModel = get(),
+            libraryRepository = get(),
+            navigationCommands = get(),
+        )
     }
     navigation<Routes.Lyrics> {
         LyricsScreen(viewModel = koinViewModel())
     }
     navigation<Routes.SavedTracks> {
-        SavedTracksScreen()
+        SavedTracksScreen(
+            viewModel = koinViewModel(
+                key = SAVED_TRACKS_COLLECTION_ID,
+                parameters = { parametersOf(SAVED_TRACKS_COLLECTION_ID) }
+            ),
+            audioPlayerQueue = get(),
+            audioPlayer = get(),
+            shareService = get(),
+            downloadsViewModel = get(),
+            libraryRepository = get(),
+            navigationCommands = get(),
+        )
+    }
+    navigation<Routes.Blacklist> {
+        BlacklistScreen()
     }
 }
 

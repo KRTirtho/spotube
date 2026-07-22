@@ -84,6 +84,8 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.user.MetadataUser
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.navigation.NavigationCommands
+import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.base.AutocompleteTextField
 import dev.krtirtho.spotube.core.ui.base.ChipTab
@@ -98,6 +100,7 @@ import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.core.ui.component.UserCard
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
+import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
@@ -120,6 +123,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     val shareService: ShareService = koinInject()
     val downloadsViewModel: DownloadsViewModel = koinViewModel()
     val libraryRepository: LibraryRepository = koinInject()
+    val blacklistRepository: BlacklistRepository = koinInject()
+    val navigationCommands: NavigationCommands = koinInject()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val selectedType = state.selectedSearchType
     val scope = rememberCoroutineScope()
@@ -127,6 +132,21 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     var showAddToPlaylistPicker by remember { mutableStateOf(false) }
     var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
     var currentUserId by remember { mutableStateOf<String?>(null) }
+
+    val blacklistedTracks by blacklistRepository.blacklistedTracks.collectAsStateWithLifecycle(emptyList())
+    val blacklistedArtists by blacklistRepository.blacklistedArtists.collectAsStateWithLifecycle(emptyList())
+
+    fun isTrackBlacklisted(track: MetadataTrack): Boolean {
+        val trackIds = blacklistedTracks.map { it.id }.toSet()
+        val artistIds = blacklistedArtists.map { it.id }.toSet()
+        return track.id in trackIds || track.artists.any { it.id in artistIds }
+    }
+
+    fun toggleTrackBlacklist(track: MetadataTrack) {
+        scope.launch {
+            blacklistRepository.toggleTrack(track)
+        }
+    }
 
     LaunchedEffect(Unit) {
         currentUserId = libraryRepository.currentUser()?.id
@@ -180,7 +200,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
 
                 is TrackOptionsAction.ToggleFavorite -> viewModel.toggleTrackIsFavorite(track.id)
                 is TrackOptionsAction.Download -> downloadsViewModel.downloadTrack(track)
-                is TrackOptionsAction.ToggleBlacklist -> {}
+                is TrackOptionsAction.ToggleBlacklist -> toggleTrackBlacklist(track)
                 is TrackOptionsAction.Share -> {
                     val uri = track.externalUri?.takeIf { it.isNotBlank() }
                     if (uri != null) {
@@ -206,7 +226,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
             isInQueue = queueTrackIds.contains(track.id),
             isCurrentlyPlaying = track.id == currentTrackId,
             isFavorite = savedTrackIds.contains(track.id),
-            isBlacklisted = false,
+            isBlacklisted = isTrackBlacklisted(track),
         )
     }
 
@@ -222,20 +242,36 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
             isInQueue = queueTrackIds.contains(track.id),
             isCurrentlyPlaying = track.id == currentTrackId,
             isFavorite = savedTrackIds.contains(track.id),
-            isBlacklisted = false,
+            isBlacklisted = isTrackBlacklisted(track),
         )
     }
 
     fun bulkAddToQueue(tracks: List<MetadataTrack>) {
         scope.launch {
-            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
+            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+            
+            val filteredTracks = tracks.filter { track ->
+                track.id !in blacklistedTrackIds && 
+                track.artists.none { it.id in blacklistedArtistIds }
+            }
+            
+            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
             audioPlayerQueue.addAllToQueue(entries)
         }
     }
 
     fun bulkPlayNext(tracks: List<MetadataTrack>) {
         scope.launch {
-            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
+            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+            
+            val filteredTracks = tracks.filter { track ->
+                track.id !in blacklistedTrackIds && 
+                track.artists.none { it.id in blacklistedArtistIds }
+            }
+            
+            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
             audioPlayerQueue.addAllAfterCurrent(entries)
         }
     }
@@ -315,6 +351,15 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                             tracksToAddToPlaylist = tracks
                             showAddToPlaylistPicker = true
                         },
+                        onArtistClick = { artist ->
+                            navigationCommands.navigateTo(Routes.Artist(artist.id))
+                        },
+                        onAlbumClick = { album ->
+                            navigationCommands.navigateTo(Routes.Album(album.id))
+                        },
+                        onArtistsOverflowClick = { track ->
+                            // No-op for now, could show a dialog with all artists
+                        },
                         modifier = Modifier
                             .fillMaxSize(),
                     )
@@ -334,6 +379,15 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                         onBulkAddToPlaylist = { tracks ->
                             tracksToAddToPlaylist = tracks
                             showAddToPlaylistPicker = true
+                        },
+                        onArtistClick = { artist ->
+                            navigationCommands.navigateTo(Routes.Artist(artist.id))
+                        },
+                        onAlbumClick = { album ->
+                            navigationCommands.navigateTo(Routes.Album(album.id))
+                        },
+                        onArtistsOverflowClick = { track ->
+                            // No-op for now, could show a dialog with all artists
                         },
                         modifier = Modifier
                             .fillMaxSize(),
@@ -607,6 +661,9 @@ private fun SearchAllTab(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit,
     onBulkPlayNext: (List<MetadataTrack>) -> Unit,
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit,
+    onArtistClick: (MetadataArtist.Basic) -> Unit,
+    onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
+    onArtistsOverflowClick: (MetadataTrack) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (query.isBlank()) {
@@ -661,6 +718,9 @@ private fun SearchAllTab(
         onBulkAddToQueue = onBulkAddToQueue,
         onBulkPlayNext = onBulkPlayNext,
         onBulkAddToPlaylist = onBulkAddToPlaylist,
+        onArtistClick = onArtistClick,
+        onAlbumClick = onAlbumClick,
+        onArtistsOverflowClick = onArtistsOverflowClick,
         contentPadding = PaddingValues(top = 12.dp, bottom = 16.dp + bottomInset),
         headerContent = {
             if (showTracks) {
@@ -745,6 +805,9 @@ private fun SearchTracksTab(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit,
     onBulkPlayNext: (List<MetadataTrack>) -> Unit,
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit,
+    onArtistClick: (MetadataArtist.Basic) -> Unit,
+    onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
+    onArtistsOverflowClick: (MetadataTrack) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (query.isBlank()) {
@@ -771,6 +834,9 @@ private fun SearchTracksTab(
         onBulkAddToQueue = onBulkAddToQueue,
         onBulkPlayNext = onBulkPlayNext,
         onBulkAddToPlaylist = onBulkAddToPlaylist,
+        onArtistClick = onArtistClick,
+        onAlbumClick = onAlbumClick,
+        onArtistsOverflowClick = onArtistsOverflowClick,
         simplified = true,
         modifier = modifier,
     )

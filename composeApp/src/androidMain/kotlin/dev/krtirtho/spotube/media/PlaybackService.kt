@@ -42,6 +42,7 @@ import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import dev.krtirtho.spotube.MainActivity
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import kotlinx.coroutines.CoroutineScope
@@ -55,7 +56,7 @@ import org.koin.core.component.inject
 @OptIn(UnstableApi::class)
 class PlaybackService : MediaLibraryService(), KoinComponent {
 
-    private val audioPlayer: AudioPlayer by inject()
+    private val audioPlayer = inject<AudioPlayerInterface>().value as AudioPlayer
     private val audioPlayerQueue: AudioPlayerQueue by inject()
     private val mediaBrowseHelper: MediaBrowseHelper by inject()
     private lateinit var librarySession: MediaLibrarySession
@@ -87,9 +88,10 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         startForeground(NOTIFICATION_ID, notification)
 
-        librarySession = MediaLibrarySession.Builder(this, audioPlayer.player, LibrarySessionCallback())
-            .setSessionActivity(sessionActivity)
-            .build()
+        librarySession =
+            MediaLibrarySession.Builder(this, audioPlayer.player, LibrarySessionCallback())
+                .setSessionActivity(sessionActivity)
+                .build()
 
         addSession(librarySession)
 
@@ -112,7 +114,8 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         }
     }
 
-    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession = librarySession
+    override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession =
+        librarySession
 
     override fun onDestroy() {
         Log.i(TAG, "onDestroy")
@@ -270,7 +273,10 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
                     } else {
                         results
                     }
-                    Log.d(TAG, "onGetSearchResult: query=$query, page=$page, returning ${paged.size} items")
+                    Log.d(
+                        TAG,
+                        "onGetSearchResult: query=$query, page=$page, returning ${paged.size} items"
+                    )
                     future.set(LibraryResult.ofItemList(paged, params))
                 } catch (e: Exception) {
                     Log.e(TAG, "onGetSearchResult failed for $query", e)
@@ -352,17 +358,20 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
                     helper.playPlaylist(playlistId)
                     return
                 }
+
                 mediaId.startsWith("${MediaBrowseHelper.MEDIA_ID_ALBUM}:") -> {
                     val albumId = mediaId.removePrefix("${MediaBrowseHelper.MEDIA_ID_ALBUM}:")
                     val helper: dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper by inject()
                     helper.playAlbum(albumId)
                     return
                 }
+
                 mediaId == MediaBrowseHelper.MEDIA_ID_SAVED_TRACKS -> {
                     val helper: dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper by inject()
                     helper.playSavedTracks()
                     return
                 }
+
                 mediaId.startsWith("${MediaBrowseHelper.MEDIA_ID_ARTIST_TRACKS}:") -> {
                     mediaBrowseHelper.resolveAndPlayFromMediaId(mediaId)
                     return
@@ -384,17 +393,16 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         }
     }
 
-    private suspend fun buildCurrentMediaItemList(): List<Media3MediaItem> = withContext(Dispatchers.Main) {
-        val count = audioPlayer.player.mediaItemCount
-        val items = mutableListOf<Media3MediaItem>()
-        for (i in 0 until count) {
-            val item = audioPlayer.player.getMediaItemAt(i)
-            if (item != null) {
+    private suspend fun buildCurrentMediaItemList(): List<Media3MediaItem> =
+        withContext(Dispatchers.Main) {
+            val count = audioPlayer.player.mediaItemCount
+            val items = mutableListOf<Media3MediaItem>()
+            for (i in 0 until count) {
+                val item = audioPlayer.player.getMediaItemAt(i)
                 items.add(item)
             }
+            items
         }
-        items
-    }
 
     companion object {
         private const val TAG = "PlaybackService"

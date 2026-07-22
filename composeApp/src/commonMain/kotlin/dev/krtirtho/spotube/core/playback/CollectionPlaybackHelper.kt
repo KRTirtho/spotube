@@ -22,6 +22,7 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueCollectionEntry
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.modules.album.AlbumRepository
+import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.playlist.PlaylistRepository
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
 
@@ -30,6 +31,7 @@ class CollectionPlaybackHelper(
     private val playlistRepository: PlaylistRepository,
     private val savedTracksRepository: SavedTracksRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
+    private val blacklistRepository: BlacklistRepository,
 ) {
     suspend fun playAlbum(albumId: String) {
         if (audioPlayerQueue.isAlbumPlaying(albumId)) return
@@ -185,7 +187,13 @@ class CollectionPlaybackHelper(
             pagination?.items?.let { allTracks.addAll(it) }
         }
 
-        return allTracks.map { track ->
+        val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+        val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+
+        val filteredTracks = allTracks.filter { track ->
+            !isTrackBlacklisted(track, blacklistedTrackIds, blacklistedArtistIds)
+        }
+        return filteredTracks.map { track ->
             QueueEntry.StreamingTrack(track = track, url = "")
         }
     }
@@ -200,7 +208,16 @@ class CollectionPlaybackHelper(
             pagination?.items?.let { allTracks.addAll(it) }
         }
 
-        return allTracks.map { track ->
+        val blacklistedTracks = blacklistRepository.getTracksSnapshot()
+        val blacklistedArtists = blacklistRepository.getArtistsSnapshot()
+        val blacklistedTrackIds = blacklistedTracks.map { it.id }.toSet()
+        val blacklistedArtistIds = blacklistedArtists.map { it.id }.toSet()
+
+        val filteredTracks = allTracks.filter { track ->
+            !isTrackBlacklisted(track, blacklistedTrackIds, blacklistedArtistIds)
+        }
+        
+        return filteredTracks.map { track ->
             QueueEntry.StreamingTrack(track = track, url = "")
         }
     }
@@ -215,9 +232,23 @@ class CollectionPlaybackHelper(
             pagination?.items?.let { allTracks.addAll(it) }
         }
 
-        return allTracks.map { track ->
+        val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+        val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+
+        val filteredTracks = allTracks.filter { track ->
+            !isTrackBlacklisted(track, blacklistedTrackIds, blacklistedArtistIds)
+        }
+        return filteredTracks.map { track ->
             QueueEntry.StreamingTrack(track = track, url = "")
         }
+    }
+
+    private fun isTrackBlacklisted(
+        track: MetadataTrack,
+        blacklistedTrackIds: Set<String>,
+        blacklistedArtistIds: Set<String>,
+    ): Boolean {
+        return track.id in blacklistedTrackIds || track.artists.any { it.id in blacklistedArtistIds }
     }
 
     private fun MetadataTrack.matchesTrack(other: MetadataTrack): Boolean {

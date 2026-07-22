@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.core.audioplayer
 
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import dev.krtirtho.spotube.core.di.injectLogger
+import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.plugin.PluginProvider
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +45,7 @@ class DeviceAudioPlayerQueue(
     private val settingsProvider: SettingsProvider,
     private val repository: QueueStateRepository,
     private val pluginProvider: PluginProvider,
+    private val blacklistRepository: BlacklistRepository,
 ) : AudioPlayerQueue, KoinComponent {
 
     private val logger by injectLogger<DeviceAudioPlayerQueue>()
@@ -346,7 +348,22 @@ class DeviceAudioPlayerQueue(
                 return
             }
 
-            val newEntries = recommendations.map { track ->
+            val blacklistedTrackIds = blacklistRepository.blacklistedTracks.first().map { it.id }.toSet()
+            val blacklistedArtistIds = blacklistRepository.blacklistedArtists.first().map { it.id }.toSet()
+
+            val filteredRecommendations = recommendations.filter { track ->
+                val trackBlacklisted = track.id in blacklistedTrackIds
+                val artistBlacklisted = track.artists.any { it.id in blacklistedArtistIds }
+                !trackBlacklisted && !artistBlacklisted
+            }
+
+            if (filteredRecommendations.isEmpty()) {
+                logger.w { "Endless playback: all recommendations were blacklisted" }
+                isFetchingRecommendations = false
+                return
+            }
+
+            val newEntries = filteredRecommendations.map { track ->
                 QueueEntry.StreamingTrack(track = track, url = "")
             }
 

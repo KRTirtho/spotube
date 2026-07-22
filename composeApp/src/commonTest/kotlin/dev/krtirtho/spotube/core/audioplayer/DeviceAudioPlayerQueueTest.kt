@@ -28,6 +28,7 @@ class DeviceAudioPlayerQueueTest {
     private lateinit var fakeSettings: FakeSettingsProvider
     private lateinit var fakeRepo: FakeAudioPlayerQueueRepository
     private lateinit var fakePlugin: FakePluginProvider
+    private lateinit var fakeBlacklist: FakeBlacklistRepository
 
     @BeforeTest
     fun setup() {
@@ -40,6 +41,7 @@ class DeviceAudioPlayerQueueTest {
         fakeSettings = FakeSettingsProvider()
         fakeRepo = FakeAudioPlayerQueueRepository()
         fakePlugin = FakePluginProvider()
+        fakeBlacklist = FakeBlacklistRepository()
     }
 
     @AfterTest
@@ -48,7 +50,7 @@ class DeviceAudioPlayerQueueTest {
     }
 
     private fun createQueue(): DeviceAudioPlayerQueue {
-        return DeviceAudioPlayerQueue(fakePlayer, fakeSettings, fakeRepo, fakePlugin)
+        return DeviceAudioPlayerQueue(fakePlayer, fakeSettings, fakeRepo, fakePlugin, fakeBlacklist)
     }
 
     private fun streamingTrack(

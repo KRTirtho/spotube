@@ -60,6 +60,7 @@ val serializersConfig = SavedStateConfiguration {
             subclass(Routes.Playlist::class, Routes.Playlist.serializer())
             subclass(Routes.Artist::class, Routes.Artist.serializer())
             subclass(Routes.Album::class, Routes.Album.serializer())
+            subclass(Routes.Blacklist::class, Routes.Blacklist.serializer())
         }
     }
 }

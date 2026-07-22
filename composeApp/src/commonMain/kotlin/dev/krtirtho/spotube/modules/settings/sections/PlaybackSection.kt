@@ -18,20 +18,27 @@
 package dev.krtirtho.spotube.modules.settings.sections
 
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import compose.icons.FeatherIcons
+import compose.icons.feathericons.ChevronRight
 import compose.icons.feathericons.Cast
 import compose.icons.feathericons.Radio
 import compose.icons.feathericons.Repeat
 import compose.icons.feathericons.Server
 import compose.icons.feathericons.Sliders
 import spotube.composeapp.generated.resources.*
+import dev.krtirtho.spotube.core.navigation.NavigationCommands
+import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SelectionSettingCard
+import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
 import dev.krtirtho.spotube.modules.settings.components.SwitchSettingCard
 import dev.krtirtho.spotube.modules.settings.components.TextInputSettingCard
 import dev.krtirtho.spotube.resources.iconsax.CustomServer
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxForbidden
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlay
 import dev.krtirtho.spotube.resources.iconsax.IconsaxRepeatArrow
@@ -41,6 +48,7 @@ import org.jetbrains.compose.resources.stringResource
 internal fun LazyListScope.playbackSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
+    navigatorCommands: NavigationCommands,
 ) {
     val streamingFormats = availableAudioFormats(settings.streamingMusicFormat, streamingFormatPresets)
     val streamingQualities = availableAudioQualities(
@@ -157,6 +165,28 @@ internal fun LazyListScope.playbackSection(
                             copy(playbackProxyServerPort = value.toInt())
                         }
                     }
+                )
+            },
+            {
+                SettingCardItem(
+                    title = stringResource(Res.string.settings_blacklist_title),
+                    subtitle = stringResource(Res.string.settings_blacklist_subtitle),
+                    icon = {
+                        SettingsItemIcon(
+                            Iconsax.IconsaxForbidden,
+                            stringResource(Res.string.settings_blacklist_title),
+                        )
+                    },
+                    trailingContent = {
+                        Icon(
+                            imageVector = FeatherIcons.ChevronRight,
+                            contentDescription = stringResource(Res.string.settings_blacklist_title),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    },
+                    onClick = {
+                        navigatorCommands.navigateTo(Routes.Blacklist)
+                    },
                 )
             },
         )

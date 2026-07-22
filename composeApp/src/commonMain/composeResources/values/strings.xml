@@ -102,6 +102,9 @@
     <string name="settings_error_whole_number">Enter a valid whole number.</string>
     <string name="settings_error_port_range">Port must be between 1 and 65535.</string>
 
+    <string name="settings_blacklist_title">Blacklist</string>
+    <string name="settings_blacklist_subtitle">Manage blacklisted tracks and artists</string>
+
     <string name="settings_desktop_minimize_title">Minimize to tray</string>
     <string name="settings_desktop_minimize_subtitle">Keep Spotube running in the system tray when the window is minimized.</string>
     <string name="settings_desktop_discord_title">Discord rich presence</string>

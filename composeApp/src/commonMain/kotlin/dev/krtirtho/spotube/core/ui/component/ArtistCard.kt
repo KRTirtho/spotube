@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.style.TextAlign
@@ -50,17 +52,19 @@ import org.koin.compose.koinInject
 fun ArtistCard(
     artist: MetadataArtist.Basic,
     modifier: Modifier = Modifier,
+    isBlacklisted: Boolean = false,
 ) {
     val navigationCommands = koinInject<NavigationCommands>()
 
     AvatarCard(
         title = artist.name,
-        subtitle = "Artist",
+        subtitle = if (isBlacklisted) "Blacklisted" else "Artist",
         imageURL = artist.thumbnails.firstOrNull()?.url,
         onClick = {
             navigationCommands.navigateTo(Routes.Artist(artist.id))
         },
         modifier = modifier,
+        isBlacklisted = isBlacklisted,
     )
 }
 

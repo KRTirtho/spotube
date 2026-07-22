@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
@@ -57,18 +58,17 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun PlaylistScreen(playlistId: String) {
-    val audioPlayerQueue: AudioPlayerQueue = koinInject()
-    val audioPlayer: AudioPlayer = koinInject()
-    val shareService: ShareService = koinInject()
-    val downloadsViewModel: DownloadsViewModel = koinViewModel()
-    val libraryRepository: LibraryRepository = koinInject()
+fun PlaylistScreen(
+    playlistId: String,
+    viewModel: PlaylistViewModel,
+    audioPlayerQueue: AudioPlayerQueue,
+    audioPlayer: AudioPlayerInterface,
+    shareService: ShareService,
+    downloadsViewModel: DownloadsViewModel,
+    libraryRepository: LibraryRepository,
+    navigationCommands: NavigationCommands
+) {
     val scope = rememberCoroutineScope()
-    val viewModel = koinViewModel<PlaylistViewModel>(
-        key = playlistId,
-        parameters = { parametersOf(playlistId) }
-    )
-    val navigationCommands = koinInject<NavigationCommands>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val queue by audioPlayerQueue.queueFlow.collectAsStateWithLifecycle()
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
@@ -109,18 +109,20 @@ fun PlaylistScreen(playlistId: String) {
         playerState == PlayerState.PLAYING
 
     val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
+    val blacklistedTrackIds by viewModel.blacklistedTrackIds.collectAsStateWithLifecycle()
+    val blacklistedArtistIds by viewModel.blacklistedArtistIds.collectAsStateWithLifecycle()
 
     fun getTrackOptionsState(track: MetadataTrack): TrackOptionsState {
         val currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id
         val queueTrackIds = queue.mapNotNull { entry ->
             (entry as? QueueEntry.StreamingTrack)?.track?.id
         }.toSet()
-        return TrackOptionsState(
-            isInQueue = queueTrackIds.contains(track.id),
-            isCurrentlyPlaying = track.id == currentTrackId,
-            isFavorite = savedTrackIds.contains(track.id),
-            isBlacklisted = false,
-        )
+    return TrackOptionsState(
+        isInQueue = queueTrackIds.contains(track.id),
+        isCurrentlyPlaying = track.id == currentTrackId,
+        isFavorite = savedTrackIds.contains(track.id),
+        isBlacklisted = track.id in blacklistedTrackIds || track.artists.any { it.id in blacklistedArtistIds },
+    )
     }
 
     val errorMessage = (state as? PlaylistScreenState.Error)?.message

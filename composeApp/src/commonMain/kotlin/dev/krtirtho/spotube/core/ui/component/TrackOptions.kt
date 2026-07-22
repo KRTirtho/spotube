@@ -51,6 +51,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicCircle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlaylist
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemoveFilled
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShare
 
@@ -294,7 +295,7 @@ private fun buildTrackMenuItems(
 
     add(
         AdaptiveMenuItem(
-            icon = Iconsax.IconsaxMusicSquareRemove,
+            icon = Iconsax.IconsaxMusicSquareRemoveFilled,
             label = if (state.isBlacklisted) "Remove from blacklist" else "Add to blacklist",
             onClick = { onAction(TrackOptionsAction.ToggleBlacklist) },
         ),

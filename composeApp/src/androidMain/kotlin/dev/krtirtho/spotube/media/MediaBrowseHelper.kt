@@ -32,6 +32,7 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.modules.album.AlbumRepository
+import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.home.HomeScreenRepository
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.playlist.PlaylistRepository
@@ -52,6 +53,7 @@ class MediaBrowseHelper(
     private val collectionPlaybackHelper: CollectionPlaybackHelper,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val settingsRepository: SettingsRepository,
+    private val blacklistRepository: BlacklistRepository,
 ) {
 
     companion object {
@@ -532,7 +534,18 @@ class MediaBrowseHelper(
         } catch (_: Exception) {
             return
         }
-        val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
+        
+        val blacklistedTracks = blacklistRepository.getTracksSnapshot()
+        val blacklistedArtists = blacklistRepository.getArtistsSnapshot()
+        val blacklistedTrackIds = blacklistedTracks.map { it.id }.toSet()
+        val blacklistedArtistIds = blacklistedArtists.map { it.id }.toSet()
+        
+        val filteredTracks = tracks.filter { track ->
+            track.id !in blacklistedTrackIds && 
+            track.artists.none { it.id in blacklistedArtistIds }
+        }
+        
+        val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
         if (entries.isNotEmpty()) {
             audioPlayerQueue.load(entries, autoPlay = true, startPosition = 0)
         }

@@ -64,7 +64,7 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
@@ -85,36 +85,30 @@ import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.component.dragScrollable
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
-import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
-import dev.krtirtho.spotube.core.ui.misc.shimmerApply
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
+import dev.krtirtho.spotube.resources.iconsax.IconsaxUserRemove
 import dev.krtirtho.spotube.resources.iconsax.User
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 import kotlin.math.roundToInt
 
 @Composable
-fun ArtistScreen(artistId: String) {
-    val audioPlayerQueue: AudioPlayerQueue = koinInject()
-    val audioPlayer: AudioPlayer = koinInject()
-    val shareService: ShareService = koinInject()
-    val downloadsViewModel: DownloadsViewModel = koinViewModel()
-    val libraryRepository: LibraryRepository = koinInject()
+fun ArtistScreen(
+    viewModel: ArtistViewModel,
+    audioPlayerQueue: AudioPlayerQueue,
+    audioPlayer: AudioPlayerInterface,
+    shareService: ShareService,
+    downloadsViewModel: DownloadsViewModel,
+    libraryRepository: LibraryRepository,
+    navigationCommands: NavigationCommands
+) {
     val scope = rememberCoroutineScope()
-    val viewModel = koinViewModel<ArtistViewModel>(
-        key = artistId,
-        parameters = { parametersOf(artistId) }
-    )
-    val navigationCommands = koinInject<NavigationCommands>()
 
     val state by viewModel.state.collectAsStateWithLifecycle()
     val queue by audioPlayerQueue.queueFlow.collectAsStateWithLifecycle()
@@ -122,6 +116,8 @@ fun ArtistScreen(artistId: String) {
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
     val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
     val savedArtistIds by viewModel.savedArtistIds.collectAsStateWithLifecycle()
+    val blacklistedTrackIds by viewModel.blacklistedTrackIds.collectAsStateWithLifecycle()
+    val blacklistedArtistIds by viewModel.blacklistedArtistIds.collectAsStateWithLifecycle()
     var showAddToPlaylistPicker by remember { mutableStateOf(false) }
     var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
     var currentUserId by remember { mutableStateOf<String?>(null) }
@@ -139,7 +135,7 @@ fun ArtistScreen(artistId: String) {
             isInQueue = queueTrackIds.contains(track.id),
             isCurrentlyPlaying = track.id == currentTrackId,
             isFavorite = savedTrackIds.contains(track.id),
-            isBlacklisted = false,
+            isBlacklisted = track.id in blacklistedTrackIds || track.artists.any { it.id in blacklistedArtistIds },
         )
     }
 
@@ -191,6 +187,8 @@ fun ArtistScreen(artistId: String) {
                             artist = currentState.artist,
                             isSaved = savedArtistIds.contains(currentState.artist.id),
                             onFollowClick = viewModel::toggleSavedArtist,
+                            isBlacklisted = currentState.artist.id in blacklistedArtistIds,
+                            onBlacklistClick = { viewModel.toggleArtistBlacklist(currentState.artist) },
                         )
                     }
 
@@ -398,6 +396,8 @@ private fun ArtistHeaderCard(
     artist: MetadataArtist.Detailed,
     isSaved: Boolean,
     onFollowClick: () -> Unit,
+    isBlacklisted: Boolean,
+    onBlacklistClick: () -> Unit,
 ) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val isCompact = maxWidth < 600.dp
@@ -432,6 +432,8 @@ private fun ArtistHeaderCard(
                     ArtistHeaderActions(
                         isSaved = isSaved,
                         onFollowClick = onFollowClick,
+                        isBlacklisted = isBlacklisted,
+                        onBlacklistClick = onBlacklistClick,
                     )
                 }
             } else {
@@ -459,6 +461,8 @@ private fun ArtistHeaderCard(
                         ArtistHeaderActions(
                             isSaved = isSaved,
                             onFollowClick = onFollowClick,
+                            isBlacklisted = isBlacklisted,
+                            onBlacklistClick = onBlacklistClick,
                         )
                     }
                 }
@@ -547,6 +551,8 @@ private fun ArtistMeta(
 private fun ArtistHeaderActions(
     isSaved: Boolean,
     onFollowClick: () -> Unit,
+    isBlacklisted: Boolean,
+    onBlacklistClick: () -> Unit,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -559,6 +565,23 @@ private fun ArtistHeaderActions(
         } else {
             PrimaryButton(onClick = onFollowClick) {
                 Text("Follow", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
+            }
+        }
+
+        if (isBlacklisted) {
+            SecondaryIconButton(onClick = onBlacklistClick) {
+                Icon(
+                    imageVector = Iconsax.IconsaxUserRemove,
+                    contentDescription = "Remove from blacklist",
+                    tint = MaterialTheme.colorScheme.error,
+                )
+            }
+        } else {
+            SecondaryIconButton(onClick = onBlacklistClick) {
+                Icon(
+                    imageVector = Iconsax.IconsaxUserRemove,
+                    contentDescription = "Add to blacklist",
+                )
             }
         }
     }

@@ -28,11 +28,14 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
+import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -61,6 +64,7 @@ class ArtistViewModel(
     private val libraryRepository: LibraryRepository,
     private val savedTracksRepository: SavedTracksRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
+    private val blacklistRepository: BlacklistRepository,
 ) : ViewModel(), KoinComponent {
     private val logger by injectLogger<ArtistViewModel>()
 
@@ -73,6 +77,12 @@ class ArtistViewModel(
     val savedTrackIds
         get() = savedTracksRepository.savedTracksIdsFlow
 
+    private val _blacklistedTrackIds = MutableStateFlow<Set<String>>(emptySet())
+    val blacklistedTrackIds: StateFlow<Set<String>> = _blacklistedTrackIds.asStateFlow()
+
+    private val _blacklistedArtistIds = MutableStateFlow<Set<String>>(emptySet())
+    val blacklistedArtistIds: StateFlow<Set<String>> = _blacklistedArtistIds.asStateFlow()
+
     init {
         viewModelScope.launch {
             libraryRepository.savedArtistIdsFlow.collect {
@@ -82,6 +92,12 @@ class ArtistViewModel(
                 }
             }
         }
+        blacklistRepository.blacklistedTracks
+            .onEach { tracks -> _blacklistedTrackIds.value = tracks.map { it.id }.toSet() }
+            .launchIn(viewModelScope)
+        blacklistRepository.blacklistedArtists
+            .onEach { artists -> _blacklistedArtistIds.value = artists.map { it.id }.toSet() }
+            .launchIn(viewModelScope)
         loadOverview()
     }
 
@@ -98,6 +114,28 @@ class ArtistViewModel(
             } else {
                 libraryRepository.saveArtists(listOf(artistId))
             }
+        }
+    }
+
+    fun isArtistBlacklisted(artistId: String): Boolean {
+        return _blacklistedArtistIds.value.contains(artistId)
+    }
+
+    fun toggleArtistBlacklist(artist: MetadataArtist) {
+        viewModelScope.launch {
+            blacklistRepository.toggleArtist(artist)
+        }
+    }
+
+    fun isTrackBlacklisted(track: MetadataTrack): Boolean {
+        val trackIds = _blacklistedTrackIds.value
+        val artistIds = _blacklistedArtistIds.value
+        return track.id in trackIds || track.artists.any { it.id in artistIds }
+    }
+
+    fun toggleTrackBlacklist(track: MetadataTrack) {
+        viewModelScope.launch {
+            blacklistRepository.toggleTrack(track)
         }
     }
 
@@ -211,17 +249,32 @@ class ArtistViewModel(
             )
         }
     }
-
     fun addTracksToQueue(tracks: List<MetadataTrack>) {
         viewModelScope.launch {
-            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
+            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+            
+            val filteredTracks = tracks.filter { track ->
+                track.id !in blacklistedTrackIds && 
+                track.artists.none { it.id in blacklistedArtistIds }
+            }
+            
+            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
             audioPlayerQueue.addAllToQueue(entries)
         }
     }
 
     fun playTracksNext(tracks: List<MetadataTrack>) {
         viewModelScope.launch {
-            val entries = tracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
+            val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+            val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+            
+            val filteredTracks = tracks.filter { track ->
+                track.id !in blacklistedTrackIds && 
+                track.artists.none { it.id in blacklistedArtistIds }
+            }
+            
+            val entries = filteredTracks.map { QueueEntry.StreamingTrack(track = it, url = "") }
             audioPlayerQueue.addAllAfterCurrent(entries)
         }
     }
@@ -267,7 +320,7 @@ class ArtistViewModel(
                     }
                 }
                 is TrackOptionsAction.Download -> {}
-                is TrackOptionsAction.ToggleBlacklist -> {}
+                is TrackOptionsAction.ToggleBlacklist -> toggleTrackBlacklist(track)
                 is TrackOptionsAction.Share -> {}
                 is TrackOptionsAction.AddToPlaylist -> {}
             }
@@ -303,12 +356,23 @@ class ArtistViewModel(
         }
     }
 
-    private fun resolveTopTrackEntries(): List<QueueEntry> {
+    private suspend fun resolveTopTrackEntries(): List<QueueEntry> {
         val currentState = _state.value
         if (currentState !is ArtistScreenState.Loaded) return emptyList()
-        return currentState.topTracks.map { track ->
-            QueueEntry.StreamingTrack(track = track, url = "")
-        }
+        
+        val blacklistedTracks = blacklistRepository.getTracksSnapshot()
+        val blacklistedArtists = blacklistRepository.getArtistsSnapshot()
+        val blacklistedTrackIds = blacklistedTracks.map { it.id }.toSet()
+        val blacklistedArtistIds = blacklistedArtists.map { it.id }.toSet()
+        
+        return currentState.topTracks
+            .filter { track ->
+                track.id !in blacklistedTrackIds && 
+                track.artists.none { it.id in blacklistedArtistIds }
+            }
+            .map { track ->
+                QueueEntry.StreamingTrack(track = track, url = "")
+            }
     }
 
     private fun MetadataTrack.matchesTrack(other: MetadataTrack): Boolean {

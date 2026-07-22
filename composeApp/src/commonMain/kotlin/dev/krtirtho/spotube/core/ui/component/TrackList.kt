@@ -571,6 +571,7 @@ private fun TrackListRow(
         isSelected -> rowTheme.background.selected
         isCurrentTrack && isCurrentTrackPlaying -> rowTheme.background.hovered
         isCurrentTrack -> rowTheme.background.focused
+        trackOptionsState.isBlacklisted -> androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.error.copy(alpha = 0.1f))
         else -> rowTheme.background.normal
     }
     val highlightColor = Color.White.copy(

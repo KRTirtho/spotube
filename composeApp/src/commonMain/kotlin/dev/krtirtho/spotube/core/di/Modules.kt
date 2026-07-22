@@ -35,6 +35,8 @@ import dev.krtirtho.spotube.modules.album.AlbumRepository
 import dev.krtirtho.spotube.modules.album.AlbumViewModel
 import dev.krtirtho.spotube.modules.artist.ArtistRepository
 import dev.krtirtho.spotube.modules.artist.ArtistViewModel
+import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
+import dev.krtirtho.spotube.modules.blacklist.BlacklistViewModel
 import dev.krtirtho.spotube.modules.downloads.DownloadManager
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.home.HomeScreenRepository
@@ -125,12 +127,20 @@ val sharedModules = module {
             libraryRepository = get(),
             playbackHelper = get(),
             audioPlayerQueue = get(),
+            blacklistRepository = get(),
         )
     }
 
     // Saved Tracks
     singleOf(::SavedTracksRepository)
-    viewModelOf(::SavedTracksViewModel)
+    viewModel {
+        SavedTracksViewModel(
+            repository = get(),
+            playbackHelper = get(),
+            audioPlayerQueue = get(),
+            blacklistRepository = get(),
+        )
+    }
 
     // Artist
     singleOf(::ArtistRepository)
@@ -141,8 +151,13 @@ val sharedModules = module {
             libraryRepository = get(),
             savedTracksRepository = get(),
             audioPlayerQueue = get(),
+            blacklistRepository = get(),
         )
     }
+
+    // Blacklist
+    singleOf(::BlacklistRepository)
+    viewModelOf(::BlacklistViewModel)
 
     // Album
     singleOf(::AlbumRepository)
@@ -152,8 +167,9 @@ val sharedModules = module {
             repository = get(),
             savedTracksRepository = get(),
             playbackHelper = get(),
-            audioPlayerQueue = get(),
             libraryRepository = get(),
+            audioPlayerQueue = get(),
+            blacklistRepository = get(),
         )
     }
 
@@ -161,7 +177,15 @@ val sharedModules = module {
     viewModelOf(::LyricsViewModel)
 
     // Local playback proxy server
-    singleOf(::CollectionPlaybackHelper)
+    single {
+        CollectionPlaybackHelper(
+            albumRepository = get(),
+            playlistRepository = get(),
+            savedTracksRepository = get(),
+            audioPlayerQueue = get(),
+            blacklistRepository = get(),
+        )
+    }
     singleOf(::MatchedTracksRepository)
     singleOf(::StreamingUrlRepository)
     singleOf(::AlternativeTracksRepository)
@@ -170,7 +194,7 @@ val sharedModules = module {
     }
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {
-        DeviceAudioPlayerQueue(get(), get(), get(), get())
+        DeviceAudioPlayerQueue(get(), get(), get(), get(), get())
     }
 
     single { DiscordRpcService(get(), get()) } withOptions { createdAtStart() }
