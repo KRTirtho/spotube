@@ -155,6 +155,24 @@ class PluginDiscoverViewModel(
         }
     }
 
+    fun installPluginFromUrl(url: String, repoId: Long) {
+        if (_state.value.installingRepoId != null) return
+        _state.update { it.copy(installingRepoId = repoId, error = null) }
+        viewModelScope.launch {
+            runCatching {
+                pluginManager.addPluginFromURL(url)
+            }.onFailure { e ->
+                logger.e(e) { "Failed to install plugin" }
+                _state.update { it.copy(error = e.message) }
+            }
+            _state.update { it.copy(installingRepoId = null) }
+        }
+    }
+
+    suspend fun getReleases(owner: String, repo: String): List<GitHubRelease> {
+        return gitHubRepo.getReleases(owner, repo)
+    }
+
     override fun onCleared() {
         gitHubRepo.close()
         super.onCleared()

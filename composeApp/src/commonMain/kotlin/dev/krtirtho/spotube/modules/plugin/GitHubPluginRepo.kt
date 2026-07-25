@@ -55,8 +55,12 @@ data class GitHubOwner(
 @Serializable
 data class GitHubRelease(
     @SerialName("tag_name") val tagName: String,
+    val name: String? = null,
+    val body: String? = null,
     val assets: List<GitHubAsset>,
     @SerialName("html_url") val htmlUrl: String,
+    val prerelease: Boolean = false,
+    val draft: Boolean = false,
 )
 
 @Serializable
@@ -98,6 +102,20 @@ class GitHubPluginRepository {
             release.assets.firstOrNull { it.name.endsWith(".smplug") }?.browserDownloadUrl
         } catch (_: Exception) {
             null
+        }
+    }
+
+    suspend fun getReleases(owner: String, repo: String, perPage: Int = 30): List<GitHubRelease> {
+        return try {
+            httpClient.get("https://api.github.com/repos/$owner/$repo/releases") {
+                headers {
+                    append("Accept", "application/vnd.github+json")
+                    append("X-GitHub-Api-Version", "2022-11-28")
+                }
+                parameter("per_page", perPage)
+            }.body()
+        } catch (_: Exception) {
+            emptyList()
         }
     }
 

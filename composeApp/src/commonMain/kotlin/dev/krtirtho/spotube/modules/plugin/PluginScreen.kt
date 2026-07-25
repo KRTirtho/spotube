@@ -80,6 +80,7 @@ import dev.krtirtho.spotube.core.ui.component.HeaderDisplayMode
 import dev.krtirtho.spotube.core.webview.WebViewController
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.modules.plugin.components.PluginCard
+import dev.krtirtho.spotube.modules.plugin.components.PluginInstallDialog
 import dev.krtirtho.spotube.modules.plugin.components.PluginPermissionDialog
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.openUrlInBrowser
@@ -169,6 +170,10 @@ fun PluginScreen(
     var showPluginSupport by remember { mutableStateOf<PluginEntry?>(null) }
     var supportText by remember { mutableStateOf<String?>(null) }
     var isLoadingSupport by remember { mutableStateOf(false) }
+
+    var installDialogRepo by remember { mutableStateOf<GitHubRepo?>(null) }
+    var releases by remember { mutableStateOf<List<GitHubRelease>>(emptyList()) }
+    var isLoadingReleases by remember { mutableStateOf(false) }
 
     val pleaseEnterUrl = stringResource(Res.string.plugin_error_enter_url)
     val urlSchemeError = stringResource(Res.string.plugin_error_url_scheme)
@@ -365,6 +370,22 @@ fun PluginScreen(
                 )
             }
         }
+    }
+
+    installDialogRepo?.let { repo ->
+        PluginInstallDialog(
+            repo = repo,
+            releases = releases,
+            isLoadingReleases = isLoadingReleases,
+            onDismiss = { installDialogRepo = null },
+            onInstall = { release ->
+                installDialogRepo = null
+                val smplugUrl = release.assets.firstOrNull { it.name.endsWith(".smplug") }?.browserDownloadUrl
+                if (smplugUrl != null) {
+                    discoverViewModel.installPluginFromUrl(smplugUrl, repo.id)
+                }
+            }
+        )
     }
 
     if (showInstallSheet) {
@@ -912,7 +933,16 @@ fun PluginScreen(
                                             }
                                         }
                                         SecondaryButton(
-                                            onClick = { discoverViewModel.installPlugin(repo) },
+                                            onClick = {
+                                                installDialogRepo = repo
+                                                isLoadingReleases = true
+                                                releases = emptyList()
+                                                scope.launch {
+                                                    val parts = repo.fullName.split("/")
+                                                    releases = discoverViewModel.getReleases(parts[0], parts[1])
+                                                    isLoadingReleases = false
+                                                }
+                                            },
                                             enabled = !isInstalling
                                         ) {
                                             if (isInstalling) {
