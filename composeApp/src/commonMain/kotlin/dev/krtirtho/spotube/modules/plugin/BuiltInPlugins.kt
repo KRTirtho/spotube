@@ -27,7 +27,11 @@ val NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN = PluginEntry(
         PluginCapability.NETWORK_REQUESTS,
         PluginCapability.PERSISTENT_STORAGE
     ),
-    abilities = listOf(PluginAbility.AUDIO)
+    abilities = listOf(PluginAbility.AUDIO),
+    contact = "",
+    repository = "",
+    bugs = "",
+    license = "",
 )
 val LRCLIB_BUILT_IN_PLUGIN = PluginEntry(
     name = "LRCLib Lyrics",
@@ -38,7 +42,11 @@ val LRCLIB_BUILT_IN_PLUGIN = PluginEntry(
     capabilities = listOf(
         PluginCapability.NETWORK_REQUESTS,
     ),
-    abilities = listOf(PluginAbility.LYRICS)
+    abilities = listOf(PluginAbility.LYRICS),
+    contact = "",
+    repository = "",
+    bugs = "",
+    license = "",
 )
 val BUILT_IN_PLUGINS = listOf(
     NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN,

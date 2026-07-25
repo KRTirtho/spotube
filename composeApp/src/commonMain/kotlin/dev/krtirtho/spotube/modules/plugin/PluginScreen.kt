@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.modules.plugin
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,6 +31,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -41,6 +44,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,16 +54,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.request.crossfade
 import dev.krtirtho.spotube.PlatformType
+import dev.krtirtho.spotube.core.extras.kebabToTitleCase
 import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
+import dev.krtirtho.spotube.core.ui.base.SecondaryButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.base.TextField
+import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
@@ -67,21 +79,21 @@ import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.HeaderDisplayMode
 import dev.krtirtho.spotube.core.webview.WebViewController
 import dev.krtirtho.spotube.getPlatform
-import dev.krtirtho.spotube.openUrlInBrowser
 import dev.krtirtho.spotube.modules.plugin.components.PluginCard
 import dev.krtirtho.spotube.modules.plugin.components.PluginPermissionDialog
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
+import dev.krtirtho.spotube.openUrlInBrowser
+import dev.krtirtho.spotube.resources.iconsax.CarbonGithubLogo
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAdd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import dev.krtirtho.spotube.resources.iconsax.IconsaxBox
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
-import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentDownload
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentText
-import dev.krtirtho.spotube.resources.iconsax.IconsaxGlobe
-import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
 import dev.krtirtho.spotube.resources.iconsax.IconsaxEdit
 import dev.krtirtho.spotube.resources.iconsax.IconsaxExportArrowBulk
+import dev.krtirtho.spotube.resources.iconsax.IconsaxGlobe
+import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
 import dev.krtirtho.spotube.resources.iconsax.IconsaxImportArrow2Bulk
 import dev.krtirtho.spotube.resources.iconsax.IconsaxLink
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusic
@@ -92,20 +104,9 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import net.swiftzer.semver.SemVer
 import okio.FileSystem
 import okio.Path.Companion.toPath
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.ui.platform.LocalDensity
-import coil3.compose.AsyncImage
-import coil3.compose.LocalPlatformContext
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import dev.krtirtho.spotube.core.extras.kebabToTitleCase
-import dev.krtirtho.spotube.core.ui.base.SecondaryButton
-import dev.krtirtho.spotube.resources.iconsax.CarbonGithubLogo
 import okio.SYSTEM
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
@@ -164,6 +165,11 @@ fun PluginScreen(
     val discoverViewModel: PluginDiscoverViewModel = koinViewModel()
     val discoverState by discoverViewModel.state.collectAsStateWithLifecycle()
 
+    var showPluginInfo by remember { mutableStateOf<PluginEntry?>(null) }
+    var showPluginSupport by remember { mutableStateOf<PluginEntry?>(null) }
+    var supportText by remember { mutableStateOf<String?>(null) }
+    var isLoadingSupport by remember { mutableStateOf(false) }
+
     val pleaseEnterUrl = stringResource(Res.string.plugin_error_enter_url)
     val urlSchemeError = stringResource(Res.string.plugin_error_url_scheme)
     val downloadFailed = stringResource(Res.string.plugin_error_download_failed)
@@ -203,9 +209,8 @@ fun PluginScreen(
     }
 
     pendingPlugin?.let { pending ->
-        val logoPath = remember(pending.existingEntry?.id) {
-            val existingId = pending.existingEntry?.id ?: return@remember null
-            val path = pluginManager.pluginsDirPath / existingId.toPath() / "logo.png".toPath()
+        val logoPath = remember(pending.entry.id) {
+            val path = pluginManager.pluginsDirPath / pending.entry.id.toPath() / "logo.png".toPath()
             if (FileSystem.SYSTEM.exists(path)) path else null
         }
         PluginPermissionDialog(
@@ -222,6 +227,144 @@ fun PluginScreen(
             },
             onDismiss = { pluginManager.dismissInstall() }
         )
+    }
+
+    showPluginInfo?.let { plugin ->
+        val logoPath = remember(plugin.id) {
+            val path = pluginManager.pluginsDirPath / plugin.id.toPath() / "logo.png".toPath()
+            if (FileSystem.SYSTEM.exists(path)) path else null
+        }
+        ThemedDialog(
+            onDismissRequest = { showPluginInfo = null },
+            title = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(RoundedCornerShape(12.dp)),
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                    ) {
+                        if (logoPath != null) {
+                            val platformContext = LocalPlatformContext.current
+                            AsyncImage(
+                                model = ImageRequest.Builder(platformContext)
+                                    .data(logoPath.toString())
+                                    .crossfade(true)
+                                    .build(),
+                                contentDescription = plugin.name,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        } else {
+                            Box(contentAlignment = Alignment.Center) {
+                                Icon(
+                                    Iconsax.IconsaxBox,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(24.dp),
+                                    tint = MaterialTheme.colorScheme.primary
+                                )
+                            }
+                        }
+                    }
+                    Text(
+                        plugin.name,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }
+            },
+            actions = {
+                PrimaryButton(onClick = { showPluginInfo = null }) {
+                    Text("Close")
+                }
+            }
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (plugin.description.isNotBlank()) {
+                    Text(
+                        plugin.description,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+
+                DetailRow("Version", plugin.version)
+                DetailRow("API Version", plugin.apiVersion)
+                DetailRow("Author", plugin.author)
+                if (plugin.license.isNotBlank()) {
+                    DetailRow("License", plugin.license)
+                }
+
+                if (plugin.capabilities.isNotEmpty()) {
+                    DetailChipsRow("Capabilities", plugin.capabilities.map { it.name })
+                }
+
+                if (plugin.abilities.isNotEmpty()) {
+                    DetailChipsRow("Abilities", plugin.abilities.map { ability ->
+                        when (ability) {
+                            PluginAbility.METADATA -> "Metadata"
+                            PluginAbility.AUDIO -> "Audio"
+                            PluginAbility.LYRICS -> "Lyrics"
+                            PluginAbility.SCROBBLE -> "Scrobble"
+                        }
+                    })
+                }
+
+                if (plugin.repository.isNotBlank()) {
+                    ClickableDetailRow(label = "Repository", value = plugin.repository) {
+                        openUrlInBrowser(plugin.repository)
+                    }
+                }
+
+                if (plugin.contact.isNotBlank()) {
+                    DetailRow("Contact", plugin.contact)
+                }
+
+                if (plugin.bugs.isNotBlank()) {
+                    ClickableDetailRow(label = "Report Bugs", value = plugin.bugs) {
+                        openUrlInBrowser(plugin.bugs)
+                    }
+                }
+            }
+        }
+    }
+
+    showPluginSupport?.let { plugin ->
+        ThemedDialog(
+            onDismissRequest = { showPluginSupport = null; supportText = null },
+            title = {
+                Text(
+                    "Support ${plugin.name}",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
+            actions = {
+                PrimaryButton(onClick = { showPluginSupport = null; supportText = null }) {
+                    Text("Close")
+                }
+            }
+        ) {
+            if (isLoadingSupport) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            } else {
+                Text(
+                    supportText ?: "",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
     }
 
     if (showInstallSheet) {
@@ -539,6 +682,23 @@ fun PluginScreen(
                                                 },
                                                 isLoggedIn = isLoggedIn,
                                                 logoPath = logoPath,
+                                                onInfo = { showPluginInfo = plugin },
+                                                onSupport = if (selectedService != null) {
+                                                    {
+                                                        isLoadingSupport = true
+                                                        scope.launch {
+                                                            showPluginSupport = plugin
+                                                            val version = SemVer.parse(plugin.version)
+                                                            selectedService.use {
+                                                                supportText =
+                                                                    coreAPI.supportMarkdownText(version)
+                                                            }
+                                                            isLoadingSupport = false
+                                                        }
+                                                    }
+                                                } else {
+                                                    null
+                                                },
                                                 onLogin = if (requiresAuth && selectedService != null) {
                                                     {
                                                         pluginManager.launchTask {
@@ -817,6 +977,78 @@ fun PluginScreen(
                             discoverViewModel.loadNextPage()
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DetailRow(label: String, value: String) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            "$label:",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.widthIn(min = 90.dp)
+        )
+        Text(
+            value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
+
+@Composable
+private fun ClickableDetailRow(label: String, value: String, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            "$label:",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.widthIn(min = 90.dp)
+        )
+        Text(
+            value,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.primary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun DetailChipsRow(label: String, chips: List<String>) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Text(
+            "$label:",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.widthIn(min = 90.dp)
+        )
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            chips.forEach { chip ->
+                Surface(
+                    shape = RoundedCornerShape(4.dp),
+                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+                ) {
+                    Text(
+                        chip,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
+                    )
                 }
             }
         }

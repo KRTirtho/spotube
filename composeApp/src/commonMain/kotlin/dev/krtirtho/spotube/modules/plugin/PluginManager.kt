@@ -325,6 +325,15 @@ class PluginManager(
                     throw IllegalArgumentException("Invalid plugin.json format: ${e.message}")
                 }
 
+                // Preserve logo.png before deleting temp dir so the permission dialog can show it
+                val logoPngPath = tempDir / "logo.png".toPath()
+                if (FileSystem.SYSTEM.exists(logoPngPath)) {
+                    val logoDir = pluginsDirPath / pluginEntry.id.toPath()
+                    if (!FileSystem.SYSTEM.exists(logoDir)) FileSystem.SYSTEM.createDirectories(logoDir)
+                    val destLogo = logoDir / "logo.png".toPath()
+                    FileSystem.SYSTEM.copy(logoPngPath, destLogo)
+                }
+
                 pendingPlugin.value = buildPendingPlugin(pluginEntry, bytes)
             } catch (e: Exception) {
                 throw Exception("Failed to read plugin: ${e.message}", e)

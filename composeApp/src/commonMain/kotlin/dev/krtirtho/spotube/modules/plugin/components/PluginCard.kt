@@ -52,6 +52,8 @@ import dev.krtirtho.spotube.modules.plugin.PluginEntry
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxBox
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxInformation
+import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTag
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
 import dev.krtirtho.spotube.resources.iconsax.User
@@ -76,6 +78,8 @@ internal fun PluginCard(
     isLoggedIn: Boolean,
     onLogin: (() -> Unit)? = null,
     onLogout: (() -> Unit)? = null,
+    onInfo: (() -> Unit)? = null,
+    onSupport: (() -> Unit)? = null,
     logoPath: Path? = null,
 ) {
     Row(
@@ -234,28 +238,50 @@ internal fun PluginCard(
             Column(
                 modifier = Modifier.align(Alignment.Bottom),
                 horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                if (plugin in BUILT_IN_PLUGINS) {
-                    // Built-in plugins cannot be removed
-                    Text(
-                        stringResource(Res.string.plugin_state_builtin),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                            .border(
-                                BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                                shape = RoundedCornerShape(6.dp)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (onInfo != null) {
+                        GhostIconButton(onClick = onInfo) {
+                            Icon(
+                                Iconsax.IconsaxInformation,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                } else {
-                    GhostIconButton(onClick = onRemove) {
-                        Icon(
-                            Iconsax.IconsaxTrash,
-                            contentDescription = stringResource(Res.string.plugin_action_remove),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        }
+                    }
+                    if (onSupport != null) {
+                        GhostIconButton(onClick = onSupport) {
+                            Icon(
+                                Iconsax.IconsaxHeart,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                    if (plugin in BUILT_IN_PLUGINS) {
+                        Text(
+                            stringResource(Res.string.plugin_state_builtin),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                                .border(
+                                    BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                    shape = RoundedCornerShape(6.dp)
+                                )
+                                .padding(horizontal = 6.dp, vertical = 2.dp)
                         )
+                    } else {
+                        GhostIconButton(onClick = onRemove) {
+                            Icon(
+                                Iconsax.IconsaxTrash,
+                                contentDescription = stringResource(Res.string.plugin_action_remove),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
                     }
                 }
 

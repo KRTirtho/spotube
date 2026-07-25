@@ -61,9 +61,9 @@ class PluginDiscoverViewModel(
         viewModelScope.launch {
             pluginManager.state.collect { pluginState ->
                 if (pluginState is PluginManagerStates.Data) {
-                    val installedAuthors = pluginState.plugins.map { it.author }.toSet()
+                    val installedUrls = pluginState.plugins.mapNotNull { it.repository.takeIf { r -> r.isNotBlank() } }.toSet()
                     _state.update {
-                        it.copy(repos = _allRepos.filter { repo -> repo.owner.login !in installedAuthors })
+                        it.copy(repos = _allRepos.filter { repo -> repo.htmlUrl !in installedUrls })
                     }
                 }
             }
@@ -74,8 +74,8 @@ class PluginDiscoverViewModel(
     private fun filterInstalled(repos: List<GitHubRepo>): List<GitHubRepo> {
         val pluginState = pluginManager.state.value
         if (pluginState !is PluginManagerStates.Data) return repos
-        val installedAuthors = pluginState.plugins.map { it.author }.toSet()
-        return repos.filter { it.owner.login !in installedAuthors }
+        val installedUrls = pluginState.plugins.mapNotNull { it.repository.takeIf { r -> r.isNotBlank() } }.toSet()
+        return repos.filter { it.htmlUrl !in installedUrls }
     }
 
     private fun loadFirstPage() {
