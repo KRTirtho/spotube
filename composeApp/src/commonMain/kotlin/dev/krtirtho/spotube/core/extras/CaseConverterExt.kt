@@ -15,28 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.krtirtho.spotube
+package dev.krtirtho.spotube.core.extras
 
-enum class PlatformType {
-    Android, IOS, Windows, Linux, MacOS, Unknown
-}
-
-interface Platform {
-    val name: String
-    val type: PlatformType
-}
-
-expect fun getPlatform(): Platform
-
-expect fun openUrlInBrowser(url: String)
-
-fun Platform.isDesktop(): Boolean {
-    return type == PlatformType.Windows ||
-            type == PlatformType.Linux ||
-            type == PlatformType.MacOS
-}
-
-fun Platform.isMobile(): Boolean {
-    return type == PlatformType.Android ||
-            type == PlatformType.IOS
+fun String.kebabToTitleCase(): String {
+    return this.split("-").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
 }

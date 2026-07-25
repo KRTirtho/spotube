@@ -51,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.PlatformType
@@ -66,6 +67,7 @@ import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.HeaderDisplayMode
 import dev.krtirtho.spotube.core.webview.WebViewController
 import dev.krtirtho.spotube.getPlatform
+import dev.krtirtho.spotube.openUrlInBrowser
 import dev.krtirtho.spotube.modules.plugin.components.PluginCard
 import dev.krtirtho.spotube.modules.plugin.components.PluginPermissionDialog
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
@@ -73,7 +75,11 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAdd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import dev.krtirtho.spotube.resources.iconsax.IconsaxBox
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
+import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentDownload
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentText
+import dev.krtirtho.spotube.resources.iconsax.IconsaxGlobe
+import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
 import dev.krtirtho.spotube.resources.iconsax.IconsaxEdit
 import dev.krtirtho.spotube.resources.iconsax.IconsaxExportArrowBulk
 import dev.krtirtho.spotube.resources.iconsax.IconsaxImportArrow2Bulk
@@ -86,8 +92,24 @@ import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import okio.FileSystem
+import okio.Path.Companion.toPath
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.platform.LocalDensity
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import dev.krtirtho.spotube.core.extras.kebabToTitleCase
+import dev.krtirtho.spotube.core.ui.base.SecondaryButton
+import dev.krtirtho.spotube.resources.iconsax.CarbonGithubLogo
+import okio.SYSTEM
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import org.koin.compose.viewmodel.koinViewModel
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_action_download
 import spotube.composeapp.generated.resources.plugin_action_install_from_file
@@ -103,6 +125,7 @@ import spotube.composeapp.generated.resources.plugin_installed_plural
 import spotube.composeapp.generated.resources.plugin_installed_singular
 import spotube.composeapp.generated.resources.plugin_screen_title
 import spotube.composeapp.generated.resources.plugin_section_file_title
+import spotube.composeapp.generated.resources.plugin_section_install
 import spotube.composeapp.generated.resources.plugin_section_url_title
 import spotube.composeapp.generated.resources.plugin_url_placeholder
 import spotube.composeapp.generated.resources.settings_plugins_ability_audio
@@ -115,6 +138,10 @@ import spotube.composeapp.generated.resources.settings_plugins_default_ability_t
 import spotube.composeapp.generated.resources.settings_plugins_no_plugins
 import spotube.composeapp.generated.resources.settings_plugins_no_selection
 import spotube.composeapp.generated.resources.settings_plugins_plugin_content_description
+
+private val OFFICIAL_PLUGIN_OWNERS = setOf("KRTirtho", "team-spotube")
+
+private val VERIFIED_PLUGIN_OWNERS = setOf<String>()
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -133,6 +160,9 @@ fun PluginScreen(
     var urlError by remember { mutableStateOf<String?>(null) }
     var isLoadingUrl by remember { mutableStateOf(false) }
     var showInstallSheet by remember { mutableStateOf(false) }
+
+    val discoverViewModel: PluginDiscoverViewModel = koinViewModel()
+    val discoverState by discoverViewModel.state.collectAsStateWithLifecycle()
 
     val pleaseEnterUrl = stringResource(Res.string.plugin_error_enter_url)
     val urlSchemeError = stringResource(Res.string.plugin_error_url_scheme)
@@ -173,12 +203,18 @@ fun PluginScreen(
     }
 
     pendingPlugin?.let { pending ->
+        val logoPath = remember(pending.existingEntry?.id) {
+            val existingId = pending.existingEntry?.id ?: return@remember null
+            val path = pluginManager.pluginsDirPath / existingId.toPath() / "logo.png".toPath()
+            if (FileSystem.SYSTEM.exists(path)) path else null
+        }
         PluginPermissionDialog(
             pluginInfo = pending.entry,
             title = pending.title,
             message = pending.message,
             confirmLabel = pending.confirmLabel,
             existingPlugin = pending.existingEntry,
+            logoPath = logoPath,
             onConfirm = if (pending.kind != PluginManager.InstallPromptKind.INFO && pending.confirmLabel != null) {
                 { pluginManager.confirmInstall() }
             } else {
@@ -301,7 +337,9 @@ fun PluginScreen(
                         .fillMaxSize()
                         .padding(innerPadding)
                 ) {
+                    val discoverListState = rememberLazyListState()
                     LazyColumn(
+                        state = discoverListState,
                         modifier = Modifier.widthIn(max = 1280.dp).align(Alignment.TopCenter),
                         contentPadding = PaddingValues(
                             start = 12.dp,
@@ -487,6 +525,12 @@ fun PluginScreen(
                                                 }
                                             }
 
+                                            val logoPath = remember(plugin.id) {
+                                                val path =
+                                                    pluginManager.pluginsDirPath / plugin.id.toPath() / "logo.png".toPath()
+                                                if (FileSystem.SYSTEM.exists(path)) path else null
+                                            }
+
                                             PluginCard(
                                                 plugin = plugin,
                                                 isSelected = isSelected,
@@ -494,6 +538,7 @@ fun PluginScreen(
                                                     scope.launch { pluginManager.removePlugin(plugin) }
                                                 },
                                                 isLoggedIn = isLoggedIn,
+                                                logoPath = logoPath,
                                                 onLogin = if (requiresAuth && selectedService != null) {
                                                     {
                                                         pluginManager.launchTask {
@@ -519,6 +564,257 @@ fun PluginScreen(
                                     }
                                 }
                             }
+                        }
+
+                        // ── Discover plugins ─────────────────────────
+                        if (discoverState.isLoading || discoverState.repos.isNotEmpty()) {
+                            item {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 4.dp, vertical = 12.dp),
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Icon(
+                                        Iconsax.IconsaxGlobe,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(18.dp),
+                                        tint = MaterialTheme.colorScheme.primary
+                                    )
+                                    Text(
+                                        "Discover Plugins",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+                            }
+                            items(
+                                discoverState.repos,
+                                key = { it.id }
+                            ) { repo ->
+                                val isOfficial = repo.owner.login in OFFICIAL_PLUGIN_OWNERS
+                                val isVerified = repo.owner.login in VERIFIED_PLUGIN_OWNERS
+                                val isInstalling = discoverState.installingRepoId == repo.id
+                                Card(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 4.dp)
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                    ) {
+                                        val platformContext = LocalPlatformContext.current
+                                        AsyncImage(
+                                            model = ImageRequest.Builder(platformContext)
+                                                .data(repo.owner.avatarUrl)
+                                                .crossfade(true)
+                                                .build(),
+                                            contentDescription = repo.owner.login,
+                                            modifier = Modifier
+                                                .size(36.dp)
+                                                .clip(RoundedCornerShape(8.dp))
+                                        )
+                                        Column(
+                                            modifier = Modifier.weight(1f),
+                                            verticalArrangement = Arrangement.spacedBy(2.dp)
+                                        ) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                                            ) {
+                                                Text(
+                                                    repo.fullName.split("/")
+                                                        .last()
+                                                        .replace("spotube-plugin-", "")
+                                                        .kebabToTitleCase(),
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    fontWeight = FontWeight.SemiBold,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    modifier = Modifier.weight(1f, fill = false)
+                                                )
+                                                if (isOfficial) {
+                                                    Surface(
+                                                        shape = RoundedCornerShape(4.dp),
+                                                        color = MaterialTheme.colorScheme.primary.copy(
+                                                            alpha = 0.15f
+                                                        )
+                                                    ) {
+                                                        Text(
+                                                            "Official",
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            color = MaterialTheme.colorScheme.primary,
+                                                            modifier = Modifier.padding(
+                                                                horizontal = 5.dp,
+                                                                vertical = 1.dp
+                                                            )
+                                                        )
+                                                    }
+                                                } else if (isVerified) {
+                                                    Surface(
+                                                        shape = RoundedCornerShape(4.dp),
+                                                        color = Color(0xFF4CAF50).copy(alpha = 0.15f)
+                                                    ) {
+                                                        Row(
+                                                            modifier = Modifier.padding(
+                                                                horizontal = 5.dp,
+                                                                vertical = 1.dp
+                                                            ),
+                                                            verticalAlignment = Alignment.CenterVertically,
+                                                            horizontalArrangement = Arrangement.spacedBy(
+                                                                2.dp
+                                                            )
+                                                        ) {
+                                                            Icon(
+                                                                Iconsax.IconsaxCheckCircle,
+                                                                contentDescription = null,
+                                                                modifier = Modifier.size(10.dp),
+                                                                tint = Color(0xFF4CAF50)
+                                                            )
+                                                            Text(
+                                                                "Verified",
+                                                                style = MaterialTheme.typography.labelSmall,
+                                                                color = Color(0xFF4CAF50)
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (!repo.description.isNullOrBlank()) {
+                                                Text(
+                                                    repo.description,
+                                                    style = MaterialTheme.typography.bodySmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                    maxLines = 2,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                            ) {
+                                                Text(
+                                                    repo.owner.login,
+                                                    style = MaterialTheme.typography.labelSmall,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.spacedBy(3.dp)
+                                                ) {
+                                                    Icon(
+                                                        Iconsax.IconsaxHeart,
+                                                        contentDescription = "Github Stars",
+                                                        modifier = Modifier.size(11.dp),
+                                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                    Text(
+                                                        repo.stargazersCount.toString(),
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                                Surface(
+                                                    shape = RoundedCornerShape(4.dp),
+                                                    color = MaterialTheme.colorScheme.surfaceVariant,
+                                                    modifier = Modifier.clickable {
+                                                        openUrlInBrowser(repo.htmlUrl)
+                                                    }
+                                                ) {
+                                                    Row(
+                                                        modifier = Modifier.padding(
+                                                            horizontal = 5.dp,
+                                                            vertical = 2.dp
+                                                        ),
+                                                        verticalAlignment = Alignment.CenterVertically,
+                                                        horizontalArrangement = Arrangement.spacedBy(
+                                                            3.dp
+                                                        )
+                                                    ) {
+                                                        Icon(
+                                                            Iconsax.CarbonGithubLogo,
+                                                            contentDescription = "Github Repository URL",
+                                                            modifier = Modifier.size(10.dp),
+                                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                        Text(
+                                                            "github.com",
+                                                            style = MaterialTheme.typography.labelSmall,
+                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        SecondaryButton(
+                                            onClick = { discoverViewModel.installPlugin(repo) },
+                                            enabled = !isInstalling
+                                        ) {
+                                            if (isInstalling) {
+                                                CircularProgressIndicator(
+                                                    modifier = Modifier.size(16.dp),
+                                                    strokeWidth = 2.dp
+                                                )
+                                            } else {
+                                                Icon(
+                                                    Iconsax.IconsaxAdd,
+                                                    contentDescription = null,
+                                                )
+                                            }
+                                            Text(stringResource(Res.string.plugin_section_install))
+                                        }
+                                    }
+                                }
+                            }
+
+                            if (discoverState.isLoadingMore) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 16.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                    }
+                                }
+                            }
+
+                            if (discoverState.error != null) {
+                                item {
+                                    Text(
+                                        discoverState.error ?: "",
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.padding(
+                                            horizontal = 4.dp,
+                                            vertical = 8.dp
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    val density = LocalDensity.current
+                    val shouldLoadMore = remember(density) {
+                        derivedStateOf {
+                            val totalItems = discoverListState.layoutInfo.totalItemsCount
+                            val lastVisibleIndex =
+                                discoverListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                                    ?: 0
+                            totalItems > 0 && lastVisibleIndex >= totalItems - 3
+                        }
+                    }
+
+                    LaunchedEffect(shouldLoadMore.value) {
+                        if (shouldLoadMore.value) {
+                            discoverViewModel.loadNextPage()
                         }
                     }
                 }

@@ -80,6 +80,7 @@ class PluginManager(
     }
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate + pluginExceptionHandler)
     private val pluginsDir = "${paths.getApplicationDataDirPath()}/plugins".toPath()
+    val pluginsDirPath: Path get() = pluginsDir
     private val httpClient = HttpClient()
 
 

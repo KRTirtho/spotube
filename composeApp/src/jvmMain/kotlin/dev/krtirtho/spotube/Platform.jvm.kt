@@ -17,6 +17,9 @@
 
 package dev.krtirtho.spotube
 
+import java.awt.Desktop
+import java.net.URI
+
 class JVMPlatform : Platform {
     override val name: String = "Java ${System.getProperty("java.version")}"
     override val type: PlatformType = System.getProperty("os.name").let { osName ->
@@ -34,3 +37,7 @@ class JVMPlatform : Platform {
 }
 
 actual fun getPlatform(): Platform = JVMPlatform()
+
+actual fun openUrlInBrowser(url: String) {
+    Desktop.getDesktop().browse(URI(url))
+}

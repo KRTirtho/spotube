@@ -151,6 +151,7 @@
     <string name="plugin_action_logout">Logout</string>
     <string name="plugin_section_url_title">Download from URL</string>
     <string name="plugin_section_file_title">Install from file</string>
+    <string name="plugin_section_install">Install</string>
 
     <string name="plugin_permissions_author_version">• %1$s</string>
     <string name="plugin_permissions_requested_title">Permissions requested</string>

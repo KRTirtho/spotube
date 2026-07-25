@@ -18,20 +18,28 @@
 package dev.krtirtho.spotube.modules.plugin
 
 import com.goncalossilva.murmurhash.MurmurHash3
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 enum class PluginCapability {
+    @SerialName("persistent_storage")
     PERSISTENT_STORAGE,
+    @SerialName("network_requests")
     NETWORK_REQUESTS,
+    @SerialName("webview")
     WEBVIEW
 }
 
 //Set naming strategy to snake_case for better interoperability with JavaScript plugins
 @Serializable
 enum class PluginAbility {
+    @SerialName("metadata")
     METADATA,
+    @SerialName("audio")
     AUDIO,
+    @SerialName("lyrics")
     LYRICS,
+    @SerialName("scrobble")
     SCROBBLE,
 }
 

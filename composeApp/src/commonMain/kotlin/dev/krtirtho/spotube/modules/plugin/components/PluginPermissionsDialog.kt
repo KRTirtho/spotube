@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,6 +39,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import okio.Path
 import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
@@ -76,6 +82,7 @@ fun PluginPermissionDialog(
     message: String,
     confirmLabel: String?,
     existingPlugin: PluginEntry? = null,
+    logoPath: Path? = null,
     onConfirm: (() -> Unit)? = null,
     onDismiss: () -> Unit,
 ) {
@@ -93,12 +100,24 @@ fun PluginPermissionDialog(
                         .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Iconsax.IconsaxBoxAdd,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    if (logoPath != null) {
+                        val platformContext = LocalPlatformContext.current
+                        AsyncImage(
+                            model = ImageRequest.Builder(platformContext)
+                                .data(logoPath.toString())
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = pluginInfo.name,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Iconsax.IconsaxBoxAdd,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
                 }
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
