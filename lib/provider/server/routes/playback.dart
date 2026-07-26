@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart' hide Response;
 import 'package:dio/dio.dart' as dio_lib;
 import 'package:flutter/foundation.dart';
@@ -42,6 +43,13 @@ class ServerPlaybackRoutes {
   AudioPlayerState get playlist => ref.read(audioPlayerProvider);
   final Dio dio;
 
+  /// Track IDs that are currently being written to the music cache.
+  /// MediaKit/MPV opens several concurrent range requests for the same track
+  /// (buffering, seeking, reconnects); without this guard every request would
+  /// open its own sink to the same `.part` file and the final `rename` would
+  /// fail with a file-in-use error on Windows.
+  final Set<String> _cachingInProgress = {};
+
   ServerPlaybackRoutes(this.ref) : dio = Dio();
 
   Future<String> _getTrackCacheFilePath(SourcedTrack track) async {
@@ -53,25 +61,19 @@ class ServerPlaybackRoutes {
     );
   }
 
-  Future<SourcedTrack?> _getSourcedTrack(
-    Request request,
-    String trackId,
-  ) async {
-    final track =
-        playlist.tracks.firstWhere((element) => element.id == trackId);
+  Future<SourcedTrack?> _getSourcedTrack(String trackId) async {
+    final track = playlist.tracks
+        .firstWhereOrNull((element) => element.id == trackId);
+
+    if (track == null) return null;
 
     final activeSourcedTrack =
         await ref.read(activeTrackSourcesProvider.future);
 
-    final media = audioPlayer.playlist.medias
-        .firstWhere((e) => e.uri == request.requestedUri.toString());
-    final spotubeMedia =
-        media is SpotubeMedia ? media : SpotubeMedia.media(media);
     final sourcedTrack = activeSourcedTrack?.track.id == track.id
         ? activeSourcedTrack?.source
         : await ref.read(
-            sourcedTrackProvider(spotubeMedia.track as SpotubeFullTrackObject)
-                .future,
+            sourcedTrackProvider(track as SpotubeFullTrackObject).future,
           );
 
     return sourcedTrack;
@@ -103,11 +105,16 @@ class ServerPlaybackRoutes {
       );
     }
 
-    String url = track.url ??
+    final swappedUrl0 = track.url ??
         await ref
             .read(sourcedTrackProvider(track.query).notifier)
             .swapWithNextSibling()
-            .then((track) => track.url!);
+            .then((t) => t.url);
+    if (swappedUrl0 == null) {
+      AppLogger.log.e("No playable URL for ${track.query.name}");
+      throw Exception("No playable URL for ${track.query.name}");
+    }
+    String url = swappedUrl0;
 
     final options = Options(
       headers: {
@@ -156,11 +163,16 @@ class ServerPlaybackRoutes {
       );
     }
 
-    String url = track.url ??
+    final swappedUrl1 = track.url ??
         await ref
             .read(sourcedTrackProvider(track.query).notifier)
             .swapWithNextSibling()
-            .then((track) => track.url!);
+            .then((t) => t.url);
+    if (swappedUrl1 == null) {
+      AppLogger.log.e("No playable URL for ${track.query.name}");
+      throw Exception("No playable URL for ${track.query.name}");
+    }
+    String url = swappedUrl1;
 
     final options = Options(
       headers: {
@@ -214,9 +226,20 @@ class ServerPlaybackRoutes {
       "Headers: ${res.headers.map}",
     );
 
-    if (!userPreferences.cacheMusic) {
+    final contentRange = res.headers.value("content-range") != null
+        ? ContentRangeHeader.parse(res.headers.value("content-range") ?? "")
+        : ContentRangeHeader(0, 0, 0);
+
+    // Only cache full requests (range starting at 0) and only one writer per
+    // track at a time. Concurrent range requests just stream straight through.
+    final trackId = track.info.id;
+    final isFullRequest = contentRange.start == 0;
+    if (!userPreferences.cacheMusic ||
+        !isFullRequest ||
+        _cachingInProgress.contains(trackId)) {
       return res;
     }
+    _cachingInProgress.add(trackId);
 
     final resStream = res.data!.stream.asBroadcastStream();
 
@@ -227,44 +250,51 @@ class ServerPlaybackRoutes {
 
     // Write the stream to the file based on the range
     final partialCacheFileSink =
-        trackPartialCacheFile.openWrite(mode: FileMode.writeOnlyAppend);
-    final contentRange = res.headers.value("content-range") != null
-        ? ContentRangeHeader.parse(res.headers.value("content-range") ?? "")
-        : ContentRangeHeader(0, 0, 0);
+        trackPartialCacheFile.openWrite(mode: FileMode.writeOnly);
 
     resStream.listen(
       (data) {
         partialCacheFileSink.add(data);
       },
-      onError: (e, stack) {
-        partialCacheFileSink.close();
+      onError: (e, stack) async {
+        await partialCacheFileSink.close();
+        _cachingInProgress.remove(trackId);
       },
       onDone: () async {
-        await partialCacheFileSink.close();
+        try {
+          await partialCacheFileSink.close();
 
-        final fileLength = await trackPartialCacheFile.length();
-        if (fileLength != contentRange.total) return;
+          final fileLength = await trackPartialCacheFile.length();
+          if (fileLength != contentRange.total) {
+            await trackPartialCacheFile.delete().catchError((_) => trackPartialCacheFile);
+            return;
+          }
 
-        await trackPartialCacheFile.rename(trackCacheFile.path);
+          await trackPartialCacheFile.rename(trackCacheFile.path);
 
-        if (track.qualityPreset!.getFileExtension() == "weba") return;
+          if (track.qualityPreset!.getFileExtension() == "weba") return;
 
-        final imageBytes = await ServiceUtils.downloadImage(
-          track.query.album.images.asUrlString(
-            placeholder: ImagePlaceholder.albumArt,
-            index: 1,
-          ),
-        );
+          final imageBytes = await ServiceUtils.downloadImage(
+            track.query.album.images.asUrlString(
+              placeholder: ImagePlaceholder.albumArt,
+              index: 1,
+            ),
+          );
 
-        await MetadataGod.writeMetadata(
-          file: trackCacheFile.path,
-          metadata: track.query.toMetadata(
-            imageBytes: imageBytes,
-            fileLength: fileLength,
-          ),
-        ).catchError((e, stackTrace) {
-          AppLogger.reportError(e, stackTrace);
-        });
+          await MetadataGod.writeMetadata(
+            file: trackCacheFile.path,
+            metadata: track.query.toMetadata(
+              imageBytes: imageBytes,
+              fileLength: fileLength,
+            ),
+          ).catchError((e, stackTrace) {
+            AppLogger.reportError(e, stackTrace);
+          });
+        } catch (e, stack) {
+          AppLogger.reportError(e, stack);
+        } finally {
+          _cachingInProgress.remove(trackId);
+        }
       },
       cancelOnError: true,
     );
@@ -277,7 +307,7 @@ class ServerPlaybackRoutes {
   /// @head('/stream/<trackId>')
   Future<Response> headStreamTrackId(Request request, String trackId) async {
     try {
-      final sourcedTrack = await _getSourcedTrack(request, trackId);
+      final sourcedTrack = await _getSourcedTrack(trackId);
 
       if (sourcedTrack == null) {
         return Response.notFound("Track not found in the current queue");
@@ -301,7 +331,7 @@ class ServerPlaybackRoutes {
   /// @get('/stream/<trackId>')
   Future<Response> getStreamTrackId(Request request, String trackId) async {
     try {
-      final sourcedTrack = await _getSourcedTrack(request, trackId);
+      final sourcedTrack = await _getSourcedTrack(trackId);
 
       if (sourcedTrack == null) {
         return Response.notFound("Track not found in the current queue");
