@@ -21,6 +21,7 @@ import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
 import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:spotube/provider/server/sourced_track_provider.dart';
 import 'package:spotube/utils/platform.dart';
 
 final isBlacklistedProvider =
@@ -46,6 +47,7 @@ class TrackTile extends HookConsumerWidget {
   final bool userPlaylist;
   final String? playlistId;
   final AudioPlayerState playlist;
+  final bool resolveMissingDuration;
 
   final List<Widget>? leadingActions;
 
@@ -62,6 +64,7 @@ class TrackTile extends HookConsumerWidget {
     this.userPlaylist = false,
     this.playlistId,
     this.leadingActions,
+    this.resolveMissingDuration = false,
   });
 
   @override
@@ -88,6 +91,16 @@ class TrackTile extends HookConsumerWidget {
     // toggling a dedicated `selectionMode` flag (e.g. playlists), so we must
     // disable inner navigation in both cases.
     final effectiveSelection = selectionMode || onChanged != null;
+    final sourcedTrack = resolveMissingDuration &&
+            track is SpotubeFullTrackObject &&
+            track.durationMs < Duration.millisecondsPerSecond
+        ? ref.watch(sourcedTrackProvider(track as SpotubeFullTrackObject))
+        : null;
+    final duration = sourcedTrack?.maybeWhen(
+          data: (track) => track.info.duration,
+          orElse: () => Duration(milliseconds: this.track.durationMs),
+        ) ??
+        Duration(milliseconds: track.durationMs);
 
     return LayoutBuilder(builder: (context, constrains) {
       return Listener(
@@ -322,8 +335,7 @@ class TrackTile extends HookConsumerWidget {
               children: [
                 const SizedBox(width: 8),
                 Text(
-                  Duration(milliseconds: track.durationMs)
-                      .toHumanReadableString(padZero: false),
+                  duration.toHumanReadableString(padZero: false),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
