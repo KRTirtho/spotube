@@ -308,6 +308,7 @@ class PlayerQueue extends HookConsumerWidget {
                                   playlist: playlist,
                                   index: i,
                                   track: track,
+                                  resolveMissingDuration: true,
                                   selectionMode: selectionMode.value,
                                   selected:
                                       selectedTrackIds.value.contains(track.id),
