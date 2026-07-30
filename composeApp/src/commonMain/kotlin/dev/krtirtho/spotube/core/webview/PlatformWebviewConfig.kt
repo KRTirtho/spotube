@@ -19,4 +19,6 @@ package dev.krtirtho.spotube.core.webview
 
 import io.github.kdroidfilter.webview.web.WebViewState
 
-expect fun platformWebviewConfig(webView: WebViewState)
+expect fun platformWebviewConfig(webView: WebViewState, pluginId: String?)
+
+expect suspend fun platformClearWebviewData(pluginId: String?)

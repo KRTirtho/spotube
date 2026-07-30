@@ -19,7 +19,6 @@ package dev.krtirtho.spotube.core.webview
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -40,30 +39,25 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import io.github.kdroidfilter.webview.jsbridge.IJsMessageHandler
-import io.github.kdroidfilter.webview.jsbridge.JsMessage
-import io.github.kdroidfilter.webview.jsbridge.rememberWebViewJsBridge
-import io.github.kdroidfilter.webview.web.WebView
-import io.github.kdroidfilter.webview.web.rememberWebViewNavigator
-import io.github.kdroidfilter.webview.web.WebViewState
-import io.github.kdroidfilter.webview.web.WebViewNavigator
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ChevronLeft
 import compose.icons.feathericons.ChevronRight
 import compose.icons.feathericons.X
 import dev.krtirtho.spotube.core.tools.user_agents.UserAgents
-import kotlinx.coroutines.launch
+import io.github.kdroidfilter.webview.jsbridge.IJsMessageHandler
+import io.github.kdroidfilter.webview.jsbridge.JsMessage
+import io.github.kdroidfilter.webview.jsbridge.rememberWebViewJsBridge
+import io.github.kdroidfilter.webview.web.WebView
+import io.github.kdroidfilter.webview.web.WebViewNavigator
+import io.github.kdroidfilter.webview.web.WebViewState
+import io.github.kdroidfilter.webview.web.rememberWebViewNavigator
 
 class PostMessageHandler(
     private val onMessageReceived: (String) -> Unit = {}
@@ -98,7 +92,7 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
         )
     }.apply {
         this.content = webViewController.getWebContent()
-        platformWebviewConfig(this)
+        platformWebviewConfig(this, webViewController.currentPluginId)
     }
 
     val navigator = rememberWebViewNavigator()

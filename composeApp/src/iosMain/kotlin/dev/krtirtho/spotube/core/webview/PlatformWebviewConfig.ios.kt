@@ -18,6 +18,24 @@
 package dev.krtirtho.spotube.core.webview
 
 import io.github.kdroidfilter.webview.web.WebViewState
+import kotlinx.cinterop.ExperimentalForeignApi
+import platform.Foundation.NSDate
+import platform.Foundation.NSHTTPCookieStorage
+import platform.Foundation.distantPast
+import platform.WebKit.WKWebsiteDataStore
+import platform.WebKit.WKWebsiteDataTypeCookies
+import platform.WebKit.WKWebsiteDataTypeLocalStorage
 
-actual fun platformWebviewConfig(webView: WebViewState) {
+actual fun platformWebviewConfig(webView: WebViewState, pluginId: String?) {
+}
+
+@OptIn(ExperimentalForeignApi::class)
+actual suspend fun platformClearWebviewData(pluginId: String?) {
+    if (pluginId == null) return
+    
+    val dataStore = WKWebsiteDataStore.defaultDataStore()
+    val dataTypes = setOf(WKWebsiteDataTypeCookies, WKWebsiteDataTypeLocalStorage)
+    dataStore.removeDataOfTypes(dataTypes, NSDate.distantPast) {}
+    
+    NSHTTPCookieStorage.sharedHTTPCookieStorage.removeCookiesSinceDate(NSDate.distantPast)
 }

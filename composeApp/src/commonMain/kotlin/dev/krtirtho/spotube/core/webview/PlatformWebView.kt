@@ -38,6 +38,8 @@ class WebViewController(val navigationCommands: NavigationCommands): KoinCompone
     private var cookieManager: CookieManager? = null
     private val urlFlow = MutableStateFlow("")
     private val webViewCreated = MutableSharedFlow<Unit>(replay = 1)
+    var currentPluginId: String? = null
+        private set
 
     suspend fun getCookies(url: String): List<Cookie> {
         if (cookieManager == null) {
@@ -104,19 +106,21 @@ class WebViewController(val navigationCommands: NavigationCommands): KoinCompone
         webViewNavigator = null
     }
 
-    fun navigateTo(url: String) {
+    fun navigateTo(url: String, pluginId: String) {
         if (this.content != null) {
             throw IllegalStateException("WebView is already open. Please close the current WebView before navigating to a new URL.")
         }
+        this.currentPluginId = pluginId
         this.content = url
         this.isHtmlContent = false
         navigationCommands.navigateTo(Routes.WebView)
     }
 
-    fun navigateToHTML(html: String) {
+    fun navigateToHTML(html: String, pluginId: String) {
         if (this.content != null) {
             throw IllegalStateException("WebView is already open. Please close the current WebView before navigating to a new URL.")
         }
+        this.currentPluginId = pluginId
         this.content = html
         this.isHtmlContent = true
         navigationCommands.navigateTo(Routes.WebView)
@@ -138,12 +142,15 @@ class WebViewController(val navigationCommands: NavigationCommands): KoinCompone
         return completer.await()
     }
 
-    suspend fun clearData() {
+    suspend fun clearData(pluginId: String? = null) {
         cookieManager?.removeAllCookies()
+        val targetPluginId = pluginId ?: currentPluginId
+        platformClearWebviewData(targetPluginId)
         cookieManager = null
         content = null
         isHtmlContent = false
         webViewNavigator = null
+        currentPluginId = null
     }
 
     val urlChangedFlow = urlFlow.asStateFlow()

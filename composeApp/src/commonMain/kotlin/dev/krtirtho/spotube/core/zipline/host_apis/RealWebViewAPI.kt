@@ -22,26 +22,24 @@ import dev.krtirtho.plugin_interfaces.host_apis.WebViewAPI
 import dev.krtirtho.spotube.core.webview.WebViewController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class RealWebViewAPI(
     private val scope: CoroutineScope,
     private val webViewController: WebViewController,
+    private val pluginId: String,
 ) : WebViewAPI {
     override fun navigateTo(url: String) {
         scope.launch(Dispatchers.Main) {
-            webViewController.navigateTo(url)
+            webViewController.navigateTo(url, pluginId)
         }
     }
 
     override fun navigateToHTML(html: String) {
         scope.launch {
-            webViewController.navigateToHTML(html)
+            webViewController.navigateToHTML(html, pluginId)
         }
     }
 

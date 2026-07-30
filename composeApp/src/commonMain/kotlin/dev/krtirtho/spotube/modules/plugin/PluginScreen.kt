@@ -735,7 +735,7 @@ fun PluginScreen(
                                                             selectedService.use { coreAPI.logout() }
                                                         }
                                                         // should clear webview data after logout
-                                                        scope.launch { webviewController.clearData() }
+                                                        scope.launch { webviewController.clearData(plugin.id) }
                                                     }
                                                 } else {
                                                     null

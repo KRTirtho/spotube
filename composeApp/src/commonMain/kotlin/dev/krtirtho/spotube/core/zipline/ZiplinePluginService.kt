@@ -141,7 +141,7 @@ open class ZiplinePluginService(
     }
 
     private val realHttpClientAPI = RealHttpClientAPI()
-    private val realWebViewAPI = RealWebViewAPI(scope, webViewController)
+    private val realWebViewAPI = RealWebViewAPI(scope, webViewController, pluginInfo.id)
 
     private val persistedStorageAPI = RealPersistedStorageAPI(pluginInfo)
     private val cryptoAPI = RealCryptoAPI(scope.coroutineContext)

@@ -19,13 +19,24 @@ package dev.krtirtho.spotube.core.webview
 
 import dev.krtirtho.spotube.core.paths.Paths
 import io.github.kdroidfilter.webview.web.WebViewState
-import io.github.vinceglb.filekit.utils.div
-import io.github.vinceglb.filekit.utils.toPath
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import org.koin.core.context.GlobalContext
 
-actual fun platformWebviewConfig(webView: WebViewState) {
+actual fun platformWebviewConfig(webView: WebViewState, pluginId: String?) {
     val paths = GlobalContext.get().get<Paths>()
 
-    webView.webSettings.desktopWebSettings.dataDirectory =
-        (paths.getApplicationCacheDirPath().toPath() / "webview_data").toString()
+    val baseDir = "${paths.getApplicationCacheDirPath()}/webview_data".toPath()
+    val dataDir = if (pluginId != null) baseDir / pluginId else baseDir
+    webView.webSettings.desktopWebSettings.dataDirectory = dataDir.toString()
+}
+
+actual suspend fun platformClearWebviewData(pluginId: String?) {
+    if (pluginId == null) return
+    val paths = GlobalContext.get().get<Paths>()
+    val dataDirStr = "${paths.getApplicationCacheDirPath()}/webview_data/$pluginId"
+    val dataDir = dataDirStr.toPath()
+    if (FileSystem.SYSTEM.exists(dataDir)) {
+        FileSystem.SYSTEM.deleteRecursively(dataDir)
+    }
 }
