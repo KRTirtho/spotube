@@ -216,7 +216,6 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
                 navigator.evaluateJavaScript(bridgeBootstrapScript)
 
             },
-            factory = null
         )
     }
 }

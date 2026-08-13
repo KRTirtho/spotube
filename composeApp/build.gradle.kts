@@ -335,6 +335,9 @@ compose.desktop {
 // Issue with compose plugin
 // https://github.com/JetBrains/compose-hot-reload/blob/master/docs/Known_limitations.md#property-composeapplicationresourcesdir-is-null-when-running-hot-reload-tasks
 tasks.withType<ComposeHotRun>().configureEach {
+    jvmArgs(
+        "--enable-native-access=ALL-UNNAMED"
+    )
     systemProperty(
         "compose.application.resources.dir",
         project.layout.buildDirectory.dir("compose/tmp/prepareAppResources").get()
