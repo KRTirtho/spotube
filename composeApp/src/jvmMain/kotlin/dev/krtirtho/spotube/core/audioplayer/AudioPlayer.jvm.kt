@@ -490,6 +490,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             if (disposed || index !in currentPlaylist.indices) return
             currentIndex = index
             _currentMediaItem.tryEmit(currentPlaylist[index])
+            pendingNextIndex = index
             mediaListPlayer.controls().play(index)
         }
     }
