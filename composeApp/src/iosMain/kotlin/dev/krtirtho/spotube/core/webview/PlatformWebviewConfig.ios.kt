@@ -17,7 +17,7 @@
 
 package dev.krtirtho.spotube.core.webview
 
-import io.github.kdroidfilter.webview.web.WebViewState
+import dev.nucleusframework.webview.web.WebViewState
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSDate
 import platform.Foundation.NSHTTPCookieStorage

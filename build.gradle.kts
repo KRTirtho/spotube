@@ -33,4 +33,5 @@ plugins {
     alias(libs.plugins.uniffi) apply false
     alias(libs.plugins.cargo) apply false
     alias(libs.plugins.mokkery) apply false
+    alias(libs.plugins.neucleusFramework) apply false
 }

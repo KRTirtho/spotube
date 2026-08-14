@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.window.WindowDraggableArea
@@ -44,6 +45,10 @@ import dev.krtirtho.spotube.resources.iconsax.FluentMaximize
 import dev.krtirtho.spotube.resources.iconsax.FluentMinus
 import dev.krtirtho.spotube.resources.iconsax.FluentSquareMultiple
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.nucleusframework.window.WindowControls
+import dev.nucleusframework.window.WindowControlsRenderer
+import dev.nucleusframework.window.WindowDoubleClickAction
+import dev.nucleusframework.window.windowDragArea
 import org.koin.compose.koinInject
 
 
@@ -55,27 +60,27 @@ actual fun ApplicationMainBar(
     actions: @Composable (RowScope.() -> Unit),
     backButton: Boolean,
 ) {
-    LocalWindowScope.current.WindowDraggableArea {
-        Box(
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            TopAppBar(
-                title = title,
-                actions = {
-                    actions()
-                },
-                navigationIcon = {
-                    if (backButton) {
-                        ApplicationBackButton()
-                    }
-                },
-                subtitle = subtitle,
-                modifier = Modifier.padding(end = 125.dp) // To avoid overlap with window buttons
-            )
-            WindowButtons(
-                modifier = Modifier.align(Alignment.TopEnd)
-            )
-        }
+    Box(
+        modifier = Modifier.fillMaxWidth()
+            .windowDragArea(doubleClickAction = WindowDoubleClickAction.ToggleMaximize)
+    ) {
+        TopAppBar(
+            title = title,
+            actions = {
+                actions()
+            },
+            navigationIcon = {
+                if (backButton) {
+                    ApplicationBackButton()
+                }
+            },
+            subtitle = subtitle,
+            modifier = Modifier.padding(end = 125.dp) // To avoid overlap with window buttons
+        )
+        LocalWindowScope.current.WindowControls(
+            modifier = Modifier.align(Alignment.TopEnd).heightIn(max = 48.dp),
+            renderer = WindowControlsRenderer.Platform, // default
+        )
     }
 }
 

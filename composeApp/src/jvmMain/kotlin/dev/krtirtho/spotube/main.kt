@@ -25,9 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Window
-import androidx.compose.ui.window.WindowDecoration
-import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import dev.krtirtho.spotube.core.di.initKoin
 import dev.krtirtho.spotube.core.newpipe.NewPipeDownloader
@@ -37,6 +34,9 @@ import dev.krtirtho.spotube.core.ui.component.LocalApplicationScope
 import dev.krtirtho.spotube.core.ui.component.LocalWindowScope
 import dev.krtirtho.spotube.core.ui.component.LocalWindowState
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
+import dev.nucleusframework.application.DecoratedWindow
+import dev.nucleusframework.application.NucleusBackend
+import dev.nucleusframework.application.nucleusApplication
 import io.github.vinceglb.filekit.FileKit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -61,7 +61,7 @@ fun main() {
     NewPipeDownloader.init(KoinPathsProvider.paths)
     val appScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    application {
+    nucleusApplication(backend = NucleusBackend.Tao) {
         val windowState = rememberWindowState(
             width = 1080.dp,
             height = 720.dp
@@ -84,7 +84,7 @@ fun main() {
             }
         )
 
-        Window(
+        DecoratedWindow(
             state = windowState,
             onCloseRequest = {
                 if (minimizeToTray) {
@@ -96,12 +96,11 @@ fun main() {
                 }
             },
             title = "Spotube",
-            decoration = WindowDecoration.Undecorated(),
             visible = isWindowVisible,
         ) {
             CompositionLocalProvider(
-                LocalApplicationScope provides this@application,
-                LocalWindowScope provides this@Window,
+                LocalApplicationScope provides this@nucleusApplication,
+                LocalWindowScope provides this@DecoratedWindow,
                 LocalWindowState provides windowState
             ) {
                 App()

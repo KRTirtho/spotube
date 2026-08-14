@@ -51,13 +51,13 @@ import compose.icons.feathericons.ChevronLeft
 import compose.icons.feathericons.ChevronRight
 import compose.icons.feathericons.X
 import dev.krtirtho.spotube.core.tools.user_agents.UserAgents
-import io.github.kdroidfilter.webview.jsbridge.IJsMessageHandler
-import io.github.kdroidfilter.webview.jsbridge.JsMessage
-import io.github.kdroidfilter.webview.jsbridge.rememberWebViewJsBridge
-import io.github.kdroidfilter.webview.web.WebView
-import io.github.kdroidfilter.webview.web.WebViewNavigator
-import io.github.kdroidfilter.webview.web.WebViewState
-import io.github.kdroidfilter.webview.web.rememberWebViewNavigator
+import dev.nucleusframework.webview.jsbridge.IJsMessageHandler
+import dev.nucleusframework.webview.jsbridge.JsMessage
+import dev.nucleusframework.webview.jsbridge.rememberWebViewJsBridge
+import dev.nucleusframework.webview.web.WebView
+import dev.nucleusframework.webview.web.WebViewNavigator
+import dev.nucleusframework.webview.web.WebViewState
+import dev.nucleusframework.webview.web.rememberWebViewNavigator
 
 class PostMessageHandler(
     private val onMessageReceived: (String) -> Unit = {}

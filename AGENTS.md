@@ -20,6 +20,7 @@
 ## Dependencies
 - `gradle/libs.versions.toml` is the single source of truth for all version pins and library declarations.
 - Kotlin: `2.3.0`, JVM target: `11` (compile/target compatibility in both `composeApp/build.gradle.kts` and `plugin_interfaces/build.gradle.kts`).
+- **compose-webview (desktop) dispatcher hijack:** `dev.nucleusframework:composewebview` transitively pulls `nucleus.decorated-window-tao`, which registers a `TaoMainDispatcherFactory` (`loadPriority = 100`) via `META-INF/services` that hijacks `Dispatchers.Main` away from the Swing EDT. This breaks lifecycle's `enforceMainThreadIfNeeded` (window fails with "Method addObserver must be called on the main thread"). The app overrides it with `SwingMainDispatcherFactory` (`composeApp/src/jvmMain/.../core/coroutines/`, `loadPriority = Int.MAX_VALUE`) which pins `Dispatchers.Main` back to the Swing EDT. Keep that factory + its `META-INF/services/kotlinx.coroutines.internal.MainDispatcherFactory` resource; the long-term fix is in the webview (make the Tao dispatcher opt-in or lower its priority).
 
 ## Codegen and plugin packaging
 - JS plugin bundles: `:js_plugin_example:packageDevelopmentPlugin` and `:js_plugin_example:packageProductionPlugin`. Output is `.smplug` files in `js_plugin_example/build/distributions/`.

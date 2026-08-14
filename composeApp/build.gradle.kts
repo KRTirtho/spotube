@@ -17,7 +17,7 @@
 
 import gobley.gradle.GobleyHost
 import gobley.gradle.cargo.dsl.jvm
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import dev.nucleusframework.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.io.FileInputStream
@@ -35,6 +35,7 @@ plugins {
     alias(libs.plugins.uniffi)
     alias(libs.plugins.cargo)
     alias(libs.plugins.mokkery)
+    alias(libs.plugins.neucleusFramework)
     kotlin("plugin.atomicfu") version libs.versions.kotlin
 }
 
@@ -220,6 +221,10 @@ kotlin {
 
                 implementation(libs.appdirs)
                 implementation(libs.jna)
+
+                implementation(libs.nucleus.core.runtime)
+                implementation(libs.nucleus.nucleus.application)
+                implementation(libs.nucleus.decorated.window.tao)
             }
         }
     }
@@ -280,55 +285,55 @@ dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
 
-compose.desktop {
-    application {
-        mainClass = "dev.krtirtho.spotube.MainKt"
+nucleus.application {
+    mainClass = "dev.krtirtho.spotube.MainKt"
 
-        jvmArgs += listOf(
-            "--enable-native-access=ALL-UNNAMED", // need for JNA for compose-webview (wry) to work
-            // --- ADD THESE FOR SPEED & LOW RAM ---
-            "-Xms64m",                  // Start with a tiny heap (prevents grabbing 500MB upfront)
-            "-Xmx384m",                 // Cap the max heap (VLC and WebView need a bit of room)
-            "-XX:TieredStopAtLevel=1",  // Disables the heavy C2 compiler. Huge startup speedup!
-            "-XX:+UseSerialGC"          // The Serial GC is the most efficient for heaps under 512MB
+    jvmArgs += listOf(
+        "--enable-native-access=ALL-UNNAMED", // need for JNA for compose-webview (wry) to work
+        // --- ADD THESE FOR SPEED & LOW RAM ---
+        "-Xms64m",                  // Start with a tiny heap (prevents grabbing 500MB upfront)
+        "-Xmx384m",                 // Cap the max heap (VLC and WebView need a bit of room)
+        "-XX:TieredStopAtLevel=1",  // Disables the heavy C2 compiler. Huge startup speedup!
+        "-XX:+UseSerialGC"          // The Serial GC is the most efficient for heaps under 512MB
+    )
+
+    nativeDistributions {
+        packageName = "dev.krtirtho.spotube"
+        packageVersion = project.findProperty("versionName") as String? ?: "6.0.0"
+        licenseFile = project.file("../LICENSE")
+
+        appResourcesRootDir.set(vlcjBundler.vlcNativesDirectory)
+
+        targetFormats(
+            TargetFormat.Dmg,
+            TargetFormat.Deb,
+            TargetFormat.Rpm,
+            TargetFormat.AppImage,
+            TargetFormat.Msi,
+            TargetFormat.Exe,
         )
 
-        nativeDistributions {
-            packageName = "dev.krtirtho.spotube"
-            packageVersion = project.findProperty("versionName") as String? ?: "6.0.0"
-            licenseFile = project.file("../LICENSE")
+        modules("jdk.unsupported")
 
-            targetFormats(
-                TargetFormat.Dmg,
-                TargetFormat.Deb,
-                TargetFormat.Rpm,
-                TargetFormat.AppImage,
-                TargetFormat.Msi,
-                TargetFormat.Exe,
-            )
-
-            modules("jdk.unsupported")
-
-            linux {
-                modules("jdk.security.auth")
-            }
-            windows {
-                shortcut = true
-                menu = true
-                dirChooser = true
-                perUserInstall = true
-            }
-
-            macOS {
-                notarization {
-                    
-                }
-            }
+        linux {
+            modules("jdk.security.auth")
+        }
+        windows {
+            shortcut = true
+            menu = true
+            dirChooser = true
+            perUserInstall = true
         }
 
-        buildTypes.release.proguard {
-            configurationFiles.from(project.file("proguard-rules.pro"))
+        macOS {
+            notarization {
+
+            }
         }
+    }
+
+    buildTypes.release.proguard {
+        configurationFiles.from(project.file("proguard-rules.pro"))
     }
 }
 

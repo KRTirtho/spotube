@@ -20,7 +20,7 @@ package dev.krtirtho.spotube.core.webview
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 import android.webkit.WebView
-import io.github.kdroidfilter.webview.web.WebViewState
+import dev.nucleusframework.webview.web.WebViewState
 
 actual fun platformWebviewConfig(webView: WebViewState, pluginId: String?) {
     val nativeWebView = webView.webView?.nativeWebView as? WebView ?: return

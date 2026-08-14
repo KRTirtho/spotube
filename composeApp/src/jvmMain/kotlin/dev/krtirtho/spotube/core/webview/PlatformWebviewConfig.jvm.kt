@@ -18,7 +18,7 @@
 package dev.krtirtho.spotube.core.webview
 
 import dev.krtirtho.spotube.core.paths.Paths
-import io.github.kdroidfilter.webview.web.WebViewState
+import dev.nucleusframework.webview.web.WebViewState
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import org.koin.core.context.GlobalContext

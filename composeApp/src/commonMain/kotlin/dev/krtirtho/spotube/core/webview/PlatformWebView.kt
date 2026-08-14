@@ -17,9 +17,9 @@
 
 package dev.krtirtho.spotube.core.webview
 
-import io.github.kdroidfilter.webview.web.WebContent
-import io.github.kdroidfilter.webview.web.WebViewNavigator
-import io.github.kdroidfilter.webview.cookie.CookieManager
+import dev.nucleusframework.webview.web.WebContent
+import dev.nucleusframework.webview.web.WebViewNavigator
+import dev.nucleusframework.webview.cookie.CookieManager
 import dev.krtirtho.plugin_interfaces.host_apis.Cookie
 import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
