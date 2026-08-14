@@ -19,9 +19,6 @@ package dev.krtirtho.spotube.modules.shell.player_queue
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +26,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -44,127 +40,53 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.krtirtho.spotube.core.audioplayer.QueueEntry
-import dev.krtirtho.spotube.core.di.rememberLogger
 import dev.krtirtho.spotube.core.ui.base.Card
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.ListRowTile
 import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.core.ui.base.copyShape
-import dev.krtirtho.spotube.core.ui.base.highlight
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDragHandle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
-import dev.krtirtho.spotube.resources.iconsax.IconsaxSetting
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
 import org.koin.compose.viewmodel.koinViewModel
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
-
-private data class QueueItemUi(
-    val id: String,
-    val title: String,
-    val subtitle: String,
-    val durationMs: Long,
-    val isCurrent: Boolean,
-    val imageUrl: String?,
-    val originalIndex: Int,
-)
 
 @Composable
 fun PlayerQueueContent(
     viewModel: PlayerQueueContentViewModel = koinViewModel<PlayerQueueContentViewModel>(),
     modifier: Modifier = Modifier,
 ) {
-    val logger = rememberLogger("PlayerQueueContent")
-    val queueContentUiState by viewModel.queueContentUiState.collectAsState()
-    val queue = queueContentUiState.queue
-    val currentQueueEntry = queueContentUiState.currentQueueEntry
-    val filterQuery = queueContentUiState.filterQuery
-
-    val normalizedFilter = remember(filterQuery) { filterQuery.trim().lowercase() }
-    val currentIndex = remember(queue, currentQueueEntry) {
-        val current = currentQueueEntry ?: return@remember -1
-        queue.indexOfFirst { entry -> entry.matchesCurrent(current) }
-    }
-
-    val sourceItems = remember(queue, currentIndex) {
-        queue.mapIndexed { index, entry ->
-            val (title, subtitle, durationMs, imageUrl) = entry.toQueueDisplayData()
-            QueueItemUi(
-                id = "${entry.url}@$index",
-                title = title,
-                subtitle = subtitle,
-                durationMs = durationMs,
-                isCurrent = index == currentIndex,
-                imageUrl = imageUrl,
-                originalIndex = index,
-            )
-        }
-    }
-
-    val isFiltered = normalizedFilter.isNotBlank()
-    val displayList = remember { mutableStateListOf<QueueItemUi>() }
-    var moveParams by remember { mutableStateOf<Pair<Int, Int>?>(null) }
-    var queueVersion by remember { mutableIntStateOf(0) }
-
-    LaunchedEffect(sourceItems, normalizedFilter) {
-        queueVersion++
-        displayList.clear()
-        val filtered = if (isFiltered) {
-            sourceItems.filter { item ->
-                item.title.lowercase().contains(normalizedFilter) ||
-                        item.subtitle.lowercase().contains(normalizedFilter)
-            }
-        } else {
-            sourceItems
-        }
-        displayList.addAll(filtered)
-    }
+    val state by viewModel.queueContentUiState.collectAsState()
+    val displayItems = state.displayItems
+    val filterQuery = state.filterQuery
+    val isFiltered = state.isFiltered
 
     val lazyListState = rememberLazyListState()
-    val reorderableLazyListState =
-        rememberReorderableLazyListState(
-            lazyListState,
-            onMove = { from, to ->
-                if (isFiltered) return@rememberReorderableLazyListState
-                val item = displayList.removeAt(from.index)
-                displayList.add(to.index, item)
-
-                logger.i { "Moved item from ${from.index} to ${to.index}" }
-
-                moveParams = item.originalIndex to to.index
-            },
-        )
-
-    fun finalizeReorder() {
-        moveParams?.let { (fromOriginal, toDisplay) ->
-            logger.i { "Finalizing move from $fromOriginal to $toDisplay (version $queueVersion)" }
-            viewModel.moveQueueItem(fromOriginal, toDisplay)
-        }
-        moveParams = null
-    }
+    val reorderableLazyListState = rememberReorderableLazyListState(
+        lazyListState,
+        onMove = { from, to ->
+            if (isFiltered) return@rememberReorderableLazyListState
+            viewModel.onMove(from.index, to.index)
+        },
+    )
 
     Surface(modifier = modifier) {
         Column(
@@ -204,7 +126,7 @@ fun PlayerQueueContent(
                 }
             }
 
-            if (displayList.isEmpty()) {
+            if (displayItems.isEmpty()) {
                 Text(
                     text = "No queue entries",
                     style = MaterialTheme.typography.bodyMedium,
@@ -217,7 +139,7 @@ fun PlayerQueueContent(
                         state = lazyListState,
                         contentPadding = PaddingValues(bottom = 8.dp),
                     ) {
-                        items(displayList, key = { item -> item.id }) { item ->
+                        items(displayItems, key = { it.id }) { item ->
                             ReorderableItem(reorderableLazyListState, key = item.id) { isDragging ->
                                 val elevation by animateDpAsState(if (isDragging) 8.dp else 0.dp)
                                 QueueItemRow(
@@ -225,7 +147,8 @@ fun PlayerQueueContent(
                                     reorderScope = if (isFiltered) null else this,
                                     onPlayClick = { viewModel.playQueueItem(item.originalIndex) },
                                     onRemoveClick = { viewModel.removeQueueItem(item.originalIndex) },
-                                    onDragStopped = ::finalizeReorder,
+                                    onDragStarted = { viewModel.onDragStart() },
+                                    onDragStopped = { viewModel.onDragStop() },
                                 )
                             }
                         }
@@ -242,6 +165,7 @@ private fun QueueItemRow(
     reorderScope: sh.calvin.reorderable.ReorderableCollectionItemScope?,
     onPlayClick: () -> Unit,
     onRemoveClick: () -> Unit,
+    onDragStarted: () -> Unit,
     onDragStopped: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
@@ -263,7 +187,12 @@ private fun QueueItemRow(
                         .size(24.dp)
                         .then(
                             if (reorderScope != null) {
-                                with(reorderScope) { Modifier.draggableHandle(onDragStopped = onDragStopped) }
+                                with(reorderScope) {
+                                    Modifier.draggableHandle(
+                                        onDragStarted = { onDragStarted() },
+                                        onDragStopped = onDragStopped,
+                                    )
+                                }
                             } else {
                                 Modifier
                             },
@@ -319,7 +248,7 @@ private fun QueueItemRow(
         },
         trailing = {
             Text(
-                text = item.durationMs.toDurationString(),
+                text = item.durationLabel,
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -355,54 +284,4 @@ private fun QueueItemRow(
             }
         }
     )
-}
-
-private fun QueueEntry.toQueueDisplayData(): Tuple4<String, String, Long, String?> {
-    return when (this) {
-        is QueueEntry.StreamingTrack -> {
-            val imageUrl = track.thumbnails?.maxByOrNull { it.width * it.height }?.url
-                ?: track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
-            Tuple4(
-                track.title,
-                track.artists.joinToString(", ") { it.name },
-                track.durationMs,
-                imageUrl,
-            )
-        }
-
-        is QueueEntry.LocalTrack -> Tuple4(
-            name,
-            artists.joinToString(", "),
-            duration,
-            null,
-        )
-    }
-}
-
-private data class Tuple4<A, B, C, D>(
-    val first: A,
-    val second: B,
-    val third: C,
-    val fourth: D,
-)
-
-private fun QueueEntry.matchesCurrent(current: QueueEntry): Boolean {
-    return when {
-        this is QueueEntry.StreamingTrack && current is QueueEntry.StreamingTrack -> {
-            this.track.id == current.track.id
-        }
-
-        this is QueueEntry.LocalTrack && current is QueueEntry.LocalTrack -> {
-            this.url == current.url && this.name == current.name
-        }
-
-        else -> false
-    }
-}
-
-private fun Long.toDurationString(): String {
-    val totalSeconds = (this / 1000).coerceAtLeast(0)
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return "$minutes:${seconds.toString().padStart(2, '0')}"
 }

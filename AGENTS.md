@@ -30,6 +30,7 @@
 - `plugin_interfaces` also has a JS target (`browser()`), used by the plugin system.
 
 ## UI component patterns
+- **ViewModels own ALL state and logic.** Composables are dumb renderers: they collect a single `StateFlow<UiState>` from the ViewModel and forward user events (clicks, text input, drag callbacks) back to ViewModel functions. No business logic, filtering, derivation, reordering buffers, or `LaunchedEffect`-based state syncing belongs in a composable — it goes in the ViewModel. The `combine`/`stateIn` flow chain in the ViewModel must produce fully-computed, ready-to-render UI state so the composable never needs intermediate `remember` derivations or `mutableStateListOf` mirrors.
 - **AdaptiveDropdownBottomSheet** (`commonMain/.../core/ui/component/AdaptiveDropdownBottomSheet.kt`): switches between `DropdownMenu` (large screen) and `ModalBottomSheet` (small screen) via `currentWindowAdaptiveInfo()`. Do NOT use expect/actual — all adaptive components that rely ONLY on Compose/Material3 APIs belong in commonMain.
 - **AdaptiveDialogBottomSheet** (`commonMain/.../core/ui/component/AdaptiveDialogBottomSheet.kt`): switches between `ThemedDialog` (large screen) and `ModalBottomSheet` (small screen) via `currentWindowAdaptiveInfo()`. Same rule — keep in commonMain unless platform-specific APIs are required.
 - Use `expect`/`actual` only when the component MUST use platform-specific APIs (e.g. `WindowState` for desktop window controls, native scrollbars). Pure Compose/Material3 adaptivity stays in commonMain.

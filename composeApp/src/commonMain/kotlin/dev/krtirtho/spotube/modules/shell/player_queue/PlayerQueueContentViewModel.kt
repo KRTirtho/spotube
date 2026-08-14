@@ -30,10 +30,20 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+data class QueueItemUi(
+    val id: String,
+    val title: String,
+    val subtitle: String,
+    val durationLabel: String,
+    val isCurrent: Boolean,
+    val imageUrl: String?,
+    val originalIndex: Int,
+)
+
 data class QueueContentUiState(
     val filterQuery: String = "",
-    val queue: List<QueueEntry> = emptyList(),
-    val currentQueueEntry: QueueEntry? = null,
+    val displayItems: List<QueueItemUi> = emptyList(),
+    val isFiltered: Boolean = false,
 )
 
 class PlayerQueueContentViewModel(
@@ -41,18 +51,79 @@ class PlayerQueueContentViewModel(
 ) : ViewModel() {
     private val queueVisibilityFlow = MutableStateFlow(false)
     private val queueFilterFlow = MutableStateFlow("")
+    private val reorderBuffer = MutableStateFlow<List<QueueItemUi>?>(null)
+    private var moveFromOriginal: Int? = null
+    private var moveToDisplay: Int? = null
 
     val isQueueVisible: StateFlow<Boolean> = queueVisibilityFlow.asStateFlow()
 
-    val queueContentUiState: StateFlow<QueueContentUiState> = combine(
+    private val computedItems: StateFlow<List<QueueItemUi>> = combine(
         audioPlayerQueue.queueFlow,
         audioPlayerQueue.currentQueueEntryFlow,
+    ) { queue, currentEntry ->
+        val currentIndex = if (currentEntry != null) {
+            queue.indexOfFirst { it.matchesCurrent(currentEntry) }
+        } else {
+            -1
+        }
+        queue.mapIndexed { index, entry ->
+            val title: String
+            val subtitle: String
+            val durationMs: Long
+            val imageUrl: String?
+
+            when (entry) {
+                is QueueEntry.StreamingTrack -> {
+                    title = entry.track.title
+                    subtitle = entry.track.artists.joinToString(", ") { it.name }
+                    durationMs = entry.track.durationMs
+                    imageUrl = entry.track.thumbnails?.maxByOrNull { it.width * it.height }?.url
+                        ?: entry.track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
+                }
+
+                is QueueEntry.LocalTrack -> {
+                    title = entry.name
+                    subtitle = entry.artists.joinToString(", ")
+                    durationMs = entry.duration
+                    imageUrl = null
+                }
+            }
+
+            QueueItemUi(
+                id = "${entry.url}@$index",
+                title = title,
+                subtitle = subtitle,
+                durationLabel = durationMs.toDurationLabel(),
+                isCurrent = index == currentIndex,
+                imageUrl = imageUrl,
+                originalIndex = index,
+            )
+        }
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = emptyList(),
+    )
+
+    val queueContentUiState: StateFlow<QueueContentUiState> = combine(
+        computedItems,
+        reorderBuffer,
         queueFilterFlow,
-    ) { queue, currentQueueEntry, filterQuery ->
+    ) { items, buffer, filterQuery ->
+        val normalizedFilter = filterQuery.trim().lowercase()
+        val isFiltered = normalizedFilter.isNotBlank()
+        val filtered = if (isFiltered) {
+            items.filter { item ->
+                item.title.lowercase().contains(normalizedFilter) ||
+                    item.subtitle.lowercase().contains(normalizedFilter)
+            }
+        } else {
+            items
+        }
         QueueContentUiState(
             filterQuery = filterQuery,
-            queue = queue,
-            currentQueueEntry = currentQueueEntry,
+            displayItems = buffer ?: filtered,
+            isFiltered = isFiltered,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -72,13 +143,6 @@ class PlayerQueueContentViewModel(
         queueFilterFlow.value = query
     }
 
-    fun moveQueueItem(fromIndex: Int, toIndex: Int) {
-        if (fromIndex == toIndex || fromIndex < 0 || toIndex < 0) return
-        viewModelScope.launch {
-            audioPlayerQueue.move(fromIndex, toIndex)
-        }
-    }
-
     fun playQueueItem(index: Int) {
         if (index < 0) return
         viewModelScope.launch {
@@ -96,9 +160,67 @@ class PlayerQueueContentViewModel(
         }
     }
 
+    fun moveQueueItem(fromIndex: Int, toIndex: Int) {
+        if (fromIndex == toIndex || fromIndex < 0 || toIndex < 0) return
+        viewModelScope.launch {
+            audioPlayerQueue.move(fromIndex, toIndex)
+        }
+    }
+
     fun clearQueue() {
         viewModelScope.launch {
             audioPlayerQueue.clear()
         }
     }
+
+    fun onDragStart() {
+        if (reorderBuffer.value != null) return
+        val currentItems = queueContentUiState.value.displayItems
+        reorderBuffer.value = currentItems.toList()
+    }
+
+    fun onMove(from: Int, to: Int) {
+        val buffer = reorderBuffer.value ?: return
+        if (from == to || from < 0 || to < 0 || from >= buffer.size || to >= buffer.size) return
+        val item = buffer[from]
+        val newList = buffer.toMutableList().apply {
+            removeAt(from)
+            add(to, item)
+        }
+        reorderBuffer.value = newList
+        moveFromOriginal = item.originalIndex
+        moveToDisplay = to
+    }
+
+    fun onDragStop() {
+        val fromOriginal = moveFromOriginal
+        val toDisplay = moveToDisplay
+        if (fromOriginal != null && toDisplay != null) {
+            moveQueueItem(fromOriginal, toDisplay)
+        }
+        moveFromOriginal = null
+        moveToDisplay = null
+        reorderBuffer.value = null
+    }
+}
+
+private fun QueueEntry.matchesCurrent(current: QueueEntry): Boolean {
+    return when {
+        this is QueueEntry.StreamingTrack && current is QueueEntry.StreamingTrack -> {
+            this.track.id == current.track.id
+        }
+
+        this is QueueEntry.LocalTrack && current is QueueEntry.LocalTrack -> {
+            this.url == current.url && this.name == current.name
+        }
+
+        else -> false
+    }
+}
+
+private fun Long.toDurationLabel(): String {
+    val totalSeconds = (this / 1000).coerceAtLeast(0)
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "$minutes:${seconds.toString().padStart(2, '0')}"
 }
