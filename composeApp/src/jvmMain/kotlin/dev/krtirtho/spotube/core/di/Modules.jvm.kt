@@ -33,5 +33,5 @@ actual val platformModules = module {
     single<AudioPlayerInterface> { AudioPlayer(Unit) }
     single<LocalMediaDiscoveryService> { JvmLocalMediaDiscoveryService() }
     single<ShareService> { JvmShareService() }
-    single { SystemTrayService(get(), get(), get(), get()) }
+    single { SystemTrayService(get(), get(), get()) }
 }

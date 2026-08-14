@@ -29,6 +29,7 @@ import androidx.compose.ui.window.rememberWindowState
 import dev.krtirtho.spotube.core.di.initKoin
 import dev.krtirtho.spotube.core.newpipe.NewPipeDownloader
 import dev.krtirtho.spotube.core.paths.Paths
+import dev.krtirtho.spotube.core.systemtray.SystemTray
 import dev.krtirtho.spotube.core.systemtray.SystemTrayService
 import dev.krtirtho.spotube.core.ui.component.LocalApplicationScope
 import dev.krtirtho.spotube.core.ui.component.LocalWindowScope
@@ -75,14 +76,22 @@ fun main() {
 
         var isWindowVisible by remember { mutableStateOf(true) }
 
-        trayService.setCallbacks(
-            onToggleWindowVisibility = { isWindowVisible = !isWindowVisible },
-            onExit = {
-                trayService.close()
-                appScope.cancel()
-                exitApplication()
-            }
-        )
+        val onToggleWindowVisibility = { isWindowVisible = !isWindowVisible }
+        val onExit = {
+            trayService.close()
+            appScope.cancel()
+            exitApplication()
+        }
+
+        trayService.setCallbacks(onToggleWindowVisibility)
+
+        if (minimizeToTray) {
+            SystemTray(
+                isWindowVisible = isWindowVisible,
+                onToggleWindowVisibility = onToggleWindowVisibility,
+                onExit = onExit,
+            )
+        }
 
         DecoratedWindow(
             state = windowState,

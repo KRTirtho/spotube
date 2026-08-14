@@ -58,6 +58,7 @@ runner = "1.7.0"
 core = "1.7.0"
 filekit = "0.14.2"
 compose-webview = "1.0.1"
+composeNativeTray = "2.0.3"
 koin = "4.2.2"
 multiplatform-nav3-ui = "1.1.1"
 compose-multiplatform-adaptive = "1.3.0-beta02"
@@ -145,6 +146,7 @@ filekit-core = { group = "io.github.vinceglb", name = "filekit-core", version.re
 filekit-dialogs = { group = "io.github.vinceglb", name = "filekit-dialogs", version.ref = "filekit" }
 filekit-dialogs-compose = { group = "io.github.vinceglb", name = "filekit-dialogs-compose", version.ref = "filekit" }
 compose-webview = { module = "dev.nucleusframework:composewebview", version.ref = "compose-webview" }
+compose-native-tray = { module = "dev.nucleusframework:composenativetray", version.ref = "composeNativeTray" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", version.ref = "koin" }
