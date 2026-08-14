@@ -40,12 +40,21 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
 
     private fun transformVideo(track: MetadataTrack, video: VideoSearchResult): AudioSource.Basic {
         var confidence = 0f
-        if (track.title.lowercase() in video.title.lowercase()) confidence += 0.3f
-        if (track.artists.any { it.name.lowercase() in video.title.lowercase() }) confidence += 0.3f
-        if ((track.album != null && track.album!!.title.lowercase() in video.title.lowercase()) || video.uploader.lowercase() in (track.artists.firstOrNull()?.name?.lowercase()
-                ?: "")
-        ) confidence += 0.2f
-        if (video.durationMs in (track.durationMs - 30_000)..(track.durationMs + 30_000)) confidence += 0.2f // Duration within ±30 seconds
+
+        val isTitleMatch = track.title.lowercase() in video.title.lowercase()
+        val isArtistInTitle = track.artists.any { it.name.lowercase() in video.title.lowercase() }
+        val isAlbumInTitle =
+            track.album != null && track.album!!.title.lowercase() in video.title.lowercase()
+        val isUploaderMatch =
+            video.uploader.lowercase() in (track.artists.firstOrNull()?.name?.lowercase() ?: "")
+        val isDurationMatch =
+            video.durationMs in (track.durationMs - 30_000)..(track.durationMs + 30_000) // Duration within ±30 seconds
+
+        if (isTitleMatch) confidence += 0.3f
+        if (isUploaderMatch) confidence += 0.3f
+        if (isDurationMatch) confidence += 0.2f // Duration within ±30 seconds
+        if (isArtistInTitle) confidence += 0.1f
+        if (isAlbumInTitle) confidence += 0.1f
 
         return AudioSource.Basic(
             id = video.id,
@@ -66,19 +75,14 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
 
     override val supportedQualities: List<AudioFormat> = listOf(
         AudioFormat(
-            codec = "opus",
-            container = "webm",
-            qualities = listOf(
+            codec = "opus", container = "webm", qualities = listOf(
                 AudioQuality.Lossy(bitrate = 44_000),
                 AudioQuality.Lossy(bitrate = 96_000),
                 AudioQuality.Lossy(bitrate = 128_000),
                 AudioQuality.Lossy(bitrate = 256_000),
             )
-        ),
-        AudioFormat(
-            codec = "aac",
-            container = "mp4",
-            qualities = listOf(
+        ), AudioFormat(
+            codec = "aac", container = "mp4", qualities = listOf(
                 AudioQuality.Lossy(bitrate = 44_000),
                 AudioQuality.Lossy(bitrate = 96_000),
                 AudioQuality.Lossy(bitrate = 128_000),
@@ -89,9 +93,9 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
 
     override suspend fun getStreamsByTrack(track: MetadataTrack): List<AudioSource> {
         val isYouTubeUrl =
-            track.externalUri != null &&
-                    (track.externalUri!!.contains("youtube.com") ||
-                            track.externalUri!!.contains("youtu.be"))
+            track.externalUri != null && (track.externalUri!!.contains("youtube.com") || track.externalUri!!.contains(
+                "youtu.be"
+            ))
         val isYouTubeID = track.id.matches(youtubeIDRegex)
 
 
@@ -129,19 +133,17 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
         logger.i { "No YouTube ID or URL found, performing search with track metadata" }
 
         val isrcCode = track.isrcCode ?: isrcProvider.auto(track)
-        val searchQuery ="${track.title} - ${track.artists.joinToString(", ") { it.name }}".trim()
+        val searchQuery = "${track.title} - ${track.artists.joinToString(", ") { it.name }}".trim()
 
         logger.i { "Searching for video with query: $searchQuery" }
-        val videos =
-            newPipeService.searchVideos(isrcCode ?: searchQuery)
+        val videos = newPipeService.searchVideos(isrcCode ?: searchQuery)
 
         logger.i { "Found ${videos.size} videos with query: $searchQuery" }
         var sources = videos.map { transformVideo(track, it) }
 
         if (isrcCode != null && ((sources.size < 2 && sources.any { it.confidence < 0.3f }) || sources.isEmpty())) {
             logger.i { "ISRC search failed, fallback to title search" }
-            val videos =
-                newPipeService.searchVideos(searchQuery)
+            val videos = newPipeService.searchVideos(searchQuery)
             sources = videos.map { transformVideo(track, it) }
         }
 
