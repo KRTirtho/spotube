@@ -109,9 +109,6 @@ val navigationModule = module {
             ),
             audioPlayerQueue = get(),
             audioPlayer = get(),
-            shareService = get(),
-            downloadsViewModel = get(),
-            libraryRepository = get(),
             navigationCommands = get(),
         )
     }
@@ -123,9 +120,6 @@ val navigationModule = module {
             ),
             audioPlayerQueue = get(),
             audioPlayer = get(),
-            shareService = get(),
-            downloadsViewModel = get(),
-            libraryRepository = get(),
             navigationCommands = get(),
         )
     }
@@ -138,9 +132,6 @@ val navigationModule = module {
             ),
             audioPlayerQueue = get(),
             audioPlayer = get(),
-            shareService = get(),
-            downloadsViewModel = get(),
-            libraryRepository = get(),
             navigationCommands = get(),
         )
     }
@@ -155,9 +146,6 @@ val navigationModule = module {
             ),
             audioPlayerQueue = get(),
             audioPlayer = get(),
-            shareService = get(),
-            downloadsViewModel = get(),
-            libraryRepository = get(),
             navigationCommands = get(),
         )
     }

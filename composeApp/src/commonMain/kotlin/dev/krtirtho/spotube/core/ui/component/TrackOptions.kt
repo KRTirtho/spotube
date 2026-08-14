@@ -74,6 +74,23 @@ data class TrackOptionsState(
     val isBlacklisted: Boolean = false,
 )
 
+data class TrackOptionsContext(
+    val currentTrackId: String? = null,
+    val queueTrackIds: Set<String> = emptySet(),
+    val savedTrackIds: Set<String> = emptySet(),
+    val blacklistedTrackIds: Set<String> = emptySet(),
+    val blacklistedArtistIds: Set<String> = emptySet(),
+    val forceFavorite: Boolean = false,
+) {
+    fun stateFor(track: MetadataTrack): TrackOptionsState = TrackOptionsState(
+        isInQueue = track.id in queueTrackIds,
+        isCurrentlyPlaying = track.id == currentTrackId,
+        isFavorite = forceFavorite || track.id in savedTrackIds,
+        isBlacklisted = track.id in blacklistedTrackIds ||
+            track.artists.any { it.id in blacklistedArtistIds },
+    )
+}
+
 @Composable
 fun TrackOptions(
     track: MetadataTrack,

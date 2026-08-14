@@ -131,6 +131,8 @@ val sharedModules = module {
             playbackHelper = get(),
             audioPlayerQueue = get(),
             blacklistRepository = get(),
+            shareService = get(),
+            downloadManager = get(),
         )
     }
 
@@ -142,6 +144,9 @@ val sharedModules = module {
             playbackHelper = get(),
             audioPlayerQueue = get(),
             blacklistRepository = get(),
+            libraryRepository = get(),
+            shareService = get(),
+            downloadManager = get(),
         )
     }
 
@@ -155,6 +160,8 @@ val sharedModules = module {
             savedTracksRepository = get(),
             audioPlayerQueue = get(),
             blacklistRepository = get(),
+            shareService = get(),
+            downloadManager = get(),
         )
     }
 
@@ -173,6 +180,8 @@ val sharedModules = module {
             libraryRepository = get(),
             audioPlayerQueue = get(),
             blacklistRepository = get(),
+            shareService = get(),
+            downloadManager = get(),
         )
     }
 

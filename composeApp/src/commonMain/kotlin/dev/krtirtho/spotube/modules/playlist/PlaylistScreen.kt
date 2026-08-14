@@ -27,35 +27,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
-import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
-import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.component.CollectionView
-import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
-import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
-import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
-import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormData
 import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormSheet
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun PlaylistScreen(
@@ -63,40 +50,17 @@ fun PlaylistScreen(
     viewModel: PlaylistViewModel,
     audioPlayerQueue: AudioPlayerQueue,
     audioPlayer: AudioPlayerInterface,
-    shareService: ShareService,
-    downloadsViewModel: DownloadsViewModel,
-    libraryRepository: LibraryRepository,
     navigationCommands: NavigationCommands
 ) {
-    val scope = rememberCoroutineScope()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val queue by audioPlayerQueue.queueFlow.collectAsStateWithLifecycle()
-    val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
     val savedPlaylistIds by viewModel.savedPlaylistIds.collectAsStateWithLifecycle()
     val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
+    val trackOptionsContext by viewModel.trackOptionsContext.collectAsStateWithLifecycle()
+    val showAddToPlaylistPicker by viewModel.showAddToPlaylistPicker.collectAsStateWithLifecycle()
     var showEditPlaylist by remember { mutableStateOf(false) }
-    var showAddToPlaylistPicker by remember { mutableStateOf(false) }
     var showAddTracksDialog by remember { mutableStateOf(false) }
-    var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
-
-    fun handleTrackOptionsAction(track: MetadataTrack, action: TrackOptionsAction) {
-        viewModel.handleTrackOptionsAction(track, action)
-        if (action is TrackOptionsAction.Share) {
-            val uri = track.externalUri?.takeIf { it.isNotBlank() }
-            if (uri != null) {
-                shareService.share(uri, track.title)
-            }
-        }
-        if (action is TrackOptionsAction.Download) {
-            downloadsViewModel.downloadTrack(track)
-        }
-        if (action is TrackOptionsAction.AddToPlaylist) {
-            tracksToAddToPlaylist = listOf(track)
-            showAddToPlaylistPicker = true
-        }
-    }
 
     val dataState = state as? PlaylistScreenState.Data
     val playlist = dataState?.playlist
@@ -107,23 +71,6 @@ fun PlaylistScreen(
     val artworkUrl = playlist?.thumbnails?.firstOrNull()?.url.orEmpty()
     val isPlaying = currentCollectionEntry?.id == playlistId &&
         playerState == PlayerState.PLAYING
-
-    val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
-    val blacklistedTrackIds by viewModel.blacklistedTrackIds.collectAsStateWithLifecycle()
-    val blacklistedArtistIds by viewModel.blacklistedArtistIds.collectAsStateWithLifecycle()
-
-    fun getTrackOptionsState(track: MetadataTrack): TrackOptionsState {
-        val currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id
-        val queueTrackIds = queue.mapNotNull { entry ->
-            (entry as? QueueEntry.StreamingTrack)?.track?.id
-        }.toSet()
-    return TrackOptionsState(
-        isInQueue = queueTrackIds.contains(track.id),
-        isCurrentlyPlaying = track.id == currentTrackId,
-        isFavorite = savedTrackIds.contains(track.id),
-        isBlacklisted = track.id in blacklistedTrackIds || track.artists.any { it.id in blacklistedArtistIds },
-    )
-    }
 
     val errorMessage = (state as? PlaylistScreenState.Error)?.message
     val isLoading = state is PlaylistScreenState.Loading && (dataState == null || dataState.tracks.isEmpty())
@@ -168,27 +115,18 @@ fun PlaylistScreen(
         tracks = dataState?.tracks ?: emptyList(),
         hasMore = dataState?.nextPagination != null,
         isLoadingNextPage = state is PlaylistScreenState.Data.LoadingMore,
-        currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
+        currentTrackId = trackOptionsContext.currentTrackId,
         isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
         onTrackClick = viewModel::playPlaylistFromTrack,
         onLoadNextPage = viewModel::loadNextTracksPage,
         onArtistClick = { navigationCommands.navigateTo(Routes.Artist(it.id)) },
         onAlbumClick = { navigationCommands.navigateTo(Routes.Album(it.id)) },
-        onTrackOptionsAction = ::handleTrackOptionsAction,
-        trackOptionsState = ::getTrackOptionsState,
-        onBulkDownload = { tracks ->
-            downloadsViewModel.downloadTracks(tracks)
-        },
-        onBulkAddToQueue = { tracks ->
-            viewModel.addTracksToQueue(tracks)
-        },
-        onBulkPlayNext = { tracks ->
-            viewModel.playTracksNext(tracks)
-        },
-        onBulkAddToPlaylist = { tracks ->
-            tracksToAddToPlaylist = tracks
-            showAddToPlaylistPicker = true
-        },
+        onTrackOptionsAction = viewModel::handleTrackOptionsAction,
+        trackOptionsState = trackOptionsContext::stateFor,
+        onBulkDownload = viewModel::downloadTracks,
+        onBulkAddToQueue = viewModel::addTracksToQueue,
+        onBulkPlayNext = viewModel::playTracksNext,
+        onBulkAddToPlaylist = viewModel::showAddToPlaylistPicker,
         footerContent = footerContent,
         trailingContent = {
             val loadedPlaylist = (dataState as? PlaylistScreenState.Data.Loaded)?.playlist
@@ -219,15 +157,8 @@ fun PlaylistScreen(
             AddToPlaylistPicker(
                 visible = showAddToPlaylistPicker,
                 currentUserId = currentUserId,
-                onDismiss = { showAddToPlaylistPicker = false },
-                onPlaylistSelected = { selectedPlaylistId ->
-                    scope.launch {
-                        libraryRepository.addTracksToPlaylist(
-                            selectedPlaylistId,
-                            tracksToAddToPlaylist.map { it.id }
-                        )
-                    }
-                },
+                onDismiss = viewModel::dismissAddToPlaylistPicker,
+                onPlaylistSelected = viewModel::addTracksToPlaylist,
             )
 
             AddTracksToPlaylistDialog(

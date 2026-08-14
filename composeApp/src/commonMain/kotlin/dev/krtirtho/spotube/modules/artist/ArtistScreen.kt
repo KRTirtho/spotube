@@ -45,10 +45,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,14 +59,12 @@ import coil3.compose.AsyncImage
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
-import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
-import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryIconButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryButton
@@ -80,13 +74,9 @@ import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.ArtistCard
 import dev.krtirtho.spotube.core.ui.component.PlaylistCard
 import dev.krtirtho.spotube.core.ui.component.TrackList
-import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
-import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.component.dragScrollable
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
-import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
-import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
@@ -95,7 +85,6 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxUserRemove
 import dev.krtirtho.spotube.resources.iconsax.User
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 @Composable
@@ -103,58 +92,16 @@ fun ArtistScreen(
     viewModel: ArtistViewModel,
     audioPlayerQueue: AudioPlayerQueue,
     audioPlayer: AudioPlayerInterface,
-    shareService: ShareService,
-    downloadsViewModel: DownloadsViewModel,
-    libraryRepository: LibraryRepository,
     navigationCommands: NavigationCommands
 ) {
-    val scope = rememberCoroutineScope()
-
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val queue by audioPlayerQueue.queueFlow.collectAsStateWithLifecycle()
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
-    val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
     val savedArtistIds by viewModel.savedArtistIds.collectAsStateWithLifecycle()
-    val blacklistedTrackIds by viewModel.blacklistedTrackIds.collectAsStateWithLifecycle()
     val blacklistedArtistIds by viewModel.blacklistedArtistIds.collectAsStateWithLifecycle()
-    var showAddToPlaylistPicker by remember { mutableStateOf(false) }
-    var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
-    var currentUserId by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        currentUserId = libraryRepository.currentUser()?.id
-    }
-
-    fun getTrackOptionsState(track: MetadataTrack): TrackOptionsState {
-        val currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id
-        val queueTrackIds = queue.mapNotNull { entry ->
-            (entry as? QueueEntry.StreamingTrack)?.track?.id
-        }.toSet()
-        return TrackOptionsState(
-            isInQueue = queueTrackIds.contains(track.id),
-            isCurrentlyPlaying = track.id == currentTrackId,
-            isFavorite = savedTrackIds.contains(track.id),
-            isBlacklisted = track.id in blacklistedTrackIds || track.artists.any { it.id in blacklistedArtistIds },
-        )
-    }
-
-    fun handleTrackOptionsAction(track: MetadataTrack, action: TrackOptionsAction) {
-        viewModel.handleTrackOptionsAction(track, action)
-        if (action is TrackOptionsAction.Share) {
-            val uri = track.externalUri?.takeIf { it.isNotBlank() }
-            if (uri != null) {
-                shareService.share(uri, track.title)
-            }
-        }
-        if (action is TrackOptionsAction.Download) {
-            downloadsViewModel.downloadTrack(track)
-        }
-        if (action is TrackOptionsAction.AddToPlaylist) {
-            tracksToAddToPlaylist = listOf(track)
-            showAddToPlaylistPicker = true
-        }
-    }
+    val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
+    val trackOptionsContext by viewModel.trackOptionsContext.collectAsStateWithLifecycle()
+    val showAddToPlaylistPicker by viewModel.showAddToPlaylistPicker.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = { ApplicationMainBar() }
@@ -209,8 +156,8 @@ fun ArtistScreen(
                             currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
                             isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
                             onTrackClick = viewModel::playTopTracksFromTrack,
-                            onTrackOptionsAction = ::handleTrackOptionsAction,
-                            trackOptionsState = ::getTrackOptionsState,
+                            onTrackOptionsAction = viewModel::handleTrackOptionsAction,
+                            trackOptionsState = trackOptionsContext::stateFor,
                             onArtistClick = { trackArtist ->
                                 navigationCommands.navigateTo(
                                     Routes.Artist(
@@ -228,13 +175,10 @@ fun ArtistScreen(
                             onLoadNextPage = {},
                             simplified = true,
                             scrollable = false,
-                            onBulkDownload = { tracks -> downloadsViewModel.downloadTracks(tracks) },
-                            onBulkAddToQueue = { tracks -> viewModel.addTracksToQueue(tracks) },
-                            onBulkPlayNext = { tracks -> viewModel.playTracksNext(tracks) },
-                            onBulkAddToPlaylist = { tracks ->
-                                tracksToAddToPlaylist = tracks
-                                showAddToPlaylistPicker = true
-                            },
+                            onBulkDownload = viewModel::downloadTracks,
+                            onBulkAddToQueue = viewModel::addTracksToQueue,
+                            onBulkPlayNext = viewModel::playTracksNext,
+                            onBulkAddToPlaylist = viewModel::showAddToPlaylistPicker,
                         )
                     }
 
@@ -292,15 +236,8 @@ fun ArtistScreen(
         AddToPlaylistPicker(
             visible = showAddToPlaylistPicker,
             currentUserId = currentUserId,
-            onDismiss = { showAddToPlaylistPicker = false },
-            onPlaylistSelected = { playlistId ->
-                scope.launch {
-                    libraryRepository.addTracksToPlaylist(
-                        playlistId,
-                        tracksToAddToPlaylist.map { it.id }
-                    )
-                }
-            },
+            onDismiss = viewModel::dismissAddToPlaylistPicker,
+            onPlaylistSelected = viewModel::addTracksToPlaylist,
         )
     }
 }

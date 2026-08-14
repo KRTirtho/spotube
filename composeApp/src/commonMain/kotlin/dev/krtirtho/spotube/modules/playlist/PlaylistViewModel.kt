@@ -26,20 +26,26 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
+import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
+import dev.krtirtho.spotube.core.ui.component.TrackOptionsContext
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
+import dev.krtirtho.spotube.modules.downloads.DownloadManager
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -90,6 +96,8 @@ class PlaylistViewModel(
     private val playbackHelper: CollectionPlaybackHelper,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val blacklistRepository: BlacklistRepository,
+    private val shareService: ShareService,
+    private val downloadManager: DownloadManager,
 ) : ViewModel(), KoinComponent {
     private val logger by injectLogger<PlaylistViewModel>()
 
@@ -106,6 +114,28 @@ class PlaylistViewModel(
 
     private val _blacklistedArtistIds = MutableStateFlow<Set<String>>(emptySet())
     val blacklistedArtistIds: StateFlow<Set<String>> = _blacklistedArtistIds.asStateFlow()
+
+    private val _tracksToAddToPlaylist = MutableStateFlow<List<MetadataTrack>>(emptyList())
+    private val _showAddToPlaylistPicker = MutableStateFlow(false)
+    val showAddToPlaylistPicker: StateFlow<Boolean> = _showAddToPlaylistPicker.asStateFlow()
+
+    val trackOptionsContext: StateFlow<TrackOptionsContext> = combine(
+        audioPlayerQueue.queueFlow,
+        audioPlayerQueue.currentQueueEntryFlow,
+        savedTracksRepository.savedTracksIdsFlow,
+        _blacklistedTrackIds,
+        _blacklistedArtistIds,
+    ) { queue, currentEntry, savedIds, blacklistedTracks, blacklistedArtists ->
+        TrackOptionsContext(
+            currentTrackId = (currentEntry as? QueueEntry.StreamingTrack)?.track?.id,
+            queueTrackIds = queue.mapNotNull { entry ->
+                (entry as? QueueEntry.StreamingTrack)?.track?.id
+            }.toSet(),
+            savedTrackIds = savedIds,
+            blacklistedTrackIds = blacklistedTracks,
+            blacklistedArtistIds = blacklistedArtists,
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TrackOptionsContext())
 
     init {
         viewModelScope.launch {
@@ -280,12 +310,48 @@ class PlaylistViewModel(
                     }
                 }
 
-                is TrackOptionsAction.Download -> {}
+                is TrackOptionsAction.Download -> downloadManager.enqueue(track)
                 is TrackOptionsAction.ToggleBlacklist -> toggleTrackBlacklist(track)
-                is TrackOptionsAction.Share -> {}
-                is TrackOptionsAction.AddToPlaylist -> {}
+                is TrackOptionsAction.Share -> {
+                    val uri = track.externalUri?.takeIf { it.isNotBlank() }
+                    if (uri != null) {
+                        shareService.share(uri, track.title)
+                    }
+                }
+                is TrackOptionsAction.AddToPlaylist -> {
+                    _tracksToAddToPlaylist.value = listOf(track)
+                    _showAddToPlaylistPicker.value = true
+                }
             }
         }
+    }
+
+    fun addTracksToPlaylist(playlistId: String) {
+        viewModelScope.launch {
+            runCatching {
+                libraryRepository.addTracksToPlaylist(
+                    playlistId,
+                    _tracksToAddToPlaylist.value.map { it.id },
+                )
+            }.onFailure { e ->
+                logger.e(e) { "Failed to add tracks to playlist" }
+            }.onSuccess {
+                _showAddToPlaylistPicker.value = false
+            }
+        }
+    }
+
+    fun showAddToPlaylistPicker(tracks: List<MetadataTrack>) {
+        _tracksToAddToPlaylist.value = tracks
+        _showAddToPlaylistPicker.value = true
+    }
+
+    fun dismissAddToPlaylistPicker() {
+        _showAddToPlaylistPicker.value = false
+    }
+
+    fun downloadTracks(tracks: List<MetadataTrack>) {
+        tracks.forEach { track -> downloadManager.enqueue(track) }
     }
 
     fun isTrackBlacklisted(track: MetadataTrack): Boolean {

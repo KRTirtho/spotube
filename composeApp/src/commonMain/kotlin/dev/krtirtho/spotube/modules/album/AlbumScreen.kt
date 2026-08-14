@@ -18,33 +18,15 @@
 package dev.krtirtho.spotube.modules.album
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
-import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
-import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.component.CollectionView
-import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
-import dev.krtirtho.spotube.core.ui.component.TrackOptionsState
-import dev.krtirtho.spotube.modules.artist.ArtistViewModel
-import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
-import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
-import org.koin.compose.viewmodel.koinViewModel
-import org.koin.core.parameter.parametersOf
 
 @Composable
 fun AlbumScreen(
@@ -52,59 +34,15 @@ fun AlbumScreen(
     viewModel: AlbumViewModel,
     audioPlayerQueue: AudioPlayerQueue,
     audioPlayer: AudioPlayerInterface,
-    shareService: ShareService,
-    downloadsViewModel: DownloadsViewModel,
-    libraryRepository: LibraryRepository,
     navigationCommands: NavigationCommands
 ) {
-
-    val scope = rememberCoroutineScope()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val queue by audioPlayerQueue.queueFlow.collectAsStateWithLifecycle()
-    val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
-    val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
     val savedAlbumIds by viewModel.savedAlbumIds.collectAsStateWithLifecycle()
-    val blacklistedTrackIds by viewModel.blacklistedTrackIds.collectAsStateWithLifecycle()
-    val blacklistedArtistIds by viewModel.blacklistedArtistIds.collectAsStateWithLifecycle()
-    var showAddToPlaylistPicker by remember { mutableStateOf(false) }
-    var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
-    var currentUserId by remember { mutableStateOf<String?>(null) }
-
-    LaunchedEffect(Unit) {
-        currentUserId = libraryRepository.currentUser()?.id
-    }
-
-    fun getTrackOptionsState(track: MetadataTrack): TrackOptionsState {
-        val currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id
-        val queueTrackIds = queue.mapNotNull { entry ->
-            (entry as? QueueEntry.StreamingTrack)?.track?.id
-        }.toSet()
-    return TrackOptionsState(
-        isInQueue = queueTrackIds.contains(track.id),
-        isCurrentlyPlaying = track.id == currentTrackId,
-        isFavorite = savedTrackIds.contains(track.id),
-        isBlacklisted = track.id in blacklistedTrackIds || track.artists.any { it.id in blacklistedArtistIds },
-    )
-    }
-
-    fun handleTrackOptionsAction(track: MetadataTrack, action: TrackOptionsAction) {
-        viewModel.handleTrackOptionsAction(track, action)
-        if (action is TrackOptionsAction.Share) {
-            val uri = track.externalUri?.takeIf { it.isNotBlank() }
-            if (uri != null) {
-                shareService.share(uri, track.title)
-            }
-        }
-        if (action is TrackOptionsAction.Download) {
-            downloadsViewModel.downloadTrack(track)
-        }
-        if (action is TrackOptionsAction.AddToPlaylist) {
-            tracksToAddToPlaylist = listOf(track)
-            showAddToPlaylistPicker = true
-        }
-    }
+    val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
+    val trackOptionsContext by viewModel.trackOptionsContext.collectAsStateWithLifecycle()
+    val showAddToPlaylistPicker by viewModel.showAddToPlaylistPicker.collectAsStateWithLifecycle()
 
     val dataState = state as? AlbumScreenState.Data
     val album = dataState?.album
@@ -142,40 +80,24 @@ fun AlbumScreen(
         tracks = dataState?.tracks ?: emptyList(),
         hasMore = dataState?.nextPagination != null,
         isLoadingNextPage = state is AlbumScreenState.Data.LoadingMore,
-        currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
+        currentTrackId = trackOptionsContext.currentTrackId,
         isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
         onTrackClick = viewModel::playAlbumFromTrack,
         onLoadNextPage = viewModel::loadNextTracksPage,
         onArtistClick = { navigationCommands.navigateTo(Routes.Artist(it.id)) },
         onAlbumClick = { navigationCommands.navigateTo(Routes.Album(it.id)) },
-        onTrackOptionsAction = ::handleTrackOptionsAction,
-        trackOptionsState = ::getTrackOptionsState,
-        onBulkDownload = { tracks ->
-            downloadsViewModel.downloadTracks(tracks)
-        },
-        onBulkAddToQueue = { tracks ->
-            viewModel.addTracksToQueue(tracks)
-        },
-        onBulkPlayNext = { tracks ->
-            viewModel.playTracksNext(tracks)
-        },
-        onBulkAddToPlaylist = { tracks ->
-            tracksToAddToPlaylist = tracks
-            showAddToPlaylistPicker = true
-        },
+        onTrackOptionsAction = viewModel::handleTrackOptionsAction,
+        trackOptionsState = trackOptionsContext::stateFor,
+        onBulkDownload = viewModel::downloadTracks,
+        onBulkAddToQueue = viewModel::addTracksToQueue,
+        onBulkPlayNext = viewModel::playTracksNext,
+        onBulkAddToPlaylist = viewModel::showAddToPlaylistPicker,
         trailingContent = {
             AddToPlaylistPicker(
                 visible = showAddToPlaylistPicker,
                 currentUserId = currentUserId,
-                onDismiss = { showAddToPlaylistPicker = false },
-                onPlaylistSelected = { playlistId ->
-                    scope.launch {
-                        libraryRepository.addTracksToPlaylist(
-                            playlistId,
-                            tracksToAddToPlaylist.map { it.id }
-                        )
-                    }
-                },
+                onDismiss = viewModel::dismissAddToPlaylistPicker,
+                onPlaylistSelected = viewModel::addTracksToPlaylist,
             )
         },
     )
