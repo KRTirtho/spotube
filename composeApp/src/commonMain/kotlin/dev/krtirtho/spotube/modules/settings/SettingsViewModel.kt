@@ -32,11 +32,7 @@ interface SettingsProvider {
 class SettingsViewModel(
     private val repository: SettingsRepository
 ) : ViewModel(), SettingsProvider {
-    override val settingsState: StateFlow<UserSettings?> = repository.userSettings.stateIn(
-            viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
-            null,
-        )
+    override val settingsState = repository.userSettings
 
     fun updateSettings(transform: UserSettings.() -> UserSettings) {
         viewModelScope.launch {

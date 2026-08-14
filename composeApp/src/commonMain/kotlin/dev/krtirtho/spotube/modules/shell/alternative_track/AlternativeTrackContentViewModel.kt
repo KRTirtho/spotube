@@ -95,8 +95,9 @@ class AlternativeTrackContentViewModel(
     }
 
     fun selectAlternative(source: AudioSource) {
-        val currentTrack = (audioPlayerQueue.currentQueueEntryFlow.value as? QueueEntry.StreamingTrack)?.track
-        if (currentTrack == null) return
+        val currentTrack =
+            (audioPlayerQueue.currentQueueEntryFlow.value as? QueueEntry.StreamingTrack)?.track
+                ?: return
         viewModelScope.launch {
             alternativeTracksRepository.selectAlternative(currentTrack, source)
             activeSourceIdFlow.value = source.id

@@ -27,6 +27,7 @@ import dev.krtirtho.spotube.core.discord.DiscordRpcService
 import dev.krtirtho.spotube.core.navigation.navigationModule
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.core.server.AlternativeTracksRepository
+import dev.krtirtho.spotube.core.server.CacheManager
 import dev.krtirtho.spotube.core.server.LocalServer
 import dev.krtirtho.spotube.core.server.MatchedTracksRepository
 import dev.krtirtho.spotube.core.server.StreamingUrlRepository
@@ -190,6 +191,7 @@ val sharedModules = module {
     }
     singleOf(::MatchedTracksRepository)
     singleOf(::StreamingUrlRepository)
+    singleOf(::CacheManager)
     singleOf(::AlternativeTracksRepository)
     singleOf(::LocalServer) withOptions {
         createdAtStart()

@@ -19,7 +19,6 @@ package dev.krtirtho.spotube.core.server
 
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.di.injectLogger
-import dev.krtirtho.spotube.core.paths.Paths
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import io.ktor.client.HttpClient
 import io.ktor.http.HttpMethod
@@ -52,10 +51,10 @@ import kotlinx.coroutines.sync.withLock
 import org.koin.core.component.KoinComponent
 
 class LocalServer(
-    private val paths: Paths,
     settingsViewModel: SettingsViewModel,
     private val streamingUrlRepository: StreamingUrlRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
+    private val cacheManager: CacheManager,
 ) : KoinComponent {
 
     val logger by injectLogger<LocalServer>()
@@ -76,14 +75,6 @@ class LocalServer(
     }.stateIn(scope, SharingStarted.WhileSubscribed(5_000), null)
 
     private val cachedCacheEnabled = MutableStateFlow(false)
-    private val cachedCacheFolder = MutableStateFlow<String?>(null)
-    private val cachedCacheSizeLimitMB = MutableStateFlow(0L)
-
-    private val cacheManager = CacheManager(
-        paths = paths,
-        resolveCacheFolder = { cachedCacheFolder.value },
-        resolveSizeLimitMB = { cachedCacheSizeLimitMB.value },
-    )
 
     private val streamProxy by lazy {
         StreamProxy(
@@ -94,7 +85,6 @@ class LocalServer(
             isCachingEnabled = { cachedCacheEnabled.value },
             activePort = { activePort.value },
             scope = scope,
-            logger = logger,
         )
     }
 
@@ -118,8 +108,6 @@ class LocalServer(
                 .collect { settings ->
                     if (settings != null) {
                         cachedCacheEnabled.value = settings.enableMusicCaching
-                        cachedCacheFolder.value = settings.cacheFolder
-                        cachedCacheSizeLimitMB.value = settings.cacheSizeLimitMB
                     }
                 }
         }

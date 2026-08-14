@@ -29,6 +29,7 @@ class AlternativeTracksRepository(
     private val matchedTracksRepository: MatchedTracksRepository,
     private val streamingUrlRepository: StreamingUrlRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
+    private val cacheManager: CacheManager,
 ) : KoinComponent {
 
     private val logger by injectLogger<AlternativeTracksRepository>()
@@ -78,6 +79,7 @@ class AlternativeTracksRepository(
         matchedTracksRepository.saveTrackSource(track, basic)
         streamingUrlRepository.invalidateCachedStreamUrl(trackId)
         streamingUrlRepository.invalidateCachedAlternatives(trackId)
+        cacheManager.invalidateCacheEntry(trackId)
         audioPlayerQueue.reloadCurrent()
         logger.d { "Alternative source selection complete for track $trackId" }
     }

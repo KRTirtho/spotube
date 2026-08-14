@@ -20,6 +20,10 @@ package dev.krtirtho.spotube.modules.settings
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import dev.krtirtho.spotube.core.db.Database
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.*
 import kotlinx.serialization.json.Json
 
@@ -28,14 +32,20 @@ class SettingsRepository(private val database: Database) {
         private val SETTINGS_KEY = stringPreferencesKey("user_settings")
     }
 
-    val userSettings: Flow<UserSettings> = database.settingsDataStore.data.map { prefs ->
+    val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    val userSettings: StateFlow<UserSettings> = database.settingsDataStore.data.map { prefs ->
         val json = prefs[SETTINGS_KEY]
         if (json != null) {
             Json.decodeFromString<UserSettings>(json as String)
         } else {
             UserSettings() // Default value
         }
-    }
+    }.stateIn(
+        scope,
+        started = SharingStarted.Eagerly,
+        initialValue = UserSettings() // Default value
+    )
 
     suspend fun updateSettings(newSettings: UserSettings) {
         database.settingsDataStore.edit { prefs ->

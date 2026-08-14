@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.core.server
 
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.paths.Paths
+import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import io.ktor.http.ContentType
 import io.ktor.http.Headers
 import io.ktor.http.HeadersBuilder
@@ -40,12 +41,12 @@ import okio.buffer
 import okio.use
 
 @Serializable
-internal data class CacheIndex(
+data class CacheIndex(
     val entries: List<CacheEntry> = emptyList()
 )
 
 @Serializable
-internal data class CacheEntry(
+data class CacheEntry(
     val trackId: String,
     val filename: String,
     val sizeBytes: Long,
@@ -53,16 +54,24 @@ internal data class CacheEntry(
     val contentType: String = "application/octet-stream",
 )
 
-internal class CacheManager(
+class CacheManager(
     private val paths: Paths,
-    private val resolveCacheFolder: () -> String?,
-    private val resolveSizeLimitMB: () -> Long,
-    private val fileSystem: FileSystem = FileSystem.SYSTEM,
-    private val cacheMutex: Mutex = Mutex(),
-    private val json: Json = Json { ignoreUnknownKeys = true },
+    private val settingsRepository: SettingsRepository,
 ) {
+    private val fileSystem: FileSystem = FileSystem.SYSTEM
+    private val cacheMutex: Mutex = Mutex()
+    private val json: Json = Json { ignoreUnknownKeys = true }
+
     companion object {
         private val cacheIndexFileName = "cache_index.json".toPath()
+    }
+
+    private fun resolveCacheFolder(): String? {
+        return settingsRepository.userSettings.value.cacheFolder
+    }
+
+    private fun resolveSizeLimitMB(): Long {
+        return settingsRepository.userSettings.value.cacheSizeLimitMB
     }
 
     fun resolveCacheDir(): Path {
@@ -99,6 +108,18 @@ internal class CacheManager(
         val entry = index.entries.firstOrNull { it.trackId == trackId } ?: return null
         val filePath = resolveCacheDir() / entry.filename.toPath()
         return if (fileSystem.exists(filePath)) filePath to entry else null
+    }
+
+    suspend fun invalidateCacheEntry(trackId: String) {
+        cacheMutex.withLock {
+            val index = readCacheIndex()
+            val entry = index.entries.firstOrNull { it.trackId == trackId } ?: return
+            val filePath = resolveCacheDir() / entry.filename.toPath()
+            if (fileSystem.exists(filePath)) {
+                fileSystem.delete(filePath)
+            }
+            writeCacheIndex(index.copy(entries = index.entries.filter { it.trackId != trackId }))
+        }
     }
 
     fun resolveCacheFilename(track: MetadataTrack, contentType: String?): String {

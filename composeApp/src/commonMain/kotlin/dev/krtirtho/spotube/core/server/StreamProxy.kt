@@ -21,6 +21,7 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.di.injectLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
@@ -51,6 +52,7 @@ import okio.Path.Companion.toPath
 import okio.SYSTEM
 import okio.buffer
 import okio.use
+import org.koin.core.component.KoinComponent
 
 internal class StreamProxy(
     private val httpClient: HttpClient,
@@ -60,8 +62,9 @@ internal class StreamProxy(
     private val isCachingEnabled: () -> Boolean,
     private val activePort: () -> Int?,
     private val scope: CoroutineScope,
-    private val logger: co.touchlab.kermit.Logger,
-) {
+): KoinComponent {
+    val logger by injectLogger<StreamProxy>()
+
     companion object {
         private const val HOST = "127.0.0.1"
     }

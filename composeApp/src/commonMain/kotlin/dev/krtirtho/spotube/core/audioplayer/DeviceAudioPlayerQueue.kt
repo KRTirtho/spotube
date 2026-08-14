@@ -259,12 +259,16 @@ class DeviceAudioPlayerQueue(
             return
         }
         val queue = queueFlow.value
+
+        // Using separate current index entry as the current track's source url has changed so it won't match
         val index = queue.indexOfFirst { entry ->
-            when {
-                entry is QueueEntry.StreamingTrack && current is QueueEntry.StreamingTrack ->
+            when (entry) {
+                is QueueEntry.StreamingTrack if current is QueueEntry.StreamingTrack ->
                     entry.track.id == current.track.id
-                entry is QueueEntry.LocalTrack && current is QueueEntry.LocalTrack ->
+
+                is QueueEntry.LocalTrack if current is QueueEntry.LocalTrack ->
                     entry.url == current.url && entry.name == current.name
+
                 else -> false
             }
         }
