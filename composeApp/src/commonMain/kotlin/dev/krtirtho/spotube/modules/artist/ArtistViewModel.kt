@@ -329,22 +329,10 @@ class ArtistViewModel(
                 is TrackOptionsAction.StartRadio -> {}
                 is TrackOptionsAction.PlayNext -> {
                     val queue = audioPlayerQueue.getQueue()
-                    val queueIndex = queue.indexOfFirst { entry ->
+                    queue.find { entry ->
                         (entry as? QueueEntry.StreamingTrack)?.track?.matchesTrack(track) == true
-                    }
-                    if (queueIndex >= 0) {
-                        val entry = queue[queueIndex]
-                        audioPlayerQueue.removeFromQueue(entry)
-                    }
-                    val entry = QueueEntry.StreamingTrack(track = track, url = "")
-                    audioPlayerQueue.addToQueue(entry)
-                    val newQueue = audioPlayerQueue.getQueue()
-                    val newIndex = newQueue.indexOfFirst { e ->
-                        (e as? QueueEntry.StreamingTrack)?.track?.matchesTrack(track) == true
-                    }
-                    if (newIndex >= 0) {
-                        audioPlayerQueue.move(newIndex, 0)
-                    }
+                    }?.let { audioPlayerQueue.removeFromQueue(it) }
+                    audioPlayerQueue.addAllAfterCurrent(listOf(QueueEntry.StreamingTrack(track = track, url = "")))
                 }
                 is TrackOptionsAction.AddToQueue -> {
                     audioPlayerQueue.addToQueue(QueueEntry.StreamingTrack(track = track, url = ""))

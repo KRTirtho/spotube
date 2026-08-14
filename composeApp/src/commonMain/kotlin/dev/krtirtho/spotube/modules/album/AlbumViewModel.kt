@@ -241,20 +241,10 @@ class AlbumViewModel(
                 is TrackOptionsAction.StartRadio -> {}
                 is TrackOptionsAction.PlayNext -> {
                     val queue = audioPlayerQueue.getQueue()
-                    val queueIndex = queue.indexOfFirst { entry ->
+                    queue.find { entry ->
                         (entry as? QueueEntry.StreamingTrack)?.track?.matchesTrack(track) == true
-                    }
-                    if (queueIndex >= 0) {
-                        audioPlayerQueue.removeFromQueue(queue[queueIndex])
-                    }
-                    audioPlayerQueue.addToQueue(QueueEntry.StreamingTrack(track = track, url = ""))
-                    val newQueue = audioPlayerQueue.getQueue()
-                    val newIndex = newQueue.indexOfFirst { e ->
-                        (e as? QueueEntry.StreamingTrack)?.track?.matchesTrack(track) == true
-                    }
-                    if (newIndex > 0) {
-                        audioPlayerQueue.move(newIndex, 0)
-                    }
+                    }?.let { audioPlayerQueue.removeFromQueue(it) }
+                    audioPlayerQueue.addAllAfterCurrent(listOf(QueueEntry.StreamingTrack(track = track, url = "")))
                 }
 
                 is TrackOptionsAction.AddToQueue -> {
