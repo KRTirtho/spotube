@@ -18,9 +18,8 @@
 package dev.krtirtho.spotube.core.navigation
 
 import androidx.navigation3.runtime.NavKey
-import dev.krtirtho.spotube.modules.artist.ArtistScreen
 import dev.krtirtho.spotube.modules.album.AlbumScreen
-import dev.krtirtho.spotube.modules.artist.ArtistViewModel
+import dev.krtirtho.spotube.modules.artist.ArtistScreen
 import dev.krtirtho.spotube.modules.blacklist.BlacklistScreen
 import dev.krtirtho.spotube.modules.home.HomeScreen
 import dev.krtirtho.spotube.modules.library.LibraryScreen
@@ -31,7 +30,6 @@ import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksScreen
 import dev.krtirtho.spotube.modules.search.SearchScreen
 import dev.krtirtho.spotube.modules.settings.SettingsScreen
-import dev.krtirtho.spotube.modules.webview.WebViewScreen
 import kotlinx.serialization.Serializable
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -97,9 +95,7 @@ val navigationModule = module {
     navigation<Routes.Plugins> {
         PluginScreen(pluginManager = get())
     }
-    navigation<Routes.WebView> {
-        WebViewScreen(get())
-    }
+    navigation<Routes.WebView> {}
     navigation<Routes.Playlist> {
         PlaylistScreen(
             playlistId = it.playlistId,

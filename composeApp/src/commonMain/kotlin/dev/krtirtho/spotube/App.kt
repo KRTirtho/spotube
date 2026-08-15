@@ -19,6 +19,7 @@ package dev.krtirtho.spotube
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionLayout
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -41,6 +42,7 @@ import dev.krtirtho.spotube.core.ui.theming.SpotubeTheme
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.shell.AppShell
+import dev.krtirtho.spotube.modules.webview.WebViewScreen
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHome
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHomeBroken
@@ -89,7 +91,11 @@ val tabs = listOf(
     )
 )
 
-@OptIn(KoinExperimentalAPI::class, ExperimentalCoroutinesApi::class, ExperimentalSharedTransitionApi::class)
+@OptIn(
+    KoinExperimentalAPI::class,
+    ExperimentalCoroutinesApi::class,
+    ExperimentalSharedTransitionApi::class
+)
 @Composable
 fun App(
     content: @Composable () -> Unit = {}
@@ -108,18 +114,28 @@ fun App(
     SpotubeTheme(settings = userSettings) {
         val baseUITheme = rememberBaseUITheme()
         CompositionLocalProvider(LocalBaseUITheme provides baseUITheme) {
-            AppShell(navigator, navigationState) {
-                SharedTransitionLayout {
-                    CompositionLocalProvider(
-                        LocalSharedTransitionScope provides this@SharedTransitionLayout,
-                    ) {
-                        Column {
-                            NavDisplay(
-                                modifier = Modifier.fillMaxSize(),
-                                onBack = navigator::pop,
-                                entries = navigationState.toEntries(koinEntryProvider())
-                            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                val currentRoute = navigationState.backStacks[navigationState.topLevelRoute]?.last()
+
+                Box(Modifier.fillMaxSize()) {
+                    AppShell(navigator, navigationState) {
+                        SharedTransitionLayout {
+                            CompositionLocalProvider(
+                                LocalSharedTransitionScope provides this@SharedTransitionLayout,
+                            ) {
+                                Column {
+                                    NavDisplay(
+                                        modifier = Modifier.fillMaxSize(),
+                                        onBack = navigator::pop,
+                                        entries = navigationState.toEntries(koinEntryProvider())
+                                    )
+                                }
+                            }
                         }
+                    }
+                    when (currentRoute) {
+                        Routes.WebView -> WebViewScreen(koinInject())
+                        else -> {}
                     }
                 }
             }

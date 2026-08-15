@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.core.webview
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,6 +52,7 @@ import compose.icons.feathericons.ChevronLeft
 import compose.icons.feathericons.ChevronRight
 import compose.icons.feathericons.X
 import dev.krtirtho.spotube.core.tools.user_agents.UserAgents
+import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.nucleusframework.webview.jsbridge.IJsMessageHandler
 import dev.nucleusframework.webview.jsbridge.JsMessage
 import dev.nucleusframework.webview.jsbridge.rememberWebViewJsBridge
@@ -149,64 +151,63 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
     Scaffold(
         contentWindowInsets = WindowInsets.statusBars,
         topBar = {
-            Row(
-                modifier = Modifier.fillMaxWidth().statusBarsPadding().height(56.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start,
-                    modifier = Modifier.height(56.dp)
-                ) {
-                    IconButton(
-                        onClick = {
-                            navigator.navigateBack()
-                        }, enabled = navigator.canGoBack
+            ApplicationMainBar(
+                title = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().statusBarsPadding().height(56.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            FeatherIcons.ChevronLeft,
-                            contentDescription = "Go back to browser history"
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Start,
+                            modifier = Modifier.height(56.dp)
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    navigator.navigateBack()
+                                }, enabled = navigator.canGoBack
+                            ) {
+                                Icon(
+                                    FeatherIcons.ChevronLeft,
+                                    contentDescription = "Go back to browser history"
+                                )
+                            }
+                            IconButton(
+                                onClick = {
+                                    navigator.navigateForward()
+                                }, enabled = navigator.canGoForward
+                            ) {
+                                Icon(
+                                    FeatherIcons.ChevronRight,
+                                    contentDescription = "Go forward to browser history"
+                                )
+                            }
+                        }
+                        Surface(
+                            modifier = Modifier.weight(1f).height(36.dp).padding(horizontal = 4.dp),
+                            shape = RoundedCornerShape(18.dp),
+                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
+                            border = BorderStroke(1.dp, Color.Gray.copy(alpha = 0.5f))
+                        ) {
+                            BasicTextField(
+                                value = state.lastLoadedUrl ?: "",
+                                onValueChange = {}, // Read-only
+                                readOnly = true,
+                                singleLine = true,
+                                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    textAlign = TextAlign.Start
+                                ),
+                                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
+                                    .wrapContentHeight(Alignment.CenterVertically)
+                            )
+                        }
                     }
-                    IconButton(
-                        onClick = {
-                            navigator.navigateForward()
-                        }, enabled = navigator.canGoForward
-                    ) {
-                        Icon(
-                            FeatherIcons.ChevronRight,
-                            contentDescription = "Go forward to browser history"
-                        )
-                    }
                 }
-                Surface(
-                    modifier = Modifier.weight(1f).height(36.dp).padding(horizontal = 4.dp),
-                    shape = RoundedCornerShape(18.dp),
-                    color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                    border = BorderStroke(1.dp, Color.Gray.copy(alpha = 0.5f))
-                ) {
-                    BasicTextField(
-                        value = state.lastLoadedUrl ?: "",
-                        onValueChange = {}, // Read-only
-                        readOnly = true,
-                        singleLine = true,
-                        textStyle = MaterialTheme.typography.bodyMedium.copy(
-                            color = MaterialTheme.colorScheme.onSurface,
-                            textAlign = TextAlign.Start
-                        ),
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
-                            .wrapContentHeight(Alignment.CenterVertically)
-                    )
-                }
-                IconButton(
-                    onClick = {
-                        webViewController.closeWebview()
-                    }) {
-                    Icon(FeatherIcons.X, contentDescription = "Close WebView")
-                }
-            }
-        }) { innerPadding ->
+            )
+        })
+    { innerPadding ->
         WebView(
             state = state,
             modifier = Modifier.padding(innerPadding).fillMaxSize(),

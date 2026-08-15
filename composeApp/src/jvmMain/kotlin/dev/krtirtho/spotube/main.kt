@@ -26,6 +26,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.rememberWindowState
+import com.sun.jna.Library
+import com.sun.jna.Native
 import dev.krtirtho.spotube.core.di.initKoin
 import dev.krtirtho.spotube.core.newpipe.NewPipeDownloader
 import dev.krtirtho.spotube.core.paths.Paths
@@ -55,8 +57,33 @@ private object KoinServicesProvider : KoinComponent {
     val settingsProvider: SettingsProvider get() = get()
 }
 
+private interface LibC : Library {
+    fun setenv(name: String, value: String, overwrite: Int): Int
+
+    companion object {
+        val INSTANCE: LibC = Native.load("c", LibC::class.java)
+    }
+}
+
+/**
+ * WebKitGTK is only used on Linux (Windows = WebView2, macOS = WKWebView).
+ * The webview is created *after* the window is already mapped and the Tao
+ * render/swap loop is running. WebKitGTK's accelerated-compositing path then
+ * initialises its own GL context in-process, racing Tao's swap thread on the
+ * same Mesa display, which deterministically segfaults `libgallium` on the
+ * next Compose flush. Disabling WebKit's hardware-accelerated compositing
+ * (and its DMABUF renderer) removes that GL context entirely — login pages
+ * render fine in software. Must run before libwebkit2gtk is loaded.
+ */
+private fun disableWebKitGpuCompositing() {
+    if (!System.getProperty("os.name").lowercase().contains("linux")) return
+    LibC.INSTANCE.setenv("WEBKIT_DISABLE_COMPOSITING_MODE", "1", 1)
+    LibC.INSTANCE.setenv("WEBKIT_DISABLE_DMABUF_RENDERER", "1", 1)
+}
+
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
+    disableWebKitGpuCompositing()
     FileKit.init(appId = "dev.krtirtho.spotube")
     initKoin()
     NewPipeDownloader.init(KoinPathsProvider.paths)
