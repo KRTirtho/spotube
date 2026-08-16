@@ -316,8 +316,12 @@ nucleus.application {
 
         modules("jdk.unsupported")
 
+        homepage = "https://spotube.cc"
+
         linux {
             modules("jdk.security.auth")
+            debMaintainer = "Team Spotube <team.spotube@proton.me>"
+            rpmLicenseType = "AGPL-3.0-or-later"
         }
         windows {
             shortcut = true
