@@ -46,10 +46,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -77,7 +74,6 @@ import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.HeaderDisplayMode
-import dev.krtirtho.spotube.core.webview.WebViewController
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.modules.plugin.components.PluginCard
 import dev.krtirtho.spotube.modules.plugin.components.PluginInstallDialog
@@ -102,15 +98,8 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxSound
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTextalignLeft
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import net.swiftzer.semver.SemVer
-import okio.FileSystem
-import okio.Path.Companion.toPath
-import okio.SYSTEM
+import okio.Path
 import org.jetbrains.compose.resources.stringResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_action_download
@@ -148,337 +137,79 @@ private val VERIFIED_PLUGIN_OWNERS = setOf<String>()
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PluginScreen(
-    pluginManager: PluginManager,
-    webviewController: WebViewController = koinInject()
+    viewModel: PluginViewModel = koinViewModel(),
 ) {
-    val scope = rememberCoroutineScope()
-    val platform = remember { getPlatform() }
-    val pendingPlugin by pluginManager.pendingPlugin.collectAsStateWithLifecycle()
-    val pluginsState by pluginManager.state.collectAsStateWithLifecycle()
-    val activeServices by pluginManager.ziplineServices.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val shellBottomInset = LocalAppShellBottomInset.current
 
-    var urlInput by remember { mutableStateOf("") }
-    var urlError by remember { mutableStateOf<String?>(null) }
-    var isLoadingUrl by remember { mutableStateOf(false) }
-    var showInstallSheet by remember { mutableStateOf(false) }
-
-    val discoverViewModel: PluginDiscoverViewModel = koinViewModel()
-    val discoverState by discoverViewModel.state.collectAsStateWithLifecycle()
-
-    var showPluginInfo by remember { mutableStateOf<PluginEntry?>(null) }
-    var showPluginSupport by remember { mutableStateOf<PluginEntry?>(null) }
-    var supportText by remember { mutableStateOf<String?>(null) }
-    var isLoadingSupport by remember { mutableStateOf(false) }
-
-    var installDialogRepo by remember { mutableStateOf<GitHubRepo?>(null) }
-    var releases by remember { mutableStateOf<List<GitHubRelease>>(emptyList()) }
-    var isLoadingReleases by remember { mutableStateOf(false) }
-
-    val pleaseEnterUrl = stringResource(Res.string.plugin_error_enter_url)
-    val urlSchemeError = stringResource(Res.string.plugin_error_url_scheme)
-    val downloadFailed = stringResource(Res.string.plugin_error_download_failed)
-
+    val platform = remember { getPlatform() }
     val launcher = rememberFilePickerLauncher(
         type = FileKitType.File(
             extensions = if (platform.type == PlatformType.Android) listOf() else listOf("smplug")
         )
     ) { file ->
-        if (file != null) {
-            scope.launch { pluginManager.preparePlugin(file.readBytes()) }
-        }
+        viewModel.onFileSelected(file)
     }
 
-    fun submitUrl() {
-        val url = urlInput.trim()
-        if (url.isBlank()) {
-            urlError = pleaseEnterUrl
-            return
+    val state = uiState
+    if (state is PluginUiState.Data) {
+        state.pendingPlugin?.let { pending ->
+            PluginPermissionDialog(
+                pluginInfo = pending.entry,
+                title = pending.title,
+                message = pending.message,
+                confirmLabel = pending.confirmLabel,
+                existingPlugin = pending.existingEntry,
+                logoPath = state.pendingPluginLogoPath,
+                onConfirm = if (pending.kind != PluginManager.InstallPromptKind.INFO && pending.confirmLabel != null) {
+                    { viewModel.confirmInstall() }
+                } else {
+                    null
+                },
+                onDismiss = { viewModel.dismissInstall() }
+            )
         }
-        if (!url.startsWith("http://") && !url.startsWith("https://")) {
-            urlError = urlSchemeError
-            return
+
+        state.showPluginInfo?.let { plugin ->
+            PluginInfoDialog(
+                plugin = plugin,
+                logoPath = state.pluginInfoLogoPath,
+                onDismiss = { viewModel.dismissPluginInfo() }
+            )
         }
-        urlError = null
-        isLoadingUrl = true
-        scope.launch {
-            try {
-                pluginManager.addPluginFromURL(url)
-                urlInput = ""
-            } catch (e: Exception) {
-                urlError = e.message ?: downloadFailed
-            } finally {
-                isLoadingUrl = false
-            }
+
+        state.showPluginSupport?.let { plugin ->
+            SupportDialog(
+                plugin = plugin,
+                supportText = state.supportText,
+                isLoading = state.isLoadingSupport,
+                onDismiss = { viewModel.dismissSupport() }
+            )
         }
-    }
 
-    pendingPlugin?.let { pending ->
-        val logoPath = remember(pending.entry.id) {
-            val path = pluginManager.pluginsDirPath / pending.entry.id.toPath() / "logo.png".toPath()
-            if (FileSystem.SYSTEM.exists(path)) path else null
+        state.installDialogRepo?.let { repo ->
+            PluginInstallDialog(
+                repo = repo,
+                releases = state.releases,
+                isLoadingReleases = state.isLoadingReleases,
+                onDismiss = { viewModel.dismissInstallDialog() },
+                onInstall = { release ->
+                    viewModel.dismissInstallDialog()
+                    viewModel.installPlugin(release, repo.id)
+                }
+            )
         }
-        PluginPermissionDialog(
-            pluginInfo = pending.entry,
-            title = pending.title,
-            message = pending.message,
-            confirmLabel = pending.confirmLabel,
-            existingPlugin = pending.existingEntry,
-            logoPath = logoPath,
-            onConfirm = if (pending.kind != PluginManager.InstallPromptKind.INFO && pending.confirmLabel != null) {
-                { pluginManager.confirmInstall() }
-            } else {
-                null
-            },
-            onDismiss = { pluginManager.dismissInstall() }
-        )
-    }
 
-    showPluginInfo?.let { plugin ->
-        val logoPath = remember(plugin.id) {
-            val path = pluginManager.pluginsDirPath / plugin.id.toPath() / "logo.png".toPath()
-            if (FileSystem.SYSTEM.exists(path)) path else null
-        }
-        ThemedDialog(
-            onDismissRequest = { showPluginInfo = null },
-            title = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Surface(
-                        modifier = Modifier
-                            .size(48.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                    ) {
-                        if (logoPath != null) {
-                            val platformContext = LocalPlatformContext.current
-                            AsyncImage(
-                                model = ImageRequest.Builder(platformContext)
-                                    .data(logoPath.toString())
-                                    .crossfade(true)
-                                    .build(),
-                                contentDescription = plugin.name,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        } else {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    Iconsax.IconsaxBox,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
-                    }
-                    Text(
-                        plugin.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            },
-            actions = {
-                PrimaryButton(onClick = { showPluginInfo = null }) {
-                    Text("Close")
-                }
-            }
-        ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                if (plugin.description.isNotBlank()) {
-                    Text(
-                        plugin.description,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                }
-
-                DetailRow("Version", plugin.version)
-                DetailRow("API Version", plugin.apiVersion)
-                DetailRow("Author", plugin.author)
-                if (plugin.license.isNotBlank()) {
-                    DetailRow("License", plugin.license)
-                }
-
-                if (plugin.capabilities.isNotEmpty()) {
-                    DetailChipsRow("Capabilities", plugin.capabilities.map { it.name })
-                }
-
-                if (plugin.abilities.isNotEmpty()) {
-                    DetailChipsRow("Abilities", plugin.abilities.map { ability ->
-                        when (ability) {
-                            PluginAbility.METADATA -> "Metadata"
-                            PluginAbility.AUDIO -> "Audio"
-                            PluginAbility.LYRICS -> "Lyrics"
-                            PluginAbility.SCROBBLE -> "Scrobble"
-                        }
-                    })
-                }
-
-                if (plugin.repository.isNotBlank()) {
-                    ClickableDetailRow(label = "Repository", value = plugin.repository) {
-                        openUrlInBrowser(plugin.repository)
-                    }
-                }
-
-                if (plugin.contact.isNotBlank()) {
-                    DetailRow("Contact", plugin.contact)
-                }
-
-                if (plugin.bugs.isNotBlank()) {
-                    ClickableDetailRow(label = "Report Bugs", value = plugin.bugs) {
-                        openUrlInBrowser(plugin.bugs)
-                    }
-                }
-            }
-        }
-    }
-
-    showPluginSupport?.let { plugin ->
-        ThemedDialog(
-            onDismissRequest = { showPluginSupport = null; supportText = null },
-            title = {
-                Text(
-                    "Support ${plugin.name}",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            },
-            actions = {
-                PrimaryButton(onClick = { showPluginSupport = null; supportText = null }) {
-                    Text("Close")
-                }
-            }
-        ) {
-            if (isLoadingSupport) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
-            } else {
-                Text(
-                    supportText ?: "",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
-                )
-            }
-        }
-    }
-
-    installDialogRepo?.let { repo ->
-        PluginInstallDialog(
-            repo = repo,
-            releases = releases,
-            isLoadingReleases = isLoadingReleases,
-            onDismiss = { installDialogRepo = null },
-            onInstall = { release ->
-                installDialogRepo = null
-                val smplugUrl = release.assets.firstOrNull { it.name.endsWith(".smplug") }?.browserDownloadUrl
-                if (smplugUrl != null) {
-                    discoverViewModel.installPluginFromUrl(smplugUrl, repo.id)
-                }
-            }
-        )
-    }
-
-    if (showInstallSheet) {
-        AdaptiveDialogBottomSheet(
-            onDismiss = { showInstallSheet = false },
-            title = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        Iconsax.IconsaxImportArrow2Bulk,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        stringResource(Res.string.plugin_install_section_title),
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                }
-            },
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                Text(
-                    stringResource(Res.string.plugin_section_url_title),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    TextField(
-                        value = urlInput,
-                        onValueChange = { urlInput = it; urlError = null },
-                        modifier = Modifier.weight(1f),
-                        placeholder = {
-                            Text(
-                                stringResource(Res.string.plugin_url_placeholder),
-                                style = MaterialTheme.typography.bodySmall
-                            )
-                        },
-                        leadingIcon = {
-                            Icon(
-                                Iconsax.IconsaxLink,
-                                contentDescription = null,
-                                modifier = Modifier.size(16.dp)
-                            )
-                        },
-                        isError = urlError != null,
-                        singleLine = true,
-                    )
-                    SecondaryIconButton(
-                        onClick = { submitUrl() },
-                        enabled = !isLoadingUrl,
-                    ) {
-                        if (isLoadingUrl) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(16.dp),
-                                strokeWidth = 2.dp,
-                                color = MaterialTheme.colorScheme.onPrimary
-                            )
-                        } else {
-                            Icon(
-                                Iconsax.IconsaxImportArrow2Bulk,
-                                contentDescription = stringResource(Res.string.plugin_action_download),
-                            )
-                        }
-                    }
-                }
-
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
-
-                Text(
-                    stringResource(Res.string.plugin_section_file_title),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                OutlineButton(
-                    onClick = { launcher.launch() },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Icon(
-                        Iconsax.IconsaxExportArrowBulk,
-                        contentDescription = stringResource(Res.string.plugin_action_install_from_file)
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(stringResource(Res.string.plugin_action_install_from_file))
-                }
-            }
+        if (state.showInstallSheet) {
+            InstallSheet(
+                urlInput = state.urlInput,
+                urlError = state.urlError,
+                isLoadingUrl = state.isLoadingUrl,
+                onUrlChange = { viewModel.onUrlInputChange(it) },
+                onSubmitUrl = { viewModel.submitUrl() },
+                onPickFile = { launcher.launch() },
+                onDismiss = { viewModel.dismissInstallSheet() }
+            )
         }
     }
 
@@ -487,15 +218,15 @@ fun PluginScreen(
             ApplicationMainBar(title = { Text(stringResource(Res.string.plugin_screen_title)) })
         }
     ) { innerPadding ->
-        when (val state = pluginsState) {
-            is PluginManagerStates.Loading -> {
+        when (val data = uiState) {
+            is PluginUiState.Loading -> {
                 Box(
                     modifier = Modifier.fillMaxSize().padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) { CircularProgressIndicator() }
             }
 
-            is PluginManagerStates.Data -> {
+            is PluginUiState.Data -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -512,9 +243,7 @@ fun PluginScreen(
                             bottom = 24.dp + shellBottomInset
                         ),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
-                    )
-                    {
-                        // ── Configure header ──────────────────────────────
+                    ) {
                         item {
                             Row(
                                 modifier = Modifier
@@ -528,7 +257,7 @@ fun PluginScreen(
                                     style = MaterialTheme.typography.titleLarge,
                                     fontWeight = FontWeight.SemiBold
                                 )
-                                PrimaryButton(onClick = { showInstallSheet = true }) {
+                                PrimaryButton(onClick = { viewModel.showInstallSheet() }) {
                                     Icon(
                                         Iconsax.IconsaxAdd,
                                         contentDescription = "Install a plugin",
@@ -538,7 +267,6 @@ fun PluginScreen(
                             }
                         }
 
-                        // ── Default ability plugin selectors ─────────────────
                         item {
                             Card(
                                 modifier = Modifier
@@ -550,7 +278,7 @@ fun PluginScreen(
                                         .fillMaxWidth()
                                         .padding(top = 4.dp, bottom = 4.dp)
                                 ) {
-                                    PluginAbility.entries.forEachIndexed { index, ability ->
+                                    data.abilitySelections.forEachIndexed { index, selection ->
                                         if (index > 0) {
                                             HorizontalDivider(
                                                 color = MaterialTheme.colorScheme.outlineVariant.copy(
@@ -558,18 +286,10 @@ fun PluginScreen(
                                                 ),
                                             )
                                         }
-                                        val selectedPlugin = state.selectedPlugins[ability]
                                         DefaultAbilityPluginSelector(
-                                            ability = ability,
-                                            selectedPlugin = selectedPlugin,
-                                            state = when (ability) {
-                                                PluginAbility.METADATA -> pluginManager.metadataPlugins
-                                                PluginAbility.AUDIO -> pluginManager.audioPlugins
-                                                PluginAbility.LYRICS -> pluginManager.lyricsPlugins
-                                                PluginAbility.SCROBBLE -> pluginManager.scrobblePlugins
-                                            },
+                                            selection = selection,
                                             onSelected = { plugin ->
-                                                pluginManager.setSelectedPlugin(ability, plugin)
+                                                viewModel.selectPlugin(selection.ability, plugin)
                                             },
                                         )
                                     }
@@ -577,7 +297,7 @@ fun PluginScreen(
                             }
                         }
 
-                        if (state.plugins.isEmpty()) {
+                        if (data.plugins.isEmpty()) {
                             item {
                                 Box(
                                     modifier = Modifier.fillMaxWidth().padding(vertical = 48.dp),
@@ -615,9 +335,8 @@ fun PluginScreen(
                                 }
                             }
                         } else {
-                            // ── Plugin list ───────────────────────────────────
                             item {
-                                val noun = if (state.plugins.size == 1) {
+                                val noun = if (data.plugins.size == 1) {
                                     stringResource(Res.string.plugin_installed_singular)
                                 } else {
                                     stringResource(Res.string.plugin_installed_plural)
@@ -625,7 +344,7 @@ fun PluginScreen(
                                 Text(
                                     stringResource(
                                         Res.string.plugin_installed_count,
-                                        state.plugins.size,
+                                        data.plugins.size,
                                         noun
                                     ),
                                     style = MaterialTheme.typography.labelMedium,
@@ -642,7 +361,7 @@ fun PluginScreen(
                                     Column(
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
-                                        state.plugins.forEachIndexed { index, plugin ->
+                                        data.plugins.forEachIndexed { index, item ->
                                             if (index > 0) {
                                                 HorizontalDivider(
                                                     color = MaterialTheme.colorScheme.outlineVariant.copy(
@@ -650,100 +369,22 @@ fun PluginScreen(
                                                     ),
                                                 )
                                             }
-                                            val isSelected =
-                                                state.selectedPlugins.containsValue(plugin)
-                                            val selectedAbility = state.selectedPlugins
-                                                .entries
-                                                .firstOrNull { (_, selectedPlugin) -> selectedPlugin.id == plugin.id }
-                                                ?.key
-                                            val selectedService = selectedAbility?.let { ability ->
-                                                activeServices?.get(ability)
-                                            }
-
-                                            var requiresAuth by remember(
-                                                plugin.id,
-                                                selectedService
-                                            ) {
-                                                mutableStateOf(false)
-                                            }
-                                            var isLoggedIn by remember(plugin.id, selectedService) {
-                                                mutableStateOf(false)
-                                            }
-
-                                            LaunchedEffect(plugin.id, selectedService) {
-                                                requiresAuth = false
-                                                isLoggedIn = false
-                                                val service =
-                                                    selectedService ?: return@LaunchedEffect
-
-                                                try {
-                                                    service.use {
-                                                        val pluginRequiresAuth =
-                                                            coreAPI.requiresAuthentication
-                                                        requiresAuth = pluginRequiresAuth
-                                                        if (!pluginRequiresAuth) return@use
-
-                                                        coreAPI.loggedInFlow.collect { loggedIn ->
-                                                            isLoggedIn = loggedIn
-                                                        }
-                                                    }
-                                                } catch (_: Exception) {
-                                                    // Service may have been stopped/closed
-                                                    // concurrently when the plugin selection changed
-                                                }
-                                            }
-
-                                            val logoPath = remember(plugin.id) {
-                                                val path =
-                                                    pluginManager.pluginsDirPath / plugin.id.toPath() / "logo.png".toPath()
-                                                if (FileSystem.SYSTEM.exists(path)) path else null
-                                            }
-
                                             PluginCard(
-                                                plugin = plugin,
-                                                isSelected = isSelected,
-                                                onRemove = {
-                                                    scope.launch { pluginManager.removePlugin(plugin) }
-                                                },
-                                                isLoggedIn = isLoggedIn,
-                                                logoPath = logoPath,
-                                                onInfo = { showPluginInfo = plugin },
-                                                onSupport = if (selectedService != null) {
-                                                    {
-                                                        isLoadingSupport = true
-                                                        scope.launch {
-                                                            showPluginSupport = plugin
-                                                            val version = SemVer.parse(plugin.version)
-                                                            selectedService.use {
-                                                                supportText =
-                                                                    coreAPI.supportMarkdownText(version)
-                                                            }
-                                                            isLoadingSupport = false
-                                                        }
-                                                    }
-                                                } else {
-                                                    null
-                                                },
-                                                onLogin = if (requiresAuth && selectedService != null) {
-                                                    {
-                                                        pluginManager.launchTask {
-                                                            selectedService.use { coreAPI.login() }
-                                                        }
-                                                    }
-                                                } else {
-                                                    null
-                                                },
-                                                onLogout = if (requiresAuth && selectedService != null) {
-                                                    {
-                                                        pluginManager.launchTask {
-                                                            selectedService.use { coreAPI.logout() }
-                                                        }
-                                                        // should clear webview data after logout
-                                                        scope.launch { webviewController.clearData(plugin.id) }
-                                                    }
-                                                } else {
-                                                    null
-                                                }
+                                                plugin = item.plugin,
+                                                isSelected = item.isSelected,
+                                                onRemove = { viewModel.removePlugin(item.plugin) },
+                                                isLoggedIn = item.authState.isLoggedIn,
+                                                logoPath = item.logoPath,
+                                                onInfo = { viewModel.showPluginInfo(item.plugin) },
+                                                onSupport = if (item.isSelected) {
+                                                    { viewModel.loadSupport(item.plugin) }
+                                                } else null,
+                                                onLogin = if (item.isSelected && item.authState.requiresAuth) {
+                                                    { viewModel.login(item.plugin) }
+                                                } else null,
+                                                onLogout = if (item.isSelected && item.authState.requiresAuth) {
+                                                    { viewModel.logout(item.plugin) }
+                                                } else null,
                                             )
                                         }
                                     }
@@ -751,8 +392,7 @@ fun PluginScreen(
                             }
                         }
 
-                        // ── Discover plugins ─────────────────────────
-                        if (discoverState.isLoading || discoverState.repos.isNotEmpty()) {
+                        if (data.discover.isLoading || data.discover.repos.isNotEmpty()) {
                             item {
                                 Row(
                                     modifier = Modifier
@@ -775,198 +415,17 @@ fun PluginScreen(
                                 }
                             }
                             items(
-                                discoverState.repos,
+                                data.discover.repos,
                                 key = { it.id }
                             ) { repo ->
-                                val isOfficial = repo.owner.login in OFFICIAL_PLUGIN_OWNERS
-                                val isVerified = repo.owner.login in VERIFIED_PLUGIN_OWNERS
-                                val isInstalling = discoverState.installingRepoId == repo.id
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(vertical = 4.dp)
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(12.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                    ) {
-                                        val platformContext = LocalPlatformContext.current
-                                        AsyncImage(
-                                            model = ImageRequest.Builder(platformContext)
-                                                .data(repo.owner.avatarUrl)
-                                                .crossfade(true)
-                                                .build(),
-                                            contentDescription = repo.owner.login,
-                                            modifier = Modifier
-                                                .size(36.dp)
-                                                .clip(RoundedCornerShape(8.dp))
-                                        )
-                                        Column(
-                                            modifier = Modifier.weight(1f),
-                                            verticalArrangement = Arrangement.spacedBy(2.dp)
-                                        ) {
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.spacedBy(6.dp)
-                                            ) {
-                                                Text(
-                                                    repo.fullName.split("/")
-                                                        .last()
-                                                        .replace("spotube-plugin-", "")
-                                                        .kebabToTitleCase(),
-                                                    style = MaterialTheme.typography.bodyMedium,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
-                                                    modifier = Modifier.weight(1f, fill = false)
-                                                )
-                                                if (isOfficial) {
-                                                    Surface(
-                                                        shape = RoundedCornerShape(4.dp),
-                                                        color = MaterialTheme.colorScheme.primary.copy(
-                                                            alpha = 0.15f
-                                                        )
-                                                    ) {
-                                                        Text(
-                                                            "Official",
-                                                            style = MaterialTheme.typography.labelSmall,
-                                                            color = MaterialTheme.colorScheme.primary,
-                                                            modifier = Modifier.padding(
-                                                                horizontal = 5.dp,
-                                                                vertical = 1.dp
-                                                            )
-                                                        )
-                                                    }
-                                                } else if (isVerified) {
-                                                    Surface(
-                                                        shape = RoundedCornerShape(4.dp),
-                                                        color = Color(0xFF4CAF50).copy(alpha = 0.15f)
-                                                    ) {
-                                                        Row(
-                                                            modifier = Modifier.padding(
-                                                                horizontal = 5.dp,
-                                                                vertical = 1.dp
-                                                            ),
-                                                            verticalAlignment = Alignment.CenterVertically,
-                                                            horizontalArrangement = Arrangement.spacedBy(
-                                                                2.dp
-                                                            )
-                                                        ) {
-                                                            Icon(
-                                                                Iconsax.IconsaxCheckCircle,
-                                                                contentDescription = null,
-                                                                modifier = Modifier.size(10.dp),
-                                                                tint = Color(0xFF4CAF50)
-                                                            )
-                                                            Text(
-                                                                "Verified",
-                                                                style = MaterialTheme.typography.labelSmall,
-                                                                color = Color(0xFF4CAF50)
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                            if (!repo.description.isNullOrBlank()) {
-                                                Text(
-                                                    repo.description,
-                                                    style = MaterialTheme.typography.bodySmall,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    maxLines = 2,
-                                                    overflow = TextOverflow.Ellipsis
-                                                )
-                                            }
-                                            Row(
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                            ) {
-                                                Text(
-                                                    repo.owner.login,
-                                                    style = MaterialTheme.typography.labelSmall,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                )
-                                                Row(
-                                                    verticalAlignment = Alignment.CenterVertically,
-                                                    horizontalArrangement = Arrangement.spacedBy(3.dp)
-                                                ) {
-                                                    Icon(
-                                                        Iconsax.IconsaxHeart,
-                                                        contentDescription = "Github Stars",
-                                                        modifier = Modifier.size(11.dp),
-                                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                                    )
-                                                    Text(
-                                                        repo.stargazersCount.toString(),
-                                                        style = MaterialTheme.typography.labelSmall,
-                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                    )
-                                                }
-                                                Surface(
-                                                    shape = RoundedCornerShape(4.dp),
-                                                    color = MaterialTheme.colorScheme.surfaceVariant,
-                                                    modifier = Modifier.clickable {
-                                                        openUrlInBrowser(repo.htmlUrl)
-                                                    }
-                                                ) {
-                                                    Row(
-                                                        modifier = Modifier.padding(
-                                                            horizontal = 5.dp,
-                                                            vertical = 2.dp
-                                                        ),
-                                                        verticalAlignment = Alignment.CenterVertically,
-                                                        horizontalArrangement = Arrangement.spacedBy(
-                                                            3.dp
-                                                        )
-                                                    ) {
-                                                        Icon(
-                                                            Iconsax.CarbonGithubLogo,
-                                                            contentDescription = "Github Repository URL",
-                                                            modifier = Modifier.size(10.dp),
-                                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                                        )
-                                                        Text(
-                                                            "github.com",
-                                                            style = MaterialTheme.typography.labelSmall,
-                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        SecondaryButton(
-                                            onClick = {
-                                                installDialogRepo = repo
-                                                isLoadingReleases = true
-                                                releases = emptyList()
-                                                scope.launch {
-                                                    val parts = repo.fullName.split("/")
-                                                    releases = discoverViewModel.getReleases(parts[0], parts[1])
-                                                    isLoadingReleases = false
-                                                }
-                                            },
-                                            enabled = !isInstalling
-                                        ) {
-                                            if (isInstalling) {
-                                                CircularProgressIndicator(
-                                                    modifier = Modifier.size(16.dp),
-                                                    strokeWidth = 2.dp
-                                                )
-                                            } else {
-                                                Icon(
-                                                    Iconsax.IconsaxAdd,
-                                                    contentDescription = null,
-                                                )
-                                            }
-                                            Text(stringResource(Res.string.plugin_section_install))
-                                        }
-                                    }
-                                }
+                                DiscoverRepoCard(
+                                    repo = repo,
+                                    isInstalling = data.discover.installingRepoId == repo.id,
+                                    onInstall = { viewModel.showInstallDialog(repo) }
+                                )
                             }
 
-                            if (discoverState.isLoadingMore) {
+                            if (data.discover.isLoadingMore) {
                                 item {
                                     Box(
                                         modifier = Modifier
@@ -979,10 +438,10 @@ fun PluginScreen(
                                 }
                             }
 
-                            if (discoverState.error != null) {
+                            data.discover.error?.let { error ->
                                 item {
                                     Text(
-                                        discoverState.error ?: "",
+                                        error,
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.error,
                                         modifier = Modifier.padding(
@@ -1006,12 +465,449 @@ fun PluginScreen(
                         }
                     }
 
+                    // Pagination trigger stays in the composable because it is driven by
+                    // LazyList layout information, which only exists in UI scope.
+                    // The actual loading call is forwarded to the ViewModel.
                     LaunchedEffect(shouldLoadMore.value) {
                         if (shouldLoadMore.value) {
-                            discoverViewModel.loadNextPage()
+                            viewModel.loadNextDiscoverPage()
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun UrlError.text(): String = when (this) {
+    is UrlError.Empty -> stringResource(Res.string.plugin_error_enter_url)
+    is UrlError.InvalidScheme -> stringResource(Res.string.plugin_error_url_scheme)
+    is UrlError.DownloadFailed -> stringResource(Res.string.plugin_error_download_failed)
+    is UrlError.Message -> message
+}
+
+@Composable
+private fun InstallSheet(
+    urlInput: String,
+    urlError: UrlError?,
+    isLoadingUrl: Boolean,
+    onUrlChange: (String) -> Unit,
+    onSubmitUrl: () -> Unit,
+    onPickFile: () -> Unit,
+    onDismiss: () -> Unit,
+) {
+    AdaptiveDialogBottomSheet(
+        onDismiss = onDismiss,
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    Iconsax.IconsaxImportArrow2Bulk,
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    stringResource(Res.string.plugin_install_section_title),
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        },
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(
+                stringResource(Res.string.plugin_section_url_title),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                TextField(
+                    value = urlInput,
+                    onValueChange = onUrlChange,
+                    modifier = Modifier.weight(1f),
+                    placeholder = {
+                        Text(
+                            stringResource(Res.string.plugin_url_placeholder),
+                            style = MaterialTheme.typography.bodySmall
+                        )
+                    },
+                    leadingIcon = {
+                        Icon(
+                            Iconsax.IconsaxLink,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    },
+                    isError = urlError != null,
+                    singleLine = true,
+                )
+                SecondaryIconButton(
+                    onClick = onSubmitUrl,
+                    enabled = !isLoadingUrl,
+                ) {
+                    if (isLoadingUrl) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+                    } else {
+                        Icon(
+                            Iconsax.IconsaxImportArrow2Bulk,
+                            contentDescription = stringResource(Res.string.plugin_action_download),
+                        )
+                    }
+                }
+            }
+
+            urlError?.let { error ->
+                Text(
+                    error.text(),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.error,
+                )
+            }
+
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+
+            Text(
+                stringResource(Res.string.plugin_section_file_title),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            OutlineButton(
+                onClick = onPickFile,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(
+                    Iconsax.IconsaxExportArrowBulk,
+                    contentDescription = stringResource(Res.string.plugin_action_install_from_file)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(Res.string.plugin_action_install_from_file))
+            }
+        }
+    }
+}
+
+@Composable
+private fun PluginInfoDialog(
+    plugin: PluginEntry,
+    logoPath: Path?,
+    onDismiss: () -> Unit,
+) {
+    ThemedDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Surface(
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(RoundedCornerShape(12.dp)),
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
+                ) {
+                    if (logoPath != null) {
+                        val platformContext = LocalPlatformContext.current
+                        AsyncImage(
+                            model = ImageRequest.Builder(platformContext)
+                                .data(logoPath.toString())
+                                .crossfade(true)
+                                .build(),
+                            contentDescription = plugin.name,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    } else {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                Iconsax.IconsaxBox,
+                                contentDescription = null,
+                                modifier = Modifier.size(24.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                    }
+                }
+                Text(
+                    plugin.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        },
+        actions = {
+            PrimaryButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        }
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            if (plugin.description.isNotBlank()) {
+                Text(
+                    plugin.description,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            DetailRow("Version", plugin.version)
+            DetailRow("API Version", plugin.apiVersion)
+            DetailRow("Author", plugin.author)
+            if (plugin.license.isNotBlank()) {
+                DetailRow("License", plugin.license)
+            }
+
+            if (plugin.capabilities.isNotEmpty()) {
+                DetailChipsRow("Capabilities", plugin.capabilities.map { it.name })
+            }
+
+            if (plugin.abilities.isNotEmpty()) {
+                DetailChipsRow("Abilities", plugin.abilities.map { ability ->
+                    when (ability) {
+                        PluginAbility.METADATA -> "Metadata"
+                        PluginAbility.AUDIO -> "Audio"
+                        PluginAbility.LYRICS -> "Lyrics"
+                        PluginAbility.SCROBBLE -> "Scrobble"
+                    }
+                })
+            }
+
+            if (plugin.repository.isNotBlank()) {
+                ClickableDetailRow(label = "Repository", value = plugin.repository) {
+                    openUrlInBrowser(plugin.repository)
+                }
+            }
+
+            if (plugin.contact.isNotBlank()) {
+                DetailRow("Contact", plugin.contact)
+            }
+
+            if (plugin.bugs.isNotBlank()) {
+                ClickableDetailRow(label = "Report Bugs", value = plugin.bugs) {
+                    openUrlInBrowser(plugin.bugs)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SupportDialog(
+    plugin: PluginEntry,
+    supportText: String?,
+    isLoading: Boolean,
+    onDismiss: () -> Unit,
+) {
+    ThemedDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Text(
+                "Support ${plugin.name}",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold
+            )
+        },
+        actions = {
+            PrimaryButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        }
+    ) {
+        if (isLoading) {
+            Box(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
+            Text(
+                supportText ?: "",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+    }
+}
+
+@Composable
+private fun DiscoverRepoCard(
+    repo: GitHubRepo,
+    isInstalling: Boolean,
+    onInstall: () -> Unit,
+) {
+    val isOfficial = repo.owner.login in OFFICIAL_PLUGIN_OWNERS
+    val isVerified = repo.owner.login in VERIFIED_PLUGIN_OWNERS
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            val platformContext = LocalPlatformContext.current
+            AsyncImage(
+                model = ImageRequest.Builder(platformContext)
+                    .data(repo.owner.avatarUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = repo.owner.login,
+                modifier = Modifier
+                    .size(36.dp)
+                    .clip(RoundedCornerShape(8.dp))
+            )
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp)
+                ) {
+                    Text(
+                        repo.fullName.split("/")
+                            .last()
+                            .replace("spotube-plugin-", "")
+                            .kebabToTitleCase(),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.weight(1f, fill = false)
+                    )
+                    if (isOfficial) {
+                        Surface(
+                            shape = RoundedCornerShape(4.dp),
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                        ) {
+                            Text(
+                                "Official",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
+                            )
+                        }
+                    } else if (isVerified) {
+                        Surface(
+                            shape = RoundedCornerShape(4.dp),
+                            color = Color(0xFF4CAF50).copy(alpha = 0.15f)
+                        ) {
+                            Row(
+                                modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Icon(
+                                    Iconsax.IconsaxCheckCircle,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(10.dp),
+                                    tint = Color(0xFF4CAF50)
+                                )
+                                Text(
+                                    "Verified",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = Color(0xFF4CAF50)
+                                )
+                            }
+                        }
+                    }
+                }
+                if (!repo.description.isNullOrBlank()) {
+                    Text(
+                        repo.description,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        repo.owner.login,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    ) {
+                        Icon(
+                            Iconsax.IconsaxHeart,
+                            contentDescription = "Github Stars",
+                            modifier = Modifier.size(11.dp),
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            repo.stargazersCount.toString(),
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                    Surface(
+                        shape = RoundedCornerShape(4.dp),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        modifier = Modifier.clickable {
+                            openUrlInBrowser(repo.htmlUrl)
+                        }
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(3.dp)
+                        ) {
+                            Icon(
+                                Iconsax.CarbonGithubLogo,
+                                contentDescription = "Github Repository URL",
+                                modifier = Modifier.size(10.dp),
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Text(
+                                "github.com",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
+                }
+            }
+            SecondaryButton(
+                onClick = onInstall,
+                enabled = !isInstalling
+            ) {
+                if (isInstalling) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp
+                    )
+                } else {
+                    Icon(
+                        Iconsax.IconsaxAdd,
+                        contentDescription = null,
+                    )
+                }
+                Text(stringResource(Res.string.plugin_section_install))
             }
         }
     }
@@ -1091,12 +987,11 @@ private fun DetailChipsRow(label: String, chips: List<String>) {
 
 @Composable
 fun DefaultAbilityPluginSelector(
-    ability: PluginAbility,
-    state: StateFlow<List<PluginEntry>>,
-    selectedPlugin: PluginEntry? = null,
+    selection: AbilitySelection,
     onSelected: (PluginEntry?) -> Unit = { },
 ) {
-    val plugins by state.collectAsStateWithLifecycle()
+    val plugins = selection.plugins
+    val selectedPlugin = selection.selectedPlugin
     val noPluginsText = stringResource(Res.string.settings_plugins_no_plugins)
 
     val menuItems = buildList {
@@ -1136,7 +1031,7 @@ fun DefaultAbilityPluginSelector(
         ) {
             Surface(
                 modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                color = when (ability) {
+                color = when (selection.ability) {
                     PluginAbility.METADATA -> Color(0xFF4CAF50).copy(alpha = 0.1f)
                     PluginAbility.AUDIO -> Color(0xFF2196F3).copy(alpha = 0.1f)
                     PluginAbility.LYRICS -> Color(0xFFFFC107).copy(alpha = 0.1f)
@@ -1144,7 +1039,7 @@ fun DefaultAbilityPluginSelector(
                 }
             ) {
                 Icon(
-                    imageVector = when (ability) {
+                    imageVector = when (selection.ability) {
                         PluginAbility.METADATA -> Iconsax.IconsaxDocumentText
                         PluginAbility.AUDIO -> Iconsax.IconsaxMusic
                         PluginAbility.LYRICS -> Iconsax.IconsaxTextalignLeft
@@ -1152,10 +1047,10 @@ fun DefaultAbilityPluginSelector(
                     },
                     contentDescription = stringResource(
                         Res.string.settings_plugins_plugin_content_description,
-                        ability.displayLabel()
+                        selection.ability.displayLabel()
                     ),
                     modifier = Modifier.padding(8.dp),
-                    tint = when (ability) {
+                    tint = when (selection.ability) {
                         PluginAbility.METADATA -> Color(0xFF4CAF50)
                         PluginAbility.AUDIO -> Color(0xFF2196F3)
                         PluginAbility.LYRICS -> Color(0xFFFFC107)
@@ -1168,7 +1063,7 @@ fun DefaultAbilityPluginSelector(
                 Text(
                     stringResource(
                         Res.string.settings_plugins_default_ability_title,
-                        ability.displayLabel()
+                        selection.ability.displayLabel()
                     ),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurface
@@ -1204,7 +1099,7 @@ fun DefaultAbilityPluginSelector(
                 ) {
                     Surface(
                         modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                        color = when (ability) {
+                        color = when (selection.ability) {
                             PluginAbility.METADATA -> Color(0xFF4CAF50).copy(alpha = 0.1f)
                             PluginAbility.AUDIO -> Color(0xFF2196F3).copy(alpha = 0.1f)
                             PluginAbility.LYRICS -> Color(0xFFFFC107).copy(alpha = 0.1f)
@@ -1212,7 +1107,7 @@ fun DefaultAbilityPluginSelector(
                         }
                     ) {
                         Icon(
-                            imageVector = when (ability) {
+                            imageVector = when (selection.ability) {
                                 PluginAbility.METADATA -> Iconsax.IconsaxDocumentText
                                 PluginAbility.AUDIO -> Iconsax.IconsaxMusic
                                 PluginAbility.LYRICS -> Iconsax.IconsaxTextalignLeft
@@ -1220,7 +1115,7 @@ fun DefaultAbilityPluginSelector(
                             },
                             contentDescription = null,
                             modifier = Modifier.padding(8.dp),
-                            tint = when (ability) {
+                            tint = when (selection.ability) {
                                 PluginAbility.METADATA -> Color(0xFF4CAF50)
                                 PluginAbility.AUDIO -> Color(0xFF2196F3)
                                 PluginAbility.LYRICS -> Color(0xFFFFC107)
@@ -1232,7 +1127,7 @@ fun DefaultAbilityPluginSelector(
                         Text(
                             stringResource(
                                 Res.string.settings_plugins_default_ability_title,
-                                ability.displayLabel()
+                                selection.ability.displayLabel()
                             ),
                             style = MaterialTheme.typography.titleMedium,
                         )
@@ -1275,4 +1170,3 @@ private fun PluginAbility.displayLabel(): String {
         PluginAbility.SCROBBLE -> stringResource(Res.string.settings_plugins_ability_scrobble)
     }
 }
-

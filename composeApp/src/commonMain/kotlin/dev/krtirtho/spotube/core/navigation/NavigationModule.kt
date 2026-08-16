@@ -93,7 +93,7 @@ val navigationModule = module {
         SettingsScreen(settingsViewModel = koinViewModel())
     }
     navigation<Routes.Plugins> {
-        PluginScreen(pluginManager = get())
+        PluginScreen(viewModel = koinViewModel())
     }
     navigation<Routes.WebView> {}
     navigation<Routes.Playlist> {

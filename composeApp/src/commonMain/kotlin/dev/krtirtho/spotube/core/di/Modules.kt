@@ -54,9 +54,9 @@ import dev.krtirtho.spotube.modules.library.playlist.LibraryPlaylistsViewModel
 import dev.krtirtho.spotube.modules.lyrics.LyricsViewModel
 import dev.krtirtho.spotube.modules.playlist.PlaylistRepository
 import dev.krtirtho.spotube.modules.playlist.PlaylistViewModel
-import dev.krtirtho.spotube.modules.plugin.PluginDiscoverViewModel
 import dev.krtirtho.spotube.modules.plugin.PluginManager
 import dev.krtirtho.spotube.modules.plugin.PluginProvider
+import dev.krtirtho.spotube.modules.plugin.PluginViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.modules.search.SearchRepository
@@ -110,7 +110,7 @@ val sharedModules = module {
 
     // Plugin system
     singleOf(::PluginManager) { bind<PluginProvider>() }
-    viewModelOf(::PluginDiscoverViewModel)
+    viewModelOf(::PluginViewModel)
 
     // Settings
     singleOf(::SettingsRepository)
