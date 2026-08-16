@@ -676,16 +676,20 @@ fun PluginScreen(
                                                 val service =
                                                     selectedService ?: return@LaunchedEffect
 
+                                                try {
+                                                    service.use {
+                                                        val pluginRequiresAuth =
+                                                            coreAPI.requiresAuthentication
+                                                        requiresAuth = pluginRequiresAuth
+                                                        if (!pluginRequiresAuth) return@use
 
-                                                service.use {
-                                                    val pluginRequiresAuth =
-                                                        coreAPI.requiresAuthentication
-                                                    requiresAuth = pluginRequiresAuth
-                                                    if (!pluginRequiresAuth) return@use
-
-                                                    coreAPI.loggedInFlow.collect { loggedIn ->
-                                                        isLoggedIn = loggedIn
+                                                        coreAPI.loggedInFlow.collect { loggedIn ->
+                                                            isLoggedIn = loggedIn
+                                                        }
                                                     }
+                                                } catch (_: Exception) {
+                                                    // Service may have been stopped/closed
+                                                    // concurrently when the plugin selection changed
                                                 }
                                             }
 
