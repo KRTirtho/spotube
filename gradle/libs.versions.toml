@@ -47,7 +47,7 @@ materialKolor = "4.1.1"
 murmurhash = "0.4.2"
 newpipeextractor = "v0.26.2"
 newpipeExtractorKmp = "1.3.0"
-nucleusNucleusApplication = "2.4.4"
+nucleusNucleusApplication = "2.4.6"
 semver = "2.1.0"
 vlcj = "4.12.1"
 vlcjNative = "4.12.0"
@@ -123,6 +123,7 @@ newpipe-extractor-kmp = { module = "io.github.yushosei:newpipe-extractor-kmp", v
 newpipeextractor = { module = "com.github.teamnewpipe:NewPipeExtractor", version.ref = "newpipeextractor" }
 nucleus-core-runtime = { module = "dev.nucleusframework:nucleus.core-runtime", version.ref = "nucleusNucleusApplication" }
 nucleus-decorated-window-tao = { module = "dev.nucleusframework:nucleus.decorated-window-tao", version.ref = "nucleusNucleusApplication" }
+nucleus-media-control = { module = "dev.nucleusframework:nucleus.media-control", version.ref = "nucleusNucleusApplication" }
 nucleus-nucleus-application = { module = "dev.nucleusframework:nucleus.nucleus-application", version.ref = "nucleusNucleusApplication" }
 semver = { module = "net.swiftzer.semver:semver", version.ref = "semver" }
 vlcj = { module = "uk.co.caprica:vlcj", version.ref = "vlcj" }

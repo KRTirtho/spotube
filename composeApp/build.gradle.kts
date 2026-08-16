@@ -226,6 +226,7 @@ kotlin {
                 implementation(libs.nucleus.nucleus.application)
                 implementation(libs.nucleus.decorated.window.tao)
                 implementation(libs.compose.native.tray)
+                implementation(libs.nucleus.media.control)
             }
         }
     }
