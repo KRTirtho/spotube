@@ -96,6 +96,13 @@
     <string name="settings_enable_connect_title">Enable Connect</string>
     <string name="settings_enable_connect_subtitle">Expose remote playback controls through the Spotube Connect feature.</string>
     <string name="settings_playback_port_title">Playback proxy server port</string>
+    <string name="settings_allow_remote_control_title">Allow remote control</string>
+    <string name="settings_allow_remote_control_subtitle">Let other devices on the same network control playback when they connect.</string>
+    <string name="settings_remote_device_name_title">Remote control device name</string>
+    <string name="settings_remote_device_name_subtitle">The name other devices see when discovering this one. Current: %1$s</string>
+    <string name="settings_remote_device_name_description">Choose a friendly name to show to other devices on your network when they discover this Spotube instance.</string>
+    <string name="settings_remote_device_name_placeholder">e.g. Living Room Spotube</string>
+    <string name="settings_remote_device_name_default">device hostname</string>
     <string name="settings_playback_port_subtitle_current">Port used by the playback proxy server. Current: %1$d</string>
     <string name="settings_playback_port_description">Choose a port between 1 and 65535.</string>
     <string name="settings_playback_port_placeholder">14769</string>

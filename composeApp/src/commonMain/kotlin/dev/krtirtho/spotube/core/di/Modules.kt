@@ -23,8 +23,12 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueueRepository
 import dev.krtirtho.spotube.core.audioplayer.DeviceAudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueStateRepository
 import dev.krtirtho.spotube.core.db.Database
+import dev.krtirtho.spotube.core.discovery.DeviceDiscoveryService
 import dev.krtirtho.spotube.core.discord.DiscordRpcService
+import dev.krtirtho.spotube.core.jam.JamSessionService
 import dev.krtirtho.spotube.core.navigation.navigationModule
+import dev.krtirtho.spotube.core.remote.RemoteControlHandler
+import dev.krtirtho.spotube.core.remote.RemoteControlService
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.core.server.AlternativeTracksRepository
 import dev.krtirtho.spotube.core.server.CacheManager
@@ -38,6 +42,8 @@ import dev.krtirtho.spotube.modules.artist.ArtistRepository
 import dev.krtirtho.spotube.modules.artist.ArtistViewModel
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.blacklist.BlacklistViewModel
+import dev.krtirtho.spotube.modules.devices.DevicesViewModel
+import dev.krtirtho.spotube.modules.jam.JamViewModel
 import dev.krtirtho.spotube.modules.downloads.DownloadManager
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.home.HomeScreenRepository
@@ -168,6 +174,8 @@ val sharedModules = module {
     // Blacklist
     singleOf(::BlacklistRepository)
     viewModelOf(::BlacklistViewModel)
+    viewModelOf(::DevicesViewModel)
+    viewModelOf(::JamViewModel)
 
     // Album
     singleOf(::AlbumRepository)
@@ -205,6 +213,12 @@ val sharedModules = module {
     singleOf(::LocalServer) withOptions {
         createdAtStart()
     }
+    single { RemoteControlHandler(get(), get(), get()) }
+    singleOf(::DeviceDiscoveryService)
+    single { RemoteControlService(get(), get(), get()) } withOptions {
+        createdAtStart()
+    }
+    single { JamSessionService(get(), get()) }
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {
         DeviceAudioPlayerQueue(get(), get(), get(), get(), get())

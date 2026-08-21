@@ -38,6 +38,7 @@ import dev.krtirtho.spotube.modules.settings.components.SwitchSettingCard
 import dev.krtirtho.spotube.modules.settings.components.TextInputSettingCard
 import dev.krtirtho.spotube.resources.iconsax.CustomServer
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxEdit
 import dev.krtirtho.spotube.resources.iconsax.IconsaxForbidden
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlay
@@ -131,6 +132,46 @@ internal fun LazyListScope.playbackSection(
                     onCheckedChange = { enabled ->
                         settingsViewModel.updateSettings {
                             copy(enableConnect = enabled)
+                        }
+                    }
+                )
+            },
+            {
+                SwitchSettingCard(
+                    title = stringResource(Res.string.settings_allow_remote_control_title),
+                    subtitle = stringResource(Res.string.settings_allow_remote_control_subtitle),
+                    icon = {
+                        SettingsItemIcon(
+                            Iconsax.IconsaxMirroringScreen,
+                            stringResource(Res.string.settings_allow_remote_control_title)
+                        )
+                    },
+                    checked = settings.allowRemoteControl,
+                    onCheckedChange = { enabled ->
+                        settingsViewModel.updateSettings {
+                            copy(allowRemoteControl = enabled)
+                        }
+                    }
+                )
+            },
+            {
+                TextInputSettingCard(
+                    title = stringResource(Res.string.settings_remote_device_name_title),
+                    subtitle = stringResource(
+                        Res.string.settings_remote_device_name_subtitle,
+                        settings.remoteControlDeviceName.ifBlank { stringResource(Res.string.settings_remote_device_name_default) }
+                    ),
+                    icon = {
+                        SettingsItemIcon(Iconsax.IconsaxEdit, stringResource(Res.string.settings_remote_device_name_title))
+                    },
+                    value = settings.remoteControlDeviceName,
+                    dialogDescription = stringResource(Res.string.settings_remote_device_name_description),
+                    placeholder = stringResource(Res.string.settings_remote_device_name_placeholder),
+                    normalize = { it.trim() },
+                    validate = { _ -> null },
+                    onValueSaved = { value ->
+                        settingsViewModel.updateSettings {
+                            copy(remoteControlDeviceName = value)
                         }
                     }
                 )

@@ -55,6 +55,15 @@ data class UserSettings(
     val enableConnect: Boolean = false,
     val playbackProxyServerPort: Int = 14769,
 
+    // Remote Control (LAN)
+    val allowRemoteControl: Boolean = false,
+    val allowedRemoteDevices: List<String> = emptyList(),
+    val remoteControlDeviceName: String = "",
+    val remoteControlDeviceId: String = "",
+
+    // Group Jam (P2P)
+    val jamParticipantName: String = "",
+
     // Downloads
     val overloadedDownloadFolder: String? = null, // When null, uses default music folder
     val localMediaFolders: List<String> = emptyList(),

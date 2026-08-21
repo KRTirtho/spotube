@@ -4,5 +4,12 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>Required to discover local network devices</string>
+    <key>NSBonjourServices</key>
+    <array>
+    <string>_http._tcp</string>
+    <string>_spotube-ctrl._tcp</string>
+    </array>
 </dict>
 </plist>

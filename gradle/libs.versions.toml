@@ -53,6 +53,7 @@ vlcj = "4.12.1"
 vlcjNative = "4.12.0"
 ziplineVersion = "1.27.0"
 ktor = "3.5.1"
+dnssdkt = "1.1.0"
 kotlinStdlib = "2.4.10"
 runner = "1.7.0"
 core = "1.7.0"
@@ -85,6 +86,7 @@ androidx-car-app = { module = "androidx.car.app:app", version.ref = "carApp" }
 compose-placeholder-material3 = { module = "com.eygraber:compose-placeholder-material3", version.ref = "composePlaceholderMaterial3" }
 compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libs" }
+dns-sd-kt = { module = "com.appstractive:dns-sd-kt", version.ref = "dnssdkt" }
 haze = { module = "dev.chrisbanes.haze:haze", version.ref = "haze" }
 haze-materials = { module = "dev.chrisbanes.haze:haze-blur-materials", version.ref = "haze" }
 haze-blur = { module = "dev.chrisbanes.haze:haze-blur", version.ref = "haze" }
@@ -117,6 +119,8 @@ kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-s
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
 ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets", version.ref = "ktor" }
+ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.ref = "ktor" }
 material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 murmurhash = { module = "com.goncalossilva:murmurhash", version.ref = "murmurhash" }
 newpipe-extractor-kmp = { module = "io.github.yushosei:newpipe-extractor-kmp", version.ref = "newpipeExtractorKmp" }
