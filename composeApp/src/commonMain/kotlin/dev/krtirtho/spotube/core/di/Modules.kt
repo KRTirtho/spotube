@@ -23,6 +23,7 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueueRepository
 import dev.krtirtho.spotube.core.audioplayer.DeviceAudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueStateRepository
 import dev.krtirtho.spotube.core.db.Database
+import dev.krtirtho.spotube.core.deeplink.JamDeepLinkService
 import dev.krtirtho.spotube.core.discovery.DeviceDiscoveryService
 import dev.krtirtho.spotube.core.discord.DiscordRpcService
 import dev.krtirtho.spotube.core.jam.JamSessionService
@@ -219,6 +220,7 @@ val sharedModules = module {
         createdAtStart()
     }
     single { JamSessionService(get(), get()) }
+    singleOf(::JamDeepLinkService)
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {
         DeviceAudioPlayerQueue(get(), get(), get(), get(), get())

@@ -55,6 +55,17 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <!-- Group Jam invite/answer deep links: spotube://jam/... -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="jam"
+                    android:scheme="spotube" />
+            </intent-filter>
         </activity>
         <service
             android:name=".media.PlaybackService"

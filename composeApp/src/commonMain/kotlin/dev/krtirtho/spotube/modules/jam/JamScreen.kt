@@ -19,12 +19,17 @@ package dev.krtirtho.spotube.modules.jam
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SegmentedButton
@@ -32,15 +37,20 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import org.koin.compose.viewmodel.koinViewModel
@@ -50,17 +60,7 @@ fun JamScreen(
     navigationCommands: NavigationCommands,
 ) {
     val viewModel = koinViewModel<JamViewModel>()
-    val isActive by viewModel.isActive.collectAsStateWithLifecycle()
-    val pendingOffer by viewModel.pendingHostOffer.collectAsStateWithLifecycle()
-    val pendingAnswer by viewModel.pendingGuestAnswer.collectAsStateWithLifecycle()
-    val error by viewModel.error.collectAsStateWithLifecycle()
-
-    LaunchedEffect(isActive) {
-        if (isActive && navigationCommands != null) {
-            // navigationCommands doesn't navigate here automatically;
-            // the session screen is the same screen so we just stay.
-        }
-    }
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -74,33 +74,54 @@ fun JamScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(16.dp),
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            if (error != null) {
-                Text(
-                    text = error ?: "",
-                    color = MaterialTheme.colorScheme.error,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+            state.error?.let { error ->
+                ErrorBanner(text = error, onDismiss = viewModel::clearError)
             }
 
-            if (pendingOffer == null && pendingAnswer == null) {
-                CreateOrJoinView(
-                    onCreate = { viewModel.createSession() },
-                    onJoin = { offer -> viewModel.joinSession(offer) },
+            when {
+                !state.isActive && state.incomingOfferSdp != null -> IncomingInviteView(
+                    hostName = state.incomingHostName.orEmpty(),
+                    onJoin = viewModel::joinWithIncomingInvite,
+                    onDismiss = viewModel::dismissIncomingInvite,
                 )
-            } else if (pendingOffer != null) {
-                HostOfferView(
-                    offer = pendingOffer!!,
-                    onLeave = { viewModel.leave() },
+
+                !state.isActive -> CreateOrJoinView(
+                    onCreate = viewModel::createSession,
+                    onJoin = viewModel::joinWithPasted,
                 )
-            } else if (pendingAnswer != null) {
-                GuestAnswerView(
-                    answer = pendingAnswer!!,
-                    onLeave = { viewModel.leave() },
+
+                state.role == JamRole.Host -> HostSessionView(
+                    state = state,
+                    onNewInvite = viewModel::generateNewInvite,
+                    onSubmitAnswer = viewModel::submitAnswerPasted,
+                    onShare = viewModel::share,
+                    onLeave = viewModel::leave,
+                )
+
+                else -> GuestSessionView(
+                    state = state,
+                    onShare = viewModel::share,
+                    onLeave = viewModel::leave,
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun ErrorBanner(text: String, onDismiss: () -> Unit) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Text(
+            text = text,
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+        OutlinedButton(onClick = onDismiss) {
+            Text("Dismiss")
         }
     }
 }
@@ -111,12 +132,12 @@ private fun CreateOrJoinView(
     onJoin: (String) -> Unit,
 ) {
     var tab by remember { mutableIntStateOf(0) }
-    var offer by remember { mutableStateOf("") }
+    var pasted by rememberSaveable { mutableStateOf("") }
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         Text(
-            text = "Listen Together with friends",
-            style = MaterialTheme.typography.titleLarge,
+            text = "Listen together with friends over a peer-to-peer connection.",
+            style = MaterialTheme.typography.titleMedium,
         )
 
         SingleChoiceSegmentedButtonRow(modifier = Modifier.fillMaxWidth()) {
@@ -135,8 +156,10 @@ private fun CreateOrJoinView(
         if (tab == 0) {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    text = "Create a new jam session. You'll be the host and can control playback. Share the SDP offer with your friends so they can join.",
+                    text = "Start a session as the host. You'll get a shareable invite link " +
+                        "to send to friends; when they accept, they appear here.",
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Button(onClick = onCreate) {
                     Text("Create Session")
@@ -145,22 +168,24 @@ private fun CreateOrJoinView(
         } else {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(
-                    text = "Paste the SDP offer from the host below. You'll get an SDP answer to send back.",
+                    text = "Paste the invite link the host shared with you.",
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 OutlinedTextField(
-                    value = offer,
-                    onValueChange = { offer = it },
+                    value = pasted,
+                    onValueChange = { pasted = it },
                     modifier = Modifier.fillMaxWidth(),
-                    label = { Text("Host's SDP offer") },
-                    minLines = 3,
+                    label = { Text("Invite link") },
+                    placeholder = { Text("spotube://jam/invite?...") },
+                    minLines = 2,
                     maxLines = 6,
                 )
                 Button(
-                    onClick = { onJoin(offer.trim()) },
-                    enabled = offer.isNotBlank(),
+                    onClick = { onJoin(pasted) },
+                    enabled = pasted.isNotBlank(),
                 ) {
-                    Text("Generate Answer")
+                    Text("Join Session")
                 }
             }
         }
@@ -168,60 +193,196 @@ private fun CreateOrJoinView(
 }
 
 @Composable
-private fun HostOfferView(
-    offer: String,
-    onLeave: () -> Unit,
+private fun IncomingInviteView(
+    hostName: String,
+    onJoin: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Text(
-            text = "Session created. Send this SDP offer to your friends:",
-            style = MaterialTheme.typography.bodyMedium,
+            text = "$hostName invited you to a jam session",
+            style = MaterialTheme.typography.titleMedium,
         )
-        SelectionContainer {
-            OutlinedTextField(
-                value = offer,
-                onValueChange = {},
-                readOnly = true,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("SDP Offer (copy and send to guests)") },
-                minLines = 4,
-                maxLines = 10,
-            )
-        }
-        Text(
-            text = "When a guest responds with an SDP answer, use the JamSessionScreen to add them.",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-        Button(onClick = onLeave) {
-            Text("Leave Session")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = onJoin) {
+                Text("Join")
+            }
+            OutlinedButton(onClick = onDismiss) {
+                Text("Ignore")
+            }
         }
     }
 }
 
 @Composable
-private fun GuestAnswerView(
-    answer: String,
+private fun HostSessionView(
+    state: JamUiState,
+    onNewInvite: () -> Unit,
+    onSubmitAnswer: (String) -> Unit,
+    onShare: (String) -> Unit,
     onLeave: () -> Unit,
 ) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    val clipboard = LocalClipboardManager.current
+    var pastedAnswer by rememberSaveable { mutableStateOf("") }
+
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        ParticipantsSection(state.participants)
+
+        HorizontalDivider()
+
         Text(
-            text = "You've joined the session. Send this SDP answer back to the host:",
-            style = MaterialTheme.typography.bodyMedium,
+            text = "Invite someone",
+            style = MaterialTheme.typography.titleSmall,
         )
+        val inviteLink = state.inviteLink
+        if (inviteLink != null) {
+            ShareableLinkBox(
+                label = "Invite link",
+                link = inviteLink,
+                onCopy = { clipboard.setText(AnnotatedString(inviteLink)) },
+                onShare = { onShare(inviteLink) },
+            )
+        }
+        OutlinedButton(onClick = onNewInvite) {
+            Text("Generate new invite")
+        }
+
+        HorizontalDivider()
+
+        Text(
+            text = "Accept a guest's answer",
+            style = MaterialTheme.typography.titleSmall,
+        )
+        Text(
+            text = "When your guest sends back their answer link, paste it below.",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        OutlinedTextField(
+            value = pastedAnswer,
+            onValueChange = { pastedAnswer = it },
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("Answer link or SDP") },
+            minLines = 2,
+            maxLines = 6,
+        )
+        Button(
+            onClick = {
+                onSubmitAnswer(pastedAnswer)
+                pastedAnswer = ""
+            },
+            enabled = pastedAnswer.isNotBlank(),
+        ) {
+            Text("Accept Answer")
+        }
+
+        LeaveButton(onLeave)
+    }
+}
+
+@Composable
+private fun GuestSessionView(
+    state: JamUiState,
+    onShare: (String) -> Unit,
+    onLeave: () -> Unit,
+) {
+    val clipboard = LocalClipboardManager.current
+
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        ParticipantsSection(state.participants)
+
+        val answerLink = state.answerLink
+        if (answerLink == null) {
+            Text(
+                text = "Connecting to the session...",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        } else {
+            Text(
+                text = "Almost there! Send your answer back to the host:",
+                style = MaterialTheme.typography.titleSmall,
+            )
+            ShareableLinkBox(
+                label = "Answer link",
+                link = answerLink,
+                onCopy = { clipboard.setText(AnnotatedString(answerLink)) },
+                onShare = { onShare(answerLink) },
+            )
+        }
+
+        LeaveButton(onLeave)
+    }
+}
+
+@Composable
+private fun ParticipantsSection(participants: List<dev.krtirtho.spotube.core.jam.JamParticipant>) {
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            text = "Participants (${participants.size})",
+            style = MaterialTheme.typography.titleSmall,
+        )
+        participants.forEach { participant ->
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                Text(
+                    text = participant.displayName,
+                    style = MaterialTheme.typography.bodyLarge,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+                if (participant.isHost) {
+                    Text(
+                        text = "Host",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ShareableLinkBox(
+    label: String,
+    link: String,
+    onCopy: () -> Unit,
+    onShare: () -> Unit,
+) {
+    val viewModel: JamViewModel = koinViewModel()
+    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         SelectionContainer {
             OutlinedTextField(
-                value = answer,
+                value = link,
                 onValueChange = {},
                 readOnly = true,
                 modifier = Modifier.fillMaxWidth(),
-                label = { Text("SDP Answer (copy and send to host)") },
-                minLines = 4,
-                maxLines = 10,
+                label = { Text(label) },
+                minLines = 2,
+                maxLines = 6,
             )
         }
-        Button(onClick = onLeave) {
-            Text("Leave Session")
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = onCopy) {
+                Text("Copy")
+            }
+            if (viewModel.supportsNativeShare) {
+                OutlinedButton(onClick = onShare) {
+                    Text("Share")
+                }
+            }
         }
+    }
+}
+
+@Composable
+private fun LeaveButton(onLeave: () -> Unit) {
+    OutlinedButton(onClick = onLeave) {
+        Text("Leave Session")
     }
 }

@@ -17,10 +17,12 @@
 
 package dev.krtirtho.spotube
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import dev.krtirtho.spotube.core.deeplink.ExternalUriHandler
 import dev.krtirtho.spotube.core.newpipe.NewPipeDownloader
 import dev.krtirtho.spotube.core.paths.Paths
 import io.github.vinceglb.filekit.FileKit
@@ -32,8 +34,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         FileKit.init(this)
         NewPipeDownloader.init(Paths(this))
+        intent?.dataString?.let(ExternalUriHandler::onNewUri)
         setContent {
             App()
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        intent.dataString?.let(ExternalUriHandler::onNewUri)
     }
 }

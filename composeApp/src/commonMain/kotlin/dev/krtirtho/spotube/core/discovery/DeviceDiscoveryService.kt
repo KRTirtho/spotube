@@ -23,6 +23,7 @@ import com.appstractive.dnssd.createNetService
 import com.appstractive.dnssd.discoverServices
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.text.decodeToString
 
 data class DiscoveredDevice(
     val name: String,
@@ -54,7 +55,7 @@ class DeviceDiscoveryService {
                     type = event.service.type,
                     host = event.service.host,
                     port = event.service.port,
-                    deviceId = event.service.txt[TXT_DEVICE_ID]?.let { String(it) }.orEmpty(),
+                    deviceId = event.service.txt[TXT_DEVICE_ID]?.decodeToString().orEmpty(),
                 )
                 DiscoveryState.Discovered(device = device, resolve = event.resolve)
             }
@@ -65,7 +66,7 @@ class DeviceDiscoveryService {
                     type = event.service.type,
                     host = event.service.host,
                     port = event.service.port,
-                    deviceId = event.service.txt[TXT_DEVICE_ID]?.let { String(it) }.orEmpty(),
+                    deviceId = event.service.txt[TXT_DEVICE_ID]?.decodeToString().orEmpty(),
                 )
                 DiscoveryState.Resolved(device = device)
             }
