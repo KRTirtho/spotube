@@ -194,6 +194,8 @@ fun AppSidebar(
             selected = false,
             expanded = expanded,
         )
+
+        Spacer(modifier = Modifier.height(120.dp))
     }
 }
 
