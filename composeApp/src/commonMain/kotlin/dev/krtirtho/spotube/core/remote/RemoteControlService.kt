@@ -24,10 +24,18 @@ import dev.krtirtho.spotube.core.server.LocalServer
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 
@@ -36,6 +44,10 @@ import kotlin.random.Random
  * instances can discover and control it. Advertises only while the
  * "Allow remote control" setting is enabled and the local playback server is
  * listening on the LAN (0.0.0.0).
+ *
+ * Registration is retried with backoff: NsdManager is flaky right after a cold
+ * start, and a single registration attempt is bounded by a short timeout so a
+ * stalled platform callback can't wedge a dispatcher thread for long.
  */
 class RemoteControlService(
     private val settingsRepository: SettingsRepository,
@@ -45,9 +57,18 @@ class RemoteControlService(
     private val log = Logger.withTag("RemoteControlService")
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
+    private val _localDeviceId = MutableStateFlow("")
+    val localDeviceId: StateFlow<String> = _localDeviceId.asStateFlow()
+
     private var advertisedService: NetService? = null
+    private var registerJob: Job? = null
 
     init {
+        // Ensure a stable device id exists and is persisted up front, so discovery
+        // can reliably filter out this device's own advertisement.
+        scope.launch {
+            _localDeviceId.value = resolveDeviceId()
+        }
         scope.launch {
             combine(
                 settingsRepository.userSettings,
@@ -56,32 +77,74 @@ class RemoteControlService(
                 .distinctUntilChanged()
                 .collect { (settings, port) ->
                     if (settings.allowRemoteControl && port != null) {
-                        ensureAdvertised(settings.remoteControlDeviceName, port)
+                        if (registerJob?.isActive != true) {
+                            registerJob = scope.launch {
+                                registerLoop(settings.remoteControlDeviceName, port)
+                            }
+                        }
                     } else {
+                        registerJob?.cancel()
+                        registerJob = null
                         stopAdvertising()
                     }
                 }
         }
     }
 
-    private suspend fun ensureAdvertised(name: String, port: Int) {
+    /**
+     * The service name this device advertises under, derived deterministically
+     * from settings so discovery can match it against the local advertisement.
+     */
+    fun advertisedName(): String {
+        val deviceId = _localDeviceId.value.ifBlank {
+            settingsRepository.userSettings.value.remoteControlDeviceId
+        }
+        val configured = settingsRepository.userSettings.value.remoteControlDeviceName
+        return configured.ifBlank { "Spotube-${deviceId.take(6)}" }
+    }
+
+    /**
+     * Kicks off (or restarts) the advertising loop. Used when the local-network
+     * permission is granted at runtime after earlier attempts failed.
+     */
+    fun retryAdvertising() {
+        val settings = settingsRepository.userSettings.value
+        val port = localServer.port.value
+        if (!settings.allowRemoteControl || port == null) return
+        registerJob?.cancel()
+        registerJob = scope.launch {
+            registerLoop(settings.remoteControlDeviceName, port)
+        }
+    }
+
+    private suspend fun registerLoop(name: String, port: Int) {
         val deviceId = resolveDeviceId()
+        _localDeviceId.value = deviceId
         val serviceName = name.ifBlank { "Spotube-${deviceId.take(6)}" }
-        if (advertisedService == null) {
+
+        var attempt = 0
+        while (advertisedService == null && coroutineContext.isActive) {
+            attempt++
+            // The user may have toggled the setting off during backoff.
+            if (!settingsRepository.userSettings.value.allowRemoteControl) return
             try {
                 advertisedService = discoveryService.advertise(
                     name = serviceName,
                     port = port,
                     deviceId = deviceId,
+                    registerTimeoutMs = REGISTER_TIMEOUT_MS,
                 )
-                log.i { "Advertising remote control service '$serviceName' on port $port" }
+                log.i { "Advertising remote control service '$serviceName' on port $port (attempt $attempt)" }
             } catch (e: Exception) {
-                log.w(e) { "Failed to advertise remote control service" }
+                log.w(e) { "Failed to advertise remote control service (attempt $attempt); retrying in ${retryDelayMs(attempt)}ms" }
+                delay(retryDelayMs(attempt))
             }
         }
     }
 
     private suspend fun stopAdvertising() {
+        registerJob?.cancel()
+        registerJob = null
         if (advertisedService != null) {
             runCatching { advertisedService?.unregister() }
             advertisedService = null
@@ -100,5 +163,15 @@ class RemoteControlService(
         }
         settingsRepository.updateSettings(settings.copy(remoteControlDeviceId = generated))
         return generated
+    }
+
+    private fun retryDelayMs(attempt: Int): Long = when {
+        attempt >= 6 -> 5 * 60_000L
+        attempt >= 3 -> 30_000L
+        else -> 5_000L
+    }
+
+    companion object {
+        private const val REGISTER_TIMEOUT_MS = 4_000L
     }
 }

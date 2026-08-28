@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.getPlatform
+import dev.krtirtho.spotube.core.discovery.rememberLocalNetworkPermissionRequester
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import spotube.composeapp.generated.resources.*
@@ -62,6 +63,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
             platformType == PlatformType.MacOS
 
     val shellBottomInset = LocalAppShellBottomInset.current
+    val requestLocalNetworkPermission = rememberLocalNetworkPermissionRequester()
     val contentPadding = remember(shellBottomInset) {
         PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
     }
@@ -106,6 +108,7 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                         settings = settingsState!!,
                         settingsViewModel = settingsViewModel,
                         navigatorCommands = navigatorCommands,
+                        requestLocalNetworkPermission = requestLocalNetworkPermission,
                     )
                 if (settingsState != null)
                     cacheSection(

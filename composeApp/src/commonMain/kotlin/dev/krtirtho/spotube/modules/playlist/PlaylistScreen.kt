@@ -38,6 +38,7 @@ import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.component.CollectionView
+import dev.krtirtho.spotube.modules.devices.PlayDestinationPicker
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormData
 import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormSheet
@@ -59,6 +60,7 @@ fun PlaylistScreen(
     val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
     val trackOptionsContext by viewModel.trackOptionsContext.collectAsStateWithLifecycle()
     val showAddToPlaylistPicker by viewModel.showAddToPlaylistPicker.collectAsStateWithLifecycle()
+    val showPlayDestinationPicker by viewModel.showPlayDestinationPicker.collectAsStateWithLifecycle()
     var showEditPlaylist by remember { mutableStateOf(false) }
     var showAddTracksDialog by remember { mutableStateOf(false) }
 
@@ -168,6 +170,13 @@ fun PlaylistScreen(
                     showAddTracksDialog = false
                     viewModel.refresh()
                 },
+            )
+
+            PlayDestinationPicker(
+                visible = showPlayDestinationPicker,
+                onDismiss = viewModel::dismissPlayPicker,
+                onPlayLocally = viewModel::playLocally,
+                onPlayOnRemote = viewModel::playOnRemote,
             )
         },
     )

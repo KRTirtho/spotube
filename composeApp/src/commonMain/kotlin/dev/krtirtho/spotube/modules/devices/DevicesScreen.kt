@@ -28,9 +28,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -42,7 +44,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.discovery.DiscoveredDevice
+import dev.krtirtho.spotube.core.discovery.rememberLocalNetworkPermissionRequester
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
+import dev.krtirtho.spotube.core.remote.ConnectionState
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
@@ -57,10 +61,19 @@ fun DevicesScreen(
     val viewModel = koinViewModel<DevicesViewModel>()
     val devices by viewModel.devices.collectAsStateWithLifecycle()
     val isDiscovering by viewModel.isDiscovering.collectAsStateWithLifecycle()
+    val connectingToDevice by viewModel.connectingToDevice.collectAsStateWithLifecycle()
+    val connectionState by viewModel.connectionState.collectAsStateWithLifecycle()
+    val error by viewModel.error.collectAsStateWithLifecycle()
+    val requestLocalNetworkPermission = rememberLocalNetworkPermissionRequester()
 
     DisposableEffect(Unit) {
+        // Android 16+ needs NEARBY_WIFI_DEVICES granted at runtime before mDNS works.
+        requestLocalNetworkPermission()
         viewModel.startDiscovery()
-        onDispose { viewModel.stopDiscovery() }
+        onDispose {
+            viewModel.stopDiscovery()
+            viewModel.disconnect()
+        }
     }
 
     Scaffold(
@@ -69,7 +82,7 @@ fun DevicesScreen(
                 backButton = true,
                 title = { Text("Devices") },
                 actions = {
-                    if (isDiscovering) {
+                    if (isDiscovering && connectingToDevice == null) {
                         CircularProgressIndicator(
                             modifier = Modifier
                                 .size(24.dp)
@@ -82,7 +95,9 @@ fun DevicesScreen(
                             contentDescription = "Refresh",
                             modifier = Modifier
                                 .size(24.dp)
-                                .clickable { viewModel.startDiscovery() },
+                                .clickable(enabled = connectingToDevice == null) {
+                                    viewModel.startDiscovery()
+                                },
                         )
                     }
                 },
@@ -91,53 +106,131 @@ fun DevicesScreen(
     ) { innerPadding ->
         val shellBottomInset = LocalAppShellBottomInset.current
 
-        if (devices.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(bottom = shellBottomInset),
-                contentAlignment = Alignment.Center,
-            ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = if (isDiscovering) {
-                            "Searching for devices on the network..."
-                        } else {
-                            "No devices found"
-                        },
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                    if (!isDiscovering) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding),
+        ) {
+            // Error banner
+            error?.let { errorMessage ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                ) {
+                    Column {
                         Text(
-                            text = "Make sure the other device has \"Allow remote control\" enabled in settings.",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(top = 8.dp, start = 32.dp, end = 32.dp),
+                            text = errorMessage,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodyMedium,
                         )
+                        OutlinedButton(
+                            onClick = { viewModel.clearError() },
+                            modifier = Modifier.padding(top = 8.dp),
+                        ) {
+                            Text("Dismiss")
+                        }
                     }
                 }
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                    horizontal = 16.dp,
-                    vertical = 8.dp,
-                ),
-            ) {
-                items(devices.values.toList(), key = { it.key }) { device ->
-                    DeviceRow(
-                        device = device,
-                        onClick = { viewModel.connectToDevice(device) },
-                    )
+
+            // Connection status
+            when (val state = connectionState) {
+                is ConnectionState.Connected -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    ) {
+                        Column {
+                            Text(
+                                text = "Connected to ${state.host}:${state.port}",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                            )
+                            OutlinedButton(
+                                onClick = { viewModel.disconnect() },
+                                modifier = Modifier.padding(top = 8.dp),
+                            ) {
+                                Text("Disconnect")
+                            }
+                        }
+                    }
                 }
-                item {
-                    Box(modifier = Modifier.padding(bottom = shellBottomInset))
+                is ConnectionState.Connecting -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        contentAlignment = Alignment.CenterStart,
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(24.dp),
+                                strokeWidth = 2.dp,
+                            )
+                            Text(
+                                text = "Connecting...",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+                }
+                else -> {}
+            }
+
+            // Device list
+            if (devices.isEmpty() && connectingToDevice == null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = shellBottomInset),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(
+                            text = if (isDiscovering) {
+                                "Searching for devices on the network..."
+                            } else {
+                                "No devices found"
+                            },
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        if (!isDiscovering) {
+                            Text(
+                                text = "Make sure the other device has \"Allow remote control\" enabled in settings.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 8.dp, start = 32.dp, end = 32.dp),
+                            )
+                        }
+                    }
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
+                        horizontal = 16.dp,
+                        vertical = 8.dp,
+                    ),
+                ) {
+                    items(devices.values.toList(), key = { it.key }) { device ->
+                        DeviceRow(
+                            device = device,
+                            isConnecting = connectingToDevice?.key == device.key,
+                            onClick = { viewModel.connectToDevice(device) },
+                        )
+                    }
+                    item {
+                        Box(modifier = Modifier.padding(bottom = shellBottomInset))
+                    }
                 }
             }
         }
@@ -147,35 +240,56 @@ fun DevicesScreen(
 @Composable
 private fun DeviceRow(
     device: DiscoveredDevice,
+    isConnecting: Boolean,
     onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
+            .clickable(onClick = onClick, enabled = !isConnecting)
             .padding(vertical = 12.dp, horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Icon(
-            imageVector = Iconsax.IconsaxMirroringScreen,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary,
-        )
+        if (isConnecting) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(24.dp),
+                strokeWidth = 2.dp,
+            )
+        } else {
+            Icon(
+                imageVector = Iconsax.IconsaxMirroringScreen,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.primary,
+            )
+        }
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = device.name,
+                text = device.name.ifBlank { "Unknown Device" },
                 style = MaterialTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
-                text = "${device.host}:${device.port}",
+                text = if (device.host.isNotBlank() && device.port > 0) {
+                    "${device.host}:${device.port}"
+                } else {
+                    "Resolving..."
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+            if (device.deviceId.isNotBlank()) {
+                Text(
+                    text = "ID: ${device.deviceId.take(8)}...",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                )
+            }
         }
     }
 }

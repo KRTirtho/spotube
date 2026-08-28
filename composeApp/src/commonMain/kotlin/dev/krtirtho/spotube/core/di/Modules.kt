@@ -28,8 +28,10 @@ import dev.krtirtho.spotube.core.discovery.DeviceDiscoveryService
 import dev.krtirtho.spotube.core.discord.DiscordRpcService
 import dev.krtirtho.spotube.core.jam.JamSessionService
 import dev.krtirtho.spotube.core.navigation.navigationModule
+import dev.krtirtho.spotube.core.remote.RemoteControlClient
 import dev.krtirtho.spotube.core.remote.RemoteControlHandler
 import dev.krtirtho.spotube.core.remote.RemoteControlService
+import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.core.server.AlternativeTracksRepository
 import dev.krtirtho.spotube.core.server.CacheManager
@@ -44,6 +46,7 @@ import dev.krtirtho.spotube.modules.artist.ArtistViewModel
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.blacklist.BlacklistViewModel
 import dev.krtirtho.spotube.modules.devices.DevicesViewModel
+import dev.krtirtho.spotube.modules.devices.RemoteControlViewModel
 import dev.krtirtho.spotube.modules.jam.JamViewModel
 import dev.krtirtho.spotube.modules.downloads.DownloadManager
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
@@ -140,6 +143,7 @@ val sharedModules = module {
             blacklistRepository = get(),
             shareService = get(),
             downloadManager = get(),
+            remotePlaybackController = get(),
         )
     }
 
@@ -175,7 +179,8 @@ val sharedModules = module {
     // Blacklist
     singleOf(::BlacklistRepository)
     viewModelOf(::BlacklistViewModel)
-    viewModelOf(::DevicesViewModel)
+    viewModel { DevicesViewModel(get()) }
+    viewModelOf(::RemoteControlViewModel)
     viewModelOf(::JamViewModel)
 
     // Album
@@ -215,10 +220,12 @@ val sharedModules = module {
         createdAtStart()
     }
     single { RemoteControlHandler(get(), get(), get()) }
+    single { RemoteControlClient() }
     singleOf(::DeviceDiscoveryService)
     single { RemoteControlService(get(), get(), get()) } withOptions {
         createdAtStart()
     }
+    single { RemotePlaybackController() }
     single { JamSessionService(get(), get()) }
     singleOf(::JamDeepLinkService)
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }

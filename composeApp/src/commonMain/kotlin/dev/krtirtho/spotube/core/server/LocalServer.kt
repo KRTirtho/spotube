@@ -22,6 +22,7 @@ import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.core.remote.RemoteControlHandler
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
@@ -63,7 +64,14 @@ class LocalServer(
 ) : KoinComponent {
 
     val logger by injectLogger<LocalServer>()
-    private val httpClient = HttpClient()
+    private val httpClient = HttpClient {
+        // A stalled upstream connection must not wedge the CIO dispatcher thread
+        // forever. Only the connect phase is bounded — the proxy streams long
+        // audio bodies, so request/socket timeouts would cut playback short.
+        install(HttpTimeout) {
+            connectTimeoutMillis = 10_000
+        }
+    }
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val serverMutex = Mutex()

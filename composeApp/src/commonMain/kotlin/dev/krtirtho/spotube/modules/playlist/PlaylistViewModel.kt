@@ -26,6 +26,7 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
+import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsAction
 import dev.krtirtho.spotube.core.ui.component.TrackOptionsContext
@@ -98,6 +99,7 @@ class PlaylistViewModel(
     private val blacklistRepository: BlacklistRepository,
     private val shareService: ShareService,
     private val downloadManager: DownloadManager,
+    private val remotePlaybackController: RemotePlaybackController,
 ) : ViewModel(), KoinComponent {
     private val logger by injectLogger<PlaylistViewModel>()
 
@@ -114,6 +116,8 @@ class PlaylistViewModel(
 
     private val _blacklistedArtistIds = MutableStateFlow<Set<String>>(emptySet())
     val blacklistedArtistIds: StateFlow<Set<String>> = _blacklistedArtistIds.asStateFlow()
+
+    val showPlayDestinationPicker = remotePlaybackController.showPicker
 
     private val _tracksToAddToPlaylist = MutableStateFlow<List<MetadataTrack>>(emptyList())
     private val _showAddToPlaylistPicker = MutableStateFlow(false)
@@ -223,15 +227,35 @@ class PlaylistViewModel(
     }
 
     fun playPlaylist() {
-        viewModelScope.launch { playbackHelper.playPlaylist(playlistId) }
+        remotePlaybackController.wrapPlaybackAction {
+            viewModelScope.launch { playbackHelper.playPlaylist(playlistId) }
+        }
     }
 
     fun addPlaylistToQueue() {
-        viewModelScope.launch { playbackHelper.addPlaylistToQueue(playlistId) }
+        if (remotePlaybackController.isRemoteConnected()) {
+            remotePlaybackController.addToQueueOnRemote(playlistId)
+        } else {
+            viewModelScope.launch { playbackHelper.addPlaylistToQueue(playlistId) }
+        }
     }
 
     fun playPlaylistFromTrack(track: MetadataTrack) {
-        viewModelScope.launch { playbackHelper.playPlaylistFromTrack(playlistId, track) }
+        remotePlaybackController.wrapPlaybackAction {
+            viewModelScope.launch { playbackHelper.playPlaylistFromTrack(playlistId, track) }
+        }
+    }
+
+    fun playLocally() {
+        remotePlaybackController.playLocally()
+    }
+
+    fun playOnRemote() {
+        remotePlaybackController.playOnRemote(playlistId)
+    }
+
+    fun dismissPlayPicker() {
+        remotePlaybackController.dismissPicker()
     }
 
     fun refresh() {

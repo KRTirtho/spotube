@@ -70,6 +70,12 @@ class RemoteControlHandler(
         val isAllowed = deviceId != null && deviceId in settings.allowedRemoteDevices
 
         if (!isAllowed) {
+            // Send waiting for permission message
+            val waitingMessage = RemoteControlEvent.WaitingForPermission(
+                "Waiting for permission from $deviceName..."
+            )
+            session.send(Frame.Text(json.encodeToString(RemoteControlEvent.WaitingForPermission.serializer(), waitingMessage)))
+
             val request = ConnectionRequest(
                 deviceId = deviceId ?: "unknown",
                 deviceName = deviceName,
@@ -92,6 +98,8 @@ class RemoteControlHandler(
             }
         }
 
+        // Send connected message
+        session.send(Frame.Text(json.encodeToString(RemoteControlEvent.Connected.serializer(), RemoteControlEvent.Connected)))
         logger.i { "Remote control connection established from $deviceName ($deviceId)" }
 
         try {

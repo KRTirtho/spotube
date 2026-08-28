@@ -70,6 +70,14 @@ sealed class RemoteControlCommand {
 @Serializable
 sealed class RemoteControlEvent {
     @Serializable
+    @SerialName("connected")
+    data object Connected : RemoteControlEvent()
+
+    @Serializable
+    @SerialName("waitingForPermission")
+    data class WaitingForPermission(val message: String) : RemoteControlEvent()
+
+    @Serializable
     @SerialName("playerState")
     data class PlayerState(
         val isPlaying: Boolean,

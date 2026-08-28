@@ -50,6 +50,7 @@ internal fun LazyListScope.playbackSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
     navigatorCommands: NavigationCommands,
+    requestLocalNetworkPermission: () -> Unit,
 ) {
     val streamingFormats = availableAudioFormats(settings.streamingMusicFormat, streamingFormatPresets)
     val streamingQualities = availableAudioQualities(
@@ -150,6 +151,11 @@ internal fun LazyListScope.playbackSection(
                     onCheckedChange = { enabled ->
                         settingsViewModel.updateSettings {
                             copy(allowRemoteControl = enabled)
+                        }
+                        // Request the local network permission when enabling remote control
+                        // so that DNS-SD registration can succeed on Android 16+
+                        if (enabled) {
+                            requestLocalNetworkPermission()
                         }
                     }
                 )

@@ -18,6 +18,7 @@
 package dev.krtirtho.spotube
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -25,6 +26,7 @@ import androidx.activity.enableEdgeToEdge
 import dev.krtirtho.spotube.core.deeplink.ExternalUriHandler
 import dev.krtirtho.spotube.core.newpipe.NewPipeDownloader
 import dev.krtirtho.spotube.core.paths.Paths
+import dev.krtirtho.spotube.media.PlaybackService
 import io.github.vinceglb.filekit.FileKit
 import io.github.vinceglb.filekit.dialogs.init
 
@@ -33,7 +35,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         FileKit.init(this)
-        NewPipeDownloader.init(Paths(this))
+        NewPipeDownloader.init(Paths())
+        
+        // Start PlaybackService from Activity context (allowed on Android 12+)
+        val serviceIntent = Intent(this, PlaybackService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
+        }
+        
         intent?.dataString?.let(ExternalUriHandler::onNewUri)
         setContent {
             App()
