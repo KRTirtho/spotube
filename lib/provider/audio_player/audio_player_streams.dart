@@ -19,11 +19,10 @@ import 'package:spotube/services/logger/logger.dart';
 
 class AudioPlayerStreamListeners {
   final Ref ref;
-  late final AudioServices notificationService;
+  late final Future<AudioServices> notificationServiceFuture;
   AudioPlayerStreamListeners(this.ref) {
-    AudioServices.create(ref, ref.read(audioPlayerProvider.notifier)).then(
-      (value) => notificationService = value,
-    );
+    notificationServiceFuture =
+        AudioServices.create(ref, ref.read(audioPlayerProvider.notifier));
 
     final subscriptions = [
       subscribeToPlaylist(),
@@ -48,10 +47,11 @@ class AudioPlayerStreamListeners {
       ref.read(playbackHistoryActionsProvider);
 
   StreamSubscription subscribeToPlaylist() {
-    return audioPlayer.playlistStream.listen((mpvPlaylist) {
+    return audioPlayer.playlistStream.listen((mpvPlaylist) async {
       try {
         if (audioPlayerState.activeTrack == null) return;
-        notificationService.addTrack(audioPlayerState.activeTrack!);
+        final notificationService = await notificationServiceFuture;
+        await notificationService.addTrack(audioPlayerState.activeTrack!);
         discord.updatePresence(audioPlayerState.activeTrack!);
       } catch (e, stack) {
         AppLogger.reportError(e, stack);
