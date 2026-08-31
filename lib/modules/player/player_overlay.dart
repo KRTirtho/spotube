@@ -28,26 +28,45 @@ class PlayerOverlay extends HookConsumerWidget {
 
     final panelController = ref.watch(playerOverlayControllerProvider);
 
-    return SlidingUpPanel(
-      maxHeight: screenSize.height,
-      backdropEnabled: false,
-      minHeight: canShow ? 63 : 0,
-      onPanelSlide: (position) {
-        final invertedPosition = 1 - position;
-        ref.read(navigationPanelHeight.notifier).state = 50 * invertedPosition;
-      },
-      controller: panelController,
-      color: Colors.transparent,
-      parallaxEnabled: true,
-      renderPanelSheet: false,
-      header: SizedBox(
-        height: 63,
-        width: screenSize.width,
-        child: PlayerOverlayCollapsedSection(panelController: panelController),
-      ),
-      panelBuilder: (scrollController) => PlayerView(
-        panelController: panelController,
-        scrollController: scrollController,
+    // [SlidingUpPanel] animates its own height between [minHeight] and
+    // [maxHeight] (the full screen height) while it is being opened/closed.
+    // Since this widget sits as a plain child inside the [Scaffold]'s
+    // footers column, that transient height briefly exceeds the collapsed
+    // [minHeight] slot it was given, overflowing the footers column by a
+    // few pixels. [OverflowBox] lets the panel keep painting at its actual
+    // (larger) size while reporting only the fixed collapsed height to its
+    // parent, so the outer layout never overflows.
+    return SizedBox(
+      height: canShow ? 63 : 0,
+      width: screenSize.width,
+      child: OverflowBox(
+        maxHeight: screenSize.height,
+        alignment: Alignment.bottomCenter,
+        child: SlidingUpPanel(
+          maxHeight: screenSize.height,
+          backdropEnabled: false,
+          minHeight: canShow ? 63 : 0,
+          onPanelSlide: (position) {
+            final invertedPosition = 1 - position;
+            ref.read(navigationPanelHeight.notifier).state =
+                50 * invertedPosition;
+          },
+          controller: panelController,
+          color: Colors.transparent,
+          parallaxEnabled: true,
+          renderPanelSheet: false,
+          header: SizedBox(
+            height: 63,
+            width: screenSize.width,
+            child: PlayerOverlayCollapsedSection(
+              panelController: panelController,
+            ),
+          ),
+          panelBuilder: (scrollController) => PlayerView(
+            panelController: panelController,
+            scrollController: scrollController,
+          ),
+        ),
       ),
     );
   }
