@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:spotube/models/metadata/metadata.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/state.dart';
+import 'package:spotube/provider/metadata_plugin/library/tracks.dart';
 import 'package:spotube/provider/metadata_plugin/metadata_plugin_provider.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/metadata/metadata.dart';
@@ -48,6 +49,9 @@ class MobileAudioService extends BaseAudioHandler {
 
   /// Name of the custom "shuffle" media control action.
   static const String _shuffleActionName = 'shuffle';
+
+  /// Name of the custom "favorite" media control action.
+  static const String _favoriteActionName = 'favorite';
 
   // ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
   AudioPlayerState get playlist => audioPlayerNotifier.state;
@@ -141,6 +145,22 @@ class MobileAudioService extends BaseAudioHandler {
       );
       // Refresh playback state so the control's icon reflects the new state.
       playbackState.add(await _transformEvent());
+      return null;
+    }
+    if (name == _favoriteActionName) {
+      final track = playlist.activeTrack;
+      if (track != null) {
+        final isLiked =
+            await ref.read(metadataPluginIsSavedTrackProvider(track.id).future);
+        final notifier = ref.read(metadataPluginSavedTracksProvider.notifier);
+        if (isLiked) {
+          await notifier.removeFavorite([track]);
+        } else {
+          await notifier.addFavorite([track]);
+        }
+        // Refresh playback state so the control's icon reflects the new state.
+        playbackState.add(await _transformEvent());
+      }
       return null;
     }
     return super.customAction(name, extras);
@@ -534,12 +554,26 @@ class MobileAudioService extends BaseAudioHandler {
 
   Future<PlaybackState> _transformEvent() async {
     try {
+      final activeTrackId = playlist.activeTrack?.id;
+      final favoriteAsync = activeTrackId != null
+          ? ref.read(metadataPluginIsSavedTrackProvider(activeTrackId))
+          : null;
+      final isFavorite = favoriteAsync?.valueOrNull ?? false;
+
       return PlaybackState(
         controls: [
           MediaControl.skipToPrevious,
           audioPlayer.isPlaying ? MediaControl.pause : MediaControl.play,
           MediaControl.skipToNext,
-          MediaControl.stop,
+          // Toggles the current track's Liked status instead of the less
+          // useful "stop". audio_service doesn't expose a standard favorite
+          // action, so this is a tappable custom control, same as shuffle.
+          MediaControl.custom(
+            androidIcon:
+                isFavorite ? 'drawable/ic_favorite_on' : 'drawable/ic_favorite',
+            label: 'Favorite',
+            name: _favoriteActionName,
+          ),
           // Explicit shuffle toggle. audio_service always advertises the
           // standard ACTION_SET_SHUFFLE_MODE, but Android Auto doesn't reliably
           // render a toggle from it, so we expose a tappable custom control.
