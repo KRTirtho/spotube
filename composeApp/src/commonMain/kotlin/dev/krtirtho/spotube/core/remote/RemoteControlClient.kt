@@ -33,11 +33,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -69,8 +66,11 @@ class RemoteControlClient {
     private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
     val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
 
-    private val _stateUpdates = MutableSharedFlow<RemoteControlEvent>(extraBufferCapacity = 32)
-    val stateUpdates: SharedFlow<RemoteControlEvent> = _stateUpdates.asSharedFlow()
+    private val _latestPlayerState = MutableStateFlow<RemoteControlEvent.PlayerState?>(null)
+    val latestPlayerState: StateFlow<RemoteControlEvent.PlayerState?> = _latestPlayerState.asStateFlow()
+
+    private val _latestQueue = MutableStateFlow<RemoteControlEvent.QueueUpdated?>(null)
+    val latestQueue: StateFlow<RemoteControlEvent.QueueUpdated?> = _latestQueue.asStateFlow()
 
     suspend fun connect(host: String, port: Int, deviceId: String, deviceName: String) {
         if (_connectionState.value is ConnectionState.Connected) {
@@ -121,9 +121,17 @@ class RemoteControlClient {
                                     // Keep showing connecting state
                                 }
                                 else -> {
-                                    // Only emit state updates after connection is established
+                                    // Only store state updates after connection is established
                                     if (_connectionState.value is ConnectionState.Connected) {
-                                        _stateUpdates.emit(event)
+                                        when (event) {
+                                            is RemoteControlEvent.PlayerState -> {
+                                                _latestPlayerState.value = event
+                                            }
+                                            is RemoteControlEvent.QueueUpdated -> {
+                                                _latestQueue.value = event
+                                            }
+                                            else -> {}
+                                        }
                                     }
                                 }
                             }

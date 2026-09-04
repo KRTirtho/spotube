@@ -24,7 +24,7 @@ import dev.krtirtho.spotube.core.remote.ConnectionState
 import dev.krtirtho.spotube.core.remote.RemoteControlClient
 import dev.krtirtho.spotube.core.remote.RemoteControlCommand
 import dev.krtirtho.spotube.core.remote.RemoteControlEvent
-import kotlinx.coroutines.Job
+import dev.krtirtho.spotube.core.remote.RemoteQueueEntry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,6 +47,11 @@ data class RemotePlayerState(
     val currentTrackCoverUrl: String? = null,
 )
 
+data class RemoteQueueState(
+    val entries: List<RemoteQueueEntry> = emptyList(),
+    val currentIndex: Int = -1,
+)
+
 class RemoteControlViewModel : ViewModel(), KoinComponent {
     private val logger = Logger.withTag("RemoteControlViewModel")
     private val remoteControlClient: RemoteControlClient by inject()
@@ -57,7 +62,11 @@ class RemoteControlViewModel : ViewModel(), KoinComponent {
     private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
     val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
 
-    private var stateUpdateJob: Job? = null
+    private val _queueState = MutableStateFlow(RemoteQueueState())
+    val queueState: StateFlow<RemoteQueueState> = _queueState.asStateFlow()
+
+    private val _isQueueVisible = MutableStateFlow(false)
+    val isQueueVisible: StateFlow<Boolean> = _isQueueVisible.asStateFlow()
 
     init {
         viewModelScope.launch {
@@ -67,50 +76,45 @@ class RemoteControlViewModel : ViewModel(), KoinComponent {
         }
 
         viewModelScope.launch {
-            remoteControlClient.stateUpdates.collect { event ->
-                handleStateUpdate(event)
+            remoteControlClient.latestPlayerState.collect { event ->
+                if (event != null) {
+                    handlePlayerState(event)
+                }
+            }
+        }
+
+        viewModelScope.launch {
+            remoteControlClient.latestQueue.collect { event ->
+                if (event != null) {
+                    handleQueueUpdated(event)
+                }
             }
         }
     }
 
-    private fun handleStateUpdate(event: RemoteControlEvent) {
-        when (event) {
-            is RemoteControlEvent.Connected -> {
-                // Connection already handled in RemoteControlClient
-                logger.d { "Connection confirmed" }
-            }
-            is RemoteControlEvent.WaitingForPermission -> {
-                // Waiting for permission - no action needed
-                logger.d { "Waiting for permission: ${event.message}" }
-            }
-            is RemoteControlEvent.PlayerState -> {
-                _playerState.update {
-                    it.copy(
-                        isPlaying = event.isPlaying,
-                        positionMs = event.positionMs,
-                        durationMs = event.durationMs,
-                        volume = event.volume,
-                        shuffleEnabled = event.shuffleEnabled,
-                        loopMode = event.loopMode,
-                        currentTrackId = event.currentTrackId,
-                        currentTrackTitle = event.currentTrackTitle,
-                        currentTrackArtists = event.currentTrackArtists,
-                        currentTrackAlbum = event.currentTrackAlbum,
-                        currentTrackCoverUrl = event.currentTrackCoverUrl,
-                    )
-                }
-            }
-            is RemoteControlEvent.QueueUpdated -> {
-                // TODO: Handle queue updates if needed
-                logger.d { "Queue updated: ${event.entries.size} entries" }
-            }
-            is RemoteControlEvent.Ack -> {
-                logger.d { "Command acknowledged: ${event.commandId}" }
-            }
-            is RemoteControlEvent.Error -> {
-                logger.e { "Remote error: ${event.message}" }
-            }
+    private fun handlePlayerState(event: RemoteControlEvent.PlayerState) {
+        _playerState.update {
+            it.copy(
+                isPlaying = event.isPlaying,
+                positionMs = event.positionMs,
+                durationMs = event.durationMs,
+                volume = event.volume,
+                shuffleEnabled = event.shuffleEnabled,
+                loopMode = event.loopMode,
+                currentTrackId = event.currentTrackId,
+                currentTrackTitle = event.currentTrackTitle,
+                currentTrackArtists = event.currentTrackArtists,
+                currentTrackAlbum = event.currentTrackAlbum,
+                currentTrackCoverUrl = event.currentTrackCoverUrl,
+            )
         }
+    }
+
+    private fun handleQueueUpdated(event: RemoteControlEvent.QueueUpdated) {
+        _queueState.value = RemoteQueueState(
+            entries = event.entries,
+            currentIndex = event.currentIndex,
+        )
     }
 
     fun togglePlayPause() {
@@ -160,6 +164,23 @@ class RemoteControlViewModel : ViewModel(), KoinComponent {
             }
             remoteControlClient.sendCommand(RemoteControlCommand.SetLoopMode(newMode))
         }
+    }
+
+    fun playQueueItem(index: Int) {
+        if (index < 0) return
+        viewModelScope.launch {
+            remoteControlClient.sendCommand(RemoteControlCommand.PlayIndex(index))
+        }
+    }
+
+    fun removeQueueItem(mediaUrl: String) {
+        viewModelScope.launch {
+            remoteControlClient.sendCommand(RemoteControlCommand.RemoveFromQueue(mediaUrl))
+        }
+    }
+
+    fun toggleQueueVisibility() {
+        _isQueueVisible.update { !it }
     }
 
     fun disconnect() {

@@ -30,8 +30,14 @@ import io.ktor.websocket.Frame
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlin.coroutines.resume
+import kotlin.time.TimeSource
+import kotlin.time.Duration.Companion.milliseconds
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
@@ -104,9 +110,20 @@ class RemoteControlHandler(
 
         // Broadcast initial player state so the controller shows current track info
         broadcastState(session)
+        broadcastQueue(session)
 
         try {
-            handleControlLoop(session)
+            // Periodically push player state so the controller's progress bar
+            // stays in sync even when no commands are being sent.
+            coroutineScope {
+                launch {
+                    while (isActive) {
+                        delay(1_000)
+                        broadcastState(session)
+                    }
+                }
+                handleControlLoop(session)
+            }
         } catch (e: Exception) {
             logger.w(e) { "Error in remote control session" }
         } finally {
@@ -159,10 +176,13 @@ class RemoteControlHandler(
                 audioPlayer.pause()
             }
             is RemoteControlCommand.TogglePlayPause -> {
-                if (audioPlayer.playerStateFlow.value == AudioPlayerState.PLAYING) {
+                val isPlaying = audioPlayer.playerStateFlow.value == AudioPlayerState.PLAYING
+                if (isPlaying) {
                     audioPlayer.pause()
+                    waitForPlaybackState(expectPlaying = false)
                 } else {
                     audioPlayer.play()
+                    waitForPlaybackState(expectPlaying = true)
                 }
             }
             is RemoteControlCommand.Seek -> {
@@ -195,12 +215,27 @@ class RemoteControlHandler(
             is RemoteControlCommand.AddToQueue -> {
                 logger.d { "Remote add to queue: ${command.source} (source parsing not yet implemented)" }
             }
+            is RemoteControlCommand.PlayIndex -> {
+                audioPlayerQueue.jumpTo(command.index)
+            }
             is RemoteControlCommand.RemoveFromQueue -> {
-                audioPlayerQueue.removeFromQueueByMediaUrl(command.mediaUrl)
+                val queue = audioPlayerQueue.queueFlow.value
+                val entry = queue.firstOrNull { candidate ->
+                    when (candidate) {
+                        is QueueEntry.StreamingTrack -> candidate.track.id == command.mediaUrl
+                        is QueueEntry.LocalTrack -> candidate.url == command.mediaUrl
+                    }
+                }
+                if (entry != null) {
+                    audioPlayerQueue.removeFromQueue(entry)
+                } else {
+                    logger.w { "Remote remove: no matching queue entry for ${command.mediaUrl}" }
+                }
             }
         }
         sendAck(session, envelope.commandId)
         broadcastState(session)
+        broadcastQueue(session)
     }
 
     private suspend fun sendAck(session: WebSocketServerSession, commandId: String) {
@@ -211,6 +246,20 @@ class RemoteControlHandler(
     private suspend fun sendError(session: WebSocketServerSession, message: String) {
         val text = json.encodeToString(RemoteControlEvent.serializer(), RemoteControlEvent.Error(message))
         session.send(Frame.Text(text))
+    }
+
+    /**
+     * Player state changes are applied asynchronously (e.g. ExoPlayer listener
+     * callbacks posted to the main looper), so after play/pause we poll until
+     * [playerStateFlow] reflects the expected state before broadcasting it back
+     * to the controller. Otherwise the client would see a stale (inverted) icon.
+     */
+    private suspend fun waitForPlaybackState(expectPlaying: Boolean, timeoutMs: Long = 1_000) {
+        val timeoutAt = TimeSource.Monotonic.markNow() + timeoutMs.milliseconds
+        while (timeoutAt.hasNotPassedNow()) {
+            if ((audioPlayer.playerStateFlow.value == AudioPlayerState.PLAYING) == expectPlaying) return
+            delay(25)
+        }
     }
 
     private suspend fun broadcastState(session: WebSocketServerSession) {
@@ -230,6 +279,58 @@ class RemoteControlHandler(
         )
         val text = json.encodeToString(RemoteControlEvent.serializer(), state)
         session.send(Frame.Text(text))
+    }
+
+    private suspend fun broadcastQueue(session: WebSocketServerSession) {
+        val queue = audioPlayerQueue.queueFlow.value
+        val current = audioPlayerQueue.currentQueueEntryFlow.value
+        val currentIndex = if (current != null) {
+            queue.indexOfFirst { it.matchesCurrent(current) }
+        } else {
+            -1
+        }
+        val event = RemoteControlEvent.QueueUpdated(
+            entries = queue.map { it.toRemoteQueueEntry() },
+            currentIndex = currentIndex,
+        )
+        val text = json.encodeToString(RemoteControlEvent.serializer(), event)
+        session.send(Frame.Text(text))
+    }
+
+    private fun QueueEntry.matchesCurrent(current: QueueEntry): Boolean {
+        return when {
+            this is QueueEntry.StreamingTrack && current is QueueEntry.StreamingTrack -> {
+                this.track.id == current.track.id
+            }
+
+            this is QueueEntry.LocalTrack && current is QueueEntry.LocalTrack -> {
+                this.url == current.url && this.name == current.name
+            }
+
+            else -> false
+        }
+    }
+
+    private fun QueueEntry.toRemoteQueueEntry(): RemoteQueueEntry = when (this) {
+        is QueueEntry.StreamingTrack -> RemoteQueueEntry(
+            mediaUrl = track.id,
+            trackId = track.id,
+            title = track.title,
+            artists = track.artists.joinToString(", ") { artist -> artist.name },
+            album = track.album?.title,
+            coverUrl = coverUrlOrNull(),
+            durationMs = track.durationMs,
+        )
+
+        is QueueEntry.LocalTrack -> RemoteQueueEntry(
+            mediaUrl = url,
+            trackId = url,
+            title = name,
+            artists = artists.joinToString(", "),
+            album = album,
+            coverUrl = null,
+            durationMs = duration,
+        )
     }
 
     private fun QueueEntry.mediaKey(): String = when (this) {
@@ -253,7 +354,8 @@ class RemoteControlHandler(
     }
 
     private fun QueueEntry.coverUrlOrNull(): String? = when (this) {
-        is QueueEntry.StreamingTrack -> track.thumbnails?.firstOrNull()?.url
+        is QueueEntry.StreamingTrack -> track.thumbnails?.maxByOrNull { it.width * it.height }?.url
+            ?: track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
         is QueueEntry.LocalTrack -> null
     }
 }

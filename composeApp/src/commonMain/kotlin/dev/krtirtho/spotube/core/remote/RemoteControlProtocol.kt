@@ -63,6 +63,10 @@ sealed class RemoteControlCommand {
     data class AddToQueue(val source: String) : RemoteControlCommand()
 
     @Serializable
+    @SerialName("playIndex")
+    data class PlayIndex(val index: Int) : RemoteControlCommand()
+
+    @Serializable
     @SerialName("removeFromQueue")
     data class RemoveFromQueue(val mediaUrl: String) : RemoteControlCommand()
 }
