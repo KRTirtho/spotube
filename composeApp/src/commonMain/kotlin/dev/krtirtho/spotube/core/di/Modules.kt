@@ -158,6 +158,7 @@ val sharedModules = module {
             libraryRepository = get(),
             shareService = get(),
             downloadManager = get(),
+            remotePlaybackController = get(),
         )
     }
 
@@ -173,6 +174,7 @@ val sharedModules = module {
             blacklistRepository = get(),
             shareService = get(),
             downloadManager = get(),
+            remotePlaybackController = get(),
         )
     }
 
@@ -196,6 +198,7 @@ val sharedModules = module {
             blacklistRepository = get(),
             shareService = get(),
             downloadManager = get(),
+            remotePlaybackController = get(),
         )
     }
 
@@ -208,6 +211,7 @@ val sharedModules = module {
             albumRepository = get(),
             playlistRepository = get(),
             savedTracksRepository = get(),
+            artistRepository = get(),
             audioPlayerQueue = get(),
             blacklistRepository = get(),
         )
@@ -219,13 +223,13 @@ val sharedModules = module {
     singleOf(::LocalServer) withOptions {
         createdAtStart()
     }
-    single { RemoteControlHandler(get(), get(), get()) }
+    single { RemoteControlHandler(get(), get(), get(), get()) }
     single { RemoteControlClient() }
     singleOf(::DeviceDiscoveryService)
     single { RemoteControlService(get(), get(), get()) } withOptions {
         createdAtStart()
     }
-    single { RemotePlaybackController() }
+    single { RemotePlaybackController(get(), get(), get(), get()) }
     single { JamSessionService(get(), get()) }
     singleOf(::JamDeepLinkService)
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }

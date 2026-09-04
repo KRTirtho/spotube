@@ -22,6 +22,7 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueCollectionEntry
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.modules.album.AlbumRepository
+import dev.krtirtho.spotube.modules.artist.ArtistRepository
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.playlist.PlaylistRepository
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
@@ -30,6 +31,7 @@ class CollectionPlaybackHelper(
     private val albumRepository: AlbumRepository,
     private val playlistRepository: PlaylistRepository,
     private val savedTracksRepository: SavedTracksRepository,
+    private val artistRepository: ArtistRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val blacklistRepository: BlacklistRepository,
 ) {
@@ -53,6 +55,13 @@ class CollectionPlaybackHelper(
                 entries,
                 collectionEntry = QueueCollectionEntry.Album(albumId),
             )
+        }
+    }
+
+    suspend fun playAlbumNext(albumId: String) {
+        val entries = fetchAllAlbumTracks(albumId)
+        if (entries.isNotEmpty()) {
+            audioPlayerQueue.addAllAfterCurrent(entries)
         }
     }
 
@@ -104,6 +113,13 @@ class CollectionPlaybackHelper(
         }
     }
 
+    suspend fun playPlaylistNext(playlistId: String) {
+        val entries = fetchAllPlaylistTracks(playlistId)
+        if (entries.isNotEmpty()) {
+            audioPlayerQueue.addAllAfterCurrent(entries)
+        }
+    }
+
     suspend fun playPlaylistFromTrack(playlistId: String, track: MetadataTrack) {
         val entries = fetchAllPlaylistTracks(playlistId)
         if (entries.isEmpty()) return
@@ -139,6 +155,32 @@ class CollectionPlaybackHelper(
                 startPosition = 0,
                 collectionEntry = QueueCollectionEntry.SavedTracks,
             )
+        }
+    }
+
+    suspend fun playArtistTopTracks(artistId: String) {
+        val entries = fetchArtistTopTracks(artistId)
+        if (entries.isNotEmpty()) {
+            audioPlayerQueue.load(
+                entries = entries,
+                autoPlay = true,
+                startPosition = 0,
+                collectionEntry = null,
+            )
+        }
+    }
+
+    suspend fun addArtistTopTracksToQueue(artistId: String) {
+        val entries = fetchArtistTopTracks(artistId)
+        if (entries.isNotEmpty()) {
+            audioPlayerQueue.addAllToQueue(entries)
+        }
+    }
+
+    suspend fun playArtistTopTracksNext(artistId: String) {
+        val entries = fetchArtistTopTracks(artistId)
+        if (entries.isNotEmpty()) {
+            audioPlayerQueue.addAllAfterCurrent(entries)
         }
     }
 
@@ -241,6 +283,15 @@ class CollectionPlaybackHelper(
         return filteredTracks.map { track ->
             QueueEntry.StreamingTrack(track = track, url = "")
         }
+    }
+
+    private suspend fun fetchArtistTopTracks(artistId: String): List<QueueEntry> {
+        val tracks = artistRepository.topTracks(artistId).orEmpty()
+        val blacklistedTrackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+        val blacklistedArtistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+        return tracks
+            .filter { track -> !isTrackBlacklisted(track, blacklistedTrackIds, blacklistedArtistIds) }
+            .map { track -> QueueEntry.StreamingTrack(track = track, url = "") }
     }
 
     private fun isTrackBlacklisted(

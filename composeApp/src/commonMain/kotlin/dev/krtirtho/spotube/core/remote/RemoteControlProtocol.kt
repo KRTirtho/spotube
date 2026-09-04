@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.core.remote
 
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -61,6 +62,30 @@ sealed class RemoteControlCommand {
     @Serializable
     @SerialName("addToQueue")
     data class AddToQueue(val source: String) : RemoteControlCommand()
+
+    @Serializable
+    @SerialName("playNext")
+    data class PlayNext(val source: String) : RemoteControlCommand()
+
+    @Serializable
+    @SerialName("playTrack")
+    data class PlayTrack(val track: MetadataTrack) : RemoteControlCommand()
+
+    @Serializable
+    @SerialName("addTrackToQueue")
+    data class AddTrackToQueue(val track: MetadataTrack) : RemoteControlCommand()
+
+    @Serializable
+    @SerialName("playTrackNext")
+    data class PlayTrackNext(val track: MetadataTrack) : RemoteControlCommand()
+
+    @Serializable
+    @SerialName("addTracksToQueue")
+    data class AddTracksToQueue(val tracks: List<MetadataTrack>) : RemoteControlCommand()
+
+    @Serializable
+    @SerialName("playTracksNext")
+    data class PlayTracksNext(val tracks: List<MetadataTrack>) : RemoteControlCommand()
 
     @Serializable
     @SerialName("playIndex")

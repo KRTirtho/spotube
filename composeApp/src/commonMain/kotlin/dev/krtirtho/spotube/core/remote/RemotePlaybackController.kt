@@ -18,100 +18,307 @@
 package dev.krtirtho.spotube.core.remote
 
 import co.touchlab.kermit.Logger
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
+import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
+import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.IO
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+
+enum class PlaybackDestinationAction {
+    Play,
+    AddToQueue,
+    PlayNext,
+}
+
+enum class RemoteCollectionType {
+    Playlist,
+    Album,
+    ArtistTopTracks,
+    SavedTracks,
+}
 
 /**
- * Manages the play destination picker state and remote playback commands.
- * Injected into ViewModels to handle playback actions when a remote device is connected.
+ * A playback request awaiting a destination choice (local device vs a connected
+ * remote device). [title] is the content label shown in the picker dialog.
  */
-class RemotePlaybackController : KoinComponent {
+sealed interface PlaybackDestinationRequest {
+    val title: String
+    val action: PlaybackDestinationAction
+
+    data class Collection(
+        override val title: String,
+        override val action: PlaybackDestinationAction,
+        val type: RemoteCollectionType,
+        val id: String,
+        val startTrack: MetadataTrack? = null,
+    ) : PlaybackDestinationRequest
+
+    data class Track(
+        override val title: String,
+        override val action: PlaybackDestinationAction,
+        val track: MetadataTrack,
+    ) : PlaybackDestinationRequest
+
+    data class Tracks(
+        override val title: String,
+        override val action: PlaybackDestinationAction,
+        val tracks: List<MetadataTrack>,
+    ) : PlaybackDestinationRequest
+}
+
+/**
+ * Routes playback actions (play / add to queue / play next) to either the local
+ * device or a connected remote device. When a remote device is connected the
+ * user is shown a destination picker; otherwise the action runs locally.
+ */
+class RemotePlaybackController(
+    private val remoteControlClient: RemoteControlClient,
+    private val collectionPlaybackHelper: CollectionPlaybackHelper,
+    private val audioPlayerQueue: AudioPlayerQueue,
+    private val blacklistRepository: BlacklistRepository,
+) : KoinComponent {
     private val logger = Logger.withTag("RemotePlaybackController")
-    private val remoteControlClient: RemoteControlClient by inject()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
-    private val _showPicker = MutableStateFlow(false)
-    val showPicker: StateFlow<Boolean> = _showPicker.asStateFlow()
+    private val _pendingRequest = MutableStateFlow<PlaybackDestinationRequest?>(null)
+    val pendingRequest: StateFlow<PlaybackDestinationRequest?> = _pendingRequest.asStateFlow()
 
-    private var pendingAction: (() -> Unit)? = null
-
-    /**
-     * Checks if a remote device is connected.
-     */
     fun isRemoteConnected(): Boolean {
         return remoteControlClient.connectionState.value is ConnectionState.Connected
     }
 
-    /**
-     * Wraps a playback action. If a remote device is connected, shows the picker.
-     * Otherwise, executes the action immediately.
-     * 
-     * @param action The action to execute if playing locally
-     */
-    fun wrapPlaybackAction(action: () -> Unit) {
-        if (isRemoteConnected()) {
-            pendingAction = action
-            _showPicker.value = true
-        } else {
-            action()
-        }
+    // ---------- Collection actions ----------
+
+    fun requestCollectionPlay(
+        type: RemoteCollectionType,
+        id: String,
+        title: String,
+        startTrack: MetadataTrack? = null,
+    ) {
+        request(PlaybackDestinationRequest.Collection(title, PlaybackDestinationAction.Play, type, id, startTrack))
     }
 
-    /**
-     * Called when the user chooses to play locally.
-     */
+    fun requestCollectionAddToQueue(type: RemoteCollectionType, id: String, title: String) {
+        request(PlaybackDestinationRequest.Collection(title, PlaybackDestinationAction.AddToQueue, type, id))
+    }
+
+    fun requestCollectionPlayNext(type: RemoteCollectionType, id: String, title: String) {
+        request(PlaybackDestinationRequest.Collection(title, PlaybackDestinationAction.PlayNext, type, id))
+    }
+
+    // ---------- Single track actions ----------
+
+    fun requestTrackAddToQueue(track: MetadataTrack) {
+        request(PlaybackDestinationRequest.Track(track.title, PlaybackDestinationAction.AddToQueue, track))
+    }
+
+    fun requestTrackPlayNext(track: MetadataTrack) {
+        request(PlaybackDestinationRequest.Track(track.title, PlaybackDestinationAction.PlayNext, track))
+    }
+
+    // ---------- Bulk track actions ----------
+
+    fun requestTracksAddToQueue(tracks: List<MetadataTrack>, title: String) {
+        if (tracks.isEmpty()) return
+        request(PlaybackDestinationRequest.Tracks(title, PlaybackDestinationAction.AddToQueue, tracks))
+    }
+
+    fun requestTracksPlayNext(tracks: List<MetadataTrack>, title: String) {
+        if (tracks.isEmpty()) return
+        request(PlaybackDestinationRequest.Tracks(title, PlaybackDestinationAction.PlayNext, tracks))
+    }
+
+    // ---------- Picker resolution ----------
+
     fun playLocally() {
-        _showPicker.value = false
-        pendingAction?.invoke()
-        pendingAction = null
+        val request = _pendingRequest.value ?: return
+        _pendingRequest.value = null
+        executeLocally(request)
     }
 
-    /**
-     * Called when the user chooses to play on the remote device.
-     * Sends a play command to the remote device.
-     * 
-     * @param source The source identifier (e.g., playlist ID, album ID, track ID)
-     */
-    fun playOnRemote(source: String) {
-        _showPicker.value = false
-        pendingAction = null
-        
-        CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-            try {
-                remoteControlClient.sendCommand(RemoteControlCommand.Play(source))
-                logger.i { "Sent play command for source: $source" }
-            } catch (e: Exception) {
-                logger.e(e) { "Failed to send play command" }
-            }
-        }
+    fun playOnRemote() {
+        val request = _pendingRequest.value ?: return
+        _pendingRequest.value = null
+        executeOnRemote(request)
     }
 
-    /**
-     * Called when the user dismisses the picker.
-     */
     fun dismissPicker() {
-        _showPicker.value = false
-        pendingAction = null
+        _pendingRequest.value = null
     }
 
-    /**
-     * Sends an add-to-queue command to the remote device.
-     * 
-     * @param source The source identifier (e.g., playlist ID, album ID, track ID)
-     */
-    fun addToQueueOnRemote(source: String) {
-        CoroutineScope(kotlinx.coroutines.Dispatchers.IO).launch {
-            try {
-                remoteControlClient.sendCommand(RemoteControlCommand.AddToQueue(source))
-                logger.i { "Sent add-to-queue command for source: $source" }
-            } catch (e: Exception) {
-                logger.e(e) { "Failed to send add-to-queue command" }
+    // ---------- Internals ----------
+
+    private fun request(request: PlaybackDestinationRequest) {
+        if (isRemoteConnected()) {
+            _pendingRequest.value = request
+        } else {
+            executeLocally(request)
+        }
+    }
+
+    private fun executeLocally(request: PlaybackDestinationRequest) {
+        scope.launch {
+            when (request) {
+                is PlaybackDestinationRequest.Collection -> {
+                    val startTrack = request.startTrack
+                    when (request.type) {
+                        RemoteCollectionType.Playlist -> when (request.action) {
+                            PlaybackDestinationAction.Play -> {
+                                if (startTrack != null) {
+                                    collectionPlaybackHelper.playPlaylistFromTrack(request.id, startTrack)
+                                } else {
+                                    collectionPlaybackHelper.playPlaylist(request.id)
+                                }
+                            }
+
+                            PlaybackDestinationAction.AddToQueue -> collectionPlaybackHelper.addPlaylistToQueue(request.id)
+                            PlaybackDestinationAction.PlayNext -> collectionPlaybackHelper.playPlaylistNext(request.id)
+                        }
+
+                        RemoteCollectionType.Album -> when (request.action) {
+                            PlaybackDestinationAction.Play -> {
+                                if (startTrack != null) {
+                                    collectionPlaybackHelper.playAlbumFromTrack(request.id, startTrack)
+                                } else {
+                                    collectionPlaybackHelper.playAlbum(request.id)
+                                }
+                            }
+
+                            PlaybackDestinationAction.AddToQueue -> collectionPlaybackHelper.addAlbumToQueue(request.id)
+                            PlaybackDestinationAction.PlayNext -> collectionPlaybackHelper.playAlbumNext(request.id)
+                        }
+
+                        RemoteCollectionType.ArtistTopTracks -> when (request.action) {
+                            PlaybackDestinationAction.Play -> collectionPlaybackHelper.playArtistTopTracks(request.id)
+                            PlaybackDestinationAction.AddToQueue -> collectionPlaybackHelper.addArtistTopTracksToQueue(request.id)
+                            PlaybackDestinationAction.PlayNext -> collectionPlaybackHelper.playArtistTopTracksNext(request.id)
+                        }
+
+                        RemoteCollectionType.SavedTracks -> when (request.action) {
+                            PlaybackDestinationAction.Play -> {
+                                if (startTrack != null) {
+                                    collectionPlaybackHelper.playSavedTracksFromTrack(startTrack)
+                                } else {
+                                    collectionPlaybackHelper.playSavedTracks()
+                                }
+                            }
+
+                            PlaybackDestinationAction.AddToQueue -> collectionPlaybackHelper.addSavedTracksToQueue()
+                            PlaybackDestinationAction.PlayNext -> collectionPlaybackHelper.addSavedTracksToQueue()
+                        }
+                    }
+                }
+
+                is PlaybackDestinationRequest.Track -> {
+                    val entry = QueueEntry.StreamingTrack(track = request.track, url = "")
+                    when (request.action) {
+                        PlaybackDestinationAction.Play -> {
+                            audioPlayerQueue.load(
+                                entries = listOf(entry),
+                                autoPlay = true,
+                                startPosition = 0,
+                                collectionEntry = null,
+                            )
+                        }
+
+                        PlaybackDestinationAction.AddToQueue -> {
+                            audioPlayerQueue.addToQueue(entry)
+                        }
+
+                        PlaybackDestinationAction.PlayNext -> {
+                            val queue = audioPlayerQueue.getQueue()
+                            queue.find { candidate ->
+                                (candidate as? QueueEntry.StreamingTrack)?.track?.matchesTrack(request.track) == true
+                            }?.let { audioPlayerQueue.removeFromQueue(it) }
+                            audioPlayerQueue.addAllAfterCurrent(listOf(entry))
+                        }
+                    }
+                }
+
+                is PlaybackDestinationRequest.Tracks -> {
+                    val entries = request.tracks
+                        .filter { track -> !isTrackBlacklisted(track) }
+                        .map { track -> QueueEntry.StreamingTrack(track = track, url = "") }
+                    when (request.action) {
+                        PlaybackDestinationAction.Play -> {
+                            audioPlayerQueue.load(
+                                entries = entries,
+                                autoPlay = true,
+                                startPosition = 0,
+                                collectionEntry = null,
+                            )
+                        }
+
+                        PlaybackDestinationAction.AddToQueue -> {
+                            audioPlayerQueue.addAllToQueue(entries)
+                        }
+
+                        PlaybackDestinationAction.PlayNext -> {
+                            audioPlayerQueue.addAllAfterCurrent(entries)
+                        }
+                    }
+                }
             }
         }
+    }
+
+    private fun executeOnRemote(request: PlaybackDestinationRequest) {
+        scope.launch {
+            try {
+                val command = when (request) {
+                    is PlaybackDestinationRequest.Collection -> {
+                        val source = when (request.type) {
+                            RemoteCollectionType.Playlist -> "spotube://playlist/${request.id}"
+                            RemoteCollectionType.Album -> "spotube://album/${request.id}"
+                            RemoteCollectionType.ArtistTopTracks -> "spotube://artist/${request.id}"
+                            RemoteCollectionType.SavedTracks -> "spotube://saved_tracks"
+                        }
+                        when (request.action) {
+                            PlaybackDestinationAction.Play -> RemoteControlCommand.Play(source)
+                            PlaybackDestinationAction.AddToQueue -> RemoteControlCommand.AddToQueue(source)
+                            PlaybackDestinationAction.PlayNext -> RemoteControlCommand.PlayNext(source)
+                        }
+                    }
+
+                    is PlaybackDestinationRequest.Track -> when (request.action) {
+                        PlaybackDestinationAction.Play -> RemoteControlCommand.PlayTrack(request.track)
+                        PlaybackDestinationAction.AddToQueue -> RemoteControlCommand.AddTrackToQueue(request.track)
+                        PlaybackDestinationAction.PlayNext -> RemoteControlCommand.PlayTrackNext(request.track)
+                    }
+
+                    is PlaybackDestinationRequest.Tracks -> when (request.action) {
+                        PlaybackDestinationAction.Play -> RemoteControlCommand.PlayTracksNext(request.tracks)
+                        PlaybackDestinationAction.AddToQueue -> RemoteControlCommand.AddTracksToQueue(request.tracks)
+                        PlaybackDestinationAction.PlayNext -> RemoteControlCommand.PlayTracksNext(request.tracks)
+                    }
+                }
+                remoteControlClient.sendCommand(command)
+                logger.i { "Sent remote ${request.action} for ${request.title}" }
+            } catch (e: Exception) {
+                logger.e(e) { "Failed to send remote playback command" }
+            }
+        }
+    }
+
+    private suspend fun isTrackBlacklisted(track: MetadataTrack): Boolean {
+        val trackIds = blacklistRepository.getTracksSnapshot().map { it.id }.toSet()
+        val artistIds = blacklistRepository.getArtistsSnapshot().map { it.id }.toSet()
+        return track.id in trackIds || track.artists.any { it.id in artistIds }
+    }
+
+    private fun MetadataTrack.matchesTrack(other: MetadataTrack): Boolean {
+        if (id.isNotBlank() && other.id.isNotBlank()) return id == other.id
+        return title == other.title &&
+            durationMs == other.durationMs &&
+            album?.id == other.album?.id &&
+            artists.map { it.id.ifBlank { it.name } } == other.artists.map { it.id.ifBlank { it.name } }
     }
 }

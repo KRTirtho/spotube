@@ -23,6 +23,7 @@ import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.PlayerState as AudioPlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.injectLogger
+import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import io.ktor.server.websocket.WebSocketServerSession
 import io.ktor.websocket.CloseReason
@@ -47,6 +48,7 @@ class RemoteControlHandler(
     private val settingsRepository: SettingsRepository,
     private val audioPlayer: AudioPlayerInterface,
     private val audioPlayerQueue: AudioPlayerQueue,
+    private val collectionPlaybackHelper: CollectionPlaybackHelper,
 ) : KoinComponent {
     val logger by injectLogger<RemoteControlHandler>()
 
@@ -170,7 +172,7 @@ class RemoteControlHandler(
     private suspend fun handleCommand(session: WebSocketServerSession, envelope: CommandEnvelope) {
         when (val command = envelope.command) {
             is RemoteControlCommand.Play -> {
-                logger.d { "Remote play request: ${command.source} (playback source not yet implemented)" }
+                handleCollectionSource(command.source, RemoteCollectionAction.Play)
             }
             is RemoteControlCommand.Pause -> {
                 audioPlayer.pause()
@@ -213,7 +215,36 @@ class RemoteControlHandler(
                 audioPlayer.loop(loopState)
             }
             is RemoteControlCommand.AddToQueue -> {
-                logger.d { "Remote add to queue: ${command.source} (source parsing not yet implemented)" }
+                handleCollectionSource(command.source, RemoteCollectionAction.AddToQueue)
+            }
+            is RemoteControlCommand.PlayNext -> {
+                handleCollectionSource(command.source, RemoteCollectionAction.PlayNext)
+            }
+            is RemoteControlCommand.PlayTrack -> {
+                audioPlayerQueue.load(
+                    entries = listOf(QueueEntry.StreamingTrack(track = command.track, url = "")),
+                    autoPlay = true,
+                    startPosition = 0,
+                    collectionEntry = null,
+                )
+            }
+            is RemoteControlCommand.AddTrackToQueue -> {
+                audioPlayerQueue.addToQueue(QueueEntry.StreamingTrack(track = command.track, url = ""))
+            }
+            is RemoteControlCommand.PlayTrackNext -> {
+                audioPlayerQueue.addAllAfterCurrent(listOf(QueueEntry.StreamingTrack(track = command.track, url = "")))
+            }
+            is RemoteControlCommand.AddTracksToQueue -> {
+                val entries = command.tracks.map { track ->
+                    QueueEntry.StreamingTrack(track = track, url = "")
+                }
+                audioPlayerQueue.addAllToQueue(entries)
+            }
+            is RemoteControlCommand.PlayTracksNext -> {
+                val entries = command.tracks.map { track ->
+                    QueueEntry.StreamingTrack(track = track, url = "")
+                }
+                audioPlayerQueue.addAllAfterCurrent(entries)
             }
             is RemoteControlCommand.PlayIndex -> {
                 audioPlayerQueue.jumpTo(command.index)
@@ -259,6 +290,55 @@ class RemoteControlHandler(
         while (timeoutAt.hasNotPassedNow()) {
             if ((audioPlayer.playerStateFlow.value == AudioPlayerState.PLAYING) == expectPlaying) return
             delay(25)
+        }
+    }
+
+    /**
+     * Resolves a `spotube://` collection source URI (playlist/album/artist top
+     * tracks/saved tracks) and applies the requested action on the remote queue.
+     */
+    private suspend fun handleCollectionSource(source: String, action: RemoteCollectionAction) {
+        logger.d { "Remote collection $action for source: $source" }
+        when {
+            source.startsWith(COLLECTION_PLAYLIST_PREFIX) -> {
+                val id = source.removePrefix(COLLECTION_PLAYLIST_PREFIX)
+                when (action) {
+                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playPlaylist(id)
+                    RemoteCollectionAction.AddToQueue -> collectionPlaybackHelper.addPlaylistToQueue(id)
+                    RemoteCollectionAction.PlayNext -> collectionPlaybackHelper.playPlaylistNext(id)
+                }
+            }
+
+            source.startsWith(COLLECTION_ALBUM_PREFIX) -> {
+                val id = source.removePrefix(COLLECTION_ALBUM_PREFIX)
+                when (action) {
+                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playAlbum(id)
+                    RemoteCollectionAction.AddToQueue -> collectionPlaybackHelper.addAlbumToQueue(id)
+                    RemoteCollectionAction.PlayNext -> collectionPlaybackHelper.playAlbumNext(id)
+                }
+            }
+
+            source.startsWith(COLLECTION_ARTIST_TOP_PREFIX) -> {
+                val id = source.removePrefix(COLLECTION_ARTIST_TOP_PREFIX)
+                when (action) {
+                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playArtistTopTracks(id)
+                    RemoteCollectionAction.AddToQueue -> collectionPlaybackHelper.addArtistTopTracksToQueue(id)
+                    RemoteCollectionAction.PlayNext -> collectionPlaybackHelper.playArtistTopTracksNext(id)
+                }
+            }
+
+            source == COLLECTION_SAVED_TRACKS -> {
+                when (action) {
+                    RemoteCollectionAction.Play -> collectionPlaybackHelper.playSavedTracks()
+                    RemoteCollectionAction.AddToQueue -> collectionPlaybackHelper.addSavedTracksToQueue()
+                    RemoteCollectionAction.PlayNext -> {
+                        // Saved tracks "play next" is not supported; add to queue instead
+                        collectionPlaybackHelper.addSavedTracksToQueue()
+                    }
+                }
+            }
+
+            else -> logger.w { "Unknown remote collection source: $source" }
         }
     }
 
@@ -365,6 +445,17 @@ data class CommandEnvelope(
     val commandId: String,
     val command: RemoteControlCommand,
 )
+
+private const val COLLECTION_PLAYLIST_PREFIX = "spotube://playlist/"
+private const val COLLECTION_ALBUM_PREFIX = "spotube://album/"
+private const val COLLECTION_ARTIST_TOP_PREFIX = "spotube://artist/"
+private const val COLLECTION_SAVED_TRACKS = "spotube://saved_tracks"
+
+enum class RemoteCollectionAction {
+    Play,
+    AddToQueue,
+    PlayNext,
+}
 
 data class ConnectionRequest(
     val deviceId: String,

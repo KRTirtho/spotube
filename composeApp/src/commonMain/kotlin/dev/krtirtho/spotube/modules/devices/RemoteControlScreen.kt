@@ -18,6 +18,8 @@
 package dev.krtirtho.spotube.modules.devices
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,11 +27,13 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
@@ -97,100 +101,130 @@ fun RemoteControlScreen(
     val isQueueVisible by viewModel.isQueueVisible.collectAsStateWithLifecycle()
     val shellBottomInset = LocalAppShellBottomInset.current
 
-    Scaffold(
-        topBar = {
-            ApplicationMainBar(
-                title = { Text("Remote Control") },
-                backButton = true,
-                actions = {
-                    GhostIconButton(
-                        onClick = viewModel::toggleQueueVisibility,
-                    ) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxMusicFilter,
-                            contentDescription = "Queue",
-                            tint = if (isQueueVisible) {
-                                MaterialTheme.colorScheme.primary
-                            } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
-                            },
-                        )
-                    }
-                    GhostIconButton(
-                        onClick = {
-                            viewModel.disconnect()
-                            onDisconnect()
+    // Center the mobile-inspired layout and limit its width so it doesn't
+    // stretch awkwardly on large screens.
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
+    ) {
+        Scaffold(
+            modifier = Modifier
+                .fillMaxHeight(),
+            topBar = {
+                ApplicationMainBar(
+                    title = { Text("Remote Control") },
+                    backButton = true,
+                    actions = {
+                        GhostIconButton(
+                            onClick = viewModel::toggleQueueVisibility,
+                        ) {
+                            Icon(
+                                imageVector = Iconsax.IconsaxMusicFilter,
+                                contentDescription = "Queue",
+                                tint = if (isQueueVisible) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                },
+                            )
                         }
-                    ) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxCloseSquare,
-                            contentDescription = "Disconnect",
-                        )
+                        GhostIconButton(
+                            onClick = {
+                                viewModel.disconnect()
+                                onDisconnect()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Iconsax.IconsaxCloseSquare,
+                                contentDescription = "Disconnect",
+                            )
+                        }
                     }
-                }
-            )
-        }
-    ) { padding ->
-        when (connectionState) {
-            is ConnectionState.Connected -> {
-                RemoteControlContent(
-                    playerState = playerState,
-                    onTogglePlayPause = viewModel::togglePlayPause,
-                    onSkipNext = viewModel::skipNext,
-                    onSkipPrevious = viewModel::skipPrevious,
-                    onSeek = viewModel::seek,
-                    onSetVolume = viewModel::setVolume,
-                    onToggleShuffle = viewModel::toggleShuffle,
-                    onCycleLoopMode = viewModel::cycleLoopMode,
-                    modifier = Modifier.padding(padding).padding(bottom = shellBottomInset)
                 )
             }
-            is ConnectionState.Connecting -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(bottom = shellBottomInset),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Connecting...")
+        ) { padding ->
+            when (connectionState) {
+                is ConnectionState.Connected -> {
+                    RemoteControlContent(
+                        playerState = playerState,
+                        onTogglePlayPause = viewModel::togglePlayPause,
+                        onSkipNext = viewModel::skipNext,
+                        onSkipPrevious = viewModel::skipPrevious,
+                        onSeek = viewModel::seek,
+                        onSetVolume = viewModel::setVolume,
+                        onToggleShuffle = viewModel::toggleShuffle,
+                        onCycleLoopMode = viewModel::cycleLoopMode,
+                        modifier = Modifier.padding(padding).padding(bottom = shellBottomInset)
+                    )
                 }
-            }
-            is ConnectionState.Disconnected -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(bottom = shellBottomInset),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Disconnected")
+                is ConnectionState.Connecting -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                            .padding(bottom = shellBottomInset),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Connecting...")
+                    }
                 }
-            }
-            is ConnectionState.Error -> {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(bottom = shellBottomInset),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Connection error: ${(connectionState as ConnectionState.Error).message}")
+                is ConnectionState.Disconnected -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                            .padding(bottom = shellBottomInset),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Disconnected")
+                    }
+                }
+                is ConnectionState.Error -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(padding)
+                            .padding(bottom = shellBottomInset),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("Connection error: ${(connectionState as ConnectionState.Error).message}")
+                    }
                 }
             }
         }
     }
 
-    QueueSheet(
-        isVisible = isQueueVisible,
-        onDismiss = { viewModel.toggleQueueVisibility() },
-        modifier = Modifier.fillMaxSize(),
-    ) {
-        RemoteQueueSection(
-            queueState = queueState,
-            onPlayQueueItem = viewModel::playQueueItem,
-            onRemoveQueueItem = viewModel::removeQueueItem,
+    // Click-outside scrim for the sliding queue sheet on large screens.
+    // (The ModalBottomSheet variant has its own built-in scrim.)
+    if (isQueueVisible) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = { viewModel.toggleQueueVisibility() },
+                )
         )
+    }
+
+    // Keep the sliding sheet above the AppLargePlayer on large screens.
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(bottom = shellBottomInset),
+    ) {
+        QueueSheet(
+            isVisible = isQueueVisible,
+            onDismiss = { viewModel.toggleQueueVisibility() },
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            RemoteQueueSection(
+                queueState = queueState,
+                onPlayQueueItem = viewModel::playQueueItem,
+                onRemoveQueueItem = viewModel::removeQueueItem,
+            )
+        }
     }
 }
 
@@ -206,227 +240,230 @@ private fun RemoteControlContent(
     onCycleLoopMode: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Album art
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f)
-                .clip(RoundedCornerShape(16.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant),
-        ) {
-            if (playerState.currentTrackCoverUrl != null) {
-                AsyncImage(
-                    model = playerState.currentTrackCoverUrl,
-                    contentDescription = "Album cover",
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
-                )
-            } else {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Iconsax.IconsaxMusicFilter,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        modifier = Modifier.size(48.dp),
-                    )
-                }
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Track info
+    Box (modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = modifier
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp)
+                .widthIn(max = 480.dp)
+                .align(Alignment.TopCenter),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(
-                text = playerState.currentTrackTitle ?: "Unknown Track",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-            )
+            Spacer(modifier = Modifier.height(32.dp))
 
-            Spacer(modifier = Modifier.height(8.dp))
+            // Album art
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+            ) {
+                if (playerState.currentTrackCoverUrl != null) {
+                    AsyncImage(
+                        model = playerState.currentTrackCoverUrl,
+                        contentDescription = "Album cover",
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop,
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = Iconsax.IconsaxMusicFilter,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(48.dp),
+                        )
+                    }
+                }
+            }
 
-            Text(
-                text = playerState.currentTrackArtists ?: "Unknown Artist",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            Spacer(modifier = Modifier.height(32.dp))
 
-            if (playerState.currentTrackAlbum != null) {
-                Spacer(modifier = Modifier.height(4.dp))
+            // Track info
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 Text(
-                    text = playerState.currentTrackAlbum!!,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                    text = playerState.currentTrackTitle ?: "Unknown Track",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = playerState.currentTrackArtists ?: "Unknown Artist",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
+
+                if (playerState.currentTrackAlbum != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = playerState.currentTrackAlbum!!,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                        textAlign = TextAlign.Center,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-        // Seek bar
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            Slider(
-                value = playerState.positionMs.toFloat(),
-                onValueChange = { onSeek(it.toLong()) },
-                valueRange = 0f..playerState.durationMs.toFloat().coerceAtLeast(1f),
+            // Seek bar
+            Column(
                 modifier = Modifier.fillMaxWidth(),
-            )
+            ) {
+                Slider(
+                    value = playerState.positionMs.toFloat(),
+                    onValueChange = { onSeek(it.toLong()) },
+                    valueRange = 0f..playerState.durationMs.toFloat().coerceAtLeast(1f),
+                    modifier = Modifier.fillMaxWidth(),
+                )
 
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                ) {
+                    Text(
+                        text = formatDuration(playerState.positionMs),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                    Text(
+                        text = formatDuration(playerState.durationMs),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Playback controls
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(
-                    text = formatDuration(playerState.positionMs),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                // Shuffle
+                IconButton(
+                    onClick = onToggleShuffle,
+                    modifier = Modifier.size(48.dp),
+                ) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxShuffle,
+                        contentDescription = "Shuffle",
+                        tint = if (playerState.shuffleEnabled) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    )
+                }
+
+                // Skip previous
+                IconButton(
+                    onClick = onSkipPrevious,
+                    modifier = Modifier.size(56.dp),
+                ) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxPrevious,
+                        contentDescription = "Previous",
+                        modifier = Modifier.size(32.dp),
+                    )
+                }
+
+                // Play/Pause
+                val baseTheme = LocalBaseUITheme.current
+                val circlePrimaryIconTheme = remember(baseTheme) {
+                    baseTheme.iconButtons.primary.copy(
+                        shape = BaseUITheme.InteractionState.fromSingleValue(CircleShape)
+                    )
+                }
+                PrimaryIconButton(
+                    onClick = onTogglePlayPause,
+                    modifier = Modifier.size(72.dp),
+                    theme = circlePrimaryIconTheme,
+                ) {
+                    Icon(
+                        imageVector = if (playerState.isPlaying) {
+                            Iconsax.IconsaxPause
+                        } else {
+                            Iconsax.IconsaxPlay
+                        },
+                        contentDescription = if (playerState.isPlaying) "Pause" else "Play",
+                        modifier = Modifier.size(40.dp),
+                    )
+                }
+
+                // Skip next
+                IconButton(
+                    onClick = onSkipNext,
+                    modifier = Modifier.size(56.dp),
+                ) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxNext,
+                        contentDescription = "Next",
+                        modifier = Modifier.size(32.dp),
+                    )
+                }
+
+                // Loop mode
+                IconButton(
+                    onClick = onCycleLoopMode,
+                    modifier = Modifier.size(48.dp),
+                ) {
+                    Icon(
+                        imageVector = Iconsax.IconsaxRepeateMusic,
+                        contentDescription = "Loop mode",
+                        tint = if (playerState.loopMode != "none") {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        },
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Volume control
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Icon(
+                    imageVector = Iconsax.IconsaxVolumeHigh,
+                    contentDescription = "Volume",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp),
                 )
-                Text(
-                    text = formatDuration(playerState.durationMs),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+
+                Slider(
+                    value = playerState.volume,
+                    onValueChange = onSetVolume,
+                    valueRange = 0f..1f,
+                    modifier = Modifier.weight(1f),
                 )
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
         }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Playback controls
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            // Shuffle
-            IconButton(
-                onClick = onToggleShuffle,
-                modifier = Modifier.size(48.dp),
-            ) {
-                Icon(
-                    imageVector = Iconsax.IconsaxShuffle,
-                    contentDescription = "Shuffle",
-                    tint = if (playerState.shuffleEnabled) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                )
-            }
-
-            // Skip previous
-            IconButton(
-                onClick = onSkipPrevious,
-                modifier = Modifier.size(56.dp),
-            ) {
-                Icon(
-                    imageVector = Iconsax.IconsaxPrevious,
-                    contentDescription = "Previous",
-                    modifier = Modifier.size(32.dp),
-                )
-            }
-
-            // Play/Pause
-            val baseTheme = LocalBaseUITheme.current
-            val circlePrimaryIconTheme = remember(baseTheme) {
-                baseTheme.iconButtons.primary.copy(
-                    shape = BaseUITheme.InteractionState.fromSingleValue(CircleShape)
-                )
-            }
-            PrimaryIconButton(
-                onClick = onTogglePlayPause,
-                modifier = Modifier.size(72.dp),
-                theme = circlePrimaryIconTheme,
-            ) {
-                Icon(
-                    imageVector = if (playerState.isPlaying) {
-                        Iconsax.IconsaxPause
-                    } else {
-                        Iconsax.IconsaxPlay
-                    },
-                    contentDescription = if (playerState.isPlaying) "Pause" else "Play",
-                    modifier = Modifier.size(40.dp),
-                )
-            }
-
-            // Skip next
-            IconButton(
-                onClick = onSkipNext,
-                modifier = Modifier.size(56.dp),
-            ) {
-                Icon(
-                    imageVector = Iconsax.IconsaxNext,
-                    contentDescription = "Next",
-                    modifier = Modifier.size(32.dp),
-                )
-            }
-
-            // Loop mode
-            IconButton(
-                onClick = onCycleLoopMode,
-                modifier = Modifier.size(48.dp),
-            ) {
-                Icon(
-                    imageVector = Iconsax.IconsaxRepeateMusic,
-                    contentDescription = "Loop mode",
-                    tint = if (playerState.loopMode != "none") {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    },
-                )
-            }
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Volume control
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Icon(
-                imageVector = Iconsax.IconsaxVolumeHigh,
-                contentDescription = "Volume",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(24.dp),
-            )
-
-            Slider(
-                value = playerState.volume,
-                onValueChange = onSetVolume,
-                valueRange = 0f..1f,
-                modifier = Modifier.weight(1f),
-            )
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 

@@ -70,6 +70,7 @@ import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.remote.ConnectionRequestDialogHost
+import dev.krtirtho.spotube.modules.devices.PlayDestinationPickerHost
 import dev.krtirtho.spotube.modules.lyrics.LyricsScreen
 import dev.krtirtho.spotube.modules.shell.alternative_track.AlternativeTrackContent
 import dev.krtirtho.spotube.modules.shell.alternative_track.AlternativeTrackContentViewModel
@@ -118,6 +119,7 @@ fun AppShell(
     }
 
     ConnectionRequestDialogHost()
+    PlayDestinationPickerHost()
 
     Box(modifier = Modifier.fillMaxSize()) {
         val useSidebar = viewModel.useSidebar()
