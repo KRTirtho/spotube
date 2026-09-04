@@ -74,6 +74,9 @@ class JamSessionService(
     private val _localParticipantId = MutableStateFlow<String?>(null)
     val localParticipantId: StateFlow<String?> = _localParticipantId.asStateFlow()
 
+    private val _isConnected = MutableStateFlow(false)
+    val isConnected: StateFlow<Boolean> = _isConnected.asStateFlow()
+
     private val _incomingMessages = MutableSharedFlow<JamMessage>(extraBufferCapacity = 64)
     val incomingMessages = _incomingMessages.asSharedFlow()
 
@@ -174,7 +177,7 @@ class JamSessionService(
         return true
     }
 
-    suspend fun joinSession(offerSdp: String): String {
+    suspend fun joinSession(offerSdp: String, hostName: String? = null): String {
         log.i { "Joining jam session" }
         val participantName = resolveParticipantName(defaultPrefix = "Guest")
 
@@ -186,6 +189,13 @@ class JamSessionService(
         hostConnection = pc
         _role.value = JamRole.Guest
         _localParticipantId.value = "guest"
+        _participants.value = listOf(
+            JamParticipant(
+                id = "host",
+                displayName = hostName?.ifBlank { null } ?: "Host",
+                isHost = true,
+            )
+        )
         _isActive.value = true
 
         // The data channel arrives in-band from the host's offer via on_data_channel;
@@ -226,6 +236,7 @@ class JamSessionService(
         _role.value = null
         _participants.value = emptyList()
         _isActive.value = false
+        _isConnected.value = false
         _localParticipantId.value = null
     }
 
@@ -303,6 +314,7 @@ class JamSessionService(
 
         override fun onDataChannelOpen(label: String) {
             log.i { "[$guestId] Data channel '$label' open" }
+            _isConnected.value = true
         }
 
         override fun onDataChannelMessage(label: String, data: String) {
@@ -329,6 +341,7 @@ class JamSessionService(
 
         override fun onDataChannelOpen(label: String) {
             log.i { "Data channel '$label' open" }
+            _isConnected.value = true
         }
 
         override fun onDataChannelMessage(label: String, data: String) {

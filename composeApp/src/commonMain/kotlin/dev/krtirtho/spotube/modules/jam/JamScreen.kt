@@ -295,23 +295,35 @@ private fun GuestSessionView(
         ParticipantsSection(state.participants)
 
         val answerLink = state.answerLink
-        if (answerLink == null) {
-            Text(
-                text = "Connecting to the session...",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-        } else {
-            Text(
-                text = "Almost there! Send your answer back to the host:",
-                style = MaterialTheme.typography.titleSmall,
-            )
-            ShareableLinkBox(
-                label = "Answer link",
-                link = answerLink,
-                onCopy = { clipboard.setText(AnnotatedString(answerLink)) },
-                onShare = { onShare(answerLink) },
-            )
+        when {
+            state.isConnected -> {
+                Text(
+                    text = "Connected to the session",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.primary,
+                )
+            }
+
+            answerLink == null -> {
+                Text(
+                    text = "Connecting to the session...",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
+            else -> {
+                Text(
+                    text = "Almost there! Send your answer back to the host:",
+                    style = MaterialTheme.typography.titleSmall,
+                )
+                ShareableLinkBox(
+                    label = "Answer link",
+                    link = answerLink,
+                    onCopy = { clipboard.setText(AnnotatedString(answerLink)) },
+                    onShare = { onShare(answerLink) },
+                )
+            }
         }
 
         LeaveButton(onLeave)

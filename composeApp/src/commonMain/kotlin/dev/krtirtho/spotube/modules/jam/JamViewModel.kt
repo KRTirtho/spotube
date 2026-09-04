@@ -37,6 +37,7 @@ import kotlinx.coroutines.launch
 
 data class JamUiState(
     val isActive: Boolean = false,
+    val isConnected: Boolean = false,
     val role: JamRole? = null,
     val participants: List<JamParticipant> = emptyList(),
     /** Host: deep link containing this session's SDP offer, ready to share. */
@@ -69,6 +70,7 @@ class JamViewModel(
                 _uiState.update {
                     it.copy(
                         isActive = active,
+                        isConnected = jamSession.isConnected.value,
                         role = jamSession.role.value,
                         participants = jamSession.participants.value,
                         inviteLink = if (!active) null else it.inviteLink,
@@ -82,6 +84,11 @@ class JamViewModel(
         viewModelScope.launch {
             jamSession.participants.collect { participants ->
                 _uiState.update { it.copy(participants = participants) }
+            }
+        }
+        viewModelScope.launch {
+            jamSession.isConnected.collect { connected ->
+                _uiState.update { it.copy(isConnected = connected) }
             }
         }
         viewModelScope.launch {
@@ -119,16 +126,17 @@ class JamViewModel(
 
     fun joinWithIncomingInvite() {
         val sdp = _uiState.value.incomingOfferSdp ?: return
-        join(sdp)
+        join(sdp, _uiState.value.incomingHostName)
     }
 
     fun joinWithPasted(input: String) {
-        val sdp = JamInviteCodec.extractSdp(input)
+        val parsed = JamInviteCodec.parse(input)
+        val sdp = parsed?.sdp ?: JamInviteCodec.extractSdp(input)
         if (sdp == null) {
             _uiState.update { it.copy(error = "That doesn't look like a valid jam invite.") }
             return
         }
-        join(sdp)
+        join(sdp, (parsed as? JamInviteLink.HostInvite)?.peerName)
     }
 
     /**
@@ -171,10 +179,10 @@ class JamViewModel(
         _uiState.update { it.copy(incomingOfferSdp = null, incomingHostName = null) }
     }
 
-    private fun join(offerSdp: String) {
+    private fun join(offerSdp: String, hostName: String? = null) {
         viewModelScope.launch {
             runCatching {
-                val answer = jamSession.joinSession(offerSdp)
+                val answer = jamSession.joinSession(offerSdp, hostName)
                 JamInviteCodec.buildGuestAnswer(localName(), answer)
             }.onSuccess { link ->
                 _uiState.update {
