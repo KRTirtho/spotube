@@ -57,6 +57,7 @@ import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.Slider
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCloseSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
@@ -77,6 +78,7 @@ fun RemoteControlScreen(
     val viewModel = koinViewModel<RemoteControlViewModel>()
     val playerState by viewModel.playerState.collectAsStateWithLifecycle()
     val connectionState by viewModel.connectionState.collectAsStateWithLifecycle()
+    val shellBottomInset = LocalAppShellBottomInset.current
 
     Scaffold(
         topBar = {
@@ -110,14 +112,15 @@ fun RemoteControlScreen(
                     onSetVolume = viewModel::setVolume,
                     onToggleShuffle = viewModel::toggleShuffle,
                     onCycleLoopMode = viewModel::cycleLoopMode,
-                    modifier = Modifier.padding(padding)
+                    modifier = Modifier.padding(padding).padding(bottom = shellBottomInset)
                 )
             }
             is ConnectionState.Connecting -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(padding),
+                        .padding(padding)
+                        .padding(bottom = shellBottomInset),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("Connecting...")
@@ -127,7 +130,8 @@ fun RemoteControlScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(padding),
+                        .padding(padding)
+                        .padding(bottom = shellBottomInset),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("Disconnected")
@@ -137,7 +141,8 @@ fun RemoteControlScreen(
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(padding),
+                        .padding(padding)
+                        .padding(bottom = shellBottomInset),
                     contentAlignment = Alignment.Center
                 ) {
                     Text("Connection error: ${(connectionState as ConnectionState.Error).message}")

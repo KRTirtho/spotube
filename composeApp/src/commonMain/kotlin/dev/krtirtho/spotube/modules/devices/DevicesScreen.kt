@@ -72,7 +72,8 @@ fun DevicesScreen(
         viewModel.startDiscovery()
         onDispose {
             viewModel.stopDiscovery()
-            viewModel.disconnect()
+            // Don't disconnect here - the connection should persist when navigating to RemoteControlScreen
+            // The RemoteControlViewModel will manage the connection lifecycle
         }
     }
 

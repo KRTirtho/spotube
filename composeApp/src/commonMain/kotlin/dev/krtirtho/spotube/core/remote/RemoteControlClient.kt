@@ -101,13 +101,16 @@ class RemoteControlClient {
 
     private suspend fun receiveLoop(host: String, port: Int) {
         val currentSession = session ?: return
+        logger.d { "Starting receive loop for $host:$port" }
         try {
             for (frame in currentSession.incoming) {
                 when (frame) {
                     is Frame.Text -> {
                         val text = frame.readText()
+                        logger.d { "Received frame: $text" }
                         try {
                             val event = json.decodeFromString(RemoteControlEvent.serializer(), text)
+                            logger.d { "Parsed event: $event" }
                             when (event) {
                                 is RemoteControlEvent.Connected -> {
                                     logger.i { "Connection authorized by server" }
@@ -136,6 +139,7 @@ class RemoteControlClient {
                     else -> {}
                 }
             }
+            logger.d { "Receive loop exited normally" }
         } catch (e: Exception) {
             logger.e(e) { "Error in receive loop" }
             _connectionState.value = ConnectionState.Error(e.message ?: "Connection lost")

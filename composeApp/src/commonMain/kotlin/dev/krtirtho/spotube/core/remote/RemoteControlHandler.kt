@@ -74,7 +74,7 @@ class RemoteControlHandler(
             val waitingMessage = RemoteControlEvent.WaitingForPermission(
                 "Waiting for permission from $deviceName..."
             )
-            session.send(Frame.Text(json.encodeToString(RemoteControlEvent.WaitingForPermission.serializer(), waitingMessage)))
+            session.send(Frame.Text(json.encodeToString(RemoteControlEvent.serializer(), waitingMessage)))
 
             val request = ConnectionRequest(
                 deviceId = deviceId ?: "unknown",
@@ -99,14 +99,18 @@ class RemoteControlHandler(
         }
 
         // Send connected message
-        session.send(Frame.Text(json.encodeToString(RemoteControlEvent.Connected.serializer(), RemoteControlEvent.Connected)))
+        session.send(Frame.Text(json.encodeToString(RemoteControlEvent.serializer(), RemoteControlEvent.Connected)))
         logger.i { "Remote control connection established from $deviceName ($deviceId)" }
+
+        // Broadcast initial player state so the controller shows current track info
+        broadcastState(session)
 
         try {
             handleControlLoop(session)
         } catch (e: Exception) {
             logger.w(e) { "Error in remote control session" }
         } finally {
+            logger.d { "Closing session in finally block" }
             session.close()
         }
     }
@@ -129,9 +133,11 @@ class RemoteControlHandler(
     }
 
     private suspend fun handleControlLoop(session: WebSocketServerSession) {
+        logger.d { "Starting control loop for session" }
         for (frame in session.incoming) {
             if (frame is Frame.Text) {
                 val text = frame.readText()
+                logger.d { "Received command: $text" }
                 try {
                     val envelope = json.decodeFromString(CommandEnvelope.serializer(), text)
                     handleCommand(session, envelope)
@@ -141,6 +147,7 @@ class RemoteControlHandler(
                 }
             }
         }
+        logger.d { "Control loop exited normally" }
     }
 
     private suspend fun handleCommand(session: WebSocketServerSession, envelope: CommandEnvelope) {
@@ -197,12 +204,12 @@ class RemoteControlHandler(
     }
 
     private suspend fun sendAck(session: WebSocketServerSession, commandId: String) {
-        val text = json.encodeToString(RemoteControlEvent.Ack.serializer(), RemoteControlEvent.Ack(commandId))
+        val text = json.encodeToString(RemoteControlEvent.serializer(), RemoteControlEvent.Ack(commandId))
         session.send(Frame.Text(text))
     }
 
     private suspend fun sendError(session: WebSocketServerSession, message: String) {
-        val text = json.encodeToString(RemoteControlEvent.Error.serializer(), RemoteControlEvent.Error(message))
+        val text = json.encodeToString(RemoteControlEvent.serializer(), RemoteControlEvent.Error(message))
         session.send(Frame.Text(text))
     }
 
@@ -221,7 +228,7 @@ class RemoteControlHandler(
             currentTrackAlbum = current?.albumOrNull(),
             currentTrackCoverUrl = current?.coverUrlOrNull(),
         )
-        val text = json.encodeToString(RemoteControlEvent.PlayerState.serializer(), state)
+        val text = json.encodeToString(RemoteControlEvent.serializer(), state)
         session.send(Frame.Text(text))
     }
 
