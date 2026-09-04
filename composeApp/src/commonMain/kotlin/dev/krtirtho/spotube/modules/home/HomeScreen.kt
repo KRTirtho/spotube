@@ -128,17 +128,19 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     Text("Browse")
                 },
                 actions = {
-                    IconButton(onClick = { navigationCommands.navigateTo(Routes.Devices) }) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxMirroringScreen,
-                            contentDescription = "Devices",
-                        )
-                    }
-                    IconButton(onClick = { navigationCommands.navigateTo(Routes.Jam) }) {
-                        Icon(
-                            imageVector = Iconsax.User,
-                            contentDescription = "Group Jam",
-                        )
+                    if (!isDesktop) {
+                        IconButton(onClick = { navigationCommands.navigateTo(Routes.Devices) }) {
+                            Icon(
+                                imageVector = Iconsax.IconsaxMirroringScreen,
+                                contentDescription = "Devices",
+                            )
+                        }
+                        IconButton(onClick = { navigationCommands.navigateTo(Routes.Jam) }) {
+                            Icon(
+                                imageVector = Iconsax.User,
+                                contentDescription = "Group Jam",
+                            )
+                        }
                     }
                 },
             )
@@ -355,7 +357,7 @@ private fun HomeSection(
         if (!subtitle.isNullOrEmpty()) Text(
             text = subtitle,
             style = MaterialTheme.typography.labelMedium.copy(
-                color =  MaterialTheme.colorScheme.secondary,
+                color = MaterialTheme.colorScheme.secondary,
                 fontWeight = FontWeight.Medium,
             ),
             modifier = Modifier.padding(horizontal = 16.dp),

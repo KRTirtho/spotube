@@ -53,6 +53,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -61,6 +62,7 @@ fun JamScreen(
 ) {
     val viewModel = koinViewModel<JamViewModel>()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val shellBottomInset = LocalAppShellBottomInset.current
 
     Scaffold(
         topBar = {
@@ -75,6 +77,7 @@ fun JamScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
                 .padding(16.dp)
+                .padding(bottom = shellBottomInset)
                 .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {

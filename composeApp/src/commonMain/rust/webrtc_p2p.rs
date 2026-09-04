@@ -16,9 +16,12 @@
  */
 
 use std::sync::Arc;
+use std::time::Duration;
 
 use parking_lot::Mutex;
+use rtc::ice::mdns::MulticastDnsMode;
 use rtc::peer_connection::configuration::interceptor_registry::register_default_interceptors;
+use rtc::peer_connection::configuration::setting_engine::SettingEngine;
 use webrtc::data_channel::{DataChannel, DataChannelEvent, RTCDataChannelInit};
 use webrtc::peer_connection::{
     MediaEngine, PeerConnection, PeerConnectionBuilder, PeerConnectionEventHandler,
@@ -111,6 +114,13 @@ pub async fn create_webrtc_peer_connection(
         )
         .build();
 
+    // mDNS adds a multicast UDP socket per peer connection. On some platforms
+    // (notably Android) that socket can stall and ICE gathering then never
+    // completes. Real-IP host candidates (no mDNS) work fine alongside STUN/TURN,
+    // so mDNS is disabled.
+    let mut setting_engine = SettingEngine::default();
+    setting_engine.set_multicast_dns_mode(MulticastDnsMode::Disabled);
+
     let (gather_tx, gather_rx) = channel::<()>(1);
     let pc_handler = Arc::new(PeerHandlerBridge {
         handler: Arc::clone(&handler),
@@ -119,6 +129,7 @@ pub async fn create_webrtc_peer_connection(
 
     let pc = PeerConnectionBuilder::new()
         .with_configuration(config)
+        .with_setting_engine(setting_engine)
         .with_media_engine(media_engine)
         .with_interceptor_registry(registry)
         .with_handler(pc_handler)
@@ -138,9 +149,20 @@ impl WebrtcPeerConnection {
     /// Waits for ICE gathering to reach `Complete` so the local SDP includes all
     /// candidates (non-trickle exchange). Must be called after `set_local_description`,
     /// which is what starts gathering.
+    ///
+    /// Bounded by a timeout so a stalled gatherer (e.g. a platform that never reports
+    /// completion) can never hang `create_offer`/`create_answer` forever — the SDP
+    /// with the candidates gathered so far is returned instead.
     async fn wait_for_ice_gathering(&self) {
         let mut gather_rx = self.gather_rx.lock().clone();
-        let _ = gather_rx.recv().await;
+        match tokio::time::timeout(Duration::from_secs(5), gather_rx.recv()).await {
+            Ok(_) => {}
+            Err(_) => {
+                log::warn!(
+                    "ICE gathering did not complete within 5s; returning SDP with the candidates gathered so far"
+                );
+            }
+        }
     }
 }
 

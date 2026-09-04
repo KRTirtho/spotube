@@ -121,7 +121,7 @@ class JamSessionService(
         log.i { "Generating invite $inviteId" }
 
         val pc = createWebrtcPeerConnection(
-            iceServers = listOf(defaultIceServer()),
+            iceServers = defaultIceServers(),
             handler = guestEventHandler(inviteId),
         )
 
@@ -179,7 +179,7 @@ class JamSessionService(
         val participantName = resolveParticipantName(defaultPrefix = "Guest")
 
         val pc = createWebrtcPeerConnection(
-            iceServers = listOf(defaultIceServer()),
+            iceServers = defaultIceServers(),
             handler = eventHandler,
         )
 
@@ -254,10 +254,28 @@ class JamSessionService(
         sendMessage(JamMessage.SuggestPlaylist(tracks))
     }
 
-    private fun defaultIceServer() = IceServerConfig(
-        urls = listOf("stun:stun.l.google.com:19302"),
-        username = "",
-        credential = "",
+    /**
+     * ICE servers for global peer-to-peer jam sessions: multiple STUN servers for
+     * NAT traversal plus a TURN relay for symmetric NATs and strict firewalls.
+     * Unreachable servers no longer stall offer/answer creation — the webrtc
+     * driver completes gathering once every STUN client has answered or timed out,
+     * and [WebrtcPeerConnection] bounds the wait anyway.
+     */
+    private fun defaultIceServers(): List<IceServerConfig> = listOf(
+        IceServerConfig(
+            urls = listOf(
+                "stun:stun.cloudflare.com:3478",
+                "stun:stun1.l.google.com:19302",
+                "stun:stun.l.google.com:19302",
+            ),
+            username = "",
+            credential = "",
+        ),
+        IceServerConfig(
+            urls = listOf("turn:openrelay.metered.ca:80"),
+            username = "openrelayproject",
+            credential = "openrelayproject",
+        ),
     )
 
     private suspend fun resolveParticipantName(defaultPrefix: String): String {
@@ -271,10 +289,12 @@ class JamSessionService(
      * attributed back to that guest (needed for kick-on-leave and targeted sends).
      */
     private fun guestEventHandler(guestId: String) = object : WebrtcEventHandler {
-        override fun onIceCandidate(candidate: String) {}
+        override fun onIceCandidate(candidate: String) {
+            log.i { "[$guestId] ICE candidate: $candidate" }
+        }
 
         override fun onIceGatheringStateChange(state: String) {
-            log.d { "[$guestId] ICE gathering state: $state" }
+            log.i { "[$guestId] ICE gathering state: $state" }
         }
 
         override fun onConnectionStateChange(state: String) {
@@ -295,10 +315,12 @@ class JamSessionService(
     }
 
     private val eventHandler = object : WebrtcEventHandler {
-        override fun onIceCandidate(candidate: String) {}
+        override fun onIceCandidate(candidate: String) {
+            log.i { "ICE candidate: $candidate" }
+        }
 
         override fun onIceGatheringStateChange(state: String) {
-            log.d { "ICE gathering state: $state" }
+            log.i { "ICE gathering state: $state" }
         }
 
         override fun onConnectionStateChange(state: String) {
