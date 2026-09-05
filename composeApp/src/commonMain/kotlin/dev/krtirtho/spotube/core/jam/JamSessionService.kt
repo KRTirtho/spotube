@@ -73,7 +73,6 @@ class JamSessionService(
         audioPlayer = audioPlayer,
         audioPlayerQueue = audioPlayerQueue,
         jamSession = this,
-        settingsProvider = settingsProvider,
     )
 
     private val json = Json {

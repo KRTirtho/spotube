@@ -23,10 +23,8 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
-import dev.krtirtho.spotube.core.audioplayer.MediaItem
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
-import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -54,7 +52,6 @@ class QueueSyncManager(
     private val audioPlayer: AudioPlayerInterface,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val jamSession: JamSessionService,
-    private val settingsProvider: SettingsProvider,
 ) {
     private val log = Logger.withTag("QueueSyncManager")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -198,12 +195,15 @@ class QueueSyncManager(
         if (queueChanged) {
             lastAppliedItems = playableItems
             lastAppliedCurrentIndex = state.currentIndex
-            val mediaItems = playableItems.map { it.toPlayableMediaItem() }
+            val entries = playableItems.map { it.toQueueEntry() }
             runCatching {
-                audioPlayer.load(
-                    playlist = mediaItems,
+                // Load through the queue repository (like the host does) so the
+                // stream proxy can resolve the tracks — it only knows tracks in
+                // queueFlow.
+                audioPlayerQueue.load(
+                    entries = entries,
                     autoPlay = state.isPlaying,
-                    startPosition = state.currentIndex.coerceIn(0, mediaItems.lastIndex.coerceAtLeast(0)),
+                    startPosition = state.currentIndex.coerceIn(0, entries.lastIndex.coerceAtLeast(0)),
                 )
             }.onFailure { e ->
                 log.e(e) { "Failed to apply jam queue to local player" }
@@ -260,9 +260,10 @@ class QueueSyncManager(
         }
     }
 
-    // ---------- Conversions ----------
-
-    /** Host side: turn a suggested item into a playable queue entry. */
+    /**
+     * Build a queue entry from a jam media item. Streaming tracks carry their id
+     * so the device's own queue/stream proxy can resolve a playable URL later.
+     */
     private fun JamMediaItem.toQueueEntry(): QueueEntry = when {
         trackId.isNotBlank() -> QueueEntry.StreamingTrack(
             track = MetadataTrack(
@@ -294,41 +295,6 @@ class QueueSyncManager(
             coverBytes = null,
             url = url,
         )
-    }
-
-    /**
-     * Guest side: build a playable MediaItem. Streaming tracks have their stream
-     * URL resolved through this device's own playback proxy (the host never sends
-     * usable URLs — each guest must fetch from its own plugins).
-     */
-    private suspend fun JamMediaItem.toPlayableMediaItem(): MediaItem {
-        if (trackId.isNotBlank()) {
-            val proxyUrl = buildStreamingUrl(trackId, protocol)
-            return MediaItem(
-                title = title,
-                artist = artist,
-                album = album,
-                duration = kotlin.time.Duration.parse("${durationMs}ms"),
-                coverURL = coverUrl,
-                url = proxyUrl,
-                protocol = runCatching { StreamProtocol.valueOf(protocol.ifBlank { "PROGRESSIVE" }) }
-                    .getOrDefault(StreamProtocol.PROGRESSIVE),
-            )
-        }
-        return JamMediaItem.toMediaItem(this)
-    }
-
-    private suspend fun buildStreamingUrl(trackId: String, protocol: String): String {
-        val port = settingsProvider.settingsState
-            .first()
-            ?.playbackProxyServerPort ?: return ""
-        val baseUrl = "http://127.0.0.1:$port"
-        val streamProtocol = runCatching { StreamProtocol.valueOf(protocol.ifBlank { "PROGRESSIVE" }) }
-            .getOrDefault(StreamProtocol.PROGRESSIVE)
-        return when (streamProtocol) {
-            StreamProtocol.HLS, StreamProtocol.DASH -> "${baseUrl.trimEnd('/')}/manifest/$trackId"
-            StreamProtocol.PROGRESSIVE -> "${baseUrl.trimEnd('/')}/stream/$trackId"
-        }
     }
 
     private fun QueueEntry.matchesEntry(other: QueueEntry): Boolean {

@@ -90,13 +90,19 @@ class DeviceDiscoveryService {
         deviceId: String,
         registerTimeoutMs: Long = 5_000,
     ): NetService {
-        val service = createNetService(
-            type = SERVICE_TYPE,
-            name = name,
-            port = port,
-            txt = mapOf(TXT_DEVICE_ID to deviceId),
-        )
+        val service = createService(name, port, deviceId)
         service.register(timeoutInMs = registerTimeoutMs)
         return service
     }
+
+    fun createService(
+        name: String,
+        port: Int,
+        deviceId: String,
+    ): NetService = createNetService(
+        type = SERVICE_TYPE,
+        name = name,
+        port = port,
+        txt = mapOf(TXT_DEVICE_ID to deviceId),
+    )
 }

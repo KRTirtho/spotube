@@ -22,6 +22,7 @@ import com.appstractive.dnssd.NetService
 import dev.krtirtho.spotube.core.discovery.DeviceDiscoveryService
 import dev.krtirtho.spotube.core.server.LocalServer
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -61,7 +62,12 @@ class RemoteControlService(
     val localDeviceId: StateFlow<String> = _localDeviceId.asStateFlow()
 
     private var advertisedService: NetService? = null
+
+    /** A registration attempt that may have been left pending by the platform. */
+    private var pendingService: NetService? = null
+
     private var registerJob: Job? = null
+    private var cleanupJob: Job? = null
 
     init {
         // Ensure a stable device id exists and is persisted up front, so discovery
@@ -112,6 +118,9 @@ class RemoteControlService(
         val port = localServer.port.value
         if (!settings.allowRemoteControl || port == null) return
         registerJob?.cancel()
+        // Clean up any in-flight registration the cancelled job may have leaked.
+        scheduleCleanup(pendingService)
+        pendingService = null
         registerJob = scope.launch {
             registerLoop(settings.remoteControlDeviceName, port)
         }
@@ -127,17 +136,43 @@ class RemoteControlService(
             attempt++
             // The user may have toggled the setting off during backoff.
             if (!settingsRepository.userSettings.value.allowRemoteControl) return
+            val service = discoveryService.createService(
+                name = serviceName,
+                port = port,
+                deviceId = deviceId,
+            )
+            pendingService = service
             try {
-                advertisedService = discoveryService.advertise(
-                    name = serviceName,
-                    port = port,
-                    deviceId = deviceId,
-                    registerTimeoutMs = REGISTER_TIMEOUT_MS,
-                )
+                service.register(timeoutInMs = REGISTER_TIMEOUT_MS)
+                pendingService = null
+                advertisedService = service
                 log.i { "Advertising remote control service '$serviceName' on port $port (attempt $attempt)" }
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: Exception) {
+                pendingService = null
                 log.w(e) { "Failed to advertise remote control service (attempt $attempt); retrying in ${retryDelayMs(attempt)}ms" }
+                // The library leaks the platform registration on timeout. Once the
+                // platform eventually completes it (success), isRegistered flips
+                // and unregister() will actually remove it — keep trying until then.
+                scheduleCleanup(service)
                 delay(retryDelayMs(attempt))
+            }
+        }
+    }
+
+    /**
+     * Repeatedly tries to unregister a service whose registration attempt failed.
+     * The library's `unregister()` is a no-op while the platform hasn't completed
+     * the registration, so poll until it has (or give up after a while).
+     */
+    private fun scheduleCleanup(service: NetService?) {
+        if (service == null) return
+        cleanupJob?.cancel()
+        cleanupJob = scope.launch {
+            repeat(REGISTER_CLEANUP_TRIES) {
+                delay(1_000)
+                runCatching { service.unregister() }
             }
         }
     }
@@ -145,6 +180,9 @@ class RemoteControlService(
     private suspend fun stopAdvertising() {
         registerJob?.cancel()
         registerJob = null
+        // Clean up any in-flight registration the cancelled job may have leaked.
+        scheduleCleanup(pendingService)
+        pendingService = null
         if (advertisedService != null) {
             runCatching { advertisedService?.unregister() }
             advertisedService = null
@@ -172,6 +210,12 @@ class RemoteControlService(
     }
 
     companion object {
-        private const val REGISTER_TIMEOUT_MS = 4_000L
+        // Generous enough that the library's timeout (which leaks the platform
+        // registration) rarely fires on a working system — registration callbacks
+        // normally arrive within a second.
+        private const val REGISTER_TIMEOUT_MS = 10_000L
+
+        // How long to keep polling unregister() on a failed service, in seconds.
+        private const val REGISTER_CLEANUP_TRIES = 15
     }
 }

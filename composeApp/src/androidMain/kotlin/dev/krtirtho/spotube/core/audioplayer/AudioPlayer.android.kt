@@ -235,7 +235,12 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
 
     actual override suspend fun seekTo(position: Duration) {
         withContext(Dispatchers.Main) {
-            val targetMs = position.inWholeMilliseconds.coerceIn(0, exoPlayer.duration)
+            val duration = exoPlayer.duration
+            val targetMs = if (duration > 0) {
+                position.inWholeMilliseconds.coerceIn(0, duration)
+            } else {
+                position.inWholeMilliseconds.coerceAtLeast(0)
+            }
             exoPlayer.seekTo(targetMs)
             _position.tryEmit(exoPlayer.currentPosition.milliseconds)
         }
