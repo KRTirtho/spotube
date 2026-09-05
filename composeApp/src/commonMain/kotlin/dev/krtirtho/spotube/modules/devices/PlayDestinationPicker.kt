@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.krtirtho.spotube.core.jam.JamSessionService
 import dev.krtirtho.spotube.core.remote.ConnectionState
 import dev.krtirtho.spotube.core.remote.PlaybackDestinationAction
 import dev.krtirtho.spotube.core.remote.RemoteControlClient
@@ -39,19 +40,22 @@ import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlaylist
 import org.koin.compose.koinInject
 
 /**
- * Globally hosted dialog shown when a remote device is connected and the user
- * tries to play / add to queue / play next. Lets the user choose between the
- * local device and the connected remote device(s).
+ * Globally hosted dialog shown when the user tries to play / add to queue /
+ * play next and there is more than one place it could go (a connected remote
+ * device and/or an active jam session). Lets the user choose the destination.
  */
 @Composable
 fun PlayDestinationPickerHost() {
     val controller = koinInject<RemotePlaybackController>()
     val remoteControlClient = koinInject<RemoteControlClient>()
+    val jamSession = koinInject<JamSessionService>()
     val request by controller.pendingRequest.collectAsStateWithLifecycle()
     val connectionState by remoteControlClient.connectionState.collectAsStateWithLifecycle()
+    val jamActive by jamSession.isActive.collectAsStateWithLifecycle()
 
     val pendingRequest = request ?: return
 
@@ -111,30 +115,59 @@ fun PlayDestinationPickerHost() {
                     },
                 )
 
-                ListRowTile(
-                    onClick = controller::playOnRemote,
-                    modifier = Modifier.fillMaxWidth(),
-                    leading = {
-                        Icon(
-                            imageVector = Iconsax.IconsaxMirroringScreen,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
-                    },
-                    title = {
-                        Text(
-                            text = remoteDeviceName,
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    },
-                    subtitle = {
-                        Text(
-                            text = "$actionLabel on the connected device",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    },
-                )
+                if (connectionState is ConnectionState.Connected) {
+                    ListRowTile(
+                        onClick = controller::playOnRemote,
+                        modifier = Modifier.fillMaxWidth(),
+                        leading = {
+                            Icon(
+                                imageVector = Iconsax.IconsaxMirroringScreen,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        },
+                        title = {
+                            Text(
+                                text = remoteDeviceName,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        },
+                        subtitle = {
+                            Text(
+                                text = "$actionLabel on the connected device",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                    )
+                }
+
+                if (jamActive) {
+                    ListRowTile(
+                        onClick = controller::playOnJam,
+                        modifier = Modifier.fillMaxWidth(),
+                        leading = {
+                            Icon(
+                                imageVector = Iconsax.IconsaxMusicPlaylist,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                            )
+                        },
+                        title = {
+                            Text(
+                                text = "Jam Session",
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        },
+                        subtitle = {
+                            Text(
+                                text = "$actionLabel in the shared jam queue",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        },
+                    )
+                }
             }
         },
         actions = {

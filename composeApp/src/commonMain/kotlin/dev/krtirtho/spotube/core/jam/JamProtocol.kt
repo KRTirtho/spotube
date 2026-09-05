@@ -17,8 +17,10 @@
 
 package dev.krtirtho.spotube.core.jam
 
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.MediaItem
+import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -73,6 +75,13 @@ sealed class JamMessage {
     data class ParticipantList(val participants: List<JamParticipant>) : JamMessage()
 
     @Serializable
+    @SerialName("kick")
+    data class Kick(
+        val participantId: String,
+        val reason: String = "kicked",
+    ) : JamMessage()
+
+    @Serializable
     @SerialName("leave")
     data class Leave(val reason: String = "user_left") : JamMessage()
 }
@@ -123,6 +132,7 @@ sealed class PlaybackCmd {
 @Serializable
 data class JamMediaItem(
     val url: String,
+    val trackId: String = "",
     val title: String,
     val artist: String,
     val album: String,
@@ -131,6 +141,45 @@ data class JamMediaItem(
     val protocol: String,
 ) {
     companion object {
+        fun fromQueueEntry(entry: QueueEntry): JamMediaItem = when (entry) {
+            is QueueEntry.StreamingTrack -> JamMediaItem(
+                url = "",
+                trackId = entry.track.id,
+                title = entry.track.title,
+                artist = entry.track.artists.joinToString(", ") { it.name },
+                album = entry.track.album?.title.orEmpty(),
+                durationMs = entry.track.durationMs,
+                coverUrl = entry.track.thumbnails?.maxByOrNull { it.width * it.height }?.url
+                    ?: entry.track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
+                    .orEmpty(),
+                protocol = entry.protocol.name,
+            )
+
+            is QueueEntry.LocalTrack -> JamMediaItem(
+                url = entry.url,
+                trackId = "",
+                title = entry.name,
+                artist = entry.artists.joinToString(", "),
+                album = entry.album.orEmpty(),
+                durationMs = entry.duration,
+                coverUrl = "",
+                protocol = "PROGRESSIVE",
+            )
+        }
+
+        fun fromTrack(track: MetadataTrack): JamMediaItem = JamMediaItem(
+            url = "",
+            trackId = track.id,
+            title = track.title,
+            artist = track.artists.joinToString(", ") { it.name },
+            album = track.album?.title.orEmpty(),
+            durationMs = track.durationMs,
+            coverUrl = track.thumbnails?.maxByOrNull { it.width * it.height }?.url
+                ?: track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
+                .orEmpty(),
+            protocol = "PROGRESSIVE",
+        )
+
         fun fromMediaItem(item: MediaItem): JamMediaItem = JamMediaItem(
             url = item.url,
             title = item.title,
@@ -149,7 +198,7 @@ data class JamMediaItem(
             coverURL = item.coverUrl,
             url = item.url,
             protocol = dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
-                .valueOf(item.protocol),
+                .valueOf(item.protocol.ifBlank { "PROGRESSIVE" }),
         )
     }
 }

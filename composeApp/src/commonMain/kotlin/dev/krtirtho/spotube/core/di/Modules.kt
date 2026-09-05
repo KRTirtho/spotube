@@ -183,7 +183,16 @@ val sharedModules = module {
     viewModelOf(::BlacklistViewModel)
     viewModel { DevicesViewModel(get()) }
     viewModelOf(::RemoteControlViewModel)
-    viewModelOf(::JamViewModel)
+    viewModel {
+        JamViewModel(
+            jamSession = get(),
+            deepLinks = get(),
+            shareService = get(),
+            settingsProvider = get(),
+            audioPlayer = get(),
+            audioPlayerQueue = get(),
+        )
+    }
 
     // Album
     singleOf(::AlbumRepository)
@@ -229,8 +238,8 @@ val sharedModules = module {
     single { RemoteControlService(get(), get(), get()) } withOptions {
         createdAtStart()
     }
-    single { RemotePlaybackController(get(), get(), get(), get()) }
-    single { JamSessionService(get(), get()) }
+    single { RemotePlaybackController(get(), get(), get(), get(), get()) }
+    single { JamSessionService(get(), get(), get()) }
     singleOf(::JamDeepLinkService)
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {

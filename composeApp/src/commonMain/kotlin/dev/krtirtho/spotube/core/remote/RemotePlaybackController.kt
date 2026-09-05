@@ -21,6 +21,9 @@ import co.touchlab.kermit.Logger
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.jam.JamMediaItem
+import dev.krtirtho.spotube.core.jam.JamRole
+import dev.krtirtho.spotube.core.jam.JamSessionService
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import kotlinx.coroutines.CoroutineScope
@@ -84,6 +87,7 @@ class RemotePlaybackController(
     private val collectionPlaybackHelper: CollectionPlaybackHelper,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val blacklistRepository: BlacklistRepository,
+    private val jamSession: JamSessionService,
 ) : KoinComponent {
     private val logger = Logger.withTag("RemotePlaybackController")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
@@ -152,6 +156,49 @@ class RemotePlaybackController(
 
     fun dismissPicker() {
         _pendingRequest.value = null
+    }
+
+    /**
+     * Routes the pending request into the active jam session. On the host the jam
+     * queue IS the local queue, so the action runs locally; on a guest the content
+     * is suggested to the host, which accepts it into the shared queue.
+     */
+    fun playOnJam() {
+        val request = _pendingRequest.value ?: return
+        _pendingRequest.value = null
+        scope.launch {
+            try {
+                when (jamSession.role.value) {
+                    JamRole.Host -> executeLocally(request)
+                    JamRole.Guest -> suggestToJam(request)
+                    null -> {}
+                }
+            } catch (e: Exception) {
+                logger.e(e) { "Failed to send content to jam session" }
+            }
+        }
+    }
+
+    private suspend fun suggestToJam(request: PlaybackDestinationRequest) {
+        when (request) {
+            is PlaybackDestinationRequest.Collection -> {
+                val tracks = collectionPlaybackHelper.resolveCollectionTracks(request.type, request.id)
+                if (tracks.isNotEmpty()) {
+                    jamSession.suggestPlaylist(tracks.map { it.toJamMediaItem() })
+                    logger.i { "Suggested ${tracks.size} track(s) to the jam session" }
+                }
+            }
+
+            is PlaybackDestinationRequest.Track -> {
+                jamSession.suggestTrack(request.track.toJamMediaItem())
+            }
+
+            is PlaybackDestinationRequest.Tracks -> {
+                if (request.tracks.isNotEmpty()) {
+                    jamSession.suggestPlaylist(request.tracks.map { it.toJamMediaItem() })
+                }
+            }
+        }
     }
 
     // ---------- Internals ----------
@@ -322,3 +369,5 @@ class RemotePlaybackController(
             artists.map { it.id.ifBlank { it.name } } == other.artists.map { it.id.ifBlank { it.name } }
     }
 }
+
+private fun MetadataTrack.toJamMediaItem(): JamMediaItem = JamMediaItem.fromTrack(this)

@@ -78,7 +78,7 @@ struct DataChannelEntry {
 pub struct WebrtcPeerConnection {
     pc: Arc<dyn PeerConnection>,
     handler: Arc<dyn WebrtcEventHandler>,
-    channels: Mutex<Vec<DataChannelEntry>>,
+    channels: Arc<Mutex<Vec<DataChannelEntry>>>,
     gather_rx: Mutex<webrtc::runtime::Receiver<()>>,
 }
 
@@ -122,9 +122,11 @@ pub async fn create_webrtc_peer_connection(
     setting_engine.set_multicast_dns_mode(MulticastDnsMode::Disabled);
 
     let (gather_tx, gather_rx) = channel::<()>(1);
+    let channels = Arc::new(Mutex::new(Vec::new()));
     let pc_handler = Arc::new(PeerHandlerBridge {
         handler: Arc::clone(&handler),
         gather_tx,
+        channels: Arc::clone(&channels),
     });
 
     let pc = PeerConnectionBuilder::new()
@@ -140,7 +142,7 @@ pub async fn create_webrtc_peer_connection(
     Ok(Arc::new(WebrtcPeerConnection {
         pc: Arc::new(pc) as Arc<dyn PeerConnection>,
         handler,
-        channels: Mutex::new(Vec::new()),
+        channels,
         gather_rx: Mutex::new(gather_rx),
     }))
 }
@@ -150,17 +152,34 @@ impl WebrtcPeerConnection {
     /// candidates (non-trickle exchange). Must be called after `set_local_description`,
     /// which is what starts gathering.
     ///
-    /// Bounded by a timeout so a stalled gatherer (e.g. a platform that never reports
-    /// completion) can never hang `create_offer`/`create_answer` forever — the SDP
-    /// with the candidates gathered so far is returned instead.
+    /// Robust against a stalled gatherer (e.g. an unreachable STUN server): once at
+    /// least one candidate has landed in the local description, a short grace period
+    /// is enough — the SDP must never leave candidate-less. Hard cap at 5s.
     async fn wait_for_ice_gathering(&self) {
         let mut gather_rx = self.gather_rx.lock().clone();
-        match tokio::time::timeout(Duration::from_secs(5), gather_rx.recv()).await {
-            Ok(_) => {}
-            Err(_) => {
+        let started = std::time::Instant::now();
+
+        loop {
+            let elapsed = started.elapsed();
+            if elapsed >= Duration::from_secs(5) {
                 log::warn!(
-                    "ICE gathering did not complete within 5s; returning SDP with the candidates gathered so far"
+                    "ICE gathering did not complete within 5s; using the candidates gathered so far"
                 );
+                return;
+            }
+
+            match tokio::time::timeout(Duration::from_millis(100), gather_rx.recv()).await {
+                Ok(Some(())) => return, // gathering complete
+                Ok(None) => return,     // handler dropped
+                Err(_) => {}            // timed out, keep waiting
+            }
+
+            // Grace period once candidates are present, so the SDP always carries them.
+            if elapsed >= Duration::from_secs(1) {
+                let sdp = self.pc.local_description().await.map(|d| d.sdp);
+                if sdp.as_deref().map_or(false, |s| s.contains("a=candidate:")) {
+                    return;
+                }
             }
         }
     }
@@ -251,6 +270,7 @@ impl WebrtcPeerConnection {
 struct PeerHandlerBridge {
     handler: Arc<dyn WebrtcEventHandler>,
     gather_tx: webrtc::runtime::Sender<()>,
+    channels: Arc<Mutex<Vec<DataChannelEntry>>>,
 }
 
 #[async_trait::async_trait]
@@ -272,6 +292,15 @@ impl PeerConnectionEventHandler for PeerHandlerBridge {
     }
 
     async fn on_data_channel(&self, dc: Arc<dyn DataChannel>) {
+        // Register in-band (remote-initiated) channels so send_data() can find
+        // them — without this, the answering peer can never send anything.
+        let label = match dc.label().await {
+            Ok(l) => l,
+            Err(_) => return,
+        };
+        self.channels
+            .lock()
+            .push(DataChannelEntry { dc: Arc::clone(&dc), label });
         spawn_data_channel_poll_loop(dc, Arc::clone(&self.handler));
     }
 }

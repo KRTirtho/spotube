@@ -26,6 +26,7 @@ import dev.krtirtho.spotube.modules.artist.ArtistRepository
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.playlist.PlaylistRepository
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
+import dev.krtirtho.spotube.core.remote.RemoteCollectionType
 
 class CollectionPlaybackHelper(
     private val albumRepository: AlbumRepository,
@@ -263,6 +264,21 @@ class CollectionPlaybackHelper(
             QueueEntry.StreamingTrack(track = track, url = "")
         }
     }
+
+    /**
+     * Resolves the tracks of a collection without loading them into the local
+     * queue — used to suggest a collection into a jam session from a guest.
+     */
+    suspend fun resolveCollectionTracks(type: RemoteCollectionType, id: String): List<MetadataTrack> =
+        when (type) {
+            RemoteCollectionType.Playlist -> fetchAllPlaylistTracks(id).asTracks()
+            RemoteCollectionType.Album -> fetchAllAlbumTracks(id).asTracks()
+            RemoteCollectionType.ArtistTopTracks -> fetchArtistTopTracks(id).asTracks()
+            RemoteCollectionType.SavedTracks -> fetchAllSavedTracks().asTracks()
+        }
+
+    private fun List<QueueEntry>.asTracks(): List<MetadataTrack> =
+        mapNotNull { (it as? QueueEntry.StreamingTrack)?.track }
 
     private suspend fun fetchAllSavedTracks(): List<QueueEntry> {
         val allTracks = mutableListOf<MetadataTrack>()

@@ -20,18 +20,31 @@ package dev.krtirtho.spotube.modules.jam
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.krtirtho.spotube.PlatformType
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
+import dev.krtirtho.spotube.core.audioplayer.LoopState
+import dev.krtirtho.spotube.core.audioplayer.MediaItem
+import dev.krtirtho.spotube.core.audioplayer.PlayerState
+import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.deeplink.JamDeepLinkService
 import dev.krtirtho.spotube.core.jam.JamInviteCodec
 import dev.krtirtho.spotube.core.jam.JamInviteLink
+import dev.krtirtho.spotube.core.jam.JamLoopMapping
+import dev.krtirtho.spotube.core.jam.JamMediaItem
+import dev.krtirtho.spotube.core.jam.JamMessage
 import dev.krtirtho.spotube.core.jam.JamParticipant
 import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.jam.JamSessionService
+import dev.krtirtho.spotube.core.jam.PlaybackCmd
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
@@ -50,11 +63,36 @@ data class JamUiState(
     val error: String? = null,
 )
 
+data class JamQueueUiItem(
+    val id: String,
+    val title: String,
+    val artist: String,
+    val album: String,
+    val durationMs: Long,
+    val coverUrl: String,
+    val isCurrent: Boolean,
+)
+
+data class JamPlayerUiState(
+    val queue: List<JamQueueUiItem> = emptyList(),
+    val currentIndex: Int = -1,
+    val currentTitle: String? = null,
+    val currentArtist: String? = null,
+    val currentCoverUrl: String? = null,
+    val isPlaying: Boolean = false,
+    val positionMs: Long = 0,
+    val durationMs: Long = 0,
+    val shuffleEnabled: Boolean = false,
+    val loopMode: String = "none",
+)
+
 class JamViewModel(
     private val jamSession: JamSessionService,
     private val deepLinks: JamDeepLinkService,
     private val shareService: ShareService,
     private val settingsProvider: SettingsProvider,
+    private val audioPlayer: AudioPlayerInterface,
+    private val audioPlayerQueue: AudioPlayerQueue,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(JamUiState())
@@ -96,6 +134,144 @@ class JamViewModel(
                 handleDeepLink(link)
             }
         }
+    }
+
+    /**
+     * The jam player state: the shared queue + current playback, built from the
+     * local player (the host's queue IS the jam queue; on guests the synced
+     * mirror lives in the local player).
+     */
+    val jamPlayerState: StateFlow<JamPlayerUiState> = combine(
+        audioPlayerQueue.queueFlow,
+        audioPlayerQueue.currentQueueEntryFlow,
+        audioPlayer.playlistFlow,
+        audioPlayer.currentMediaItemFlow,
+        audioPlayer.playerStateFlow,
+        audioPlayer.positionFlow,
+        audioPlayer.durationFlow,
+        audioPlayer.loopStateFlow,
+        audioPlayer.shuffleModeFlow,
+    ) { values ->
+        val queue: List<QueueEntry> = values[0] as List<QueueEntry>
+        val currentEntry: QueueEntry? = values[1] as QueueEntry?
+        val playlist: List<MediaItem> = values[2] as List<MediaItem>
+        val currentItem: MediaItem? = values[3] as MediaItem?
+        val playerState: PlayerState = values[4] as PlayerState
+        val position: kotlin.time.Duration = values[5] as kotlin.time.Duration
+        val duration: kotlin.time.Duration = values[6] as kotlin.time.Duration
+        val loop: LoopState = values[7] as LoopState
+        val shuffle: Boolean = values[8] as Boolean
+
+        val isHost = jamSession.role.value == JamRole.Host
+
+        val items: List<JamQueueUiItem>
+        val currentIndex: Int
+        val currentTitle: String?
+        val currentArtist: String?
+        val currentCoverUrl: String?
+
+        if (isHost) {
+            val queueItems = queue.map { JamMediaItem.fromQueueEntry(it) }
+            val index = if (currentEntry != null) {
+                queue.indexOfFirst { entry -> entry.matchesQueueEntry(currentEntry) }
+            } else {
+                -1
+            }
+            items = queueItems.mapIndexed { i, item ->
+                item.toUiItem(i == index)
+            }
+            currentIndex = index
+            currentTitle = queueItems.getOrNull(index)?.title
+            currentArtist = queueItems.getOrNull(index)?.artist
+            currentCoverUrl = queueItems.getOrNull(index)?.coverUrl
+        } else {
+            val index = playlist.indexOf(currentItem)
+            items = playlist.mapIndexed { i, item ->
+                JamMediaItem.fromMediaItem(item).toUiItem(i == index)
+            }
+            currentIndex = index
+            currentTitle = currentItem?.title
+            currentArtist = currentItem?.artist
+            currentCoverUrl = currentItem?.coverURL
+        }
+
+        JamPlayerUiState(
+            queue = items,
+            currentIndex = currentIndex,
+            currentTitle = currentTitle,
+            currentArtist = currentArtist,
+            currentCoverUrl = currentCoverUrl,
+            isPlaying = playerState == PlayerState.PLAYING,
+            positionMs = position.inWholeMilliseconds,
+            durationMs = duration.inWholeMilliseconds,
+            shuffleEnabled = shuffle,
+            loopMode = loop.name.lowercase(),
+        )
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), JamPlayerUiState())
+
+    // ---------- Playback controls ----------
+
+    fun togglePlayPause() = sendOrApply(PlaybackCmd.Toggle)
+
+    fun skipNext() = sendOrApply(PlaybackCmd.SkipNext)
+
+    fun skipPrevious() = sendOrApply(PlaybackCmd.SkipPrevious)
+
+    fun seek(positionMs: Long) = sendOrApply(PlaybackCmd.Seek(positionMs))
+
+    fun jumpTo(index: Int) = sendOrApply(PlaybackCmd.JumpTo(index))
+
+    fun toggleShuffle() = sendOrApply(PlaybackCmd.SetShuffle(!jamPlayerState.value.shuffleEnabled))
+
+    fun cycleLoopMode() {
+        val next = when (jamPlayerState.value.loopMode) {
+            "none" -> "one"
+            "one" -> "all"
+            else -> "none"
+        }
+        sendOrApply(PlaybackCmd.SetLoop(next))
+    }
+
+    private fun sendOrApply(command: PlaybackCmd) {
+        viewModelScope.launch {
+            if (jamSession.role.value == JamRole.Host) {
+                applyCommandLocally(command)
+            } else {
+                jamSession.sendMessage(JamMessage.PlaybackCommand(command))
+            }
+        }
+    }
+
+    private suspend fun applyCommandLocally(command: PlaybackCmd) {
+        when (command) {
+            PlaybackCmd.Play -> audioPlayer.play()
+            PlaybackCmd.Pause -> audioPlayer.pause()
+            PlaybackCmd.Toggle -> {
+                if (audioPlayer.playerStateFlow.value == PlayerState.PLAYING) {
+                    audioPlayer.pause()
+                } else {
+                    audioPlayer.play()
+                }
+            }
+
+            is PlaybackCmd.Seek -> audioPlayer.seekTo(kotlin.time.Duration.parse("${command.positionMs}ms"))
+            PlaybackCmd.SkipNext -> audioPlayer.skipToNext()
+            PlaybackCmd.SkipPrevious -> audioPlayer.skipToPrevious()
+            is PlaybackCmd.SetVolume -> audioPlayer.setVolume(command.volume)
+            is PlaybackCmd.SetLoop -> audioPlayer.loop(JamLoopMapping.fromString(command.loop))
+            is PlaybackCmd.SetShuffle -> audioPlayer.shuffle(command.enabled)
+            is PlaybackCmd.JumpTo -> audioPlayer.jumpTo(command.index)
+        }
+    }
+
+    // ---------- Host moderation ----------
+
+    fun kickParticipant(participantId: String) {
+        viewModelScope.launch { jamSession.kickParticipant(participantId) }
+    }
+
+    fun banParticipant(participantId: String) {
+        viewModelScope.launch { jamSession.banParticipant(participantId) }
     }
 
     fun createSession() {
@@ -228,4 +404,26 @@ class JamViewModel(
 
     private fun localName(): String =
         settingsProvider.settingsState.value?.jamParticipantName.orEmpty()
+}
+
+private fun JamMediaItem.toUiItem(isCurrent: Boolean): JamQueueUiItem = JamQueueUiItem(
+    id = if (trackId.isNotBlank()) trackId else url,
+    title = title,
+    artist = artist,
+    album = album,
+    durationMs = durationMs,
+    coverUrl = coverUrl,
+    isCurrent = isCurrent,
+)
+
+private fun QueueEntry.matchesQueueEntry(other: QueueEntry): Boolean {
+    return when {
+        this is QueueEntry.StreamingTrack && other is QueueEntry.StreamingTrack ->
+            this.track.id == other.track.id
+
+        this is QueueEntry.LocalTrack && other is QueueEntry.LocalTrack ->
+            this.url == other.url && this.name == other.name
+
+        else -> false
+    }
 }

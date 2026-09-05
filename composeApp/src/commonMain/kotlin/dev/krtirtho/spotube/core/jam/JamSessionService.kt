@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.core.jam
 
 import co.touchlab.kermit.Logger
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
+import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import kotlinx.coroutines.CoroutineScope
@@ -49,12 +50,31 @@ data class JamInvite(
     val sdp: String,
 )
 
+/**
+ * Owns the peer connections of a jam session (star topology: host relays state
+ * to all guests) and the hello/welcome handshake, participant bookkeeping and
+ * kick/ban. Playback & queue synchronization itself is delegated to
+ * [QueueSyncManager], which runs while a session is active.
+ */
 class JamSessionService(
     private val audioPlayer: AudioPlayerInterface,
+    private val audioPlayerQueue: AudioPlayerQueue,
     private val settingsProvider: SettingsProvider,
 ) : KoinComponent {
     val logger by injectLogger<JamSessionService>()
     private val log = Logger.withTag("JamSessionService")
+
+    /**
+     * Playback/queue synchronization. Owned by this service (not a Koin bean) so
+     * the two don't form a circular dependency; it's started/stopped with the
+     * session lifecycle.
+     */
+    private val queueSyncManager = QueueSyncManager(
+        audioPlayer = audioPlayer,
+        audioPlayerQueue = audioPlayerQueue,
+        jamSession = this,
+        settingsProvider = settingsProvider,
+    )
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -91,23 +111,36 @@ class JamSessionService(
     /** Host side: guests whose handshake completed. Keyed by invite id. */
     private val connectedGuests = mutableMapOf<String, WebrtcPeerConnection>()
 
+    /** Host side: guest device ids, used for bans. */
+    private val guestDeviceIds = mutableMapOf<String, String>()
+
+    /** Host side: latest RTCPeerConnection state per guest ("connecting", "connected", "failed"...). */
+    private val guestConnectionStates = mutableMapOf<String, String>()
+
+    /** Host side: device ids banned for this session. */
+    private val bannedDeviceIds = mutableSetOf<String>()
+
     /** Guest side: the single connection to the host. */
     private var hostConnection: WebrtcPeerConnection? = null
 
+    private var hostDisplayName: String = "Host"
+    private var guestDisplayName: String = "Guest"
+
     suspend fun createSession(): String {
         log.i { "Creating jam session" }
-        val hostName = resolveParticipantName(defaultPrefix = "Host")
+        hostDisplayName = resolveParticipantName(defaultPrefix = "Host")
 
         _role.value = JamRole.Host
         _localParticipantId.value = "host"
         _participants.value = listOf(
             JamParticipant(
                 id = "host",
-                displayName = hostName,
+                displayName = hostDisplayName,
                 isHost = true,
             )
         )
         _isActive.value = true
+        queueSyncManager.start()
 
         return generateInvite().sdp
     }
@@ -174,12 +207,13 @@ class JamSessionService(
             )
         }
         log.i { "Guest $resolvedId ($peerName) joined" }
+        broadcastParticipantList()
         return true
     }
 
     suspend fun joinSession(offerSdp: String, hostName: String? = null): String {
         log.i { "Joining jam session" }
-        val participantName = resolveParticipantName(defaultPrefix = "Guest")
+        guestDisplayName = resolveParticipantName(defaultPrefix = "Guest")
 
         val pc = createWebrtcPeerConnection(
             iceServers = defaultIceServers(),
@@ -188,7 +222,7 @@ class JamSessionService(
 
         hostConnection = pc
         _role.value = JamRole.Guest
-        _localParticipantId.value = "guest"
+        _localParticipantId.value = null
         _participants.value = listOf(
             JamParticipant(
                 id = "host",
@@ -197,6 +231,7 @@ class JamSessionService(
             )
         )
         _isActive.value = true
+        queueSyncManager.start()
 
         // The data channel arrives in-band from the host's offer via on_data_channel;
         // we only answer here.
@@ -210,27 +245,52 @@ class JamSessionService(
         val payload = json.encodeToString(JamMessage.serializer(), message)
         when (_role.value) {
             JamRole.Host -> {
-                val targets = if (guestId != null) {
-                    listOfNotNull(connectedGuests[guestId])
-                } else {
-                    connectedGuests.values.toList()
-                }
-                targets.forEach { pc ->
+                if (guestId != null) {
+                    val pc = connectedGuests[guestId] ?: return
                     runCatching { pc.sendData(CHANNEL_LABEL, payload) }
-                        .onFailure { e -> log.w(e) { "Failed to send to guest" } }
+                        .onFailure { e ->
+                            log.w(e) { "Failed to send to guest $guestId" }
+                            onSendFailure(guestId)
+                        }
+                } else {
+                    val dead = mutableListOf<String>()
+                    connectedGuests.forEach { (id, pc) ->
+                        runCatching { pc.sendData(CHANNEL_LABEL, payload) }
+                            .onFailure { e ->
+                                log.w(e) { "Failed to send to guest $id" }
+                                dead += id
+                            }
+                    }
+                    dead.forEach { id -> onSendFailure(id) }
                 }
             }
 
             JamRole.Guest -> {
-                hostConnection?.sendData(CHANNEL_LABEL, payload)
+                runCatching { hostConnection?.sendData(CHANNEL_LABEL, payload) }
+                    .onFailure { e ->
+                        log.w(e) { "Failed to send to host" }
+                    }
             }
 
             null -> log.w { "sendMessage called while no session is active" }
         }
     }
 
+    /**
+     * A send to a guest failed. If that guest's connection has already given up
+     * (failed/closed), drop them from the session; while the connection is merely
+     * "connecting" the channel may simply not be open yet, so keep them.
+     */
+    private fun onSendFailure(guestId: String) {
+        val state = guestConnectionStates[guestId]
+        if (state == "failed" || state == "closed" || state == "disconnected") {
+            scope.launch { removeGuest(guestId) }
+        }
+    }
+
     suspend fun leave() {
         log.i { "Leaving jam session" }
+        queueSyncManager.stop()
         runCatching { sendMessage(JamMessage.Leave()) }
         shutdownAll()
         _role.value = null
@@ -238,6 +298,9 @@ class JamSessionService(
         _isActive.value = false
         _isConnected.value = false
         _localParticipantId.value = null
+        guestDeviceIds.clear()
+        guestConnectionStates.clear()
+        bannedDeviceIds.clear()
     }
 
     suspend fun broadcastPlaybackCommand(command: PlaybackCmd) {
@@ -265,12 +328,44 @@ class JamSessionService(
         sendMessage(JamMessage.SuggestPlaylist(tracks))
     }
 
+    // ---------- Host moderation ----------
+
+    suspend fun kickParticipant(participantId: String, reason: String = "kicked by host") {
+        if (_role.value != JamRole.Host) return
+        log.i { "Kicking participant $participantId" }
+        sendMessage(JamMessage.Kick(participantId, reason), guestId = participantId)
+        removeGuest(participantId)
+    }
+
+    suspend fun banParticipant(participantId: String) {
+        if (_role.value != JamRole.Host) return
+        val deviceId = guestDeviceIds[participantId]
+        if (deviceId != null) {
+            bannedDeviceIds += deviceId
+            log.i { "Banning device $deviceId (participant $participantId)" }
+        }
+        kickParticipant(participantId, "banned by host")
+    }
+
+    private suspend fun removeGuest(guestId: String) {
+        val pc = connectedGuests.remove(guestId)
+        runCatching { pc?.shutdown() }
+        guestDeviceIds.remove(guestId)
+        guestConnectionStates.remove(guestId)
+        _participants.update { current ->
+            current.filterNot { it.id == guestId }
+        }
+        broadcastParticipantList()
+    }
+
+    private suspend fun broadcastParticipantList() {
+        if (_role.value != JamRole.Host) return
+        sendMessage(JamMessage.ParticipantList(_participants.value))
+    }
+
     /**
      * ICE servers for global peer-to-peer jam sessions: multiple STUN servers for
      * NAT traversal plus a TURN relay for symmetric NATs and strict firewalls.
-     * Unreachable servers no longer stall offer/answer creation — the webrtc
-     * driver completes gathering once every STUN client has answered or timed out,
-     * and [WebrtcPeerConnection] bounds the wait anyway.
      */
     private fun defaultIceServers(): List<IceServerConfig> = listOf(
         IceServerConfig(
@@ -295,6 +390,11 @@ class JamSessionService(
             ?: "$defaultPrefix-${randomShortId()}"
     }
 
+    private fun localDeviceId(): String {
+        return settingsProvider.settingsState.value?.remoteControlDeviceId
+            ?: "device-${randomShortId()}"
+    }
+
     /**
      * Per-guest handler so messages received on a guest's connection can be
      * attributed back to that guest (needed for kick-on-leave and targeted sends).
@@ -310,6 +410,10 @@ class JamSessionService(
 
         override fun onConnectionStateChange(state: String) {
             log.i { "[$guestId] Connection state: $state" }
+            guestConnectionStates[guestId] = state
+            if (state == "failed" || state == "closed") {
+                scope.launch { removeGuest(guestId) }
+            }
         }
 
         override fun onDataChannelOpen(label: String) {
@@ -323,6 +427,9 @@ class JamSessionService(
 
         override fun onDataChannelClose(label: String) {
             log.i { "[$guestId] Data channel closed" }
+            if (_role.value == JamRole.Host) {
+                scope.launch { removeGuest(guestId) }
+            }
         }
     }
 
@@ -337,11 +444,19 @@ class JamSessionService(
 
         override fun onConnectionStateChange(state: String) {
             log.i { "Connection state: $state" }
+            if (state == "failed" || state == "closed") {
+                scope.launch { leave() }
+            }
         }
 
         override fun onDataChannelOpen(label: String) {
             log.i { "Data channel '$label' open" }
             _isConnected.value = true
+            // Introduce ourselves so the host can fill in our name and hand us
+            // our participant id.
+            scope.launch {
+                sendMessage(JamMessage.Hello(guestDisplayName, localDeviceId()))
+            }
         }
 
         override fun onDataChannelMessage(label: String, data: String) {
@@ -350,6 +465,7 @@ class JamSessionService(
 
         override fun onDataChannelClose(label: String) {
             log.i { "Data channel closed" }
+            scope.launch { leave() }
         }
     }
 
@@ -362,15 +478,44 @@ class JamSessionService(
                     _incomingSuggestions.tryEmit(message)
                 }
 
+                is JamMessage.Hello -> {
+                    if (_role.value == JamRole.Host && fromGuestId != null) {
+                        handleHello(fromGuestId, message)
+                    }
+                }
+
+                is JamMessage.Welcome -> {
+                    if (_role.value == JamRole.Guest) {
+                        _localParticipantId.value = message.participantId
+                        _participants.update { current ->
+                            current.map { participant ->
+                                if (participant.isHost) {
+                                    participant.copy(displayName = message.hostName.ifBlank { participant.displayName })
+                                } else {
+                                    participant
+                                }
+                            }
+                        }
+                        log.i { "Welcome: joined as ${message.participantId}" }
+                    }
+                }
+
+                is JamMessage.ParticipantList -> {
+                    if (_role.value == JamRole.Guest) {
+                        _participants.value = message.participants
+                    }
+                }
+
+                is JamMessage.Kick -> {
+                    if (_role.value == JamRole.Guest) {
+                        log.i { "Kicked by host: ${message.reason}" }
+                        scope.launch { leave() }
+                    }
+                }
+
                 is JamMessage.Leave -> {
                     if (_role.value == JamRole.Host && fromGuestId != null) {
-                        val leavingPc = connectedGuests.remove(fromGuestId)
-                        scope.launch {
-                            runCatching { leavingPc?.shutdown() }
-                        }
-                        _participants.update { current ->
-                            current.filterNot { it.id == fromGuestId }
-                        }
+                        scope.launch { removeGuest(fromGuestId) }
                     } else if (_role.value == JamRole.Guest) {
                         scope.launch { leave() }
                     }
@@ -380,6 +525,40 @@ class JamSessionService(
             }
         } catch (e: Exception) {
             log.w(e) { "Failed to parse jam message" }
+        }
+    }
+
+    private fun handleHello(guestId: String, hello: JamMessage.Hello) {
+        val deviceId = hello.deviceId
+        if (deviceId in bannedDeviceIds) {
+            log.w { "Rejecting banned device $deviceId" }
+            scope.launch {
+                sendMessage(
+                    JamMessage.Kick(guestId, "banned by host"),
+                    guestId = guestId,
+                )
+                removeGuest(guestId)
+            }
+            return
+        }
+        guestDeviceIds[guestId] = deviceId
+        _participants.update { current ->
+            current.map { participant ->
+                if (participant.id == guestId) {
+                    participant.copy(displayName = hello.displayName.ifBlank { participant.displayName })
+                } else {
+                    participant
+                }
+            }
+        }
+        scope.launch {
+            sendMessage(
+                JamMessage.Welcome(hostDisplayName, guestId),
+                guestId = guestId,
+            )
+            broadcastParticipantList()
+            // Give the newly joined guest the current queue + playback state.
+            queueSyncManager.broadcastNow()
         }
     }
 
