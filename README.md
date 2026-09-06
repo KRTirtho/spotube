@@ -279,7 +279,7 @@ If you are curious, you can [read the reason of choosing this license](https://d
 1. [sliver_tools](https://github.com/Kavantix) - A set of useful sliver tools that are missing from the flutter framework
 1. [smtc_windows](https://pub.dev/packages/smtc_windows) - Windows `SystemMediaTransportControls` implementation for Flutter giving access to Windows OS Media Control applet.
 1. [sqlite3](https://github.com/simolus3/sqlite3.dart/tree/main/sqlite3) - Provides lightweight yet convenient bindings to SQLite by using dart:ffi
-1. [sqlite3_flutter_libs](https://github.com/simolus3/sqlite3.dart/tree/main/sqlite3_flutter_libs) - Flutter plugin to include native sqlite3 libraries with your app
+1. [sqlite3_flutter_libs](https://github.com/simolus3/sqlite3.dart/tree/main/legacy/sqlite3_flutter_libs) - Flutter plugin to include native sqlite3 libraries with your app
 1. [timezone](https://pub.dev/packages/timezone) - Time zone database and time zone aware DateTime.
 1. [titlebar_buttons](https://github.com/gtk-flutter/titlebar_buttons) - A package which provides most of the titlebar buttons from windows, linux and macos.
 1. [tray_manager](https://github.com/leanflutter/tray_manager) - This plugin allows Flutter desktop apps to defines system tray.
