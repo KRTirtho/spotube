@@ -78,12 +78,13 @@ fun PlayerQueueContent(
     val displayItems = state.displayItems
     val filterQuery = state.filterQuery
     val isFiltered = state.isFiltered
+    val isReadOnly = state.isReadOnly
 
     val lazyListState = rememberLazyListState()
     val reorderableLazyListState = rememberReorderableLazyListState(
         lazyListState,
         onMove = { from, to ->
-            if (isFiltered) return@rememberReorderableLazyListState
+            if (isFiltered || isReadOnly) return@rememberReorderableLazyListState
             viewModel.onMove(from.index, to.index)
         },
     )
@@ -118,11 +119,13 @@ fun PlayerQueueContent(
                     singleLine = true,
                     modifier = Modifier.weight(1f),
                 )
-                IconButton(
-                    onClick = viewModel::clearQueue,
-                    theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(MaterialTheme.shapes.small),
-                ) {
-                    Icon(Iconsax.IconsaxTrash, contentDescription = "Clear Queue")
+                if (!isReadOnly) {
+                    IconButton(
+                        onClick = viewModel::clearQueue,
+                        theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(MaterialTheme.shapes.small),
+                    ) {
+                        Icon(Iconsax.IconsaxTrash, contentDescription = "Clear Queue")
+                    }
                 }
             }
 
@@ -144,11 +147,12 @@ fun PlayerQueueContent(
                                 val elevation by animateDpAsState(if (isDragging) 8.dp else 0.dp)
                                 QueueItemRow(
                                     item = item,
-                                    reorderScope = if (isFiltered) null else this,
+                                    reorderScope = if (isFiltered || isReadOnly) null else this,
                                     onPlayClick = { viewModel.playQueueItem(item.originalIndex) },
                                     onRemoveClick = { viewModel.removeQueueItem(item.originalIndex) },
                                     onDragStarted = { viewModel.onDragStart() },
                                     onDragStopped = { viewModel.onDragStop() },
+                                    showOptions = !isReadOnly,
                                 )
                             }
                         }
@@ -167,6 +171,7 @@ private fun QueueItemRow(
     onRemoveClick: () -> Unit,
     onDragStarted: () -> Unit,
     onDragStopped: () -> Unit,
+    showOptions: Boolean = true,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -255,31 +260,33 @@ private fun QueueItemRow(
 
             Spacer(modifier = Modifier.width(4.dp))
 
-            Box {
-                GhostIconButton(
-                    onClick = { showMenu = true },
-                    modifier = Modifier.size(36.dp),
-                ) {
-                    Icon(
-                        Iconsax.Iconsax3DotsMore,
-                        contentDescription = "More options",
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-                DropdownMenu(
-                    expanded = showMenu,
-                    onDismissRequest = { showMenu = false },
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Remove from queue") },
-                        onClick = {
-                            onRemoveClick()
-                            showMenu = false
-                        },
-                        leadingIcon = {
-                            Icon(Iconsax.IconsaxMusicSquareRemove, contentDescription = null)
-                        },
-                    )
+            if (showOptions) {
+                Box {
+                    GhostIconButton(
+                        onClick = { showMenu = true },
+                        modifier = Modifier.size(36.dp),
+                    ) {
+                        Icon(
+                            Iconsax.Iconsax3DotsMore,
+                            contentDescription = "More options",
+                            modifier = Modifier.size(18.dp),
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("Remove from queue") },
+                            onClick = {
+                                onRemoveClick()
+                                showMenu = false
+                            },
+                            leadingIcon = {
+                                Icon(Iconsax.IconsaxMusicSquareRemove, contentDescription = null)
+                            },
+                        )
+                    }
                 }
             }
         }

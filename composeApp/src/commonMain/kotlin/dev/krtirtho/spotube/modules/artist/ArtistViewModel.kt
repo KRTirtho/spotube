@@ -276,6 +276,10 @@ class ArtistViewModel(
             startTrack = track,
         )
     }
+    fun addTracksToJam(tracks: List<MetadataTrack>) {
+        remotePlaybackController.addTracksToJam(tracks)
+    }
+
     fun addTracksToQueue(tracks: List<MetadataTrack>) {
         val artistName = (_state.value as? ArtistScreenState.Loaded)?.artist?.name ?: "Artist"
         remotePlaybackController.requestTracksAddToQueue(tracks, artistName)
@@ -305,6 +309,10 @@ class ArtistViewModel(
                 }
                 is TrackOptionsAction.AddToQueue -> {
                     remotePlaybackController.requestTrackAddToQueue(track)
+                }
+
+                is TrackOptionsAction.AddToJam -> {
+                    remotePlaybackController.addTrackToJam(track)
                 }
                 is TrackOptionsAction.RemoveFromQueue -> {
                     val queue = audioPlayerQueue.getQueue()

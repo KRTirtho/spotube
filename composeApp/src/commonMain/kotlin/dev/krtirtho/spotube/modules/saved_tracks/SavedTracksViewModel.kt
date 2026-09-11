@@ -248,6 +248,10 @@ class SavedTracksViewModel(
                     remotePlaybackController.requestTrackAddToQueue(track)
                 }
 
+                is TrackOptionsAction.AddToJam -> {
+                    remotePlaybackController.addTrackToJam(track)
+                }
+
                 is TrackOptionsAction.RemoveFromQueue -> {
                     val queue = audioPlayerQueue.getQueue()
                     queue.find { entry ->
@@ -310,6 +314,10 @@ class SavedTracksViewModel(
         viewModelScope.launch {
             blacklistRepository.toggleTrack(track)
         }
+    }
+
+    fun addTracksToJam(tracks: List<MetadataTrack>) {
+        remotePlaybackController.addTracksToJam(tracks)
     }
 
     fun addTracksToQueue(tracks: List<MetadataTrack>) {

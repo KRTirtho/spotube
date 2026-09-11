@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import kotlin.time.Clock
 
 /**
  * A jam session over MQTT (star topology, host-authoritative queue).
@@ -54,6 +55,13 @@ import kotlin.random.Random
  * - Guests can only add to the queue (suggest); the host applies suggestions.
  * - If the host leaves, the participant with the lowest client id takes over.
  */
+private data class PlaybackBroadcast(
+    val queue: List<QueueEntry>,
+    val current: QueueEntry?,
+    val shuffle: Boolean,
+    val playerState: PlayerState,
+)
+
 class JamRoomService(
     private val jamClient: JamRoomClient,
     private val audioPlayer: AudioPlayerInterface,
@@ -83,11 +91,27 @@ class JamRoomService(
 
     private var localClientId: String = ""
     private var localDisplayName: String = ""
+
+    /** Display name of the local participant (stamped on items this device adds). */
+    val participantDisplayName: String
+        get() = localDisplayName
+
     private var hostBroadcastJob: Job? = null
 
     /** Guest side: last queue snapshot applied to the local player. */
     private var lastAppliedItems: List<JamMediaItem> = emptyList()
     private var lastAppliedIndex = -1
+
+    /**
+     * Host side: a song completed, so index changes within this window are
+     * auto-advance (guests must not follow). The completion event, the player
+     * state change and the media transition arrive as separate flow emissions,
+     * so the window covers the whole sequence instead of a single flag.
+     */
+    private var autoAdvanceDeadlineMs = 0L
+
+    /** Guest side: playback has started at least once (local control is the guest's own). */
+    private var hasStartedPlayback = false
 
     /** Host side: client ids banned for this session. */
     private val bannedClientIds = mutableSetOf<String>()
@@ -109,6 +133,20 @@ class JamRoomService(
             .launchIn(scope)
         jamClient.presence
             .onEach { onPresence(it) }
+            .launchIn(scope)
+        // A naturally-completed song means the host's next index change is an
+        // auto-advance — guests must NOT follow those, only manual skips.
+        audioPlayer.completionFlow
+            .onEach { autoAdvanceDeadlineMs = now() + AUTO_ADVANCE_WINDOW_MS }
+            .launchIn(scope)
+        // Once a guest has played on its own (or was started by the host), its
+        // play/pause is its own — the host's play state only starts fresh joiners.
+        audioPlayer.playerStateFlow
+            .onEach { state ->
+                if (_role.value == JamRole.Guest && state == PlayerState.PLAYING) {
+                    hasStartedPlayback = true
+                }
+            }
             .launchIn(scope)
     }
 
@@ -138,6 +176,8 @@ class JamRoomService(
             lastAppliedIndex = -1
             bannedClientIds.clear()
             leaving = false
+            autoAdvanceDeadlineMs = 0L
+            hasStartedPlayback = false
             startHostBroadcast()
             persistLastCode(code)
             code
@@ -170,6 +210,7 @@ class JamRoomService(
             lastAppliedItems = emptyList()
             lastAppliedIndex = -1
             leaving = false
+            hasStartedPlayback = false
             persistLastCode(normalized)
         }
     }
@@ -187,6 +228,7 @@ class JamRoomService(
         lastAppliedItems = emptyList()
         lastAppliedIndex = -1
         bannedClientIds.clear()
+        hasStartedPlayback = false
     }
 
     // ---------- Controls (called from the UI) ----------
@@ -250,20 +292,25 @@ class JamRoomService(
                 audioPlayerQueue.queueFlow,
                 audioPlayerQueue.currentQueueEntryFlow,
                 audioPlayer.shuffleModeFlow,
-            ) { queue, current, shuffle -> Triple(queue, current, shuffle) }
-                .onEach { (queue, current, shuffle) ->
+                audioPlayer.playerStateFlow,
+            ) { queue, current, shuffle, playerState ->
+                PlaybackBroadcast(queue, current, shuffle, playerState)
+            }
+                .onEach { broadcast ->
                     if (_role.value != JamRole.Host) return@onEach
-                    val index = if (current != null) {
-                        queue.indexOfFirst { it.matchesEntry(current) }
+                    val index = if (broadcast.current != null) {
+                        broadcast.queue.indexOfFirst { it.matchesEntry(broadcast.current) }
                     } else {
                         -1
                     }
-                    _shuffleEnabled.value = shuffle
+                    _shuffleEnabled.value = broadcast.shuffle
                     jamClient.publishState(
                         JamMessage.QueueState(
-                            items = queue.map(JamMediaItem::fromQueueEntry),
+                            items = broadcast.queue.map(JamMediaItem::fromQueueEntry),
                             currentIndex = index.coerceAtLeast(0),
-                            shuffleEnabled = shuffle,
+                            shuffleEnabled = broadcast.shuffle,
+                            follow = now() > autoAdvanceDeadlineMs,
+                            isPlaying = broadcast.playerState == PlayerState.PLAYING,
                         )
                     )
                 }
@@ -285,25 +332,54 @@ class JamRoomService(
         _shuffleEnabled.value = state.shuffleEnabled
         runCatching { audioPlayer.shuffle(state.shuffleEnabled) }
 
+        // Late joiner: the host is already playing, so start immediately. Once
+        // this guest has played on its own, the host's play state is ignored.
+        if (state.isPlaying && !hasStartedPlayback) {
+            runCatching { audioPlayer.play() }
+                .onFailure { log.w(it) { "Failed to start playback on host play state" } }
+        }
+
         val items = state.items.filter { it.trackId.isNotBlank() || it.url.isNotBlank() }
         val wasPlaying = audioPlayer.playerStateFlow.value == PlayerState.PLAYING
 
         if (items != lastAppliedItems) {
+            val previous = lastAppliedItems
             lastAppliedItems = items
-            lastAppliedIndex = state.currentIndex
+            val guestCurrent = audioPlayerQueue.currentQueueEntryFlow.value
+            val guestIndex = items.indexOfFirst { it.matchesEntry(guestCurrent) }
+
+            // The host only appended items (e.g. accepted suggestions): merge
+            // them in without resetting playback or the guest's position.
+            if (previous.isNotEmpty() && items.size > previous.size &&
+                items.take(previous.size) == previous && guestIndex >= 0
+            ) {
+                lastAppliedIndex = guestIndex
+                val appended = items.drop(previous.size)
+                runCatching {
+                    audioPlayerQueue.addAllToQueue(appended.map { it.toQueueEntry() })
+                }.onFailure { log.w(it) { "Failed to append jam queue items" } }
+                return
+            }
+
+            // Full re-sync. Keep the guest's current track when it still exists
+            // in the synced queue; otherwise take the host's position.
+            val startIndex = if (guestIndex >= 0) guestIndex
+                else state.currentIndex.coerceIn(0, items.lastIndex.coerceAtLeast(0))
+            lastAppliedIndex = startIndex
             runCatching {
                 audioPlayerQueue.load(
                     entries = items.map { it.toQueueEntry() },
                     autoPlay = wasPlaying,
-                    startPosition = state.currentIndex.coerceIn(0, items.lastIndex.coerceAtLeast(0)),
+                    startPosition = startIndex,
                 )
             }.onFailure { log.w(it) { "Failed to apply jam queue" } }
             return
         }
 
-        if (state.currentIndex != lastAppliedIndex) {
+        // Same queue content: only follow the host when it moved manually
+        // (skip/jump). Natural auto-advance keeps everyone where they are.
+        if (state.follow && state.currentIndex != lastAppliedIndex) {
             lastAppliedIndex = state.currentIndex
-            // Queue moved on: follow it, but keep this device's play/pause state.
             runCatching {
                 audioPlayerQueue.jumpTo(state.currentIndex.coerceAtLeast(0), autoPlay = false)
             }.onFailure { log.w(it) { "Failed to follow jam queue index" } }
@@ -459,6 +535,17 @@ class JamRoomService(
         )
     }
 
+    private fun JamMediaItem.matchesEntry(entry: QueueEntry?): Boolean {
+        if (entry == null) return false
+        return when (entry) {
+            is QueueEntry.StreamingTrack ->
+                trackId.isNotBlank() && entry.track.id == trackId
+
+            is QueueEntry.LocalTrack ->
+                url.isNotBlank() && entry.url == url && entry.name == title
+        }
+    }
+
     private fun QueueEntry.matchesEntry(other: QueueEntry): Boolean = when {
         this is QueueEntry.StreamingTrack && other is QueueEntry.StreamingTrack ->
             this.track.id == other.track.id
@@ -469,7 +556,10 @@ class JamRoomService(
         else -> false
     }
 
+    private fun now(): Long = Clock.System.now().toEpochMilliseconds()
+
     companion object {
         private const val HOST_TAKEOVER_DELAY_MS = 1_500L
+        private const val AUTO_ADVANCE_WINDOW_MS = 2_000L
     }
 }

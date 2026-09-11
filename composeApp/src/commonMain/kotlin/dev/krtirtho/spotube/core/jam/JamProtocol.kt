@@ -39,6 +39,14 @@ sealed class JamMessage {
         val items: List<JamMediaItem>,
         val currentIndex: Int,
         val shuffleEnabled: Boolean = false,
+        /**
+         * Whether guests should follow the host's current index. True when the
+         * host manually skipped/jumped or loaded a queue; false when the host
+         * merely auto-advanced because its song ended (guests stay put).
+         */
+        val follow: Boolean = false,
+        /** Host's live play state — late-joining guests start with it. */
+        val isPlaying: Boolean = false,
     ) : JamMessage()
 
     @Serializable

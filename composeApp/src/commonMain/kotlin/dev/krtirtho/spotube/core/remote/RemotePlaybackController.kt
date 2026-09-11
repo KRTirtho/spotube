@@ -164,52 +164,56 @@ class RemotePlaybackController(
         _pendingRequest.value = null
     }
 
+    // ---------- Jam actions ----------
+
     /**
-     * Routes the pending request into the active jam session. On the host the jam
-     * queue IS the local queue, so the action runs locally; on a guest the content
-     * is suggested to the host, which accepts it into the shared queue.
+     * Adds a single track to the active jam queue. The host applies it to the
+     * local (shared) queue directly; a guest suggests it to the host over MQTT.
      */
-    fun playOnJam() {
-        val request = _pendingRequest.value ?: return
-        _pendingRequest.value = null
+    fun addTrackToJam(track: MetadataTrack) {
+        if (jamRoomService.role.value == null) return
         scope.launch {
             try {
                 when (jamRoomService.role.value) {
-                    JamRole.Host -> executeLocally(request)
-                    JamRole.Guest -> suggestToJam(request)
+                    JamRole.Host -> audioPlayerQueue.addToQueue(
+                        QueueEntry.StreamingTrack(track = track, url = "", addedBy = jamRoomService.participantDisplayName)
+                    )
+
+                    JamRole.Guest -> jamRoomService.suggestTrack(track)
                     null -> return@launch
                 }
-                _events.emit(confirmationMessage(request))
+                _events.emit("Added to the jam queue")
             } catch (e: Exception) {
-                logger.e(e) { "Failed to send content to jam session" }
+                logger.e(e) { "Failed to add track to jam session" }
             }
         }
     }
 
-    private fun confirmationMessage(request: PlaybackDestinationRequest): String = when (request.action) {
-        PlaybackDestinationAction.Play -> "Playing on the jam queue"
-        PlaybackDestinationAction.AddToQueue -> "Added to the jam queue"
-        PlaybackDestinationAction.PlayNext -> "Added to play next in the jam queue"
-    }
+    /**
+     * Adds multiple tracks to the active jam queue (host applies locally,
+     * guest suggests to the host).
+     */
+    fun addTracksToJam(tracks: List<MetadataTrack>) {
+        if (tracks.isEmpty() || jamRoomService.role.value == null) return
+        scope.launch {
+            try {
+                when (jamRoomService.role.value) {
+                    JamRole.Host -> audioPlayerQueue.addAllToQueue(
+                        tracks.map { track ->
+                            QueueEntry.StreamingTrack(
+                                track = track,
+                                url = "",
+                                addedBy = jamRoomService.participantDisplayName,
+                            )
+                        }
+                    )
 
-    private suspend fun suggestToJam(request: PlaybackDestinationRequest) {
-        when (request) {
-            is PlaybackDestinationRequest.Collection -> {
-                val tracks = collectionPlaybackHelper.resolveCollectionTracks(request.type, request.id)
-                if (tracks.isNotEmpty()) {
-                    jamRoomService.suggestPlaylist(tracks)
-                    logger.i { "Suggested ${tracks.size} track(s) to the jam session" }
+                    JamRole.Guest -> jamRoomService.suggestPlaylist(tracks)
+                    null -> return@launch
                 }
-            }
-
-            is PlaybackDestinationRequest.Track -> {
-                jamRoomService.suggestTrack(request.track)
-            }
-
-            is PlaybackDestinationRequest.Tracks -> {
-                if (request.tracks.isNotEmpty()) {
-                    jamRoomService.suggestPlaylist(request.tracks)
-                }
+                _events.emit("Added ${tracks.size} to the jam queue")
+            } catch (e: Exception) {
+                logger.e(e) { "Failed to add tracks to jam session" }
             }
         }
     }
@@ -217,9 +221,7 @@ class RemotePlaybackController(
     // ---------- Internals ----------
 
     private fun request(request: PlaybackDestinationRequest) {
-        // The picker offers "This Device", a connected remote device, and an
-        // active jam session — show it whenever more than one destination exists.
-        if (isRemoteConnected() || jamRoomService.role.value != null) {
+        if (isRemoteConnected()) {
             _pendingRequest.value = request
         } else {
             executeLocally(request)

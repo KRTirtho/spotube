@@ -65,6 +65,8 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.jam.JamRole
+import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.core.ui.base.IconButton
 import dev.krtirtho.spotube.core.ui.base.Slider
@@ -93,6 +95,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeCross
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeHigh
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeLow
 import dev.krtirtho.spotube.resources.iconsax.SwapHorizontal2
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -125,6 +128,10 @@ fun AppLargePlayer(
     ),
 ) {
     val playerUiState = rememberPlayerUiState(audioPlayer, audioPlayerQueue)
+    val jamRoomService: JamRoomService = koinInject()
+    val isJamGuest by jamRoomService.role
+        .map { it == JamRole.Guest }
+        .collectAsStateWithLifecycle(initialValue = false)
     val scope = rememberCoroutineScope()
     val currentEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     var isSeeking by remember { mutableStateOf(false) }
@@ -155,18 +162,22 @@ fun AppLargePlayer(
     }
 
     fun onSkipPrevious() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.skipToPrevious() }
     }
 
     fun onSkipNext() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.skipToNext() }
     }
 
     fun onShuffleToggle() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.shuffle(!playerUiState.isShuffling) }
     }
 
     fun onLoopToggle() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.loop(playerUiState.loopState.next()) }
     }
 
@@ -294,6 +305,7 @@ fun AppLargePlayer(
                     ) {
                         VariableIconButton(
                             onClick = ::onShuffleToggle,
+                            enabled = !isJamGuest,
                             variant = if (playerUiState.isShuffling) VariableIconButtonVariant.Outline else VariableIconButtonVariant.Ghost
                         ) {
                             Icon(
@@ -306,7 +318,7 @@ fun AppLargePlayer(
                                 }
                             )
                         }
-                        GhostIconButton(onClick = ::onSkipPrevious) {
+                        GhostIconButton(onClick = ::onSkipPrevious, enabled = !isJamGuest) {
                             Icon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
                         }
                         IconButton(
@@ -320,11 +332,12 @@ fun AppLargePlayer(
                                 contentDescription = if (playerUiState.isPlaying) "Pause" else "Play or pause",
                             )
                         }
-                        GhostIconButton(onClick = ::onSkipNext) {
+                        GhostIconButton(onClick = ::onSkipNext, enabled = !isJamGuest) {
                             Icon(Iconsax.IconsaxNext, contentDescription = "Next")
                         }
                         VariableIconButton(
                             onClick = ::onLoopToggle,
+                            enabled = !isJamGuest,
                             variant = if (playerUiState.loopState == LoopState.NONE) VariableIconButtonVariant.Ghost else VariableIconButtonVariant.Outline
                         ) {
                             Icon(

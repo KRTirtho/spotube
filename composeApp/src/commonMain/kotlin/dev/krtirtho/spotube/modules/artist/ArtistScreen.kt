@@ -63,8 +63,10 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
+import org.koin.compose.koinInject
 import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.core.ui.base.PrimaryIconButton
 import dev.krtirtho.spotube.core.ui.base.SecondaryButton
@@ -95,6 +97,9 @@ fun ArtistScreen(
     navigationCommands: NavigationCommands
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val jamRoomService: JamRoomService = koinInject()
+    val jamActive by jamRoomService.role.map { it != null }
+        .collectAsStateWithLifecycle(initialValue = false)
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
     val savedArtistIds by viewModel.savedArtistIds.collectAsStateWithLifecycle()
@@ -179,6 +184,8 @@ fun ArtistScreen(
                             onBulkAddToQueue = viewModel::addTracksToQueue,
                             onBulkPlayNext = viewModel::playTracksNext,
                             onBulkAddToPlaylist = viewModel::showAddToPlaylistPicker,
+                            onBulkAddToJam = viewModel::addTracksToJam,
+                            isInJam = jamActive,
                         )
                     }
 

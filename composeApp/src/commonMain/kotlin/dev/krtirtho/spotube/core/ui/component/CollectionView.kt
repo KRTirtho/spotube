@@ -87,6 +87,8 @@ fun CollectionView(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit = {},
     onBulkPlayNext: (List<MetadataTrack>) -> Unit = {},
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit = {},
+    onBulkAddToJam: (List<MetadataTrack>) -> Unit = {},
+    isInJam: Boolean = false,
     trackOptionsState: (MetadataTrack) -> TrackOptionsState = { TrackOptionsState() },
     footerContent: (@Composable () -> Unit)? = null,
     trailingContent: @Composable () -> Unit = {},
@@ -200,6 +202,8 @@ fun CollectionView(
                 onBulkAddToQueue = onBulkAddToQueue,
                 onBulkPlayNext = onBulkPlayNext,
                 onBulkAddToPlaylist = onBulkAddToPlaylist,
+                onBulkAddToJam = onBulkAddToJam,
+                isInJam = isInJam,
                 trackOptionsState = trackOptionsState,
             )
         }

@@ -56,6 +56,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShare
 
 sealed interface TrackOptionsAction {
+    data object AddToJam : TrackOptionsAction
     data object StartRadio : TrackOptionsAction
     data object PlayNext : TrackOptionsAction
     data object AddToQueue : TrackOptionsAction
@@ -98,6 +99,7 @@ fun TrackOptions(
     onAction: (TrackOptionsAction) -> Unit,
     onAlbumClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isInJam: Boolean = false,
 ) {
     AdaptiveDropdownBottomSheet(
         items = buildTrackMenuItems(
@@ -105,6 +107,7 @@ fun TrackOptions(
             state = state,
             onAction = onAction,
             onAlbumClick = onAlbumClick,
+            isInJam = isInJam,
         ),
         trigger = { onClick ->
             GhostIconButton(onClick = onClick) {
@@ -129,6 +132,7 @@ fun TrackOptionsBottomSheet(
     onDismiss: () -> Unit,
     onAction: (TrackOptionsAction) -> Unit,
     onAlbumClick: () -> Unit,
+    isInJam: Boolean = false,
 ) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(modifier = Modifier.fillMaxWidth()) {
@@ -151,6 +155,7 @@ fun TrackOptionsBottomSheet(
                         onAlbumClick()
                         onDismiss()
                     },
+                    isInJam = isInJam,
                 ).forEach { item ->
                     Row(
                         modifier = Modifier
@@ -241,7 +246,18 @@ private fun buildTrackMenuItems(
     state: TrackOptionsState,
     onAction: (TrackOptionsAction) -> Unit,
     onAlbumClick: () -> Unit,
+    isInJam: Boolean = false,
 ): List<AdaptiveMenuItem> = buildList {
+    if (isInJam) {
+        add(
+            AdaptiveMenuItem(
+                icon = Iconsax.IconsaxAddSquare,
+                label = "Add to Jam",
+                onClick = { onAction(TrackOptionsAction.AddToJam) },
+            ),
+        )
+    }
+
     add(
         AdaptiveMenuItem(
             icon = Iconsax.IconsaxMusicCircle,

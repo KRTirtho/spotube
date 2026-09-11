@@ -21,6 +21,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.jam.JamRole
+import dev.krtirtho.spotube.core.jam.JamRoomService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -44,10 +46,13 @@ data class QueueContentUiState(
     val filterQuery: String = "",
     val displayItems: List<QueueItemUi> = emptyList(),
     val isFiltered: Boolean = false,
+    /** Guests cannot reorder/remove/clear the shared jam queue. */
+    val isReadOnly: Boolean = false,
 )
 
 class PlayerQueueContentViewModel(
     private val audioPlayerQueue: AudioPlayerQueue,
+    private val jamRoomService: JamRoomService,
 ) : ViewModel() {
     private val queueVisibilityFlow = MutableStateFlow(false)
     private val queueFilterFlow = MutableStateFlow("")
@@ -114,7 +119,8 @@ class PlayerQueueContentViewModel(
         computedItems,
         reorderBuffer,
         queueFilterFlow,
-    ) { items, buffer, filterQuery ->
+        jamRoomService.role,
+    ) { items, buffer, filterQuery, role ->
         val normalizedFilter = filterQuery.trim().lowercase()
         val isFiltered = normalizedFilter.isNotBlank()
         val filtered = if (isFiltered) {
@@ -129,6 +135,7 @@ class PlayerQueueContentViewModel(
             filterQuery = filterQuery,
             displayItems = buffer ?: filtered,
             isFiltered = isFiltered,
+            isReadOnly = role == JamRole.Guest,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -156,7 +163,7 @@ class PlayerQueueContentViewModel(
     }
 
     fun removeQueueItem(index: Int) {
-        if (index < 0) return
+        if (index < 0 || queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             val currentQueue = audioPlayerQueue.queueFlow.value
             if (index < currentQueue.size) {
@@ -167,12 +174,14 @@ class PlayerQueueContentViewModel(
 
     fun moveQueueItem(fromIndex: Int, toIndex: Int) {
         if (fromIndex == toIndex || fromIndex < 0 || toIndex < 0) return
+        if (queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             audioPlayerQueue.move(fromIndex, toIndex)
         }
     }
 
     fun clearQueue() {
+        if (queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             audioPlayerQueue.clear()
         }
@@ -180,11 +189,13 @@ class PlayerQueueContentViewModel(
 
     fun onDragStart() {
         if (reorderBuffer.value != null) return
+        if (queueContentUiState.value.isReadOnly) return
         val currentItems = queueContentUiState.value.displayItems
         reorderBuffer.value = currentItems.toList()
     }
 
     fun onMove(from: Int, to: Int) {
+        if (queueContentUiState.value.isReadOnly) return
         val buffer = reorderBuffer.value ?: return
         if (from == to || from < 0 || to < 0 || from >= buffer.size || to >= buffer.size) return
         val item = buffer[from]

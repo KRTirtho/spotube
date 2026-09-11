@@ -20,11 +20,14 @@ package dev.krtirtho.spotube.modules.saved_tracks
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.map
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueCollectionEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
+import dev.krtirtho.spotube.core.jam.JamRoomService
+import org.koin.compose.koinInject
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.component.CollectionView
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
@@ -39,6 +42,9 @@ fun SavedTracksScreen(
     navigationCommands: NavigationCommands
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val jamRoomService: JamRoomService = koinInject()
+    val jamActive by jamRoomService.role.map { it != null }
+        .collectAsStateWithLifecycle(initialValue = false)
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
     val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
@@ -85,6 +91,8 @@ fun SavedTracksScreen(
         onBulkAddToQueue = viewModel::addTracksToQueue,
         onBulkPlayNext = viewModel::playTracksNext,
         onBulkAddToPlaylist = viewModel::showAddToPlaylistPicker,
+        onBulkAddToJam = viewModel::addTracksToJam,
+        isInJam = jamActive,
         trailingContent = {
             AddToPlaylistPicker(
                 visible = showAddToPlaylistPicker,

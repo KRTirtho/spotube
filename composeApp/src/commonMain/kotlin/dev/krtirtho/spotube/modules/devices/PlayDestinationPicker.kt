@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.remote.ConnectionState
 import dev.krtirtho.spotube.core.remote.PlaybackDestinationAction
 import dev.krtirtho.spotube.core.remote.RemoteControlClient
@@ -40,8 +39,6 @@ import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
-import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlaylist
-import kotlinx.coroutines.flow.map
 import org.koin.compose.koinInject
 
 /**
@@ -53,11 +50,8 @@ import org.koin.compose.koinInject
 fun PlayDestinationPickerHost() {
     val controller = koinInject<RemotePlaybackController>()
     val remoteControlClient = koinInject<RemoteControlClient>()
-    val jamRoomService = koinInject<JamRoomService>()
     val request by controller.pendingRequest.collectAsStateWithLifecycle()
     val connectionState by remoteControlClient.connectionState.collectAsStateWithLifecycle()
-    val jamActive by jamRoomService.role.map { it != null }
-        .collectAsStateWithLifecycle(initialValue = false)
 
     val pendingRequest = request ?: return
 
@@ -137,33 +131,6 @@ fun PlayDestinationPickerHost() {
                         subtitle = {
                             Text(
                                 text = "$actionLabel on the connected device",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                    )
-                }
-
-                if (jamActive) {
-                    ListRowTile(
-                        onClick = controller::playOnJam,
-                        modifier = Modifier.fillMaxWidth(),
-                        leading = {
-                            Icon(
-                                imageVector = Iconsax.IconsaxMusicPlaylist,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        },
-                        title = {
-                            Text(
-                                text = "Jam Session",
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        },
-                        subtitle = {
-                            Text(
-                                text = "$actionLabel in the shared jam queue",
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )

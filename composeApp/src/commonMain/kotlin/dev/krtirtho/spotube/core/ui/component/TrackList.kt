@@ -143,6 +143,8 @@ fun TrackList(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit = {},
     onBulkPlayNext: (List<MetadataTrack>) -> Unit = {},
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit = {},
+    onBulkAddToJam: (List<MetadataTrack>) -> Unit = {},
+    isInJam: Boolean = false,
     currentTrackId: String? = null,
     isCurrentTrackPlaying: Boolean = false,
     trackOptionsState: (MetadataTrack) -> TrackOptionsState = { TrackOptionsState() },
@@ -274,6 +276,7 @@ fun TrackList(
                             )
                         },
                         trackOptionsState = trackOptionsState(track),
+                        isInJam = isInJam,
                         onShowOptionsClick = { selectedTrackForOptions = track },
                         onArtistClick = onArtistClick,
                         onAlbumClick = onAlbumClick,
@@ -442,7 +445,17 @@ fun TrackList(
                                 label = if (isAll) "Add All to Playlist" else "Add $trackCount to Playlist",
                                 onClick = { onBulkAddToPlaylist(targetTracks) },
                             ),
-                        ),
+                        ) + if (isInJam) {
+                            listOf(
+                                AdaptiveMenuItem(
+                                    icon = Iconsax.IconsaxAddSquare,
+                                    label = if (isAll) "Add All to Jam" else "Add $trackCount to Jam",
+                                    onClick = { onBulkAddToJam(targetTracks) },
+                                ),
+                            )
+                        } else {
+                            emptyList()
+                        },
                         trigger = { onClick ->
                             GroupIconButton(
                                 onClick = onClick,
@@ -497,6 +510,7 @@ fun TrackList(
                             selectedTrackForOptions = null
                         },
                         onAlbumClick = { track.album?.let { onAlbumClick(it) } },
+                        isInJam = isInJam,
                     )
                 }
             }
@@ -555,6 +569,7 @@ private fun TrackListRow(
     onSelectionToggle: (Boolean) -> Unit,
     onTrackOptionsAction: (TrackOptionsAction) -> Unit,
     trackOptionsState: TrackOptionsState,
+    isInJam: Boolean,
     onShowOptionsClick: () -> Unit,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
@@ -750,6 +765,7 @@ private fun TrackListRow(
                 state = trackOptionsState,
                 onAction = onTrackOptionsAction,
                 onAlbumClick = { track.album?.let { onAlbumClick(it) } },
+                isInJam = isInJam,
             )
         } else {
             GhostIconButton(onClick = onShowOptionsClick) {
@@ -843,6 +859,7 @@ private fun ShimmerTrackListRow(
             onSelectionToggle = {},
             onTrackOptionsAction = {},
             trackOptionsState = TrackOptionsState(),
+            isInJam = false,
             onShowOptionsClick = {},
             onArtistClick = {},
             onAlbumClick = {},

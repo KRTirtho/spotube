@@ -86,6 +86,8 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
+import dev.krtirtho.spotube.core.jam.JamRoomService
+import org.koin.compose.koinInject
 import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.core.share.ShareService
 import dev.krtirtho.spotube.core.ui.base.AutocompleteTextField
@@ -128,6 +130,9 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     val blacklistRepository: BlacklistRepository = koinInject()
     val navigationCommands: NavigationCommands = koinInject()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val jamRoomService: JamRoomService = koinInject()
+    val jamActive by jamRoomService.role.map { it != null }
+        .collectAsStateWithLifecycle(initialValue = false)
     val selectedType = state.selectedSearchType
     val scope = rememberCoroutineScope()
     val savedTrackIds by viewModel.savedTrackIds.collectAsStateWithLifecycle()
@@ -188,6 +193,9 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                 is TrackOptionsAction.AddToQueue -> {
                     remotePlaybackController.requestTrackAddToQueue(track)
                 }
+                is TrackOptionsAction.AddToJam -> {
+                    remotePlaybackController.addTrackToJam(track)
+                }
 
                 is TrackOptionsAction.RemoveFromQueue -> {
                     val queue = audioPlayerQueue.getQueue()
@@ -246,6 +254,10 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
 
     fun bulkAddToQueue(tracks: List<MetadataTrack>) {
         remotePlaybackController.requestTracksAddToQueue(tracks, "Search results")
+    }
+
+    fun bulkAddToJam(tracks: List<MetadataTrack>) {
+        remotePlaybackController.addTracksToJam(tracks)
     }
 
     fun bulkPlayNext(tracks: List<MetadataTrack>) {
@@ -327,6 +339,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                             tracksToAddToPlaylist = tracks
                             showAddToPlaylistPicker = true
                         },
+                        onBulkAddToJam = ::bulkAddToJam,
+                        isInJam = jamActive,
                         onArtistClick = { artist ->
                             navigationCommands.navigateTo(Routes.Artist(artist.id))
                         },
@@ -356,6 +370,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                             tracksToAddToPlaylist = tracks
                             showAddToPlaylistPicker = true
                         },
+                        onBulkAddToJam = ::bulkAddToJam,
+                        isInJam = jamActive,
                         onArtistClick = { artist ->
                             navigationCommands.navigateTo(Routes.Artist(artist.id))
                         },
@@ -637,6 +653,8 @@ private fun SearchAllTab(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit,
     onBulkPlayNext: (List<MetadataTrack>) -> Unit,
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit,
+    onBulkAddToJam: (List<MetadataTrack>) -> Unit,
+    isInJam: Boolean,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
     onArtistsOverflowClick: (MetadataTrack) -> Unit,
@@ -694,6 +712,8 @@ private fun SearchAllTab(
         onBulkAddToQueue = onBulkAddToQueue,
         onBulkPlayNext = onBulkPlayNext,
         onBulkAddToPlaylist = onBulkAddToPlaylist,
+        onBulkAddToJam = onBulkAddToJam,
+        isInJam = isInJam,
         onArtistClick = onArtistClick,
         onAlbumClick = onAlbumClick,
         onArtistsOverflowClick = onArtistsOverflowClick,
@@ -781,6 +801,8 @@ private fun SearchTracksTab(
     onBulkAddToQueue: (List<MetadataTrack>) -> Unit,
     onBulkPlayNext: (List<MetadataTrack>) -> Unit,
     onBulkAddToPlaylist: (List<MetadataTrack>) -> Unit,
+    onBulkAddToJam: (List<MetadataTrack>) -> Unit,
+    isInJam: Boolean,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
     onArtistsOverflowClick: (MetadataTrack) -> Unit,
@@ -810,6 +832,8 @@ private fun SearchTracksTab(
         onBulkAddToQueue = onBulkAddToQueue,
         onBulkPlayNext = onBulkPlayNext,
         onBulkAddToPlaylist = onBulkAddToPlaylist,
+        onBulkAddToJam = onBulkAddToJam,
+        isInJam = isInJam,
         onArtistClick = onArtistClick,
         onAlbumClick = onAlbumClick,
         onArtistsOverflowClick = onArtistsOverflowClick,
