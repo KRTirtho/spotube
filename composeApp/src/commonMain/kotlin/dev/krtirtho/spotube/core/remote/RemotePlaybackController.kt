@@ -176,7 +176,7 @@ class RemotePlaybackController(
             try {
                 when (jamRoomService.role.value) {
                     JamRole.Host -> audioPlayerQueue.addToQueue(
-                        QueueEntry.StreamingTrack(track = track, url = "", addedBy = jamRoomService.participantDisplayName)
+                        QueueEntry.StreamingTrack(track = track, url = "", addedBy = jamRoomService.participantClientId)
                     )
 
                     JamRole.Guest -> jamRoomService.suggestTrack(track)
@@ -203,7 +203,7 @@ class RemotePlaybackController(
                             QueueEntry.StreamingTrack(
                                 track = track,
                                 url = "",
-                                addedBy = jamRoomService.participantDisplayName,
+                                addedBy = jamRoomService.participantClientId,
                             )
                         }
                     )

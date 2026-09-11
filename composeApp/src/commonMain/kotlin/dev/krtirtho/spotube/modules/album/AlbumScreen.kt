@@ -25,6 +25,7 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
+import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.jam.JamRoomService
 import org.koin.compose.koinInject
 import dev.krtirtho.spotube.core.navigation.Routes
@@ -42,6 +43,8 @@ fun AlbumScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val jamRoomService: JamRoomService = koinInject()
     val jamActive by jamRoomService.role.map { it != null }
+        .collectAsStateWithLifecycle(initialValue = false)
+    val isJamGuest by jamRoomService.role.map { it == JamRole.Guest }
         .collectAsStateWithLifecycle(initialValue = false)
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val playerState by audioPlayer.playerStateFlow.collectAsStateWithLifecycle()
@@ -100,6 +103,8 @@ fun AlbumScreen(
         onBulkAddToPlaylist = viewModel::showAddToPlaylistPicker,
         onBulkAddToJam = viewModel::addTracksToJam,
         isInJam = jamActive,
+        isJamGuest = isJamGuest,
+        onAddToJam = viewModel::addTracksToJam,
         trailingContent = {
             AddToPlaylistPicker(
                 visible = showAddToPlaylistPicker,

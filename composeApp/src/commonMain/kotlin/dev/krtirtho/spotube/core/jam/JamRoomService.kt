@@ -92,9 +92,13 @@ class JamRoomService(
     private var localClientId: String = ""
     private var localDisplayName: String = ""
 
-    /** Display name of the local participant (stamped on items this device adds). */
+    /** Display name of the local participant. */
     val participantDisplayName: String
         get() = localDisplayName
+
+    /** Stable id of the local participant (stamped on items this device adds). */
+    val participantClientId: String
+        get() = localClientId
 
     private var hostBroadcastJob: Job? = null
 
@@ -257,7 +261,7 @@ class JamRoomService(
         jamClient.publishCommand(
             JamMessage.SuggestTrack(
                 mediaItem = JamMediaItem.fromTrack(track),
-                addedBy = localDisplayName,
+                addedBy = localClientId,
             )
         )
     }
@@ -267,7 +271,7 @@ class JamRoomService(
         jamClient.publishCommand(
             JamMessage.SuggestPlaylist(
                 tracks = tracks.map(JamMediaItem::fromTrack),
-                addedBy = localDisplayName,
+                addedBy = localClientId,
             )
         )
     }
@@ -396,11 +400,15 @@ class JamRoomService(
             }
 
             is JamMessage.SuggestTrack -> {
-                if (_role.value == JamRole.Host) acceptSuggestion(listOf(message.mediaItem))
+                if (_role.value == JamRole.Host) {
+                    acceptSuggestion(listOf(message.mediaItem.copy(addedBy = message.addedBy)))
+                }
             }
 
             is JamMessage.SuggestPlaylist -> {
-                if (_role.value == JamRole.Host) acceptSuggestion(message.tracks)
+                if (_role.value == JamRole.Host) {
+                    acceptSuggestion(message.tracks.map { it.copy(addedBy = message.addedBy) })
+                }
             }
 
             is JamMessage.Kick -> {

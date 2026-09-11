@@ -133,13 +133,6 @@ fun AppShell(
     PlayDestinationPickerHost()
 
     Box(modifier = Modifier.fillMaxSize()) {
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 96.dp),
-        )
-
         val useSidebar = viewModel.useSidebar()
         val bottomOverlayInset = viewModel.bottomOverlayInset(useSidebar)
 
@@ -281,6 +274,15 @@ fun AppShell(
                 }
             }
         }
+
+        // Drawn last so it floats above the players/sheets, just above the
+        // bottom overlay (large player or compact player + bottombar).
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = bottomOverlayInset + 12.dp),
+        )
     }
 }
 

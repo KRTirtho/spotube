@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.jam.JamParticipant
 import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.jam.JamRoomService
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -40,6 +41,8 @@ data class QueueItemUi(
     val isCurrent: Boolean,
     val imageUrl: String?,
     val originalIndex: Int,
+    /** Participant who added this item to the jam queue, if any. */
+    val addedByParticipant: JamParticipant? = null,
 )
 
 data class QueueContentUiState(
@@ -48,6 +51,8 @@ data class QueueContentUiState(
     val isFiltered: Boolean = false,
     /** Guests cannot reorder/remove/clear the shared jam queue. */
     val isReadOnly: Boolean = false,
+    val isJamHost: Boolean = false,
+    val participants: List<JamParticipant> = emptyList(),
 )
 
 class PlayerQueueContentViewModel(
@@ -65,7 +70,8 @@ class PlayerQueueContentViewModel(
     private val computedItems: StateFlow<List<QueueItemUi>> = combine(
         audioPlayerQueue.queueFlow,
         audioPlayerQueue.currentQueueEntryFlow,
-    ) { queue, currentEntry ->
+        jamRoomService.participants,
+    ) { queue, currentEntry, participants ->
         val currentIndex = if (currentEntry != null) {
             queue.indexOfFirst { it.matchesCurrent(currentEntry) }
         } else {
@@ -94,9 +100,9 @@ class PlayerQueueContentViewModel(
                 }
             }
 
-            val addedBy = entry.addedBy
-            if (addedBy.isNotBlank()) {
-                subtitle = "$subtitle • Added by $addedBy"
+            val addedByParticipant = participants.firstOrNull { it.id == entry.addedBy }
+            if (addedByParticipant != null) {
+                subtitle = "$subtitle • Added by ${addedByParticipant.displayName}"
             }
 
             QueueItemUi(
@@ -107,6 +113,7 @@ class PlayerQueueContentViewModel(
                 isCurrent = index == currentIndex,
                 imageUrl = imageUrl,
                 originalIndex = index,
+                addedByParticipant = addedByParticipant,
             )
         }
     }.stateIn(
@@ -120,7 +127,8 @@ class PlayerQueueContentViewModel(
         reorderBuffer,
         queueFilterFlow,
         jamRoomService.role,
-    ) { items, buffer, filterQuery, role ->
+        jamRoomService.participants,
+    ) { items, buffer, filterQuery, role, participants ->
         val normalizedFilter = filterQuery.trim().lowercase()
         val isFiltered = normalizedFilter.isNotBlank()
         val filtered = if (isFiltered) {
@@ -136,6 +144,8 @@ class PlayerQueueContentViewModel(
             displayItems = buffer ?: filtered,
             isFiltered = isFiltered,
             isReadOnly = role == JamRole.Guest,
+            isJamHost = role == JamRole.Host,
+            participants = participants,
         )
     }.stateIn(
         scope = viewModelScope,
@@ -156,7 +166,7 @@ class PlayerQueueContentViewModel(
     }
 
     fun playQueueItem(index: Int) {
-        if (index < 0) return
+        if (index < 0 || queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             audioPlayerQueue.jumpTo(index)
         }
@@ -184,6 +194,27 @@ class PlayerQueueContentViewModel(
         if (queueContentUiState.value.isReadOnly) return
         viewModelScope.launch {
             audioPlayerQueue.clear()
+        }
+    }
+
+    // ---------- Jam participant moderation (host only) ----------
+
+    fun kickParticipant(participantId: String) {
+        if (!queueContentUiState.value.isJamHost) return
+        viewModelScope.launch { jamRoomService.kickParticipant(participantId) }
+    }
+
+    fun banParticipant(participantId: String) {
+        if (!queueContentUiState.value.isJamHost) return
+        viewModelScope.launch { jamRoomService.banParticipant(participantId) }
+    }
+
+    /** Removes every queue item that the given participant suggested. */
+    fun removeParticipantTracks(participantId: String) {
+        if (!queueContentUiState.value.isJamHost) return
+        viewModelScope.launch {
+            val entries = audioPlayerQueue.queueFlow.value.filter { it.addedBy == participantId }
+            entries.forEach { audioPlayerQueue.removeFromQueue(it) }
         }
     }
 
