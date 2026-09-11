@@ -61,8 +61,10 @@ data class UserSettings(
     val remoteControlDeviceName: String = "",
     val remoteControlDeviceId: String = "",
 
-    // Group Jam (P2P)
+    // Group Jam (MQTT)
     val jamParticipantName: String = "",
+    val jamBroker: JamBroker = JamBroker(),
+    val lastJamCode: String = "",
 
     // Downloads
     val overloadedDownloadFolder: String? = null, // When null, uses default music folder
@@ -85,4 +87,21 @@ data class UserSettings(
 
     // Updates
     val autoCheckForUpdates: Boolean = true,
+)
+
+/**
+ * Configuration for the MQTT broker used by Group Jam. The host is a placeholder
+ * until a real broker is configured; users can self-host and point the app at it.
+ */
+@Serializable
+data class JamBroker(
+    val name: String = "",
+    val host: String = "test.mosquitto.org",
+    val port: Int = 1883,
+    val useTls: Boolean = false,
+    val username: String? = null,
+    val password: String? = null,
+    val clientIdPrefix: String = "spotube",
+    val keepAliveSeconds: Int = 30,
+    val connectionTimeoutSeconds: Int = 10,
 )

@@ -18,61 +18,46 @@
 package dev.krtirtho.spotube.core.jam
 
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.MediaItem
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Jam messages exchanged over MQTT.
+ *
+ * - `state` topic: [QueueState] (retained, host -> everyone)
+ * - `cmd` topic: [PlaybackCommand], [Kick], [SuggestTrack], [SuggestPlaylist]
+ *   (anyone -> host, except Kick which is host -> guest)
+ * - `presence/{clientId}` topic: [JamPresence] (retained, one per participant)
+ */
 @Serializable
 sealed class JamMessage {
-    @Serializable
-    @SerialName("hello")
-    data class Hello(
-        val displayName: String,
-        val deviceId: String,
-    ) : JamMessage()
-
-    @Serializable
-    @SerialName("welcome")
-    data class Welcome(
-        val hostName: String,
-        val participantId: String,
-    ) : JamMessage()
-
     @Serializable
     @SerialName("queueState")
     data class QueueState(
         val items: List<JamMediaItem>,
         val currentIndex: Int,
-        val isPlaying: Boolean,
-        val positionMs: Long,
+        val shuffleEnabled: Boolean = false,
     ) : JamMessage()
 
     @Serializable
     @SerialName("playbackCommand")
-    data class PlaybackCommand(
-        val command: PlaybackCmd,
-    ) : JamMessage()
+    data class PlaybackCommand(val command: PlaybackCmd) : JamMessage()
 
     @Serializable
     @SerialName("suggestTrack")
-    data class SuggestTrack(val mediaItem: JamMediaItem) : JamMessage()
-
-    @Serializable
-    @SerialName("suggestPlaylist")
-    data class SuggestPlaylist(val tracks: List<JamMediaItem>) : JamMessage()
-
-    @Serializable
-    @SerialName("chat")
-    data class Chat(
-        val fromName: String,
-        val text: String,
+    data class SuggestTrack(
+        val mediaItem: JamMediaItem,
+        val addedBy: String = "",
     ) : JamMessage()
 
     @Serializable
-    @SerialName("participantList")
-    data class ParticipantList(val participants: List<JamParticipant>) : JamMessage()
+    @SerialName("suggestPlaylist")
+    data class SuggestPlaylist(
+        val tracks: List<JamMediaItem>,
+        val addedBy: String = "",
+    ) : JamMessage()
 
     @Serializable
     @SerialName("kick")
@@ -86,24 +71,12 @@ sealed class JamMessage {
     data class Leave(val reason: String = "user_left") : JamMessage()
 }
 
+/**
+ * Playback commands. Only queue navigation is global — play/pause, seek,
+ * volume, shuffle and loop are local to each participant.
+ */
 @Serializable
 sealed class PlaybackCmd {
-    @Serializable
-    @SerialName("play")
-    data object Play : PlaybackCmd()
-
-    @Serializable
-    @SerialName("pause")
-    data object Pause : PlaybackCmd()
-
-    @Serializable
-    @SerialName("toggle")
-    data object Toggle : PlaybackCmd()
-
-    @Serializable
-    @SerialName("seek")
-    data class Seek(val positionMs: Long) : PlaybackCmd()
-
     @Serializable
     @SerialName("skipNext")
     data object SkipNext : PlaybackCmd()
@@ -113,21 +86,18 @@ sealed class PlaybackCmd {
     data object SkipPrevious : PlaybackCmd()
 
     @Serializable
-    @SerialName("setVolume")
-    data class SetVolume(val volume: Float) : PlaybackCmd()
-
-    @Serializable
-    @SerialName("setLoop")
-    data class SetLoop(val loop: String) : PlaybackCmd()
-
-    @Serializable
-    @SerialName("setShuffle")
-    data class SetShuffle(val enabled: Boolean) : PlaybackCmd()
-
-    @Serializable
     @SerialName("jumpTo")
     data class JumpTo(val index: Int) : PlaybackCmd()
 }
+
+/** Retained per-participant presence entry (with an MQTT Last Will for leave). */
+@Serializable
+data class JamPresence(
+    val clientId: String,
+    val displayName: String,
+    val isHost: Boolean,
+    val left: Boolean = false,
+)
 
 @Serializable
 data class JamMediaItem(
@@ -139,6 +109,7 @@ data class JamMediaItem(
     val durationMs: Long,
     val coverUrl: String,
     val protocol: String,
+    val addedBy: String = "",
 ) {
     companion object {
         fun fromQueueEntry(entry: QueueEntry): JamMediaItem = when (entry) {
@@ -153,6 +124,7 @@ data class JamMediaItem(
                     ?: entry.track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
                     .orEmpty(),
                 protocol = entry.protocol.name,
+                addedBy = entry.addedBy,
             )
 
             is QueueEntry.LocalTrack -> JamMediaItem(
@@ -164,6 +136,7 @@ data class JamMediaItem(
                 durationMs = entry.duration,
                 coverUrl = "",
                 protocol = "PROGRESSIVE",
+                addedBy = entry.addedBy,
             )
         }
 
@@ -214,14 +187,4 @@ data class JamParticipant(
 enum class JamRole {
     Host,
     Guest,
-}
-
-object JamLoopMapping {
-    fun toString(state: LoopState): String = state.name.lowercase()
-    fun fromString(value: String): LoopState = when (value.lowercase()) {
-        "none" -> LoopState.NONE
-        "one" -> LoopState.ONE
-        "all" -> LoopState.ALL
-        else -> LoopState.NONE
-    }
 }

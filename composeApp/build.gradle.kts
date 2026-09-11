@@ -166,6 +166,12 @@ kotlin {
 
                 // DLNA
                 implementation(libs.dns.sd.kt)
+
+                // mqtt client for jam-session
+                implementation(libs.mqtt.client)
+                implementation(libs.mqtt.x.models)
+                implementation(libs.mqtt.buffer)
+                implementation(libs.mqtt.buffer.codec)
             }
         }
         commonTest.dependencies {

@@ -43,6 +43,7 @@ import dev.krtirtho.spotube.modules.settings.sections.appearanceSection
 import dev.krtirtho.spotube.modules.settings.sections.cacheSection
 import dev.krtirtho.spotube.modules.settings.sections.desktopSection
 import dev.krtirtho.spotube.modules.settings.sections.downloadsSection
+import dev.krtirtho.spotube.modules.settings.sections.jamSection
 import dev.krtirtho.spotube.modules.settings.sections.languageRegionSection
 import dev.krtirtho.spotube.modules.settings.sections.playbackSection
 import dev.krtirtho.spotube.modules.settings.sections.pluginsSection
@@ -109,6 +110,11 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
                         settingsViewModel = settingsViewModel,
                         navigatorCommands = navigatorCommands,
                         requestLocalNetworkPermission = requestLocalNetworkPermission,
+                    )
+                if (settingsState != null)
+                    jamSection(
+                        settings = settingsState!!,
+                        settingsViewModel = settingsViewModel,
                     )
                 if (settingsState != null)
                     cacheSection(

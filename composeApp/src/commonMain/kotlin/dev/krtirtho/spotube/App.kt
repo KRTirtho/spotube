@@ -33,8 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.NavDisplay
-import dev.krtirtho.spotube.core.deeplink.ExternalUriHandler
-import dev.krtirtho.spotube.core.deeplink.JamDeepLinkService
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.navigation.TOP_LEVEL_ROUTES
@@ -105,12 +103,6 @@ fun App(
 ) {
     val settingsRepository: SettingsRepository = koinInject<SettingsRepository>()
     val userSettings by settingsRepository.userSettings.collectAsStateWithLifecycle(initialValue = UserSettings())
-
-    val jamDeepLinks: JamDeepLinkService = koinInject()
-    DisposableEffect(Unit) {
-        ExternalUriHandler.listener = { uri -> jamDeepLinks.handleUri(uri) }
-        onDispose { ExternalUriHandler.listener = null }
-    }
 
     val navigationState = rememberNavigationState(
         startRoute = Routes.Home,

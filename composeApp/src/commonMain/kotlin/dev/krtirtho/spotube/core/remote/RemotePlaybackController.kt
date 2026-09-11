@@ -21,16 +21,18 @@ import co.touchlab.kermit.Logger
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
-import dev.krtirtho.spotube.core.jam.JamMediaItem
 import dev.krtirtho.spotube.core.jam.JamRole
-import dev.krtirtho.spotube.core.jam.JamSessionService
+import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -87,13 +89,17 @@ class RemotePlaybackController(
     private val collectionPlaybackHelper: CollectionPlaybackHelper,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val blacklistRepository: BlacklistRepository,
-    private val jamSession: JamSessionService,
+    private val jamRoomService: JamRoomService,
 ) : KoinComponent {
     private val logger = Logger.withTag("RemotePlaybackController")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
     private val _pendingRequest = MutableStateFlow<PlaybackDestinationRequest?>(null)
     val pendingRequest: StateFlow<PlaybackDestinationRequest?> = _pendingRequest.asStateFlow()
+
+    /** One-shot user-facing messages (e.g. "added to jam queue") for a snackbar host. */
+    private val _events = MutableSharedFlow<String>(extraBufferCapacity = 8)
+    val events: SharedFlow<String> = _events.asSharedFlow()
 
     fun isRemoteConnected(): Boolean {
         return remoteControlClient.connectionState.value is ConnectionState.Connected
@@ -168,15 +174,22 @@ class RemotePlaybackController(
         _pendingRequest.value = null
         scope.launch {
             try {
-                when (jamSession.role.value) {
+                when (jamRoomService.role.value) {
                     JamRole.Host -> executeLocally(request)
                     JamRole.Guest -> suggestToJam(request)
-                    null -> {}
+                    null -> return@launch
                 }
+                _events.emit(confirmationMessage(request))
             } catch (e: Exception) {
                 logger.e(e) { "Failed to send content to jam session" }
             }
         }
+    }
+
+    private fun confirmationMessage(request: PlaybackDestinationRequest): String = when (request.action) {
+        PlaybackDestinationAction.Play -> "Playing on the jam queue"
+        PlaybackDestinationAction.AddToQueue -> "Added to the jam queue"
+        PlaybackDestinationAction.PlayNext -> "Added to play next in the jam queue"
     }
 
     private suspend fun suggestToJam(request: PlaybackDestinationRequest) {
@@ -184,18 +197,18 @@ class RemotePlaybackController(
             is PlaybackDestinationRequest.Collection -> {
                 val tracks = collectionPlaybackHelper.resolveCollectionTracks(request.type, request.id)
                 if (tracks.isNotEmpty()) {
-                    jamSession.suggestPlaylist(tracks.map { it.toJamMediaItem() })
+                    jamRoomService.suggestPlaylist(tracks)
                     logger.i { "Suggested ${tracks.size} track(s) to the jam session" }
                 }
             }
 
             is PlaybackDestinationRequest.Track -> {
-                jamSession.suggestTrack(request.track.toJamMediaItem())
+                jamRoomService.suggestTrack(request.track)
             }
 
             is PlaybackDestinationRequest.Tracks -> {
                 if (request.tracks.isNotEmpty()) {
-                    jamSession.suggestPlaylist(request.tracks.map { it.toJamMediaItem() })
+                    jamRoomService.suggestPlaylist(request.tracks)
                 }
             }
         }
@@ -204,7 +217,9 @@ class RemotePlaybackController(
     // ---------- Internals ----------
 
     private fun request(request: PlaybackDestinationRequest) {
-        if (isRemoteConnected()) {
+        // The picker offers "This Device", a connected remote device, and an
+        // active jam session — show it whenever more than one destination exists.
+        if (isRemoteConnected() || jamRoomService.role.value != null) {
             _pendingRequest.value = request
         } else {
             executeLocally(request)
@@ -369,5 +384,3 @@ class RemotePlaybackController(
             artists.map { it.id.ifBlank { it.name } } == other.artists.map { it.id.ifBlank { it.name } }
     }
 }
-
-private fun MetadataTrack.toJamMediaItem(): JamMediaItem = JamMediaItem.fromTrack(this)

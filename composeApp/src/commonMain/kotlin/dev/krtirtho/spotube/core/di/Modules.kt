@@ -23,10 +23,10 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueueRepository
 import dev.krtirtho.spotube.core.audioplayer.DeviceAudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueStateRepository
 import dev.krtirtho.spotube.core.db.Database
-import dev.krtirtho.spotube.core.deeplink.JamDeepLinkService
 import dev.krtirtho.spotube.core.discovery.DeviceDiscoveryService
 import dev.krtirtho.spotube.core.discord.DiscordRpcService
-import dev.krtirtho.spotube.core.jam.JamSessionService
+import dev.krtirtho.spotube.core.jam.JamRoomClient
+import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.navigation.navigationModule
 import dev.krtirtho.spotube.core.remote.RemoteControlClient
 import dev.krtirtho.spotube.core.remote.RemoteControlHandler
@@ -185,12 +185,9 @@ val sharedModules = module {
     viewModelOf(::RemoteControlViewModel)
     viewModel {
         JamViewModel(
-            jamSession = get(),
-            deepLinks = get(),
+            jamRoomService = get(),
             shareService = get(),
             settingsProvider = get(),
-            audioPlayer = get(),
-            audioPlayerQueue = get(),
         )
     }
 
@@ -239,8 +236,8 @@ val sharedModules = module {
         createdAtStart()
     }
     single { RemotePlaybackController(get(), get(), get(), get(), get()) }
-    single { JamSessionService(get(), get(), get()) }
-    singleOf(::JamDeepLinkService)
+    singleOf(::JamRoomClient)
+    single { JamRoomService(get(), get(), get(), get()) }
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {
         DeviceAudioPlayerQueue(get(), get(), get(), get(), get())

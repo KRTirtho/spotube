@@ -32,6 +32,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
@@ -41,6 +42,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetValue
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.rememberBottomSheetScaffoldState
@@ -70,6 +73,7 @@ import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.remote.ConnectionRequestDialogHost
+import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.modules.devices.PlayDestinationPickerHost
 import dev.krtirtho.spotube.modules.lyrics.LyricsScreen
 import dev.krtirtho.spotube.modules.shell.alternative_track.AlternativeTrackContent
@@ -95,6 +99,13 @@ fun AppShell(
     content: @Composable () -> Unit,
 ) {
     val navigatorCommands: NavigationCommands = koinInject()
+    val remotePlaybackController: RemotePlaybackController = koinInject()
+    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(remotePlaybackController) {
+        remotePlaybackController.events.collect { message ->
+            snackbarHostState.showSnackbar(message)
+        }
+    }
     val isQueueVisible by queueViewModel.isQueueVisible.collectAsState()
     val isAlternativeVisible by alternativeViewModel.isAlternativeVisible.collectAsState()
     val isLyricsOverlayVisible by viewModel.isLyricsOverlayVisible.collectAsState()
@@ -122,6 +133,13 @@ fun AppShell(
     PlayDestinationPickerHost()
 
     Box(modifier = Modifier.fillMaxSize()) {
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 96.dp),
+        )
+
         val useSidebar = viewModel.useSidebar()
         val bottomOverlayInset = viewModel.bottomOverlayInset(useSidebar)
 

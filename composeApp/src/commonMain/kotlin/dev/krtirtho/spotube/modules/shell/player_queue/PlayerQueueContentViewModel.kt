@@ -68,7 +68,7 @@ class PlayerQueueContentViewModel(
         }
         queue.mapIndexed { index, entry ->
             val title: String
-            val subtitle: String
+            var subtitle: String
             val durationMs: Long
             val imageUrl: String?
 
@@ -87,6 +87,11 @@ class PlayerQueueContentViewModel(
                     durationMs = entry.duration
                     imageUrl = null
                 }
+            }
+
+            val addedBy = entry.addedBy
+            if (addedBy.isNotBlank()) {
+                subtitle = "$subtitle • Added by $addedBy"
             }
 
             QueueItemUi(
