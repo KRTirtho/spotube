@@ -23,8 +23,15 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueueRepository
 import dev.krtirtho.spotube.core.audioplayer.DeviceAudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueStateRepository
 import dev.krtirtho.spotube.core.db.Database
+import dev.krtirtho.spotube.core.discovery.DeviceDiscoveryService
 import dev.krtirtho.spotube.core.discord.DiscordRpcService
+import dev.krtirtho.spotube.core.jam.JamRoomClient
+import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.navigation.navigationModule
+import dev.krtirtho.spotube.core.remote.RemoteControlClient
+import dev.krtirtho.spotube.core.remote.RemoteControlHandler
+import dev.krtirtho.spotube.core.remote.RemoteControlService
+import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
 import dev.krtirtho.spotube.core.server.AlternativeTracksRepository
 import dev.krtirtho.spotube.core.server.CacheManager
@@ -38,6 +45,9 @@ import dev.krtirtho.spotube.modules.artist.ArtistRepository
 import dev.krtirtho.spotube.modules.artist.ArtistViewModel
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.blacklist.BlacklistViewModel
+import dev.krtirtho.spotube.modules.devices.DevicesViewModel
+import dev.krtirtho.spotube.modules.devices.RemoteControlViewModel
+import dev.krtirtho.spotube.modules.jam.JamViewModel
 import dev.krtirtho.spotube.modules.downloads.DownloadManager
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.home.HomeScreenRepository
@@ -133,6 +143,7 @@ val sharedModules = module {
             blacklistRepository = get(),
             shareService = get(),
             downloadManager = get(),
+            remotePlaybackController = get(),
         )
     }
 
@@ -147,6 +158,7 @@ val sharedModules = module {
             libraryRepository = get(),
             shareService = get(),
             downloadManager = get(),
+            remotePlaybackController = get(),
         )
     }
 
@@ -162,12 +174,22 @@ val sharedModules = module {
             blacklistRepository = get(),
             shareService = get(),
             downloadManager = get(),
+            remotePlaybackController = get(),
         )
     }
 
     // Blacklist
     singleOf(::BlacklistRepository)
     viewModelOf(::BlacklistViewModel)
+    viewModel { DevicesViewModel(get()) }
+    viewModelOf(::RemoteControlViewModel)
+    viewModel {
+        JamViewModel(
+            jamRoomService = get(),
+            shareService = get(),
+            settingsProvider = get(),
+        )
+    }
 
     // Album
     singleOf(::AlbumRepository)
@@ -182,6 +204,7 @@ val sharedModules = module {
             blacklistRepository = get(),
             shareService = get(),
             downloadManager = get(),
+            remotePlaybackController = get(),
         )
     }
 
@@ -194,6 +217,7 @@ val sharedModules = module {
             albumRepository = get(),
             playlistRepository = get(),
             savedTracksRepository = get(),
+            artistRepository = get(),
             audioPlayerQueue = get(),
             blacklistRepository = get(),
         )
@@ -205,6 +229,15 @@ val sharedModules = module {
     singleOf(::LocalServer) withOptions {
         createdAtStart()
     }
+    single { RemoteControlHandler(get(), get(), get(), get()) }
+    single { RemoteControlClient() }
+    singleOf(::DeviceDiscoveryService)
+    single { RemoteControlService(get(), get(), get()) } withOptions {
+        createdAtStart()
+    }
+    single { RemotePlaybackController(get(), get(), get(), get(), get()) }
+    singleOf(::JamRoomClient)
+    single { JamRoomService(get(), get(), get(), get()) }
     singleOf(::AudioPlayerQueueRepository) { bind<QueueStateRepository>() }
     single<AudioPlayerQueue> {
         DeviceAudioPlayerQueue(get(), get(), get(), get(), get())

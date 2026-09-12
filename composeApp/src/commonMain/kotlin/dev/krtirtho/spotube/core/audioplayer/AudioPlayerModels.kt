@@ -25,6 +25,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface QueueEntry {
     val url: String
+    val addedBy: String
 
     @Serializable
     @SerialName("streaming")
@@ -32,6 +33,7 @@ sealed interface QueueEntry {
         val track: MetadataTrack,
         override val url: String,
         val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
+        override val addedBy: String = "",
     ) : QueueEntry
 
     @Serializable
@@ -42,7 +44,8 @@ sealed interface QueueEntry {
         val duration: Long,
         val album: String?,
         val coverBytes: ByteArray?,
-        override val url: String
+        override val url: String,
+        override val addedBy: String = "",
     ) : QueueEntry {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -56,6 +59,7 @@ sealed interface QueueEntry {
             if (album != other.album) return false
             if (!coverBytes.contentEquals(other.coverBytes)) return false
             if (url != other.url) return false
+            if (addedBy != other.addedBy) return false
 
             return true
         }
@@ -67,6 +71,7 @@ sealed interface QueueEntry {
             result = 31 * result + (album?.hashCode() ?: 0)
             result = 31 * result + (coverBytes?.contentHashCode() ?: 0)
             result = 31 * result + url.hashCode()
+            result = 31 * result + addedBy.hashCode()
             return result
         }
     }

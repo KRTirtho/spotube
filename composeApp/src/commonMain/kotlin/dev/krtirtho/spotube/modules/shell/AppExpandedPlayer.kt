@@ -82,6 +82,8 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.core.jam.JamRole
+import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.base.BaseUITheme
@@ -117,6 +119,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxRepeateOne
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShuffle
 import dev.krtirtho.spotube.resources.iconsax.InconsaxClock
 import dev.krtirtho.spotube.resources.iconsax.SwapHorizontal2
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
@@ -158,6 +161,10 @@ fun AppExpandedPlayer(
     ),
 ) {
     val playerUiState = rememberPlayerUiState(audioPlayer, audioPlayerQueue)
+    val jamRoomService: JamRoomService = koinInject()
+    val isJamGuest by jamRoomService.role
+        .map { it == JamRole.Guest }
+        .collectAsStateWithLifecycle(initialValue = false)
     val scope = rememberCoroutineScope()
     val downloadsViewModel: DownloadsViewModel = koinViewModel()
     val navigationCommands: NavigationCommands = koinInject()
@@ -198,18 +205,22 @@ fun AppExpandedPlayer(
     }
 
     fun onSkipPrevious() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.skipToPrevious() }
     }
 
     fun onSkipNext() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.skipToNext() }
     }
 
     fun onShuffleToggle() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.shuffle(!playerUiState.isShuffling) }
     }
 
     fun onLoopToggle() {
+        if (isJamGuest) return
         scope.launch { audioPlayer.loop(playerUiState.loopState.next()) }
     }
 
@@ -517,7 +528,7 @@ fun AppExpandedPlayer(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    GhostIconButton(onClick = ::onShuffleToggle) {
+                    GhostIconButton(onClick = ::onShuffleToggle, enabled = !isJamGuest) {
                         Icon(
                             Iconsax.IconsaxShuffle,
                             contentDescription = if (playerUiState.isShuffling) "Disable shuffle" else "Enable shuffle",
@@ -528,7 +539,7 @@ fun AppExpandedPlayer(
                             }
                         )
                     }
-                    GhostIconButton(onClick = ::onSkipPrevious) {
+                    GhostIconButton(onClick = ::onSkipPrevious, enabled = !isJamGuest) {
                         Icon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
                     }
                     IconButton(
@@ -543,10 +554,10 @@ fun AppExpandedPlayer(
                             modifier = Modifier.size(30.dp),
                         )
                     }
-                    GhostIconButton(onClick = ::onSkipNext) {
+                    GhostIconButton(onClick = ::onSkipNext, enabled = !isJamGuest) {
                         Icon(Iconsax.IconsaxNext, contentDescription = "Next")
                     }
-                    GhostIconButton(onClick = ::onLoopToggle) {
+                    GhostIconButton(onClick = ::onLoopToggle, enabled = !isJamGuest) {
                         Icon(
                             imageVector = when (playerUiState.loopState) {
                                 LoopState.NONE -> Iconsax.IconsaxRepeateMusic

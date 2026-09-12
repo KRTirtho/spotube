@@ -21,6 +21,9 @@ import androidx.navigation3.runtime.NavKey
 import dev.krtirtho.spotube.modules.album.AlbumScreen
 import dev.krtirtho.spotube.modules.artist.ArtistScreen
 import dev.krtirtho.spotube.modules.blacklist.BlacklistScreen
+import dev.krtirtho.spotube.modules.devices.DevicesScreen
+import dev.krtirtho.spotube.modules.devices.RemoteControlScreen
+import dev.krtirtho.spotube.modules.jam.JamScreen
 import dev.krtirtho.spotube.modules.home.HomeScreen
 import dev.krtirtho.spotube.modules.library.LibraryScreen
 import dev.krtirtho.spotube.modules.lyrics.LyricsScreen
@@ -75,6 +78,15 @@ sealed interface Routes : NavKey {
 
     @Serializable
     data object Blacklist : Routes
+
+    @Serializable
+    data object RemoteControl : Routes
+
+    @Serializable
+    data object Devices : Routes
+
+    @Serializable
+    data object Jam : Routes
 }
 
 @OptIn(KoinExperimentalAPI::class)
@@ -147,6 +159,17 @@ val navigationModule = module {
     }
     navigation<Routes.Blacklist> {
         BlacklistScreen()
+    }
+    navigation<Routes.Devices> {
+        DevicesScreen(navigationCommands = get())
+    }
+    navigation<Routes.RemoteControl> {
+        RemoteControlScreen(
+            onDisconnect = { get<NavigationCommands>().pop() }
+        )
+    }
+    navigation<Routes.Jam> {
+        JamScreen(navigationCommands = get())
     }
 }
 
