@@ -17,8 +17,10 @@
 
 package dev.krtirtho.spotube.modules.settings
 
+
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -67,8 +69,8 @@ private val SettingsDialogMinWidth = 720.dp
 fun SettingsScreen(settingsViewModel: SettingsViewModel) {
     val navigatorCommands: NavigationCommands = koinInject()
 
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
-        if (maxWidth >= SettingsDialogMinWidth) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        if (currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Expanded) {
             SettingsDialog(
                 settingsViewModel = settingsViewModel,
                 onDismiss = { navigatorCommands.pop(Routes.Settings) })

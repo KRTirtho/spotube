@@ -18,17 +18,8 @@
 package dev.krtirtho.spotube.core.ui.component
 
 
-import org.spotube.millennium.composables.MillenniumIcon
-import org.spotube.millennium.composables.MillenniumIconButton
-import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumModalBottomSheet
-import org.spotube.millennium.composables.MillenniumSeparator
-import org.spotube.millennium.composables.MillenniumTextField
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -42,23 +33,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-
-import dev.krtirtho.spotube.core.ui.theming.AppTheme
-import com.composeunstyled.DropdownMenuPanel
-import com.composeunstyled.SheetDetent
-import com.composeunstyled.Text
-import com.composeunstyled.UnstyledDropdownMenu
-import com.composeunstyled.UnstyledDropdownMenuItem
-import com.composeunstyled.rememberModalBottomSheetState
-import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
-import org.spotube.millennium.theme.MillenniumTheme
-import org.spotube.millennium.theme.gelBrush
-import org.spotube.millennium.theme.millenniumPanelBrush
-import org.spotube.millennium.theme.millenniumSurface
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -69,21 +46,37 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.composeunstyled.DropdownMenuPanel
+import com.composeunstyled.SheetDetent
+import com.composeunstyled.Text
+import com.composeunstyled.UnstyledDropdownMenu
+import com.composeunstyled.UnstyledDropdownMenuItem
+import com.composeunstyled.rememberModalBottomSheetState
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Check
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
-import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumModalBottomSheet
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumTextField
+import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.millennium.theme.gelBrush
+import org.spotube.millennium.theme.millenniumPanelBrush
+import org.spotube.millennium.theme.millenniumSurface
 
 data class AdaptiveMenuItem(
     val icon: ImageVector? = null,
@@ -106,14 +99,12 @@ fun AdaptiveDropdownBottomSheet(
     items: List<AdaptiveMenuItem>,
     trigger: @Composable (onClick: () -> Unit) -> Unit,
     modifier: Modifier = Modifier,
-    breakpointDp: Float = 600f,
     menuMinWidth: Dp = 200.dp,
     header: @Composable (() -> Unit)? = null,
     headerDisplayMode: HeaderDisplayMode = HeaderDisplayMode.Always,
     filter: ((AdaptiveMenuItem, String) -> Boolean)? = null) {
     var expanded by remember { mutableStateOf(false) }
-    val adaptiveInfo = currentWindowAdaptiveInfo()
-    val isLargeScreen = adaptiveInfo.windowSizeClass.minWidthDp >= breakpointDp
+    val isLargeScreen = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
 
     Box(modifier = modifier) {
         if (isLargeScreen) {

@@ -29,7 +29,8 @@ import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -327,8 +328,8 @@ private fun ArtistHeaderCard(
     onFollowClick: () -> Unit,
     isBlacklisted: Boolean,
     onBlacklistClick: () -> Unit) {
-    BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
-        val isCompact = maxWidth < 600.dp
+    Box(modifier = Modifier.fillMaxWidth()) {
+        val isCompact = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
 
         MillenniumCard(
             modifier = Modifier

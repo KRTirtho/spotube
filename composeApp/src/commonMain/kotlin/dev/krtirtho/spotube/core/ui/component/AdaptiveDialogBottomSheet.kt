@@ -32,16 +32,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-
-import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.SheetDetent
 import com.composeunstyled.rememberModalBottomSheetState
-import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.ui.unit.dp
 import dev.krtirtho.spotube.resources.iconsax.FluentDismiss
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
@@ -51,11 +49,9 @@ fun AdaptiveDialogBottomSheet(
     onDismiss: () -> Unit,
     title: @Composable (() -> Unit)? = null,
     modifier: Modifier = Modifier,
-    breakpointDp: Float = 600f,
     actions: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit) {
-    val adaptiveInfo = currentWindowAdaptiveInfo()
-    val isLargeScreen = adaptiveInfo.windowSizeClass.minWidthDp >= breakpointDp
+    val isLargeScreen = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
 
     if (isLargeScreen) {
         MillenniumDialog(

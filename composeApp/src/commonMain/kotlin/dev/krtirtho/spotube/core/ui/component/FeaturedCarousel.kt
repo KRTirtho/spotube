@@ -41,7 +41,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
-import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -104,8 +105,7 @@ private fun FeaturedCarouselContent(
     val centerIndex = items.size / 2
     var selectedIndex by remember { mutableIntStateOf(centerIndex) }
     val state = rememberCoverflowState(centerIndex) { index -> selectedIndex = index }
-    val adaptiveInfo = currentWindowAdaptiveInfo()
-    val isSmallScreen = adaptiveInfo.windowSizeClass.minWidthDp <= 600
+    val isSmallScreen = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
 
     Box(
         modifier = modifier

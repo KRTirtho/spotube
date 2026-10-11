@@ -18,18 +18,8 @@
 package dev.krtirtho.spotube.modules.shell.player_queue
 
 
-import org.spotube.millennium.composables.MillenniumIcon
-import org.spotube.millennium.composables.MillenniumCard
-import org.spotube.millennium.composables.MillenniumDropdownMenu
-import org.spotube.millennium.composables.MillenniumIconButton
-import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumListTile
-import org.spotube.millennium.composables.MillenniumSeparator
-import org.spotube.millennium.composables.MillenniumTextField
-import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,14 +35,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.CircleShape
-
-import dev.krtirtho.spotube.core.ui.theming.AppTheme
-
-import com.composeunstyled.Text
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,29 +46,47 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.composeunstyled.Text
 import dev.krtirtho.spotube.core.jam.JamParticipant
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
-import dev.krtirtho.spotube.resources.iconsax.IconsaxDragHandle
-import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCloseSquare
+import dev.krtirtho.spotube.resources.iconsax.IconsaxDragHandle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
 import dev.krtirtho.spotube.resources.iconsax.IconsaxUserRemove
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.spotube.millennium.composables.MillenniumDropdownMenu
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumListTile
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumTextField
+import org.spotube.millennium.composables.MillenniumTooltip
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.rememberReorderableLazyListState
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.queue_clear_queue
+import spotube.composeapp.generated.resources.queue_filter_queue
+import spotube.composeapp.generated.resources.queue_no_queue_entries
+import spotube.composeapp.generated.resources.queue_title
 
 @Composable
 fun PlayerQueueContent(
     viewModel: PlayerQueueContentViewModel = koinViewModel<PlayerQueueContentViewModel>(),
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     val state by viewModel.queueContentUiState.collectAsState()
     val displayItems = state.displayItems
     val filterQuery = state.filterQuery
@@ -103,14 +107,17 @@ fun PlayerQueueContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
             Text(
-                text = "Queue",
-                style = AppTheme.typography.titleLarge)
+                text = stringResource(Res.string.queue_title),
+                style = AppTheme.typography.titleLarge
+            )
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
-                verticalAlignment = Alignment.CenterVertically) {
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 val filterState = rememberTextFieldState(filterQuery)
                 LaunchedEffect(filterState.text) {
                     viewModel.setQueueFilter(filterState.text.toString())
@@ -118,42 +125,49 @@ fun PlayerQueueContent(
                 MillenniumTextField(
                     state = filterState,
                     label = "",
-                    placeholder = "Filter queue...",
-                    modifier = Modifier.weight(1f))
+                    placeholder = stringResource(Res.string.queue_filter_queue),
+                    modifier = Modifier.weight(1f)
+                )
                 if (!isReadOnly) {
-                    MillenniumIconButton(
-                        onClick = viewModel::clearQueue,
-                        style = MillenniumIconButtonStyle.Quiet) {
-                        MillenniumIcon(Iconsax.IconsaxTrash, contentDescription = "Clear Queue")
+                    MillenniumTooltip(stringResource(Res.string.queue_clear_queue)) {
+                        MillenniumIconButton(
+                            onClick = viewModel::clearQueue,
+                            style = MillenniumIconButtonStyle.Quiet
+                        ) {
+                            MillenniumIcon(
+                                Iconsax.IconsaxTrash,
+                                contentDescription = stringResource(Res.string.queue_clear_queue)
+                            )
+                        }
                     }
                 }
             }
 
             if (displayItems.isEmpty()) {
                 Text(
-                    text = "No queue entries",
+                    text = stringResource(Res.string.queue_no_queue_entries),
                     style = AppTheme.typography.bodyMedium,
-                    color = AppTheme.colors.onSurfaceVariant)
+                    color = AppTheme.colors.onSurfaceVariant
+                )
             } else {
-                MillenniumCard {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = lazyListState,
-                        contentPadding = PaddingValues(bottom = 8.dp)) {
-                        items(displayItems, key = { it.id }) { item ->
-                            ReorderableItem(reorderableLazyListState, key = item.id) { isDragging ->
-                                val elevation by animateDpAsState(if (isDragging) 8.dp else 0.dp)
-                                QueueItemRow(
-                                    item = item,
-                                    reorderScope = if (isFiltered || isReadOnly) null else this,
-                                    onPlayClick = { viewModel.playQueueItem(item.originalIndex) },
-                                    onRemoveClick = { viewModel.removeQueueItem(item.originalIndex) },
-                                    onDragStarted = { viewModel.onDragStart() },
-                                    onDragStopped = { viewModel.onDragStop() },
-                                    showOptions = !isReadOnly,
-                                    enabled = !isReadOnly,
-                                    onParticipantClick = { selectedParticipant = it })
-                            }
+
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    contentPadding = PaddingValues(bottom = 8.dp)
+                ) {
+                    items(displayItems, key = { it.id }) { item ->
+                        ReorderableItem(reorderableLazyListState, key = item.id) { isDragging ->
+                            QueueItemRow(
+                                item = item,
+                                reorderScope = if (isFiltered || isReadOnly) null else this,
+                                onPlayClick = { viewModel.playQueueItem(item.originalIndex) },
+                                onRemoveClick = { viewModel.removeQueueItem(item.originalIndex) },
+                                onDragStarted = { viewModel.onDragStart() },
+                                onDragStopped = { viewModel.onDragStop() },
+                                showOptions = !isReadOnly,
+                                enabled = !isReadOnly,
+                                onParticipantClick = { selectedParticipant = it })
                         }
                     }
                 }
@@ -179,32 +193,38 @@ private fun ParticipantDialog(
     onDismiss: () -> Unit,
     onKick: () -> Unit,
     onBan: () -> Unit,
-    onRemoveSuggestions: () -> Unit) {
+    onRemoveSuggestions: () -> Unit
+) {
     AdaptiveDialogBottomSheet(
         onDismiss = onDismiss,
         title = { Text(participant.displayName, style = AppTheme.typography.titleLarge) }) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.padding(vertical = 8.dp)) {
+                modifier = Modifier.padding(vertical = 8.dp)
+            ) {
                 ParticipantAvatar(participant, size = 40)
                 Text(
                     text = participant.displayName,
-                    style = AppTheme.typography.bodyLarge)
+                    style = AppTheme.typography.bodyLarge
+                )
                 if (participant.isHost) {
                     Text(
                         text = "Host",
                         style = AppTheme.typography.labelSmall,
-                        color = AppTheme.colors.primary)
+                        color = AppTheme.colors.primary
+                    )
                 }
             }
 
             if (isJamHost && !participant.isHost) {
                 MillenniumSeparator(
-                    modifier = Modifier.fillMaxWidth())
+                    modifier = Modifier.fillMaxWidth()
+                )
                 MillenniumListTile(
                     onClick = {
                         onKick()
@@ -214,7 +234,8 @@ private fun ParticipantDialog(
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxCloseSquare,
                             contentDescription = null,
-                            tint = AppTheme.colors.error)
+                            tint = AppTheme.colors.error
+                        )
                     },
                     title = { Text("Kick") },
                     subtitle = { Text("Remove them from the session") })
@@ -227,7 +248,8 @@ private fun ParticipantDialog(
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxUserRemove,
                             contentDescription = null,
-                            tint = AppTheme.colors.error)
+                            tint = AppTheme.colors.error
+                        )
                     },
                     title = { Text("Ban") },
                     subtitle = { Text("Kick and prevent them from rejoining") })
@@ -239,7 +261,8 @@ private fun ParticipantDialog(
                     leading = {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxMusicSquareRemove,
-                            contentDescription = null)
+                            contentDescription = null
+                        )
                     },
                     title = { Text("Remove suggestions") },
                     subtitle = { Text("Remove every track they added to the queue") })
@@ -255,11 +278,13 @@ private fun ParticipantAvatar(participant: JamParticipant, size: Int) {
             .size(size.dp)
             .clip(CircleShape)
             .background(AppTheme.colors.primaryContainer),
-        contentAlignment = Alignment.Center) {
+        contentAlignment = Alignment.Center
+    ) {
         Text(
             text = participant.displayName.firstOrNull()?.uppercase()?.take(1) ?: "?",
             style = AppTheme.typography.labelMedium,
-            color = AppTheme.colors.onPrimaryContainer)
+            color = AppTheme.colors.onPrimaryContainer
+        )
     }
 }
 
@@ -273,7 +298,8 @@ private fun QueueItemRow(
     onDragStopped: () -> Unit,
     showOptions: Boolean = true,
     enabled: Boolean = true,
-    onParticipantClick: (JamParticipant) -> Unit = {}) {
+    onParticipantClick: (JamParticipant) -> Unit = {}
+) {
     var showMenu by remember { mutableStateOf(false) }
 
     MillenniumListTile(
@@ -284,8 +310,9 @@ private fun QueueItemRow(
         leading = {
             Row(
                 modifier = Modifier
-                    .height(72.dp),
-                verticalAlignment = Alignment.CenterVertically) {
+                    .height(56.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 MillenniumIcon(
                     Iconsax.IconsaxDragHandle,
                     contentDescription = if (reorderScope != null) "Reorder" else null,
@@ -296,7 +323,8 @@ private fun QueueItemRow(
                                 with(reorderScope) {
                                     Modifier.draggableHandle(
                                         onDragStarted = { onDragStarted() },
-                                        onDragStopped = onDragStopped)
+                                        onDragStopped = onDragStopped
+                                    )
                                 }
                             } else {
                                 Modifier
@@ -305,21 +333,24 @@ private fun QueueItemRow(
 
                 Box(
                     modifier = Modifier
-                        .size(48.dp)
+                        .size(40.dp)
                         .clip(AppTheme.shapes.small)
                         .background(AppTheme.colors.surfaceVariant),
-                    contentAlignment = Alignment.Center) {
+                    contentAlignment = Alignment.Center
+                ) {
                     if (item.imageUrl != null) {
                         AsyncImage(
                             model = item.imageUrl,
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop)
+                            contentScale = ContentScale.Crop
+                        )
                     } else {
                         Text(
                             text = "${item.originalIndex + 1}",
                             style = AppTheme.typography.labelMedium,
-                            color = AppTheme.colors.onSurfaceVariant)
+                            color = AppTheme.colors.onSurfaceVariant
+                        )
                     }
                 }
             }
@@ -334,7 +365,8 @@ private fun QueueItemRow(
                     AppTheme.colors.onSecondaryContainer
                 } else {
                     AppTheme.colors.onSurface
-                })
+                }
+            )
         },
         subtitle = {
             Text(
@@ -342,13 +374,15 @@ private fun QueueItemRow(
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis)
+                overflow = TextOverflow.Ellipsis
+            )
         },
         trailing = {
             Text(
                 text = item.durationLabel,
                 style = AppTheme.typography.bodySmall,
-                color = AppTheme.colors.onSurfaceVariant)
+                color = AppTheme.colors.onSurfaceVariant
+            )
 
             Spacer(modifier = Modifier.width(4.dp))
 
@@ -359,11 +393,13 @@ private fun QueueItemRow(
                         .clip(CircleShape)
                         .background(AppTheme.colors.surfaceVariant)
                         .clickable { onParticipantClick(participant) },
-                    contentAlignment = Alignment.Center) {
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(
                         text = participant.displayName.firstOrNull()?.uppercase()?.take(1) ?: "?",
                         style = AppTheme.typography.labelSmall,
-                        color = AppTheme.colors.onSurfaceVariant)
+                        color = AppTheme.colors.onSurfaceVariant
+                    )
                 }
                 Spacer(modifier = Modifier.width(4.dp))
             }
@@ -380,10 +416,12 @@ private fun QueueItemRow(
                     anchor = {
                         MillenniumIconButton(
                             onClick = { showMenu = true },
-                            style = MillenniumIconButtonStyle.Quiet) {
+                            style = MillenniumIconButtonStyle.Quiet
+                        ) {
                             MillenniumIcon(
                                 Iconsax.Iconsax3DotsMore,
-                                contentDescription = "More options")
+                                contentDescription = "More options"
+                            )
                         }
                     })
             }

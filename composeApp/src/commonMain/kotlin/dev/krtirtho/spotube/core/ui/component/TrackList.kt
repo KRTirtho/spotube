@@ -18,6 +18,9 @@
 package dev.krtirtho.spotube.core.ui.component
 
 
+
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -78,7 +81,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
@@ -207,11 +209,10 @@ fun TrackList(
         }
     }
 
-    val windowInfo = LocalWindowInfo.current
-    val maxWidth = with(density) { windowInfo.containerSize.width.toDp() }
-    val isCompact = maxWidth < CompactTrackListBreakpoint
+    val widthBreakpoint = currentWindowWidthBreakpoint()
+    val isCompact = widthBreakpoint isBelow WindowBreakpoints.Medium
     val isDesktop = remember { getPlatform().isDesktop() }
-    val showIndex = maxWidth >= LargeTrackListBreakpoint
+    val showIndex = widthBreakpoint isAtLeast WindowBreakpoints.Expanded
     val showAlbum = !isCompact
     val useDropdownForOptions = isDesktop && !isCompact
 

@@ -41,7 +41,8 @@ import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.SheetDetent
 import com.composeunstyled.Text
 import com.composeunstyled.rememberModalBottomSheetState
-import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
@@ -82,12 +83,10 @@ fun PlaylistFormSheet(
     onSubmit: (PlaylistFormData) -> Unit,
     modifier: Modifier = Modifier,
     initialData: PlaylistFormData? = null,
-    isEditing: Boolean = false,
-    breakpointDp: Float = 600f) {
+    isEditing: Boolean = false) {
     if (!visible) return
 
-    val adaptiveInfo = currentWindowAdaptiveInfo()
-    val isLargeScreen = adaptiveInfo.windowSizeClass.minWidthDp >= breakpointDp
+    val isLargeScreen = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
 
     var name by remember(initialData) { mutableStateOf(initialData?.name ?: "") }
     var description by remember(initialData) { mutableStateOf(initialData?.description ?: "") }

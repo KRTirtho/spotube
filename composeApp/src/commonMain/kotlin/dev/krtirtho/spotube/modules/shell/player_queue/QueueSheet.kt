@@ -17,15 +17,17 @@
 
 package dev.krtirtho.spotube.modules.shell.player_queue
 
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
 import com.composeunstyled.DrawerPlacement
 import com.composeunstyled.SheetDetent
+import com.composeunstyled.currentWindowWidthBreakpoint
 import com.composeunstyled.rememberModalBottomSheetState
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import org.spotube.millennium.composables.MillenniumDrawer
 import org.spotube.millennium.composables.MillenniumDrawerValue
 import org.spotube.millennium.composables.MillenniumModalBottomSheet
@@ -38,13 +40,14 @@ fun QueueSheet(
     isVisible: Boolean,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit) {
-    BoxWithConstraints(modifier = modifier) {
-        if (maxWidth >= SlidingSheetBreakpoint) {
-            EndDrawerSheet(isVisible, onDismiss, content)
-        } else {
-            BottomSheetContent(isVisible, onDismiss, content)
-        }
+    content: @Composable () -> Unit
+) {
+    val isExpanded = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Expanded
+
+    if (isExpanded) {
+        EndDrawerSheet(isVisible, onDismiss, content)
+    } else {
+        BottomSheetContent(isVisible, onDismiss, content)
     }
 }
 
@@ -52,7 +55,8 @@ fun QueueSheet(
 internal fun EndDrawerSheet(
     isVisible: Boolean,
     onDismiss: () -> Unit,
-    content: @Composable () -> Unit) {
+    content: @Composable () -> Unit
+) {
     val drawerState = rememberMillenniumDrawerState()
     LaunchedEffect(isVisible) {
         drawerState.targetValue =
@@ -66,7 +70,10 @@ internal fun EndDrawerSheet(
     MillenniumDrawer(
         state = drawerState,
         placement = DrawerPlacement.End,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)) {
+        shape = RectangleShape,
+        maximumWidth = 400.dp,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)
+    ) {
         content()
     }
 }
@@ -75,7 +82,8 @@ internal fun EndDrawerSheet(
 internal fun BottomSheetContent(
     isVisible: Boolean,
     onDismiss: () -> Unit,
-    content: @Composable () -> Unit) {
+    content: @Composable () -> Unit
+) {
     if (!isVisible) return
     val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
     LaunchedEffect(sheetState.bottomSheetState.currentDetent) {
@@ -85,7 +93,8 @@ internal fun BottomSheetContent(
     }
     MillenniumModalBottomSheet(
         state = sheetState,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)) {
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+    ) {
         content()
     }
 }

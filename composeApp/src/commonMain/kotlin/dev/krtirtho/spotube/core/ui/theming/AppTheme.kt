@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 
 import dev.krtirtho.spotube.modules.settings.Theme
 import dev.krtirtho.spotube.modules.settings.UserSettings
+import org.spotube.millennium.composables.MillenniumTooltipHost
 import org.spotube.millennium.theme.MillenniumColors
 import org.spotube.millennium.theme.MillenniumPalette
 import org.spotube.millennium.theme.MillenniumTheme
@@ -75,7 +76,8 @@ data class AppColors(
     val onError: Color,
     val errorContainer: Color,
     val onErrorContainer: Color,
-    val scrim: Color)
+    val scrim: Color
+)
 
 /** Maps Millennium's semantic palette onto the app's role names. */
 fun appColorsFrom(m: MillenniumColors): AppColors = AppColors(
@@ -106,7 +108,8 @@ fun appColorsFrom(m: MillenniumColors): AppColors = AppColors(
     onError = m.background,
     errorContainer = m.danger.copy(alpha = 0.16f),
     onErrorContainer = m.danger,
-    scrim = m.scrim)
+    scrim = m.scrim
+)
 
 /** Named text styles used by the app, independent of Material typography. */
 @Immutable
@@ -123,16 +126,19 @@ data class AppTypography(
     val bodySmall: TextStyle,
     val labelLarge: TextStyle,
     val labelMedium: TextStyle,
-    val labelSmall: TextStyle)
+    val labelSmall: TextStyle
+)
 
 private fun style(
     size: Int,
     lineHeight: Int,
-    weight: FontWeight = FontWeight.Normal): TextStyle = TextStyle(
+    weight: FontWeight = FontWeight.Normal
+): TextStyle = TextStyle(
     fontFamily = FontFamily.SansSerif,
     fontSize = size.sp,
     lineHeight = lineHeight.sp,
-    fontWeight = weight)
+    fontWeight = weight
+)
 
 val AppDefaultTypography = AppTypography(
     displaySmall = style(36, 44),
@@ -147,21 +153,25 @@ val AppDefaultTypography = AppTypography(
     bodySmall = style(12, 16),
     labelLarge = style(14, 20, FontWeight.Medium),
     labelMedium = style(12, 16, FontWeight.Medium),
-    labelSmall = style(11, 16, FontWeight.Medium))
+    labelSmall = style(11, 16, FontWeight.Medium)
+)
 
 /** Corner shapes used by the app. */
 @Immutable
 data class AppShapes(
     val small: Shape,
     val medium: Shape,
-    val large: Shape)
+    val large: Shape
+)
 
 val AppDefaultShapes = AppShapes(
     small = RoundedCornerShape(8.dp),
     medium = RoundedCornerShape(12.dp),
-    large = RoundedCornerShape(16.dp))
+    large = RoundedCornerShape(16.dp)
+)
 
-val LocalAppColors = staticCompositionLocalOf { appColorsFrom(org.spotube.millennium.theme.MillenniumLightColors) }
+val LocalAppColors =
+    staticCompositionLocalOf { appColorsFrom(org.spotube.millennium.theme.MillenniumLightColors) }
 val LocalAppTypography = staticCompositionLocalOf { AppDefaultTypography }
 val LocalAppShapes = staticCompositionLocalOf { AppDefaultShapes }
 
@@ -182,7 +192,8 @@ object AppTheme {
 @Composable
 fun SpotubeTheme(
     settings: UserSettings,
-    content: @Composable () -> Unit) {
+    content: @Composable () -> Unit
+) {
     val isDarkTheme = when (settings.theme) {
         Theme.LIGHT -> false
         Theme.DARK -> true
@@ -192,11 +203,14 @@ fun SpotubeTheme(
 
     MillenniumTheme(dark = isDarkTheme, config = MillenniumThemeConfig(palette = palette)) {
         val colors = appColorsFrom(MillenniumTheme.colors)
-        CompositionLocalProvider(
-            LocalAppColors provides colors,
-            LocalAppTypography provides AppDefaultTypography,
-            LocalAppShapes provides AppDefaultShapes,
-            content = content)
+        MillenniumTooltipHost {
+            CompositionLocalProvider(
+                LocalAppColors provides colors,
+                LocalAppTypography provides AppDefaultTypography,
+                LocalAppShapes provides AppDefaultShapes,
+                content = content
+            )
+        }
     }
 }
 

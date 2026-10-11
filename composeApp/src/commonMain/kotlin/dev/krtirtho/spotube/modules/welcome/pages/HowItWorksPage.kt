@@ -1,6 +1,11 @@
 package dev.krtirtho.spotube.modules.welcome.pages
 
 
+
+
+import androidx.compose.foundation.layout.Box
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import org.spotube.millennium.composables.MillenniumCard
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
@@ -38,8 +43,8 @@ fun HowItWorksPage(
     onTogglePlayback: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    BoxWithConstraints(modifier.fillMaxSize()) {
-        val wide = maxWidth >= 760.dp
+    Box(modifier.fillMaxSize()) {
+        val wide = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Expanded
         if (wide) {
             Row(
                 Modifier.fillMaxSize().padding(40.dp),

@@ -76,7 +76,8 @@ interface NavigationItem {
 
 private val tabs = listOf<NavigationItem>(
     NavigationItem.Tab<Any>("Home", Iconsax.IconsaxHome, Routes.Home),
-    NavigationItem.Tab<Any>("Search", Iconsax.IconsaxSearch, Routes.Search))
+    NavigationItem.Tab<Any>("Search", Iconsax.IconsaxSearch, Routes.Search)
+)
 
 val sidebarTabs = tabs + listOf(
     NavigationItem.Group(
@@ -89,7 +90,8 @@ val sidebarTabs = tabs + listOf(
                 LibraryTab.Playlists
             ),
             NavigationItem.Tab("Albums", Iconsax.IconsaxCd, Routes.Library, LibraryTab.Albums),
-            NavigationItem.Tab("Artists", Iconsax.User, Routes.Library, LibraryTab.Artists))
+            NavigationItem.Tab("Artists", Iconsax.User, Routes.Library, LibraryTab.Artists)
+        )
     ),
     NavigationItem.Group(
         "On Device",
@@ -105,23 +107,23 @@ val sidebarTabs = tabs + listOf(
                 Iconsax.IconsaxDirectboxReceive,
                 Routes.Library,
                 LibraryTab.Downloads
-            ))
+            )
+        )
     ),
     NavigationItem.Group(
         "Connect",
         items = listOf(
             NavigationItem.Tab("Devices", Iconsax.IconsaxMirrorScreenRegular, Routes.Devices),
-            NavigationItem.Tab("Group Jam", Iconsax.IconsaxSoundTwotone, Routes.Jam))))
+            NavigationItem.Tab("Group Jam", Iconsax.IconsaxSoundTwotone, Routes.Jam)
+        )
+    )
+)
 val bottombarTabs = tabs + listOf(
     NavigationItem.Tab<Any>("Library", Iconsax.IconsaxMusicLibrary, Routes.Library),
     NavigationItem.Tab("Settings", Iconsax.IconsaxSetting2, Routes.Settings)
 )
 
-@OptIn(
-    KoinExperimentalAPI::class,
-    ExperimentalCoroutinesApi::class,
-    ExperimentalSharedTransitionApi::class
-)
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun App(
     content: @Composable () -> Unit = {}
@@ -156,7 +158,8 @@ fun App(
                 AppShell(navigator, navigationState) {
                     SharedTransitionLayout {
                         CompositionLocalProvider(
-                            LocalSharedTransitionScope provides this@SharedTransitionLayout) {
+                            LocalSharedTransitionScope provides this@SharedTransitionLayout
+                        ) {
                             Column {
                                 NavDisplay(
                                     modifier = Modifier.fillMaxSize(),

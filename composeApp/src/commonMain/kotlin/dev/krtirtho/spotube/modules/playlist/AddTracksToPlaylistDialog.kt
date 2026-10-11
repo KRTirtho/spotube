@@ -44,7 +44,8 @@ import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.SheetDetent
 import com.composeunstyled.Text
 import com.composeunstyled.rememberModalBottomSheetState
-import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -79,12 +80,10 @@ fun AddTracksToPlaylistDialog(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     searchRepository: SearchRepository = koinInject(),
-    libraryRepository: LibraryRepository = koinInject(),
-    breakpointDp: Float = 600f) {
+    libraryRepository: LibraryRepository = koinInject()) {
     if (!visible) return
 
-    val adaptiveInfo = currentWindowAdaptiveInfo()
-    val isLargeScreen = adaptiveInfo.windowSizeClass.minWidthDp >= breakpointDp
+    val isLargeScreen = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
 
     var query by remember { mutableStateOf("") }
     var searchResults by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }

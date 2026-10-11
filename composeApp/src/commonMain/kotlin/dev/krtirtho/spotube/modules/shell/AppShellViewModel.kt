@@ -17,9 +17,10 @@
 
 package dev.krtirtho.spotube.modules.shell
 
+
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.lifecycle.ViewModel
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -63,9 +64,7 @@ class AppShellViewModel : ViewModel() {
         if (maxWidth != null) {
             return maxWidth >= sidebarMinWidth
         }
-        val density = LocalDensity.current
-        val windowInfo = LocalWindowInfo.current
-        return with(density) { windowInfo.containerSize.width.toDp() >= sidebarMinWidth }
+        return currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Expanded
     }
 
     fun bottomOverlayInset(useSidebar: Boolean): Dp =

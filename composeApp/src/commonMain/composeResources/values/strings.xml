@@ -16,13 +16,18 @@
   -->
 
 <resources>
+    <string name="queue_title">Queue</string>
+    <string name="queue_clear_queue">Clear Queue</string>
+    <string name="queue_filter_queue">Filter queue...</string>
+    <string name="queue_no_queue_entries">No queue entries</string>
+
     <string name="settings_screen_title">Settings</string>
 
     <string name="settings_section_plugins">Plugins</string>
     <string name="settings_section_language_region">Language and Region</string>
     <string name="settings_section_appearance">Appearance</string>
     <string name="settings_section_playback">Playback</string>
-    <string name="settings_section_downloads">Downloads</string>
+    <string name="settings_section_downloads">Downloads</string>f
     <string name="settings_section_caching">Caching</string>
     <string name="settings_section_desktop">Desktop</string>
     <string name="settings_section_updates">Updates</string>

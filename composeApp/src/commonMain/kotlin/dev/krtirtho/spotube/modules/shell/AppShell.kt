@@ -23,8 +23,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -32,43 +30,29 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.graphicsLayer
-
-import dev.krtirtho.spotube.core.ui.theming.AppTheme
-import org.spotube.millennium.composables.MillenniumSnackbarHost
-import org.spotube.millennium.composables.MillenniumSnackbarHostState
-import org.spotube.millennium.composables.MillenniumSeparator
-import org.spotube.millennium.theme.MillenniumTheme
-import com.composeunstyled.Sheet
-import com.composeunstyled.SheetDetent
-import com.composeunstyled.UnstyledBottomSheet
-import com.composeunstyled.rememberBottomSheetState
-import com.composeunstyled.Text
-
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.composeunstyled.Sheet
+import com.composeunstyled.SheetDetent
+import com.composeunstyled.UnstyledBottomSheet
+import com.composeunstyled.rememberBottomSheetState
+import dev.chrisbanes.haze.hazeSource
+import dev.chrisbanes.haze.rememberHazeState
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
@@ -86,10 +70,13 @@ import dev.krtirtho.spotube.modules.shell.player_queue.QueueSheet
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumSnackbarHost
+import org.spotube.millennium.composables.MillenniumSnackbarHostState
+import org.spotube.millennium.theme.MillenniumTheme
 
 val LocalAppShellBottomInset = staticCompositionLocalOf { 0.dp }
 
-@OptIn(ExperimentalSharedTransitionApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun AppShell(
     navigator: Navigator,
@@ -158,7 +145,6 @@ fun AppShell(
                     Column(modifier = Modifier.fillMaxSize()) {
                         Row(modifier = Modifier.weight(1f)) {
                             AppSidebar(
-                                hazeState = bgHazeState,
                                 navigator = navigator,
                                 navigationState = navigationState
                             )
@@ -214,7 +200,7 @@ fun AppShell(
                     }
                 }
             } else {
-                BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.fillMaxSize()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -278,7 +264,7 @@ fun AppShell(
 @OptIn(
     ExperimentalSharedTransitionApi::class, ExperimentalFoundationApi::class)
 @Composable
-private fun BoxWithConstraintsScope.CompactPlayerOverlay(
+private fun CompactPlayerOverlay(
     navigator: Navigator,
     navigationState: NavigationState,
     viewModel: AppShellViewModel,

@@ -18,6 +18,11 @@
 package dev.krtirtho.spotube.modules.settings.components
 
 
+
+
+import androidx.compose.foundation.layout.Box
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.ui.Alignment
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
@@ -27,7 +32,6 @@ import org.spotube.millennium.composables.MillenniumRadioGroup
 import org.spotube.millennium.composables.MillenniumSwitch
 import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -92,8 +96,8 @@ internal fun <T> SelectionSettingCard(
     filter: ((AdaptiveMenuItem, String) -> Boolean)? = null) {
     var isDialogOpen by remember { mutableStateOf(false) }
 
-    BoxWithConstraints {
-        val isWideLayout = maxWidth >= inlineSelectorMinWidth
+    Box {
+        val isWideLayout = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
 
         SettingCardItem(
             title = title,
@@ -173,8 +177,8 @@ internal fun TextInputSettingCard(
     enabled: Boolean = true) {
     var isDialogOpen by remember { mutableStateOf(false) }
 
-    BoxWithConstraints {
-        val isWideLayout = maxWidth >= inlineTextFieldMinWidth
+    Box {
+        val isWideLayout = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
         val inlineState = rememberTextFieldState(value)
 
         LaunchedEffect(inlineState, isWideLayout) {

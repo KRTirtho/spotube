@@ -42,7 +42,8 @@ import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.SheetDetent
 import com.composeunstyled.Text
 import com.composeunstyled.rememberModalBottomSheetState
-import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -74,12 +75,10 @@ fun AddToPlaylistPicker(
     onDismiss: () -> Unit,
     onPlaylistSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
-    libraryRepository: LibraryRepository = koinInject(),
-    breakpointDp: Float = 600f) {
+    libraryRepository: LibraryRepository = koinInject()) {
     if (!visible) return
 
-    val adaptiveInfo = currentWindowAdaptiveInfo()
-    val isLargeScreen = adaptiveInfo.windowSizeClass.minWidthDp >= breakpointDp
+    val isLargeScreen = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
 
     var playlists by remember { mutableStateOf<List<MetadataPlaylist>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }

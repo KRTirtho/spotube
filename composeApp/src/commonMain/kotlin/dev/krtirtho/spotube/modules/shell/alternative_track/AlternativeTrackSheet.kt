@@ -17,7 +17,11 @@
 
 package dev.krtirtho.spotube.modules.shell.alternative_track
 
-import androidx.compose.foundation.layout.BoxWithConstraints
+
+
+import androidx.compose.foundation.layout.Box
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -32,8 +36,8 @@ fun AlternativeTrackSheet(
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit) {
-    BoxWithConstraints(modifier = modifier) {
-        if (maxWidth >= SlidingSheetBreakpoint) {
+    Box(modifier = modifier) {
+        if (currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Expanded) {
             EndDrawerSheet(isVisible, onDismiss, content)
         } else {
             BottomSheetContent(isVisible, onDismiss, content)

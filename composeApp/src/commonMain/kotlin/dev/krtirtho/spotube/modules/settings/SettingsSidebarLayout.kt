@@ -23,6 +23,7 @@ import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumSidebarItem
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
@@ -62,7 +63,6 @@ import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.core.discovery.rememberLocalNetworkPermissionRequester
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
-import dev.krtirtho.spotube.core.ui.component.SidebarItem
 import dev.krtirtho.spotube.modules.blacklist.BlacklistContent
 import dev.krtirtho.spotube.modules.plugin.PluginScreenContent
 import dev.krtirtho.spotube.modules.settings.sections.appearanceSection
@@ -247,11 +247,12 @@ private fun SettingsSidebar(
             )
         }
         items(tabs, key = { it.name }) { tab ->
-            SidebarItem(
+            MillenniumSidebarItem(
                 label = stringResource(tab.titleRes),
-                icon = tab.icon,
+                onClick = { onSelect(tab) },
                 selected = tab == selectedTab,
-                onClick = { onSelect(tab) })
+                contentDescription = stringResource(tab.titleRes),
+                icon = tab.icon)
         }
     }
 }

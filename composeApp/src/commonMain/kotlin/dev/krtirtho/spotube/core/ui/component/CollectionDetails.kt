@@ -31,7 +31,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.BoxWithConstraints
+import com.composeunstyled.currentWindowWidthBreakpoint
+import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -89,8 +90,8 @@ fun CollectionDetails(
     showFollowButton: Boolean = true,
     onEdit: (() -> Unit)? = null,
     sharedElementKey: String? = null) {
-    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
-        val isCompact = maxWidth < 600.dp
+    Box(modifier = modifier.fillMaxWidth()) {
+        val isCompact = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
 
         val sharedTransitionScope = LocalSharedTransitionScope.current
         val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
