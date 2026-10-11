@@ -17,6 +17,13 @@
 
 package dev.krtirtho.spotube.modules.devices
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumIndeterminateProgress
+import org.spotube.millennium.theme.MillenniumTheme
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,13 +35,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -56,8 +60,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun DevicesScreen(
-    navigationCommands: NavigationCommands,
-) {
+    navigationCommands: NavigationCommands) {
     val viewModel = koinViewModel<DevicesViewModel>()
     val devices by viewModel.devices.collectAsStateWithLifecycle()
     val isDiscovering by viewModel.isDiscovering.collectAsStateWithLifecycle()
@@ -77,58 +80,51 @@ fun DevicesScreen(
         }
     }
 
-    BaseScaffold(
-        topBar = {
-            ApplicationMainBar(
-                backButton = true,
-                title = { Text("Devices") },
-                actions = {
-                    if (isDiscovering && connectingToDevice == null) {
-                        CircularProgressIndicator(
-                            modifier = Modifier
-                                .size(24.dp)
-                                .padding(end = 8.dp),
-                            strokeWidth = 2.dp,
-                        )
-                    } else {
-                        Icon(
-                            imageVector = Iconsax.IconsaxRefreshRight,
-                            contentDescription = "Refresh",
-                            modifier = Modifier
-                                .size(24.dp)
-                                .clickable(enabled = connectingToDevice == null) {
-                                    viewModel.startDiscovery()
-                                },
-                        )
-                    }
-                },
-            )
-        },
-    ) { innerPadding ->
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MillenniumTheme.colors.background)) {
+        ApplicationMainBar(
+            backButton = true,
+            title = { Text("Devices") },
+            actions = {
+                if (isDiscovering && connectingToDevice == null) {
+                    MillenniumIndeterminateProgress(
+                        modifier = Modifier
+                            .size(24.dp)
+                            .padding(end = 8.dp))
+                } else {
+                    MillenniumIcon(
+                        imageVector = Iconsax.IconsaxRefreshRight,
+                        contentDescription = "Refresh",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable(enabled = connectingToDevice == null) {
+                                viewModel.startDiscovery()
+                            })
+                }
+            })
         val shellBottomInset = LocalAppShellBottomInset.current
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-        ) {
+                .weight(1f)) {
             // Error banner
             error?.let { errorMessage ->
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                ) {
+                        .padding(16.dp)) {
                     Column {
                         Text(
                             text = errorMessage,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium,
-                        )
-                        OutlinedButton(
+                            color = AppTheme.colors.error,
+                            style = AppTheme.typography.bodyMedium)
+                        MillenniumButton(
                             onClick = { viewModel.clearError() },
                             modifier = Modifier.padding(top = 8.dp),
-                        ) {
+                            style = MillenniumButtonStyle.Secondary) {
                             Text("Dismiss")
                         }
                     }
@@ -141,18 +137,16 @@ fun DevicesScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                    ) {
+                            .padding(16.dp)) {
                         Column {
                             Text(
                                 text = "Connected to ${state.host}:${state.port}",
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                            OutlinedButton(
+                                style = AppTheme.typography.bodyMedium,
+                                color = AppTheme.colors.primary)
+                            MillenniumButton(
                                 onClick = { viewModel.disconnect() },
                                 modifier = Modifier.padding(top = 8.dp),
-                            ) {
+                                style = MillenniumButtonStyle.Secondary) {
                                 Text("Disconnect")
                             }
                         }
@@ -163,20 +157,15 @@ fun DevicesScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
-                        contentAlignment = Alignment.CenterStart,
-                    ) {
+                        contentAlignment = Alignment.CenterStart) {
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp),
-                                strokeWidth = 2.dp,
-                            )
+                            verticalAlignment = Alignment.CenterVertically) {
+                            MillenniumIndeterminateProgress(
+                                modifier = Modifier.size(24.dp))
                             Text(
                                 text = "Connecting...",
-                                style = MaterialTheme.typography.bodyMedium,
-                            )
+                                style = AppTheme.typography.bodyMedium)
                         }
                     }
                 }
@@ -189,8 +178,7 @@ fun DevicesScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(bottom = shellBottomInset),
-                    contentAlignment = Alignment.Center,
-                ) {
+                    contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = if (isDiscovering) {
@@ -198,16 +186,14 @@ fun DevicesScreen(
                             } else {
                                 "No devices found"
                             },
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                            style = AppTheme.typography.bodyMedium,
+                            color = AppTheme.colors.onSurfaceVariant)
                         if (!isDiscovering) {
                             Text(
                                 text = "Make sure the other device has \"Allow remote control\" enabled in settings.",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(top = 8.dp, start = 32.dp, end = 32.dp),
-                            )
+                                style = AppTheme.typography.bodySmall,
+                                color = AppTheme.colors.onSurfaceVariant,
+                                modifier = Modifier.padding(top = 8.dp, start = 32.dp, end = 32.dp))
                         }
                     }
                 }
@@ -219,15 +205,12 @@ fun DevicesScreen(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(
                         horizontal = 16.dp,
-                        vertical = 8.dp,
-                    ),
-                ) {
+                        vertical = 8.dp)) {
                     items(devices.values.toList(), key = { it.key }) { device ->
                         DeviceRow(
                             device = device,
                             isConnecting = connectingToDevice?.key == device.key,
-                            onClick = { viewModel.connectToDevice(device) },
-                        )
+                            onClick = { viewModel.connectToDevice(device) })
                     }
                     item {
                         Box(modifier = Modifier.padding(bottom = shellBottomInset))
@@ -242,54 +225,46 @@ fun DevicesScreen(
 private fun DeviceRow(
     device: DiscoveredDevice,
     isConnecting: Boolean,
-    onClick: () -> Unit,
-) {
+    onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick, enabled = !isConnecting)
             .padding(vertical = 12.dp, horizontal = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         if (isConnecting) {
-            CircularProgressIndicator(
-                modifier = Modifier.size(24.dp),
-                strokeWidth = 2.dp,
-            )
+            MillenniumIndeterminateProgress(
+                modifier = Modifier.size(24.dp))
         } else {
-            Icon(
+            MillenniumIcon(
                 imageVector = Iconsax.IconsaxMirroringScreen,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
-            )
+                tint = AppTheme.colors.primary)
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = device.name.ifBlank { "Unknown Device" },
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
             Text(
                 text = if (device.host.isNotBlank() && device.port > 0) {
                     "${device.host}:${device.port}"
                 } else {
                     "Resolving..."
                 },
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
             if (device.deviceId.isNotBlank()) {
                 Text(
                     text = "ID: ${device.deviceId.take(8)}...",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                    style = AppTheme.typography.labelSmall,
+                    color = AppTheme.colors.onSurfaceVariant.copy(alpha = 0.6f),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
             }
         }
     }

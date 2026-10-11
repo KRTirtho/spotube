@@ -59,8 +59,7 @@ sealed interface ArtistScreenState {
         val relatedArtists: List<MetadataArtist.Basic>,
         val relatedArtistsNextPagination: PaginationStrategy?,
         val featuredPlaylists: List<MetadataPlaylist>,
-        val featuredPlaylistsNextPagination: PaginationStrategy?,
-    ) : ArtistScreenState
+        val featuredPlaylistsNextPagination: PaginationStrategy?) : ArtistScreenState
 
     data class Error(val message: String) : ArtistScreenState
 }
@@ -75,8 +74,7 @@ class ArtistViewModel(
     private val blacklistRepository: BlacklistRepository,
     private val shareService: ShareService,
     private val downloadManager: DownloadManager,
-    private val remotePlaybackController: RemotePlaybackController,
-) : ViewModel(), KoinComponent {
+    private val remotePlaybackController: RemotePlaybackController) : ViewModel(), KoinComponent {
     private val logger by injectLogger<ArtistViewModel>()
 
     private val _state = MutableStateFlow<ArtistScreenState>(ArtistScreenState.Loading)
@@ -106,8 +104,7 @@ class ArtistViewModel(
         audioPlayerQueue.currentQueueEntryFlow,
         savedTracksRepository.savedTracksIdsFlow,
         _blacklistedTrackIds,
-        _blacklistedArtistIds,
-    ) { queue, currentEntry, savedIds, blacklistedTracks, blacklistedArtists ->
+        _blacklistedArtistIds) { queue, currentEntry, savedIds, blacklistedTracks, blacklistedArtists ->
         TrackOptionsContext(
             currentTrackId = (currentEntry as? QueueEntry.StreamingTrack)?.track?.id,
             queueTrackIds = queue.mapNotNull { entry ->
@@ -115,8 +112,7 @@ class ArtistViewModel(
             }.toSet(),
             savedTrackIds = savedIds,
             blacklistedTrackIds = blacklistedTracks,
-            blacklistedArtistIds = blacklistedArtists,
-        )
+            blacklistedArtistIds = blacklistedArtists)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TrackOptionsContext())
 
     init {
@@ -198,8 +194,7 @@ class ArtistViewModel(
                 if (result != null) {
                     _state.value = currentState.copy(
                         albums = currentState.albums + result.items,
-                        albumsNextPagination = result.nextPagination,
-                    )
+                        albumsNextPagination = result.nextPagination)
                 }
             }.onFailure { e ->
                 logger.e(e) { "Failed to load more albums" }
@@ -219,8 +214,7 @@ class ArtistViewModel(
                 if (result != null) {
                     _state.value = currentState.copy(
                         relatedArtists = currentState.relatedArtists + result.items,
-                        relatedArtistsNextPagination = result.nextPagination,
-                    )
+                        relatedArtistsNextPagination = result.nextPagination)
                 }
             }.onFailure { e ->
                 logger.e(e) { "Failed to load more related artists" }
@@ -240,8 +234,7 @@ class ArtistViewModel(
                 if (result != null) {
                     _state.value = currentState.copy(
                         featuredPlaylists = currentState.featuredPlaylists + result.items,
-                        featuredPlaylistsNextPagination = result.nextPagination,
-                    )
+                        featuredPlaylistsNextPagination = result.nextPagination)
                 }
             }.onFailure { e ->
                 logger.e(e) { "Failed to load more featured playlists" }
@@ -254,8 +247,7 @@ class ArtistViewModel(
         remotePlaybackController.requestCollectionAddToQueue(
             RemoteCollectionType.ArtistTopTracks,
             artistId,
-            artistName,
-        )
+            artistName)
     }
 
     fun playTopTracks() {
@@ -263,8 +255,7 @@ class ArtistViewModel(
         remotePlaybackController.requestCollectionPlay(
             RemoteCollectionType.ArtistTopTracks,
             artistId,
-            artistName,
-        )
+            artistName)
     }
 
     fun playTopTracksFromTrack(track: MetadataTrack) {
@@ -273,8 +264,7 @@ class ArtistViewModel(
             type = RemoteCollectionType.ArtistTopTracks,
             id = artistId,
             title = artistName,
-            startTrack = track,
-        )
+            startTrack = track)
     }
     fun addTracksToJam(tracks: List<MetadataTrack>) {
         remotePlaybackController.addTracksToJam(tracks)
@@ -349,8 +339,7 @@ class ArtistViewModel(
             runCatching {
                 libraryRepository.addTracksToPlaylist(
                     playlistId,
-                    _tracksToAddToPlaylist.value.map { it.id },
-                )
+                    _tracksToAddToPlaylist.value.map { it.id })
             }.onFailure { e ->
                 logger.e(e) { "Failed to add tracks to playlist" }
             }.onSuccess {
@@ -389,8 +378,7 @@ class ArtistViewModel(
                         relatedArtists = overview.relatedArtists.items,
                         relatedArtistsNextPagination = overview.relatedArtists.nextPagination,
                         featuredPlaylists = overview.featuredPlaylists.items,
-                        featuredPlaylistsNextPagination = overview.featuredPlaylists.nextPagination,
-                    )
+                        featuredPlaylistsNextPagination = overview.featuredPlaylists.nextPagination)
                 } else {
                     _state.value = ArtistScreenState.Error("Failed to load artist overview")
                 }

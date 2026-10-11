@@ -17,6 +17,13 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+
+import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumModalBottomSheet
+import org.spotube.millennium.composables.MillenniumSeparator
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,22 +33,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.SheetDetent
+import com.composeunstyled.rememberModalBottomSheetState
+import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.krtirtho.spotube.core.ui.base.IconButton
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.resources.iconsax.FluentDismiss
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AdaptiveDialogBottomSheet(
     onDismiss: () -> Unit,
@@ -49,51 +53,37 @@ fun AdaptiveDialogBottomSheet(
     modifier: Modifier = Modifier,
     breakpointDp: Float = 600f,
     actions: @Composable (() -> Unit)? = null,
-    content: @Composable () -> Unit,
-) {
+    content: @Composable () -> Unit) {
     val adaptiveInfo = currentWindowAdaptiveInfo()
     val isLargeScreen = adaptiveInfo.windowSizeClass.minWidthDp >= breakpointDp
 
     if (isLargeScreen) {
-        ThemedDialog(
+        MillenniumDialog(
+            visible = true,
             onDismissRequest = onDismiss,
-            title = if (title != null) {
-                {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Box(Modifier.weight(1f)) { title() }
-                        IconButton(onClick = onDismiss) {
-                            Icon(
-                                Iconsax.FluentDismiss,
-                                contentDescription = "Close dialog",
-                            )
-                        }
-                    }
-                }
-            } else {
-                null
-            },
-            actions = actions,
-            modifier = modifier,
-        ) {
+            title = "",
+            modifier = modifier) {
+            title?.let { it() }
             content()
+            actions?.let {
+                MillenniumSeparator()
+                it()
+            }
         }
     } else {
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-            dragHandle = null,
-            modifier = modifier,
-        ) {
+        val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
+        LaunchedEffect(sheetState.currentDetent) {
+            if (sheetState.currentDetent == SheetDetent.Hidden) {
+                onDismiss()
+            }
+        }
+        MillenniumModalBottomSheet(state = sheetState) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(top = 16.dp),
-                horizontalAlignment = Alignment.Start,
-            ) {
+                horizontalAlignment = Alignment.Start) {
                 title?.let {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -101,11 +91,12 @@ fun AdaptiveDialogBottomSheet(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(Modifier.weight(1f)) { it() }
-                        IconButton(onClick = onDismiss) {
-                            Icon(
+                        MillenniumIconButton(
+                            onClick = onDismiss,
+                            style = MillenniumIconButtonStyle.Quiet) {
+                            MillenniumIcon(
                                 Iconsax.FluentDismiss,
-                                contentDescription = "Close dialog",
-                            )
+                                contentDescription = "Close dialog")
                         }
                     }
                     Spacer(Modifier.height(12.dp))
@@ -113,7 +104,7 @@ fun AdaptiveDialogBottomSheet(
                 content()
                 actions?.let {
                     Spacer(Modifier.height(8.dp))
-                    HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                    MillenniumSeparator()
                     Spacer(Modifier.height(8.dp))
                     it()
                 }

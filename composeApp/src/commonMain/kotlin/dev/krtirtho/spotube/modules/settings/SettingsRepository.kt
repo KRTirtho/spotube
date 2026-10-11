@@ -37,6 +37,16 @@ interface UserSettingsSource {
 class SettingsRepository(private val database: Database) : UserSettingsSource {
     companion object {
         private val SETTINGS_KEY = stringPreferencesKey("user_settings")
+
+        /**
+         * Lenient so settings written by older builds (which stored `accentColor` /
+         * `surfaceTheme` instead of the Millennium `palette`) still decode, and so a
+         * missing field falls back to its default.
+         */
+        private val settingsJson = Json {
+            ignoreUnknownKeys = true
+            encodeDefaults = true
+        }
     }
 
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -44,7 +54,7 @@ class SettingsRepository(private val database: Database) : UserSettingsSource {
     override val userSettings: StateFlow<UserSettings> = database.settingsDataStore.data.map { prefs ->
         val json = prefs[SETTINGS_KEY]
         if (json != null) {
-            Json.decodeFromString<UserSettings>(json as String)
+            settingsJson.decodeFromString<UserSettings>(json as String)
         } else {
             UserSettings() // Default value
         }
@@ -56,13 +66,13 @@ class SettingsRepository(private val database: Database) : UserSettingsSource {
 
     suspend fun updateSettings(newSettings: UserSettings) {
         database.settingsDataStore.edit { prefs ->
-            prefs[SETTINGS_KEY] = Json.encodeToString(newSettings)
+            prefs[SETTINGS_KEY] = settingsJson.encodeToString(newSettings)
         }
     }
 
     suspend fun getCurrentSettings(): UserSettings {
         val preferences = database.settingsDataStore.data.first()
-        val settingsJson = preferences[SETTINGS_KEY] ?: return UserSettings()
-        return Json.decodeFromString<UserSettings>(settingsJson)
+        val storedJson = preferences[SETTINGS_KEY] ?: return UserSettings()
+        return settingsJson.decodeFromString<UserSettings>(storedJson)
     }
 }

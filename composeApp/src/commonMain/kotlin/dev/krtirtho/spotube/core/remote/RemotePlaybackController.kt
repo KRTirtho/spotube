@@ -64,20 +64,17 @@ sealed interface PlaybackDestinationRequest {
         val type: RemoteCollectionType,
         val id: String,
         val startTrack: MetadataTrack? = null,
-        val shuffle: Boolean = false,
-    ) : PlaybackDestinationRequest
+        val shuffle: Boolean = false) : PlaybackDestinationRequest
 
     data class Track(
         override val title: String,
         override val action: PlaybackDestinationAction,
-        val track: MetadataTrack,
-    ) : PlaybackDestinationRequest
+        val track: MetadataTrack) : PlaybackDestinationRequest
 
     data class Tracks(
         override val title: String,
         override val action: PlaybackDestinationAction,
-        val tracks: List<MetadataTrack>,
-    ) : PlaybackDestinationRequest
+        val tracks: List<MetadataTrack>) : PlaybackDestinationRequest
 }
 
 /**
@@ -90,8 +87,7 @@ class RemotePlaybackController(
     private val collectionPlaybackHelper: CollectionPlaybackHelper,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val blacklistRepository: BlacklistRepository,
-    private val jamRoomService: JamRoomService,
-) : KoinComponent {
+    private val jamRoomService: JamRoomService) : KoinComponent {
     private val logger = Logger.withTag("RemotePlaybackController")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -113,8 +109,7 @@ class RemotePlaybackController(
         id: String,
         title: String,
         startTrack: MetadataTrack? = null,
-        shuffle: Boolean = false,
-    ) {
+        shuffle: Boolean = false) {
         request(PlaybackDestinationRequest.Collection(title, PlaybackDestinationAction.Play, type, id, startTrack, shuffle))
     }
 
@@ -205,8 +200,7 @@ class RemotePlaybackController(
                             QueueEntry.StreamingTrack(
                                 track = track,
                                 url = "",
-                                addedBy = jamRoomService.participantClientId,
-                            )
+                                addedBy = jamRoomService.participantClientId)
                         }
                     )
 
@@ -291,8 +285,7 @@ class RemotePlaybackController(
                                 entries = listOf(entry),
                                 autoPlay = true,
                                 startPosition = 0,
-                                collectionEntry = null,
-                            )
+                                collectionEntry = null)
                         }
 
                         PlaybackDestinationAction.AddToQueue -> {
@@ -319,8 +312,7 @@ class RemotePlaybackController(
                                 entries = entries,
                                 autoPlay = true,
                                 startPosition = 0,
-                                collectionEntry = null,
-                            )
+                                collectionEntry = null)
                         }
 
                         PlaybackDestinationAction.AddToQueue -> {

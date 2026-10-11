@@ -26,7 +26,6 @@ import org.schabi.newpipe.extractor.ServiceList.YouTube
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
 
-
 actual class NewPipeService {
     actual suspend fun searchVideos(query: String): List<VideoSearchResult> {
         return withContext(Dispatchers.IO) {
@@ -47,8 +46,7 @@ actual class NewPipeService {
                         url = item.url,
                         uploader = item.uploaderName,
                         durationMs = item.duration,
-                        thumbnailUrl = item.thumbnails.first().url,
-                    )
+                        thumbnailUrl = item.thumbnails.first().url)
                 } else {
                     null
                 }
@@ -67,8 +65,7 @@ actual class NewPipeService {
                         url = stream.content,
                         codec = stream.codec,
                         container = stream.format!!.suffix,
-                        bitrate = stream.bitrate,
-                    )
+                        bitrate = stream.bitrate)
                 } + buildList {
                 if (extractor.dashMpdUrl.isNotBlank()) add(
                     AudioStream.Lossy(
@@ -90,7 +87,6 @@ actual class NewPipeService {
                 )
             }
 
-
             val videoStreams = extractor.videoStreams
                 .filter { stream -> stream.isUrl && stream.format != null }
                 .map { stream ->
@@ -98,8 +94,7 @@ actual class NewPipeService {
                         url = stream.content,
                         codec = stream.codec,
                         bitrate = stream.bitrate,
-                        container = stream.format!!.suffix,
-                    )
+                        container = stream.format!!.suffix)
                 }
             VideoInfo(
                 id = id,

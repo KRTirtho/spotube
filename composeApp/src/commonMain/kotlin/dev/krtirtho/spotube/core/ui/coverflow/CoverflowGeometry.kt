@@ -25,8 +25,7 @@ import kotlin.math.min
 @Stable
 internal class Geometry(
     internal val params: CoverflowParams = CoverflowParams(),
-    private val size: IntSize = IntSize.Zero,
-) {
+    private val size: IntSize = IntSize.Zero) {
     @Stable
     private val shortEdge
         get() = min(size.width, size.height)

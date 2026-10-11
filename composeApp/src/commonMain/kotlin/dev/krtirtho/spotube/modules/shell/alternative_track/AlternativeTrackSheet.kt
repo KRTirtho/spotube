@@ -17,27 +17,12 @@
 
 package dev.krtirtho.spotube.modules.shell.alternative_track
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterExitState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.core.animateDp
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import dev.krtirtho.spotube.modules.shell.player_queue.BottomSheetContent
+import dev.krtirtho.spotube.modules.shell.player_queue.EndDrawerSheet
 
 private val SlidingSheetBreakpoint = 840.dp
 
@@ -46,61 +31,12 @@ fun AlternativeTrackSheet(
     isVisible: Boolean,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
+    content: @Composable () -> Unit) {
     BoxWithConstraints(modifier = modifier) {
         if (maxWidth >= SlidingSheetBreakpoint) {
-            SlidingAlternativeSheet(isVisible, onDismiss, content)
+            EndDrawerSheet(isVisible, onDismiss, content)
         } else {
-            BottomAlternativeSheet(isVisible, onDismiss, content)
-        }
-    }
-}
-
-@Composable
-private fun SlidingAlternativeSheet(
-    isVisible: Boolean,
-    onDismiss: () -> Unit,
-    content: @Composable () -> Unit,
-) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(
-            visible = isVisible,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 12.dp, end = 12.dp, bottom = 12.dp),
-            enter = slideInHorizontally { fullWidth -> fullWidth / 2 } + fadeIn(),
-            exit = slideOutHorizontally { fullWidth -> fullWidth / 2 } + fadeOut(),
-        ) {
-            val animatedShadowElevation = transition.animateDp(label = "alternativeShadow") { state ->
-                if (state == EnterExitState.Visible) 20.dp else 0.dp
-            }
-            Surface(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(460.dp),
-                shape = MaterialTheme.shapes.large,
-                tonalElevation = 2.dp,
-                shadowElevation = animatedShadowElevation.value,
-            ) {
-                content()
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun BottomAlternativeSheet(
-    isVisible: Boolean,
-    onDismiss: () -> Unit,
-    content: @Composable () -> Unit,
-) {
-    if (isVisible) {
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-        ) {
-            content()
+            BottomSheetContent(isVisible, onDismiss, content)
         }
     }
 }

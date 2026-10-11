@@ -68,8 +68,7 @@ class ScrobbleManagerTest {
             audioPlayer = player,
             audioPlayerQueue = queue,
             scrobblePluginSource = pluginSource,
-            scope = CoroutineScope(backgroundScope.coroutineContext + UnconfinedTestDispatcher(testScheduler)),
-        )
+            scope = CoroutineScope(backgroundScope.coroutineContext + UnconfinedTestDispatcher(testScheduler)))
     }
 
     private fun playSeconds(seconds: Int) {
@@ -86,8 +85,7 @@ class ScrobbleManagerTest {
             streamingEntry(
                 id = "t1",
                 durationMs = 200_000,
-                externalUri = "https://open.spotify.com/track/t1",
-            )
+                externalUri = "https://open.spotify.com/track/t1")
         )
         player.setPlayerState(PlayerState.PLAYING)
         player.setDuration(200.seconds)
@@ -241,8 +239,7 @@ class ScrobbleManagerTest {
             localEntry(
                 name = "Local Song",
                 url = "file:///music/local.mp3",
-                duration = 100_000,
-            )
+                duration = 100_000)
         )
         player.setPlayerState(PlayerState.PLAYING)
 
@@ -273,14 +270,12 @@ class ScrobbleManagerTest {
     private fun streamingTrack(
         id: String,
         durationMs: Long = 200_000,
-        externalUri: String? = null,
-    ): MetadataTrack {
+        externalUri: String? = null): MetadataTrack {
         val artist = MetadataArtist.Basic(
             id = "artist-$id",
             name = "Artist $id",
             thumbnails = emptyList(),
-            externalUri = null,
-        )
+            externalUri = null)
         val album = MetadataAlbum.Detailed(
             releaseDate = "2024",
             genres = emptyList(),
@@ -291,8 +286,7 @@ class ScrobbleManagerTest {
             thumbnails = emptyList(),
             albumType = MetadataAlbumType.Album,
             artists = listOf(artist),
-            externalUri = null,
-        )
+            externalUri = null)
         return MetadataTrack(
             id = id,
             title = "Track $id",
@@ -305,34 +299,29 @@ class ScrobbleManagerTest {
             explicit = false,
             popularity = null,
             isrcCode = null,
-            externalUri = externalUri,
-        )
+            externalUri = externalUri)
     }
 
     private fun streamingEntry(
         id: String,
         durationMs: Long = 200_000,
-        externalUri: String? = null,
-    ): QueueEntry.StreamingTrack {
+        externalUri: String? = null): QueueEntry.StreamingTrack {
         return QueueEntry.StreamingTrack(
             track = streamingTrack(id, durationMs, externalUri),
-            url = "http://127.0.0.1:14769/stream/$id",
-        )
+            url = "http://127.0.0.1:14769/stream/$id")
     }
 
     private fun localEntry(
         name: String = "Local Track",
         url: String = "file:///music/local.mp3",
-        duration: Long = 180_000,
-    ): QueueEntry.LocalTrack {
+        duration: Long = 180_000): QueueEntry.LocalTrack {
         return QueueEntry.LocalTrack(
             name = name,
             artists = listOf("Local Artist"),
             duration = duration,
             album = "Local Album",
             coverBytes = null,
-            url = url,
-        )
+            url = url)
     }
 
     private class FakeQueue : AudioPlayerQueue {
@@ -354,14 +343,12 @@ class ScrobbleManagerTest {
             entries: List<QueueEntry>,
             autoPlay: Boolean,
             startPosition: Int,
-            collectionEntry: QueueCollectionEntry?,
-        ) = error("not used")
+            collectionEntry: QueueCollectionEntry?) = error("not used")
 
         override suspend fun addToQueue(entry: QueueEntry) = error("not used")
         override suspend fun addAllToQueue(
             entries: List<QueueEntry>,
-            collectionEntry: QueueCollectionEntry?,
-        ) = error("not used")
+            collectionEntry: QueueCollectionEntry?) = error("not used")
 
         override suspend fun addAllAfterCurrent(entries: List<QueueEntry>) = error("not used")
         override suspend fun removeFromQueue(entry: QueueEntry) = error("not used")
@@ -377,8 +364,7 @@ class ScrobbleManagerTest {
     }
 
     private class FakeScrobblePluginSource(
-        initialPlugin: PluginService? = null,
-    ) : ScrobblePluginSource {
+        initialPlugin: PluginService? = null) : ScrobblePluginSource {
         private val selected = MutableStateFlow(initialPlugin)
         override val selectedScrobblePlugin: StateFlow<PluginService?> = selected
 

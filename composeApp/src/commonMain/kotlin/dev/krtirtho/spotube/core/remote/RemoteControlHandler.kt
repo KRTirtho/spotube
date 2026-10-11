@@ -48,13 +48,11 @@ class RemoteControlHandler(
     private val settingsRepository: SettingsRepository,
     private val audioPlayer: AudioPlayerInterface,
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val collectionPlaybackHelper: CollectionPlaybackHelper,
-) : KoinComponent {
+    private val collectionPlaybackHelper: CollectionPlaybackHelper) : KoinComponent {
     val logger by injectLogger<RemoteControlHandler>()
 
     val incomingConnectionRequests = MutableSharedFlow<ConnectionRequest>(
-        extraBufferCapacity = 16,
-    )
+        extraBufferCapacity = 16)
 
     private val json = Json {
         ignoreUnknownKeys = true
@@ -88,8 +86,7 @@ class RemoteControlHandler(
                 deviceId = deviceId ?: "unknown",
                 deviceName = deviceName,
                 sessionId = session.call.request.headers["X-Request-Id"]
-                    ?: "req-${kotlin.time.Clock.System.now().toEpochMilliseconds()}",
-            )
+                    ?: "req-${kotlin.time.Clock.System.now().toEpochMilliseconds()}")
             incomingConnectionRequests.emit(request)
             val response = waitForRequestResolution(request.sessionId)
             if (response != ConnectionRequestResponse.Allow && response != ConnectionRequestResponse.AllowAlways) {
@@ -225,8 +222,7 @@ class RemoteControlHandler(
                     entries = listOf(QueueEntry.StreamingTrack(track = command.track, url = "")),
                     autoPlay = true,
                     startPosition = 0,
-                    collectionEntry = null,
-                )
+                    collectionEntry = null)
             }
             is RemoteControlCommand.AddTrackToQueue -> {
                 audioPlayerQueue.addToQueue(QueueEntry.StreamingTrack(track = command.track, url = ""))
@@ -300,8 +296,7 @@ class RemoteControlHandler(
     private suspend fun handleCollectionSource(
         source: String,
         action: RemoteCollectionAction,
-        shuffle: Boolean = false,
-    ) {
+        shuffle: Boolean = false) {
         logger.d { "Remote collection $action for source: $source" }
         when {
             source.startsWith(COLLECTION_PLAYLIST_PREFIX) -> {
@@ -359,8 +354,7 @@ class RemoteControlHandler(
             currentTrackTitle = current?.titleOrNull(),
             currentTrackArtists = current?.artistsOrNull(),
             currentTrackAlbum = current?.albumOrNull(),
-            currentTrackCoverUrl = current?.coverUrlOrNull(),
-        )
+            currentTrackCoverUrl = current?.coverUrlOrNull())
         val text = json.encodeToString(RemoteControlEvent.serializer(), state)
         session.send(Frame.Text(text))
     }
@@ -375,8 +369,7 @@ class RemoteControlHandler(
         }
         val event = RemoteControlEvent.QueueUpdated(
             entries = queue.map { it.toRemoteQueueEntry() },
-            currentIndex = currentIndex,
-        )
+            currentIndex = currentIndex)
         val text = json.encodeToString(RemoteControlEvent.serializer(), event)
         session.send(Frame.Text(text))
     }
@@ -403,8 +396,7 @@ class RemoteControlHandler(
             artists = track.artists.joinToString(", ") { artist -> artist.name },
             album = track.album?.title,
             coverUrl = coverUrlOrNull(),
-            durationMs = track.durationMs,
-        )
+            durationMs = track.durationMs)
 
         is QueueEntry.LocalTrack -> RemoteQueueEntry(
             mediaUrl = url,
@@ -413,8 +405,7 @@ class RemoteControlHandler(
             artists = artists.joinToString(", "),
             album = album,
             coverUrl = null,
-            durationMs = duration,
-        )
+            durationMs = duration)
     }
 
     private fun QueueEntry.mediaKey(): String = when (this) {
@@ -447,8 +438,7 @@ class RemoteControlHandler(
 @Serializable
 data class CommandEnvelope(
     val commandId: String,
-    val command: RemoteControlCommand,
-)
+    val command: RemoteControlCommand)
 
 private const val COLLECTION_PLAYLIST_PREFIX = "spotube://playlist/"
 private const val COLLECTION_ALBUM_PREFIX = "spotube://album/"
@@ -464,8 +454,7 @@ enum class RemoteCollectionAction {
 data class ConnectionRequest(
     val deviceId: String,
     val deviceName: String,
-    val sessionId: String,
-)
+    val sessionId: String)
 
 enum class ConnectionRequestResponse {
     Allow,

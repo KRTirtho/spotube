@@ -34,8 +34,7 @@ import kotlin.time.Clock
 
 class DiscordRpcService(
     private val audioPlayer: AudioPlayerInterface,
-    private val settingsProvider: SettingsProvider,
-) : KoinComponent, AutoCloseable {
+    private val settingsProvider: SettingsProvider) : KoinComponent, AutoCloseable {
 
     private val logger by injectLogger<DiscordRpcService>()
 
@@ -61,8 +60,7 @@ class DiscordRpcService(
                 audioPlayer.playerStateFlow,
                 audioPlayer.currentMediaItemFlow,
                 audioPlayer.positionFlow,
-                audioPlayer.durationFlow,
-            ) { settings, playerState, mediaItem, position, duration ->
+                audioPlayer.durationFlow) { settings, playerState, mediaItem, position, duration ->
                 DiscordRpcState(settings?.discordRichPresence == true, playerState, mediaItem, position, duration)
             }.collect { state ->
                 handleStateChange(state)
@@ -86,8 +84,7 @@ class DiscordRpcService(
                     album = mediaItem.album,
                     coverUrl = mediaItem.coverURL,
                     positionMs = state.position.inWholeMilliseconds,
-                    durationMs = state.duration.inWholeMilliseconds,
-                )
+                    durationMs = state.duration.inWholeMilliseconds)
             }
             PlayerState.PAUSED -> {
                 val mediaItem = state.mediaItem ?: return
@@ -98,8 +95,7 @@ class DiscordRpcService(
                     album = mediaItem.album,
                     coverUrl = mediaItem.coverURL,
                     positionMs = state.position.inWholeMilliseconds,
-                    durationMs = state.duration.inWholeMilliseconds,
-                )
+                    durationMs = state.duration.inWholeMilliseconds)
             }
             PlayerState.IDLE, PlayerState.COMPLETED -> {
                 clearPresence()
@@ -158,8 +154,7 @@ class DiscordRpcService(
         album: String,
         coverUrl: String,
         positionMs: Long,
-        durationMs: Long,
-    ) {
+        durationMs: Long) {
         val client = rpcClient ?: return
         try {
             client.updatePresence(
@@ -168,8 +163,7 @@ class DiscordRpcService(
                 album = album,
                 coverUrl = coverUrl,
                 positionMs = positionMs,
-                durationMs = durationMs,
-            )
+                durationMs = durationMs)
         } catch (e: Exception) {
             rpcClient = null
             connectionFailed = true
@@ -210,6 +204,5 @@ class DiscordRpcService(
         val playerState: PlayerState,
         val mediaItem: dev.krtirtho.spotube.core.audioplayer.MediaItem?,
         val position: kotlin.time.Duration,
-        val duration: kotlin.time.Duration,
-    )
+        val duration: kotlin.time.Duration)
 }

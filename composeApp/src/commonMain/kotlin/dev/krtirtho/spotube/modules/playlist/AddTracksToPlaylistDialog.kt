@@ -17,6 +17,16 @@
 
 package dev.krtirtho.spotube.modules.playlist
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumIndeterminateProgress
+import org.spotube.millennium.composables.MillenniumModalBottomSheet
+import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,14 +39,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.SheetDetent
+import com.composeunstyled.Text
+import com.composeunstyled.rememberModalBottomSheetState
+import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,6 +53,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,20 +62,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import dev.krtirtho.spotube.core.ui.base.IconButton
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
-import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.search.SearchRepository
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearch
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddTracksToPlaylistDialog(
     visible: Boolean,
@@ -74,8 +80,7 @@ fun AddTracksToPlaylistDialog(
     modifier: Modifier = Modifier,
     searchRepository: SearchRepository = koinInject(),
     libraryRepository: LibraryRepository = koinInject(),
-    breakpointDp: Float = 600f,
-) {
+    breakpointDp: Float = 600f) {
     if (!visible) return
 
     val adaptiveInfo = currentWindowAdaptiveInfo()
@@ -88,6 +93,13 @@ fun AddTracksToPlaylistDialog(
     var addingTrackIds by remember { mutableStateOf<Set<String>>(emptySet()) }
     var addedTrackIds by remember { mutableStateOf<Set<String>>(emptySet()) }
     val scope = rememberCoroutineScope()
+    val queryState = rememberTextFieldState(query)
+
+    LaunchedEffect(queryState) {
+        snapshotFlow { queryState.text.toString() }
+            .drop(1)
+            .collect { query = it }
+    }
 
     LaunchedEffect(visible) {
         if (!visible) {
@@ -125,32 +137,21 @@ fun AddTracksToPlaylistDialog(
     val content: @Composable () -> Unit = {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
+            verticalArrangement = Arrangement.spacedBy(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                TextField(
-                    value = query,
-                    onValueChange = { query = it },
+                verticalAlignment = Alignment.CenterVertically) {
+                MillenniumTextField(
+                    state = queryState,
+                    label = "Search",
                     modifier = Modifier.weight(1f),
-                    placeholder = { Text("Search tracks...") },
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Iconsax.IconsaxFilterSearch,
-                            contentDescription = "Search",
-                        )
-                    },
-                )
-                IconButton(onClick = handleSearch) {
-                    Icon(
-                        imageVector = Iconsax.IconsaxSearch,
-                        contentDescription = "Search",
-                    )
-                }
+                    placeholder = "Search tracks...")
+                MillenniumIconButton(
+                    icon = Iconsax.IconsaxSearch,
+                    contentDescription = "Search",
+                    onClick = handleSearch,
+                    style = MillenniumIconButtonStyle.Secondary)
             }
 
             when {
@@ -159,9 +160,8 @@ fun AddTracksToPlaylistDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        CircularProgressIndicator()
+                        contentAlignment = Alignment.Center) {
+                        MillenniumIndeterminateProgress()
                     }
                 }
                 hasSearched && searchResults.isEmpty() -> {
@@ -169,8 +169,7 @@ fun AddTracksToPlaylistDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        contentAlignment = Alignment.Center,
-                    ) {
+                        contentAlignment = Alignment.Center) {
                         Text("No tracks found")
                     }
                 }
@@ -179,15 +178,13 @@ fun AddTracksToPlaylistDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(4.dp),
-                    ) {
+                        verticalArrangement = Arrangement.spacedBy(4.dp)) {
                         items(searchResults, key = { it.id }) { track ->
                             TrackSearchResultRow(
                                 track = track,
                                 isAdding = addingTrackIds.contains(track.id),
                                 isAdded = addedTrackIds.contains(track.id),
-                                onAdd = { handleAddTrack(track) },
-                            )
+                                onAdd = { handleAddTrack(track) })
                         }
                     }
                 }
@@ -196,8 +193,7 @@ fun AddTracksToPlaylistDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        contentAlignment = Alignment.Center,
-                    ) {
+                        contentAlignment = Alignment.Center) {
                         Text("Search for tracks to add")
                     }
                 }
@@ -206,39 +202,30 @@ fun AddTracksToPlaylistDialog(
     }
 
     if (isLargeScreen) {
-        AlertDialog(
+        MillenniumDialog(
+            visible = true,
             onDismissRequest = onDismiss,
-            modifier = modifier,
-            title = {
-                Text("Add Tracks to Playlist")
-            },
-            text = {
-                Box(modifier = Modifier.fillMaxWidth().height(500.dp)) {
-                    content()
-                }
-            },
-            confirmButton = {
-                PrimaryButton(onClick = onDismiss) {
-                    Text("Done")
-                }
-            },
-        )
+            title = "Add Tracks to Playlist",
+            modifier = modifier) {
+            Box(modifier = Modifier.fillMaxWidth().height(500.dp)) {
+                content()
+            }
+            MillenniumButton(onClick = onDismiss) {
+                Text("Done")
+            }
+        }
     } else {
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-            dragHandle = null,
-        ) {
+        val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
+        MillenniumModalBottomSheet(state = sheetState) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .height(600.dp),
-            ) {
+                    .height(600.dp)) {
                 Text(
                     text = "Add Tracks to Playlist",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                )
+                    style = AppTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = 16.dp))
                 content()
             }
         }
@@ -250,16 +237,14 @@ private fun TrackSearchResultRow(
     track: MetadataTrack,
     isAdding: Boolean,
     isAdded: Boolean,
-    onAdd: () -> Unit,
-) {
+    onAdd: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         val imageUrl = track.album?.thumbnails?.firstOrNull()?.url
         if (imageUrl != null) {
             AsyncImage(
@@ -268,55 +253,49 @@ private fun TrackSearchResultRow(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(6.dp)),
-                contentScale = ContentScale.Crop,
-            )
+                contentScale = ContentScale.Crop)
         } else {
             Box(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(6.dp)),
-                contentAlignment = Alignment.Center,
-            ) {
+                contentAlignment = Alignment.Center) {
                 Text(
                     text = track.title.take(1).uppercase(),
-                    style = MaterialTheme.typography.titleMedium,
-                )
+                    style = AppTheme.typography.titleMedium)
             }
         }
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = track.title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
             Text(
                 text = track.artists.joinToString(", ") { it.name },
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
         }
 
         when {
             isAdded -> {
-                Icon(
+                MillenniumIcon(
                     imageVector = Iconsax.IconsaxCheckCircle,
                     contentDescription = "Added",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp),
-                )
+                    tint = AppTheme.colors.primary,
+                    modifier = Modifier.size(24.dp))
             }
             isAdding -> {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    strokeWidth = 2.dp,
-                )
+                MillenniumIndeterminateProgress(
+                    modifier = Modifier.size(24.dp))
             }
             else -> {
-                OutlineButton(onClick = onAdd) {
+                MillenniumButton(
+                    onClick = onAdd,
+                    style = MillenniumButtonStyle.Secondary) {
                     Text("Add")
                 }
             }

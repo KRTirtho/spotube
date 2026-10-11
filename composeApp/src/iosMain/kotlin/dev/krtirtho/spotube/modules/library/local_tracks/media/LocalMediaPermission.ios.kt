@@ -23,6 +23,5 @@ import androidx.compose.runtime.Composable
 actual fun rememberLocalMediaPermissionState(): LocalMediaPermissionState {
     return LocalMediaPermissionState(
         isGranted = true,
-        requestPermission = {},
-    )
+        requestPermission = {})
 }

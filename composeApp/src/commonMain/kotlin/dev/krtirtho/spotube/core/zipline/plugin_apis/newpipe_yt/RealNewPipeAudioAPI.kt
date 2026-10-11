@@ -65,12 +65,10 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
                 Thumbnail(
                     url = video.thumbnailUrl,
                     width = 300,
-                    height = 300,
-                )
+                    height = 300)
             ),
             externalUri = "https://www.youtube.com/watch?v=${video.id}",
-            confidence = confidence,
-        )
+            confidence = confidence)
     }
 
     override val supportedQualities: List<AudioFormat> = listOf(
@@ -79,15 +77,13 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
                 AudioQuality.Lossy(bitrate = 44_000),
                 AudioQuality.Lossy(bitrate = 96_000),
                 AudioQuality.Lossy(bitrate = 128_000),
-                AudioQuality.Lossy(bitrate = 256_000),
-            )
+                AudioQuality.Lossy(bitrate = 256_000))
         ), AudioFormat(
             codec = "aac", container = "mp4", qualities = listOf(
                 AudioQuality.Lossy(bitrate = 44_000),
                 AudioQuality.Lossy(bitrate = 96_000),
                 AudioQuality.Lossy(bitrate = 128_000),
-                AudioQuality.Lossy(bitrate = 256_000),
-            )
+                AudioQuality.Lossy(bitrate = 256_000))
         )
     )
 
@@ -97,7 +93,6 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
                 "youtu.be"
             ))
         val isYouTubeID = track.id.matches(youtubeIDRegex)
-
 
         logger.i {
             "Searching streams for track(${track.id}): ${track.title} by ${
@@ -119,13 +114,11 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
                             Thumbnail(
                                 url = videoInfo.thumbnailUrl,
                                 width = 300,
-                                height = 300,
-                            )
+                                height = 300)
                         ),
                         externalUri = "https://www.youtube.com/watch?v=${videoInfo.id}",
                         confidence = 1.0f,
-                        streams = videoInfo.audioStreams,
-                    )
+                        streams = videoInfo.audioStreams)
                 )
             }
         }
@@ -165,8 +158,7 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
                         Thumbnail(
                             url = videoInfo.thumbnailUrl,
                             width = 300,
-                            height = 300,
-                        )
+                            height = 300)
                     ),
                     externalUri = "https://www.youtube.com/watch?v=${videoInfo.id}",
                     confidence = source.confidence,

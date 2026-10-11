@@ -53,8 +53,7 @@ class MediaBrowseHelper(
     private val collectionPlaybackHelper: CollectionPlaybackHelper,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val settingsRepository: SettingsRepository,
-    private val blacklistRepository: BlacklistRepository,
-) {
+    private val blacklistRepository: BlacklistRepository) {
 
     companion object {
         const val MEDIA_ID_ROOT = "root"
@@ -253,8 +252,7 @@ class MediaBrowseHelper(
                         .setIsPlayable(false)
                         .build()
                 )
-                .build(),
-        )
+                .build())
     }
 
     private suspend fun buildBrowseItems(): List<MediaItem> {
@@ -390,8 +388,7 @@ class MediaBrowseHelper(
                         .setIsBrowsable(true)
                         .build()
                 )
-                .build(),
-        )
+                .build())
     }
 
     private suspend fun buildSavedPlaylistsItems(): List<MediaItem> {
@@ -475,8 +472,7 @@ class MediaBrowseHelper(
                         .setIsPlayable(false)
                         .build()
                 )
-                .build(),
-        )
+                .build())
     }
 
     private suspend fun buildArtistTracksItems(artistId: String): List<MediaItem> {

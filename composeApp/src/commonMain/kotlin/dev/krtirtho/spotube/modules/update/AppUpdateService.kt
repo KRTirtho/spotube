@@ -43,8 +43,7 @@ import org.koin.core.component.KoinComponent
 
 data class AvailableAppUpdate(
     val tag: String,
-    val releaseNotesMarkdown: String,
-)
+    val releaseNotesMarkdown: String)
 
 /**
  * Checks GitHub for a newer app release once on startup and exposes it for the UI to
@@ -53,8 +52,7 @@ data class AvailableAppUpdate(
  * process, independent of any screen's lifecycle.
  */
 class AppUpdateService(
-    private val settingsRepository: SettingsRepository,
-) : KoinComponent, AutoCloseable {
+    private val settingsRepository: SettingsRepository) : KoinComponent, AutoCloseable {
     private val logger = Logger.withTag("AppUpdateService")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private val httpClient = HttpClient(CIO) {
@@ -92,8 +90,7 @@ class AppUpdateService(
             if (latestVersion > currentVersion && release.tagName != settings.ignoredAppUpdateVersion) {
                 _availableUpdate.value = AvailableAppUpdate(
                     tag = release.tagName,
-                    releaseNotesMarkdown = release.body.orEmpty(),
-                )
+                    releaseNotesMarkdown = release.body.orEmpty())
             }
         } catch (e: Exception) {
             logger.w(e) { "Failed to check for app updates" }
@@ -129,5 +126,4 @@ class AppUpdateService(
 @Serializable
 private data class GitHubRelease(
     @SerialName("tag_name") val tagName: String,
-    val body: String? = null,
-)
+    val body: String? = null)

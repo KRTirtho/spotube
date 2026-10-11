@@ -17,10 +17,12 @@
 
 package dev.krtirtho.spotube.modules.settings.sections
 
+
+import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import compose.icons.FeatherIcons
@@ -51,10 +53,10 @@ internal fun LazyListScope.pluginsSection(
                     )
                 },
                 trailingContent = {
-                    Icon(
+                    MillenniumIcon(
                         imageVector = FeatherIcons.ChevronRight,
                         contentDescription = stringResource(Res.string.settings_plugins_manage_title),
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        tint = AppTheme.colors.onSurfaceVariant
                     )
                 },
                 onClick = {

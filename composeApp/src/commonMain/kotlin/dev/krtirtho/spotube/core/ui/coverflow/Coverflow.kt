@@ -45,8 +45,7 @@ fun Coverflow(
     modifier: Modifier = Modifier,
     state: CoverflowState = rememberCoverflowState(),
     params: CoverflowParams = CoverflowParams(),
-    content: CoverflowScope.() -> Unit,
-) {
+    content: CoverflowScope.() -> Unit) {
     var size by remember { mutableStateOf(IntSize.Zero) }
     var geometry by remember { mutableStateOf<Geometry?>(null) }
 
@@ -55,8 +54,7 @@ fun Coverflow(
         val g = geometry ?: return@LaunchedEffect
         state.lazyListState.scrollToItem(
             state.selectedIndex + 1,
-            -g.spacerWidth,
-        )
+            -g.spacerWidth)
         state.initialScrollDone = true
     }
 
@@ -69,8 +67,7 @@ fun Coverflow(
                 },
             verticalAlignment = Alignment.CenterVertically,
             state = state.lazyListState,
-            flingBehavior = rememberSnapFlingBehavior(lazyListState = state.lazyListState),
-        ) {
+            flingBehavior = rememberSnapFlingBehavior(lazyListState = state.lazyListState)) {
             if (size != IntSize.Zero) {
                 val g = Geometry(params, size)
                 geometry = g
@@ -79,8 +76,7 @@ fun Coverflow(
                 val coverflowScope = CoverflowScopeImpl(
                     geometry = g,
                     lazyListScope = this,
-                    coverflowState = state,
-                )
+                    coverflowState = state)
 
                 item {
                     Spacer(modifier = Modifier.width(with(LocalDensity.current) { g.spacerWidth.toDp() }))
@@ -102,15 +98,13 @@ fun Coverflow(
                     if (state.selectedIndex > 0) {
                         state.scrollToItem(state.selectedIndex - 1)
                     }
-                },
-        ) {}
+                }) {}
         Box(
             modifier = Modifier
                 .fillMaxHeight()
                 .align(Alignment.CenterEnd)
                 .clickable {
                     state.scrollToItem(state.selectedIndex + 1)
-                },
-        ) {}
+                }) {}
     }
 }

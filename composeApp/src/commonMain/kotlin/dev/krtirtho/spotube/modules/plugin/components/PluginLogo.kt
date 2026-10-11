@@ -44,8 +44,7 @@ fun PluginLogo(
     modifier: Modifier = Modifier,
     contentDescription: String? = null,
     contentScale: ContentScale = ContentScale.Crop,
-    fallback: @Composable () -> Unit,
-) {
+    fallback: @Composable () -> Unit) {
     val builtInLogo = plugin?.let { builtInPluginLogo(it) }
 
     when {
@@ -58,8 +57,7 @@ fun PluginLogo(
                     .build(),
                 contentDescription = contentDescription,
                 contentScale = contentScale,
-                modifier = modifier,
-            )
+                modifier = modifier)
         }
 
         builtInLogo != null -> {
@@ -67,8 +65,7 @@ fun PluginLogo(
                 painter = painterResource(builtInLogo),
                 contentDescription = contentDescription,
                 contentScale = contentScale,
-                modifier = modifier,
-            )
+                modifier = modifier)
         }
 
         else -> fallback()

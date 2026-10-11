@@ -26,15 +26,13 @@ data class LocalMediaTrack(
     val artists: List<String>,
     val durationMs: Long,
     val album: String? = null,
-    val coverBytes: ByteArray? = null,
-)
+    val coverBytes: ByteArray? = null)
 
 @Serializable
 data class LocalMediaFolder(
     val path: String,
     val name: String,
-    val tracks: List<LocalMediaTrack>,
-) {
+    val tracks: List<LocalMediaTrack>) {
     val trackCount: Int
         get() = tracks.size
 }
@@ -42,5 +40,4 @@ data class LocalMediaFolder(
 @Serializable
 data class LocalMediaCache(
     val folders: List<LocalMediaFolder> = emptyList(),
-    val indexedAtEpochMs: Long = 0,
-)
+    val indexedAtEpochMs: Long = 0)

@@ -17,6 +17,10 @@
 
 package dev.krtirtho.spotube.modules.welcome
 
+
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.fadeIn
@@ -38,22 +42,17 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.krtirtho.spotube.core.ui.base.GhostButton
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.modules.welcome.pages.BrandingPage
 import dev.krtirtho.spotube.modules.welcome.pages.DonationPage
@@ -72,54 +71,45 @@ import spotube.composeapp.generated.resources.welcome_skip
  * rendered inside the app shell. Uses the application's base controls and keeps plugin setup
  * in-place, with a neutral palette independent of the user's chosen accent.
  */
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WelcomeScreen(viewModel: WelcomeViewModel) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     WelcomeTheme {
         Box(Modifier.fillMaxSize()) {
             WelcomeBackground()
-            BaseScaffold(
-                containerColor = Color.Transparent,
-                topBar = {
-                    ApplicationMainBar(
-                        title = {
-                            WelcomeWordmark(
-                                fontSize = MaterialTheme.typography.titleLarge.fontSize,
-                            )
-                        },
-                        backButton = false,
-                        transparent = true,
-                        actions = {
-                            if (!state.isLastPage) {
-                                GhostButton(onClick = viewModel::completeOnboarding) {
-                                    Text(
-                                        text = stringResource(Res.string.welcome_skip),
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
-                                }
+            Column(modifier = Modifier.fillMaxSize()) {
+                ApplicationMainBar(
+                    title = {
+                        WelcomeWordmark(
+                            fontSize = AppTheme.typography.titleLarge.fontSize)
+                    },
+                    backButton = false,
+                    transparent = true,
+                    actions = {
+                        if (!state.isLastPage) {
+                            MillenniumButton(
+                                onClick = viewModel::completeOnboarding,
+                                style = MillenniumButtonStyle.Quiet) {
+                                Text(
+                                    text = stringResource(Res.string.welcome_skip),
+                                    color = AppTheme.colors.onSurfaceVariant)
                             }
-                        },
-                    )
-                },
-            ) { innerPadding ->
-                Box(modifier = Modifier.fillMaxSize()) {
+                        }
+                    })
+                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
 
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(innerPadding)
                             .padding(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
+                        horizontalAlignment = Alignment.CenterHorizontally) {
                         // Central stage (animated page content)
                         Box(
                             modifier = Modifier
                                 .weight(1f)
                                 .widthIn(max = 1280.dp)
                                 .fillMaxWidth(),
-                            contentAlignment = Alignment.Center,
-                        ) {
+                            contentAlignment = Alignment.Center) {
                             AnimatedContent(
                                 modifier = Modifier.fillMaxSize(),
                                 targetState = state.currentPageIndex,
@@ -132,15 +122,13 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                                                 (slideOutHorizontally { it / 4 } + fadeOut())
                                     }
                                 },
-                                label = "welcome_page",
-                            ) { index ->
+                                label = "welcome_page") { index ->
                                 when (index) {
                                     0 -> BrandingPage()
 
                                     1 -> DonationPage(
                                         donations = state.donations,
-                                        onDonate = viewModel::openDonation,
-                                    )
+                                        onDonate = viewModel::openDonation)
 
                                     2 -> PluginsPage()
 
@@ -160,17 +148,15 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                                 .widthIn(max = 680.dp)
                                 .fillMaxWidth()
                                 .padding(horizontal = 12.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
+                            verticalAlignment = Alignment.CenterVertically) {
                             // Left: Back button
                             if (state.currentPageIndex > 0) {
-                                OutlineButton(
+                                MillenniumButton(
                                     onClick = viewModel::previousPage,
-                                ) {
+                                    style = MillenniumButtonStyle.Secondary) {
                                     Text(
                                         text = stringResource(Res.string.welcome_back),
-                                        color = MaterialTheme.colorScheme.onSurface,
-                                    )
+                                        color = AppTheme.colors.onSurface)
                                 }
                             } else {
                                 Spacer(Modifier.width(76.dp))
@@ -180,27 +166,28 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                             Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
                                 PageIndicator(
                                     pageCount = state.pageCount,
-                                    currentPageIndex = state.currentPageIndex,
-                                )
+                                    currentPageIndex = state.currentPageIndex)
                             }
 
                             // Right: Primary Next / Let's Go action
-                            OutlineButton(
+                            MillenniumButton(
                                 onClick = viewModel::onPrimary,
-                            ) {
-                                Text(
-                                    text = stringResource(state.primaryLabel),
-                                    fontWeight = FontWeight.SemiBold,
-                                )
-                                Icon(
-                                    imageVector = if (state.isLastPage) {
-                                        Iconsax.IconsaxCheckCircle
-                                    } else {
-                                        Iconsax.IconsaxNext
-                                    },
-                                    contentDescription = null,
-                                    modifier = Modifier.size(16.dp),
-                                )
+                                style = MillenniumButtonStyle.Secondary) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                    Text(
+                                        text = stringResource(state.primaryLabel),
+                                        fontWeight = FontWeight.SemiBold)
+                                    MillenniumIcon(
+                                        imageVector = if (state.isLastPage) {
+                                            Iconsax.IconsaxCheckCircle
+                                        } else {
+                                            Iconsax.IconsaxNext
+                                        },
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp))
+                                }
                             }
                         }
                     }
@@ -214,32 +201,28 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
 private fun PageIndicator(
     pageCount: Int,
     currentPageIndex: Int,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .padding(horizontal = 12.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(7.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+        verticalAlignment = Alignment.CenterVertically) {
         repeat(pageCount) { index ->
             val selected = index == currentPageIndex
             val width by animateDpAsState(
                 targetValue = if (selected) 20.dp else 6.dp,
-                label = "welcome_page_indicator",
-            )
+                label = "welcome_page_indicator")
             Box(
                 modifier = Modifier
                     .size(width = width, height = 6.dp)
                     .clip(CircleShape)
                     .background(
                         if (selected) {
-                            MaterialTheme.colorScheme.onSurface
+                            AppTheme.colors.onSurface
                         } else {
-                            MaterialTheme.colorScheme.outlineVariant
+                            AppTheme.colors.outlineVariant
                         }
-                    ),
-            )
+                    ))
         }
     }
 }

@@ -35,13 +35,11 @@ data class LibraryLocalTracksState(
     val folders: List<LocalMediaFolder> = emptyList(),
     val currentFolderPath: String? = null,
     val query: String = "",
-    val error: String? = null,
-)
+    val error: String? = null)
 
 class LibraryLocalTracksViewModel(
     private val coordinator: LocalMediaLibraryCoordinator,
-    private val audioPlayerQueue: AudioPlayerQueue,
-) : ViewModel() {
+    private val audioPlayerQueue: AudioPlayerQueue) : ViewModel() {
     private val _state = MutableStateFlow(LibraryLocalTracksState())
     val state: StateFlow<LibraryLocalTracksState> = _state.asStateFlow()
 
@@ -52,8 +50,7 @@ class LibraryLocalTracksViewModel(
                 _state.update {
                     it.copy(
                         folders = cache.folders,
-                        error = null,
-                    )
+                        error = null)
                 }
             }
         }
@@ -98,8 +95,7 @@ class LibraryLocalTracksViewModel(
                 entries = tracks.map { it.toQueueEntry() },
                 autoPlay = true,
                 startPosition = 0,
-                collectionEntry = null,
-            )
+                collectionEntry = null)
         }
     }
 
@@ -114,8 +110,7 @@ class LibraryLocalTracksViewModel(
                 entries = tracks.map { it.toQueueEntry() },
                 autoPlay = true,
                 startPosition = selectedIndex,
-                collectionEntry = null,
-            )
+                collectionEntry = null)
         }
     }
 
@@ -173,7 +168,6 @@ class LibraryLocalTracksViewModel(
             duration = durationMs,
             album = album,
             coverBytes = coverBytes,
-            url = path,
-        )
+            url = path)
     }
 }

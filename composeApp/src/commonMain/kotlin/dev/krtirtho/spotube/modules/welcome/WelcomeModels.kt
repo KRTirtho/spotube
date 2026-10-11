@@ -26,8 +26,7 @@ data class DonationOption(
     val title: StringResource,
     val subtitle: StringResource,
     val url: String,
-    val icon: ImageVector,
-)
+    val icon: ImageVector)
 
 data class WelcomeUiState(
     val currentPageIndex: Int,
@@ -35,5 +34,4 @@ data class WelcomeUiState(
     val isLastPage: Boolean,
     val primaryLabel: StringResource,
     val donations: List<DonationOption>,
-    val demoPlaying: Boolean = true,
-)
+    val demoPlaying: Boolean = true)

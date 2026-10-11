@@ -17,40 +17,41 @@
 
 package dev.krtirtho.spotube.modules.settings.components
 
-import androidx.compose.foundation.clickable
+
+import androidx.compose.ui.Alignment
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumRadioGroup
+import org.spotube.millennium.composables.MillenniumSwitch
+import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
+import androidx.compose.foundation.text.input.rememberTextFieldState
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
-import dev.krtirtho.spotube.core.ui.base.Radio
-import dev.krtirtho.spotube.core.ui.base.TextField
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
-import dev.krtirtho.spotube.core.ui.base.Toggle
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
+import kotlinx.coroutines.flow.drop
 import spotube.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 
@@ -60,17 +61,16 @@ internal fun SwitchSettingCard(
     subtitle: String? = null,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    icon: (@Composable () -> Unit)? = null,
-) {
+    icon: (@Composable () -> Unit)? = null) {
     SettingCardItem(
         title = title,
         subtitle = subtitle,
         icon = icon,
         trailingContent = {
-            Toggle(
+            MillenniumSwitch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
-            )
+                label = title)
         },
         onClick = {
             onCheckedChange(!checked)
@@ -89,8 +89,7 @@ internal fun <T> SelectionSettingCard(
     dialogTitle: String = title,
     icon: (@Composable () -> Unit)? = null,
     inlineSelectorMinWidth: Dp = 700.dp,
-    filter: ((AdaptiveMenuItem, String) -> Boolean)? = null,
-) {
+    filter: ((AdaptiveMenuItem, String) -> Boolean)? = null) {
     var isDialogOpen by remember { mutableStateOf(false) }
 
     BoxWithConstraints {
@@ -106,21 +105,24 @@ internal fun <T> SelectionSettingCard(
                         AdaptiveMenuItem(
                             label = optionLabel(option),
                             onClick = { onOptionSelected(option) },
-                            selected = option == selectedOption,
-                        )
+                            selected = option == selectedOption)
                     },
                     trigger = { onClick ->
-                        OutlineButton(onClick = onClick) {
-                            Text(optionLabel(selectedOption))
-                            Icon(
-                                imageVector = Iconsax.IconsaxArrowDown4,
-                                contentDescription = null,
-                                modifier = Modifier.size(14.dp),
-                            )
+                        MillenniumButton(
+                            onClick = onClick,
+                            style = MillenniumButtonStyle.Secondary) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                Text(optionLabel(selectedOption))
+                                MillenniumIcon(
+                                    imageVector = Iconsax.IconsaxArrowDown4,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(14.dp))
+                            }
                         }
                     },
-                    filter = filter,
-                )
+                    filter = filter)
             },
             onClick = {
                 if (isWideLayout) {
@@ -130,45 +132,24 @@ internal fun <T> SelectionSettingCard(
         )
 
         if (!isWideLayout && isDialogOpen) {
-            ThemedDialog(
+            val labels = options.map { optionLabel(it) }
+            MillenniumDialog(
+                visible = true,
                 onDismissRequest = { isDialogOpen = false },
-                title = {
-                    Text(dialogTitle, style = MaterialTheme.typography.titleLarge)
-                },
-                actions = {
-                    OutlineButton(onClick = { isDialogOpen = false }) {
-                        Text(stringResource(Res.string.settings_action_close))
-                    }
-                },
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    options.forEach { option ->
-                        val isSelected = option == selectedOption
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(10.dp))
-                                .clickable {
-                                    onOptionSelected(option)
-                                    isDialogOpen = false
-                                }
-                                .padding(vertical = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            Radio(
-                                selected = isSelected,
-                                onClick = {
-                                    onOptionSelected(option)
-                                    isDialogOpen = false
-                                }
-                            )
-                            Text(
-                                text = optionLabel(option),
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                        }
-                    }
+                title = dialogTitle) {
+                MillenniumRadioGroup(
+                    value = selectedOption,
+                    onValueChange = { option ->
+                        onOptionSelected(option)
+                        isDialogOpen = false
+                    },
+                    options = options,
+                    label = dialogTitle,
+                    optionLabel = { option -> labels[options.indexOf(option)] })
+                MillenniumButton(
+                    onClick = { isDialogOpen = false },
+                    style = MillenniumButtonStyle.Quiet) {
+                    Text(stringResource(Res.string.settings_action_close))
                 }
             }
         }
@@ -189,13 +170,23 @@ internal fun TextInputSettingCard(
     icon: (@Composable () -> Unit)? = null,
     inlineTextFieldMinWidth: Dp = 700.dp,
     inlineTextFieldWidth: Dp = 220.dp,
-    enabled: Boolean = true,
-) {
+    enabled: Boolean = true) {
     var isDialogOpen by remember { mutableStateOf(false) }
 
     BoxWithConstraints {
         val isWideLayout = maxWidth >= inlineTextFieldMinWidth
-        var inlineDraft by remember(value, isWideLayout) { mutableStateOf(value) }
+        val inlineState = rememberTextFieldState(value)
+
+        LaunchedEffect(inlineState, isWideLayout) {
+            snapshotFlow { inlineState.text.toString() }
+                .drop(1)
+                .collect { draft ->
+                    val normalizedValue = normalize(draft)
+                    if (validate(normalizedValue) == null) {
+                        onValueSaved(normalizedValue)
+                    }
+                }
+        }
 
         SettingCardItem(
             enabled = enabled,
@@ -204,24 +195,12 @@ internal fun TextInputSettingCard(
             icon = icon,
             trailingContent = if (isWideLayout) {
                 {
-                    TextField(
-                        value = inlineDraft,
-                        onValueChange = { draft ->
-                            inlineDraft = draft
-                            val normalizedValue = normalize(draft)
-                            if (validate(normalizedValue) == null) {
-                                onValueSaved(normalizedValue)
-                            }
-                        },
+                    MillenniumTextField(
+                        state = inlineState,
+                        label = title,
                         modifier = Modifier.width(inlineTextFieldWidth),
-                        placeholder = if (placeholder.isNotEmpty()) {
-                            { Text(placeholder) }
-                        } else {
-                            null
-                        },
-                        singleLine = true,
-                        enabled = enabled,
-                    )
+                        placeholder = placeholder,
+                        enabled = enabled)
                 }
             } else {
                 null
@@ -234,54 +213,50 @@ internal fun TextInputSettingCard(
         )
 
         if (!isWideLayout && isDialogOpen) {
+            val dialogState = rememberTextFieldState(value)
             var draft by remember(value, isDialogOpen) { mutableStateOf(value) }
+
+            LaunchedEffect(dialogState) {
+                snapshotFlow { dialogState.text.toString() }
+                    .drop(1)
+                    .collect { draft = it }
+            }
+
             val normalizedValue = normalize(draft)
             val errorMessage = validate(normalizedValue)
 
-            ThemedDialog(
+            MillenniumDialog(
+                visible = true,
                 onDismissRequest = { isDialogOpen = false },
-                title = {
-                    Text(dialogTitle, style = MaterialTheme.typography.titleLarge)
-                },
-                actions = {
-                    PrimaryButton(
+                title = dialogTitle) {
+                if (dialogDescription != null) {
+                    Text(
+                        text = dialogDescription,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant)
+                }
+                MillenniumTextField(
+                    state = dialogState,
+                    label = title,
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = placeholder,
+                    error = errorMessage)
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    MillenniumButton(
                         onClick = {
                             if (errorMessage == null) {
                                 onValueSaved(normalizedValue)
                                 isDialogOpen = false
                             }
-                        }
-                    ) {
+                        },
+                        enabled = errorMessage == null) {
                         Text(stringResource(Res.string.settings_action_save))
                     }
-                    OutlineButton(onClick = { isDialogOpen = false }) {
+                    MillenniumButton(
+                        onClick = { isDialogOpen = false },
+                        style = MillenniumButtonStyle.Secondary) {
                         Text(stringResource(Res.string.settings_action_cancel))
                     }
-                },
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    dialogDescription?.let {
-                        Text(
-                            text = it,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    OutlinedTextField(
-                        value = draft,
-                        onValueChange = { draft = it },
-                        modifier = Modifier.fillMaxWidth(),
-                        placeholder = if (placeholder.isNotEmpty()) {
-                            { Text(placeholder) }
-                        } else {
-                            null
-                        },
-                        isError = errorMessage != null,
-                        supportingText = errorMessage?.let { message ->
-                            { Text(message) }
-                        },
-                        singleLine = true,
-                    )
                 }
             }
         }

@@ -35,8 +35,7 @@ import org.koin.core.component.KoinComponent
 class LocalMediaLibraryCoordinator(
     private val discoveryService: LocalMediaDiscoveryService,
     private val cacheRepository: LocalMediaCacheRepository,
-    private val foldersConfig: LocalMediaFoldersConfig,
-) : KoinComponent {
+    private val foldersConfig: LocalMediaFoldersConfig) : KoinComponent {
     private val logger by injectLogger<LocalMediaLibraryCoordinator>()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -100,8 +99,7 @@ class LocalMediaLibraryCoordinator(
             }.onSuccess { folders ->
                 val cache = LocalMediaCache(
                     folders = folders,
-                    indexedAtEpochMs = Clock.System.now().toEpochMilliseconds(),
-                )
+                    indexedAtEpochMs = Clock.System.now().toEpochMilliseconds())
                 cacheRepository.save(cache)
                 _cacheState.value = cache
             }.onFailure { throwable ->

@@ -17,6 +17,8 @@
 
 package dev.krtirtho.spotube.modules.plugin.components
 
+
+import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,10 +34,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -123,23 +125,19 @@ private fun PluginEntry.metadataLabel(): String = buildString {
 internal fun DefaultAbilityPluginGrid(
     selections: List<AbilitySelection>,
     onSelected: (PluginAbility, PluginEntry?) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+        verticalArrangement = Arrangement.spacedBy(12.dp)) {
         selections.chunked(2).forEach { rowSelections ->
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
+                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 rowSelections.forEach { selection ->
                     DefaultAbilityPluginCard(
                         selection = selection,
                         onSelected = { onSelected(selection.ability, it) },
-                        modifier = Modifier.weight(1f),
-                    )
+                        modifier = Modifier.weight(1f))
                 }
                 repeat(2 - rowSelections.size) {
                     Spacer(modifier = Modifier.weight(1f))
@@ -153,8 +151,7 @@ internal fun DefaultAbilityPluginGrid(
 private fun DefaultAbilityPluginCard(
     selection: AbilitySelection,
     onSelected: (PluginEntry?) -> Unit,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val ability = selection.ability
     val selected = selection.selectedPlugin
     val noPluginsText = stringResource(Res.string.settings_plugins_no_plugins)
@@ -172,27 +169,23 @@ private fun DefaultAbilityPluginCard(
                                 modifier = Modifier
                                     .size(30.dp)
                                     .clip(RoundedCornerShape(8.dp)),
-                                contentAlignment = Alignment.Center,
-                            ) {
+                                contentAlignment = Alignment.Center) {
                                 PluginLogo(
                                     plugin = plugin,
                                     logoPath = selection.pluginLogoPaths[plugin.id],
                                     contentDescription = plugin.name,
                                     modifier = Modifier.fillMaxSize(),
                                     fallback = {
-                                        Icon(
+                                        MillenniumIcon(
                                             imageVector = ability.abilityIcon(),
                                             contentDescription = null,
                                             modifier = Modifier.size(18.dp),
-                                            tint = ability.accentColor(),
-                                        )
-                                    },
-                                )
+                                            tint = ability.accentColor())
+                                    })
                             }
                         },
                         onClick = { onSelected(plugin) },
-                        selected = selected?.name == plugin.name,
-                    )
+                        selected = selected?.name == plugin.name)
                 )
             }
         } else {
@@ -200,8 +193,7 @@ private fun DefaultAbilityPluginCard(
                 AdaptiveMenuItem(
                     label = noPluginsText,
                     onClick = { },
-                    enabled = false,
-                )
+                    enabled = false)
             )
         }
     }
@@ -216,23 +208,19 @@ private fun DefaultAbilityPluginCard(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
+                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 AbilityBadge(ability)
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         stringResource(
                             Res.string.settings_plugins_default_ability_title,
-                            ability.displayLabel(),
-                        ),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
+                            ability.displayLabel()),
+                        style = AppTheme.typography.titleMedium)
                     selected?.let {
                         Text(
                             it.name,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.primary,
-                        )
+                            style = AppTheme.typography.bodyMedium,
+                            color = AppTheme.colors.primary)
                     }
                 }
             }
@@ -244,10 +232,8 @@ private fun DefaultAbilityPluginCard(
                 logoPath = selection.pluginLogoPaths[selected?.id],
                 pluginName = selected?.name ?: noSelectionText,
                 version = selected?.version,
-                onClick = onClick,
-            )
-        },
-    )
+                onClick = onClick)
+        })
 }
 
 @Composable
@@ -258,8 +244,7 @@ private fun AbilityPluginTile(
     pluginName: String,
     version: String?,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val accent = ability.accentColor()
     val gradient = ability.aeroGradient()
     val shape = RoundedCornerShape(20.dp)
@@ -275,8 +260,7 @@ private fun AbilityPluginTile(
                 val background = Brush.linearGradient(
                     colors = gradient,
                     start = Offset.Zero,
-                    end = Offset(size.width, size.height),
-                )
+                    end = Offset(size.width, size.height))
                 onDrawBehind {
                     drawRect(background)
                     drawAeroDecorations(seed)
@@ -285,71 +269,59 @@ private fun AbilityPluginTile(
                         brush = Brush.verticalGradient(
                             colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.32f)),
                             startY = size.height * 0.3f,
-                            endY = size.height,
-                        ),
-                    )
+                            endY = size.height))
                     // Glossy top highlight.
                     drawRect(
                         brush = Brush.verticalGradient(
                             colors = listOf(Color.White.copy(alpha = 0.35f), Color.Transparent),
                             startY = 0f,
-                            endY = size.height * 0.55f,
-                        ),
-                    )
+                            endY = size.height * 0.55f))
                 }
-            },
-    ) {
+            }) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(18.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
+            verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top,
-            ) {
+                verticalAlignment = Alignment.Top) {
                 Box(
                     modifier = Modifier
                         .size(52.dp)
                         .clip(CircleShape)
                         .background(Color.White.copy(alpha = 0.35f))
                         .border(1.dp, Color.White.copy(alpha = 0.6f), CircleShape),
-                    contentAlignment = Alignment.Center,
-                ) {
+                    contentAlignment = Alignment.Center) {
                     PluginLogo(
                         plugin = selectedPlugin,
                         logoPath = logoPath,
                         contentDescription = pluginName,
                         modifier = Modifier.fillMaxSize(),
                         fallback = {
-                            Icon(
+                            MillenniumIcon(
                                 imageVector = ability.abilityIcon(),
                                 contentDescription = null,
                                 modifier = Modifier.size(26.dp),
-                                tint = accent,
-                            )
-                        },
-                    )
+                                tint = accent)
+                        })
                 }
-                Icon(
+                MillenniumIcon(
                     imageVector = Iconsax.IconsaxArrowDown4,
                     contentDescription = null,
                     modifier = Modifier.size(16.dp),
-                    tint = Color.White.copy(alpha = 0.85f),
-                )
+                    tint = Color.White.copy(alpha = 0.85f))
             }
 
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
                     text = pluginName,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = AppTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
                 Text(
                     text = buildString {
                         append(ability.displayLabel())
@@ -357,11 +329,10 @@ private fun AbilityPluginTile(
                             append(" · v").append(version)
                         }
                     },
-                    style = MaterialTheme.typography.labelMedium,
+                    style = AppTheme.typography.labelMedium,
                     color = Color.White.copy(alpha = 0.85f),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
             }
         }
     }
@@ -370,16 +341,15 @@ private fun AbilityPluginTile(
 @Composable
 private fun AbilityBadge(ability: PluginAbility) {
     val accent = ability.accentColor()
-    Surface(
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-        color = accent.copy(alpha = 0.12f),
-    ) {
-        Icon(
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(accent.copy(alpha = 0.12f))) {
+        MillenniumIcon(
             imageVector = ability.abilityIcon(),
             contentDescription = null,
             modifier = Modifier.padding(8.dp),
-            tint = accent,
-        )
+            tint = accent)
     }
 }
 
@@ -392,29 +362,24 @@ private fun DrawScope.drawAeroDecorations(seed: Int) {
     repeat(6) {
         val center = Offset(
             x = random.nextFloat() * size.width,
-            y = random.nextFloat() * size.height,
-        )
+            y = random.nextFloat() * size.height)
         val radius = size.minDimension * (0.12f + random.nextFloat() * 0.4f)
         drawCircle(
             brush = Brush.radialGradient(
                 colors = listOf(Color.White.copy(alpha = 0.3f), Color.Transparent),
                 center = center,
-                radius = radius,
-            ),
+                radius = radius),
             radius = radius,
-            center = center,
-        )
+            center = center)
     }
     repeat(3) {
         val center = Offset(
             x = random.nextFloat() * size.width,
-            y = random.nextFloat() * size.height,
-        )
+            y = random.nextFloat() * size.height)
         val radius = size.minDimension * (0.03f + random.nextFloat() * 0.05f)
         drawCircle(
             color = Color.White.copy(alpha = 0.28f),
             radius = radius,
-            center = center,
-        )
+            center = center)
     }
 }

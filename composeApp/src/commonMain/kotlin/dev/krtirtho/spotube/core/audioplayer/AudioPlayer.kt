@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.time.Duration
 
-
 interface AudioPlayerInterface {
     //    // Playback
     suspend fun play()

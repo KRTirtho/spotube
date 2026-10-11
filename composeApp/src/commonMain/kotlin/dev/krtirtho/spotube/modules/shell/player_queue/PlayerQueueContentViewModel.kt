@@ -42,8 +42,7 @@ data class QueueItemUi(
     val imageUrl: String?,
     val originalIndex: Int,
     /** Participant who added this item to the jam queue, if any. */
-    val addedByParticipant: JamParticipant? = null,
-)
+    val addedByParticipant: JamParticipant? = null)
 
 data class QueueContentUiState(
     val filterQuery: String = "",
@@ -52,13 +51,11 @@ data class QueueContentUiState(
     /** Guests cannot reorder/remove/clear the shared jam queue. */
     val isReadOnly: Boolean = false,
     val isJamHost: Boolean = false,
-    val participants: List<JamParticipant> = emptyList(),
-)
+    val participants: List<JamParticipant> = emptyList())
 
 class PlayerQueueContentViewModel(
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val jamRoomService: JamRoomService,
-) : ViewModel() {
+    private val jamRoomService: JamRoomService) : ViewModel() {
     private val queueVisibilityFlow = MutableStateFlow(false)
     private val queueFilterFlow = MutableStateFlow("")
     private val reorderBuffer = MutableStateFlow<List<QueueItemUi>?>(null)
@@ -70,8 +67,7 @@ class PlayerQueueContentViewModel(
     private val computedItems: StateFlow<List<QueueItemUi>> = combine(
         audioPlayerQueue.queueFlow,
         audioPlayerQueue.currentQueueEntryFlow,
-        jamRoomService.participants,
-    ) { queue, currentEntry, participants ->
+        jamRoomService.participants) { queue, currentEntry, participants ->
         val currentIndex = if (currentEntry != null) {
             queue.indexOfFirst { it.matchesCurrent(currentEntry) }
         } else {
@@ -113,22 +109,19 @@ class PlayerQueueContentViewModel(
                 isCurrent = index == currentIndex,
                 imageUrl = imageUrl,
                 originalIndex = index,
-                addedByParticipant = addedByParticipant,
-            )
+                addedByParticipant = addedByParticipant)
         }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = emptyList(),
-    )
+        initialValue = emptyList())
 
     val queueContentUiState: StateFlow<QueueContentUiState> = combine(
         computedItems,
         reorderBuffer,
         queueFilterFlow,
         jamRoomService.role,
-        jamRoomService.participants,
-    ) { items, buffer, filterQuery, role, participants ->
+        jamRoomService.participants) { items, buffer, filterQuery, role, participants ->
         val normalizedFilter = filterQuery.trim().lowercase()
         val isFiltered = normalizedFilter.isNotBlank()
         val filtered = if (isFiltered) {
@@ -145,13 +138,11 @@ class PlayerQueueContentViewModel(
             isFiltered = isFiltered,
             isReadOnly = role == JamRole.Guest,
             isJamHost = role == JamRole.Host,
-            participants = participants,
-        )
+            participants = participants)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = QueueContentUiState(),
-    )
+        initialValue = QueueContentUiState())
 
     fun toggleQueueVisibility() {
         queueVisibilityFlow.update { !it }

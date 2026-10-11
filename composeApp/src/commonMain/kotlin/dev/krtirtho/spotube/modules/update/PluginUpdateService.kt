@@ -39,8 +39,7 @@ data class AvailablePluginUpdate(
     val pluginId: String,
     val pluginName: String,
     val currentVersion: String,
-    val info: PluginUpdateInfo,
-)
+    val info: PluginUpdateInfo)
 
 /**
  * Checks the currently active plugins for updates through their own [PluginService.use]
@@ -52,8 +51,7 @@ data class AvailablePluginUpdate(
  */
 class PluginUpdateService(
     private val pluginManager: PluginManager,
-    private val settingsRepository: SettingsRepository,
-) : KoinComponent {
+    private val settingsRepository: SettingsRepository) : KoinComponent {
     private val logger = Logger.withTag("PluginUpdateService")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -94,8 +92,7 @@ class PluginUpdateService(
                         pluginId = pluginEntry.id,
                         pluginName = pluginEntry.name,
                         currentVersion = pluginEntry.version,
-                        info = updateInfo,
-                    )
+                        info = updateInfo)
                     return
                 }
             } catch (e: Exception) {

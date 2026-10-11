@@ -46,8 +46,7 @@ sealed interface LibraryArtistsState {
         data class Loaded(
             override val query: String = "",
             override val allItems: List<MetadataArtist.Basic> = emptyList(),
-            override val nextPagination: PaginationStrategy? = null,
-        ) : Data {
+            override val nextPagination: PaginationStrategy? = null) : Data {
             override val items: List<MetadataArtist.Basic>
                 get() = if (query.isNotBlank()) {
                     allItems.filter { artist ->
@@ -60,15 +59,13 @@ sealed interface LibraryArtistsState {
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 query = query,
                 allItems = allItems,
-                nextPagination = nextPagination,
-            )
+                nextPagination = nextPagination)
         }
 
         data class LoadingMore(
             override val query: String = "",
             override val allItems: List<MetadataArtist.Basic> = emptyList(),
-            override val nextPagination: PaginationStrategy? = null,
-        ) : Data {
+            override val nextPagination: PaginationStrategy? = null) : Data {
             override val items: List<MetadataArtist.Basic>
                 get() = if (query.isNotBlank()) {
                     allItems.filter { artist ->
@@ -85,8 +82,7 @@ sealed interface LibraryArtistsState {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryArtistsViewModel(
-    private val repository: LibraryRepository,
-) : ViewModel(), KoinComponent {
+    private val repository: LibraryRepository) : ViewModel(), KoinComponent {
     private val logger by injectLogger<LibraryArtistsViewModel>()
 
     private val _state = MutableStateFlow<LibraryArtistsState>(LibraryArtistsState.Loading)
@@ -115,11 +111,9 @@ class LibraryArtistsViewModel(
                     id = it.id,
                     name = it.name,
                     thumbnails = it.thumbnails,
-                    externalUri = it.externalUri,
-                )
+                    externalUri = it.externalUri)
             } ?: emptyList(),
-            nextPagination = result?.nextPagination,
-        )
+            nextPagination = result?.nextPagination)
     }.onFailure { e ->
         logger.e(e) { "Failed to load artists" }
         _state.value = LibraryArtistsState.Error(e.message ?: "Unknown error")
@@ -135,14 +129,12 @@ class LibraryArtistsViewModel(
                     id = it.id,
                     name = it.name,
                     thumbnails = it.thumbnails,
-                    externalUri = it.externalUri,
-                )
+                    externalUri = it.externalUri)
             } ?: emptyList()
             _state.value = LibraryArtistsState.Data.Loaded(
                 query = currentState.query,
                 allItems = currentState.allItems + newItems,
-                nextPagination = result?.nextPagination,
-            )
+                nextPagination = result?.nextPagination)
         }
     }.onFailure { e ->
         logger.e(e) { "Failed to load more artists" }

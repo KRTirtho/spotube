@@ -37,13 +37,11 @@ data class AlternativeTrackUiState(
     val currentTrack: MetadataTrack? = null,
     val alternatives: List<AudioSource> = emptyList(),
     val activeSourceId: String? = null,
-    val isLoading: Boolean = false,
-)
+    val isLoading: Boolean = false)
 
 class AlternativeTrackContentViewModel(
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val alternativeTracksRepository: AlternativeTracksRepository,
-) : ViewModel() {
+    private val alternativeTracksRepository: AlternativeTracksRepository) : ViewModel() {
     private val alternativeVisibilityFlow = MutableStateFlow(false)
     private val alternativesFlow = MutableStateFlow<List<AudioSource>>(emptyList())
     private val activeSourceIdFlow = MutableStateFlow<String?>(null)
@@ -55,20 +53,17 @@ class AlternativeTrackContentViewModel(
         audioPlayerQueue.currentQueueEntryFlow,
         alternativesFlow,
         activeSourceIdFlow,
-        isLoadingFlow,
-    ) { currentEntry, alternatives, activeSourceId, isLoading ->
+        isLoadingFlow) { currentEntry, alternatives, activeSourceId, isLoading ->
         val currentTrack = (currentEntry as? QueueEntry.StreamingTrack)?.track
         AlternativeTrackUiState(
             currentTrack = currentTrack,
             alternatives = alternatives,
             activeSourceId = activeSourceId,
-            isLoading = isLoading,
-        )
+            isLoading = isLoading)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = AlternativeTrackUiState(),
-    )
+        initialValue = AlternativeTrackUiState())
 
     fun toggleAlternativeVisibility() {
         alternativeVisibilityFlow.update { !it }

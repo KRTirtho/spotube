@@ -17,9 +17,15 @@
 
 package dev.krtirtho.spotube.modules.settings
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumIndeterminateProgress
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.millennium.theme.millenniumPanelBrush
+import org.spotube.millennium.theme.millenniumSurface
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,12 +40,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -49,8 +53,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -60,8 +62,6 @@ import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.core.discovery.rememberLocalNetworkPermissionRequester
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
 import dev.krtirtho.spotube.core.ui.component.SidebarItem
 import dev.krtirtho.spotube.modules.blacklist.BlacklistContent
 import dev.krtirtho.spotube.modules.plugin.PluginScreenContent
@@ -113,8 +113,7 @@ private val SettingsSidebarWidth = 236.dp
  */
 internal enum class SettingsTab(
     val titleRes: StringResource,
-    val icon: ImageVector,
-) {
+    val icon: ImageVector) {
     Plugins(Res.string.settings_section_plugins, Iconsax.IconsaxBoxAdd),
     LanguageRegion(Res.string.settings_section_language_region, Iconsax.IconsaxLanguageSquare),
     Appearance(Res.string.settings_section_appearance, Iconsax.IconsaxColorSwatch),
@@ -134,19 +133,16 @@ internal enum class SettingsTab(
 @Composable
 internal fun SettingsDialog(
     settingsViewModel: SettingsViewModel,
-    onDismiss: () -> Unit,
-) {
+    onDismiss: () -> Unit) {
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(usePlatformDefaultWidth = false),
-    ) {
+        properties = DialogProperties(usePlatformDefaultWidth = false)) {
         // The dialog is its own surface; the player/bottom bars behind it should not
         // reserve any inset inside the dialog content.
         CompositionLocalProvider(LocalAppShellBottomInset provides 0.dp) {
             SettingsPane(
                 settingsViewModel = settingsViewModel,
-                onClose = onDismiss,
-            )
+                onClose = onDismiss)
         }
     }
 }
@@ -154,13 +150,11 @@ internal fun SettingsDialog(
 @Composable
 private fun SettingsPane(
     settingsViewModel: SettingsViewModel,
-    onClose: () -> Unit,
-) {
+    onClose: () -> Unit) {
     val navigatorCommands: NavigationCommands = koinInject()
     val settingsState by settingsViewModel.settingsState.collectAsStateWithLifecycle()
     val requestLocalNetworkPermission = rememberLocalNetworkPermissionRequester()
     val contentPadding = remember { PaddingValues(top = 16.dp, bottom = 24.dp) }
-    val dialogTheme = LocalBaseUITheme.current.dialog
 
     val platformType = remember { getPlatform().type }
     val isDesktopPlatform = platformType == PlatformType.Windows ||
@@ -177,73 +171,57 @@ private fun SettingsPane(
         modifier = Modifier
             .fillMaxSize()
             .padding(32.dp),
-        contentAlignment = Alignment.Center,
-    ) {
+        contentAlignment = Alignment.Center) {
         Row(
             modifier = Modifier
                 .widthIn(max = 1200.dp)
                 .heightIn(max = 860.dp)
                 .fillMaxWidth()
                 .fillMaxHeight()
-                .shadow(
-                    elevation = dialogTheme.shadow.elevation,
-                    shape = dialogTheme.shape,
-                    ambientColor = dialogTheme.shadow.ambientColor,
-                    spotColor = dialogTheme.shadow.spotColor,
-                )
-                .clip(dialogTheme.shape)
-                .background(dialogTheme.background, dialogTheme.shape)
-                .border(
-                    BorderStroke(dialogTheme.border.width, dialogTheme.border.color),
-                    dialogTheme.shape,
-                ),
-        ) {
+                .millenniumSurface(
+                    background = millenniumPanelBrush(MillenniumTheme.colors),
+                    shape = AppTheme.shapes.large,
+                    borderColor = MillenniumTheme.colors.border,
+                    borderWidth = 1.dp,
+                    shadowElevation = 16.dp)) {
             SettingsSidebar(
                 tabs = tabs,
                 selectedTab = selectedTab,
-                onSelect = { selectedIndex = tabs.indexOf(it) },
-            )
-            VerticalDivider(
+                onSelect = { selectedIndex = tabs.indexOf(it) })
+            MillenniumSeparator(
                 modifier = Modifier.fillMaxHeight(),
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                thickness = 1.dp,
-            )
+                vertical = true)
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxHeight(),
-            ) {
+                    .fillMaxHeight()) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+                    verticalAlignment = Alignment.CenterVertically) {
                     Box(modifier = Modifier.weight(1f)) {
                         SettingsPageTitle(selectedTab.titleRes)
                     }
-                    GhostIconButton(
+                    MillenniumIconButton(
                         onClick = onClose,
                         modifier = Modifier.padding(end = 8.dp),
-                    ) {
-                        Icon(
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
                             imageVector = Iconsax.IconsaxCloseSquare,
-                            contentDescription = "Close",
-                        )
+                            contentDescription = "Close")
                     }
                 }
-                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+                MillenniumSeparator()
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .fillMaxWidth(),
-                ) {
+                        .fillMaxWidth()) {
                     SettingsTabContent(
                         tab = selectedTab,
                         settings = settingsState,
                         settingsViewModel = settingsViewModel,
                         navigatorCommands = navigatorCommands,
                         requestLocalNetworkPermission = requestLocalNetworkPermission,
-                        contentPadding = contentPadding,
-                    )
+                        contentPadding = contentPadding)
                 }
             }
         }
@@ -254,19 +232,17 @@ private fun SettingsPane(
 private fun SettingsSidebar(
     tabs: List<SettingsTab>,
     selectedTab: SettingsTab,
-    onSelect: (SettingsTab) -> Unit,
-) {
+    onSelect: (SettingsTab) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .width(SettingsSidebarWidth)
             .fillMaxHeight()
             .padding(horizontal = 8.dp, vertical = 12.dp),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
-    ) {
+        verticalArrangement = Arrangement.spacedBy(2.dp)) {
         item {
             Text(
                 stringResource(Res.string.settings_screen_title),
-                style = MaterialTheme.typography.titleLarge,
+                style = AppTheme.typography.titleLarge,
                 modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp, bottom = 16.dp)
             )
         }
@@ -275,8 +251,7 @@ private fun SettingsSidebar(
                 label = stringResource(tab.titleRes),
                 icon = tab.icon,
                 selected = tab == selectedTab,
-                onClick = { onSelect(tab) },
-            )
+                onClick = { onSelect(tab) })
         }
     }
 }
@@ -288,8 +263,7 @@ private fun SettingsTabContent(
     settingsViewModel: SettingsViewModel,
     navigatorCommands: NavigationCommands,
     requestLocalNetworkPermission: () -> Unit,
-    contentPadding: PaddingValues,
-) {
+    contentPadding: PaddingValues) {
     when (tab) {
         SettingsTab.Plugins -> {
             PluginScreenContent(viewModel = koinViewModel())
@@ -307,9 +281,8 @@ private fun SettingsTabContent(
             if (settings == null) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
+                    contentAlignment = Alignment.Center) {
+                    MillenniumIndeterminateProgress()
                 }
             } else {
                 Box(modifier = Modifier.fillMaxSize()) {
@@ -317,8 +290,7 @@ private fun SettingsTabContent(
                         modifier = Modifier
                             .widthIn(max = 1280.dp)
                             .align(Alignment.TopCenter),
-                        contentPadding = contentPadding,
-                    ) {
+                        contentPadding = contentPadding) {
                         when (tab) {
                             SettingsTab.LanguageRegion ->
                                 languageRegionSection(settings, settingsViewModel, includeHeader = false)
@@ -333,8 +305,7 @@ private fun SettingsTabContent(
                                     navigatorCommands = navigatorCommands,
                                     requestLocalNetworkPermission = requestLocalNetworkPermission,
                                     includeBlacklist = false,
-                                    includeHeader = false,
-                                )
+                                    includeHeader = false)
 
                             SettingsTab.Caching ->
                                 cacheSection(settings, settingsViewModel, includeHeader = false)

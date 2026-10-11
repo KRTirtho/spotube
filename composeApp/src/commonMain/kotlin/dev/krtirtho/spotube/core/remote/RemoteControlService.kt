@@ -53,8 +53,7 @@ import kotlin.random.Random
 class RemoteControlService(
     private val settingsRepository: SettingsRepository,
     private val discoveryService: DeviceDiscoveryService,
-    private val localServer: LocalServer,
-) {
+    private val localServer: LocalServer) {
     private val log = Logger.withTag("RemoteControlService")
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -78,8 +77,7 @@ class RemoteControlService(
         scope.launch {
             combine(
                 settingsRepository.userSettings,
-                localServer.port,
-            ) { settings, port -> settings to port }
+                localServer.port) { settings, port -> settings to port }
                 .distinctUntilChanged()
                 .collect { (settings, port) ->
                     if (settings.allowRemoteControl && port != null) {
@@ -139,8 +137,7 @@ class RemoteControlService(
             val service = discoveryService.createService(
                 name = serviceName,
                 port = port,
-                deviceId = deviceId,
-            )
+                deviceId = deviceId)
             pendingService = service
             try {
                 service.register(timeoutInMs = REGISTER_TIMEOUT_MS)

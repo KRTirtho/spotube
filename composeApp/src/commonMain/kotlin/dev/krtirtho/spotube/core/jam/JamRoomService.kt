@@ -59,15 +59,13 @@ private data class PlaybackBroadcast(
     val queue: List<QueueEntry>,
     val current: QueueEntry?,
     val shuffle: Boolean,
-    val playerState: PlayerState,
-)
+    val playerState: PlayerState)
 
 class JamRoomService(
     private val jamClient: JamRoomClient,
     private val audioPlayer: AudioPlayerInterface,
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val settingsRepository: SettingsRepository,
-) {
+    private val settingsRepository: SettingsRepository) {
     private val log = Logger.withTag("JamRoomService")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -171,8 +169,7 @@ class JamRoomService(
             code = code,
             clientId = localClientId,
             displayName = name,
-            isHost = true,
-        ).map {
+            isHost = true).map {
             _role.value = JamRole.Host
             _roomCode.value = code
             _participants.value = listOf(JamParticipant(localClientId, name, isHost = true))
@@ -206,8 +203,7 @@ class JamRoomService(
             code = normalized,
             clientId = localClientId,
             displayName = name,
-            isHost = false,
-        ).map {
+            isHost = false).map {
             _role.value = JamRole.Guest
             _roomCode.value = normalized
             _participants.value = emptyList()
@@ -261,8 +257,7 @@ class JamRoomService(
         jamClient.publishCommand(
             JamMessage.SuggestTrack(
                 mediaItem = JamMediaItem.fromTrack(track),
-                addedBy = localClientId,
-            )
+                addedBy = localClientId)
         )
     }
 
@@ -271,8 +266,7 @@ class JamRoomService(
         jamClient.publishCommand(
             JamMessage.SuggestPlaylist(
                 tracks = tracks.map(JamMediaItem::fromTrack),
-                addedBy = localClientId,
-            )
+                addedBy = localClientId)
         )
     }
 
@@ -296,8 +290,7 @@ class JamRoomService(
                 audioPlayerQueue.queueFlow,
                 audioPlayerQueue.currentQueueEntryFlow,
                 audioPlayer.shuffleModeFlow,
-                audioPlayer.playerStateFlow,
-            ) { queue, current, shuffle, playerState ->
+                audioPlayer.playerStateFlow) { queue, current, shuffle, playerState ->
                 PlaybackBroadcast(queue, current, shuffle, playerState)
             }
                 .onEach { broadcast ->
@@ -314,8 +307,7 @@ class JamRoomService(
                             currentIndex = index.coerceAtLeast(0),
                             shuffleEnabled = broadcast.shuffle,
                             follow = now() > autoAdvanceDeadlineMs,
-                            isPlaying = broadcast.playerState == PlayerState.PLAYING,
-                        )
+                            isPlaying = broadcast.playerState == PlayerState.PLAYING)
                     )
                 }
                 .launchIn(this)
@@ -374,8 +366,7 @@ class JamRoomService(
                 audioPlayerQueue.load(
                     entries = items.map { it.toQueueEntry() },
                     autoPlay = wasPlaying,
-                    startPosition = startIndex,
-                )
+                    startPosition = startIndex)
             }.onFailure { log.w(it) { "Failed to apply jam queue" } }
             return
         }
@@ -524,13 +515,11 @@ class JamRoomService(
                 explicit = null,
                 popularity = null,
                 isrcCode = null,
-                externalUri = null,
-            ),
+                externalUri = null),
             url = "",
             protocol = runCatching { StreamProtocol.valueOf(protocol.ifBlank { "PROGRESSIVE" }) }
                 .getOrDefault(StreamProtocol.PROGRESSIVE),
-            addedBy = addedBy,
-        )
+            addedBy = addedBy)
 
         else -> QueueEntry.LocalTrack(
             name = title,
@@ -539,8 +528,7 @@ class JamRoomService(
             album = album.ifBlank { null },
             coverBytes = null,
             url = url,
-            addedBy = addedBy,
-        )
+            addedBy = addedBy)
     }
 
     private fun JamMediaItem.matchesEntry(entry: QueueEntry?): Boolean {

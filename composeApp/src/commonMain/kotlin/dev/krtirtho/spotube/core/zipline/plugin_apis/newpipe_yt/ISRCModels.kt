@@ -124,16 +124,14 @@ data class MusicGatewayResponse(
                 val externalIds: ExternalIds,
                 val id: String,
                 val name: String,
-                val popularity: Int,
-            ) {
+                val popularity: Int) {
                 @Serializable
                 data class Album(
                     @SerialName("album_type")
                     val albumType: String,
                     val artists: List<Artist>,
                     val id: String,
-                    val name: String,
-                )
+                    val name: String)
 
                 @Serializable
                 data class Artist(

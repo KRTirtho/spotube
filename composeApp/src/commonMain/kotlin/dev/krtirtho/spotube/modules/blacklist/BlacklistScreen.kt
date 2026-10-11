@@ -17,6 +17,11 @@
 
 package dev.krtirtho.spotube.modules.blacklist
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -31,15 +36,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,9 +53,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
-import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
@@ -67,36 +67,31 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun BlacklistScreen() {
     val viewModel = koinViewModel<BlacklistViewModel>()
-    BaseScaffold(
-        topBar = {
-            ApplicationMainBar(
-                backButton = true,
-                title = { Text("Blacklist") },
-            )
-        },
-    ) { innerPadding ->
+    Column(modifier = Modifier.fillMaxSize()) {
+        ApplicationMainBar(
+            backButton = true,
+            title = { Text("Blacklist") })
         BlacklistContent(
             viewModel = viewModel,
-            modifier = Modifier.padding(innerPadding),
-        )
+            modifier = Modifier.weight(1f))
     }
 }
 
 /**
- * The blacklist UI without its own [BaseScaffold] / app bar, so it can be embedded
+ * The blacklist UI without its own app bar, so it can be embedded
  * as a tab in the large-screen settings layout as well as hosted by [BlacklistScreen].
  */
 @Composable
 internal fun BlacklistContent(
     viewModel: BlacklistViewModel,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val blacklistedTracks by viewModel.blacklistedTracks.collectAsStateWithLifecycle()
     val blacklistedArtists by viewModel.blacklistedArtists.collectAsStateWithLifecycle()
     val shellBottomInset = LocalAppShellBottomInset.current
 
-    var filterQuery by rememberSaveable { mutableStateOf("") }
-    val normalizedQuery = remember(filterQuery) { filterQuery.trim().lowercase() }
+    val filterState = rememberTextFieldState("")
+    val filterQuery = filterState.text.toString()
+    val normalizedQuery = filterQuery.trim().lowercase()
 
     val filteredTracks = remember(blacklistedTracks, normalizedQuery) {
         if (normalizedQuery.isBlank()) {
@@ -130,61 +125,46 @@ internal fun BlacklistContent(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        TextField(
-            value = filterQuery,
-            onValueChange = { filterQuery = it },
+        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        MillenniumTextField(
+            state = filterState,
+            label = "",
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Filter blacklist...") },
-            singleLine = true,
-            leadingIcon = {
-                Icon(
-                    imageVector = Iconsax.IconsaxFilterSearch,
-                    contentDescription = "Search",
-                )
-            },
-        )
+            placeholder = "Filter blacklist...")
 
         if (isEmpty) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(bottom = shellBottomInset),
-                contentAlignment = Alignment.Center,
-            ) {
+                contentAlignment = Alignment.Center) {
                 Text(
                     text = if (hasActiveFilter) {
                         "No blacklisted items match '$filterQuery'"
                     } else {
                         "No blacklisted items"
                     },
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colors.onSurfaceVariant)
             }
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                    bottom = 16.dp + shellBottomInset,
-                ),
-            ) {
+                    bottom = 16.dp + shellBottomInset)) {
                 if (filteredTracks.isNotEmpty()) {
                     item {
                         Text(
                             text = "Tracks",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(vertical = 8.dp),
-                        )
+                            style = AppTheme.typography.titleSmall,
+                            color = AppTheme.colors.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 8.dp))
                     }
                     items(filteredTracks, key = { "track_${it.id}" }) { track ->
                         BlacklistedTrackRow(
                             track = track,
-                            onRemove = { viewModel.toggleTrack(track) },
-                        )
+                            onRemove = { viewModel.toggleTrack(track) })
                     }
                 }
 
@@ -192,16 +172,14 @@ internal fun BlacklistContent(
                     item {
                         Text(
                             text = "Artists",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.padding(vertical = 8.dp),
-                        )
+                            style = AppTheme.typography.titleSmall,
+                            color = AppTheme.colors.onSurfaceVariant,
+                            modifier = Modifier.padding(vertical = 8.dp))
                     }
                     items(filteredArtists, key = { "artist_${it.id}" }) { artist ->
                         BlacklistedArtistRow(
                             artist = artist,
-                            onRemove = { viewModel.toggleArtist(artist) },
-                        )
+                            onRemove = { viewModel.toggleArtist(artist) })
                     }
                 }
             }
@@ -212,21 +190,18 @@ internal fun BlacklistContent(
 @Composable
 private fun BlacklistedTrackRow(
     track: MetadataTrack,
-    onRemove: () -> Unit,
-) {
+    onRemove: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Icon(
+        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        MillenniumIcon(
             imageVector = Iconsax.IconsaxMusicCircle,
             contentDescription = "Track",
             modifier = Modifier.size(20.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+            tint = AppTheme.colors.onSurfaceVariant)
 
         AsyncImage(
             model = (track.album?.thumbnails ?: track.thumbnails)?.firstOrNull()?.url,
@@ -234,32 +209,30 @@ private fun BlacklistedTrackRow(
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(48.dp)
-                .clip(MaterialTheme.shapes.small)
-                .shimmerApply(),
-        )
+                .clip(AppTheme.shapes.small)
+                .shimmerApply())
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = track.title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
             Text(
                 text = track.artists.joinToString(", ") { it.name },
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
         }
 
-        GhostIconButton(onClick = onRemove) {
-            Icon(
+        MillenniumIconButton(
+            onClick = onRemove,
+            style = MillenniumIconButtonStyle.Quiet) {
+            MillenniumIcon(
                 imageVector = Iconsax.IconsaxMusicSquareRemoveFilled,
                 contentDescription = "Remove from blacklist",
-                tint = MaterialTheme.colorScheme.error,
-            )
+                tint = AppTheme.colors.error)
         }
     }
 }
@@ -267,28 +240,24 @@ private fun BlacklistedTrackRow(
 @Composable
 private fun BlacklistedArtistRow(
     artist: MetadataArtist,
-    onRemove: () -> Unit,
-) {
+    onRemove: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        Icon(
+        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        MillenniumIcon(
             imageVector = Iconsax.User,
             contentDescription = "Artist",
             modifier = Modifier.size(20.dp),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+            tint = AppTheme.colors.onSurfaceVariant)
 
         Box(
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape),
-            contentAlignment = Alignment.Center,
-        ) {
+            contentAlignment = Alignment.Center) {
             val imageUrl = artist.thumbnails.firstOrNull()?.url
             if (!imageUrl.isNullOrBlank()) {
                 AsyncImage(
@@ -298,38 +267,35 @@ private fun BlacklistedArtistRow(
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(CircleShape)
-                        .shimmerApply(),
-                )
+                        .shimmerApply())
             } else {
-                Icon(
+                MillenniumIcon(
                     imageVector = Iconsax.User,
                     contentDescription = artist.name,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(24.dp),
-                )
+                    tint = AppTheme.colors.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp))
             }
         }
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = artist.name,
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
             Text(
                 text = "Artist",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant)
         }
 
-        GhostIconButton(onClick = onRemove) {
-            Icon(
+        MillenniumIconButton(
+            onClick = onRemove,
+            style = MillenniumIconButtonStyle.Quiet) {
+            MillenniumIcon(
                 imageVector = Iconsax.IconsaxUserRemove,
                 contentDescription = "Remove from blacklist",
-                tint = MaterialTheme.colorScheme.error,
-            )
+                tint = AppTheme.colors.error)
         }
     }
 }

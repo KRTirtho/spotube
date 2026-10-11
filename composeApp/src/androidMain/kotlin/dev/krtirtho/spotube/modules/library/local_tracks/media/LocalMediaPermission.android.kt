@@ -42,19 +42,16 @@ actual fun rememberLocalMediaPermissionState(): LocalMediaPermissionState {
 
     var isGranted by remember {
         mutableStateOf(
-            context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED,
-        )
+            context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED)
     }
 
     val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-    ) { granted ->
+        contract = ActivityResultContracts.RequestPermission()) { granted ->
         isGranted = granted ||
             context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
     }
 
     return LocalMediaPermissionState(
         isGranted = isGranted,
-        requestPermission = { launcher.launch(permission) },
-    )
+        requestPermission = { launcher.launch(permission) })
 }

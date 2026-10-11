@@ -45,8 +45,7 @@ class DeviceAudioPlayerQueue(
     private val settingsProvider: SettingsProvider,
     private val repository: QueueStateRepository,
     private val pluginProvider: PluginProvider,
-    private val blacklistRepository: BlacklistRepository,
-) : AudioPlayerQueue, KoinComponent {
+    private val blacklistRepository: BlacklistRepository) : AudioPlayerQueue, KoinComponent {
 
     private val logger by injectLogger<DeviceAudioPlayerQueue>()
 
@@ -60,8 +59,7 @@ class DeviceAudioPlayerQueue(
 
     override val queueFlow: StateFlow<List<QueueEntry>> = combine(
         audioPlayer.playlistFlow,
-        entryByMediaUrl,
-    ) { playlist, knownEntries ->
+        entryByMediaUrl) { playlist, knownEntries ->
         playlist.map { mediaItem ->
             knownEntries[mediaItem.url] ?: mediaItem.toFallbackQueueEntry()
         }
@@ -69,8 +67,7 @@ class DeviceAudioPlayerQueue(
 
     override val currentQueueEntryFlow: StateFlow<QueueEntry?> = combine(
         audioPlayer.currentMediaItemFlow,
-        entryByMediaUrl,
-    ) { mediaItem, knownEntries ->
+        entryByMediaUrl) { mediaItem, knownEntries ->
         mediaItem?.let { knownEntries[it.url] ?: it.toFallbackQueueEntry() }
     }.stateIn(scope, SharingStarted.WhileSubscribed(5_000), null)
 
@@ -107,8 +104,7 @@ class DeviceAudioPlayerQueue(
             combine(
                 audioPlayer.currentMediaItemFlow,
                 audioPlayer.playlistFlow,
-                audioPlayer.loopStateFlow,
-            ) { currentMedia, playlist, loopState ->
+                audioPlayer.loopStateFlow) { currentMedia, playlist, loopState ->
                 Triple(currentMedia, playlist, loopState)
             }.collect { (currentMedia, playlist, loopState) ->
                 if (currentMedia == null || playlist.isEmpty()) return@collect
@@ -129,8 +125,7 @@ class DeviceAudioPlayerQueue(
         entries: List<QueueEntry>,
         autoPlay: Boolean,
         startPosition: Int,
-        collectionEntry: QueueCollectionEntry?,
-    ) {
+        collectionEntry: QueueCollectionEntry?) {
         logger.i { "Loading queue with ${entries.size} entries, autoPlay=$autoPlay, startPosition=$startPosition" }
         val mediaItems = entries.mapNotNull { it.toMediaItem() }
         if (mediaItems.isEmpty()) {
@@ -436,8 +431,7 @@ class DeviceAudioPlayerQueue(
                 entries = queueEntries,
                 currentIndex = normalizedCurrentIndex,
                 currentCollectionEntry = currentCollectionEntryState.value,
-                collectionHistory = collectionHistoryState.value,
-            )
+                collectionHistory = collectionHistoryState.value)
         )
     }
 
@@ -471,8 +465,7 @@ class DeviceAudioPlayerQueue(
                     duration = track.durationMs.milliseconds,
                     coverURL = (track.album?.thumbnails ?: track.thumbnails)?.firstOrNull()?.url.orEmpty(),
                     url = resolvedUrl,
-                    protocol = protocol,
-                )
+                    protocol = protocol)
             }
 
             is QueueEntry.LocalTrack -> {
@@ -483,8 +476,7 @@ class DeviceAudioPlayerQueue(
                     album = album.orEmpty(),
                     duration = duration.milliseconds,
                     coverURL = "",
-                    url = url,
-                )
+                    url = url)
             }
         }
     }
@@ -496,8 +488,7 @@ class DeviceAudioPlayerQueue(
             duration = duration.inWholeMilliseconds,
             album = album.ifBlank { null },
             coverBytes = null,
-            url = url,
-        )
+            url = url)
     }
 
     private suspend fun buildStreamingUrl(trackId: String, protocol: StreamProtocol): String {

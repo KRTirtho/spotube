@@ -56,8 +56,7 @@ class StreamingUrlRepositoryBehaviorTest {
         explicit = false,
         popularity = null,
         isrcCode = null,
-        externalUri = null,
-    )
+        externalUri = null)
 
     private fun basicSource(id: String, confidence: Float = 1f) = AudioSource.Basic(
         id = id,
@@ -66,14 +65,12 @@ class StreamingUrlRepositoryBehaviorTest {
         album = null,
         thumbnails = emptyList(),
         externalUri = null,
-        confidence = confidence,
-    )
+        confidence = confidence)
 
     private fun streamedSource(
         sourceId: String,
         streams: List<AudioStream>,
-        confidence: Float = 1f,
-    ) = AudioSource.Streamed(
+        confidence: Float = 1f) = AudioSource.Streamed(
         id = sourceId,
         title = "source-$sourceId",
         artist = null,
@@ -81,16 +78,14 @@ class StreamingUrlRepositoryBehaviorTest {
         thumbnails = emptyList(),
         externalUri = null,
         confidence = confidence,
-        streams = streams,
-    )
+        streams = streams)
 
     private fun stream(url: String, bitrate: Int = 256_000) = AudioStream.Lossy(
         url = url,
         codec = "opus",
         container = "webm",
         protocol = StreamProtocol.PROGRESSIVE,
-        bitrate = bitrate,
-    )
+        bitrate = bitrate)
 
     private class Harness(cacheTtlMs: Long = 30_000) {
         val queue = FakeStreamingAudioPlayerQueue()
@@ -102,8 +97,7 @@ class StreamingUrlRepositoryBehaviorTest {
             audioPlayerQueue = queue,
             matchedTracksRepository = matchedTracksRepository,
             settingsRepository = settings,
-            streamUrlCacheTtlMs = cacheTtlMs,
-        )
+            streamUrlCacheTtlMs = cacheTtlMs)
 
         fun selectPlugin(pluginId: String, audioAPI: FakeAudioAPI = FakeAudioAPI()): FakeAudioPluginService {
             val service = FakeAudioPluginService(pluginId, audioAPI)
@@ -219,9 +213,7 @@ class StreamingUrlRepositoryBehaviorTest {
                             url = "https://example.com/aac.mp4",
                             codec = "aac",
                             container = "mp4",
-                            bitrate = 256_000,
-                        ),
-                    )
+                            bitrate = 256_000))
                 )
             )
         }

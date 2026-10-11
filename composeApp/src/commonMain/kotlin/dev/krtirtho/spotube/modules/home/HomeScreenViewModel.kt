@@ -51,15 +51,13 @@ sealed interface HomeScreenState {
             override val genres: List<MetadataBrowseGenre>,
             override val selectedGenreId: String?,
             override val browseSections: Map<String, List<MetadataBrowseSection>?>,
-            override val paginationStrategies: Map<String, PaginationStrategy?>,
-        ) : Data {
+            override val paginationStrategies: Map<String, PaginationStrategy?>) : Data {
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 featuredItems = featuredItems,
                 genres = genres,
                 selectedGenreId = selectedGenreId,
                 browseSections = browseSections,
-                paginationStrategies = paginationStrategies,
-            )
+                paginationStrategies = paginationStrategies)
         }
 
         data class LoadingMore(
@@ -67,8 +65,7 @@ sealed interface HomeScreenState {
             override val genres: List<MetadataBrowseGenre>,
             override val selectedGenreId: String?,
             override val browseSections: Map<String, List<MetadataBrowseSection>?>,
-            override val paginationStrategies: Map<String, PaginationStrategy?>,
-        ) : Data
+            override val paginationStrategies: Map<String, PaginationStrategy?>) : Data
     }
 
     data class Error(val message: String) : HomeScreenState
@@ -111,8 +108,7 @@ class HomeScreenViewModel(
             genres = genres,
             selectedGenreId = firstGenreId,
             browseSections = browseSections,
-            paginationStrategies = paginationStrategies,
-        )
+            paginationStrategies = paginationStrategies)
     }.onFailure { e ->
         logger.e(e) { "Failed to load home screen data" }
         state.value = HomeScreenState.Error(e.message ?: "Unknown error")
@@ -135,8 +131,7 @@ class HomeScreenViewModel(
                             genres = current.genres,
                             selectedGenreId = genreId,
                             browseSections = current.browseSections + (genreId to (result?.items ?: emptyList())),
-                            paginationStrategies = current.paginationStrategies + (genreId to result?.nextPagination),
-                        )
+                            paginationStrategies = current.paginationStrategies + (genreId to result?.nextPagination))
                     }
                 }
             }
@@ -156,8 +151,7 @@ class HomeScreenViewModel(
                 genres = currentState.genres,
                 selectedGenreId = genreId,
                 browseSections = currentState.browseSections + (genreId to (existingSections + (result?.items ?: emptyList()))),
-                paginationStrategies = currentState.paginationStrategies + (genreId to result?.nextPagination),
-            )
+                paginationStrategies = currentState.paginationStrategies + (genreId to result?.nextPagination))
         }
     }.onFailure { e ->
         logger.e(e) { "Failed to load more home screen data" }

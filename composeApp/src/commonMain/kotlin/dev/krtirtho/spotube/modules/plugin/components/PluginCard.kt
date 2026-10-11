@@ -17,7 +17,14 @@
 
 package dev.krtirtho.spotube.modules.plugin.components
 
+
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,10 +35,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,8 +47,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import okio.Path
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.modules.plugin.BUILT_IN_PLUGINS
 import dev.krtirtho.spotube.modules.plugin.PluginAbility
 import dev.krtirtho.spotube.modules.plugin.PluginEntry
@@ -72,8 +77,7 @@ internal fun PluginCard(
     onLogout: (() -> Unit)? = null,
     onInfo: (() -> Unit)? = null,
     onSupport: (() -> Unit)? = null,
-    logoPath: Path? = null,
-) {
+    logoPath: Path? = null) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -82,11 +86,11 @@ internal fun PluginCard(
             horizontalArrangement = Arrangement.spacedBy(14.dp)
         ) {
             // Plugin icon
-            Surface(
+            Box(
                 modifier = Modifier
                     .size(44.dp)
-                    .clip(RoundedCornerShape(10.dp)),
-                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                    .clip(RoundedCornerShape(10.dp))
+                    .background(AppTheme.colors.primary.copy(alpha = 0.1f))
             ) {
                 PluginLogo(
                     plugin = plugin,
@@ -95,15 +99,14 @@ internal fun PluginCard(
                     modifier = Modifier.fillMaxSize(),
                     fallback = {
                         Box(contentAlignment = Alignment.Center) {
-                            Icon(
+                            MillenniumIcon(
                                 Iconsax.IconsaxBox,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
+                                tint = AppTheme.colors.primary,
                                 modifier = Modifier.size(22.dp)
                             )
                         }
-                    },
-                )
+                    })
             }
 
             // Text content
@@ -117,7 +120,7 @@ internal fun PluginCard(
                 ) {
                     Text(
                         plugin.name,
-                        style = MaterialTheme.typography.bodyLarge,
+                        style = AppTheme.typography.bodyLarge,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
@@ -125,25 +128,26 @@ internal fun PluginCard(
                     )
                     // "Active" chip
                     if (isSelected) {
-                        Surface(
-                            shape = RoundedCornerShape(6.dp),
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(6.dp))
+                                .background(AppTheme.colors.primary.copy(alpha = 0.15f))
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(3.dp)
                             ) {
-                                Icon(
+                                MillenniumIcon(
                                     Iconsax.IconsaxCheckSquare,
                                     contentDescription = null,
                                     modifier = Modifier.size(10.dp),
-                                    tint = MaterialTheme.colorScheme.primary
+                                    tint = AppTheme.colors.primary
                                 )
                                 Text(
                                     stringResource(Res.string.plugin_state_active),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary
+                                    style = AppTheme.typography.labelSmall,
+                                    color = AppTheme.colors.primary
                                 )
                             }
                         }
@@ -153,8 +157,8 @@ internal fun PluginCard(
                 if (plugin.description.isNotBlank()) {
                     Text(
                         plugin.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -169,16 +173,16 @@ internal fun PluginCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(3.dp)
                     ) {
-                        Icon(
+                        MillenniumIcon(
                             Iconsax.User,
                             contentDescription = null,
                             modifier = Modifier.size(11.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            tint = AppTheme.colors.onSurfaceVariant
                         )
                         Text(
                             plugin.author,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = AppTheme.typography.labelSmall,
+                            color = AppTheme.colors.onSurfaceVariant
                         )
                     }
                     if (plugin !in BUILT_IN_PLUGINS)
@@ -186,16 +190,16 @@ internal fun PluginCard(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(3.dp)
                         ) {
-                            Icon(
+                            MillenniumIcon(
                                 Iconsax.IconsaxTag,
                                 contentDescription = null,
                                 modifier = Modifier.size(11.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = AppTheme.colors.onSurfaceVariant
                             )
                             Text(
                                 stringResource(Res.string.plugin_version_label, plugin.version),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                style = AppTheme.typography.labelSmall,
+                                color = AppTheme.colors.onSurfaceVariant
                             )
                         }
                 }
@@ -204,14 +208,15 @@ internal fun PluginCard(
                 if (plugin.abilities.isNotEmpty()) {
                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                         plugin.abilities.forEach { ability ->
-                            Surface(
-                                shape = RoundedCornerShape(4.dp),
-                                color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(4.dp))
+                                    .background(AppTheme.colors.secondaryContainer.copy(alpha = 0.6f))
                             ) {
                                 Text(
                                     ability.displayLabel(),
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                                    style = AppTheme.typography.labelSmall,
+                                    color = AppTheme.colors.onSecondaryContainer,
                                     modifier = Modifier.padding(
                                         horizontal = 6.dp,
                                         vertical = 2.dp
@@ -233,42 +238,45 @@ internal fun PluginCard(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     if (onInfo != null) {
-                        GhostIconButton(onClick = onInfo) {
-                            Icon(
+                        MillenniumIconButton(
+                            onClick = onInfo,
+                            style = MillenniumIconButtonStyle.Quiet) {
+                            MillenniumIcon(
                                 Iconsax.IconsaxInformation,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                                tint = AppTheme.colors.onSurfaceVariant)
                         }
                     }
                     if (onSupport != null) {
-                        GhostIconButton(onClick = onSupport) {
-                            Icon(
+                        MillenniumIconButton(
+                            onClick = onSupport,
+                            style = MillenniumIconButtonStyle.Quiet) {
+                            MillenniumIcon(
                                 Iconsax.IconsaxHeart,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                                tint = AppTheme.colors.onSurfaceVariant)
                         }
                     }
                     if (plugin in BUILT_IN_PLUGINS) {
                         Text(
                             stringResource(Res.string.plugin_state_builtin),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = AppTheme.typography.labelSmall,
+                            color = AppTheme.colors.onSurfaceVariant,
                             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
                                 .border(
-                                    BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                    BorderStroke(1.dp, AppTheme.colors.outlineVariant),
                                     shape = RoundedCornerShape(6.dp)
                                 )
                                 .padding(horizontal = 6.dp, vertical = 2.dp)
                         )
                     } else {
-                        GhostIconButton(onClick = onRemove) {
-                            Icon(
+                        MillenniumIconButton(
+                            onClick = onRemove,
+                            style = MillenniumIconButtonStyle.Quiet) {
+                            MillenniumIcon(
                                 Iconsax.IconsaxTrash,
                                 contentDescription = stringResource(Res.string.plugin_action_remove),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                                tint = AppTheme.colors.onSurfaceVariant)
                         }
                     }
                 }
@@ -279,10 +287,12 @@ internal fun PluginCard(
                     else -> null
                 }
                 authAction?.let { (action, label) ->
-                    OutlineButton(onClick = action) {
+                    MillenniumButton(
+                        onClick = action,
+                        style = MillenniumButtonStyle.Secondary) {
                         Text(
                             text = stringResource(label),
-                            style = MaterialTheme.typography.labelLarge
+                            style = AppTheme.typography.labelLarge
                         )
                 }
             }

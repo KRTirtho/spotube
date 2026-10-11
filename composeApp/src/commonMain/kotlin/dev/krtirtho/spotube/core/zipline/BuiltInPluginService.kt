@@ -38,8 +38,7 @@ import org.koin.core.component.KoinComponent
 import kotlin.reflect.KClass
 
 class BuiltInPluginService(
-    private val pluginInfo: PluginEntry,
-) : PluginService, KoinComponent {
+    private val pluginInfo: PluginEntry) : PluginService, KoinComponent {
 
     override val pluginId: String = pluginInfo.id
     private val loggedInStateFlow = MutableStateFlow(false)
@@ -57,7 +56,6 @@ class BuiltInPluginService(
             loggedInStateFlow.value = isLoggedIn
         }
     }
-
 
     override suspend fun start() {
         when (pluginInfo) {

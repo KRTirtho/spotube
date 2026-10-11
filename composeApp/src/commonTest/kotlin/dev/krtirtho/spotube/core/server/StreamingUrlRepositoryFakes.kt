@@ -19,8 +19,7 @@ import kotlinx.coroutines.flow.StateFlow
 class FakeAudioAPI(
     override val supportedQualities: List<AudioFormat> = emptyList(),
     var onGetStreamsByTrack: suspend (MetadataTrack) -> List<AudioSource> = { emptyList() },
-    var onGetStreamsOfAudioSource: suspend (AudioSource.Basic) -> List<AudioSource.Streamed> = { emptyList() },
-) : AudioAPI {
+    var onGetStreamsOfAudioSource: suspend (AudioSource.Basic) -> List<AudioSource.Streamed> = { emptyList() }) : AudioAPI {
     var getStreamsByTrackCallCount = 0
     var getStreamsOfAudioSourceCallCount = 0
     val getStreamsOfAudioSourceCalls = mutableListOf<AudioSource.Basic>()
@@ -40,8 +39,7 @@ class FakeAudioAPI(
 /** Minimal [PluginService] that only ever exposes an [AudioAPI], identified by [pluginId]. */
 class FakeAudioPluginService(
     override val pluginId: String,
-    val audioAPI: FakeAudioAPI = FakeAudioAPI(),
-) : PluginService {
+    val audioAPI: FakeAudioAPI = FakeAudioAPI()) : PluginService {
     override val loggedInFlow: StateFlow<Boolean> = MutableStateFlow(true)
 
     override suspend fun start() = Unit
@@ -116,8 +114,7 @@ class FakeStreamingAudioPlayerQueue : AudioPlayerQueue {
         entries: List<QueueEntry>,
         autoPlay: Boolean,
         startPosition: Int,
-        collectionEntry: QueueCollectionEntry?,
-    ) = error("not used")
+        collectionEntry: QueueCollectionEntry?) = error("not used")
 
     override suspend fun addToQueue(entry: QueueEntry) = error("not used")
     override suspend fun addAllToQueue(entries: List<QueueEntry>, collectionEntry: QueueCollectionEntry?) =

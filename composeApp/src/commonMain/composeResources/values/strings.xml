@@ -76,6 +76,16 @@
     <string name="settings_appearance_accent_label">Accent</string>
     <string name="settings_preview_secondary">Secondary</string>
 
+    <string name="settings_palette_title">Palette</string>
+    <string name="settings_palette_subtitle_current">Millennium accent palette. Current: %1$s</string>
+    <string name="settings_palette_dialog_title">Palette</string>
+    <string name="settings_palette_dialog_description">Choose a Millennium accent palette and preview it in light and dark.</string>
+    <string name="settings_palette_label">Palette</string>
+    <string name="settings_appearance_subtitle_palette">Millennium palette and accent. Current: %1$s</string>
+    <string name="settings_palette_blue">Blue</string>
+    <string name="settings_palette_orange">Orange</string>
+    <string name="settings_palette_lime">Lime</string>
+
     <string name="settings_download_folder_title">Download folder override</string>
     <string name="settings_download_folder_current">Current folder: %1$s</string>
     <string name="settings_download_folder_default">Current folder: default music folder</string>

@@ -28,8 +28,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class WelcomeViewModel(
-    private val repository: WelcomeRepository,
-) : ViewModel() {
+    private val repository: WelcomeRepository) : ViewModel() {
     private val currentPageIndex = MutableStateFlow(0)
     private val demoPlaying = MutableStateFlow(true)
 
@@ -42,8 +41,7 @@ class WelcomeViewModel(
                 isLastPage = index == pageCount - 1,
                 primaryLabel = welcomePrimaryLabels[index.coerceIn(0, pageCount - 1)],
                 donations = welcomeDonations,
-                demoPlaying = playing,
-            )
+                demoPlaying = playing)
         }
             .stateIn(
                 scope = viewModelScope,
@@ -53,9 +51,7 @@ class WelcomeViewModel(
                     pageCount = welcomePrimaryLabels.size,
                     isLastPage = welcomePrimaryLabels.size == 1,
                     primaryLabel = welcomePrimaryLabels.first(),
-                    donations = welcomeDonations,
-                ),
-            )
+                    donations = welcomeDonations))
 
     fun nextPage() {
         currentPageIndex.update { (it + 1).coerceAtMost(welcomePrimaryLabels.lastIndex) }

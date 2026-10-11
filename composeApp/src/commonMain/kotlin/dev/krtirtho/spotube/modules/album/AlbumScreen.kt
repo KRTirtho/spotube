@@ -110,8 +110,6 @@ fun AlbumScreen(
                 visible = showAddToPlaylistPicker,
                 currentUserId = currentUserId,
                 onDismiss = viewModel::dismissAddToPlaylistPicker,
-                onPlaylistSelected = viewModel::addTracksToPlaylist,
-            )
-        },
-    )
+                onPlaylistSelected = viewModel::addTracksToPlaylist)
+        })
 }

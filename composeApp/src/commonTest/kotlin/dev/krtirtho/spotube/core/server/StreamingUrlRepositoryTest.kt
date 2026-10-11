@@ -32,34 +32,29 @@ class StreamingUrlRepositoryTest {
         bitrate: Int,
         codec: String = "opus",
         container: String = "webm",
-        protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
-    ) = AudioStream.Lossy(
+        protocol: StreamProtocol = StreamProtocol.PROGRESSIVE) = AudioStream.Lossy(
         url = url,
         codec = codec,
         container = container,
         protocol = protocol,
-        bitrate = bitrate,
-    )
+        bitrate = bitrate)
 
     private fun lossless(
         url: String,
         sampleRate: Int,
         channels: Int,
         codec: String = "flac",
-        container: String = "flac",
-    ) = AudioStream.Lossless(
+        container: String = "flac") = AudioStream.Lossless(
         url = url,
         codec = codec,
         container = container,
         sampleRate = sampleRate,
-        channels = channels,
-    )
+        channels = channels)
 
     private fun select(
         streams: List<AudioStream>,
         format: AudioFormat = opusWebm(),
-        quality: AudioQuality = AudioQuality.Lossy(256_000),
-    ) = selectPreferredAudioStream(streams, format, quality)
+        quality: AudioQuality = AudioQuality.Lossy(256_000)) = selectPreferredAudioStream(streams, format, quality)
 
     // ---------- empty / single ----------
 
@@ -78,8 +73,7 @@ class StreamingUrlRepositoryTest {
     fun `does not mutate the input list`() {
         val streams = mutableListOf(
             lossy("opus-44", 44_000),
-            lossy("opus-256", 256_000),
-        )
+            lossy("opus-256", 256_000))
         val snapshot = streams.toList()
 
         select(streams)
@@ -96,8 +90,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(otherFormat, preferredFormat),
-            quality = AudioQuality.Lossy(256_000),
-        )
+            quality = AudioQuality.Lossy(256_000))
 
         assertSame(preferredFormat, result)
     }
@@ -109,8 +102,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(mismatch, exact),
-            format = AudioFormat(codec = "OPUS", container = "WEBM", qualities = emptyList()),
-        )
+            format = AudioFormat(codec = "OPUS", container = "WEBM", qualities = emptyList()))
 
         assertSame(exact, result)
     }
@@ -122,8 +114,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(fullMismatch, partial),
-            quality = AudioQuality.Lossy(44_000),
-        )
+            quality = AudioQuality.Lossy(44_000))
 
         assertSame(partial, result)
     }
@@ -145,8 +136,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(codecOnly, containerOnly),
-            quality = AudioQuality.Lossy(44_000),
-        )
+            quality = AudioQuality.Lossy(44_000))
 
         assertSame(containerOnly, result)
     }
@@ -159,8 +149,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(low, target, high),
-            quality = AudioQuality.Lossy(256_000),
-        )
+            quality = AudioQuality.Lossy(256_000))
 
         assertSame(target, result)
     }
@@ -173,8 +162,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(wrongFormatRightFamily, sameFormatWrongFamily),
-            quality = AudioQuality.Lossy(44_000),
-        )
+            quality = AudioQuality.Lossy(44_000))
 
         assertSame(sameFormatWrongFamily, result)
     }
@@ -189,8 +177,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(low, exact, high),
-            quality = AudioQuality.Lossy(128_000),
-        )
+            quality = AudioQuality.Lossy(128_000))
 
         assertSame(exact, result)
     }
@@ -202,8 +189,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(higher, lower),
-            quality = AudioQuality.Lossy(200_000),
-        )
+            quality = AudioQuality.Lossy(200_000))
 
         assertSame(lower, result)
     }
@@ -215,8 +201,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(lower, higher),
-            quality = AudioQuality.Lossy(100_000),
-        )
+            quality = AudioQuality.Lossy(100_000))
 
         assertSame(higher, result)
     }
@@ -237,8 +222,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(losslessStream, lossyStream),
-            quality = AudioQuality.Lossy(128_000),
-        )
+            quality = AudioQuality.Lossy(128_000))
 
         assertSame(lossyStream, result)
     }
@@ -250,8 +234,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(min, max),
-            quality = AudioQuality.Lossy(Int.MAX_VALUE),
-        )
+            quality = AudioQuality.Lossy(Int.MAX_VALUE))
 
         assertSame(max, result)
     }
@@ -267,8 +250,7 @@ class StreamingUrlRepositoryTest {
         val result = select(
             streams = listOf(otherRate, mono, exact),
             format = flac(),
-            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2),
-        )
+            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2))
 
         assertSame(exact, result)
     }
@@ -281,8 +263,7 @@ class StreamingUrlRepositoryTest {
         val result = select(
             streams = listOf(far, near),
             format = flac(),
-            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2),
-        )
+            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2))
 
         assertSame(near, result)
     }
@@ -295,8 +276,7 @@ class StreamingUrlRepositoryTest {
         val result = select(
             streams = listOf(mono, stereo),
             format = flac(),
-            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2),
-        )
+            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2))
 
         assertSame(stereo, result)
     }
@@ -309,8 +289,7 @@ class StreamingUrlRepositoryTest {
         val result = select(
             streams = listOf(lossyStream, losslessStream),
             format = flac(),
-            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2),
-        )
+            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2))
 
         assertSame(losslessStream, result)
     }
@@ -325,8 +304,7 @@ class StreamingUrlRepositoryTest {
         val result = select(
             streams = listOf(first, second),
             format = flac(),
-            quality = AudioQuality.Lossy(256_000),
-        )
+            quality = AudioQuality.Lossy(256_000))
 
         assertSame(first, result)
     }
@@ -338,8 +316,7 @@ class StreamingUrlRepositoryTest {
 
         val result = select(
             streams = listOf(first, second),
-            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2),
-        )
+            quality = AudioQuality.Lossless(sampleRate = 48_000, channels = 2))
 
         assertSame(first, result)
     }
@@ -354,8 +331,7 @@ class StreamingUrlRepositoryTest {
         val result = select(
             streams = listOf(low, target),
             format = AudioFormat(codec = "", container = "", qualities = emptyList()),
-            quality = AudioQuality.Lossy(256_000),
-        )
+            quality = AudioQuality.Lossy(256_000))
 
         assertSame(target, result)
     }
@@ -376,8 +352,7 @@ class StreamingUrlRepositoryTest {
         val streams = listOf(
             lossy("opus-44", 44_000),
             lossy("opus-128", 128_000),
-            lossy("opus-256", 256_000),
-        )
+            lossy("opus-256", 256_000))
 
         val first = select(streams, quality = AudioQuality.Lossy(100_000))
         val second = select(streams, quality = AudioQuality.Lossy(100_000))
@@ -405,24 +380,21 @@ class StreamingUrlRepositoryTest {
     fun `relative hls manifest paths are resolved against the youtube origin`() {
         assertEquals(
             "https://www.youtube.com/watch?v=abc",
-            normalizeManifestUrl("/watch?v=abc", StreamProtocol.HLS),
-        )
+            normalizeManifestUrl("/watch?v=abc", StreamProtocol.HLS))
     }
 
     @Test
     fun `relative dash manifest paths are resolved against the youtube origin`() {
         assertEquals(
             "https://www.youtube.com/watch?v=abc",
-            normalizeManifestUrl("/watch?v=abc", StreamProtocol.DASH),
-        )
+            normalizeManifestUrl("/watch?v=abc", StreamProtocol.DASH))
     }
 
     @Test
     fun `relative progressive urls are returned unchanged`() {
         assertEquals(
             "/watch?v=abc",
-            normalizeManifestUrl("/watch?v=abc", StreamProtocol.PROGRESSIVE),
-        )
+            normalizeManifestUrl("/watch?v=abc", StreamProtocol.PROGRESSIVE))
     }
 
     @Test

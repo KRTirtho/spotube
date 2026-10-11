@@ -72,8 +72,7 @@ actual class NewPipeService {
                             url = stream.content,
                             codec = stream.codec ?: "unknown",
                             bitrate = stream.bitrate,
-                            container = stream.format?.suffix ?: "unknown",
-                        )
+                            container = stream.format?.suffix ?: "unknown")
                     },
                 videoStreams = listOf(), // Not yet supported
                 id = id

@@ -28,7 +28,6 @@ interface SettingsProvider {
     val settingsState: StateFlow<UserSettings?>
 }
 
-
 class SettingsViewModel(
     private val repository: SettingsRepository
 ) : ViewModel(), SettingsProvider {

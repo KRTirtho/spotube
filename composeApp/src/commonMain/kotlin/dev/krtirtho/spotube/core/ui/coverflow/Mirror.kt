@@ -48,23 +48,20 @@ import androidx.compose.ui.unit.times
 internal fun Mirror(
     modifier: Modifier = Modifier,
     coverSize: Float,
-    content: @Composable () -> Unit,
-) {
+    content: @Composable () -> Unit) {
     val coverSizeDp = with(LocalDensity.current) { coverSize.toDp() }
 
     Column(
         modifier = modifier
             .padding(top = coverSizeDp)
             .fillMaxWidth()
-            .requiredHeight(2 * coverSizeDp),
-    ) {
+            .requiredHeight(2 * coverSizeDp)) {
         Box(
             propagateMinConstraints = true,
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .height(coverSizeDp),
-        ) {
+                .height(coverSizeDp)) {
             content()
         }
         Box(
@@ -75,34 +72,27 @@ internal fun Mirror(
                 .height(coverSizeDp)
                 .graphicsLayer(
                     compositingStrategy = CompositingStrategy.Offscreen,
-                    rotationX = 180f,
-                )
+                    rotationX = 180f)
                 .clip(HalfSizeShape)
                 .drawWithContent {
                     val colors = listOf(
                         Color.Transparent,
                         Color.Transparent,
-                        Color.Black,
-                    )
+                        Color.Black)
                     drawContent()
                     drawRect(
                         topLeft = Offset(
                             0f,
-                            this.size.height / 2,
-                        ),
+                            this.size.height / 2),
                         size = Size(
                             this.size.width,
-                            this.size.height / 2,
-                        ),
+                            this.size.height / 2),
                         brush = Brush.verticalGradient(colors),
-                        blendMode = BlendMode.DstIn,
-                    )
+                        blendMode = BlendMode.DstIn)
                 }
                 .blur(
                     radiusX = 1.dp,
-                    radiusY = 3.dp,
-                ),
-        ) {
+                    radiusY = 3.dp)) {
             content()
         }
     }
@@ -112,17 +102,12 @@ private object HalfSizeShape : Shape {
     override fun createOutline(
         size: Size,
         layoutDirection: LayoutDirection,
-        density: Density,
-    ): Outline = Outline.Rectangle(
+        density: Density): Outline = Outline.Rectangle(
         Rect(
             Offset(
                 0f,
-                size.height / 2,
-            ),
+                size.height / 2),
             Size(
                 size.width,
-                size.height,
-            ),
-        ),
-    )
+                size.height)))
 }

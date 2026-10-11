@@ -17,6 +17,9 @@
 
 package dev.krtirtho.spotube.modules.library.album
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,8 +33,8 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -40,16 +43,17 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
-import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -61,6 +65,13 @@ fun LibraryAlbumsScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
+
+    val searchState = rememberTextFieldState((state as? LibraryAlbumsState.Data)?.query ?: "")
+    LaunchedEffect(searchState) {
+        snapshotFlow { searchState.text.toString() }
+            .drop(1)
+            .collect(viewModel::onQueryChange)
+    }
 
     LaunchedEffect(gridState) {
         snapshotFlow { gridState.layoutInfo }
@@ -83,19 +94,11 @@ fun LibraryAlbumsScreen(
 
     Column(modifier = modifier) {
         AnimatedVisibility(searchMode){
-            TextField(
-                value = (state as? LibraryAlbumsState.Data)?.query ?: "",
-                onValueChange = viewModel::onQueryChange,
+            MillenniumTextField(
+                state = searchState,
+                label = "Search",
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search saved albums...") },
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Iconsax.IconsaxFilterSearch,
-                        contentDescription = "Search"
-                    )
-                }
-            )
+                placeholder = "Search saved albums...")
         }
         Spacer(modifier = Modifier.height(12.dp))
         when (state) {
@@ -116,8 +119,7 @@ fun LibraryAlbumsScreen(
                             PlayableCard(
                                 title = "Album Title",
                                 subtitle = "Artist Name",
-                                imageURL = "https://placehold.co/600x400",
-                            )
+                                imageURL = "https://placehold.co/600x400")
                         }
                     }
                 }
@@ -127,8 +129,7 @@ fun LibraryAlbumsScreen(
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     ErrorDisplay(
                         errorMessage = (state as LibraryAlbumsState.Error).message,
-                        onRetry = { viewModel.refresh() },
-                    )
+                        onRetry = { viewModel.refresh() })
                 }
             }
 
@@ -167,8 +168,7 @@ fun LibraryAlbumsScreen(
                                     PlayableCard(
                                         title = "Album Title",
                                         subtitle = "Artist Name",
-                                        imageURL = "https://placehold.co/600x400",
-                                    )
+                                        imageURL = "https://placehold.co/600x400")
                                 }
                             }
                         }

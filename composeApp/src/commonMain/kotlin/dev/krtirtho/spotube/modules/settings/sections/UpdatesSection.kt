@@ -32,8 +32,7 @@ import spotube.composeapp.generated.resources.settings_updates_auto_check_title
 internal fun LazyListScope.updatesSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
-    includeHeader: Boolean = true,
-) {
+    includeHeader: Boolean = true) {
     if (includeHeader) {
         settingsSectionHeader(Res.string.settings_section_updates)
     }

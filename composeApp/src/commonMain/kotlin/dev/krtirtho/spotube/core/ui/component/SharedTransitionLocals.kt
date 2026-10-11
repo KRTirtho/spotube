@@ -35,13 +35,11 @@ val LocalAnimatedVisibilityScope = compositionLocalOf<AnimatedVisibilityScope?> 
 fun Modifier.sharedElementOrNone(
     key: String?,
     sharedTransitionScope: SharedTransitionScope?,
-    animatedVisibilityScope: AnimatedVisibilityScope?,
-): Modifier {
+    animatedVisibilityScope: AnimatedVisibilityScope?): Modifier {
     if (sharedTransitionScope == null || animatedVisibilityScope == null || key == null) return this
     with(sharedTransitionScope) {
         return this@sharedElementOrNone.sharedElement(
             sharedContentState = rememberSharedContentState(key = key),
-            animatedVisibilityScope = animatedVisibilityScope,
-        )
+            animatedVisibilityScope = animatedVisibilityScope)
     }
 }

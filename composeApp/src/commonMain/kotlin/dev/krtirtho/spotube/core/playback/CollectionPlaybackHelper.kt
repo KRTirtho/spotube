@@ -34,8 +34,7 @@ class CollectionPlaybackHelper(
     private val savedTracksRepository: SavedTracksRepository,
     private val artistRepository: ArtistRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val blacklistRepository: BlacklistRepository,
-) {
+    private val blacklistRepository: BlacklistRepository) {
     suspend fun playAlbum(albumId: String, shuffle: Boolean = false) {
         if (!shuffle && audioPlayerQueue.isAlbumPlaying(albumId)) return
         val entries = fetchAllAlbumTracks(albumId).let { if (shuffle) it.shuffled() else it }
@@ -44,8 +43,7 @@ class CollectionPlaybackHelper(
                 entries = entries,
                 autoPlay = true,
                 startPosition = 0,
-                collectionEntry = QueueCollectionEntry.Album(albumId),
-            )
+                collectionEntry = QueueCollectionEntry.Album(albumId))
         }
     }
 
@@ -54,8 +52,7 @@ class CollectionPlaybackHelper(
         if (entries.isNotEmpty()) {
             audioPlayerQueue.addAllToQueue(
                 entries,
-                collectionEntry = QueueCollectionEntry.Album(albumId),
-            )
+                collectionEntry = QueueCollectionEntry.Album(albumId))
         }
     }
 
@@ -87,8 +84,7 @@ class CollectionPlaybackHelper(
             entries = entries,
             autoPlay = true,
             startPosition = startPosition,
-            collectionEntry = QueueCollectionEntry.Album(albumId),
-        )
+            collectionEntry = QueueCollectionEntry.Album(albumId))
     }
 
     suspend fun playPlaylist(playlistId: String, shuffle: Boolean = false) {
@@ -99,8 +95,7 @@ class CollectionPlaybackHelper(
                 entries = entries,
                 autoPlay = true,
                 startPosition = 0,
-                collectionEntry = QueueCollectionEntry.Playlist(playlistId),
-            )
+                collectionEntry = QueueCollectionEntry.Playlist(playlistId))
         }
     }
 
@@ -109,8 +104,7 @@ class CollectionPlaybackHelper(
         if (entries.isNotEmpty()) {
             audioPlayerQueue.addAllToQueue(
                 entries,
-                collectionEntry = QueueCollectionEntry.Playlist(playlistId),
-            )
+                collectionEntry = QueueCollectionEntry.Playlist(playlistId))
         }
     }
 
@@ -142,8 +136,7 @@ class CollectionPlaybackHelper(
             entries = entries,
             autoPlay = true,
             startPosition = startPosition,
-            collectionEntry = QueueCollectionEntry.Playlist(playlistId),
-        )
+            collectionEntry = QueueCollectionEntry.Playlist(playlistId))
     }
 
     suspend fun playSavedTracks(shuffle: Boolean = false) {
@@ -154,8 +147,7 @@ class CollectionPlaybackHelper(
                 entries = entries,
                 autoPlay = true,
                 startPosition = 0,
-                collectionEntry = QueueCollectionEntry.SavedTracks,
-            )
+                collectionEntry = QueueCollectionEntry.SavedTracks)
         }
     }
 
@@ -166,8 +158,7 @@ class CollectionPlaybackHelper(
                 entries = entries,
                 autoPlay = true,
                 startPosition = 0,
-                collectionEntry = null,
-            )
+                collectionEntry = null)
         }
     }
 
@@ -190,8 +181,7 @@ class CollectionPlaybackHelper(
         if (entries.isNotEmpty()) {
             audioPlayerQueue.addAllToQueue(
                 entries,
-                collectionEntry = QueueCollectionEntry.SavedTracks,
-            )
+                collectionEntry = QueueCollectionEntry.SavedTracks)
         }
     }
 
@@ -216,8 +206,7 @@ class CollectionPlaybackHelper(
             entries = entries,
             autoPlay = true,
             startPosition = startPosition,
-            collectionEntry = QueueCollectionEntry.SavedTracks,
-        )
+            collectionEntry = QueueCollectionEntry.SavedTracks)
     }
 
     private suspend fun fetchAllAlbumTracks(albumId: String): List<QueueEntry> {
@@ -313,8 +302,7 @@ class CollectionPlaybackHelper(
     private fun isTrackBlacklisted(
         track: MetadataTrack,
         blacklistedTrackIds: Set<String>,
-        blacklistedArtistIds: Set<String>,
-    ): Boolean {
+        blacklistedArtistIds: Set<String>): Boolean {
         return track.id in blacklistedTrackIds || track.artists.any { it.id in blacklistedArtistIds }
     }
 

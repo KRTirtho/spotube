@@ -17,6 +17,13 @@
 
 package dev.krtirtho.spotube.modules.shell
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumProgress
+import org.spotube.millennium.theme.millenniumSurface
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -33,10 +40,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -68,11 +74,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
-import dev.krtirtho.spotube.core.ui.base.BaseUITheme
-import dev.krtirtho.spotube.core.ui.base.BaseSurface
-import dev.krtirtho.spotube.core.ui.base.IconButton
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.SurfaceRole
 
 // The floating player on small screens that appears above the floating AppBottombar
 //
@@ -93,8 +94,7 @@ fun AppFloatingPlayer(
     savedTracksViewModel: SavedTracksViewModel = koinViewModel<SavedTracksViewModel>(
         key = SAVED_TRACKS_COLLECTION_ID,
         parameters = { parametersOf() }
-    ),
-) {
+    )) {
     val playerUiState = rememberPlayerUiState(audioPlayer, audioPlayerQueue)
     val scope = rememberCoroutineScope()
     val albumArtModifier =
@@ -116,21 +116,18 @@ fun AppFloatingPlayer(
         }
     }
 
-    BaseSurface(
-        role = SurfaceRole.InverseBackground,
-        shape = RoundedCornerShape(24.dp, 24.dp),
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(76.dp),
-    ) {
+            .height(76.dp)
+            .millenniumSurface(
+                background = SolidColor(AppTheme.colors.inverseSurface),
+                shape = RoundedCornerShape(24.dp, 24.dp))) {
         Box(
             modifier = Modifier
-                .fillMaxSize(),
-        ) {
-            LinearProgressIndicator(
-                progress = { seekProgress.coerceIn(0f, 1f) },
-                color = MaterialTheme.colorScheme.inverseOnSurface,
-                trackColor = MaterialTheme.colorScheme.inverseOnSurface.copy(alpha = 0.22f),
+                .fillMaxSize()) {
+            MillenniumProgress(
+                progress = seekProgress.coerceIn(0f, 1f),
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp)
@@ -154,28 +151,27 @@ fun AppFloatingPlayer(
                             .size(48.dp)
                             .then(albumArtModifier)
                             .clip(RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f))
+                            .background(AppTheme.colors.onSurface.copy(alpha = 0.12f))
                     ) {
                         AsyncImage(
                             model = coverModel,
                             contentDescription = playerUiState.title,
                             modifier = Modifier
                                 .fillMaxSize(),
-                            contentScale = ContentScale.Crop,
-                        )
+                            contentScale = ContentScale.Crop)
                     }
                     Column(modifier = Modifier.padding(start = 10.dp)) {
                         Text(
                             text = playerUiState.title,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.inverseOnSurface,
+                            style = AppTheme.typography.bodyMedium,
+                            color = AppTheme.colors.inverseOnSurface,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             text = playerUiState.artists,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.inverseOnSurface.copy(alpha = 0.72f),
+                            style = AppTheme.typography.bodySmall,
+                            color = AppTheme.colors.inverseOnSurface.copy(alpha = 0.72f),
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -185,20 +181,15 @@ fun AppFloatingPlayer(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     PlayerHeartButton(
                         audioPlayerQueue = audioPlayerQueue,
-                        savedTracksViewModel = savedTracksViewModel,
-                    )
+                        savedTracksViewModel = savedTracksViewModel)
                     Spacer(modifier = Modifier.size(8.dp))
-                    IconButton(
+                    MillenniumIconButton(
                         onClick = ::onPlayPause,
                         enabled = playerUiState.queue.isNotEmpty(),
-                        theme = LocalBaseUITheme.current.iconButtons.outline.copy(
-                            shape = BaseUITheme.InteractionState.fromSingleValue(CircleShape)
-                        )
-                    ) {
-                        Icon(
+                        style = MillenniumIconButtonStyle.Secondary) {
+                        MillenniumIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                            contentDescription = if (playerUiState.isPlaying) "Pause" else "Play",
-                        )
+                            contentDescription = if (playerUiState.isPlaying) "Pause" else "Play")
                     }
                 }
             }
@@ -210,14 +201,12 @@ fun AppFloatingPlayer(
 @Composable
 private fun rememberSharedAlbumArtModifier(
     sharedTransitionScope: SharedTransitionScope?,
-    animatedVisibilityScope: AnimatedVisibilityScope?,
-): Modifier {
+    animatedVisibilityScope: AnimatedVisibilityScope?): Modifier {
     if (sharedTransitionScope == null || animatedVisibilityScope == null) return Modifier
 
     with(sharedTransitionScope) {
         return Modifier.sharedElement(
             sharedContentState = rememberSharedContentState(key = "player_album_art"),
-            animatedVisibilityScope = animatedVisibilityScope,
-        )
+            animatedVisibilityScope = animatedVisibilityScope)
     }
 }

@@ -1,5 +1,10 @@
 package dev.krtirtho.spotube.modules.welcome.pages
 
+
+import org.spotube.millennium.composables.MillenniumCard
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -7,9 +12,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -21,8 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
-import dev.krtirtho.spotube.core.ui.base.Card
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.resources.iconsax.*
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.*
@@ -41,16 +44,14 @@ fun HowItWorksPage(
             Row(
                 Modifier.fillMaxSize().padding(40.dp),
                 horizontalArrangement = Arrangement.spacedBy(48.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+                verticalAlignment = Alignment.CenterVertically) {
                 PlayerDemonstration(isPlaying, onTogglePlayback, Modifier.weight(1f))
                 ListeningIntroduction(Modifier.weight(1f))
             }
         } else {
             Column(
                 Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(24.dp),
-                verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically),
-            ) {
+                verticalArrangement = Arrangement.spacedBy(32.dp, Alignment.CenterVertically)) {
                 ListeningIntroduction()
                 PlayerDemonstration(isPlaying, onTogglePlayback)
             }
@@ -63,13 +64,11 @@ private fun ListeningIntroduction(modifier: Modifier = Modifier) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(20.dp)) {
         Text(
             stringResource(Res.string.welcome_how_quiet_title),
-            style = MaterialTheme.typography.headlineLarge.copy(fontFamily = FontFamily.Serif),
-        )
+            style = AppTheme.typography.headlineLarge.copy(fontFamily = FontFamily.Serif))
         Text(
             stringResource(Res.string.welcome_how_quiet_description),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+            style = AppTheme.typography.bodyLarge,
+            color = AppTheme.colors.onSurfaceVariant)
     }
 }
 
@@ -89,15 +88,14 @@ private fun PlayerDemonstration(
         0f, (2 * PI).toFloat(),
         infiniteRepeatable(tween(2400, easing = LinearEasing)), label = "audio_meter"
     )
-    val scheme = MaterialTheme.colorScheme
+    val scheme = AppTheme.colors
 
-    Card(modifier.fillMaxWidth()) {
+    MillenniumCard(modifier = modifier.fillMaxWidth()) {
         Column(Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(20.dp)) {
             Text(
                 stringResource(if (isPlaying) Res.string.welcome_demo_streaming else Res.string.welcome_demo_paused),
-                style = MaterialTheme.typography.labelSmall,
-                color = scheme.onSurfaceVariant,
-            )
+                style = AppTheme.typography.labelSmall,
+                color = scheme.onSurfaceVariant)
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
@@ -124,11 +122,11 @@ private fun PlayerDemonstration(
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(
                         stringResource(Res.string.welcome_how_mockup_title),
-                        style = MaterialTheme.typography.titleLarge
+                        style = AppTheme.typography.titleLarge
                     )
                     Text(
                         stringResource(Res.string.welcome_how_mockup_artist),
-                        style = MaterialTheme.typography.bodySmall, color = scheme.onSurfaceVariant
+                        style = AppTheme.typography.bodySmall, color = scheme.onSurfaceVariant
                     )
                     Canvas(Modifier.fillMaxWidth().height(32.dp)) {
                         val count = 18
@@ -147,29 +145,32 @@ private fun PlayerDemonstration(
             }
             Text(
                 stringResource(Res.string.welcome_how_mockup_lyric),
-                style = MaterialTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Serif),
+                style = AppTheme.typography.bodyMedium.copy(fontFamily = FontFamily.Serif),
                 color = scheme.onSurfaceVariant
             )
             Row(
                 Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
+                MillenniumIcon(
                     Iconsax.IconsaxPrevious,
                     null,
                     Modifier.size(18.dp),
                     tint = scheme.onSurfaceVariant
                 )
                 Spacer(Modifier.width(24.dp))
-                GhostIconButton(onClick = onTogglePlayback, modifier = Modifier.size(48.dp)) {
-                    Icon(
+                MillenniumIconButton(
+                    onClick = onTogglePlayback,
+                    modifier = Modifier.size(48.dp),
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
                         if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         stringResource(if (isPlaying) Res.string.welcome_demo_pause_action else Res.string.welcome_demo_play_action),
                         Modifier.size(24.dp)
                     )
                 }
                 Spacer(Modifier.width(24.dp))
-                Icon(
+                MillenniumIcon(
                     Iconsax.IconsaxNext,
                     null,
                     Modifier.size(18.dp),

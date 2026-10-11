@@ -23,20 +23,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,36 +38,37 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import dev.krtirtho.spotube.core.ui.base.BaseSurface
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUIColors
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
-import dev.krtirtho.spotube.core.ui.base.SurfaceRole
-import dev.krtirtho.spotube.core.ui.base.SurfaceStyle
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
-import dev.krtirtho.spotube.core.ui.base.baseUIColorScheme
-import dev.krtirtho.spotube.modules.settings.AccentColors
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.Theme
 import dev.krtirtho.spotube.modules.settings.UserSettings
-import dev.krtirtho.spotube.modules.settings.colorFor
 import dev.krtirtho.spotube.modules.settings.components.SelectionSettingCard
 import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
-import dev.krtirtho.spotube.modules.settings.recommendedAccents
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxColorSwatch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMagic
 import org.jetbrains.compose.resources.stringResource
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumText
+import org.spotube.millennium.theme.MillenniumColorSchemes
+import org.spotube.millennium.theme.MillenniumPalette
+import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.millennium.theme.MillenniumThemeConfig
+import org.spotube.millennium.theme.resolve
 import spotube.composeapp.generated.resources.*
 
 internal fun LazyListScope.appearanceSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
-    includeHeader: Boolean = true,
-) {
+    includeHeader: Boolean = true) {
     if (includeHeader) {
         settingsSectionHeader(Res.string.settings_section_appearance)
     }
@@ -100,26 +95,20 @@ internal fun LazyListScope.appearanceSection(
                 )
             },
             {
-                // Surface material and accent are one decision: each surface only offers the
-                // accents that are known to pair with it, so the result is always a curated,
-                // good-looking combination instead of an arbitrary one.
                 AppearanceSettingCard(
-                    selectedSurface = settings.surfaceTheme,
-                    selectedAccent = settings.accentColor,
+                    selectedPalette = settings.palette,
                     icon = {
                         SettingsItemIcon(
                             Iconsax.IconsaxMagic,
                             stringResource(Res.string.settings_appearance_title)
                         )
                     },
-                    onSaved = { surface, accent ->
+                    onSaved = { palette ->
                         settingsViewModel.updateSettings {
-                            copy(surfaceTheme = surface, accentColor = accent)
+                            copy(palette = palette)
                         }
-                    },
-                )
-            },
-        )
+                    })
+            })
     )
 }
 
@@ -133,197 +122,72 @@ private fun Theme.displayLabel(): String {
 }
 
 @Composable
-private fun SurfaceStyle.displayLabel(): String {
-    return when (this) {
-        SurfaceStyle.Watery -> stringResource(Res.string.settings_surface_watery)
-        SurfaceStyle.Icy -> stringResource(Res.string.settings_surface_icy)
-        SurfaceStyle.Chrome -> stringResource(Res.string.settings_surface_chrome)
-        SurfaceStyle.Acrylic -> stringResource(Res.string.settings_surface_acrylic)
-        SurfaceStyle.Glass -> stringResource(Res.string.settings_surface_glass)
-    }
-}
-
-@Composable
-private fun AccentColors.displayLabel(): String {
-    return when (this) {
-        AccentColors.GREEN_GOBLIN -> stringResource(Res.string.settings_accent_green_goblin)
-        AccentColors.ELECTRIC_VIOLET -> stringResource(Res.string.settings_accent_electric_violet)
-        AccentColors.OCEANIC_CYAN -> stringResource(Res.string.settings_accent_oceanic_cyan)
-        AccentColors.SUNSET_ORANGE -> stringResource(Res.string.settings_accent_sunset_orange)
-        AccentColors.ROSE_GARDEN -> stringResource(Res.string.settings_accent_rose_garden)
-        AccentColors.MIDNIGHT_BLUE -> stringResource(Res.string.settings_accent_midnight_blue)
-        AccentColors.METALLIC_SLATE -> stringResource(Res.string.settings_accent_metallic_slate)
-    }
+private fun MillenniumPalette.displayLabel(): String = when (this) {
+    MillenniumPalette.Blue -> stringResource(Res.string.settings_palette_blue)
+    MillenniumPalette.Orange -> stringResource(Res.string.settings_palette_orange)
+    MillenniumPalette.Lime -> stringResource(Res.string.settings_palette_lime)
 }
 
 @Composable
 private fun AppearanceSettingCard(
-    selectedSurface: SurfaceStyle,
-    selectedAccent: AccentColors,
+    selectedPalette: MillenniumPalette,
     icon: (@Composable () -> Unit)? = null,
-    onSaved: (SurfaceStyle, AccentColors) -> Unit,
-) {
+    onSaved: (MillenniumPalette) -> Unit) {
     var isDialogOpen by remember { mutableStateOf(false) }
-    val isLight = LocalBaseUIColors.current.isLight
 
     SettingCardItem(
         title = stringResource(Res.string.settings_appearance_title),
         subtitle = stringResource(
-            Res.string.settings_appearance_subtitle_current,
-            selectedSurface.displayLabel(),
-            selectedAccent.displayLabel(),
-        ),
+            Res.string.settings_appearance_subtitle_palette,
+            selectedPalette.displayLabel()),
         icon = icon,
         trailingContent = {
-            AppearanceTrailingSwatch(
-                surface = selectedSurface,
-                accent = selectedAccent,
-                isLight = isLight,
-            )
+            PaletteTrailingSwatch(selectedPalette)
         },
-        onClick = { isDialogOpen = true },
-    )
+        onClick = { isDialogOpen = true })
 
     if (isDialogOpen) {
-        var draftSurface by remember(selectedSurface, isDialogOpen) {
-            mutableStateOf(selectedSurface)
-        }
-        var draftAccent by remember(selectedSurface, selectedAccent, isDialogOpen) {
-            mutableStateOf(selectedAccent)
+        var draftPalette by remember(selectedPalette, isDialogOpen) {
+            mutableStateOf(selectedPalette)
         }
 
-        ThemedDialog(
+        MillenniumDialog(
+            visible = true,
             onDismissRequest = { isDialogOpen = false },
-            title = {
-                Text(
-                    stringResource(Res.string.settings_appearance_dialog_title),
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            },
-            actions = {
-                PrimaryButton(
+            title = stringResource(Res.string.settings_palette_dialog_title)) {
+            MillenniumText(
+                stringResource(Res.string.settings_palette_dialog_description),
+                color = AppTheme.colors.onSurfaceVariant)
+            MillenniumText(
+                stringResource(Res.string.settings_palette_label),
+                color = AppTheme.colors.onSurface)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                MillenniumPalette.entries.forEach { palette ->
+                    PaletteSwatch(
+                        palette = palette,
+                        label = palette.displayLabel(),
+                        selected = palette == draftPalette,
+                        onClick = { draftPalette = palette })
+                }
+            }
+
+            PalettePreview(draftPalette)
+
+            MillenniumSeparator()
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                MillenniumButton(
                     onClick = {
-                        onSaved(draftSurface, draftAccent)
+                        onSaved(draftPalette)
                         isDialogOpen = false
-                    }
-                ) {
-                    Text(stringResource(Res.string.settings_action_save))
+                    }) {
+                    MillenniumText(stringResource(Res.string.settings_action_save))
                 }
-                OutlineButton(onClick = { isDialogOpen = false }) {
-                    Text(stringResource(Res.string.settings_action_cancel))
-                }
-            },
-        ) {
-            Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                Text(
-                    text = stringResource(Res.string.settings_appearance_dialog_description),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-
-                Text(
-                    text = stringResource(Res.string.settings_appearance_surface_label),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    SurfaceStyle.entries.forEach { style ->
-                        SurfaceStyleTile(
-                            style = style,
-                            accent = draftAccent,
-                            isLight = isLight,
-                            selected = style == draftSurface,
-                            modifier = Modifier.weight(1f),
-                            onClick = {
-                                draftSurface = style
-                                if (draftAccent !in style.recommendedAccents) {
-                                    draftAccent = style.recommendedAccents.first()
-                                }
-                            },
-                        )
-                    }
-                }
-
-                Text(
-                    text = stringResource(Res.string.settings_appearance_accent_label),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    draftSurface.recommendedAccents.forEach { accent ->
-                        AccentSwatch(
-                            accent = accent,
-                            label = accent.displayLabel(),
-                            isLight = isLight,
-                            selected = accent == draftAccent,
-                            onClick = { draftAccent = accent },
-                        )
-                    }
-                }
-
-                AppearancePreview(
-                    surface = draftSurface,
-                    accent = draftAccent,
-                    isLight = isLight,
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun SurfaceStyleTile(
-    style: SurfaceStyle,
-    accent: AccentColors,
-    isLight: Boolean,
-    selected: Boolean,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-) {
-    val scheme = remember(style, accent, isLight) {
-        baseUIColorScheme(style, isLight, accent.colorFor(isLight))
-    }
-    Box(
-        modifier = modifier
-            .height(70.dp)
-            .then(
-                if (selected) {
-                    Modifier
-                        .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(14.dp))
-                        .padding(2.dp)
-                } else {
-                    Modifier.padding(2.dp)
-                }
-            ),
-    ) {
-        CompositionLocalProvider(LocalBaseUIColors provides scheme) {
-            BaseSurface(
-                style = style,
-                role = SurfaceRole.PrimaryBackground,
-                shape = RoundedCornerShape(12.dp),
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(12.dp))
-                    .clickable(onClick = onClick),
-                contentPadding = PaddingValues(8.dp),
-            ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                ) {
-                    Text(
-                        text = style.displayLabel(),
-                        style = MaterialTheme.typography.labelMedium,
-                    )
-                    Box(
-                        modifier = Modifier
-                            .size(14.dp)
-                            .background(accent.colorFor(isLight), CircleShape),
-                    )
+                MillenniumButton(
+                    onClick = { isDialogOpen = false },
+                    style = MillenniumButtonStyle.Secondary) {
+                    MillenniumText(stringResource(Res.string.settings_action_cancel))
                 }
             }
         }
@@ -331,126 +195,65 @@ private fun SurfaceStyleTile(
 }
 
 @Composable
-private fun AccentSwatch(
-    accent: AccentColors,
+private fun PaletteSwatch(
+    palette: MillenniumPalette,
     label: String,
-    isLight: Boolean,
     selected: Boolean,
-    onClick: () -> Unit,
-) {
+    onClick: () -> Unit) {
+    val scheme = remember(palette) { MillenniumColorSchemes().resolve(palette, dark = false) }
     Box(
         modifier = Modifier
-            .size(34.dp)
+            .size(40.dp)
             .clip(CircleShape)
-            .background(accent.colorFor(isLight))
+            .background(scheme.accent)
             .border(
                 width = if (selected) 3.dp else 1.dp,
-                color = if (selected) {
-                    MaterialTheme.colorScheme.onSurface
-                } else {
-                    MaterialTheme.colorScheme.outlineVariant
-                },
-                shape = CircleShape,
-            )
+                color = if (selected) AppTheme.colors.onSurface else AppTheme.colors.outlineVariant,
+                shape = CircleShape)
             .clickable(onClick = onClick)
-            .semantics { contentDescription = label },
-    )
+            .semantics { contentDescription = label })
 }
 
 @Composable
-private fun AppearanceTrailingSwatch(
-    surface: SurfaceStyle,
-    accent: AccentColors,
-    isLight: Boolean,
-) {
-    val scheme = remember(surface, accent, isLight) {
-        baseUIColorScheme(surface, isLight, accent.colorFor(isLight))
-    }
-    CompositionLocalProvider(LocalBaseUIColors provides scheme) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            BaseSurface(
-                style = surface,
-                role = SurfaceRole.PrimaryBackground,
-                shape = RoundedCornerShape(8.dp),
-                modifier = Modifier.size(width = 46.dp, height = 28.dp),
-            ) {}
-            BaseSurface(
-                style = surface,
-                role = SurfaceRole.PrimaryAccent,
-                shape = CircleShape,
-                modifier = Modifier.size(18.dp),
-            ) {}
-        }
+private fun PaletteTrailingSwatch(palette: MillenniumPalette) {
+    val scheme = remember(palette) { MillenniumColorSchemes().resolve(palette, dark = false) }
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        Box(
+            Modifier
+                .size(width = 46.dp, height = 28.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(scheme.accent.copy(alpha = 0.35f)))
+        Box(
+            Modifier
+                .size(18.dp)
+                .clip(CircleShape)
+                .background(scheme.accent))
     }
 }
 
 @Composable
-private fun AppearancePreview(
-    surface: SurfaceStyle,
-    accent: AccentColors,
-    isLight: Boolean,
-) {
-    val scheme = remember(surface, accent, isLight) {
-        baseUIColorScheme(surface, isLight, accent.colorFor(isLight))
-    }
-    CompositionLocalProvider(LocalBaseUIColors provides scheme) {
-        BaseSurface(
-            style = surface,
-            role = SurfaceRole.PrimaryBackground,
-            shape = RoundedCornerShape(16.dp),
+private fun PalettePreview(palette: MillenniumPalette) {
+    val dark = AppTheme.colors.background.luminance() < 0.5f
+    MillenniumTheme(dark = dark, config = MillenniumThemeConfig(palette = palette)) {
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(150.dp),
-            contentPadding = PaddingValues(14.dp),
-        ) {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(10.dp),
-            ) {
-                Text(
-                    text = stringResource(Res.string.settings_preview_label),
-                    style = MaterialTheme.typography.labelLarge,
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                    BaseSurface(
-                        style = surface,
-                        role = SurfaceRole.PrimaryAccent,
-                        shape = RoundedCornerShape(999.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    ) {
-                        Text(
-                            stringResource(Res.string.settings_preview_button),
-                            style = MaterialTheme.typography.labelMedium,
-                        )
-                    }
-                    BaseSurface(
-                        style = surface,
-                        role = SurfaceRole.SecondaryAccent,
-                        shape = RoundedCornerShape(999.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                    ) {
-                        Text(
-                            stringResource(Res.string.settings_preview_secondary),
-                            style = MaterialTheme.typography.labelMedium,
-                        )
-                    }
+                .clip(RoundedCornerShape(14.dp))
+                .background(MillenniumTheme.colors.surface)
+                .border(1.dp, MillenniumTheme.colors.border, RoundedCornerShape(14.dp))
+                .padding(14.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)) {
+            MillenniumText(
+                stringResource(Res.string.settings_preview_label),
+                color = MillenniumTheme.colors.muted)
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                MillenniumButton(onClick = {}) {
+                    MillenniumText(stringResource(Res.string.settings_preview_button))
                 }
-                BaseSurface(
-                    style = surface,
-                    role = SurfaceRole.SecondaryBackground,
-                    shape = RoundedCornerShape(10.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    contentPadding = PaddingValues(10.dp),
-                ) {
-                    Text(
-                        text = stringResource(Res.string.settings_preview_label),
-                        style = MaterialTheme.typography.bodySmall,
-                    )
+                MillenniumButton(onClick = {}, style = MillenniumButtonStyle.Secondary) {
+                    MillenniumText(stringResource(Res.string.settings_preview_secondary))
                 }
             }
         }

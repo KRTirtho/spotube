@@ -17,6 +17,8 @@
 
 package dev.krtirtho.spotube.modules.shell
 
+
+import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -28,12 +30,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -43,16 +48,23 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import org.spotube.millennium.composables.MillenniumSnackbarHost
+import org.spotube.millennium.composables.MillenniumSnackbarHostState
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumModalBottomSheet
+import org.spotube.millennium.composables.MillenniumCard
+import org.spotube.millennium.composables.MillenniumSlider
+import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.millennium.theme.millenniumPanelBrush
+import org.spotube.millennium.theme.millenniumSurface
+import com.composeunstyled.SheetDetent
+import com.composeunstyled.rememberModalBottomSheetState
+import androidx.compose.ui.graphics.SolidColor
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -82,12 +94,6 @@ import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
-import dev.krtirtho.spotube.core.ui.base.IconButton
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.Slider
-import dev.krtirtho.spotube.core.ui.base.copyShape
-import dev.krtirtho.spotube.core.ui.base.invertedButtonStyle
 import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
 import dev.krtirtho.spotube.modules.downloads.DownloadStatus
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
@@ -121,7 +127,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.milliseconds
 
-
 // The expanded player on small screens
 // on the top left it has a angle/chevron down that can be used to collapse the player back to the
 // floating player
@@ -135,7 +140,6 @@ import kotlin.time.Duration.Companion.milliseconds
 // below that we have the playback controls and the progress bar, which should be similar to the
 // large player but with a different layout to fit the smaller screen
 // And at the very end we will have the volume slider
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppExpandedPlayer(
     modifier: Modifier = Modifier,
@@ -154,8 +158,7 @@ fun AppExpandedPlayer(
     savedTracksViewModel: SavedTracksViewModel = koinViewModel<SavedTracksViewModel>(
         key = SAVED_TRACKS_COLLECTION_ID,
         parameters = { parametersOf() }
-    ),
-) {
+    )) {
     val playerUiState = rememberPlayerUiState(audioPlayer, audioPlayerQueue)
     val jamRoomService: JamRoomService = koinInject()
     val isJamGuest by jamRoomService.role
@@ -175,16 +178,16 @@ fun AppExpandedPlayer(
             downloads.lastOrNull { it.track?.id == t.id }
         }
     }
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = remember { MillenniumSnackbarHostState() }
     val albumArtModifier =
         rememberSharedAlbumArtModifier(sharedTransitionScope, animatedVisibilityScope)
     val coverModel = playerUiState.coverUrl.takeIf { it.isNotBlank() }
     var isSeeking by remember { mutableStateOf(false) }
     var seekProgress by remember { mutableFloatStateOf(playerUiState.progress) }
-    val moreOptionsSheetState = rememberModalBottomSheetState()
+    val moreOptionsSheetState = rememberModalBottomSheetState(
+        initialDetent = SheetDetent.FullyExpanded)
 
     PlayerOptionDialogs(viewModel = playerOptionsViewModel)
-
 
     LaunchedEffect(playerUiState.progress, isSeeking) {
         if (!isSeeking) {
@@ -235,16 +238,23 @@ fun AppExpandedPlayer(
         }
     }
 
-    BaseScaffold(
-        modifier = modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
-    ) { innerPadding ->
+    LaunchedEffect(moreOptionsSheetState.bottomSheetState.currentDetent) {
+        if (moreOptionsSheetState.bottomSheetState.currentDetent == SheetDetent.Hidden) {
+            playerOptionsViewModel.dismissMoreOptionsSheet()
+        }
+    }
+
+    LaunchedEffect(playerOptionsUiState.isMoreOptionsSheetOpen) {
         if (playerOptionsUiState.isMoreOptionsSheetOpen) {
-            ModalBottomSheet(
-                onDismissRequest = {
-                    playerOptionsViewModel.dismissMoreOptionsSheet()
-                },
-                sheetState = moreOptionsSheetState
+            moreOptionsSheetState.animateTo(SheetDetent.FullyExpanded)
+        }
+    }
+
+    Box(modifier = modifier.fillMaxSize().background(AppTheme.colors.background)) {
+        if (playerOptionsUiState.isMoreOptionsSheetOpen) {
+            MillenniumModalBottomSheet(
+                state = moreOptionsSheetState,
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
             ) {
                 // Grid of Options
                 LazyVerticalGrid(
@@ -252,8 +262,7 @@ fun AppExpandedPlayer(
                     contentPadding = PaddingValues(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
+                    modifier = Modifier.fillMaxWidth()) {
                     item {
                         OptionTile(
                             icon = Iconsax.SwapHorizontal2,
@@ -261,8 +270,7 @@ fun AppExpandedPlayer(
                             onClick = {
                                 playerOptionsViewModel.dismissMoreOptionsSheet()
                                 onAlternativeSource()
-                            },
-                        )
+                            })
                     }
                     item {
                         val download = currentDownload
@@ -276,14 +284,20 @@ fun AppExpandedPlayer(
                             null -> "Download"
                         }
                         val statusColor = when (status) {
-                            is DownloadStatus.Completed -> MaterialTheme.colorScheme.primary
-                            is DownloadStatus.Failed -> MaterialTheme.colorScheme.error
-                            else -> MaterialTheme.colorScheme.onSurfaceVariant
+                            is DownloadStatus.Completed -> AppTheme.colors.primary
+                            is DownloadStatus.Failed -> AppTheme.colors.error
+                            else -> AppTheme.colors.onSurfaceVariant
                         }
 
-                        Surface(
+                        Box(
                             modifier = Modifier
                                 .aspectRatio(1f)
+                                .millenniumSurface(
+                                    background = millenniumPanelBrush(MillenniumTheme.colors),
+                                    shape = RoundedCornerShape(14.dp),
+                                    borderColor = MillenniumTheme.colors.border,
+                                    borderWidth = 1.dp,
+                                    shadowElevation = 2.dp)
                                 .clickable {
                                     playerOptionsViewModel.dismissMoreOptionsSheet()
                                     when (status) {
@@ -317,26 +331,20 @@ fun AppExpandedPlayer(
                                         }
                                     }
                                     onDownloadTrack()
-                                },
-                            shape = RoundedCornerShape(16.dp),
-                            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                            tonalElevation = 1.dp,
-                        ) {
+                                }) {
                             Column(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(12.dp),
                                 horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.Center,
-                            ) {
+                                verticalArrangement = Arrangement.Center) {
                                 if (status is DownloadStatus.Downloading) {
                                     DownloadProgressIcon(
                                         track = currentTrack,
                                         icon = Iconsax.IconsaxDirectboxReceive,
                                         contentDescription = "Download",
                                         modifier = Modifier.size(28.dp),
-                                        tint = MaterialTheme.colorScheme.onSurface,
-                                    )
+                                        tint = AppTheme.colors.onSurface)
                                 } else {
                                     val icon = when (status) {
                                         is DownloadStatus.Completed -> Iconsax.IconsaxCheckCircle
@@ -345,26 +353,24 @@ fun AppExpandedPlayer(
                                         is DownloadStatus.Queued -> Iconsax.InconsaxClock
                                         null -> Iconsax.IconsaxDirectboxReceive
                                     }
-                                    Icon(
+                                    MillenniumIcon(
                                         imageVector = icon,
                                         contentDescription = statusLabel,
                                         modifier = Modifier.size(28.dp),
                                         tint = when (status) {
-                                            is DownloadStatus.Completed -> MaterialTheme.colorScheme.primary
-                                            is DownloadStatus.Failed -> MaterialTheme.colorScheme.error
-                                            else -> MaterialTheme.colorScheme.onSurface
-                                        },
-                                    )
+                                            is DownloadStatus.Completed -> AppTheme.colors.primary
+                                            is DownloadStatus.Failed -> AppTheme.colors.error
+                                            else -> AppTheme.colors.onSurface
+                                        })
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                                 Text(
                                     text = statusLabel,
-                                    style = MaterialTheme.typography.labelSmall,
+                                    style = AppTheme.typography.labelSmall,
                                     textAlign = TextAlign.Center,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis,
-                                    color = statusColor,
-                                )
+                                    color = statusColor)
                             }
                         }
                     }
@@ -376,8 +382,7 @@ fun AppExpandedPlayer(
                                 playerOptionsViewModel.dismissMoreOptionsSheet()
                                 playerOptionsViewModel.showSleepTimerDialog()
                                 onSleepTimer()
-                            },
-                        )
+                            })
                     }
                     item {
                         OptionTile(
@@ -390,8 +395,7 @@ fun AppExpandedPlayer(
                                     navigationCommands.navigateTo(Routes.Album(albumId))
                                 }
                                 onGoToAlbum()
-                            },
-                        )
+                            })
                     }
                     item {
                         OptionTile(
@@ -400,8 +404,7 @@ fun AppExpandedPlayer(
                             onClick = {
                                 playerOptionsViewModel.dismissMoreOptionsSheet()
                                 playerOptionsViewModel.showTrackDetails()
-                            },
-                        )
+                            })
                     }
                 }
             }
@@ -410,29 +413,31 @@ fun AppExpandedPlayer(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .windowInsetsPadding(WindowInsets.safeDrawing)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+            horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(4.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                GhostIconButton(onClick = onCollapse) {
-                    Icon(Iconsax.IconsaxArrowDown4, contentDescription = "Collapse player")
+                MillenniumIconButton(
+                    onClick = onCollapse,
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(Iconsax.IconsaxArrowDown4, contentDescription = "Collapse player")
                 }
                 Text(
                     text = "Now Playing",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = AppTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
-                    maxLines = 1,
-                )
-                GhostIconButton(onClick = playerOptionsViewModel::showMoreOptionsSheet) {
-                    Icon(Iconsax.Iconsax3DotsMore, contentDescription = "Player options")
+                    maxLines = 1)
+                MillenniumIconButton(
+                    onClick = playerOptionsViewModel::showMoreOptionsSheet,
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(Iconsax.Iconsax3DotsMore, contentDescription = "Player options")
                 }
             }
 
@@ -440,22 +445,20 @@ fun AppExpandedPlayer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 20.dp, bottom = 24.dp),
-                contentAlignment = Alignment.Center,
-            ) {
+                contentAlignment = Alignment.Center) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth(0.84f)
                         .aspectRatio(1f)
                         .then(albumArtModifier)
                         .clip(RoundedCornerShape(22.dp))
-                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        .background(AppTheme.colors.surfaceContainerHighest)
                 ) {
                     AsyncImage(
                         model = coverModel,
                         contentDescription = playerUiState.title,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                    )
+                        contentScale = ContentScale.Crop)
                 }
             }
 
@@ -468,38 +471,34 @@ fun AppExpandedPlayer(
             ) {
                 PlayerHeartButton(
                     audioPlayerQueue = audioPlayerQueue,
-                    savedTracksViewModel = savedTracksViewModel,
-                )
+                    savedTracksViewModel = savedTracksViewModel)
                 Column(
                     modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
+                    horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = playerUiState.title,
-                        style = MaterialTheme.typography.headlineSmall,
+                        style = AppTheme.typography.headlineSmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Center,
-                    )
+                        textAlign = TextAlign.Center)
                     Text(
                         text = playerUiState.artists,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = AppTheme.typography.bodyLarge,
+                        color = AppTheme.colors.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Center,
-                    )
+                        textAlign = TextAlign.Center)
                 }
-                IconButton(
+                MillenniumIconButton(
                     onClick = onQueue,
-                    theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(CircleShape)
+                    style = MillenniumIconButtonStyle.Secondary
                 ) {
-                    Icon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
+                    MillenniumIcon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
                 }
             }
 
             Column(modifier = Modifier.padding(top = 20.dp)) {
-                Slider(
+                MillenniumSlider(
                     value = seekProgress,
                     onValueChange = {
                         seekProgress = it
@@ -510,6 +509,7 @@ fun AppExpandedPlayer(
                         onSeekFinished()
                     },
                     enabled = playerUiState.seekDuration.inWholeMilliseconds > 0L,
+                    label = "Seek",
                     modifier = Modifier.fillMaxWidth()
                 )
                 Row(
@@ -517,57 +517,61 @@ fun AppExpandedPlayer(
                         .fillMaxWidth()
                         .padding(top = 2.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+                    verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = formatPlayerTime(playerUiState.position),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.onSurfaceVariant)
                     Text(
                         text = formatPlayerTime(playerUiState.displayDuration),
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 16.dp, bottom = 12.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    GhostIconButton(onClick = ::onShuffleToggle, enabled = !isJamGuest) {
-                        Icon(
+                    verticalAlignment = Alignment.CenterVertically) {
+                    MillenniumIconButton(
+                        onClick = ::onShuffleToggle,
+                        enabled = !isJamGuest,
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
                             Iconsax.IconsaxShuffle,
                             contentDescription = if (playerUiState.isShuffling) "Disable shuffle" else "Enable shuffle",
                             tint = if (playerUiState.isShuffling) {
-                                MaterialTheme.colorScheme.primary
+                                AppTheme.colors.primary
                             } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                                AppTheme.colors.onSurfaceVariant
                             }
                         )
                     }
-                    GhostIconButton(onClick = ::onSkipPrevious, enabled = !isJamGuest) {
-                        Icon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
+                    MillenniumIconButton(
+                        onClick = ::onSkipPrevious,
+                        enabled = !isJamGuest,
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
                     }
-                    IconButton(
+                    MillenniumIconButton(
                         onClick = ::onPlayPause,
-                        theme = invertedButtonStyle().copyShape(CircleShape),
-                        modifier = Modifier
-                            .size(72.dp),
-                    ) {
-                        Icon(
+                        style = MillenniumIconButtonStyle.Primary) {
+                        MillenniumIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                             contentDescription = if (playerUiState.isPlaying) "Pause" else "Play",
-                            modifier = Modifier.size(30.dp),
-                        )
+                            modifier = Modifier.size(30.dp))
                     }
-                    GhostIconButton(onClick = ::onSkipNext, enabled = !isJamGuest) {
-                        Icon(Iconsax.IconsaxNext, contentDescription = "Next")
+                    MillenniumIconButton(
+                        onClick = ::onSkipNext,
+                        enabled = !isJamGuest,
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(Iconsax.IconsaxNext, contentDescription = "Next")
                     }
-                    GhostIconButton(onClick = ::onLoopToggle, enabled = !isJamGuest) {
-                        Icon(
+                    MillenniumIconButton(
+                        onClick = ::onLoopToggle,
+                        enabled = !isJamGuest,
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
                             imageVector = when (playerUiState.loopState) {
                                 LoopState.NONE -> Iconsax.IconsaxRepeateMusic
                                 LoopState.ONE -> Iconsax.IconsaxRepeateOne
@@ -575,9 +579,9 @@ fun AppExpandedPlayer(
                             },
                             contentDescription = "Loop mode ${playerUiState.loopState.name}",
                             tint = if (playerUiState.loopState == LoopState.NONE) {
-                                MaterialTheme.colorScheme.onSurfaceVariant
+                                AppTheme.colors.onSurfaceVariant
                             } else {
-                                MaterialTheme.colorScheme.primary
+                                AppTheme.colors.primary
                             }
                         )
                     }
@@ -589,9 +593,12 @@ fun AppExpandedPlayer(
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
                 audioPlayer = audioPlayer,
-                onExpand = onExpandLyrics,
-            )
+                onExpand = onExpandLyrics)
         }
+
+        MillenniumSnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
 
@@ -599,15 +606,13 @@ fun AppExpandedPlayer(
 @Composable
 private fun rememberSharedAlbumArtModifier(
     sharedTransitionScope: SharedTransitionScope?,
-    animatedVisibilityScope: AnimatedVisibilityScope?,
-): Modifier {
+    animatedVisibilityScope: AnimatedVisibilityScope?): Modifier {
     if (sharedTransitionScope == null || animatedVisibilityScope == null) return Modifier
 
     with(sharedTransitionScope) {
         return Modifier.sharedElement(
             sharedContentState = rememberSharedContentState(key = "player_album_art"),
-            animatedVisibilityScope = animatedVisibilityScope,
-        )
+            animatedVisibilityScope = animatedVisibilityScope)
     }
 }
 
@@ -649,33 +654,29 @@ private fun LyricsPreviewCard(
 
     if (syncedLyrics.isEmpty() || isLoading) return
 
-    Surface(
+    Box(
         modifier = modifier
-            .clip(RoundedCornerShape(16.dp))
-            .clickable(onClick = onExpand),
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        tonalElevation = 2.dp,
-    ) {
+            .millenniumSurface(
+                background = SolidColor(AppTheme.colors.surfaceContainerHighest),
+                shape = RoundedCornerShape(16.dp),
+                shadowElevation = 2.dp)
+            .clickable(onClick = onExpand)) {
         Column(modifier = Modifier.padding(12.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+                verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = "Lyrics",
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                GhostIconButton(
+                    style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colors.onSurfaceVariant)
+                MillenniumIconButton(
                     onClick = onExpand,
-                    modifier = Modifier.size(28.dp),
-                ) {
-                    Icon(
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
                         Iconsax.IconsaxArrowSquareUp,
                         contentDescription = "Expand lyrics",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        tint = AppTheme.colors.onSurfaceVariant)
                 }
             }
 
@@ -685,8 +686,7 @@ private fun LyricsPreviewCard(
                     .fillMaxWidth()
                     .height(120.dp),
                 contentPadding = PaddingValues(vertical = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
+                verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 val displayLines = syncedLyrics.take(6)
                 itemsIndexed(displayLines) { index, line ->
                     val isCurrent =
@@ -696,18 +696,17 @@ private fun LyricsPreviewCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp, vertical = 2.dp),
-                        style = MaterialTheme.typography.bodySmall.copy(
+                        style = AppTheme.typography.bodySmall.copy(
                             fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal,
                             color = if (isCurrent) {
-                                MaterialTheme.colorScheme.primary
+                                AppTheme.colors.primary
                             } else {
-                                MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                                AppTheme.colors.onSurfaceVariant.copy(alpha = 0.7f)
                             }
                         ),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Center,
-                    )
+                        textAlign = TextAlign.Center)
                 }
             }
         }
@@ -719,38 +718,30 @@ private fun OptionTile(
     icon: ImageVector,
     label: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Surface(
+    modifier: Modifier = Modifier) {
+    MillenniumCard(
         modifier = modifier
             .aspectRatio(1f)
             .clickable(onClick = onClick),
-        shape = RoundedCornerShape(16.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-        tonalElevation = 1.dp,
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                modifier = Modifier.size(28.dp),
-                tint = MaterialTheme.colorScheme.onSurface,
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = label,
-                style = MaterialTheme.typography.labelSmall,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+        contentPadding = PaddingValues(12.dp)) {
+        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center) {
+                MillenniumIcon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    modifier = Modifier.size(28.dp),
+                    tint = AppTheme.colors.onSurface)
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = label,
+                    style = AppTheme.typography.labelSmall,
+                    textAlign = TextAlign.Center,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    color = AppTheme.colors.onSurfaceVariant)
+            }
         }
     }
 }

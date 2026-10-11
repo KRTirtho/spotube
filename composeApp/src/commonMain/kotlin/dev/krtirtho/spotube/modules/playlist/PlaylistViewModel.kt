@@ -66,15 +66,13 @@ sealed interface PlaylistScreenState {
             override val isSaved: Boolean = false,
             override val tracks: List<MetadataTrack> = emptyList(),
             override val nextPagination: PaginationStrategy? = null,
-            override val isSaving: Boolean = false,
-        ) : Data {
+            override val isSaving: Boolean = false) : Data {
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 playlist = playlist,
                 isSaved = isSaved,
                 tracks = tracks,
                 nextPagination = nextPagination,
-                isSaving = isSaving,
-            )
+                isSaving = isSaving)
         }
 
         data class LoadingMore(
@@ -82,8 +80,7 @@ sealed interface PlaylistScreenState {
             override val isSaved: Boolean = false,
             override val tracks: List<MetadataTrack> = emptyList(),
             override val nextPagination: PaginationStrategy? = null,
-            override val isSaving: Boolean = false,
-        ) : Data
+            override val isSaving: Boolean = false) : Data
     }
 
     data class Error(val message: String) : PlaylistScreenState
@@ -100,8 +97,7 @@ class PlaylistViewModel(
     private val blacklistRepository: BlacklistRepository,
     private val shareService: ShareService,
     private val downloadManager: DownloadManager,
-    private val remotePlaybackController: RemotePlaybackController,
-) : ViewModel(), KoinComponent {
+    private val remotePlaybackController: RemotePlaybackController) : ViewModel(), KoinComponent {
     private val logger by injectLogger<PlaylistViewModel>()
 
     private val _state = MutableStateFlow<PlaylistScreenState>(PlaylistScreenState.Loading)
@@ -127,8 +123,7 @@ class PlaylistViewModel(
         audioPlayerQueue.currentQueueEntryFlow,
         savedTracksRepository.savedTracksIdsFlow,
         _blacklistedTrackIds,
-        _blacklistedArtistIds,
-    ) { queue, currentEntry, savedIds, blacklistedTracks, blacklistedArtists ->
+        _blacklistedArtistIds) { queue, currentEntry, savedIds, blacklistedTracks, blacklistedArtists ->
         TrackOptionsContext(
             currentTrackId = (currentEntry as? QueueEntry.StreamingTrack)?.track?.id,
             queueTrackIds = queue.mapNotNull { entry ->
@@ -136,8 +131,7 @@ class PlaylistViewModel(
             }.toSet(),
             savedTrackIds = savedIds,
             blacklistedTrackIds = blacklistedTracks,
-            blacklistedArtistIds = blacklistedArtists,
-        )
+            blacklistedArtistIds = blacklistedArtists)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TrackOptionsContext())
 
     init {
@@ -177,8 +171,7 @@ class PlaylistViewModel(
             playlist = playlistInfo?.first,
             isSaved = playlistInfo?.second ?: false,
             tracks = tracksResult?.items ?: emptyList(),
-            nextPagination = tracksResult?.nextPagination,
-        )
+            nextPagination = tracksResult?.nextPagination)
     }.onFailure { e ->
         logger.e(e) { "Failed to load playlist" }
         _state.value = PlaylistScreenState.Error(e.message ?: "Unknown error")
@@ -196,8 +189,7 @@ class PlaylistViewModel(
                 isSaved = currentState.isSaved,
                 tracks = currentState.tracks + (result?.items ?: emptyList()),
                 nextPagination = result?.nextPagination,
-                isSaving = currentState.isSaving,
-            )
+                isSaving = currentState.isSaving)
         }
     }.onFailure { e ->
         logger.e(e) { "Failed to load more tracks" }
@@ -251,8 +243,7 @@ class PlaylistViewModel(
             type = RemoteCollectionType.Playlist,
             id = playlistId,
             title = title,
-            startTrack = track,
-        )
+            startTrack = track)
     }
 
     fun refresh() {
@@ -267,8 +258,7 @@ class PlaylistViewModel(
         description: String?,
         isPublic: Boolean?,
         isCollaborating: Boolean?,
-        imageBase64: String?,
-    ) {
+        imageBase64: String?) {
         viewModelScope.launch {
             runCatching {
                 libraryRepository.updatePlaylist(
@@ -278,8 +268,7 @@ class PlaylistViewModel(
                     isPublic = isPublic,
                     isCollaborating = isCollaborating,
                     imageBase64 = imageBase64,
-                    trackIds = null,
-                )
+                    trackIds = null)
             }.onFailure { e ->
                 logger.e(e) { "Failed to update playlist" }
             }.onSuccess {
@@ -352,8 +341,7 @@ class PlaylistViewModel(
             runCatching {
                 libraryRepository.addTracksToPlaylist(
                     playlistId,
-                    _tracksToAddToPlaylist.value.map { it.id },
-                )
+                    _tracksToAddToPlaylist.value.map { it.id })
             }.onFailure { e ->
                 logger.e(e) { "Failed to add tracks to playlist" }
             }.onSuccess {

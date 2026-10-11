@@ -29,8 +29,7 @@ interface AudioPlayerQueue {
 		entries: List<QueueEntry>,
 		autoPlay: Boolean = true,
 		startPosition: Int = 0,
-		collectionEntry: QueueCollectionEntry? = null,
-	)
+		collectionEntry: QueueCollectionEntry? = null)
 	suspend fun addToQueue(entry: QueueEntry)
 	suspend fun addAllToQueue(entries: List<QueueEntry>, collectionEntry: QueueCollectionEntry? = null)
 	suspend fun addAllAfterCurrent(entries: List<QueueEntry>)

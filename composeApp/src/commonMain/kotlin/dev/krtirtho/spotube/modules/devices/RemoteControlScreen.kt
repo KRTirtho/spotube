@@ -17,6 +17,14 @@
 
 package dev.krtirtho.spotube.modules.devices
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumListTile
+import org.spotube.millennium.composables.MillenniumSlider
+import org.spotube.millennium.composables.MillenniumDropdownMenu
+import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -37,16 +45,11 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -64,13 +67,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.remote.ConnectionState
 import dev.krtirtho.spotube.core.remote.RemoteQueueEntry
-import dev.krtirtho.spotube.core.ui.base.BaseUITheme
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
-import dev.krtirtho.spotube.core.ui.base.IconButton
-import dev.krtirtho.spotube.core.ui.base.ListRowTile
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.PrimaryIconButton
-import dev.krtirtho.spotube.core.ui.base.Slider
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.modules.shell.player_queue.QueueSheet
@@ -78,7 +74,6 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCloseSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicFilter
-import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPause
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
@@ -89,11 +84,9 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeHigh
 import org.koin.compose.viewmodel.koinViewModel
 import kotlin.time.Duration.Companion.milliseconds
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RemoteControlScreen(
-    onDisconnect: () -> Unit,
-) {
+    onDisconnect: () -> Unit) {
     val viewModel = koinViewModel<RemoteControlViewModel>()
     val playerState by viewModel.playerState.collectAsStateWithLifecycle()
     val connectionState by viewModel.connectionState.collectAsStateWithLifecycle()
@@ -105,44 +98,40 @@ fun RemoteControlScreen(
     // stretch awkwardly on large screens.
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter,
-    ) {
-        BaseScaffold(
+        contentAlignment = Alignment.TopCenter) {
+        Column(
             modifier = Modifier
-                .fillMaxHeight(),
-            topBar = {
-                ApplicationMainBar(
-                    title = { Text("Remote Control") },
-                    backButton = true,
-                    actions = {
-                        GhostIconButton(
-                            onClick = viewModel::toggleQueueVisibility,
-                        ) {
-                            Icon(
-                                imageVector = Iconsax.IconsaxMusicFilter,
-                                contentDescription = "Queue",
-                                tint = if (isQueueVisible) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                                },
-                            )
-                        }
-                        GhostIconButton(
-                            onClick = {
-                                viewModel.disconnect()
-                                onDisconnect()
-                            }
-                        ) {
-                            Icon(
-                                imageVector = Iconsax.IconsaxCloseSquare,
-                                contentDescription = "Disconnect",
-                            )
-                        }
+                .fillMaxHeight()
+                .background(MillenniumTheme.colors.background)) {
+            ApplicationMainBar(
+                title = { Text("Remote Control") },
+                backButton = true,
+                actions = {
+                    MillenniumIconButton(
+                        onClick = viewModel::toggleQueueVisibility,
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
+                            imageVector = Iconsax.IconsaxMusicFilter,
+                            contentDescription = "Queue",
+                            tint = if (isQueueVisible) {
+                                AppTheme.colors.primary
+                            } else {
+                                AppTheme.colors.onSurfaceVariant
+                            })
                     }
-                )
-            }
-        ) { padding ->
+                    MillenniumIconButton(
+                        onClick = {
+                            viewModel.disconnect()
+                            onDisconnect()
+                        },
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
+                            imageVector = Iconsax.IconsaxCloseSquare,
+                            contentDescription = "Disconnect")
+                    }
+                }
+            )
+            Box(modifier = Modifier.weight(1f)) {
             when (connectionState) {
                 is ConnectionState.Connected -> {
                     RemoteControlContent(
@@ -154,14 +143,13 @@ fun RemoteControlScreen(
                         onSetVolume = viewModel::setVolume,
                         onToggleShuffle = viewModel::toggleShuffle,
                         onCycleLoopMode = viewModel::cycleLoopMode,
-                        modifier = Modifier.padding(padding).padding(bottom = shellBottomInset)
+                        modifier = Modifier.padding(bottom = shellBottomInset)
                     )
                 }
                 is ConnectionState.Connecting -> {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(padding)
                             .padding(bottom = shellBottomInset),
                         contentAlignment = Alignment.Center
                     ) {
@@ -172,7 +160,6 @@ fun RemoteControlScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(padding)
                             .padding(bottom = shellBottomInset),
                         contentAlignment = Alignment.Center
                     ) {
@@ -183,13 +170,13 @@ fun RemoteControlScreen(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(padding)
                             .padding(bottom = shellBottomInset),
                         contentAlignment = Alignment.Center
                     ) {
                         Text("Connection error: ${(connectionState as ConnectionState.Error).message}")
                     }
                 }
+            }
             }
         }
     }
@@ -203,8 +190,7 @@ fun RemoteControlScreen(
                 .clickable(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
-                    onClick = { viewModel.toggleQueueVisibility() },
-                )
+                    onClick = { viewModel.toggleQueueVisibility() })
         )
     }
 
@@ -212,18 +198,15 @@ fun RemoteControlScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = shellBottomInset),
-    ) {
+            .padding(bottom = shellBottomInset)) {
         QueueSheet(
             isVisible = isQueueVisible,
             onDismiss = { viewModel.toggleQueueVisibility() },
-            modifier = Modifier.fillMaxSize(),
-        ) {
+            modifier = Modifier.fillMaxSize()) {
             RemoteQueueSection(
                 queueState = queueState,
                 onPlayQueueItem = viewModel::playQueueItem,
-                onRemoveQueueItem = viewModel::removeQueueItem,
-            )
+                onRemoveQueueItem = viewModel::removeQueueItem)
         }
     }
 }
@@ -238,8 +221,7 @@ private fun RemoteControlContent(
     onSetVolume: (Float) -> Unit,
     onToggleShuffle: () -> Unit,
     onCycleLoopMode: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     Box (modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = modifier
@@ -247,8 +229,7 @@ private fun RemoteControlContent(
                 .padding(horizontal = 24.dp)
                 .widthIn(max = 480.dp)
                 .align(Alignment.TopCenter),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+            horizontalAlignment = Alignment.CenterHorizontally) {
             Spacer(modifier = Modifier.height(32.dp))
 
             // Album art
@@ -257,26 +238,22 @@ private fun RemoteControlContent(
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-            ) {
+                    .background(AppTheme.colors.surfaceVariant)) {
                 if (playerState.currentTrackCoverUrl != null) {
                     AsyncImage(
                         model = playerState.currentTrackCoverUrl,
                         contentDescription = "Album cover",
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                    )
+                        contentScale = ContentScale.Crop)
                 } else {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
+                        contentAlignment = Alignment.Center) {
+                        MillenniumIcon(
                             imageVector = Iconsax.IconsaxMusicFilter,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(48.dp),
-                        )
+                            tint = AppTheme.colors.onSurfaceVariant,
+                            modifier = Modifier.size(48.dp))
                     }
                 }
             }
@@ -286,38 +263,34 @@ private fun RemoteControlContent(
             // Track info
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
+                horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(
                     text = playerState.currentTrackTitle ?: "Unknown Track",
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = AppTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = playerState.currentTrackArtists ?: "Unknown Artist",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = AppTheme.typography.bodyLarge,
+                    color = AppTheme.colors.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
 
                 if (playerState.currentTrackAlbum != null) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = playerState.currentTrackAlbum!!,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f),
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.colors.onSurfaceVariant.copy(alpha = 0.7f),
                         textAlign = TextAlign.Center,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                        overflow = TextOverflow.Ellipsis)
                 }
             }
 
@@ -325,29 +298,25 @@ private fun RemoteControlContent(
 
             // Seek bar
             Column(
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                Slider(
+                modifier = Modifier.fillMaxWidth()) {
+                MillenniumSlider(
                     value = playerState.positionMs.toFloat(),
                     onValueChange = { onSeek(it.toLong()) },
+                    label = "Seek",
                     valueRange = 0f..playerState.durationMs.toFloat().coerceAtLeast(1f),
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                    modifier = Modifier.fillMaxWidth())
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
+                    horizontalArrangement = Arrangement.SpaceBetween) {
                     Text(
                         text = formatDuration(playerState.positionMs),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant)
                     Text(
                         text = formatDuration(playerState.durationMs),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
             }
 
@@ -357,85 +326,67 @@ private fun RemoteControlContent(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+                verticalAlignment = Alignment.CenterVertically) {
                 // Shuffle
-                IconButton(
+                MillenniumIconButton(
                     onClick = onToggleShuffle,
-                    modifier = Modifier.size(48.dp),
-                ) {
-                    Icon(
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
                         imageVector = Iconsax.IconsaxShuffle,
                         contentDescription = "Shuffle",
                         tint = if (playerState.shuffleEnabled) {
-                            MaterialTheme.colorScheme.primary
+                            AppTheme.colors.primary
                         } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                    )
+                            AppTheme.colors.onSurfaceVariant
+                        })
                 }
 
                 // Skip previous
-                IconButton(
+                MillenniumIconButton(
                     onClick = onSkipPrevious,
-                    modifier = Modifier.size(56.dp),
-                ) {
-                    Icon(
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
                         imageVector = Iconsax.IconsaxPrevious,
                         contentDescription = "Previous",
-                        modifier = Modifier.size(32.dp),
-                    )
+                        modifier = Modifier.size(32.dp))
                 }
 
                 // Play/Pause
-                val baseTheme = LocalBaseUITheme.current
-                val circlePrimaryIconTheme = remember(baseTheme) {
-                    baseTheme.iconButtons.primary.copy(
-                        shape = BaseUITheme.InteractionState.fromSingleValue(CircleShape)
-                    )
-                }
-                PrimaryIconButton(
+                MillenniumIconButton(
                     onClick = onTogglePlayPause,
-                    modifier = Modifier.size(72.dp),
-                    theme = circlePrimaryIconTheme,
-                ) {
-                    Icon(
+                    style = MillenniumIconButtonStyle.Primary) {
+                    MillenniumIcon(
                         imageVector = if (playerState.isPlaying) {
                             Iconsax.IconsaxPause
                         } else {
                             Iconsax.IconsaxPlay
                         },
                         contentDescription = if (playerState.isPlaying) "Pause" else "Play",
-                        modifier = Modifier.size(40.dp),
-                    )
+                        modifier = Modifier.size(40.dp))
                 }
 
                 // Skip next
-                IconButton(
+                MillenniumIconButton(
                     onClick = onSkipNext,
-                    modifier = Modifier.size(56.dp),
-                ) {
-                    Icon(
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
                         imageVector = Iconsax.IconsaxNext,
                         contentDescription = "Next",
-                        modifier = Modifier.size(32.dp),
-                    )
+                        modifier = Modifier.size(32.dp))
                 }
 
                 // Loop mode
-                IconButton(
+                MillenniumIconButton(
                     onClick = onCycleLoopMode,
-                    modifier = Modifier.size(48.dp),
-                ) {
-                    Icon(
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
                         imageVector = Iconsax.IconsaxRepeateMusic,
                         contentDescription = "Loop mode",
                         tint = if (playerState.loopMode != "none") {
-                            MaterialTheme.colorScheme.primary
+                            AppTheme.colors.primary
                         } else {
-                            MaterialTheme.colorScheme.onSurfaceVariant
-                        },
-                    )
+                            AppTheme.colors.onSurfaceVariant
+                        })
                 }
             }
 
@@ -445,21 +396,19 @@ private fun RemoteControlContent(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-            ) {
-                Icon(
+                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                MillenniumIcon(
                     imageVector = Iconsax.IconsaxVolumeHigh,
                     contentDescription = "Volume",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(24.dp),
-                )
+                    tint = AppTheme.colors.onSurfaceVariant,
+                    modifier = Modifier.size(24.dp))
 
-                Slider(
+                MillenniumSlider(
                     value = playerState.volume,
                     onValueChange = onSetVolume,
+                    label = "Volume",
                     valueRange = 0f..1f,
-                    modifier = Modifier.weight(1f),
-                )
+                    modifier = Modifier.weight(1f))
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -471,42 +420,35 @@ private fun RemoteControlContent(
 private fun RemoteQueueSection(
     queueState: RemoteQueueState,
     onPlayQueueItem: (Int) -> Unit,
-    onRemoveQueueItem: (String) -> Unit,
-) {
+    onRemoveQueueItem: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
+        verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(
             text = "Queue",
-            style = MaterialTheme.typography.titleLarge,
-        )
+            style = AppTheme.typography.titleLarge)
 
         if (queueState.entries.isEmpty()) {
             Text(
                 text = "No queue entries",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.onSurfaceVariant)
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
-            ) {
+                verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 itemsIndexed(
                     items = queueState.entries,
-                    key = { index, entry -> "${entry.mediaUrl}@$index" },
-                ) { index, entry ->
+                    key = { index, entry -> "${entry.mediaUrl}@$index" }) { index, entry ->
                     RemoteQueueItemRow(
                         entry = entry,
                         index = index,
                         isCurrent = index == queueState.currentIndex,
                         onPlayClick = { onPlayQueueItem(index) },
-                        onRemoveClick = { onRemoveQueueItem(entry.mediaUrl) },
-                    )
+                        onRemoveClick = { onRemoveQueueItem(entry.mediaUrl) })
                 }
             }
         }
@@ -519,11 +461,10 @@ private fun RemoteQueueItemRow(
     index: Int,
     isCurrent: Boolean,
     onPlayClick: () -> Unit,
-    onRemoveClick: () -> Unit,
-) {
+    onRemoveClick: () -> Unit) {
     var showMenu by remember { mutableStateOf(false) }
 
-    ListRowTile(
+    MillenniumListTile(
         onClick = onPlayClick,
         selected = isCurrent,
         modifier = Modifier,
@@ -531,82 +472,67 @@ private fun RemoteQueueItemRow(
             Box(
                 modifier = Modifier
                     .size(48.dp)
-                    .clip(MaterialTheme.shapes.small)
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center,
-            ) {
+                    .clip(AppTheme.shapes.small)
+                    .background(AppTheme.colors.surfaceVariant),
+                contentAlignment = Alignment.Center) {
                 if (entry.coverUrl != null) {
                     AsyncImage(
                         model = entry.coverUrl,
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                    )
+                        contentScale = ContentScale.Crop)
                 } else {
                     Text(
                         text = "${index + 1}",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.labelMedium,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
             }
         },
         title = {
             Text(
                 text = entry.title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = if (isCurrent) {
-                    MaterialTheme.colorScheme.onSecondaryContainer
+                    AppTheme.colors.onSecondaryContainer
                 } else {
-                    MaterialTheme.colorScheme.onSurface
-                },
-            )
+                    AppTheme.colors.onSurface
+                })
         },
         subtitle = {
             Text(
                 text = entry.artists,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
         },
         trailing = {
             Text(
                 text = formatDuration(entry.durationMs),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant)
 
-            Box {
-                GhostIconButton(
-                    onClick = { showMenu = true },
-                    modifier = Modifier.size(36.dp),
-                ) {
-                    Icon(
-                        Iconsax.Iconsax3DotsMore,
-                        contentDescription = "More options",
-                        modifier = Modifier.size(18.dp),
-                    )
-                }
-                DropdownMenu(
-                    expanded = showMenu,
-                    onDismissRequest = { showMenu = false },
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("Remove from queue") },
-                        onClick = {
-                            onRemoveClick()
-                            showMenu = false
-                        },
-                        leadingIcon = {
-                            Icon(Iconsax.IconsaxMusicSquareRemove, contentDescription = null)
-                        },
-                    )
-                }
-            }
+            MillenniumDropdownMenu(
+                expanded = showMenu,
+                onExpandedChange = { showMenu = it },
+                items = listOf("Remove from queue"),
+                onItemClick = {
+                    onRemoveClick()
+                    showMenu = false
+                },
+                anchor = {
+                    MillenniumIconButton(
+                        onClick = { showMenu = true },
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
+                            Iconsax.Iconsax3DotsMore,
+                            contentDescription = "More options",
+                            modifier = Modifier.size(18.dp))
+                    }
+                })
         }
     )
 }

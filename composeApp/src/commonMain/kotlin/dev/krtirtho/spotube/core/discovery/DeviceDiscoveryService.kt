@@ -30,8 +30,7 @@ data class DiscoveredDevice(
     val type: String,
     val host: String,
     val port: Int,
-    val deviceId: String,
-) {
+    val deviceId: String) {
     val key: String get() = "$name$type".replace(".", "")
 }
 
@@ -55,8 +54,7 @@ class DeviceDiscoveryService {
                     type = event.service.type,
                     host = event.service.host,
                     port = event.service.port,
-                    deviceId = event.service.txt[TXT_DEVICE_ID]?.decodeToString().orEmpty(),
-                )
+                    deviceId = event.service.txt[TXT_DEVICE_ID]?.decodeToString().orEmpty())
                 DiscoveryState.Discovered(device = device, resolve = event.resolve)
             }
 
@@ -66,8 +64,7 @@ class DeviceDiscoveryService {
                     type = event.service.type,
                     host = event.service.host,
                     port = event.service.port,
-                    deviceId = event.service.txt[TXT_DEVICE_ID]?.decodeToString().orEmpty(),
-                )
+                    deviceId = event.service.txt[TXT_DEVICE_ID]?.decodeToString().orEmpty())
                 DiscoveryState.Resolved(device = device)
             }
 
@@ -77,8 +74,7 @@ class DeviceDiscoveryService {
                     type = event.service.type,
                     host = event.service.host,
                     port = event.service.port,
-                    deviceId = "",
-                )
+                    deviceId = "")
                 DiscoveryState.Removed(device = device)
             }
         }
@@ -88,8 +84,7 @@ class DeviceDiscoveryService {
         name: String,
         port: Int,
         deviceId: String,
-        registerTimeoutMs: Long = 5_000,
-    ): NetService {
+        registerTimeoutMs: Long = 5_000): NetService {
         val service = createService(name, port, deviceId)
         service.register(timeoutInMs = registerTimeoutMs)
         return service
@@ -98,11 +93,9 @@ class DeviceDiscoveryService {
     fun createService(
         name: String,
         port: Int,
-        deviceId: String,
-    ): NetService = createNetService(
+        deviceId: String): NetService = createNetService(
         type = SERVICE_TYPE,
         name = name,
         port = port,
-        txt = mapOf(TXT_DEVICE_ID to deviceId),
-    )
+        txt = mapOf(TXT_DEVICE_ID to deviceId))
 }

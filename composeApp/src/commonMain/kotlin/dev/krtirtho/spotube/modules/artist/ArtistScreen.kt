@@ -17,6 +17,15 @@
 
 package dev.krtirtho.spotube.modules.artist
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumCard
+import org.spotube.millennium.composables.MillenniumTooltip
+import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -35,19 +44,9 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.PlainTooltip
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TooltipAnchorPosition
-import androidx.compose.material3.TooltipBox
-import androidx.compose.material3.TooltipDefaults
-import androidx.compose.material3.rememberTooltipState
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -74,10 +73,6 @@ import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import org.koin.compose.koinInject
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
-import dev.krtirtho.spotube.core.ui.base.PrimaryIconButton
-import dev.krtirtho.spotube.core.ui.base.SecondaryButton
-import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.ArtistCard
@@ -118,17 +113,19 @@ fun ArtistScreen(
     val trackOptionsContext by viewModel.trackOptionsContext.collectAsStateWithLifecycle()
     val showAddToPlaylistPicker by viewModel.showAddToPlaylistPicker.collectAsStateWithLifecycle()
 
-    BaseScaffold(
-        topBar = { ApplicationMainBar() }
-    ) { innerPadding ->
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MillenniumTheme.colors.background)) {
+        ApplicationMainBar()
+        Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
         when (val currentState = state) {
             is ArtistScreenState.Loading -> {
-                ArtistLoadingContent(innerPadding)
+                ArtistLoadingContent()
             }
 
             is ArtistScreenState.Error -> {
                 ArtistErrorContent(
-                    innerPadding = innerPadding,
                     message = currentState.message,
                     onRetry = { viewModel.refresh() }
                 )
@@ -141,25 +138,21 @@ fun ArtistScreen(
                     state = listState,
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(innerPadding)
                         .padding(bottom = LocalAppShellBottomInset.current + 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp),
-                ) {
+                    verticalArrangement = Arrangement.spacedBy(24.dp)) {
                     item {
                         ArtistHeaderCard(
                             artist = currentState.artist,
                             isSaved = savedArtistIds.contains(currentState.artist.id),
                             onFollowClick = viewModel::toggleSavedArtist,
                             isBlacklisted = currentState.artist.id in blacklistedArtistIds,
-                            onBlacklistClick = { viewModel.toggleArtistBlacklist(currentState.artist) },
-                        )
+                            onBlacklistClick = { viewModel.toggleArtistBlacklist(currentState.artist) })
                     }
 
                     item {
                         TopTracksHeader(
                             onPlay = viewModel::playTopTracks,
-                            onAddToQueue = viewModel::addTopTracksToQueue,
-                        )
+                            onAddToQueue = viewModel::addTopTracksToQueue)
                     }
 
                     item {
@@ -197,8 +190,7 @@ fun ArtistScreen(
                             onBulkAddToPlaylist = viewModel::showAddToPlaylistPicker,
                             onBulkAddToJam = viewModel::addTracksToJam,
                             isInJam = jamActive,
-                            isJamGuest = isJamGuest,
-                        )
+                            isJamGuest = isJamGuest)
                     }
 
                     if (currentState.albums.isNotEmpty() || currentState.albumsNextPagination != null) {
@@ -212,8 +204,7 @@ fun ArtistScreen(
                                         )
                                     )
                                 },
-                                onLoadMore = { viewModel.loadMoreAlbums() },
-                            )
+                                onLoadMore = { viewModel.loadMoreAlbums() })
                         }
                     }
 
@@ -228,8 +219,7 @@ fun ArtistScreen(
                                         )
                                     )
                                 },
-                                onLoadMore = { viewModel.loadMoreRelatedArtists() },
-                            )
+                                onLoadMore = { viewModel.loadMoreRelatedArtists() })
                         }
                     }
 
@@ -244,73 +234,62 @@ fun ArtistScreen(
                                         )
                                     )
                                 },
-                                onLoadMore = { viewModel.loadMoreFeaturedPlaylists() },
-                            )
+                                onLoadMore = { viewModel.loadMoreFeaturedPlaylists() })
                         }
                     }
                 }
             }
+        }
         }
 
         AddToPlaylistPicker(
             visible = showAddToPlaylistPicker,
             currentUserId = currentUserId,
             onDismiss = viewModel::dismissAddToPlaylistPicker,
-            onPlaylistSelected = viewModel::addTracksToPlaylist,
-        )
+            onPlaylistSelected = viewModel::addTracksToPlaylist)
     }
 }
 
 @Composable
-private fun ArtistLoadingContent(innerPadding: PaddingValues) {
+private fun ArtistLoadingContent() {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-        contentAlignment = Alignment.Center,
-    ) {
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center) {
         SkeletonTree(true) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(24.dp),
-            ) {
+                verticalArrangement = Arrangement.spacedBy(24.dp)) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                ) {
+                        .padding(horizontal = 16.dp)) {
                     Box(
                         modifier = Modifier
                             .size(200.dp)
                             .clip(CircleShape)
-                            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
-                    )
+                            .background(AppTheme.colors.surfaceContainerHighest))
                 }
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
+                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                    ) {
+                            .padding(horizontal = 16.dp)) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                        )
+                                .padding(vertical = 8.dp))
                     }
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp),
-                    ) {
+                        contentPadding = PaddingValues(horizontal = 16.dp)) {
                         items(4) {
                             PlayableCard(
                                 title = "Item Title",
                                 subtitle = "Subtitle",
-                                imageURL = "https://placehold.co/600x400",
-                            )
+                                imageURL = "https://placehold.co/600x400")
                         }
                     }
                 }
@@ -321,26 +300,20 @@ private fun ArtistLoadingContent(innerPadding: PaddingValues) {
 
 @Composable
 private fun ArtistErrorContent(
-    innerPadding: PaddingValues,
     message: String,
-    onRetry: () -> Unit,
-) {
+    onRetry: () -> Unit) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(innerPadding),
-        contentAlignment = Alignment.Center,
-    ) {
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-        ) {
+            verticalArrangement = Arrangement.spacedBy(16.dp)) {
             Text(
                 text = message,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            PrimaryButton(onClick = onRetry) {
+                color = AppTheme.colors.error,
+                style = AppTheme.typography.bodyLarge)
+            MillenniumButton(onClick = onRetry) {
                 Text("Retry")
             }
         }
@@ -353,44 +326,34 @@ private fun ArtistHeaderCard(
     isSaved: Boolean,
     onFollowClick: () -> Unit,
     isBlacklisted: Boolean,
-    onBlacklistClick: () -> Unit,
-) {
+    onBlacklistClick: () -> Unit) {
     BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
         val isCompact = maxWidth < 600.dp
 
-        Card(
+        MillenniumCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-            ),
-            shape = RoundedCornerShape(20.dp),
-        ) {
+                .padding(horizontal = 12.dp, vertical = 8.dp)) {
             if (isCompact) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
+                    horizontalAlignment = Alignment.CenterHorizontally) {
                     ArtistAvatar(
                         artist = artist,
-                        size = 180.dp,
-                    )
+                        size = 180.dp)
 
                     ArtistMeta(
                         artist = artist,
-                        isCompact = true,
-                    )
+                        isCompact = true)
 
                     ArtistHeaderActions(
                         isSaved = isSaved,
                         onFollowClick = onFollowClick,
                         isBlacklisted = isBlacklisted,
-                        onBlacklistClick = onBlacklistClick,
-                    )
+                        onBlacklistClick = onBlacklistClick)
                 }
             } else {
                 Row(
@@ -398,28 +361,23 @@ private fun ArtistHeaderCard(
                         .fillMaxWidth()
                         .padding(20.dp),
                     horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalAlignment = Alignment.Top,
-                ) {
+                    verticalAlignment = Alignment.Top) {
                     ArtistAvatar(
                         artist = artist,
-                        size = 220.dp,
-                    )
+                        size = 220.dp)
 
                     Column(
                         modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(14.dp),
-                    ) {
+                        verticalArrangement = Arrangement.spacedBy(14.dp)) {
                         ArtistMeta(
                             artist = artist,
-                            isCompact = false,
-                        )
+                            isCompact = false)
 
                         ArtistHeaderActions(
                             isSaved = isSaved,
                             onFollowClick = onFollowClick,
                             isBlacklisted = isBlacklisted,
-                            onBlacklistClick = onBlacklistClick,
-                        )
+                            onBlacklistClick = onBlacklistClick)
                     }
                 }
             }
@@ -430,30 +388,26 @@ private fun ArtistHeaderCard(
 @Composable
 private fun ArtistAvatar(
     artist: MetadataArtist.Detailed,
-    size: androidx.compose.ui.unit.Dp,
-) {
+    size: androidx.compose.ui.unit.Dp) {
     Box(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
-        contentAlignment = Alignment.Center,
-    ) {
+            .background(AppTheme.colors.surfaceContainerHighest),
+        contentAlignment = Alignment.Center) {
         val imageUrl = artist.thumbnails.firstOrNull()?.url.orEmpty()
         if (imageUrl.isNotBlank()) {
             AsyncImage(
                 model = imageUrl,
                 contentDescription = artist.name,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-            )
+                contentScale = ContentScale.Crop)
         } else {
-            Icon(
+            MillenniumIcon(
                 imageVector = Iconsax.User,
                 contentDescription = artist.name,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(size * 0.4f),
-            )
+                tint = AppTheme.colors.onSurfaceVariant,
+                modifier = Modifier.size(size * 0.4f))
         }
     }
 }
@@ -461,21 +415,18 @@ private fun ArtistAvatar(
 @Composable
 private fun ArtistMeta(
     artist: MetadataArtist.Detailed,
-    isCompact: Boolean,
-) {
+    isCompact: Boolean) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = if (isCompact) Alignment.CenterHorizontally else Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
+        verticalArrangement = Arrangement.spacedBy(10.dp)) {
         Text(
             text = artist.name,
-            style = if (isCompact) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.headlineLarge,
+            style = if (isCompact) AppTheme.typography.headlineSmall else AppTheme.typography.headlineLarge,
             fontWeight = FontWeight.SemiBold,
             textAlign = if (isCompact) TextAlign.Center else TextAlign.Start,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
+            overflow = TextOverflow.Ellipsis)
 
         Text(
             text = buildString {
@@ -485,74 +436,66 @@ private fun ArtistMeta(
                     append(artist.genres.joinToString(", "))
                 }
             },
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = if (isCompact) TextAlign.Center else TextAlign.Start,
-        )
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.colors.onSurfaceVariant,
+            textAlign = if (isCompact) TextAlign.Center else TextAlign.Start)
 
         artist.biography?.takeIf { it.isNotBlank() }?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.onSurfaceVariant,
                 maxLines = if (isCompact) 4 else 6,
                 overflow = TextOverflow.Ellipsis,
-                textAlign = if (isCompact) TextAlign.Center else TextAlign.Start,
-            )
+                textAlign = if (isCompact) TextAlign.Center else TextAlign.Start)
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ArtistHeaderActions(
     isSaved: Boolean,
     onFollowClick: () -> Unit,
     isBlacklisted: Boolean,
-    onBlacklistClick: () -> Unit,
-) {
+    onBlacklistClick: () -> Unit) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+        verticalAlignment = Alignment.CenterVertically) {
         if (isSaved) {
-            SecondaryButton(onClick = onFollowClick) {
+            MillenniumButton(
+                onClick = onFollowClick,
+                style = MillenniumButtonStyle.Secondary) {
                 Text(
                     "Following",
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
             }
         } else {
-            PrimaryButton(onClick = onFollowClick) {
+            MillenniumButton(onClick = onFollowClick) {
                 Text("Follow", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
             }
         }
 
-        TooltipBox(
-            positionProvider = TooltipDefaults.rememberTooltipPositionProvider(TooltipAnchorPosition.Above),
-            tooltip = {
-                PlainTooltip {
-                    Text(if (isBlacklisted) "Remove from blacklist" else "Add to blacklist")
-                }
-            },
-            state = rememberTooltipState()
+        MillenniumTooltip(
+            text = if (isBlacklisted) "Remove from blacklist" else "Add to blacklist"
         ) {
             if (isBlacklisted) {
-                SecondaryIconButton(onClick = onBlacklistClick) {
-                    Icon(
+                MillenniumIconButton(
+                    onClick = onBlacklistClick,
+                    style = MillenniumIconButtonStyle.Secondary) {
+                    MillenniumIcon(
                         imageVector = Iconsax.IconsaxUserRemove,
                         contentDescription = "Remove from blacklist",
-                        tint = MaterialTheme.colorScheme.error,
-                    )
+                        tint = AppTheme.colors.error)
                 }
             } else {
-                SecondaryIconButton(onClick = onBlacklistClick) {
-                    Icon(
+                MillenniumIconButton(
+                    onClick = onBlacklistClick,
+                    style = MillenniumIconButtonStyle.Secondary) {
+                    MillenniumIcon(
                         imageVector = Iconsax.IconsaxUserRemove,
-                        contentDescription = "Add to blacklist",
-                    )
+                        contentDescription = "Add to blacklist")
                 }
             }
         }
@@ -562,33 +505,32 @@ private fun ArtistHeaderActions(
 @Composable
 private fun TopTracksHeader(
     onPlay: () -> Unit,
-    onAddToQueue: () -> Unit,
-) {
+    onAddToQueue: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
+        horizontalArrangement = Arrangement.SpaceBetween) {
         Text(
             text = "Top Tracks",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold,
-        )
+            style = AppTheme.typography.titleLarge,
+            fontWeight = FontWeight.SemiBold)
 
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            PrimaryIconButton(onClick = onPlay) {
-                Icon(
+            MillenniumIconButton(
+                onClick = onPlay,
+                style = MillenniumIconButtonStyle.Primary) {
+                MillenniumIcon(
                     imageVector = Iconsax.IconsaxPlay,
-                    contentDescription = "Play top tracks",
-                )
+                    contentDescription = "Play top tracks")
             }
-            SecondaryIconButton(onClick = onAddToQueue) {
-                Icon(
+            MillenniumIconButton(
+                onClick = onAddToQueue,
+                style = MillenniumIconButtonStyle.Secondary) {
+                MillenniumIcon(
                     imageVector = Iconsax.IconsaxAddSquare,
-                    contentDescription = "Add top tracks to queue",
-                )
+                    contentDescription = "Add top tracks to queue")
             }
         }
     }
@@ -598,8 +540,7 @@ private fun TopTracksHeader(
 private fun AlbumsSection(
     albums: List<MetadataAlbum.Detailed>,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
-    onLoadMore: () -> Unit,
-) {
+    onLoadMore: () -> Unit) {
     val rowState = rememberLazyListState()
 
     LaunchedEffect(rowState) {
@@ -624,8 +565,7 @@ private fun AlbumsSection(
         modifier = Modifier.dragScrollable(rowState),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top,
-    ) {
+        verticalAlignment = Alignment.Top) {
         items(albums, key = { it.id }) { album ->
             AlbumCard(album = album)
         }
@@ -636,8 +576,7 @@ private fun AlbumsSection(
 private fun RelatedArtistsSection(
     artists: List<MetadataArtist.Basic>,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
-    onLoadMore: () -> Unit,
-) {
+    onLoadMore: () -> Unit) {
     val rowState = rememberLazyListState()
 
     LaunchedEffect(rowState) {
@@ -662,8 +601,7 @@ private fun RelatedArtistsSection(
         modifier = Modifier.dragScrollable(rowState),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top,
-    ) {
+        verticalAlignment = Alignment.Top) {
         items(artists, key = { it.id }) { artist ->
             ArtistCard(artist = artist)
         }
@@ -674,8 +612,7 @@ private fun RelatedArtistsSection(
 private fun FeaturedPlaylistsSection(
     playlists: List<MetadataPlaylist>,
     onPlaylistClick: (MetadataPlaylist) -> Unit,
-    onLoadMore: () -> Unit,
-) {
+    onLoadMore: () -> Unit) {
     val rowState = rememberLazyListState()
 
     LaunchedEffect(rowState) {
@@ -700,8 +637,7 @@ private fun FeaturedPlaylistsSection(
         modifier = Modifier.dragScrollable(rowState),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top,
-    ) {
+        verticalAlignment = Alignment.Top) {
         items(playlists, key = { it.id }) { playlist ->
             PlaylistCard(playlist = playlist)
         }
@@ -712,10 +648,9 @@ private fun FeaturedPlaylistsSection(
 private fun SectionHeader(title: String) {
     Text(
         text = title,
-        style = MaterialTheme.typography.titleLarge,
+        style = AppTheme.typography.titleLarge,
         fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(horizontal = 16.dp),
-    )
+        modifier = Modifier.padding(horizontal = 16.dp))
 }
 
 private fun formatFollowers(count: Int?): String {

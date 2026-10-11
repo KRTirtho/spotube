@@ -36,8 +36,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 class AlbumRepository(
     val pluginManager: PluginManager,
-    private val libraryRepository: LibraryRepository,
-) {
+    private val libraryRepository: LibraryRepository) {
     val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     val plugin

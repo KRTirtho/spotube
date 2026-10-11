@@ -26,12 +26,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Card
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -54,8 +51,7 @@ import org.koin.compose.koinInject
 fun TrackCard(
     track: MetadataTrack,
     modifier: Modifier = Modifier,
-    audioPlayerQueue: AudioPlayerQueue = koinInject(),
-) {
+    audioPlayerQueue: AudioPlayerQueue = koinInject()) {
     val scope = rememberCoroutineScope()
     val queueEntry = QueueEntry.StreamingTrack(track = track, url = "")
 
@@ -69,8 +65,7 @@ fun TrackCard(
                     entries = listOf(queueEntry),
                     autoPlay = true,
                     startPosition = 0,
-                    collectionEntry = null,
-                )
+                    collectionEntry = null)
             }
         },
         onAddToQueue = {

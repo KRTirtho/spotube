@@ -44,8 +44,7 @@ import kotlinx.coroutines.launch
 class SystemTrayService(
     private val audioPlayer: AudioPlayerInterface,
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val savedTracksRepository: SavedTracksRepository,
-) : AutoCloseable {
+    private val savedTracksRepository: SavedTracksRepository) : AutoCloseable {
 
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
@@ -61,8 +60,7 @@ class SystemTrayService(
             audioPlayer.shuffleModeFlow,
             audioPlayer.volumeFlow,
             audioPlayerQueue.currentQueueEntryFlow,
-            savedTracksRepository.savedTracksIdsFlow,
-        ) { values ->
+            savedTracksRepository.savedTracksIdsFlow) { values ->
             TrayState(
                 playerState = values[0] as PlayerState,
                 mediaItem = values[1] as MediaItem?,
@@ -70,8 +68,7 @@ class SystemTrayService(
                 shuffleEnabled = values[3] as Boolean,
                 volume = values[4] as Float,
                 currentEntry = values[5] as QueueEntry?,
-                savedTrackIds = @Suppress("UNCHECKED_CAST") (values[6] as Set<String>),
-            )
+                savedTrackIds = @Suppress("UNCHECKED_CAST") (values[6] as Set<String>))
         }.stateIn(scope, SharingStarted.Eagerly, TrayState.Initial)
 
     fun setCallbacks(onToggleWindowVisibility: () -> Unit) {
@@ -137,8 +134,7 @@ class SystemTrayService(
         val shuffleEnabled: Boolean,
         val volume: Float,
         val currentEntry: QueueEntry?,
-        val savedTrackIds: Set<String>,
-    ) {
+        val savedTrackIds: Set<String>) {
         val isPlaying: Boolean get() = playerState == PlayerState.PLAYING
 
         val currentTrackId: String? get() = (currentEntry as? QueueEntry.StreamingTrack)?.track?.id
@@ -155,8 +151,7 @@ class SystemTrayService(
                     shuffleEnabled = false,
                     volume = 1f,
                     currentEntry = null,
-                    savedTrackIds = emptySet(),
-                )
+                    savedTrackIds = emptySet())
         }
     }
 }

@@ -48,28 +48,24 @@ data class CachedStreamUrl(
     // The id of the audio plugin that produced this entry. Guards against a stale entry
     // (e.g. a YouTube video URL) being served after the user switches to a different
     // audio plugin, which would otherwise play back completely unrelated content.
-    val pluginId: String,
-)
+    val pluginId: String)
 
 private data class CachedAlternatives(
     val pluginId: String,
-    val sources: List<AudioSource>,
-)
+    val sources: List<AudioSource>)
 
 data class StreamInfo(
     val url: String,
     val protocol: StreamProtocol,
     val codec: String,
-    val container: String,
-)
+    val container: String)
 
 class StreamingUrlRepository(
     private val pluginManager: AudioPluginSource,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val matchedTracksRepository: TrackSourceRepository,
     private val settingsRepository: UserSettingsSource,
-    private val streamUrlCacheTtlMs: Long = 30.seconds.inWholeMilliseconds,
-) : KoinComponent {
+    private val streamUrlCacheTtlMs: Long = 30.seconds.inWholeMilliseconds) : KoinComponent {
 
     private val logger by injectLogger<StreamingUrlRepository>()
     private val streamUrlCacheMutex = Mutex()
@@ -133,8 +129,7 @@ class StreamingUrlRepository(
                 val resolvedStream = selectPreferredAudioStream(
                     stream.streams,
                     preferredFormat,
-                    preferredQuality,
-                )
+                    preferredQuality)
                 if (resolvedStream != null) {
                     val info = resolvedStream.toStreamInfo()
                     cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
@@ -193,8 +188,7 @@ class StreamingUrlRepository(
         val resolvedStream = selectPreferredAudioStream(
             stream.streams,
             preferredFormat,
-            preferredQuality,
-        )
+            preferredQuality)
         if (resolvedStream != null) {
             val info = resolvedStream.toStreamInfo()
             cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
@@ -207,15 +201,13 @@ class StreamingUrlRepository(
         url = normalizeManifestUrl(url, protocol),
         protocol = protocol,
         codec = codec,
-        container = container,
-    )
+        container = container)
 
     private suspend fun getCachedStreamUrl(
         trackId: String,
         preferredFormat: AudioFormat,
         preferredQuality: AudioQuality,
-        pluginId: String,
-    ): StreamInfo? {
+        pluginId: String): StreamInfo? {
         val now = Clock.System.now().toEpochMilliseconds()
         return streamUrlCacheMutex.withLock {
             val cached = streamUrlCache[trackId] ?: return@withLock null
@@ -241,8 +233,7 @@ class StreamingUrlRepository(
         preferredQuality: AudioQuality,
         source: AudioSource.Streamed,
         selectedStream: AudioStream,
-        pluginId: String,
-    ) {
+        pluginId: String) {
         val expiresAtMs = Clock.System.now().toEpochMilliseconds() + streamUrlCacheTtlMs
         streamUrlCacheMutex.withLock {
             streamUrlCache[trackId] = CachedStreamUrl(
@@ -255,8 +246,7 @@ class StreamingUrlRepository(
                 selectedStream = selectedStream,
                 preferredFormat = preferredFormat,
                 preferredQuality = preferredQuality,
-                pluginId = pluginId,
-            )
+                pluginId = pluginId)
         }
     }
 
@@ -326,8 +316,7 @@ internal fun normalizeManifestUrl(url: String, protocol: StreamProtocol): String
 internal fun selectPreferredAudioStream(
     streams: List<AudioStream>,
     preferredFormat: AudioFormat,
-    preferredQuality: AudioQuality,
-): AudioStream? = streams.minWithOrNull(
+    preferredQuality: AudioQuality): AudioStream? = streams.minWithOrNull(
     compareBy<AudioStream> { stream ->
         formatMismatchCount(stream, preferredFormat)
     }.thenBy { stream ->

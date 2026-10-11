@@ -38,16 +38,14 @@ import org.koin.compose.koinInject
 fun NucleusApplicationScope.SystemTray(
     isWindowVisible: Boolean,
     onToggleWindowVisibility: () -> Unit,
-    onExit: () -> Unit,
-) {
+    onExit: () -> Unit) {
     val trayService = koinInject<SystemTrayService>()
     val state by trayService.state.collectAsState()
 
     Tray(
         icon = Iconsax.IconsaxMusic,
         tooltip = "Spotube",
-        primaryAction = onToggleWindowVisibility,
-    ) {
+        primaryAction = onToggleWindowVisibility) {
         Item(label = if (isWindowVisible) "Hide Window" else "Show Window") {
             onToggleWindowVisibility()
         }
@@ -63,8 +61,7 @@ fun NucleusApplicationScope.SystemTray(
         CheckableItem(
             label = "Shuffle",
             checked = state.shuffleEnabled,
-            onCheckedChange = trayService::setShuffle,
-        )
+            onCheckedChange = trayService::setShuffle)
         SubMenu(label = "Loop") {
             Item(label = "Loop: OFF") { trayService.setLoop(LoopState.NONE) }
             Item(label = "Loop: ONE") { trayService.setLoop(LoopState.ONE) }

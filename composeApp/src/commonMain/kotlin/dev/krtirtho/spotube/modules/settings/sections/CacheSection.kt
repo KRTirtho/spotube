@@ -17,14 +17,17 @@
 
 package dev.krtirtho.spotube.modules.settings.sections
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Icon
+
 import androidx.compose.runtime.Composable
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Folder
 import compose.icons.feathericons.HardDrive
 import spotube.composeapp.generated.resources.*
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
@@ -42,8 +45,7 @@ import org.jetbrains.compose.resources.stringResource
 internal fun LazyListScope.cacheSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
-    includeHeader: Boolean = true,
-) {
+    includeHeader: Boolean = true) {
     if (includeHeader) {
         settingsSectionHeader(Res.string.settings_section_caching)
     }
@@ -122,8 +124,7 @@ internal fun LazyListScope.cacheSection(
                         }
                     }
                 )
-            },
-        )
+            })
     )
 }
 
@@ -131,8 +132,7 @@ internal fun LazyListScope.cacheSection(
 private fun CacheFolderSettingCard(
     enabled: Boolean,
     folder: String?,
-    onFolderSelected: (String?) -> Unit,
-) {
+    onFolderSelected: (String?) -> Unit) {
     val pickerLauncher = rememberDirectoryPickerLauncher { directory ->
         if (directory != null) {
             val normalized = normalizePath(directory.path)
@@ -154,17 +154,13 @@ private fun CacheFolderSettingCard(
             )
         },
         trailingContent = {
-            GhostIconButton(
+            MillenniumIconButton(
+                icon = Iconsax.IconsaxFolderAdd,
+                contentDescription = stringResource(Res.string.settings_cache_folder_title),
                 onClick = { pickerLauncher.launch() },
                 enabled = enabled,
-            ) {
-                Icon(
-                    Iconsax.IconsaxFolderAdd,
-                    contentDescription = stringResource(Res.string.settings_cache_folder_title)
-                )
-            }
+                style = MillenniumIconButtonStyle.Quiet)
         },
         onClick = { pickerLauncher.launch() },
-        enabled = enabled,
-    )
+        enabled = enabled)
 }

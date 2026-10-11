@@ -28,8 +28,7 @@ import dev.krtirtho.spotube.isDesktop
 @Composable
 expect fun VerticalScrollbar(
     listState: LazyListState,
-    modifier: Modifier = Modifier,
-)
+    modifier: Modifier = Modifier)
 
 fun Modifier.dragScrollable(rowState: LazyListState): Modifier =
     if (getPlatform().isDesktop()) pointerInput(rowState) {

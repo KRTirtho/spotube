@@ -17,25 +17,28 @@
 
 package dev.krtirtho.spotube.modules.devices
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumListTile
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.remote.ConnectionState
 import dev.krtirtho.spotube.core.remote.PlaybackDestinationAction
 import dev.krtirtho.spotube.core.remote.RemoteControlClient
 import dev.krtirtho.spotube.core.remote.RemotePlaybackController
-import dev.krtirtho.spotube.core.ui.base.ListRowTile
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
@@ -66,83 +69,67 @@ fun PlayDestinationPickerHost() {
         PlaybackDestinationAction.PlayNext -> "Play next"
     }
 
-    ThemedDialog(
+    MillenniumDialog(
+        visible = true,
         onDismissRequest = controller::dismissPicker,
-        title = {
+        title = "Where to $actionLabel?") {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = "Where to $actionLabel?",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-            )
-        },
-        content = {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                Text(
-                    text = "$actionLabel \"${pendingRequest.title}\" on:",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                text = "$actionLabel \"${pendingRequest.title}\" on:",
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.onSurfaceVariant)
 
-                ListRowTile(
-                    onClick = controller::playLocally,
+            MillenniumListTile(
+                onClick = controller::playLocally,
+                modifier = Modifier.fillMaxWidth(),
+                leading = {
+                    MillenniumIcon(
+                        imageVector = Iconsax.IconsaxCd,
+                        contentDescription = null,
+                        tint = AppTheme.colors.primary)
+                },
+                title = {
+                    Text(
+                        text = "This Device",
+                        style = AppTheme.typography.bodyLarge)
+                },
+                subtitle = {
+                    Text(
+                        text = "$actionLabel here",
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant)
+                })
+
+            if (connectionState is ConnectionState.Connected) {
+                MillenniumListTile(
+                    onClick = controller::playOnRemote,
                     modifier = Modifier.fillMaxWidth(),
                     leading = {
-                        Icon(
-                            imageVector = Iconsax.IconsaxCd,
+                        MillenniumIcon(
+                            imageVector = Iconsax.IconsaxMirroringScreen,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                        )
+                            tint = AppTheme.colors.primary)
                     },
                     title = {
                         Text(
-                            text = "This Device",
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
+                            text = remoteDeviceName,
+                            style = AppTheme.typography.bodyLarge)
                     },
                     subtitle = {
                         Text(
-                            text = "$actionLabel here",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    },
-                )
-
-                if (connectionState is ConnectionState.Connected) {
-                    ListRowTile(
-                        onClick = controller::playOnRemote,
-                        modifier = Modifier.fillMaxWidth(),
-                        leading = {
-                            Icon(
-                                imageVector = Iconsax.IconsaxMirroringScreen,
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.primary,
-                            )
-                        },
-                        title = {
-                            Text(
-                                text = remoteDeviceName,
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        },
-                        subtitle = {
-                            Text(
-                                text = "$actionLabel on the connected device",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
-                        },
-                    )
-                }
+                            text = "$actionLabel on the connected device",
+                            style = AppTheme.typography.bodySmall,
+                            color = AppTheme.colors.onSurfaceVariant)
+                    })
             }
-        },
-        actions = {
-            TextButton(onClick = controller::dismissPicker) {
+
+            MillenniumButton(
+                onClick = controller::dismissPicker,
+                style = MillenniumButtonStyle.Quiet) {
                 Text("Cancel")
             }
-        },
-    )
+        }
+    }
 }

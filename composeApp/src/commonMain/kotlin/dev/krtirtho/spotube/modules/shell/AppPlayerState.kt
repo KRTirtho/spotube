@@ -43,8 +43,7 @@ internal data class PlayerUiState(
     val playerState: PlayerState = PlayerState.IDLE,
     val loopState: LoopState = LoopState.NONE,
     val isShuffling: Boolean = false,
-    val volume: Float = 0f,
-) {
+    val volume: Float = 0f) {
     val isPlaying: Boolean get() = playerState == PlayerState.PLAYING
     val displayDuration: Duration
         get() = if (actualDuration.inWholeMilliseconds > 0L) actualDuration else metadataDuration
@@ -74,8 +73,7 @@ internal data class PlayerUiState(
 @Composable
 internal fun rememberPlayerUiState(
     audioPlayer: AudioPlayerInterface,
-    audioPlayerQueue: AudioPlayerQueue,
-): PlayerUiState {
+    audioPlayerQueue: AudioPlayerQueue): PlayerUiState {
     val queue by audioPlayerQueue.queueFlow.collectAsState(initial = emptyList())
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsState(initial = null)
     val playerState by audioPlayer.playerStateFlow.collectAsState()
@@ -99,8 +97,7 @@ internal fun rememberPlayerUiState(
         playerState = playerState,
         loopState = loopState,
         isShuffling = isShuffling,
-        volume = volume,
-    )
+        volume = volume)
 
 //    val logger = rememberLogger<PlayerUiState>()
 //    logger.d { state.toDebugString() }

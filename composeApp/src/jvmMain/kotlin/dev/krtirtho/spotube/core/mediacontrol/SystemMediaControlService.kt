@@ -44,8 +44,7 @@ import kotlin.time.Duration.Companion.milliseconds
  * dispatched onto [scope] so they reach the player's suspend API.
  */
 class SystemMediaControlService(
-    private val audioPlayer: AudioPlayerInterface,
-) : KoinComponent, AutoCloseable {
+    private val audioPlayer: AudioPlayerInterface) : KoinComponent, AutoCloseable {
 
     private val logger by injectLogger<SystemMediaControlService>()
 
@@ -105,12 +104,10 @@ class SystemMediaControlService(
         scope.launch {
             combine(
                 audioPlayer.playerStateFlow,
-                audioPlayer.positionFlow,
-            ) { state, position ->
+                audioPlayer.positionFlow) { state, position ->
                 MediaPlaybackState(
                     status = state.toMediaPlaybackStatus(),
-                    positionMs = position.inWholeMilliseconds,
-                )
+                    positionMs = position.inWholeMilliseconds)
             }.collect { MediaControlService.setPlaybackState(it) }
         }
 
@@ -127,8 +124,7 @@ class SystemMediaControlService(
             artist = artist,
             album = album,
             coverUrl = coverURL.ifBlank { null },
-            duration = duration.inWholeMilliseconds,
-        )
+            duration = duration.inWholeMilliseconds)
     }
 
     private fun PlayerState.toMediaPlaybackStatus(): MediaPlaybackStatus {

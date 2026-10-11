@@ -33,8 +33,7 @@ import kotlinx.serialization.json.Json
 data class GitHubRepoSearchResponse(
     @SerialName("total_count") val totalCount: Int,
     @SerialName("incomplete_results") val incompleteResults: Boolean,
-    val items: List<GitHubRepo>,
-)
+    val items: List<GitHubRepo>)
 
 @Serializable
 data class GitHubRepo(
@@ -43,14 +42,12 @@ data class GitHubRepo(
     val description: String? = null,
     @SerialName("stargazers_count") val stargazersCount: Int = 0,
     @SerialName("html_url") val htmlUrl: String,
-    val owner: GitHubOwner,
-)
+    val owner: GitHubOwner)
 
 @Serializable
 data class GitHubOwner(
     val login: String,
-    @SerialName("avatar_url") val avatarUrl: String,
-)
+    @SerialName("avatar_url") val avatarUrl: String)
 
 @Serializable
 data class GitHubRelease(
@@ -60,14 +57,12 @@ data class GitHubRelease(
     val assets: List<GitHubAsset>,
     @SerialName("html_url") val htmlUrl: String,
     val prerelease: Boolean = false,
-    val draft: Boolean = false,
-)
+    val draft: Boolean = false)
 
 @Serializable
 data class GitHubAsset(
     val name: String,
-    @SerialName("browser_download_url") val browserDownloadUrl: String,
-)
+    @SerialName("browser_download_url") val browserDownloadUrl: String)
 
 class GitHubPluginRepository {
     private val httpClient = HttpClient {

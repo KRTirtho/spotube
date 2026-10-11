@@ -282,8 +282,7 @@ class DeviceAudioPlayerQueueTest {
         val queue = createQueue()
         fakePlayer.setPlaylist(listOf(
             MediaItem("T1", "A1", "Al1", 100.milliseconds, "", "url1", StreamProtocol.PROGRESSIVE),
-            MediaItem("T2", "A2", "Al2", 200.milliseconds, "", "url2", StreamProtocol.PROGRESSIVE),
-        ))
+            MediaItem("T2", "A2", "Al2", 200.milliseconds, "", "url2", StreamProtocol.PROGRESSIVE)))
 
         queue.jumpTo(1, autoPlay = true)
 
@@ -296,8 +295,7 @@ class DeviceAudioPlayerQueueTest {
     fun `jumpTo without autoPlay does not call play`() = runTest {
         val queue = createQueue()
         fakePlayer.setPlaylist(listOf(
-            MediaItem("T1", "A1", "Al1", 100.milliseconds, "", "url1", StreamProtocol.PROGRESSIVE),
-        ))
+            MediaItem("T1", "A1", "Al1", 100.milliseconds, "", "url1", StreamProtocol.PROGRESSIVE)))
 
         queue.jumpTo(0, autoPlay = false)
 
@@ -309,8 +307,7 @@ class DeviceAudioPlayerQueueTest {
     fun `jumpTo clamps out of range index`() = runTest {
         val queue = createQueue()
         fakePlayer.setPlaylist(listOf(
-            MediaItem("T1", "A1", "Al1", 100.milliseconds, "", "url1", StreamProtocol.PROGRESSIVE),
-        ))
+            MediaItem("T1", "A1", "Al1", 100.milliseconds, "", "url1", StreamProtocol.PROGRESSIVE)))
 
         queue.jumpTo(999)
 

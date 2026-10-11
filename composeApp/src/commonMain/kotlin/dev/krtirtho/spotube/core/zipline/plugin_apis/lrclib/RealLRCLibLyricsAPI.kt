@@ -45,8 +45,7 @@ data class LRCLibResponse(
     val artistName: String,
     val albumName: String,
     val plainLyrics: String?,
-    val syncedLyrics: String?,
-)
+    val syncedLyrics: String?)
 
 class RealLRCLibLyricsAPI : LyricsAPI {
     private val httpClient = HttpClient {
@@ -95,7 +94,6 @@ class RealLRCLibLyricsAPI : LyricsAPI {
                 val text = line.substring(match.range.last + 1).trim()
                 LyricsLine(time = timeMs, text = text)
             },
-            plainLyrics = response.plainLyrics,
-        )
+            plainLyrics = response.plainLyrics)
     }
 }

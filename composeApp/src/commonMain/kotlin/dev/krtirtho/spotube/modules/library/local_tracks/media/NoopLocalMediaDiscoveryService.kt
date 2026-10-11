@@ -24,8 +24,7 @@ class NoopLocalMediaDiscoveryService : LocalMediaDiscoveryService {
 
     override fun observeChanges(
         roots: List<String>,
-        onChanged: LocalMediaChangeCallback,
-    ): LocalMediaObservation? {
+        onChanged: LocalMediaChangeCallback): LocalMediaObservation? {
         return null
     }
 }

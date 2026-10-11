@@ -119,15 +119,13 @@ sealed class RemoteControlEvent {
         val currentTrackTitle: String?,
         val currentTrackArtists: String?,
         val currentTrackAlbum: String?,
-        val currentTrackCoverUrl: String?,
-    ) : RemoteControlEvent()
+        val currentTrackCoverUrl: String?) : RemoteControlEvent()
 
     @Serializable
     @SerialName("queueUpdated")
     data class QueueUpdated(
         val entries: List<RemoteQueueEntry>,
-        val currentIndex: Int,
-    ) : RemoteControlEvent()
+        val currentIndex: Int) : RemoteControlEvent()
 
     @Serializable
     @SerialName("ack")
@@ -146,5 +144,4 @@ data class RemoteQueueEntry(
     val artists: String,
     val album: String?,
     val coverUrl: String?,
-    val durationMs: Long,
-)
+    val durationMs: Long)

@@ -60,8 +60,7 @@ class LocalServer(
     private val streamingUrlRepository: StreamingUrlRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val cacheManager: CacheManager,
-    private val remoteControlHandler: RemoteControlHandler,
-) : KoinComponent {
+    private val remoteControlHandler: RemoteControlHandler) : KoinComponent {
 
     val logger by injectLogger<LocalServer>()
     private val httpClient = HttpClient {
@@ -99,8 +98,7 @@ class LocalServer(
             audioPlayerQueue = audioPlayerQueue,
             isCachingEnabled = { cachedCacheEnabled.value },
             activePort = { activePort.value },
-            scope = scope,
-        )
+            scope = scope)
     }
 
     companion object {

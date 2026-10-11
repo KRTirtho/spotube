@@ -17,6 +17,10 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.fadeIn
@@ -35,11 +39,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.FilledTonalIconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -76,8 +78,7 @@ fun LikedTracksCard(
     modifier: Modifier = Modifier,
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     playbackHelper: CollectionPlaybackHelper = koinInject(),
-    navigationCommands: NavigationCommands = koinInject(),
-) {
+    navigationCommands: NavigationCommands = koinInject()) {
     val scope = rememberCoroutineScope()
     val interactionSource = remember { MutableInteractionSource() }
     val isHovered by interactionSource.collectIsHoveredAsState()
@@ -92,8 +93,7 @@ fun LikedTracksCard(
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = { navigationCommands.navigateTo(Routes.SavedTracks) })
             .width(160.dp)
-            .hoverable(interactionSource = interactionSource),
-    ) {
+            .hoverable(interactionSource = interactionSource)) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 androidx.compose.foundation.Image(
@@ -106,10 +106,8 @@ fun LikedTracksCard(
                         .sharedElementOrNone(
                             key = "saved_tracks_art",
                             sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                        ),
-                    contentScale = ContentScale.Crop,
-                )
+                            animatedVisibilityScope = animatedVisibilityScope),
+                    contentScale = ContentScale.Crop)
 
                 Box(
                     modifier = Modifier.fillMaxWidth().aspectRatio(1f).padding(8.dp),
@@ -120,22 +118,24 @@ fun LikedTracksCard(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.padding(4.dp)
                         ) {
-                            FilledTonalIconButton(
+                            MillenniumIconButton(
                                 onClick = { scope.launch { playbackHelper.addSavedTracksToQueue() } },
-                                modifier = Modifier.size(30.dp)
+                                modifier = Modifier.size(30.dp),
+                                style = MillenniumIconButtonStyle.Secondary
                             ) {
-                                Icon(
+                                MillenniumIcon(
                                     imageVector = Iconsax.IconsaxAddSquare,
                                     contentDescription = "Add to queue",
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            FilledIconButton(
+                            MillenniumIconButton(
                                 onClick = { scope.launch { playbackHelper.playSavedTracks() } },
-                                modifier = Modifier.size(30.dp)
+                                modifier = Modifier.size(30.dp),
+                                style = MillenniumIconButtonStyle.Primary
                             ) {
-                                Icon(
+                                MillenniumIcon(
                                     imageVector = if (isPlaying) {
                                         Iconsax.IconsaxPauseCircle
                                     } else Iconsax.Play,
@@ -152,18 +152,16 @@ fun LikedTracksCard(
             ) {
                 Text(
                     text = "Liked Tracks",
-                    style = MaterialTheme.typography.titleSmall,
+                    style = AppTheme.typography.titleSmall,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = "Your saved songs",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
             }
         }
     }

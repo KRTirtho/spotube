@@ -40,8 +40,7 @@ fun AlbumCard(
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     playbackHelper: CollectionPlaybackHelper = koinInject(),
     navigationCommands: NavigationCommands = koinInject(),
-    remotePlaybackController: RemotePlaybackController = koinInject(),
-) {
+    remotePlaybackController: RemotePlaybackController = koinInject()) {
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
 
     PlayableCard(
@@ -57,17 +56,14 @@ fun AlbumCard(
             remotePlaybackController.requestCollectionPlay(
                 RemoteCollectionType.Album,
                 album.id,
-                album.title,
-            )
+                album.title)
         },
         onAddToQueue = {
             remotePlaybackController.requestCollectionAddToQueue(
                 RemoteCollectionType.Album,
                 album.id,
-                album.title,
-            )
+                album.title)
         },
         modifier = modifier.width(160.dp),
-        sharedElementKey = "album_art_${album.id}",
-    )
+        sharedElementKey = "album_art_${album.id}")
 }

@@ -35,7 +35,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeScreenRepository(
     private val pluginManager: PluginManager

@@ -35,8 +35,7 @@ import org.jetbrains.compose.resources.stringResource
 internal fun LazyListScope.languageRegionSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
-    includeHeader: Boolean = true,
-) {
+    includeHeader: Boolean = true) {
     if (includeHeader) {
         settingsSectionHeader(Res.string.settings_section_language_region)
     }
@@ -65,8 +64,7 @@ internal fun LazyListScope.languageRegionSection(
                             copy(language = value)
                         }
                     },
-                    filter = { item, query -> item.label.contains(query, ignoreCase = true) },
-                )
+                    filter = { item, query -> item.label.contains(query, ignoreCase = true) })
             },
             {
                 SelectionSettingCard(
@@ -91,10 +89,8 @@ internal fun LazyListScope.languageRegionSection(
                             copy(country = value)
                         }
                     },
-                    filter = { item, query -> item.label.contains(query, ignoreCase = true) },
-                )
-            },
-        )
+                    filter = { item, query -> item.label.contains(query, ignoreCase = true) })
+            })
     )
 }
 

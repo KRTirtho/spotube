@@ -49,22 +49,19 @@ import org.koin.core.component.KoinComponent
 
 data class PluginAuthState(
     val requiresAuth: Boolean = false,
-    val isLoggedIn: Boolean = false,
-)
+    val isLoggedIn: Boolean = false)
 
 data class PluginListItem(
     val plugin: PluginEntry,
     val isSelected: Boolean,
     val authState: PluginAuthState,
-    val logoPath: Path?,
-)
+    val logoPath: Path?)
 
 data class AbilitySelection(
     val ability: PluginAbility,
     val plugins: List<PluginEntry>,
     val selectedPlugin: PluginEntry?,
-    val pluginLogoPaths: Map<String, Path?> = emptyMap(),
-)
+    val pluginLogoPaths: Map<String, Path?> = emptyMap())
 
 data class PluginDiscoverState(
     val repos: List<GitHubRepo> = emptyList(),
@@ -74,8 +71,7 @@ data class PluginDiscoverState(
     val isLoadingMore: Boolean = false,
     val error: String? = null,
     val installingRepoId: Long? = null,
-    val isInitialLoaded: Boolean = false,
-)
+    val isInitialLoaded: Boolean = false)
 
 sealed interface UrlError {
     data object Empty : UrlError
@@ -105,8 +101,7 @@ sealed interface PluginUiState {
         val installDialogRepo: GitHubRepo? = null,
         val releases: List<GitHubRelease> = emptyList(),
         val isLoadingReleases: Boolean = false,
-        val discover: PluginDiscoverState = PluginDiscoverState(),
-    ) : PluginUiState
+        val discover: PluginDiscoverState = PluginDiscoverState()) : PluginUiState
 }
 
 private data class PluginManagerSnapshot(
@@ -116,8 +111,7 @@ private data class PluginManagerSnapshot(
     val audioPlugins: List<PluginEntry>,
     val lyricsPlugins: List<PluginEntry>,
     val scrobblePlugins: List<PluginEntry>,
-    val activeServices: Map<PluginAbility, PluginService?>?,
-)
+    val activeServices: Map<PluginAbility, PluginService?>?)
 
 private data class PluginScreenState(
     val onboardingDiscover: Boolean = true,
@@ -133,14 +127,12 @@ private data class PluginScreenState(
     val installDialogRepo: GitHubRepo? = null,
     val releases: List<GitHubRelease> = emptyList(),
     val isLoadingReleases: Boolean = false,
-    val discover: PluginDiscoverState = PluginDiscoverState(),
-)
+    val discover: PluginDiscoverState = PluginDiscoverState())
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class PluginViewModel(
     private val pluginManager: PluginManager,
-    private val webViewController: WebViewController,
-) : ViewModel(), KoinComponent {
+    private val webViewController: WebViewController) : ViewModel(), KoinComponent {
 
     private val logger by injectLogger<PluginViewModel>()
     private val gitHubRepo = GitHubPluginRepository()
@@ -172,8 +164,7 @@ class PluginViewModel(
     private class PaginationInfo(
         var currentPage: Int = 1,
         var hasMore: Boolean = true,
-        var totalCount: Int = 0,
-    )
+        var totalCount: Int = 0)
 
     @Suppress("UNCHECKED_CAST")
     private val pluginManagerSnapshot: StateFlow<PluginManagerSnapshot> = combine(
@@ -183,8 +174,7 @@ class PluginViewModel(
         pluginManager.audioPlugins,
         pluginManager.lyricsPlugins,
         pluginManager.scrobblePlugins,
-        pluginManager.ziplineServices,
-    ) { values ->
+        pluginManager.ziplineServices) { values ->
         PluginManagerSnapshot(
             state = values[0] as PluginManagerStates,
             pendingPlugin = values[1] as PluginManager.PendingPlugin?,
@@ -192,8 +182,7 @@ class PluginViewModel(
             audioPlugins = values[3] as List<PluginEntry>,
             lyricsPlugins = values[4] as List<PluginEntry>,
             scrobblePlugins = values[5] as List<PluginEntry>,
-            activeServices = values[6] as Map<PluginAbility, PluginService?>?,
-        )
+            activeServices = values[6] as Map<PluginAbility, PluginService?>?)
     }.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
@@ -204,8 +193,7 @@ class PluginViewModel(
             audioPlugins = emptyList(),
             lyricsPlugins = emptyList(),
             scrobblePlugins = emptyList(),
-            activeServices = null,
-        )
+            activeServices = null)
     )
 
     private val pluginLogoPaths: StateFlow<Map<String, Path?>> = pluginManager.state
@@ -237,8 +225,7 @@ class PluginViewModel(
         pluginManagerSnapshot,
         _screenState,
         pluginAuthStates,
-        pluginLogoPaths,
-    ) { snapshot, screen, authStates, logoPaths ->
+        pluginLogoPaths) { snapshot, screen, authStates, logoPaths ->
         when (val state = snapshot.state) {
             is PluginManagerStates.Loading -> PluginUiState.Loading
             is PluginManagerStates.Data -> PluginUiState.Data(
@@ -248,35 +235,29 @@ class PluginViewModel(
                         plugin = plugin,
                         isSelected = state.selectedPlugins.containsValue(plugin),
                         authState = authStates[plugin.id] ?: PluginAuthState(),
-                        logoPath = logoPaths[plugin.id],
-                    )
+                        logoPath = logoPaths[plugin.id])
                 },
                 abilitySelections = listOf(
                     AbilitySelection(
                         PluginAbility.METADATA,
                         snapshot.metadataPlugins,
                         state.selectedPlugins[PluginAbility.METADATA],
-                        logoPaths,
-                    ),
+                        logoPaths),
                     AbilitySelection(
                         PluginAbility.AUDIO,
                         snapshot.audioPlugins,
                         state.selectedPlugins[PluginAbility.AUDIO],
-                        logoPaths,
-                    ),
+                        logoPaths),
                     AbilitySelection(
                         PluginAbility.LYRICS,
                         snapshot.lyricsPlugins,
                         state.selectedPlugins[PluginAbility.LYRICS],
-                        logoPaths,
-                    ),
+                        logoPaths),
                     AbilitySelection(
                         PluginAbility.SCROBBLE,
                         snapshot.scrobblePlugins,
                         state.selectedPlugins[PluginAbility.SCROBBLE],
-                        logoPaths,
-                    ),
-                ),
+                        logoPaths)),
                 pendingPlugin = snapshot.pendingPlugin,
                 pendingPluginLogoPath = snapshot.pendingPlugin?.entry?.id?.let { getLogoPath(it) },
                 urlInput = screen.urlInput,
@@ -291,8 +272,7 @@ class PluginViewModel(
                 installDialogRepo = screen.installDialogRepo,
                 releases = screen.releases,
                 isLoadingReleases = screen.isLoadingReleases,
-                discover = screen.discover,
-            )
+                discover = screen.discover)
         }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), PluginUiState.Loading)
 
@@ -373,8 +353,7 @@ class PluginViewModel(
                     it.copy(
                         urlError = e.message?.let { message -> UrlError.Message(message) }
                             ?: UrlError.DownloadFailed,
-                        isLoadingUrl = false,
-                    )
+                        isLoadingUrl = false)
                 }
             }
         }
@@ -403,8 +382,7 @@ class PluginViewModel(
         _screenState.update {
             it.copy(
                 showPluginInfo = plugin,
-                pluginInfoLogoPath = getLogoPath(plugin.id),
-            )
+                pluginInfoLogoPath = getLogoPath(plugin.id))
         }
     }
 
@@ -417,8 +395,7 @@ class PluginViewModel(
             it.copy(
                 showPluginSupport = plugin,
                 isLoadingSupport = true,
-                supportText = null,
-            )
+                supportText = null)
         }
         viewModelScope.launch {
             val service = findServiceForPlugin(plugin.id)
@@ -442,8 +419,7 @@ class PluginViewModel(
             it.copy(
                 showPluginSupport = null,
                 supportText = null,
-                isLoadingSupport = false,
-            )
+                isLoadingSupport = false)
         }
     }
 
@@ -452,8 +428,7 @@ class PluginViewModel(
             it.copy(
                 installDialogRepo = repo,
                 isLoadingReleases = true,
-                releases = emptyList(),
-            )
+                releases = emptyList())
         }
         viewModelScope.launch {
             runCatching {
@@ -549,8 +524,7 @@ class PluginViewModel(
                             currentPage = 1,
                             hasMore = _paginationInfo.hasMore,
                             isLoading = false,
-                            isInitialLoaded = true,
-                        )
+                            isInitialLoaded = true)
                     )
                 }
             }.onFailure { e ->
@@ -560,8 +534,7 @@ class PluginViewModel(
                         discover = it.discover.copy(
                             isLoading = false,
                             error = e.message,
-                            isInitialLoaded = true,
-                        )
+                            isInitialLoaded = true)
                     )
                 }
             }
@@ -588,8 +561,7 @@ class PluginViewModel(
                             repos = filterInstalledRepos(_allRepos),
                             currentPage = nextPage,
                             hasMore = _paginationInfo.hasMore,
-                            isLoadingMore = false,
-                        )
+                            isLoadingMore = false)
                     )
                 }
             }.onFailure { e ->
@@ -598,8 +570,7 @@ class PluginViewModel(
                     it.copy(
                         discover = it.discover.copy(
                             isLoadingMore = false,
-                            error = e.message,
-                        )
+                            error = e.message)
                     )
                 }
             }

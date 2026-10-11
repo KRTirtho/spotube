@@ -1,13 +1,15 @@
 package dev.krtirtho.spotube.modules.settings
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Text
+import com.composeunstyled.Text
+import org.spotube.millennium.composables.MillenniumButton
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -15,8 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.modules.settings.components.SwitchSettingCard
 import dev.krtirtho.spotube.modules.settings.components.TextInputSettingCard
@@ -57,31 +57,24 @@ import spotube.composeapp.generated.resources.settings_section_jam
 
 @Composable
 fun JamSettingsScreen(
-    viewModel: JamSettingsViewModel = koinViewModel(),
-) {
-    BaseScaffold(
-        topBar = {
-            ApplicationMainBar(
-                title = { Text(stringResource(Res.string.settings_section_jam)) },
-            )
-        },
-    ) { innerPadding ->
+    viewModel: JamSettingsViewModel = koinViewModel()) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        ApplicationMainBar(
+            title = { Text(stringResource(Res.string.settings_section_jam)) })
         JamSettingsContent(
             viewModel = viewModel,
-            modifier = Modifier.padding(innerPadding),
-        )
+            modifier = Modifier.weight(1f))
     }
 }
 
 /**
- * The Group Jam settings UI without its own [BaseScaffold] / app bar, so it can be embedded
+ * The Group Jam settings UI without its own app bar, so it can be embedded
  * as a tab in the large-screen settings layout as well as hosted by [JamSettingsScreen].
  */
 @Composable
 internal fun JamSettingsContent(
     viewModel: JamSettingsViewModel = koinViewModel(),
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val broker = uiState.settings.jamBroker
     val shellBottomInset = LocalAppShellBottomInset.current
@@ -91,14 +84,12 @@ internal fun JamSettingsContent(
 
     Box(
         modifier = modifier
-            .fillMaxSize(),
-    ) {
+            .fillMaxSize()) {
         LazyColumn(
             modifier = Modifier
                 .widthIn(max = 1280.dp)
                 .align(Alignment.TopCenter),
-            contentPadding = contentPadding,
-        ) {
+            contentPadding = contentPadding) {
             settingsSectionHeader(Res.string.settings_jam_section_connection)
             settingsSectionCard(
                 items = listOf(
@@ -116,8 +107,7 @@ internal fun JamSettingsContent(
                                         )
                                     )
                                 }
-                            },
-                        )
+                            })
                     },
                     {
                         val errorWholeNumber =
@@ -146,8 +136,7 @@ internal fun JamSettingsContent(
                                     Iconsax.CustomServer,
                                     stringResource(Res.string.settings_jam_broker_port)
                                 )
-                            },
-                        )
+                            })
                     },
                     {
                         SwitchSettingCard(
@@ -162,11 +151,8 @@ internal fun JamSettingsContent(
                                     Iconsax.IconsaxWifiSquare,
                                     stringResource(Res.string.settings_jam_broker_tls)
                                 )
-                            },
-                        )
-                    },
-                ),
-            )
+                            })
+                    }))
             settingsSectionHeader(Res.string.settings_jam_section_credentials)
             settingsSectionCard(
                 items = listOf(
@@ -185,8 +171,7 @@ internal fun JamSettingsContent(
                                     Iconsax.User,
                                     stringResource(Res.string.settings_jam_broker_username)
                                 )
-                            },
-                        )
+                            })
                     },
                     {
                         TextInputSettingCard(
@@ -203,11 +188,8 @@ internal fun JamSettingsContent(
                                     Iconsax.IconsaxEye,
                                     stringResource(Res.string.settings_jam_broker_password)
                                 )
-                            },
-                        )
-                    },
-                ),
-            )
+                            })
+                    }))
             settingsSectionHeader(Res.string.settings_jam_section_identity)
             settingsSectionCard(
                 items = listOf(
@@ -227,11 +209,8 @@ internal fun JamSettingsContent(
                                     Iconsax.IconsaxTag,
                                     stringResource(Res.string.settings_jam_broker_client_id)
                                 )
-                            },
-                        )
-                    },
-                ),
-            )
+                            })
+                    }))
             settingsSectionHeader(Res.string.settings_jam_section_diagnostics)
             settingsSectionCard(
                 items = listOf(
@@ -239,8 +218,7 @@ internal fun JamSettingsContent(
                         val canTest = broker.host.isNotBlank() && !uiState.isTesting
                         val resultMessage = uiState.testResult?.fold(
                             onSuccess = { it },
-                            onFailure = { "Failed: ${it.message ?: "Connection failed"}" },
-                        )
+                            onFailure = { "Failed: ${it.message ?: "Connection failed"}" })
 
                         SettingCardItem(
                             enabled = canTest,
@@ -253,35 +231,28 @@ internal fun JamSettingsContent(
                             icon = {
                                 SettingsItemIcon(
                                     Iconsax.IconsaxInformation,
-                                    stringResource(Res.string.settings_jam_broker_test),
-                                )
+                                    stringResource(Res.string.settings_jam_broker_test))
                             },
                             trailingContent = {
-                                PrimaryButton(
+                                MillenniumButton(
                                     onClick = viewModel::testConnection,
-                                    enabled = canTest,
-                                ) {
+                                    enabled = canTest) {
                                     Text(
                                         if (uiState.isTesting) {
                                             stringResource(Res.string.settings_jam_broker_testing)
                                         } else {
                                             stringResource(Res.string.settings_jam_broker_test)
-                                        },
-                                    )
+                                        })
                                 }
                             },
-                            onClick = viewModel::testConnection,
-                        )
-                    },
-                ),
-            )
+                            onClick = viewModel::testConnection)
+                    }))
             item {
                 Text(
                     text = stringResource(Res.string.settings_jam_broker_placeholder_note),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 4.dp),
-                )
+                        .padding(horizontal = 16.dp, vertical = 4.dp))
             }
         }
     }

@@ -17,6 +17,10 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -34,11 +38,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
+import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -83,8 +86,7 @@ import org.koin.compose.koinInject
 @Composable
 fun FeaturedCarousel(
     items: List<MetadataBrowseItem>,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val filteredItems = remember(items) {
         items.filter { it is MetadataBrowseItem.Album || it is MetadataBrowseItem.Playlist || it is MetadataBrowseItem.Track }
     }
@@ -92,15 +94,13 @@ fun FeaturedCarousel(
     if (filteredItems.isEmpty()) return
 
     FeaturedCarouselContent(
-        items = filteredItems,
-    )
+        items = filteredItems)
 }
 
 @Composable
 private fun FeaturedCarouselContent(
     items: List<MetadataBrowseItem>,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val centerIndex = items.size / 2
     var selectedIndex by remember { mutableIntStateOf(centerIndex) }
     val state = rememberCoverflowState(centerIndex) { index -> selectedIndex = index }
@@ -113,8 +113,7 @@ private fun FeaturedCarouselContent(
             .height(
                 if (isSmallScreen) 200.dp else 300.dp
             ),
-        contentAlignment = Alignment.Center,
-    ) {
+        contentAlignment = Alignment.Center) {
         Coverflow(
             state = state,
             params = CoverflowParams(
@@ -123,21 +122,17 @@ private fun FeaturedCarouselContent(
                 angle = 12f,
                 shift = 0.255f,
                 zoom = 0.7864f,
-                mirror = false,
-            ),
-            modifier = modifier,
-        ) {
+                mirror = false),
+            modifier = modifier) {
             items(
                 items = items,
-                key = { index: Int -> items[index].hashCode() },
-            ) { item: MetadataBrowseItem ->
+                key = { index: Int -> items[index].hashCode() }) { item: MetadataBrowseItem ->
                 FeaturedCarouselCard(
                     item = item,
                     isCentered = selectedIndex == items.indexOf(item),
                     onScrollToCenter = {
                         state.scrollToItem(items.indexOf(item))
-                    },
-                )
+                    })
             }
         }
     }
@@ -148,8 +143,7 @@ private fun FeaturedCarouselCard(
     item: MetadataBrowseItem,
     isCentered: Boolean,
     modifier: Modifier = Modifier,
-    onScrollToCenter: () -> Unit = { },
-) {
+    onScrollToCenter: () -> Unit = { }) {
     val navigationCommands = koinInject<NavigationCommands>()
     val audioPlayerQueue = koinInject<AudioPlayerQueue>()
 
@@ -204,25 +198,21 @@ private fun FeaturedCarouselCard(
                 }
             }
             .aspectRatio(1f)
-            .hazeSource(hazeState),
-    ) {
+            .hazeSource(hazeState)) {
         AsyncImage(
             model = thumbnailUrl,
             contentDescription = title,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
-        )
+            contentScale = ContentScale.Crop)
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = dimAlpha)),
-        )
+                .background(Color.Black.copy(alpha = dimAlpha)))
 
         Box(
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.BottomCenter,
-        ) {
+            contentAlignment = Alignment.BottomCenter) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -231,43 +221,35 @@ private fun FeaturedCarouselCard(
                         brush = Brush.verticalGradient(
                             colors = listOf(
                                 Color.Transparent,
-                                Color.Black.copy(alpha = 0.9f),
-                            ),
-                        ),
-                    ),
-            )
+                                Color.Black.copy(alpha = 0.9f)))))
         }
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.BottomCenter,
-    ) {
+        contentAlignment = Alignment.BottomCenter) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-        ) {
+                .padding(16.dp)) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = AppTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
                     text = subtitle,
-                    style = MaterialTheme.typography.bodySmall,
+                    style = AppTheme.typography.bodySmall,
                     color = Color.White.copy(alpha = 0.85f),
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
             }
 
             val animatedAlpha by animateFloatAsState(
@@ -306,8 +288,7 @@ private fun FeaturedPlayButton(
     navigationCommands: NavigationCommands,
     playbackHelper: CollectionPlaybackHelper = koinInject(),
     enabled: Boolean,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
 
@@ -320,7 +301,8 @@ private fun FeaturedPlayButton(
                 modifier = modifier.size(44.dp),
                 contentAlignment = Alignment.BottomEnd
             ) {
-                IconButton(
+                MillenniumIconButton(
+                    style = MillenniumIconButtonStyle.Quiet,
                     onClick = {
                         if (isPlaying) {
                             navigationCommands.navigateTo(Routes.Album(item.data.id))
@@ -330,7 +312,7 @@ private fun FeaturedPlayButton(
                     },
                     enabled = enabled
                 ) {
-                    Icon(
+                    MillenniumIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         contentDescription = null,
                         tint = Color.White
@@ -347,7 +329,8 @@ private fun FeaturedPlayButton(
                 modifier = modifier.size(44.dp),
                 contentAlignment = Alignment.BottomEnd
             ) {
-                IconButton(
+                MillenniumIconButton(
+                    style = MillenniumIconButtonStyle.Quiet,
                     onClick = {
                         if (isPlaying) {
                             navigationCommands.navigateTo(Routes.Playlist(item.data.id))
@@ -357,7 +340,7 @@ private fun FeaturedPlayButton(
                     },
                     enabled = enabled
                 ) {
-                    Icon(
+                    MillenniumIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         contentDescription = null,
                         tint = Color.White
@@ -377,20 +360,20 @@ private fun FeaturedPlayButton(
                 modifier = modifier.size(44.dp),
                 contentAlignment = Alignment.BottomEnd
             ) {
-                IconButton(
+                MillenniumIconButton(
+                    style = MillenniumIconButtonStyle.Quiet,
                     onClick = {
                         scope.launch {
                             audioPlayerQueue.load(
                                 entries = listOf(queueEntry),
                                 autoPlay = true,
                                 startPosition = 0,
-                                collectionEntry = null,
-                            )
+                                collectionEntry = null)
                         }
                     },
                     enabled = enabled
                 ) {
-                    Icon(
+                    MillenniumIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
                         contentDescription = null,
                         tint = Color.White

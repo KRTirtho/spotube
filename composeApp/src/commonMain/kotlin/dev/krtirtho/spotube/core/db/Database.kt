@@ -86,8 +86,7 @@ class Database(val paths: Paths) {
             "spotube_audio_player_queue.preferences_pb",
             "spotube_local_media.preferences_pb",
             "spotube_blacklist.preferences_pb",
-            "spotube_cookies.preferences_pb",
-        )
+            "spotube_cookies.preferences_pb")
     }
 }
 

@@ -12,13 +12,11 @@ import kotlinx.coroutines.launch
 data class JamSettingsUiState(
     val settings: UserSettings = UserSettings(),
     val isTesting: Boolean = false,
-    val testResult: Result<String>? = null,
-)
+    val testResult: Result<String>? = null)
 
 class JamSettingsViewModel(
     private val settingsRepository: SettingsRepository,
-    private val jamRoomClient: JamRoomClient,
-) : ViewModel() {
+    private val jamRoomClient: JamRoomClient) : ViewModel() {
     private val _uiState = MutableStateFlow(JamSettingsUiState())
     val uiState: StateFlow<JamSettingsUiState> = _uiState.asStateFlow()
 

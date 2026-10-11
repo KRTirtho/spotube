@@ -125,8 +125,7 @@ val navigationModule = module {
             ),
             audioPlayerQueue = get(),
             audioPlayer = get(),
-            navigationCommands = get(),
-        )
+            navigationCommands = get())
     }
     navigation<Routes.Artist> {
         ArtistScreen(
@@ -136,8 +135,7 @@ val navigationModule = module {
             ),
             audioPlayerQueue = get(),
             audioPlayer = get(),
-            navigationCommands = get(),
-        )
+            navigationCommands = get())
     }
     navigation<Routes.Album> {
         AlbumScreen(
@@ -148,8 +146,7 @@ val navigationModule = module {
             ),
             audioPlayerQueue = get(),
             audioPlayer = get(),
-            navigationCommands = get(),
-        )
+            navigationCommands = get())
     }
     navigation<Routes.Lyrics> {
         LyricsScreen(viewModel = koinViewModel())
@@ -162,8 +159,7 @@ val navigationModule = module {
             ),
             audioPlayerQueue = get(),
             audioPlayer = get(),
-            navigationCommands = get(),
-        )
+            navigationCommands = get())
     }
     navigation<Routes.Blacklist> {
         BlacklistScreen()

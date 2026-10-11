@@ -29,8 +29,7 @@ class AlternativeTracksRepository(
     private val matchedTracksRepository: TrackSourceRepository,
     private val streamingUrlRepository: StreamingUrlRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
-    private val cacheManager: CacheManager,
-) : KoinComponent {
+    private val cacheManager: CacheManager) : KoinComponent {
 
     private val logger by injectLogger<AlternativeTracksRepository>()
 

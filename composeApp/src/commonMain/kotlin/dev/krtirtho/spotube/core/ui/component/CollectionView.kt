@@ -17,18 +17,22 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -93,8 +97,7 @@ fun CollectionView(
     onAddToJam: (List<MetadataTrack>) -> Unit = {},
     trackOptionsState: (MetadataTrack) -> TrackOptionsState = { TrackOptionsState() },
     footerContent: (@Composable () -> Unit)? = null,
-    trailingContent: @Composable () -> Unit = {},
-) {
+    trailingContent: @Composable () -> Unit = {}) {
     val listState = rememberLazyListState()
     val isCollapsed by remember {
         derivedStateOf {
@@ -103,45 +106,42 @@ fun CollectionView(
         }
     }
 
-    BaseScaffold(
-        topBar = {
-            ApplicationMainBar(
-                backButton = true,
-                title = if (isCollapsed) {
-                    {
-                        CollapsedCollectionTitle(
-                            title = title,
-                            imageURL = imageURL,
-                            imageResource = imageResource,
-                        )
+    Column(modifier = Modifier.fillMaxSize()) {
+        ApplicationMainBar(
+            backButton = true,
+            title = if (isCollapsed) {
+                {
+                    CollapsedCollectionTitle(
+                        title = title,
+                        imageURL = imageURL,
+                        imageResource = imageResource)
+                }
+            } else {
+                {}
+            },
+            actions = if (isCollapsed && !isJamGuest) {
+                {
+                    MillenniumIconButton(
+                        onClick = onPlay,
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
+                            imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
+                            contentDescription = if (isPlaying) "Pause" else "Play")
                     }
-                } else {
-                    {}
-                },
-                actions = if (isCollapsed && !isJamGuest) {
-                    {
-                        IconButton(onClick = onPlay) {
-                            Icon(
-                                imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
-                                contentDescription = if (isPlaying) "Pause" else "Play",
-                            )
-                        }
-                    }
-                } else {
-                    {}
-                },
-            )
-        }
-    ) { innerPadding ->
+                }
+            } else {
+                {}
+            })
+
+        Box(modifier = Modifier.weight(1f).fillMaxSize()) {
         if (error != null && tracks.isEmpty() && !isLoading) {
             ErrorDisplay(
                 errorMessage = error,
                 onRetry = onRetry ?: {},
-                modifier = Modifier.padding(innerPadding),
-            )
+                modifier = Modifier.fillMaxSize())
         } else {
             TrackList(
-                modifier = Modifier.padding(innerPadding),
+                modifier = Modifier.fillMaxSize(),
                 state = listState,
                 headerContent = {
                     if (isLoading && tracks.isEmpty()) {
@@ -164,8 +164,7 @@ fun CollectionView(
                                 onEdit = onEdit,
                                 sharedElementKey = sharedElementKey,
                                 isJamGuest = isJamGuest,
-                                onAddToJam = { onAddToJam(tracks) },
-                            )
+                                onAddToJam = { onAddToJam(tracks) })
                         }
                     } else {
                         CollectionDetails(
@@ -186,8 +185,7 @@ fun CollectionView(
                             onEdit = onEdit,
                             sharedElementKey = sharedElementKey,
                             isJamGuest = isJamGuest,
-                            onAddToJam = { onAddToJam(tracks) },
-                        )
+                            onAddToJam = { onAddToJam(tracks) })
                     }
                 },
                 footerContent = footerContent,
@@ -211,11 +209,11 @@ fun CollectionView(
                 onBulkAddToJam = onBulkAddToJam,
                 isInJam = isInJam,
                 isJamGuest = isJamGuest,
-                trackOptionsState = trackOptionsState,
-            )
+                trackOptionsState = trackOptionsState)
         }
 
         trailingContent()
+        }
     }
 }
 
@@ -223,46 +221,39 @@ fun CollectionView(
 private fun CollapsedCollectionTitle(
     title: String,
     imageURL: String,
-    imageResource: DrawableResource? = null,
-) {
+    imageResource: DrawableResource? = null) {
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
+        verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
                 .size(36.dp)
                 .clip(RoundedCornerShape(6.dp))
                 .shimmerApply(),
-            contentAlignment = Alignment.Center,
-        ) {
+            contentAlignment = Alignment.Center) {
             if (imageURL.isNotBlank()) {
                 AsyncImage(
                     model = imageURL,
                     contentDescription = title,
                     modifier = Modifier.size(36.dp),
-                    contentScale = ContentScale.Crop,
-                )
+                    contentScale = ContentScale.Crop)
             } else if (imageResource != null) {
                 androidx.compose.foundation.Image(
                     painter = painterResource(imageResource),
                     contentDescription = title,
                     modifier = Modifier.size(36.dp),
-                    contentScale = ContentScale.Crop,
-                )
+                    contentScale = ContentScale.Crop)
             } else {
                 Text(
                     text = title.take(1).ifBlank { "?" }.uppercase(),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colors.onSurfaceVariant)
             }
         }
         TextWithShimmer(
             text = title,
-            style = MaterialTheme.typography.titleSmall,
+            style = AppTheme.typography.titleSmall,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.padding(start = 10.dp),
-        )
+            modifier = Modifier.padding(start = 10.dp))
     }
 }

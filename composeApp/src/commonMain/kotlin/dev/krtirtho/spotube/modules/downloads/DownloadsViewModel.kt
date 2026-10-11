@@ -25,13 +25,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 
 class DownloadsViewModel(
-    private val downloadManager: DownloadManager,
-) : ViewModel() {
+    private val downloadManager: DownloadManager) : ViewModel() {
     val downloads: StateFlow<List<DownloadItem>> = downloadManager.downloadsFlow.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        emptyList(),
-    )
+        emptyList())
 
     fun downloadTrack(track: MetadataTrack) {
         downloadManager.enqueue(track)

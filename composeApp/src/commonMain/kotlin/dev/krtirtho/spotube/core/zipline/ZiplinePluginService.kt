@@ -86,7 +86,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.reflect.KClass
 
-
 /**
  * Manages the lifecycle of a Zipline plugin.
  * It runs everything on its own dispatcher (different thread) as per Zipline's requirements.
@@ -102,8 +101,7 @@ import kotlin.reflect.KClass
 open class ZiplinePluginService(
     val applicationName: String,
     private val manifestUrl: String,
-    private val pluginInfo: PluginEntry,
-) : PluginService, KoinComponent {
+    private val pluginInfo: PluginEntry) : PluginService, KoinComponent {
 
     override val pluginId: String = pluginInfo.id
 
@@ -280,8 +278,7 @@ open class ZiplinePluginService(
                 val result = ziplineLoader.loadOnce(
                     applicationName = applicationName,
                     manifestUrl = manifestUrl,
-                    freshnessChecker = DefaultFreshnessCheckerNotFresh,
-                )
+                    freshnessChecker = DefaultFreshnessCheckerNotFresh)
                 when (result) {
                     is LoadResult.Success -> {
                         logger.d { "[$applicationName] start(): loadOnce succeeded, consuming services" }

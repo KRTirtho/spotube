@@ -122,8 +122,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             ) {
                 val durationMs = mediaPlayer.status().length()
                 _bufferingPosition.tryEmit(
-                    if (durationMs > 0) (durationMs * (newCache / 100f)).toLong().milliseconds else Duration.ZERO,
-                )
+                    if (durationMs > 0) (durationMs * (newCache / 100f)).toLong().milliseconds else Duration.ZERO)
                 _playerState.tryEmit(if (newCache < 100f) PlayerState.BUFFERING else PlayerState.READY)
             }
 
@@ -185,8 +184,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
 
             override fun nextItem(
                 mediaListPlayer: uk.co.caprica.vlcj.player.list.MediaListPlayer,
-                item: uk.co.caprica.vlcj.media.MediaRef,
-            ) {
+                item: uk.co.caprica.vlcj.media.MediaRef) {
                 lock.withLock {
                     val targetIndex = pendingNextIndex ?: run {
                         val currentMrl = runCatching {

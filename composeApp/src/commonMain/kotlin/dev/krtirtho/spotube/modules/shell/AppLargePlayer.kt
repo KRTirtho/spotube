@@ -17,6 +17,13 @@
 
 package dev.krtirtho.spotube.modules.shell
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumDropdownMenu
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumSlider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,13 +40,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -57,6 +61,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
+import com.composeunstyled.AnchorSide
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.HazeColorEffect
 import dev.chrisbanes.haze.blur.blurEffect
@@ -69,15 +74,6 @@ import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
-import dev.krtirtho.spotube.core.ui.base.IconButton
-import dev.krtirtho.spotube.core.ui.base.Slider
-import dev.krtirtho.spotube.core.ui.base.SurfaceRole
-import dev.krtirtho.spotube.core.ui.base.VariableIconButton
-import dev.krtirtho.spotube.core.ui.base.VariableIconButtonVariant
-import dev.krtirtho.spotube.core.ui.base.baseSurfaceTexture
-import dev.krtirtho.spotube.core.ui.base.copyShape
-import dev.krtirtho.spotube.core.ui.base.invertedButtonStyle
 import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
@@ -114,7 +110,6 @@ import spotube.composeapp.generated.resources.player_sleep_timer
 import spotube.composeapp.generated.resources.player_track_details
 import kotlin.time.Duration.Companion.milliseconds
 
-
 // The main player on large screens shown at the bottom of the screen permanently. It should be
 // below the sidebar. And should be similarly give a floating vibe with a translucent background
 // just like the AppBottombar.
@@ -138,7 +133,7 @@ fun AppLargePlayer(
     savedTracksViewModel: SavedTracksViewModel = koinViewModel<SavedTracksViewModel>(
         key = SAVED_TRACKS_COLLECTION_ID,
         parameters = { parametersOf() }
-    ),
+    )
 ) {
     val playerUiState = rememberPlayerUiState(audioPlayer, audioPlayerQueue)
     val jamRoomService: JamRoomService = koinInject()
@@ -214,19 +209,13 @@ fun AppLargePlayer(
 
     // A translucent tint (not near-opaque) so the blurred art behind still reads through, and
     // the material's watery caustics sit on top of it.
-    val surfaceTint = MaterialTheme.colorScheme.surface.copy(alpha = 0.6f)
+    val surfaceTint = AppTheme.colors.surface.copy(alpha = 0.6f)
 
-    Surface(
+    Column(
         modifier = modifier
-            .windowInsetsPadding(WindowInsets.navigationBars),
-        color = Color.Transparent,
-        shadowElevation = 0.dp,
+            .windowInsetsPadding(WindowInsets.navigationBars)
     ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            color = Color.Gray,
-            thickness = 1.dp,
-        )
+        MillenniumSeparator(modifier = Modifier.fillMaxWidth())
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -238,7 +227,6 @@ fun AppLargePlayer(
                         )
                     }
                 }
-                .baseSurfaceTexture(SurfaceRole.PrimaryBackground)
         ) {
             Row(
                 modifier = Modifier
@@ -255,26 +243,26 @@ fun AppLargePlayer(
                         modifier = Modifier
                             .size(52.dp)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                            .background(AppTheme.colors.surfaceContainerHighest)
                     ) {
                         AsyncImage(
                             model = coverModel,
                             contentDescription = playerUiState.title,
                             modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Crop
                         )
                     }
                     Column(modifier = Modifier.padding(start = 12.dp)) {
                         Text(
                             text = playerUiState.title,
-                            style = MaterialTheme.typography.bodyLarge,
+                            style = AppTheme.typography.bodyLarge,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                         Text(
                             text = playerUiState.artists,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = AppTheme.typography.bodySmall,
+                            color = AppTheme.colors.onSurfaceVariant,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -282,7 +270,7 @@ fun AppLargePlayer(
                     Spacer(modifier = Modifier.width(10.dp))
                     PlayerHeartButton(
                         audioPlayerQueue = audioPlayerQueue,
-                        savedTracksViewModel = savedTracksViewModel,
+                        savedTracksViewModel = savedTracksViewModel
                     )
                 }
 
@@ -290,7 +278,7 @@ fun AppLargePlayer(
                     modifier = Modifier.weight(1.1f),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Slider(
+                    MillenniumSlider(
                         value = seekProgress,
                         onValueChange = {
                             seekProgress = it
@@ -301,7 +289,8 @@ fun AppLargePlayer(
                             onSeekFinished()
                         },
                         enabled = playerUiState.seekDuration.inWholeMilliseconds > 0L,
-                        modifier = Modifier.fillMaxWidth(),
+                        label = "Seek",
+                        modifier = Modifier.fillMaxWidth()
                     )
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -310,13 +299,13 @@ fun AppLargePlayer(
                     ) {
                         Text(
                             text = formatPlayerTime(playerUiState.position),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = AppTheme.typography.labelSmall,
+                            color = AppTheme.colors.onSurfaceVariant
                         )
                         Text(
                             text = formatPlayerTime(playerUiState.displayDuration),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            style = AppTheme.typography.labelSmall,
+                            color = AppTheme.colors.onSurfaceVariant
                         )
                     }
                     Row(
@@ -324,44 +313,50 @@ fun AppLargePlayer(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        VariableIconButton(
+                        MillenniumIconButton(
                             onClick = ::onShuffleToggle,
                             enabled = !isJamGuest,
-                            variant = if (playerUiState.isShuffling) VariableIconButtonVariant.Outline else VariableIconButtonVariant.Ghost
+                            style = if (playerUiState.isShuffling) MillenniumIconButtonStyle.Secondary else MillenniumIconButtonStyle.Quiet
                         ) {
-                            Icon(
+                            MillenniumIcon(
                                 Iconsax.IconsaxShuffle,
                                 contentDescription = if (playerUiState.isShuffling) "Disable shuffle" else "Enable shuffle",
                                 tint = if (playerUiState.isShuffling) {
-                                    MaterialTheme.colorScheme.primary
+                                    AppTheme.colors.primary
                                 } else {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                    AppTheme.colors.onSurfaceVariant
                                 }
                             )
                         }
-                        GhostIconButton(onClick = ::onSkipPrevious, enabled = !isJamGuest) {
-                            Icon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
-                        }
-                        IconButton(
-                            onClick = ::onPlayPause,
-                            theme = invertedButtonStyle().copyShape(CircleShape),
-                            modifier = Modifier
-                                .size(50.dp),
+                        MillenniumIconButton(
+                            onClick = ::onSkipPrevious,
+                            enabled = !isJamGuest,
+                            style = MillenniumIconButtonStyle.Quiet
                         ) {
-                            Icon(
+                            MillenniumIcon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
+                        }
+                        MillenniumIconButton(
+                            onClick = ::onPlayPause,
+                            style = MillenniumIconButtonStyle.Primary
+                        ) {
+                            MillenniumIcon(
                                 if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                                contentDescription = if (playerUiState.isPlaying) "Pause" else "Play or pause",
+                                contentDescription = if (playerUiState.isPlaying) "Pause" else "Play or pause"
                             )
                         }
-                        GhostIconButton(onClick = ::onSkipNext, enabled = !isJamGuest) {
-                            Icon(Iconsax.IconsaxNext, contentDescription = "Next")
+                        MillenniumIconButton(
+                            onClick = ::onSkipNext,
+                            enabled = !isJamGuest,
+                            style = MillenniumIconButtonStyle.Quiet
+                        ) {
+                            MillenniumIcon(Iconsax.IconsaxNext, contentDescription = "Next")
                         }
-                        VariableIconButton(
+                        MillenniumIconButton(
                             onClick = ::onLoopToggle,
                             enabled = !isJamGuest,
-                            variant = if (playerUiState.loopState == LoopState.NONE) VariableIconButtonVariant.Ghost else VariableIconButtonVariant.Outline
+                            style = if (playerUiState.loopState == LoopState.NONE) MillenniumIconButtonStyle.Quiet else MillenniumIconButtonStyle.Secondary
                         ) {
-                            Icon(
+                            MillenniumIcon(
                                 imageVector = when (playerUiState.loopState) {
                                     LoopState.NONE -> Iconsax.IconsaxRepeateMusic
                                     LoopState.ONE -> Iconsax.IconsaxRepeateOne
@@ -369,9 +364,9 @@ fun AppLargePlayer(
                                 },
                                 contentDescription = "Loop mode ${playerUiState.loopState.name}",
                                 tint = if (playerUiState.loopState == LoopState.NONE) {
-                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                    AppTheme.colors.onSurfaceVariant
                                 } else {
-                                    MaterialTheme.colorScheme.primary
+                                    AppTheme.colors.primary
                                 }
                             )
                         }
@@ -383,88 +378,86 @@ fun AppLargePlayer(
                     horizontalAlignment = Alignment.End
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        GhostIconButton(onClick = onQueue) {
-                            Icon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
+                        MillenniumIconButton(
+                            style = MillenniumIconButtonStyle.Quiet, onClick = onQueue
+                        ) {
+                            MillenniumIcon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
                         }
-                        GhostIconButton(onClick = {
-                            val track = (currentEntry as? QueueEntry.StreamingTrack)?.track
-                            if (track != null) {
-                                downloadsViewModel.downloadTrack(track)
-                            }
-                        }) {
+                        MillenniumIconButton(
+                            style = MillenniumIconButtonStyle.Quiet,
+                            onClick = {
+                                val track = (currentEntry as? QueueEntry.StreamingTrack)?.track
+                                if (track != null) {
+                                    downloadsViewModel.downloadTrack(track)
+                                }
+                            }) {
                             DownloadProgressIcon(
                                 track = (currentEntry as? QueueEntry.StreamingTrack)?.track,
                                 icon = Iconsax.IconsaxDirectboxReceive,
-                                contentDescription = "Download",
+                                contentDescription = "Download"
                             )
                         }
-                        GhostIconButton(onClick = onAlternativeSource) {
-                            Icon(Iconsax.SwapHorizontal2, contentDescription = "Alternative source")
+                        MillenniumIconButton(
+                            style = MillenniumIconButtonStyle.Quiet, onClick = onAlternativeSource
+                        ) {
+                            MillenniumIcon(
+                                Iconsax.SwapHorizontal2,
+                                contentDescription = "Alternative source"
+                            )
                         }
-                        GhostIconButton(onClick = onLyrics) {
-                            Icon(Iconsax.IconsaxMusic, contentDescription = "Lyrics")
+                        MillenniumIconButton(
+                            style = MillenniumIconButtonStyle.Quiet, onClick = onLyrics
+                        ) {
+                            MillenniumIcon(Iconsax.IconsaxMusic, contentDescription = "Lyrics")
                         }
-                        Box {
-                            GhostIconButton(
-                                onClick = {
-                                    playerOptionsViewModel.showMoreOptionsMenu()
-                                    onMoreOptions()
-                                }
-                            ) {
-                                Icon(Iconsax.Iconsax3DotsMore, contentDescription = "More options")
-                            }
-                            DropdownMenu(
-                                expanded = playerOptionsUiState.isMoreOptionsMenuOpen,
-                                onDismissRequest = playerOptionsViewModel::dismissMoreOptionsMenu,
-                            ) {
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(Res.string.player_go_to_album)) },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Iconsax.IconsaxCd,
-                                            contentDescription = null,
-                                        )
-                                    },
-                                    enabled = currentTrack?.album?.id != null,
-                                    onClick = {
+                        val goToAlbumLabel = stringResource(Res.string.player_go_to_album)
+                        val sleepTimerLabel = stringResource(Res.string.player_sleep_timer)
+                        val trackDetailsLabel = stringResource(Res.string.player_track_details)
+                        MillenniumDropdownMenu(
+                            expanded = playerOptionsUiState.isMoreOptionsMenuOpen,
+                            onExpandedChange = { expanded ->
+                                if (!expanded) playerOptionsViewModel.dismissMoreOptionsMenu()
+                            },
+                            items = listOf(goToAlbumLabel, sleepTimerLabel, trackDetailsLabel),
+                            onItemClick = { label ->
+                                when (label) {
+                                    goToAlbumLabel -> {
                                         playerOptionsViewModel.dismissMoreOptionsMenu()
                                         currentTrack?.album?.id?.let { albumId ->
                                             navigationCommands.navigateTo(Routes.Album(albumId))
                                         }
-                                    },
-                                )
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(Res.string.player_sleep_timer)) },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Iconsax.InconsaxClock,
-                                            contentDescription = null,
-                                        )
-                                    },
-                                    onClick = {
+                                    }
+
+                                    sleepTimerLabel -> {
                                         playerOptionsViewModel.dismissMoreOptionsMenu()
                                         playerOptionsViewModel.showSleepTimerDialog()
-                                    },
-                                )
-                                DropdownMenuItem(
-                                    text = { Text(stringResource(Res.string.player_track_details)) },
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Iconsax.IconsaxInformation,
-                                            contentDescription = null,
-                                        )
-                                    },
-                                    enabled = currentTrack != null,
-                                    onClick = {
+                                    }
+
+                                    trackDetailsLabel -> {
                                         playerOptionsViewModel.dismissMoreOptionsMenu()
                                         playerOptionsViewModel.showTrackDetails()
-                                    },
-                                )
-                            }
-                        }
+                                    }
+                                }
+                            },
+                            side = AnchorSide.Top,
+                            anchor = {
+                                MillenniumIconButton(
+                                    style = MillenniumIconButtonStyle.Quiet,
+                                    onClick = {
+                                        playerOptionsViewModel.showMoreOptionsMenu()
+                                        onMoreOptions()
+                                    }
+                                ) {
+                                    MillenniumIcon(
+                                        Iconsax.Iconsax3DotsMore,
+                                        contentDescription = "More options"
+                                    )
+                                }
+                            })
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        GhostIconButton(
+                        MillenniumIconButton(
+                            style = MillenniumIconButtonStyle.Quiet,
                             onClick = {
                                 scope.launch {
                                     if (playerUiState.volume <= 0f) {
@@ -481,12 +474,12 @@ fun AppLargePlayer(
                                 playerUiState.volume < 0.5f -> Iconsax.IconsaxVolumeLow
                                 else -> Iconsax.IconsaxVolumeHigh
                             }
-                            Icon(
+                            MillenniumIcon(
                                 imageVector = volumeIcon,
                                 contentDescription = if (playerUiState.volume <= 0f) "Unmute" else "Mute"
                             )
                         }
-                        Slider(
+                        MillenniumSlider(
                             value = playerUiState.volume,
                             onValueChange = {
                                 lastNonZeroVolume = it
@@ -494,6 +487,7 @@ fun AppLargePlayer(
                                     audioPlayer.setVolume(it)
                                 }
                             },
+                            label = "Volume",
                             modifier = Modifier.fillMaxWidth(0.62f)
                         )
                     }

@@ -44,13 +44,11 @@ data class RemotePlayerState(
     val currentTrackTitle: String? = null,
     val currentTrackArtists: String? = null,
     val currentTrackAlbum: String? = null,
-    val currentTrackCoverUrl: String? = null,
-)
+    val currentTrackCoverUrl: String? = null)
 
 data class RemoteQueueState(
     val entries: List<RemoteQueueEntry> = emptyList(),
-    val currentIndex: Int = -1,
-)
+    val currentIndex: Int = -1)
 
 class RemoteControlViewModel : ViewModel(), KoinComponent {
     private val logger = Logger.withTag("RemoteControlViewModel")
@@ -105,16 +103,14 @@ class RemoteControlViewModel : ViewModel(), KoinComponent {
                 currentTrackTitle = event.currentTrackTitle,
                 currentTrackArtists = event.currentTrackArtists,
                 currentTrackAlbum = event.currentTrackAlbum,
-                currentTrackCoverUrl = event.currentTrackCoverUrl,
-            )
+                currentTrackCoverUrl = event.currentTrackCoverUrl)
         }
     }
 
     private fun handleQueueUpdated(event: RemoteControlEvent.QueueUpdated) {
         _queueState.value = RemoteQueueState(
             entries = event.entries,
-            currentIndex = event.currentIndex,
-        )
+            currentIndex = event.currentIndex)
     }
 
     fun togglePlayPause() {

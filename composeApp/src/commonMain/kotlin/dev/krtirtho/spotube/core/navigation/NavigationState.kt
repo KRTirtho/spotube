@@ -46,8 +46,7 @@ val TOP_LEVEL_ROUTES = setOf(
     Routes.Library,
     Routes.Settings,
     // Bootstrap destination: needs its own back stack when the app starts on it.
-    Routes.Welcome,
-)
+    Routes.Welcome)
 
 val serializersConfig = SavedStateConfiguration {
     serializersModule = SerializersModule {
@@ -123,8 +122,7 @@ fun NavigationState.toEntries(
 ): SnapshotStateList<NavEntry<NavKey>> {
     val decoratedEntries = backStacks.mapValues { (_, stack) ->
         val decorators = listOf(
-            rememberSaveableStateHolderNavEntryDecorator<NavKey>(),
-        )
+            rememberSaveableStateHolderNavEntryDecorator<NavKey>())
         rememberDecoratedNavEntries(
             backStack = stack,
             entryDecorators = decorators,

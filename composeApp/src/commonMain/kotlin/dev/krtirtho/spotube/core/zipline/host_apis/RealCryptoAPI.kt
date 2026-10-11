@@ -185,14 +185,12 @@ fun AESEncodingFormats.format(): AES.Key.Format {
     }
 }
 
-
 class RealCryptoAPI(private val scope: CoroutineContext) : CryptoAPI {
     private val provider = CryptographyProvider.Default
 
     override suspend fun generateRandomBytes(size: Int): ByteArray {
         return CryptographyRandom.nextBytes(size)
     }
-
 
     override suspend fun hash(algorithm: HashAlgorithms, data: ByteArray): ByteArray {
         val hasher = provider.get(algorithm.algorithm()).hasher()
@@ -301,8 +299,7 @@ class RealCryptoAPI(private val scope: CoroutineContext) : CryptoAPI {
                 val keyPair = provider.get(RSA.PSS).keyPairGenerator(
                     algorithm.keySizeBits.bits,
                     algorithm.hashAlgorithm.algorithm(),
-                    algorithm.publicExponent.toBigInt(),
-                ).generateKey()
+                    algorithm.publicExponent.toBigInt()).generateKey()
 
                 Pair(
                     keyPair.publicKey.encodeToByteArray(algorithm.format.publicKeyFormat()),
@@ -366,8 +363,7 @@ class RealCryptoAPI(private val scope: CoroutineContext) : CryptoAPI {
 
             is SignAlgorithms.ECDSA ->
                 provider.get(ECDSA).privateKeyDecoder(
-                    algorithm.curve.curve(),
-                ).decodeFromByteArray(
+                    algorithm.curve.curve()).decodeFromByteArray(
                     algorithm.format.privateKeyFormat(),
                     privateKey
                 ).signatureGenerator(
@@ -377,8 +373,7 @@ class RealCryptoAPI(private val scope: CoroutineContext) : CryptoAPI {
 
             is SignAlgorithms.EdDSA ->
                 provider.get(EdDSA).privateKeyDecoder(
-                    algorithm.curve.curve(),
-                ).decodeFromByteArray(
+                    algorithm.curve.curve()).decodeFromByteArray(
                     algorithm.format.privateKeyFormat(),
                     privateKey
                 ).signatureGenerator().generateSignature(data)
@@ -422,8 +417,7 @@ class RealCryptoAPI(private val scope: CoroutineContext) : CryptoAPI {
 
                 is SignAlgorithms.ECDSA ->
                     provider.get(ECDSA).publicKeyDecoder(
-                        algorithm.curve.curve(),
-                    ).decodeFromByteArray(
+                        algorithm.curve.curve()).decodeFromByteArray(
                         algorithm.format.publicKeyFormat(),
                         publicKey
                     ).signatureVerifier(
@@ -436,8 +430,7 @@ class RealCryptoAPI(private val scope: CoroutineContext) : CryptoAPI {
 
                 is SignAlgorithms.EdDSA ->
                     provider.get(EdDSA).publicKeyDecoder(
-                        algorithm.curve.curve(),
-                    ).decodeFromByteArray(
+                        algorithm.curve.curve()).decodeFromByteArray(
                         algorithm.format.publicKeyFormat(),
                         publicKey
                     ).signatureVerifier().verifySignature(

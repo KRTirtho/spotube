@@ -37,17 +37,18 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SheetValue
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
-import androidx.compose.material3.rememberBottomSheetScaffoldState
-import androidx.compose.material3.rememberStandardBottomSheetState
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import org.spotube.millennium.composables.MillenniumSnackbarHost
+import org.spotube.millennium.composables.MillenniumSnackbarHostState
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.theme.MillenniumTheme
+import com.composeunstyled.Sheet
+import com.composeunstyled.SheetDetent
+import com.composeunstyled.UnstyledBottomSheet
+import com.composeunstyled.rememberBottomSheetState
+import com.composeunstyled.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -74,8 +75,6 @@ import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.remote.ConnectionRequestDialogHost
 import dev.krtirtho.spotube.core.remote.RemotePlaybackController
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUIColors
-import dev.krtirtho.spotube.core.ui.base.baseSurfaceBackdrop
 import dev.krtirtho.spotube.modules.devices.PlayDestinationPickerHost
 import dev.krtirtho.spotube.modules.lyrics.LyricsScreen
 import dev.krtirtho.spotube.modules.shell.alternative_track.AlternativeTrackContent
@@ -98,12 +97,10 @@ fun AppShell(
     viewModel: AppShellViewModel = koinViewModel<AppShellViewModel>(),
     queueViewModel: PlayerQueueContentViewModel = koinViewModel<PlayerQueueContentViewModel>(),
     alternativeViewModel: AlternativeTrackContentViewModel = koinViewModel<AlternativeTrackContentViewModel>(),
-    content: @Composable () -> Unit,
-) {
+    content: @Composable () -> Unit) {
     val navigatorCommands: NavigationCommands = koinInject()
     val remotePlaybackController: RemotePlaybackController = koinInject()
-    val baseUIColors = LocalBaseUIColors.current
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState = remember { MillenniumSnackbarHostState() }
     LaunchedEffect(remotePlaybackController) {
         remotePlaybackController.events.collect { message ->
             snackbarHostState.showSnackbar(message)
@@ -155,88 +152,73 @@ fun AppShell(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .baseSurfaceBackdrop(baseUIColors.surfaceTheme, baseUIColors.isLight)
-                                .hazeSource(state = bgHazeState) // <-- Put it here!
-                        )
-                        Row(modifier = Modifier.fillMaxSize()) {
+                            .background(MillenniumTheme.colors.background)
+                            .hazeSource(state = bgHazeState) // <-- Put it here!
+                    )
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Row(modifier = Modifier.weight(1f)) {
                             AppSidebar(
                                 hazeState = bgHazeState,
                                 navigator = navigator,
                                 navigationState = navigationState
                             )
-                            VerticalDivider(
+                            MillenniumSeparator(
                                 modifier = Modifier.fillMaxHeight(),
-                                color = Color.Gray.copy(alpha = 0.2f),
-                                thickness = 1.dp,
-                            )
-                            Box(modifier = Modifier.weight(1f).hazeSource(hazeState)) {
+                                vertical = true)
+                            Box(modifier = Modifier.weight(1f).fillMaxHeight().hazeSource(hazeState)) {
                                 content()
                             }
                         }
-
-                        if (isQueueVisible) {
-                            Box(
-                                modifier = Modifier.fillMaxSize().clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    onClick = { queueViewModel.setQueueVisibility(false) },
-                                )
-                            )
-                        }
-
-                        if (isAlternativeVisible) {
-                            Box(
-                                modifier = Modifier.fillMaxSize().clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    onClick = { alternativeViewModel.setAlternativeVisibility(false) },
-                                )
-                            )
-                        }
-
-                        QueueSheet(
-                            isVisible = isQueueVisible,
-                            onDismiss = { queueViewModel.setQueueVisibility(false) },
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            PlayerQueueContent(
-                                viewModel = queueViewModel,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        }
-
-                        AlternativeTrackSheet(
-                            isVisible = isAlternativeVisible,
-                            onDismiss = { alternativeViewModel.setAlternativeVisibility(false) },
-                            modifier = Modifier.fillMaxSize(),
-                        ) {
-                            AlternativeTrackContent(
-                                viewModel = alternativeViewModel,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        }
+                        AppLargePlayer(
+                            hazeState = hazeState,
+                            modifier = Modifier.fillMaxWidth(),
+                            onQueue = queueViewModel::toggleQueueVisibility,
+                            onAlternativeSource = alternativeViewModel::toggleAlternativeVisibility,
+                            onLyrics = { navigatorCommands.navigateTo(Routes.Lyrics) })
                     }
-                    AppLargePlayer(
-                        hazeState = hazeState,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter),
-                        onQueue = queueViewModel::toggleQueueVisibility,
-                        onAlternativeSource = alternativeViewModel::toggleAlternativeVisibility,
-                        onLyrics = { navigatorCommands.navigateTo(Routes.Lyrics) },
-                    )
+
+                    if (isQueueVisible) {
+                        Box(
+                            modifier = Modifier.fillMaxSize().clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { queueViewModel.setQueueVisibility(false) })
+                        )
+                    }
+
+                    if (isAlternativeVisible) {
+                        Box(
+                            modifier = Modifier.fillMaxSize().clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { alternativeViewModel.setAlternativeVisibility(false) })
+                        )
+                    }
+
+                    QueueSheet(
+                        isVisible = isQueueVisible,
+                        onDismiss = { queueViewModel.setQueueVisibility(false) },
+                        modifier = Modifier.fillMaxSize()) {
+                        PlayerQueueContent(
+                            viewModel = queueViewModel,
+                            modifier = Modifier.fillMaxSize())
+                    }
+
+                    AlternativeTrackSheet(
+                        isVisible = isAlternativeVisible,
+                        onDismiss = { alternativeViewModel.setAlternativeVisibility(false) },
+                        modifier = Modifier.fillMaxSize()) {
+                        AlternativeTrackContent(
+                            viewModel = alternativeViewModel,
+                            modifier = Modifier.fillMaxSize())
+                    }
                 }
             } else {
                 BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .baseSurfaceBackdrop(baseUIColors.surfaceTheme, baseUIColors.isLight),
-                    )
+                            .background(MillenniumTheme.colors.background))
                     CompactPlayerOverlay(
                         navigator = navigator,
                         navigationState = navigationState,
@@ -244,8 +226,7 @@ fun AppShell(
                         onQueue = queueViewModel::toggleQueueVisibility,
                         onAlternativeSource = alternativeViewModel::toggleAlternativeVisibility,
                         onExpandLyrics = viewModel::showLyricsOverlay,
-                        content = content,
-                    )
+                        content = content)
 
                     QueueSheet(
                         isVisible = isQueueVisible,
@@ -254,19 +235,16 @@ fun AppShell(
                     ) {
                         PlayerQueueContent(
                             viewModel = queueViewModel,
-                            modifier = Modifier.fillMaxSize(),
-                        )
+                            modifier = Modifier.fillMaxSize())
                     }
 
                     AlternativeTrackSheet(
                         isVisible = isAlternativeVisible,
                         onDismiss = { alternativeViewModel.setAlternativeVisibility(false) },
-                        modifier = Modifier.fillMaxSize(),
-                    ) {
+                        modifier = Modifier.fillMaxSize()) {
                         AlternativeTrackContent(
                             viewModel = alternativeViewModel,
-                            modifier = Modifier.fillMaxSize(),
-                        )
+                            modifier = Modifier.fillMaxSize())
                     }
 
                     if (isLyricsOverlayVisible) {
@@ -275,14 +253,11 @@ fun AppShell(
                             properties = DialogProperties(
                                 usePlatformDefaultWidth = false,
                                 dismissOnBackPress = true,
-                                dismissOnClickOutside = true,
-                            ),
-                        ) {
-                            Box(modifier = Modifier.fillMaxSize()) {
+                                dismissOnClickOutside = true)) {
+                            Box(modifier = Modifier.fillMaxSize().background(MillenniumTheme.colors.background)) {
                                 LyricsScreen(
                                     modifier = Modifier.fillMaxSize(),
-                                    onClose = { viewModel.hideLyricsOverlay() },
-                                )
+                                    onClose = { viewModel.hideLyricsOverlay() })
                             }
                         }
                     }
@@ -292,19 +267,16 @@ fun AppShell(
 
         // Drawn last so it floats above the players/sheets, just above the
         // bottom overlay (large player or compact player + bottombar).
-        SnackbarHost(
+        MillenniumSnackbarHost(
             hostState = snackbarHostState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(bottom = bottomOverlayInset + 12.dp),
-        )
+                .padding(bottom = bottomOverlayInset + 12.dp))
     }
 }
 
 @OptIn(
-    ExperimentalSharedTransitionApi::class, ExperimentalFoundationApi::class,
-    ExperimentalMaterial3Api::class
-)
+    ExperimentalSharedTransitionApi::class, ExperimentalFoundationApi::class)
 @Composable
 private fun BoxWithConstraintsScope.CompactPlayerOverlay(
     navigator: Navigator,
@@ -313,8 +285,7 @@ private fun BoxWithConstraintsScope.CompactPlayerOverlay(
     onQueue: () -> Unit,
     onAlternativeSource: () -> Unit,
     onExpandLyrics: () -> Unit,
-    content: @Composable () -> Unit,
-) {
+    content: @Composable () -> Unit) {
     val density = LocalDensity.current
     val scope = rememberCoroutineScope()
 
@@ -324,88 +295,60 @@ private fun BoxWithConstraintsScope.CompactPlayerOverlay(
     val peekHeightPx = floatingPlayerHeightPx + bottomBarHeightPx + navBarInsetPx
     val peekHeight = with(density) { peekHeightPx.toDp() }
 
-    val sheetHeightPx = with(density) { maxHeight.toPx() }
-
-    val sheetState = rememberStandardBottomSheetState(
-        initialValue = SheetValue.PartiallyExpanded,
-        skipHiddenState = true,
-    )
-    val scaffoldState = rememberBottomSheetScaffoldState(
-        bottomSheetState = sheetState,
-    )
-
-    val progressState = remember { mutableFloatStateOf(0f) }
-    LaunchedEffect(sheetState, sheetHeightPx, peekHeightPx) {
-        snapshotFlow {
-            try {
-                sheetState.requireOffset()
-            } catch (_: IllegalStateException) {
-                peekHeightPx
-            }
-        }.collect { offset ->
-            val expandedOffset = 0f
-            val collapsedOffset = sheetHeightPx - peekHeightPx
-            val range = (collapsedOffset - expandedOffset).coerceAtLeast(1f)
-            val rawProgress = (collapsedOffset - offset) / range
-            progressState.floatValue = rawProgress.coerceIn(0f, 1f)
-        }
+    val partialDetent = remember(peekHeight) {
+        SheetDetent("player-peek") { _, _ -> peekHeight }
     }
+    val sheetState = rememberBottomSheetState(
+        initialDetent = partialDetent,
+        detents = listOf(partialDetent, SheetDetent.FullyExpanded))
 
-    val uiState by remember {
-        derivedStateOf {
-            viewModel.compactSheetUiState(progressState.floatValue)
-        }
-    }
+    val progress = runCatching {
+        sheetState.progress(partialDetent, SheetDetent.FullyExpanded)
+    }.getOrDefault(0f).takeIf { it.isFinite() } ?: 0f
+    val uiState = viewModel.compactSheetUiState(progress.coerceIn(0f, 1f))
 
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
-        sheetPeekHeight = peekHeight,
-        sheetDragHandle = null,
-        sheetContainerColor = Color.Transparent,
-        sheetShape = RectangleShape,
-        sheetTonalElevation = 0.dp,
-        sheetShadowElevation = 0.dp,
-        sheetContent = {
-            Box(modifier = Modifier.fillMaxSize()) {
-                if (uiState.showExpandedPlayer) {
-                    AppExpandedPlayer(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer { alpha = uiState.expandedPlayerAlpha },
-                        onCollapse = {
-                            scope.launch { sheetState.partialExpand() }
-                        },
-                        onQueue = onQueue,
-                        onAlternativeSource = onAlternativeSource,
-                        onExpandLyrics = onExpandLyrics,
-                    )
-                }
+    Box(modifier = Modifier.fillMaxSize()) {
+        content()
 
-                if (uiState.floatingPlayerAlpha > 0.01f) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        AppFloatingPlayer(
+        UnstyledBottomSheet(
+            state = sheetState,
+            modifier = Modifier.fillMaxSize()) {
+            Sheet(modifier = Modifier.fillMaxSize()) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    if (uiState.showExpandedPlayer) {
+                        AppExpandedPlayer(
                             modifier = Modifier
-                                .offset(y = 12.dp)
-                                .graphicsLayer {
-                                    alpha = uiState.floatingPlayerAlpha
-                                },
-                        )
+                                .fillMaxSize()
+                                .graphicsLayer { alpha = uiState.expandedPlayerAlpha },
+                            onCollapse = {
+                                scope.launch { sheetState.animateTo(partialDetent) }
+                            },
+                            onQueue = onQueue,
+                            onAlternativeSource = onAlternativeSource,
+                            onExpandLyrics = onExpandLyrics)
+                    }
+
+                    if (uiState.floatingPlayerAlpha > 0.01f) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            AppFloatingPlayer(
+                                modifier = Modifier
+                                    .offset(y = 12.dp)
+                                    .graphicsLayer {
+                                        alpha = uiState.floatingPlayerAlpha
+                                    })
+                        }
                     }
                 }
             }
-        },
-    ) { _ ->
-        Box(modifier = Modifier.fillMaxSize()) {
-            content()
         }
-    }
-    if (uiState.floatingPlayerAlpha > 0.01f) {
-        AppBottombar(
-            navigator = navigator,
-            navigationState = navigationState,
-            modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).graphicsLayer {
-                alpha = uiState.floatingPlayerAlpha
-            },
-        )
+
+        if (uiState.floatingPlayerAlpha > 0.01f) {
+            AppBottombar(
+                navigator = navigator,
+                navigationState = navigationState,
+                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).graphicsLayer {
+                    alpha = uiState.floatingPlayerAlpha
+                })
+        }
     }
 }

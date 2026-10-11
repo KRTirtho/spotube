@@ -162,8 +162,7 @@ class RemoteControlClient {
 
         val envelope = CommandEnvelope(
             commandId = randomShortId(),
-            command = command,
-        )
+            command = command)
 
         try {
             val text = json.encodeToString(CommandEnvelope.serializer(), envelope)

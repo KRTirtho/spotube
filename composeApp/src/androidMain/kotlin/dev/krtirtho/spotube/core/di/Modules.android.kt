@@ -45,7 +45,6 @@ actual val platformModules = module {
             collectionPlaybackHelper = get(),
             audioPlayerQueue = get(),
             settingsRepository = get(),
-            blacklistRepository = get(),
-        )
+            blacklistRepository = get())
     }
 }

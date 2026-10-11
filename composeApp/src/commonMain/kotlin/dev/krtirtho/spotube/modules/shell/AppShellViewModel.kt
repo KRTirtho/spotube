@@ -34,12 +34,10 @@ data class CompactSheetUiState(
     val showExpandedPlayer: Boolean,
     val expandedPlayerAlpha: Float,
     val floatingPlayerAlpha: Float,
-    val bottomBarAlpha: Float,
-)
+    val bottomBarAlpha: Float)
 
 data class LyricsOverlayState(
-    val isVisible: Boolean = false,
-)
+    val isVisible: Boolean = false)
 
 class AppShellViewModel : ViewModel() {
     val sidebarMinWidth = 840.dp
@@ -91,8 +89,7 @@ class AppShellViewModel : ViewModel() {
             showExpandedPlayer = progress > expandedPlayerVisibilityThreshold,
             expandedPlayerAlpha = progress,
             floatingPlayerAlpha = floatingPlayerAlpha(progress),
-            bottomBarAlpha = 1f - progress,
-        )
+            bottomBarAlpha = 1f - progress)
     }
 
     fun showLyricsOverlay() {

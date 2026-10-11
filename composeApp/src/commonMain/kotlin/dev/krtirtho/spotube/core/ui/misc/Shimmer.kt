@@ -17,10 +17,11 @@
 
 package dev.krtirtho.spotube.core.ui.misc
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.text.TextAutoSize
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.Text
+import com.composeunstyled.LocalTextStyle
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
@@ -38,7 +39,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
-import com.eygraber.compose.placeholder.material3.placeholder
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
@@ -84,11 +84,7 @@ fun Modifier.shimmerApply(
 ): Modifier = composed {
     val isTreeLoading = LocalSkeletonLoading.current
 
-    this.placeholder(
-        visible = isTreeLoading,
-        color = color,
-        shape = null,
-    )
+    if (isTreeLoading) this.background(color) else this
 }
 
 @Composable
@@ -110,23 +106,20 @@ fun TextWithShimmer(
     maxLines: Int = Int.MAX_VALUE,
     minLines: Int = 1,
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
-    style: TextStyle = LocalTextStyle.current,
-) {
+    style: TextStyle = LocalTextStyle.current) {
     Text(
         text = text,
         color = color,
         modifier = Modifier.shimmerApply().then(modifier),
         autoSize = autoSize,
         fontSize = fontSize,
-        fontStyle = fontStyle,
         fontWeight = fontWeight,
         fontFamily = fontFamily,
         letterSpacing = letterSpacing,
         textDecoration = textDecoration,
-        textAlign = textAlign,
+        textAlign = textAlign ?: TextAlign.Start,
         lineHeight = lineHeight,
         overflow = overflow,
-        softWrap = softWrap,
         maxLines = maxLines,
         minLines = minLines,
         onTextLayout = onTextLayout,

@@ -83,11 +83,9 @@ interface ScrobblePluginSource {
     val selectedScrobblePlugin: StateFlow<PluginService?>
 }
 
-
 class PluginManager(
     val database: Database,
-    val paths: Paths,
-) : KoinComponent, PluginProvider, AudioPluginSource, ScrobblePluginSource {
+    val paths: Paths) : KoinComponent, PluginProvider, AudioPluginSource, ScrobblePluginSource {
     private val logger by injectLogger<PluginManager>()
     private val pluginExceptionHandler = CoroutineExceptionHandler { _, exception ->
         logger.e(exception) { "Plugin runtime threw an unhandled exception. Intercepted safely." }
@@ -96,7 +94,6 @@ class PluginManager(
     private val pluginsDir = "${paths.getApplicationDataDirPath()}/plugins".toPath()
     val pluginsDirPath: Path get() = pluginsDir
     private val httpClient = HttpClient()
-
 
     enum class InstallPromptKind {
         INSTALL,
@@ -113,8 +110,7 @@ class PluginManager(
         val message: String,
         val bytes: ByteArray? = null,
         val existingEntry: PluginEntry? = null,
-        val confirmLabel: String? = null,
-    )
+        val confirmLabel: String? = null)
 
     val pendingPlugin = MutableStateFlow<PendingPlugin?>(null)
 
@@ -122,8 +118,7 @@ class PluginManager(
         .map { p ->
             val json = p[DatabaseKeys.PLUGINS_STATE_KEY]
             val defaultSelectedPlugins = mapOf(
-                PluginAbility.AUDIO to NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN,
-            )
+                PluginAbility.AUDIO to NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN)
             if (json == null) {
                 PluginManagerStates.Data(
                     plugins = BUILT_IN_PLUGINS,
@@ -156,8 +151,7 @@ class PluginManager(
 
                     res.copy(
                         plugins = resolvedPlugins,
-                        selectedPlugins = selectedPlugins,
-                    )
+                        selectedPlugins = selectedPlugins)
                 } catch (_: Exception) {
                     PluginManagerStates.Data(
                         BUILT_IN_PLUGINS,
@@ -202,8 +196,7 @@ class PluginManager(
                             val service = ZiplinePluginService(
                                 applicationName = plugin.name,
                                 manifestUrl = "http://localhost?path=${(pluginsDir / plugin.id.toPath() / "manifest.zipline.json")}",
-                                pluginInfo = plugin,
-                            )
+                                pluginInfo = plugin)
                             ziplineServices[ability] = service
                             ziplineServicesByPluginID[plugin.id] = service
                             service.start()
@@ -275,7 +268,6 @@ class PluginManager(
     override val selectedScrobblePlugin =
         filterSelectedPluginByType(PluginAbility.SCROBBLE)
 
-
     fun launchTask(block: suspend CoroutineScope.() -> Unit): Job {
         return scope.launch(block = block)
     }
@@ -287,7 +279,6 @@ class PluginManager(
     ) {
         block()
     }
-
 
     private suspend fun updatePluginsState(newState: PluginManagerStates.Data) {
         database.settingsDataStore.updateData { preferences ->
@@ -397,8 +388,7 @@ class PluginManager(
 
     suspend fun addPluginFromByteArray(
         bytes: ByteArray,
-        allowReplacingInstalled: Boolean = false,
-    ) {
+        allowReplacingInstalled: Boolean = false) {
         withContext(Dispatchers.IO) {
             if (!FileSystem.SYSTEM.exists(pluginsDir)) {
                 FileSystem.SYSTEM.createDirectories(pluginsDir)
@@ -606,8 +596,7 @@ class PluginManager(
                 entry = pluginEntry,
                 kind = InstallPromptKind.INFO,
                 title = "Plugin API not compatible",
-                message = apiError,
-            )
+                message = apiError)
         }
 
         val installedPlugin = findInstalledPlugin(pluginEntry.id) ?: return PendingPlugin(
@@ -616,8 +605,7 @@ class PluginManager(
             title = "Install plugin?",
             message = "${pluginEntry.name} will be added to your installed plugins.",
             bytes = bytes,
-            confirmLabel = "Install",
-        )
+            confirmLabel = "Install")
 
         return when (compareVersions(installedPlugin, pluginEntry)) {
             VersionRelation.Update -> PendingPlugin(
@@ -627,8 +615,7 @@ class PluginManager(
                 message = "An older version is installed (${installedPlugin.version}). Update to ${pluginEntry.version}?",
                 bytes = bytes,
                 existingEntry = installedPlugin,
-                confirmLabel = "Update",
-            )
+                confirmLabel = "Update")
 
             VersionRelation.Replace -> PendingPlugin(
                 entry = pluginEntry,
@@ -637,8 +624,7 @@ class PluginManager(
                 message = buildReplaceMessage(installedPlugin, pluginEntry),
                 bytes = bytes,
                 existingEntry = installedPlugin,
-                confirmLabel = "Replace",
-            )
+                confirmLabel = "Replace")
         }
     }
 

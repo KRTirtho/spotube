@@ -58,7 +58,6 @@ private object KoinServicesProvider : KoinComponent {
     val settingsProvider: SettingsProvider get() = get()
 }
 
-
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() {
     FileKit.init(appId = "dev.krtirtho.spotube")
@@ -93,8 +92,7 @@ fun main() {
             SystemTray(
                 isWindowVisible = isWindowVisible,
                 onToggleWindowVisibility = onToggleWindowVisibility,
-                onExit = onExit,
-            )
+                onExit = onExit)
         }
 
         DecoratedWindow(
@@ -109,8 +107,7 @@ fun main() {
                 }
             },
             title = "Spotube",
-            visible = isWindowVisible,
-        ) {
+            visible = isWindowVisible) {
             CompositionLocalProvider(
                 LocalApplicationScope provides this@nucleusApplication,
                 LocalWindowScope provides this@DecoratedWindow,

@@ -30,14 +30,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUIColors
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 
 @Composable
 actual fun VerticalScrollbar(
     listState: LazyListState,
     modifier: Modifier
 ) {
-    val colors = LocalBaseUIColors.current
+    val colors = AppTheme.colors
     CompositionLocalProvider(
         LocalScrollbarStyle provides ScrollbarStyle(
             minimalHeight = 16.dp,
@@ -45,15 +45,12 @@ actual fun VerticalScrollbar(
             shape = RoundedCornerShape(4.dp),
             hoverDurationMillis = 300,
             unhoverColor = colors.onSurface.copy(alpha = 0.18f),
-            hoverColor = colors.onSurface.copy(alpha = 0.4f),
-        ),
-    ) {
+            hoverColor = colors.onSurface.copy(alpha = 0.4f))) {
         VerticalScrollbar(
             adapter = rememberScrollbarAdapter(listState),
             modifier = modifier.fillMaxHeight()
                 .padding(end = 2.dp)
                 .padding(vertical = 16.dp)
-                .width(12.dp),
-        )
+                .width(12.dp))
     }
 }

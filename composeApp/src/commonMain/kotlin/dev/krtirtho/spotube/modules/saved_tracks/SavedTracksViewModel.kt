@@ -71,20 +71,17 @@ sealed interface SavedTracksScreenState {
         data class Loaded(
             override val tracks: List<MetadataTrack> = emptyList(),
             override val nextPagination: PaginationStrategy? = null,
-            override val totalCount: Int = 0,
-        ) : Data {
+            override val totalCount: Int = 0) : Data {
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 tracks = tracks,
                 nextPagination = nextPagination,
-                totalCount = totalCount,
-            )
+                totalCount = totalCount)
         }
 
         data class LoadingMore(
             override val tracks: List<MetadataTrack> = emptyList(),
             override val nextPagination: PaginationStrategy? = null,
-            override val totalCount: Int = 0,
-        ) : Data
+            override val totalCount: Int = 0) : Data
     }
 
     data class Error(val message: String) : SavedTracksScreenState
@@ -99,8 +96,7 @@ class SavedTracksViewModel(
     private val libraryRepository: LibraryRepository,
     private val shareService: ShareService,
     private val downloadManager: DownloadManager,
-    private val remotePlaybackController: RemotePlaybackController,
-) : ViewModel(), KoinComponent {
+    private val remotePlaybackController: RemotePlaybackController) : ViewModel(), KoinComponent {
     private val logger by injectLogger<SavedTracksViewModel>()
 
     private val _state = MutableStateFlow<SavedTracksScreenState>(SavedTracksScreenState.Loading)
@@ -125,8 +121,7 @@ class SavedTracksViewModel(
         audioPlayerQueue.queueFlow,
         audioPlayerQueue.currentQueueEntryFlow,
         _blacklistedTrackIds,
-        _blacklistedArtistIds,
-    ) { queue, currentEntry, blacklistedTracks, blacklistedArtists ->
+        _blacklistedArtistIds) { queue, currentEntry, blacklistedTracks, blacklistedArtists ->
         TrackOptionsContext(
             currentTrackId = (currentEntry as? QueueEntry.StreamingTrack)?.track?.id,
             queueTrackIds = queue.mapNotNull { entry ->
@@ -134,8 +129,7 @@ class SavedTracksViewModel(
             }.toSet(),
             blacklistedTrackIds = blacklistedTracks,
             blacklistedArtistIds = blacklistedArtists,
-            forceFavorite = true,
-        )
+            forceFavorite = true)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TrackOptionsContext(forceFavorite = true))
 
     init {
@@ -174,8 +168,7 @@ class SavedTracksViewModel(
             _state.value = SavedTracksScreenState.Data.Loaded(
                 tracks = tracksResult?.items ?: emptyList(),
                 nextPagination = tracksResult?.nextPagination,
-                totalCount = totalCount,
-            )
+                totalCount = totalCount)
         }.onFailure { e ->
             logger.e(e) { "Failed to load saved tracks" }
             _state.value = SavedTracksScreenState.Error(e.message ?: "Unknown error")
@@ -192,8 +185,7 @@ class SavedTracksViewModel(
                     _state.value = SavedTracksScreenState.Data.Loaded(
                         tracks = currentState.tracks + (result?.items ?: emptyList()),
                         nextPagination = result?.nextPagination,
-                        totalCount = currentState.totalCount,
-                    )
+                        totalCount = currentState.totalCount)
                 }.onFailure { e ->
                     logger.e(e) { "Failed to load more tracks" }
                     _state.value = SavedTracksScreenState.Error(e.message ?: "Unknown error")
@@ -211,8 +203,7 @@ class SavedTracksViewModel(
             RemoteCollectionType.SavedTracks,
             SAVED_TRACKS_COLLECTION_ID,
             "Saved Tracks",
-            shuffle = true,
-        )
+            shuffle = true)
     }
 
     fun addSavedTracksToQueue() {
@@ -224,8 +215,7 @@ class SavedTracksViewModel(
             type = RemoteCollectionType.SavedTracks,
             id = SAVED_TRACKS_COLLECTION_ID,
             title = "Saved Tracks",
-            startTrack = track,
-        )
+            startTrack = track)
     }
 
     fun refresh() {
@@ -290,8 +280,7 @@ class SavedTracksViewModel(
             runCatching {
                 libraryRepository.addTracksToPlaylist(
                     playlistId,
-                    _tracksToAddToPlaylist.value.map { it.id },
-                )
+                    _tracksToAddToPlaylist.value.map { it.id })
             }.onFailure { e ->
                 logger.e(e) { "Failed to add tracks to playlist" }
             }.onSuccess {
@@ -358,7 +347,6 @@ class SavedTracksViewModel(
     }
 }
 
-
 sealed interface SavedState<out T> {
     data class Success<T>(val data: T) : SavedState<T>
     data object Loading : SavedState<Nothing>
@@ -368,8 +356,7 @@ sealed interface SavedState<out T> {
 @Composable
 fun rememberIsSavedTracks(
     trackIds: List<String>,
-    repository: SavedTracksRepository = koinInject(),
-): SavedState<List<Boolean>> {
+    repository: SavedTracksRepository = koinInject()): SavedState<List<Boolean>> {
     val scope = rememberCoroutineScope()
     var state by remember { mutableStateOf<SavedState<List<Boolean>>>(SavedState.Loading) }
 

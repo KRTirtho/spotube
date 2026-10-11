@@ -28,7 +28,6 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.takeFrom
 import org.koin.core.component.KoinComponent
 
-
 class RealHttpClientAPI : HttpClientAPI, KoinComponent {
     val logger by injectLogger<RealHttpClientAPI>()
     val httpClient = HttpClient()

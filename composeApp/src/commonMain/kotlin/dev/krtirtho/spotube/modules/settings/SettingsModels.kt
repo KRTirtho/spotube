@@ -19,8 +19,8 @@ package dev.krtirtho.spotube.modules.settings
 
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioFormat
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioQuality
-import dev.krtirtho.spotube.core.ui.base.SurfaceStyle
 import kotlinx.serialization.Serializable
+import org.spotube.millennium.theme.MillenniumPalette
 
 @Serializable
 enum class Theme {
@@ -35,8 +35,7 @@ data class UserSettings(
 
     // Appearance
     val theme: Theme = Theme.SYSTEM,
-    val accentColor: AccentColors = AccentColors.GREEN_GOBLIN,
-    val surfaceTheme: SurfaceStyle = SurfaceStyle.Glass,
+    val palette: MillenniumPalette = MillenniumPalette.Blue,
 
     // Playback
     val streamingMusicFormat: AudioFormat = AudioFormat(
@@ -46,8 +45,7 @@ data class UserSettings(
             AudioQuality.Lossy(bitrate = 44_000),
             AudioQuality.Lossy(bitrate = 96_000),
             AudioQuality.Lossy(bitrate = 128_000),
-            AudioQuality.Lossy(bitrate = 256_000),
-        )
+            AudioQuality.Lossy(bitrate = 256_000))
     ),
     val streamingMusicQuality: AudioQuality = AudioQuality.Lossy(bitrate = 256_000),
     val enableMusicCaching: Boolean = true,
@@ -78,8 +76,7 @@ data class UserSettings(
             AudioQuality.Lossy(bitrate = 44_000),
             AudioQuality.Lossy(bitrate = 96_000),
             AudioQuality.Lossy(bitrate = 128_000),
-            AudioQuality.Lossy(bitrate = 256_000),
-        )
+            AudioQuality.Lossy(bitrate = 256_000))
     ),
     val downloadMusicQuality: AudioQuality = AudioQuality.Lossy(bitrate = 256_000),
 
@@ -90,8 +87,7 @@ data class UserSettings(
     // Updates
     val autoCheckForUpdates: Boolean = true,
     val ignoredAppUpdateVersion: String? = null,
-    val ignoredPluginUpdateVersions: Map<String, String> = emptyMap(),
-)
+    val ignoredPluginUpdateVersions: Map<String, String> = emptyMap())
 
 /**
  * Configuration for the MQTT broker used by Group Jam. The host is a placeholder
@@ -107,5 +103,4 @@ data class JamBroker(
     val password: String? = null,
     val clientIdPrefix: String = "spotube",
     val keepAliveSeconds: Int = 30,
-    val connectionTimeoutSeconds: Int = 10,
-)
+    val connectionTimeoutSeconds: Int = 10)

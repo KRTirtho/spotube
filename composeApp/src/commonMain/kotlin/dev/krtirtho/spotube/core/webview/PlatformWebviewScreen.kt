@@ -17,26 +17,30 @@
 
 package dev.krtirtho.spotube.core.webview
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.ui.draw.clip
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -148,10 +152,8 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
         }
     }
 
-    BaseScaffold(
-        contentWindowInsets = WindowInsets.statusBars,
-        topBar = {
-            ApplicationMainBar(
+    Column(modifier = Modifier.fillMaxSize()) {
+        ApplicationMainBar(
                 title = {
                     Row(
                         modifier = Modifier.fillMaxWidth().statusBarsPadding().height(56.dp),
@@ -163,40 +165,50 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
                             horizontalArrangement = Arrangement.Start,
                             modifier = Modifier.height(56.dp)
                         ) {
-                            IconButton(
+                            MillenniumIconButton(
                                 onClick = {
                                     navigator.navigateBack()
-                                }, enabled = navigator.canGoBack
+                                },
+                                enabled = navigator.canGoBack,
+                                style = MillenniumIconButtonStyle.Quiet
                             ) {
-                                Icon(
+                                MillenniumIcon(
                                     FeatherIcons.ChevronLeft,
                                     contentDescription = "Go back to browser history"
                                 )
                             }
-                            IconButton(
+                            MillenniumIconButton(
                                 onClick = {
                                     navigator.navigateForward()
-                                }, enabled = navigator.canGoForward
+                                },
+                                enabled = navigator.canGoForward,
+                                style = MillenniumIconButtonStyle.Quiet
                             ) {
-                                Icon(
+                                MillenniumIcon(
                                     FeatherIcons.ChevronRight,
                                     contentDescription = "Go forward to browser history"
                                 )
                             }
                         }
-                        Surface(
-                            modifier = Modifier.weight(1f).height(36.dp).padding(horizontal = 4.dp),
-                            shape = RoundedCornerShape(18.dp),
-                            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-                            border = BorderStroke(1.dp, Color.Gray.copy(alpha = 0.5f))
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(36.dp)
+                                .padding(horizontal = 4.dp)
+                                .clip(RoundedCornerShape(18.dp))
+                                .background(AppTheme.colors.surfaceVariant.copy(alpha = 0.5f))
+                                .border(
+                                    BorderStroke(1.dp, Color.Gray.copy(alpha = 0.5f)),
+                                    RoundedCornerShape(18.dp)),
+                            contentAlignment = Alignment.CenterStart
                         ) {
                             BasicTextField(
                                 value = state.lastLoadedUrl ?: "",
                                 onValueChange = {}, // Read-only
                                 readOnly = true,
                                 singleLine = true,
-                                textStyle = MaterialTheme.typography.bodyMedium.copy(
-                                    color = MaterialTheme.colorScheme.onSurface,
+                                textStyle = AppTheme.typography.bodyMedium.copy(
+                                    color = AppTheme.colors.onSurface,
                                     textAlign = TextAlign.Start
                                 ),
                                 modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp)
@@ -205,17 +217,14 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
                         }
                     }
                 }
-            )
-        })
-    { innerPadding ->
+        )
         WebView(
             state = state,
-            modifier = Modifier.padding(innerPadding).fillMaxSize(),
+            modifier = Modifier.weight(1f).fillMaxWidth(),
             navigator = navigator,
             webViewJsBridge = webViewBridge,
             onCreated = { webView ->
                 navigator.evaluateJavaScript(bridgeBootstrapScript)
-            },
-        )
+            })
     }
 }

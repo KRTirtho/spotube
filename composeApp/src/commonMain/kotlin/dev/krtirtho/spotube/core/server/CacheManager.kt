@@ -51,13 +51,11 @@ data class CacheEntry(
     val filename: String,
     val sizeBytes: Long,
     val createdAtMs: Long,
-    val contentType: String = "application/octet-stream",
-)
+    val contentType: String = "application/octet-stream")
 
 class CacheManager(
     private val paths: Paths,
-    private val settingsRepository: SettingsRepository,
-) {
+    private val settingsRepository: SettingsRepository) {
     private val fileSystem: FileSystem = FileSystem.SYSTEM
     private val cacheMutex: Mutex = Mutex()
     private val json: Json = Json { ignoreUnknownKeys = true }
@@ -160,15 +158,13 @@ class CacheManager(
         trackId: String,
         filename: String,
         allBytes: ByteArray,
-        contentType: String,
-    ) {
+        contentType: String) {
         val entry = CacheEntry(
             trackId = trackId,
             filename = filename,
             sizeBytes = allBytes.size.toLong(),
             createdAtMs = kotlin.time.Clock.System.now().toEpochMilliseconds(),
-            contentType = contentType,
-        )
+            contentType = contentType)
         cacheMutex.withLock {
             val index = readCacheIndex()
             writeCacheIndex(CacheIndex(

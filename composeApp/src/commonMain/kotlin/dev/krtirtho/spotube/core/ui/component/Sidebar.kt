@@ -17,33 +17,33 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
+import com.composeunstyled.LocalTextStyle
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
-import dev.krtirtho.spotube.core.ui.base.SecondaryButton
-import dev.krtirtho.spotube.core.ui.base.copyPadding
-import dev.krtirtho.spotube.core.ui.base.copyShape
 
 /**
  * The shared navigation item used by every sidebar in the app (the main app sidebar
@@ -60,64 +60,57 @@ fun SidebarItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     expanded: Boolean = true,
-    badge: (@Composable BoxScope.() -> Unit)? = null,
-) {
-    val itemContent: @Composable RowScope.() -> Unit = {
-        Box(modifier = Modifier.size(16.dp)) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                tint = if (selected) {
-                    MaterialTheme.colorScheme.primary
-                } else {
-                    MaterialTheme.colorScheme.onSurfaceVariant
-                },
-            )
-            badge?.invoke(this)
-        }
-        AnimatedVisibility(visible = expanded, enter = fadeIn(), exit = fadeOut()) {
-            Text(
-                text = label,
-                maxLines = 1,
-                softWrap = false,
-                style = LocalTextStyle.current.copy(
-                    fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                    fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
-                    color = if (selected) {
-                        MaterialTheme.colorScheme.onSecondaryContainer
+    badge: (@Composable BoxScope.() -> Unit)? = null) {
+    val itemContent: @Composable () -> Unit = {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically) {
+            Box(modifier = Modifier.size(16.dp)) {
+                MillenniumIcon(
+                    imageVector = icon,
+                    contentDescription = label,
+                    tint = if (selected) {
+                        AppTheme.colors.primary
                     } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    }
+                        AppTheme.colors.onSurfaceVariant
+                    })
+                badge?.invoke(this)
+            }
+            AnimatedVisibility(visible = expanded, enter = fadeIn(), exit = fadeOut()) {
+                Text(
+                    text = label,
+                    singleLine = true,
+                    style = LocalTextStyle.current.copy(
+                        fontSize = AppTheme.typography.labelMedium.fontSize,
+                        fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Medium,
+                        color = if (selected) {
+                            AppTheme.colors.onSecondaryContainer
+                        } else {
+                            AppTheme.colors.onSurfaceVariant
+                        }
+                    )
                 )
-            )
+            }
+            Spacer(modifier = if (expanded) Modifier.weight(1f) else Modifier)
         }
-        Spacer(modifier = if (expanded) Modifier.weight(1f) else Modifier)
     }
 
     val buttonModifier = modifier
         .fillMaxWidth()
         .padding(horizontal = 7.dp, vertical = 2.dp)
-    val contentPadding = PaddingValues(horizontal = 5.dp)
 
     if (selected) {
-        SecondaryButton(
+        MillenniumButton(
             onClick = onClick,
             modifier = buttonModifier,
-            theme = LocalBaseUITheme.current.buttons.secondary
-                .copyPadding(contentPadding)
-                .copyShape(RoundedCornerShape(5.dp)),
-            content = itemContent,
-        )
+            style = MillenniumButtonStyle.Secondary,
+            content = itemContent)
     } else {
-        OutlineButton(
+        MillenniumButton(
             onClick = onClick,
             modifier = buttonModifier,
-            theme = LocalBaseUITheme.current.buttons.outline
-                .copyPadding(contentPadding)
-                .copyShape(RoundedCornerShape(5.dp)),
-            hoverOnly = true,
-            content = itemContent,
-        )
+            style = MillenniumButtonStyle.Quiet,
+            content = itemContent)
     }
 }
 
@@ -127,16 +120,14 @@ fun SidebarItem(
 @Composable
 fun SidebarSectionLabel(
     text: String,
-    expanded: Boolean = true,
-) {
+    expanded: Boolean = true) {
     AnimatedVisibility(visible = expanded) {
         Text(
             text = text.uppercase(),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = AppTheme.typography.labelSmall,
+            color = AppTheme.colors.onSurfaceVariant,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 24.dp, vertical = 8.dp),
-        )
+                .padding(horizontal = 24.dp, vertical = 8.dp))
     }
 }

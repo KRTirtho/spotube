@@ -17,6 +17,17 @@
 
 package dev.krtirtho.spotube.modules.shell
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumIndeterminateProgress
+import org.spotube.millennium.composables.MillenniumTextField
+import org.spotube.millennium.theme.millenniumSurface
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,13 +35,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,9 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioStream
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
-import dev.krtirtho.spotube.core.ui.base.SecondaryButton
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
@@ -59,15 +66,13 @@ fun PlayerOptionDialogs(viewModel: PlayerOptionsViewModel) {
             onMinutesChange = viewModel::updateSleepTimerMinutes,
             onStart = viewModel::startSleepTimer,
             onCancelTimer = viewModel::cancelSleepTimer,
-            onDismiss = viewModel::dismissSleepTimerDialog,
-        )
+            onDismiss = viewModel::dismissSleepTimerDialog)
     }
 
     uiState.trackDetails?.let { details ->
         TrackDetailsDialog(
             details = details,
-            onDismiss = viewModel::dismissTrackDetails,
-        )
+            onDismiss = viewModel::dismissTrackDetails)
     }
 }
 
@@ -78,48 +83,47 @@ private fun SleepTimerDialog(
     onMinutesChange: (String) -> Unit,
     onStart: () -> Unit,
     onCancelTimer: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    ThemedDialog(
+    onDismiss: () -> Unit) {
+    MillenniumDialog(
+        visible = true,
         onDismissRequest = onDismiss,
-        title = {
-            Text("Sleep timer", style = MaterialTheme.typography.titleLarge)
-        },
-        actions = {
-            if (remainingMs != null) {
-                SecondaryButton(onClick = onCancelTimer) { Text("Cancel timer") }
-            }
-            SecondaryButton(onClick = onDismiss) { Text("Close") }
-            PrimaryButton(
-                onClick = onStart,
-                enabled = minutes.toLongOrNull()?.let { it in 1L..600L } == true,
-            ) {
-                Text("Start")
-            }
-        },
-    ) {
+        title = "Sleep timer") {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             if (remainingMs != null) {
                 Text(
                     text = "Playback will pause in ${formatRemainingTime(remainingMs)}.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                )
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colors.primary)
             } else {
                 Text(
                     text = "Pause playback after the selected number of minutes.",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+                    style = AppTheme.typography.bodyMedium)
             }
-            OutlinedTextField(
-                value = minutes,
-                onValueChange = onMinutesChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("Minutes") },
-                supportingText = { Text("Choose between 1 and 600 minutes") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true,
-            )
+            val minutesState = rememberTextFieldState(minutes)
+            LaunchedEffect(minutesState.text) {
+                onMinutesChange(minutesState.text.toString())
+            }
+            MillenniumTextField(
+                state = minutesState,
+                label = "Minutes",
+                placeholder = "Choose between 1 and 600 minutes",
+                modifier = Modifier.fillMaxWidth())
+
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (remainingMs != null) {
+                    MillenniumButton(
+                        onClick = onCancelTimer,
+                        style = MillenniumButtonStyle.Secondary) { Text("Cancel timer") }
+                }
+                MillenniumButton(
+                    onClick = onDismiss,
+                    style = MillenniumButtonStyle.Secondary) { Text("Close") }
+                MillenniumButton(
+                    onClick = onStart,
+                    enabled = minutes.toLongOrNull()?.let { it in 1L..600L } == true) {
+                    Text("Start")
+                }
+            }
         }
     }
 }
@@ -127,31 +131,22 @@ private fun SleepTimerDialog(
 @Composable
 private fun TrackDetailsDialog(
     details: PlayerTrackDetails,
-    onDismiss: () -> Unit,
-) {
-    ThemedDialog(
+    onDismiss: () -> Unit) {
+    MillenniumDialog(
+        visible = true,
         onDismissRequest = onDismiss,
-        title = {
-            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Text("Track details", style = MaterialTheme.typography.titleLarge)
-                Text(
-                    details.track.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
-        },
-        actions = {
-            SecondaryButton(onClick = onDismiss) { Text("Close") }
-        },
-    ) {
+        title = "Track details") {
         Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+            Text(
+                details.track.title,
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.onSurfaceVariant)
             if (details.isLoading) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    CircularProgressIndicator()
+                    horizontalArrangement = Arrangement.Center) {
+                    MillenniumIndeterminateProgress(
+                        modifier = Modifier.fillMaxWidth())
                 }
             }
 
@@ -159,17 +154,17 @@ private fun TrackDetailsDialog(
                 LocalCacheBanner(details.localCacheEntry)
             }
             if (details.localCacheEntry == null && details.activeStreamMatchesPreference == false) {
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    color = MaterialTheme.colorScheme.tertiaryContainer,
-                ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .millenniumSurface(
+                            background = SolidColor(AppTheme.colors.tertiaryContainer),
+                            shape = RoundedCornerShape(12.dp))) {
                     Text(
                         "The playback URL was resolved with different streaming settings. The highlighted stream matches your current preference; the active URL refreshes on the next stream request.",
                         modifier = Modifier.padding(12.dp),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onTertiaryContainer,
-                    )
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onTertiaryContainer)
                 }
             }
 
@@ -177,12 +172,11 @@ private fun TrackDetailsDialog(
 
             Text(
                 "Matched audio source",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
+                style = AppTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold)
             val source = details.matchedSource
             if (details.isLoading) {
-                Text("Loading matched source…", style = MaterialTheme.typography.bodySmall)
+                Text("Loading matched source…", style = AppTheme.typography.bodySmall)
             } else if (source == null) {
                 Text(
                     details.error ?: if (details.localCacheEntry != null) {
@@ -190,9 +184,8 @@ private fun TrackDetailsDialog(
                     } else {
                         "No matched source is available."
                     },
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant)
             } else {
                 DetailRow("Title", source.title)
                 DetailRow("ID", source.id)
@@ -204,78 +197,70 @@ private fun TrackDetailsDialog(
 
             Text(
                 "Available streams",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.SemiBold,
-            )
+                style = AppTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold)
             when {
                 details.localCacheEntry != null && details.streams.isEmpty() -> Text(
                     "This track is being served from the local cache. Stream variants are not used for this playback.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant)
 
-                details.isLoading -> Text("Loading streams…", style = MaterialTheme.typography.bodySmall)
+                details.isLoading -> Text("Loading streams…", style = AppTheme.typography.bodySmall)
                 details.streams.isEmpty() -> Text(
                     details.error ?: "No streams are available for this source.",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant)
 
                 else -> details.streams.forEach { stream ->
                     val isSelected = stream == details.preferredStream
-                    Surface(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(12.dp),
-                        color = if (isSelected) {
-                            MaterialTheme.colorScheme.primaryContainer
-                        } else {
-                            MaterialTheme.colorScheme.surfaceContainerHigh
-                        },
-                    ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .millenniumSurface(
+                                background = SolidColor(
+                                    if (isSelected) {
+                                        AppTheme.colors.primaryContainer
+                                    } else {
+                                        AppTheme.colors.surfaceContainerHigh
+                                    }),
+                                shape = RoundedCornerShape(12.dp))) {
                         Column(
                             modifier = Modifier.padding(12.dp),
-                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                        ) {
+                            verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                            ) {
+                                horizontalArrangement = Arrangement.SpaceBetween) {
                                 Text(
                                     text = streamFormatAndQuality(stream),
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = AppTheme.typography.bodyMedium,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                                     color = if (isSelected) {
-                                        MaterialTheme.colorScheme.onPrimaryContainer
+                                        AppTheme.colors.onPrimaryContainer
                                     } else {
-                                        MaterialTheme.colorScheme.onSurface
+                                        AppTheme.colors.onSurface
                                     },
-                                    modifier = Modifier.weight(1f),
-                                )
+                                    modifier = Modifier.weight(1f))
                                 if (isSelected) {
-                                    Icon(
+                                    MillenniumIcon(
                                         imageVector = Iconsax.IconsaxCheckCircle,
                                         contentDescription = "Currently selected stream",
-                                        tint = MaterialTheme.colorScheme.primary,
-                                    )
+                                        tint = AppTheme.colors.primary)
                                 }
                             }
                             Text(
                                 "${stream.protocol} • ${stream.codec} • ${stream.container}",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                                style = AppTheme.typography.labelSmall,
+                                color = AppTheme.colors.onSurfaceVariant)
                             Text(
                                 stream.url,
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                                style = AppTheme.typography.labelSmall,
+                                color = AppTheme.colors.onSurfaceVariant)
                             if (isSelected) {
                                 Text(
                                     "Matches your streaming format & quality preference",
-                                    style = MaterialTheme.typography.labelSmall,
-                                    color = MaterialTheme.colorScheme.primary,
-                                )
+                                    style = AppTheme.typography.labelSmall,
+                                    color = AppTheme.colors.primary)
                             }
                         }
                     }
@@ -285,39 +270,40 @@ private fun TrackDetailsDialog(
             details.activeStreamUrl?.let { activeUrl ->
                 DetailRow("Active playback URL", activeUrl)
             }
+
+            MillenniumButton(
+                onClick = onDismiss,
+                style = MillenniumButtonStyle.Secondary) { Text("Close") }
         }
     }
 }
 
 @Composable
 private fun LocalCacheBanner(entry: CacheEntry) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.secondaryContainer,
-    ) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .millenniumSurface(
+                background = SolidColor(AppTheme.colors.secondaryContainer),
+                shape = RoundedCornerShape(12.dp))) {
         Row(
             modifier = Modifier.padding(12.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
+            verticalAlignment = Alignment.CenterVertically) {
+            MillenniumIcon(
                 imageVector = Iconsax.IconsaxDirectboxReceive,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSecondaryContainer,
-            )
+                tint = AppTheme.colors.onSecondaryContainer)
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
                     "Served from local cache",
-                    style = MaterialTheme.typography.labelLarge,
+                    style = AppTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
+                    color = AppTheme.colors.onSecondaryContainer)
                 Text(
                     "${entry.filename} • ${formatFileSize(entry.sizeBytes)}",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
-                )
+                    style = AppTheme.typography.labelSmall,
+                    color = AppTheme.colors.onSecondaryContainer)
             }
         }
     }
@@ -327,9 +313,8 @@ private fun LocalCacheBanner(entry: CacheEntry) {
 private fun TrackMetadataSection(track: MetadataTrack) {
     Text(
         "Metadata track",
-        style = MaterialTheme.typography.titleSmall,
-        fontWeight = FontWeight.SemiBold,
-    )
+        style = AppTheme.typography.titleSmall,
+        fontWeight = FontWeight.SemiBold)
     DetailRow("ID", track.id)
     DetailRow("Title", track.title)
     DetailRow("Artists", track.artists.joinToString { it.name })
@@ -354,19 +339,16 @@ private fun DetailRow(label: String, value: String?) {
     if (value.isNullOrBlank()) return
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
+        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Text(
             label,
             modifier = Modifier.weight(0.38f),
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+            style = AppTheme.typography.labelMedium,
+            color = AppTheme.colors.onSurfaceVariant)
         Text(
             value,
             modifier = Modifier.weight(0.62f),
-            style = MaterialTheme.typography.bodySmall,
-        )
+            style = AppTheme.typography.bodySmall)
     }
 }
 

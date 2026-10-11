@@ -65,15 +65,13 @@ sealed interface AlbumScreenState {
             override val isSaved: Boolean = false,
             override val tracks: List<MetadataTrack> = emptyList(),
             override val nextPagination: PaginationStrategy? = null,
-            override val isSaving: Boolean = false,
-        ) : Data {
+            override val isSaving: Boolean = false) : Data {
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 album = album,
                 isSaved = isSaved,
                 tracks = tracks,
                 nextPagination = nextPagination,
-                isSaving = isSaving,
-            )
+                isSaving = isSaving)
         }
 
         data class LoadingMore(
@@ -81,8 +79,7 @@ sealed interface AlbumScreenState {
             override val isSaved: Boolean = false,
             override val tracks: List<MetadataTrack> = emptyList(),
             override val nextPagination: PaginationStrategy? = null,
-            override val isSaving: Boolean = false,
-        ) : Data
+            override val isSaving: Boolean = false) : Data
     }
 
     data class Error(val message: String) : AlbumScreenState
@@ -99,8 +96,7 @@ class AlbumViewModel(
     private val blacklistRepository: BlacklistRepository,
     private val shareService: ShareService,
     private val downloadManager: DownloadManager,
-    private val remotePlaybackController: RemotePlaybackController,
-) : ViewModel(), KoinComponent {
+    private val remotePlaybackController: RemotePlaybackController) : ViewModel(), KoinComponent {
     private val logger by injectLogger<AlbumViewModel>()
 
     private val _state = MutableStateFlow<AlbumScreenState>(AlbumScreenState.Loading)
@@ -126,8 +122,7 @@ class AlbumViewModel(
         audioPlayerQueue.currentQueueEntryFlow,
         savedTracksRepository.savedTracksIdsFlow,
         _blacklistedTrackIds,
-        _blacklistedArtistIds,
-    ) { queue, currentEntry, savedIds, blacklistedTracks, blacklistedArtists ->
+        _blacklistedArtistIds) { queue, currentEntry, savedIds, blacklistedTracks, blacklistedArtists ->
         TrackOptionsContext(
             currentTrackId = (currentEntry as? QueueEntry.StreamingTrack)?.track?.id,
             queueTrackIds = queue.mapNotNull { entry ->
@@ -135,8 +130,7 @@ class AlbumViewModel(
             }.toSet(),
             savedTrackIds = savedIds,
             blacklistedTrackIds = blacklistedTracks,
-            blacklistedArtistIds = blacklistedArtists,
-        )
+            blacklistedArtistIds = blacklistedArtists)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), TrackOptionsContext())
 
     init {
@@ -175,8 +169,7 @@ class AlbumViewModel(
             album = albumInfo?.first,
             isSaved = albumInfo?.second ?: false,
             tracks = tracksResult?.items ?: emptyList(),
-            nextPagination = tracksResult?.nextPagination,
-        )
+            nextPagination = tracksResult?.nextPagination)
     }.onFailure { e ->
         logger.e(e) { "Failed to load album" }
         _state.value = AlbumScreenState.Error(e.message ?: "Unknown error")
@@ -193,8 +186,7 @@ class AlbumViewModel(
                 isSaved = currentState.isSaved,
                 tracks = currentState.tracks + (result?.items ?: emptyList()),
                 nextPagination = result?.nextPagination,
-                isSaving = currentState.isSaving,
-            )
+                isSaving = currentState.isSaving)
         }
     }.onFailure { e ->
         logger.e(e) { "Failed to load more tracks" }
@@ -245,8 +237,7 @@ class AlbumViewModel(
             type = RemoteCollectionType.Album,
             id = albumId,
             title = title,
-            startTrack = track,
-        )
+            startTrack = track)
     }
 
     fun refresh() {
@@ -319,8 +310,7 @@ class AlbumViewModel(
             runCatching {
                 libraryRepository.addTracksToPlaylist(
                     playlistId,
-                    _tracksToAddToPlaylist.value.map { it.id },
-                )
+                    _tracksToAddToPlaylist.value.map { it.id })
             }.onFailure { e ->
                 logger.e(e) { "Failed to add tracks to playlist" }
             }.onSuccess {

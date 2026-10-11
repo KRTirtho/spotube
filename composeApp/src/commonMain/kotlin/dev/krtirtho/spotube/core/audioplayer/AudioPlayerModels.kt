@@ -30,8 +30,7 @@ data class MediaItem(
     val duration: Duration,
     val coverURL: String,
     val url: String,
-    val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
-)
+    val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE)
 
 enum class LoopState {
     NONE, ONE, ALL;
@@ -60,8 +59,7 @@ sealed interface QueueEntry {
         val track: MetadataTrack,
         override val url: String,
         val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
-        override val addedBy: String = "",
-    ) : QueueEntry
+        override val addedBy: String = "") : QueueEntry
 
     @Serializable
     @SerialName("local")
@@ -72,8 +70,7 @@ sealed interface QueueEntry {
         val album: String?,
         val coverBytes: ByteArray?,
         override val url: String,
-        override val addedBy: String = "",
-    ) : QueueEntry {
+        override val addedBy: String = "") : QueueEntry {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
@@ -111,14 +108,12 @@ sealed interface QueueCollectionEntry {
     @Serializable
     @SerialName("playlist")
     data class Playlist(
-        override val id: String,
-    ) : QueueCollectionEntry
+        override val id: String) : QueueCollectionEntry
 
     @Serializable
     @SerialName("album")
     data class Album(
-        override val id: String,
-    ) : QueueCollectionEntry
+        override val id: String) : QueueCollectionEntry
 
     @Serializable
     @SerialName("saved_tracks")
@@ -132,5 +127,4 @@ data class PersistedQueueState(
     val entries: List<QueueEntry>,
     val currentIndex: Int,
     val currentCollectionEntry: QueueCollectionEntry? = null,
-    val collectionHistory: List<QueueCollectionEntry> = emptyList(),
-)
+    val collectionHistory: List<QueueCollectionEntry> = emptyList())

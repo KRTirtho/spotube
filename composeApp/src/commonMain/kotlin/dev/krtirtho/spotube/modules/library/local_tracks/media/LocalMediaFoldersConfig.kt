@@ -24,8 +24,7 @@ import kotlinx.coroutines.flow.map
 
 class LocalMediaFoldersConfig(
     private val settingsRepository: SettingsRepository,
-    private val paths: Paths,
-) {
+    private val paths: Paths) {
     val configuredRootsFlow: Flow<List<String>> = settingsRepository.userSettings.map { settings ->
         val cacheRoot = if (settings.enableMusicCaching) {
             listOf(settings.cacheFolder ?: paths.getMusicCacheDirPath())

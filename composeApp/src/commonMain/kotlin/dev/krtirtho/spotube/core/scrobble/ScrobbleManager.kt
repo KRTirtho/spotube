@@ -52,8 +52,7 @@ class ScrobbleManager(
     private val audioPlayer: AudioPlayerInterface,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val scrobblePluginSource: ScrobblePluginSource,
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO),
-) : KoinComponent {
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)) : KoinComponent {
 
     private val logger by injectLogger<ScrobbleManager>()
 
@@ -69,14 +68,12 @@ class ScrobbleManager(
                 audioPlayerQueue.currentQueueEntryFlow,
                 audioPlayer.playerStateFlow,
                 audioPlayer.positionFlow,
-                audioPlayer.durationFlow,
-            ) { entry, playerState, position, duration ->
+                audioPlayer.durationFlow) { entry, playerState, position, duration ->
                 PlaybackSnapshot(
                     entry = entry,
                     playerState = playerState,
                     positionMs = position.inWholeMilliseconds,
-                    playerDurationMs = duration.inWholeMilliseconds,
-                )
+                    playerDurationMs = duration.inWholeMilliseconds)
             }.collect(::onPlaybackSnapshot)
         }
     }
@@ -137,8 +134,7 @@ class ScrobbleManager(
         scrobbled = true
         val track = entry.toScrobbleTrack(
             timestamp = playbackStartedAtEpochSeconds ?: nowEpochSeconds(),
-            durationMs = durationMs,
-        )
+            durationMs = durationMs)
         scope.launch { submitScrobble(track) }
     }
 
@@ -197,8 +193,7 @@ class ScrobbleManager(
                 artistName = track.artists.joinToString(", ") { it.name },
                 albumName = track.album?.title,
                 streamingProvider = resolveStreamingProvider(track),
-                durationMs = durationMs,
-            )
+                durationMs = durationMs)
 
             is QueueEntry.LocalTrack -> ScrobbleTrack(
                 timestamp = timestamp,
@@ -209,8 +204,7 @@ class ScrobbleManager(
                 artistName = artists.joinToString(", "),
                 albumName = album,
                 streamingProvider = LOCAL_PROVIDER,
-                durationMs = durationMs,
-            )
+                durationMs = durationMs)
         }
     }
 
@@ -245,8 +239,7 @@ class ScrobbleManager(
         val entry: QueueEntry?,
         val playerState: PlayerState,
         val positionMs: Long,
-        val playerDurationMs: Long,
-    )
+        val playerDurationMs: Long)
 
     companion object {
         /** Tracks shorter than this are never scrobbled (Last.fm rule). */

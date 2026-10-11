@@ -38,8 +38,7 @@ internal val welcomePrimaryLabels: List<StringResource> = listOf(
     Res.string.welcome_lets_go,
     Res.string.welcome_next,
     Res.string.welcome_next,
-    Res.string.welcome_get_started,
-)
+    Res.string.welcome_get_started)
 
 internal val welcomeDonations: List<DonationOption> = listOf(
     DonationOption(
@@ -47,20 +46,16 @@ internal val welcomeDonations: List<DonationOption> = listOf(
         title = Res.string.welcome_donate_patreon_title,
         subtitle = Res.string.welcome_donate_patreon_subtitle,
         url = "https://patreon.com/krtirtho",
-        icon = Iconsax.BrandPatreon,
-    ),
+        icon = Iconsax.BrandPatreon),
     DonationOption(
         id = "buymeacoffee",
         title = Res.string.welcome_donate_bmac_title,
         subtitle = Res.string.welcome_donate_bmac_subtitle,
         url = "https://www.buymeacoffee.com/krtirtho",
-        icon = Iconsax.BrandBuyMeACoffee,
-    ),
+        icon = Iconsax.BrandBuyMeACoffee),
     DonationOption(
         id = "opencollective",
         title = Res.string.welcome_donate_opencollective_title,
         subtitle = Res.string.welcome_donate_opencollective_subtitle,
         url = "https://opencollective.com/spotube",
-        icon = Iconsax.BrandOpencollective,
-    ),
-)
+        icon = Iconsax.BrandOpencollective))

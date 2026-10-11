@@ -17,20 +17,25 @@
 
 package dev.krtirtho.spotube.modules.downloads
 
+
+import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -46,9 +51,8 @@ fun DownloadProgressIcon(
     modifier: Modifier = Modifier,
     size: Dp = 24.dp,
     strokeWidth: Dp = 2.dp,
-    tint: Color = MaterialTheme.colorScheme.onSurface,
-    progressTint: Color = MaterialTheme.colorScheme.primary,
-) {
+    tint: Color = AppTheme.colors.onSurface,
+    progressTint: Color = AppTheme.colors.primary) {
     val downloadsViewModel = koinViewModel<DownloadsViewModel>()
     val downloads by downloadsViewModel.downloads.collectAsStateWithLifecycle()
 
@@ -68,33 +72,36 @@ fun DownloadProgressIcon(
             modifier = modifier.size(size),
             contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator(
-                progress = { progress },
-                modifier = Modifier.size(size),
-                strokeWidth = strokeWidth,
-                color = progressTint,
-            )
-            Icon(
+            Canvas(Modifier.size(size)) {
+                val diameter = this.size.minDimension
+                val stroke = strokeWidth.toPx()
+                drawArc(
+                    color = progressTint,
+                    startAngle = -90f,
+                    sweepAngle = 360f * progress,
+                    useCenter = false,
+                    style = Stroke(width = stroke),
+                    topLeft = Offset(stroke / 2f, stroke / 2f),
+                    size = Size(diameter - stroke, diameter - stroke))
+            }
+            MillenniumIcon(
                 imageVector = icon,
                 contentDescription = contentDescription,
                 tint = tint,
-                modifier = Modifier.size(size * 0.6f),
-            )
+                modifier = Modifier.size(size * 0.6f))
         }
     } else {
-        Icon(
+        MillenniumIcon(
             imageVector = icon,
             contentDescription = contentDescription,
             tint = tint,
-            modifier = modifier.size(size),
-        )
+            modifier = modifier.size(size))
     }
 }
 
 @Composable
 fun DownloadBadgeIndicator(
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val downloadsViewModel = koinViewModel<DownloadsViewModel>()
     val downloads by downloadsViewModel.downloads.collectAsStateWithLifecycle()
 
@@ -105,7 +112,7 @@ fun DownloadBadgeIndicator(
             modifier = modifier
                 .size(8.dp)
                 .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primary)
+                .background(AppTheme.colors.primary)
         )
     }
 }

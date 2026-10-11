@@ -47,8 +47,7 @@ data class SearchPagedState<T>(
     val nextPagination: PaginationStrategy? = null,
     val hasNextPage: Boolean = true,
     val isLoading: Boolean = false,
-    val error: String? = null,
-)
+    val error: String? = null)
 
 data class SearchScreenState(
     val query: String = "",
@@ -60,15 +59,13 @@ data class SearchScreenState(
     val albums: SearchPagedState<MetadataAlbum.Basic> = SearchPagedState(),
     val artists: SearchPagedState<MetadataArtist.Basic> = SearchPagedState(),
     val playlists: SearchPagedState<MetadataPlaylist> = SearchPagedState(),
-    val users: SearchPagedState<MetadataUser> = SearchPagedState(),
-)
+    val users: SearchPagedState<MetadataUser> = SearchPagedState())
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchScreenViewModel(
     private val repository: SearchRepository,
     private val savedTracksRepository: SavedTracksRepository,
-    private val database: Database,
-) : ViewModel() {
+    private val database: Database) : ViewModel() {
     companion object {
         private val RECENT_SEARCHES_KEY = stringPreferencesKey("recent_searches")
         private val SEARCH_TYPES_ORDER = listOf(
@@ -77,8 +74,7 @@ class SearchScreenViewModel(
             MetadataSupportedSearchType.PLAYLIST,
             MetadataSupportedSearchType.ALBUM,
             MetadataSupportedSearchType.ARTIST,
-            MetadataSupportedSearchType.USER,
-        )
+            MetadataSupportedSearchType.USER)
         private const val QUERY_DEBOUNCE_MS = 350L
         private const val RECENT_SEARCHES_LIMIT = 12
         private const val TRACK_PAGE_SIZE = 20
@@ -130,8 +126,7 @@ class SearchScreenViewModel(
             albums = SearchPagedState(),
             artists = SearchPagedState(),
             playlists = SearchPagedState(),
-            users = SearchPagedState(),
-        )
+            users = SearchPagedState())
     }
 
     fun clearAllRecentSearches() {
@@ -157,8 +152,7 @@ class SearchScreenViewModel(
             albums = SearchPagedState(),
             artists = SearchPagedState(),
             playlists = SearchPagedState(),
-            users = SearchPagedState(),
-        )
+            users = SearchPagedState())
         if (_state.value.query.isNotBlank()) {
             viewModelScope.launch {
                 refreshCurrentSelection(reset = true)
@@ -232,8 +226,7 @@ class SearchScreenViewModel(
                 _state.value = _state.value.copy(
                     supportedSearchTypes = ordered,
                     selectedSearchType = selectedType,
-                    isLoadingSearchTypes = false,
-                )
+                    isLoadingSearchTypes = false)
 
                 if (_state.value.query.isNotBlank()) {
                     refreshCurrentSelection(reset = true)
@@ -243,8 +236,7 @@ class SearchScreenViewModel(
                     isLoadingSearchTypes = false,
                     supportedSearchTypes = emptyList(),
                     selectedSearchType = null,
-                    tracks = SearchPagedState(error = it.message ?: "Failed to load search capabilities"),
-                )
+                    tracks = SearchPagedState(error = it.message ?: "Failed to load search capabilities"))
             }
         }
     }
@@ -257,8 +249,7 @@ class SearchScreenViewModel(
                 albums = SearchPagedState(),
                 artists = SearchPagedState(),
                 playlists = SearchPagedState(),
-                users = SearchPagedState(),
-            )
+                users = SearchPagedState())
             return
         }
 
@@ -284,8 +275,7 @@ class SearchScreenViewModel(
             albums = SearchPagedState(isLoading = true),
             artists = SearchPagedState(isLoading = true),
             playlists = SearchPagedState(isLoading = true),
-            users = SearchPagedState(isLoading = true),
-        )
+            users = SearchPagedState(isLoading = true))
 
         if (MetadataSupportedSearchType.ALL in supported) {
             runCatching {
@@ -305,41 +295,34 @@ class SearchScreenViewModel(
                         items = tracks.take(TRACK_PAGE_SIZE),
                         nextPagination = null,
                         hasNextPage = false,
-                        isLoading = false,
-                    ),
+                        isLoading = false),
                     playlists = SearchPagedState(
                         items = playlists.take(ALL_ROW_PAGE_SIZE),
                         nextPagination = null,
                         hasNextPage = false,
-                        isLoading = false,
-                    ),
+                        isLoading = false),
                     albums = SearchPagedState(
                         items = albums.take(ALL_ROW_PAGE_SIZE),
                         nextPagination = null,
                         hasNextPage = false,
-                        isLoading = false,
-                    ),
+                        isLoading = false),
                     artists = SearchPagedState(
                         items = artists.take(ALL_ROW_PAGE_SIZE),
                         nextPagination = null,
                         hasNextPage = false,
-                        isLoading = false,
-                    ),
+                        isLoading = false),
                     users = SearchPagedState(
                         items = users.take(ALL_ROW_PAGE_SIZE),
                         nextPagination = null,
                         hasNextPage = false,
-                        isLoading = false,
-                    ),
-                )
+                        isLoading = false))
             }.onFailure {
                 _state.value = _state.value.copy(
                     tracks = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"),
                     playlists = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"),
                     albums = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"),
                     artists = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"),
-                    users = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"),
-                )
+                    users = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"))
             }
             return@coroutineScope
         }
@@ -356,8 +339,7 @@ class SearchScreenViewModel(
             playlists = _state.value.playlists.copy(items = _state.value.playlists.items.take(ALL_ROW_PAGE_SIZE)),
             albums = _state.value.albums.copy(items = _state.value.albums.items.take(ALL_ROW_PAGE_SIZE)),
             artists = _state.value.artists.copy(items = _state.value.artists.items.take(ALL_ROW_PAGE_SIZE)),
-            users = _state.value.users.copy(items = _state.value.users.items.take(ALL_ROW_PAGE_SIZE)),
-        )
+            users = _state.value.users.copy(items = _state.value.users.items.take(ALL_ROW_PAGE_SIZE)))
     }
 
     private suspend fun loadTracks(reset: Boolean) {
@@ -390,16 +372,14 @@ class SearchScreenViewModel(
                     nextPagination = page.nextPagination,
                     hasNextPage = page.nextPagination != null,
                     isLoading = false,
-                    error = null,
-                )
+                    error = null)
             )
         }.onFailure { throwable ->
             _state.value = _state.value.copy(
                 tracks = _state.value.tracks.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search tracks",
-                )
+                    error = throwable.message ?: "Failed to search tracks")
             )
         }
     }
@@ -432,16 +412,14 @@ class SearchScreenViewModel(
                     nextPagination = page.nextPagination,
                     hasNextPage = page.nextPagination != null,
                     isLoading = false,
-                    error = null,
-                )
+                    error = null)
             )
         }.onFailure { throwable ->
             _state.value = _state.value.copy(
                 albums = _state.value.albums.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search albums",
-                )
+                    error = throwable.message ?: "Failed to search albums")
             )
         }
     }
@@ -474,16 +452,14 @@ class SearchScreenViewModel(
                     nextPagination = page.nextPagination,
                     hasNextPage = page.nextPagination != null,
                     isLoading = false,
-                    error = null,
-                )
+                    error = null)
             )
         }.onFailure { throwable ->
             _state.value = _state.value.copy(
                 artists = _state.value.artists.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search artists",
-                )
+                    error = throwable.message ?: "Failed to search artists")
             )
         }
     }
@@ -516,16 +492,14 @@ class SearchScreenViewModel(
                     nextPagination = page.nextPagination,
                     hasNextPage = page.nextPagination != null,
                     isLoading = false,
-                    error = null,
-                )
+                    error = null)
             )
         }.onFailure { throwable ->
             _state.value = _state.value.copy(
                 playlists = _state.value.playlists.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search playlists",
-                )
+                    error = throwable.message ?: "Failed to search playlists")
             )
         }
     }
@@ -558,16 +532,14 @@ class SearchScreenViewModel(
                     nextPagination = page.nextPagination,
                     hasNextPage = page.nextPagination != null,
                     isLoading = false,
-                    error = null,
-                )
+                    error = null)
             )
         }.onFailure { throwable ->
             _state.value = _state.value.copy(
                 users = _state.value.users.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search users",
-                )
+                    error = throwable.message ?: "Failed to search users")
             )
         }
     }

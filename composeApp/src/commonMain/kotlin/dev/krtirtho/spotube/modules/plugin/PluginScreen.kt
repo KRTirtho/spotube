@@ -17,6 +17,20 @@
 
 package dev.krtirtho.spotube.modules.plugin
 
+
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumIndeterminateProgress
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumTextField
+import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.millennium.theme.millenniumPanelBrush
+import org.spotube.millennium.theme.millenniumSurface
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,18 +48,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+import androidx.compose.foundation.text.input.rememberTextFieldState
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -61,14 +74,6 @@ import coil3.request.ImageRequest
 import coil3.request.crossfade
 import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.core.extras.kebabToTitleCase
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import dev.krtirtho.spotube.core.ui.base.Card
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
-import dev.krtirtho.spotube.core.ui.base.SecondaryButton
-import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
-import dev.krtirtho.spotube.core.ui.base.TextField
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDropdownBottomSheet
 import dev.krtirtho.spotube.core.ui.component.AdaptiveMenuItem
@@ -100,6 +105,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxLink
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import okio.Path
+import kotlinx.coroutines.flow.collect
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import spotube.composeapp.generated.resources.Res
@@ -139,37 +145,30 @@ private val OFFICIAL_PLUGIN_OWNERS = setOf("KRTirtho", "team-spotube")
 
 private val VERIFIED_PLUGIN_OWNERS = setOf<String>()
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PluginScreen(
     viewModel: PluginViewModel = koinViewModel(),
-    onboarding: Boolean = false,
-) {
-    BaseScaffold(
-        topBar = {
-            if (!onboarding) {
-                ApplicationMainBar(title = { Text(stringResource(Res.string.plugin_screen_title)) })
-            }
-        },
-    ) { innerPadding ->
+    onboarding: Boolean = false) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        if (!onboarding) {
+            ApplicationMainBar(title = { Text(stringResource(Res.string.plugin_screen_title)) })
+        }
         PluginScreenContent(
             viewModel = viewModel,
             onboarding = onboarding,
-            modifier = Modifier.padding(innerPadding),
-        )
+            modifier = Modifier.weight(1f))
     }
 }
 
 /**
- * The plugin management UI without its own [BaseScaffold] / app bar, so it can be embedded
+ * The plugin management UI without its own scaffold / app bar, so it can be embedded
  * as a tab in the large-screen settings layout as well as hosted by [PluginScreen].
  */
 @Composable
 internal fun PluginScreenContent(
     viewModel: PluginViewModel,
     onboarding: Boolean = false,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val shellBottomInset = LocalAppShellBottomInset.current
 
@@ -250,7 +249,7 @@ internal fun PluginScreenContent(
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
-                ) { CircularProgressIndicator() }
+                ) { MillenniumIndeterminateProgress(modifier = Modifier.widthIn(max = 160.dp)) }
             }
 
             is PluginUiState.Data -> {
@@ -274,18 +273,15 @@ internal fun PluginScreenContent(
                                         horizontal = 4.dp,
                                         vertical = 16.dp
                                     ),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                                ) {
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Text(
                                         stringResource(Res.string.welcome_plugins_title),
-                                        style = MaterialTheme.typography.headlineMedium,
-                                        fontWeight = FontWeight.SemiBold,
-                                    )
+                                        style = AppTheme.typography.headlineMedium,
+                                        fontWeight = FontWeight.SemiBold)
                                     Text(
                                         stringResource(Res.string.welcome_plugins_setup_guide),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
+                                        style = AppTheme.typography.bodyMedium,
+                                        color = AppTheme.colors.onSurfaceVariant)
                                 }
                             }
                             item {
@@ -293,17 +289,21 @@ internal fun PluginScreenContent(
                                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                                     modifier = Modifier.padding(bottom = 12.dp)
                                 ) {
-                                    OutlineButton(onClick = { viewModel.showOnboardingDiscovery(true) }) {
+                                    MillenniumButton(
+                                        onClick = { viewModel.showOnboardingDiscovery(true) },
+                                        style = MillenniumButtonStyle.Secondary) {
                                         Text(
                                             stringResource(Res.string.welcome_plugins_discover),
                                             fontWeight = if (data.onboardingDiscover) FontWeight.Bold else FontWeight.Normal
                                         )
                                     }
-                                    OutlineButton(onClick = {
-                                        viewModel.showOnboardingDiscovery(
-                                            false
-                                        )
-                                    }) {
+                                    MillenniumButton(
+                                        onClick = {
+                                            viewModel.showOnboardingDiscovery(
+                                                false
+                                            )
+                                        },
+                                        style = MillenniumButtonStyle.Secondary) {
                                         Text(
                                             stringResource(Res.string.welcome_plugins_sources),
                                             fontWeight = if (!data.onboardingDiscover) FontWeight.Bold else FontWeight.Normal
@@ -322,8 +322,7 @@ internal fun PluginScreenContent(
                                     selections = data.abilitySelections,
                                     onSelected = { ability, plugin ->
                                         viewModel.selectPlugin(ability, plugin)
-                                    },
-                                )
+                                    })
                             }
 
                             item {
@@ -336,15 +335,19 @@ internal fun PluginScreenContent(
                                 ) {
                                     Text(
                                         stringResource(Res.string.plugin_configure_title),
-                                        style = MaterialTheme.typography.titleLarge,
+                                        style = AppTheme.typography.titleLarge,
                                         fontWeight = FontWeight.SemiBold
                                     )
-                                    PrimaryButton(onClick = { viewModel.showInstallSheet() }) {
-                                        Icon(
-                                            Iconsax.IconsaxAdd,
-                                            contentDescription = stringResource(Res.string.plugin_install_section_title),
-                                        )
-                                        Text(stringResource(Res.string.plugin_install_section_title))
+                                    MillenniumButton(onClick = { viewModel.showInstallSheet() }) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                        ) {
+                                            MillenniumIcon(
+                                                Iconsax.IconsaxAdd,
+                                                contentDescription = stringResource(Res.string.plugin_install_section_title))
+                                            Text(stringResource(Res.string.plugin_install_section_title))
+                                        }
                                     }
                                 }
                             }
@@ -360,29 +363,29 @@ internal fun PluginScreenContent(
                                             horizontalAlignment = Alignment.CenterHorizontally,
                                             verticalArrangement = Arrangement.spacedBy(12.dp)
                                         ) {
-                                            Surface(
+                                            Box(
                                                 modifier = Modifier.size(72.dp)
-                                                    .clip(RoundedCornerShape(18.dp)),
-                                                color = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
+                                                    .clip(RoundedCornerShape(18.dp))
+                                                    .background(AppTheme.colors.primary.copy(alpha = 0.1f))
                                             ) {
                                                 Box(contentAlignment = Alignment.Center) {
-                                                    Icon(
+                                                    MillenniumIcon(
                                                         Iconsax.IconsaxBox,
                                                         contentDescription = null,
                                                         modifier = Modifier.size(32.dp),
-                                                        tint = MaterialTheme.colorScheme.primary
+                                                        tint = AppTheme.colors.primary
                                                     )
                                                 }
                                             }
                                             Text(
                                                 stringResource(Res.string.plugin_empty_title),
-                                                style = MaterialTheme.typography.titleSmall,
+                                                style = AppTheme.typography.titleSmall,
                                                 fontWeight = FontWeight.SemiBold
                                             )
                                             Text(
                                                 stringResource(Res.string.plugin_empty_subtitle),
-                                                style = MaterialTheme.typography.bodySmall,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                style = AppTheme.typography.bodySmall,
+                                                color = AppTheme.colors.onSurfaceVariant
                                             )
                                         }
                                     }
@@ -400,8 +403,8 @@ internal fun PluginScreenContent(
                                             data.plugins.size,
                                             noun
                                         ),
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        style = AppTheme.typography.labelMedium,
+                                        color = AppTheme.colors.onSurfaceVariant,
                                         modifier = Modifier.padding(
                                             horizontal = 4.dp,
                                             vertical = 4.dp
@@ -409,21 +412,22 @@ internal fun PluginScreenContent(
                                     )
                                 }
                                 item {
-                                    Card(
+                                    Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .padding(vertical = 4.dp),
-                                    ) {
+                                            .padding(vertical = 4.dp)
+                                            .millenniumSurface(
+                                                background = millenniumPanelBrush(MillenniumTheme.colors),
+                                                shape = RoundedCornerShape(12.dp),
+                                                borderColor = AppTheme.colors.outlineVariant,
+                                                borderWidth = 1.dp,
+                                                shadowElevation = 6.dp)) {
                                         Column(
                                             modifier = Modifier.fillMaxWidth()
                                         ) {
                                             data.plugins.forEachIndexed { index, item ->
                                                 if (index > 0) {
-                                                    HorizontalDivider(
-                                                        color = MaterialTheme.colorScheme.outlineVariant.copy(
-                                                            alpha = 0.5f
-                                                        ),
-                                                    )
+                                                    MillenniumSeparator()
                                                 }
                                                 PluginCard(
                                                     plugin = item.plugin,
@@ -440,8 +444,7 @@ internal fun PluginScreenContent(
                                                     } else null,
                                                     onLogout = if (item.isSelected && item.authState.requiresAuth) {
                                                         { viewModel.logout(item.plugin) }
-                                                    } else null,
-                                                )
+                                                    } else null)
                                             }
                                         }
                                     }
@@ -452,7 +455,9 @@ internal fun PluginScreenContent(
                         if ((!onboarding || data.onboardingDiscover) && (onboarding || data.discover.isLoading || data.discover.repos.isNotEmpty() || data.discover.error != null)) {
                             if (onboarding) {
                                 item {
-                                    OutlineButton(onClick = viewModel::showInstallSheet) {
+                                    MillenniumButton(
+                                        onClick = viewModel::showInstallSheet,
+                                        style = MillenniumButtonStyle.Secondary) {
                                         Text(stringResource(Res.string.plugin_install_section_title))
                                     }
                                 }
@@ -465,15 +470,15 @@ internal fun PluginScreenContent(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    Icon(
+                                    MillenniumIcon(
                                         Iconsax.IconsaxGlobe,
                                         contentDescription = null,
                                         modifier = Modifier.size(18.dp),
-                                        tint = MaterialTheme.colorScheme.primary
+                                        tint = AppTheme.colors.primary
                                     )
                                     Text(
                                         stringResource(Res.string.welcome_plugins_discover),
-                                        style = MaterialTheme.typography.titleLarge,
+                                        style = AppTheme.typography.titleLarge,
                                         fontWeight = FontWeight.SemiBold
                                     )
                                 }
@@ -484,7 +489,7 @@ internal fun PluginScreenContent(
                                         Modifier.fillMaxWidth().padding(16.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        CircularProgressIndicator(Modifier.size(24.dp))
+                                        MillenniumIndeterminateProgress(Modifier.widthIn(max = 120.dp))
                                     }
                                 }
                             }
@@ -492,7 +497,7 @@ internal fun PluginScreenContent(
                                 item {
                                     Text(
                                         stringResource(Res.string.welcome_plugins_discovery_empty),
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        color = AppTheme.colors.onSurfaceVariant,
                                         modifier = Modifier.padding(12.dp)
                                     )
                                 }
@@ -516,7 +521,7 @@ internal fun PluginScreenContent(
                                             .padding(vertical = 16.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                        MillenniumIndeterminateProgress(modifier = Modifier.widthIn(max = 120.dp))
                                     }
                                 }
                             }
@@ -526,14 +531,16 @@ internal fun PluginScreenContent(
                                     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                         Text(
                                             stringResource(Res.string.welcome_plugins_discovery_error),
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.error,
+                                            style = AppTheme.typography.bodySmall,
+                                            color = AppTheme.colors.error,
                                             modifier = Modifier.padding(
                                                 horizontal = 4.dp,
                                                 vertical = 8.dp
                                             )
                                         )
-                                        OutlineButton(onClick = viewModel::retryDiscovery) {
+                                        MillenniumButton(
+                                            onClick = viewModel::retryDiscovery,
+                                            style = MillenniumButtonStyle.Secondary) {
                                             Text(stringResource(Res.string.welcome_plugins_retry))
                                         }
                                     }
@@ -541,7 +548,9 @@ internal fun PluginScreenContent(
                             }
                             if (onboarding && data.discover.hasMore && !data.discover.isLoading && !data.discover.isLoadingMore && data.discover.error == null) {
                                 item {
-                                    OutlineButton(onClick = viewModel::loadNextDiscoverPage) {
+                                    MillenniumButton(
+                                        onClick = viewModel::loadNextDiscoverPage,
+                                        style = MillenniumButtonStyle.Secondary) {
                                         Text(stringResource(Res.string.welcome_plugins_more))
                                     }
                                 }
@@ -590,8 +599,7 @@ private fun InstallSheet(
     onUrlChange: (String) -> Unit,
     onSubmitUrl: () -> Unit,
     onPickFile: () -> Unit,
-    onDismiss: () -> Unit,
-) {
+    onDismiss: () -> Unit) {
     AdaptiveDialogBottomSheet(
         onDismiss = onDismiss,
         title = {
@@ -599,95 +607,78 @@ private fun InstallSheet(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Icon(
+                MillenniumIcon(
                     Iconsax.IconsaxImportArrow2Bulk,
                     contentDescription = null,
                     modifier = Modifier.size(18.dp),
-                    tint = MaterialTheme.colorScheme.primary
+                    tint = AppTheme.colors.primary
                 )
                 Text(
                     stringResource(Res.string.plugin_install_section_title),
-                    style = MaterialTheme.typography.titleSmall,
+                    style = AppTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold
                 )
             }
-        },
-    ) {
+        }) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(
-                stringResource(Res.string.plugin_section_url_title),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            val urlState = rememberTextFieldState(urlInput)
+            LaunchedEffect(urlInput) {
+                if (urlState.text.toString() != urlInput) {
+                    urlState.edit { replace(0, length, urlInput) }
+                }
+            }
+            LaunchedEffect(urlState) {
+                snapshotFlow { urlState.text.toString() }.collect { value ->
+                    if (value != urlInput) onUrlChange(value)
+                }
+            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top,
+                verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                TextField(
-                    value = urlInput,
-                    onValueChange = onUrlChange,
+                MillenniumTextField(
+                    state = urlState,
+                    label = stringResource(Res.string.plugin_section_url_title),
                     modifier = Modifier.weight(1f),
-                    placeholder = {
-                        Text(
-                            stringResource(Res.string.plugin_url_placeholder),
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    },
-                    leadingIcon = {
-                        Icon(
-                            Iconsax.IconsaxLink,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp)
-                        )
-                    },
-                    isError = urlError != null,
-                    singleLine = true,
-                )
-                SecondaryIconButton(
+                    placeholder = stringResource(Res.string.plugin_url_placeholder),
+                    error = urlError?.text())
+                MillenniumIconButton(
                     onClick = onSubmitUrl,
                     enabled = !isLoadingUrl,
-                ) {
+                    style = MillenniumIconButtonStyle.Secondary) {
                     if (isLoadingUrl) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(16.dp),
-                            strokeWidth = 2.dp,
-                            color = MaterialTheme.colorScheme.onPrimary
-                        )
+                        MillenniumIndeterminateProgress(modifier = Modifier.size(16.dp))
                     } else {
-                        Icon(
+                        MillenniumIcon(
                             Iconsax.IconsaxImportArrow2Bulk,
-                            contentDescription = stringResource(Res.string.plugin_action_download),
-                        )
+                            contentDescription = stringResource(Res.string.plugin_action_download))
                     }
                 }
             }
 
-            urlError?.let { error ->
-                Text(
-                    error.text(),
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error,
-                )
-            }
-
-            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+            MillenniumSeparator()
 
             Text(
                 stringResource(Res.string.plugin_section_file_title),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                style = AppTheme.typography.labelLarge,
+                color = AppTheme.colors.onSurfaceVariant
             )
-            OutlineButton(
+            MillenniumButton(
                 onClick = onPickFile,
                 modifier = Modifier.fillMaxWidth(),
-            ) {
-                Icon(
-                    Iconsax.IconsaxExportArrowBulk,
-                    contentDescription = stringResource(Res.string.plugin_action_install_from_file)
-                )
-                Spacer(Modifier.width(8.dp))
-                Text(stringResource(Res.string.plugin_action_install_from_file))
+                style = MillenniumButtonStyle.Secondary) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    MillenniumIcon(
+                        Iconsax.IconsaxExportArrowBulk,
+                        contentDescription = stringResource(Res.string.plugin_action_install_from_file)
+                    )
+                    Text(stringResource(Res.string.plugin_action_install_from_file))
+                }
             }
         }
     }
@@ -697,51 +688,33 @@ private fun InstallSheet(
 private fun PluginInfoDialog(
     plugin: PluginEntry,
     logoPath: Path?,
-    onDismiss: () -> Unit,
-) {
-    ThemedDialog(
+    onDismiss: () -> Unit) {
+    MillenniumDialog(
+        visible = true,
         onDismissRequest = onDismiss,
-        title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                Surface(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(12.dp)),
-                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.12f)
-                ) {
-                    PluginLogo(
-                        plugin = plugin,
-                        logoPath = logoPath,
-                        contentDescription = plugin.name,
-                        modifier = Modifier.fillMaxSize(),
-                        fallback = {
-                            Box(contentAlignment = Alignment.Center) {
-                                Icon(
-                                    Iconsax.IconsaxBox,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(24.dp),
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        },
-                    )
-                }
-                Text(
-                    plugin.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        },
-        actions = {
-            PrimaryButton(onClick = onDismiss) {
-                Text("Close")
-            }
+        title = plugin.name) {
+        Box(
+            modifier = Modifier
+                .size(48.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(AppTheme.colors.primary.copy(alpha = 0.12f))
+        ) {
+            PluginLogo(
+                plugin = plugin,
+                logoPath = logoPath,
+                contentDescription = plugin.name,
+                modifier = Modifier.fillMaxSize(),
+                fallback = {
+                    Box(contentAlignment = Alignment.Center) {
+                        MillenniumIcon(
+                            Iconsax.IconsaxBox,
+                            contentDescription = null,
+                            modifier = Modifier.size(24.dp),
+                            tint = AppTheme.colors.primary
+                        )
+                    }
+                })
         }
-    ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.fillMaxWidth()
@@ -749,8 +722,8 @@ private fun PluginInfoDialog(
             if (plugin.description.isNotBlank()) {
                 Text(
                     plugin.description,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colors.onSurface
                 )
             }
 
@@ -792,6 +765,11 @@ private fun PluginInfoDialog(
                 }
             }
         }
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            MillenniumButton(onClick = onDismiss) {
+                Text("Close")
+            }
+        }
     }
 }
 
@@ -800,36 +778,29 @@ private fun SupportDialog(
     plugin: PluginEntry,
     supportText: String?,
     isLoading: Boolean,
-    onDismiss: () -> Unit,
-) {
-    ThemedDialog(
+    onDismiss: () -> Unit) {
+    MillenniumDialog(
+        visible = true,
         onDismissRequest = onDismiss,
-        title = {
-            Text(
-                "Support ${plugin.name}",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.SemiBold
-            )
-        },
-        actions = {
-            PrimaryButton(onClick = onDismiss) {
-                Text("Close")
-            }
-        }
-    ) {
+        title = "Support ${plugin.name}") {
         if (isLoading) {
             Box(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
                 contentAlignment = Alignment.Center
             ) {
-                CircularProgressIndicator()
+                MillenniumIndeterminateProgress(modifier = Modifier.widthIn(max = 160.dp))
             }
         } else {
             Text(
                 supportText ?: "",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.onSurface
             )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            MillenniumButton(onClick = onDismiss) {
+                Text("Close")
+            }
         }
     }
 }
@@ -838,15 +809,20 @@ private fun SupportDialog(
 private fun DiscoverRepoCard(
     repo: GitHubRepo,
     isInstalling: Boolean,
-    onInstall: () -> Unit,
-) {
+    onInstall: () -> Unit) {
     val isOfficial = repo.owner.login in OFFICIAL_PLUGIN_OWNERS
     val isVerified = repo.owner.login in VERIFIED_PLUGIN_OWNERS
 
-    Card(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
+            .millenniumSurface(
+                background = millenniumPanelBrush(MillenniumTheme.colors),
+                shape = RoundedCornerShape(12.dp),
+                borderColor = AppTheme.colors.outlineVariant,
+                borderWidth = 1.dp,
+                shadowElevation = 6.dp)
     ) {
         Row(
             modifier = Modifier
@@ -879,35 +855,37 @@ private fun DiscoverRepoCard(
                             .last()
                             .replace("spotube-plugin-", "")
                             .kebabToTitleCase(),
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = AppTheme.typography.bodyMedium,
                         fontWeight = FontWeight.SemiBold,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         modifier = Modifier.weight(1f, fill = false)
                     )
                     if (isOfficial) {
-                        Surface(
-                            shape = RoundedCornerShape(4.dp),
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(AppTheme.colors.primary.copy(alpha = 0.15f))
                         ) {
                             Text(
                                 "Official",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary,
+                                style = AppTheme.typography.labelSmall,
+                                color = AppTheme.colors.primary,
                                 modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
                             )
                         }
                     } else if (isVerified) {
-                        Surface(
-                            shape = RoundedCornerShape(4.dp),
-                            color = Color(0xFF4CAF50).copy(alpha = 0.15f)
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(Color(0xFF4CAF50).copy(alpha = 0.15f))
                         ) {
                             Row(
                                 modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
-                                Icon(
+                                MillenniumIcon(
                                     Iconsax.IconsaxCheckCircle,
                                     contentDescription = null,
                                     modifier = Modifier.size(10.dp),
@@ -915,7 +893,7 @@ private fun DiscoverRepoCard(
                                 )
                                 Text(
                                     "Verified",
-                                    style = MaterialTheme.typography.labelSmall,
+                                    style = AppTheme.typography.labelSmall,
                                     color = Color(0xFF4CAF50)
                                 )
                             }
@@ -925,8 +903,8 @@ private fun DiscoverRepoCard(
                 if (!repo.description.isNullOrBlank()) {
                     Text(
                         repo.description,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -937,68 +915,71 @@ private fun DiscoverRepoCard(
                 ) {
                     Text(
                         repo.owner.login,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.onSurfaceVariant
                     )
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(3.dp)
                     ) {
-                        Icon(
+                        MillenniumIcon(
                             Iconsax.IconsaxHeart,
                             contentDescription = "Github Stars",
                             modifier = Modifier.size(11.dp),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            tint = AppTheme.colors.onSurfaceVariant
                         )
                         Text(
                             repo.stargazersCount.toString(),
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            style = AppTheme.typography.labelSmall,
+                            color = AppTheme.colors.onSurfaceVariant
                         )
                     }
-                    Surface(
-                        shape = RoundedCornerShape(4.dp),
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        modifier = Modifier.clickable {
-                            openUrlInBrowser(repo.htmlUrl)
-                        }
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(AppTheme.colors.surfaceVariant)
+                            .clickable {
+                                openUrlInBrowser(repo.htmlUrl)
+                            }
                     ) {
                         Row(
                             modifier = Modifier.padding(horizontal = 5.dp, vertical = 2.dp),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(3.dp)
                         ) {
-                            Icon(
+                            MillenniumIcon(
                                 Iconsax.CarbonGithubLogo,
                                 contentDescription = "Github Repository URL",
                                 modifier = Modifier.size(10.dp),
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                tint = AppTheme.colors.onSurfaceVariant
                             )
                             Text(
                                 "github.com",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                style = AppTheme.typography.labelSmall,
+                                color = AppTheme.colors.onSurfaceVariant
                             )
                         }
                     }
                 }
             }
-            SecondaryButton(
+            MillenniumButton(
                 onClick = onInstall,
-                enabled = !isInstalling
+                enabled = !isInstalling,
+                style = MillenniumButtonStyle.Secondary
             ) {
-                if (isInstalling) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(16.dp),
-                        strokeWidth = 2.dp
-                    )
-                } else {
-                    Icon(
-                        Iconsax.IconsaxAdd,
-                        contentDescription = null,
-                    )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    if (isInstalling) {
+                        MillenniumIndeterminateProgress(modifier = Modifier.size(16.dp))
+                    } else {
+                        MillenniumIcon(
+                            Iconsax.IconsaxAdd,
+                            contentDescription = null)
+                    }
+                    Text(stringResource(Res.string.plugin_section_install))
                 }
-                Text(stringResource(Res.string.plugin_section_install))
             }
         }
     }
@@ -1012,14 +993,14 @@ private fun DetailRow(label: String, value: String) {
     ) {
         Text(
             "$label:",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = AppTheme.typography.labelMedium,
+            color = AppTheme.colors.onSurfaceVariant,
             modifier = Modifier.widthIn(min = 90.dp)
         )
         Text(
             value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.colors.onSurface
         )
     }
 }
@@ -1032,14 +1013,14 @@ private fun ClickableDetailRow(label: String, value: String, onClick: () -> Unit
     ) {
         Text(
             "$label:",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = AppTheme.typography.labelMedium,
+            color = AppTheme.colors.onSurfaceVariant,
             modifier = Modifier.widthIn(min = 90.dp)
         )
         Text(
             value,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.primary,
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.colors.primary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
@@ -1054,20 +1035,21 @@ private fun DetailChipsRow(label: String, chips: List<String>) {
     ) {
         Text(
             "$label:",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = AppTheme.typography.labelMedium,
+            color = AppTheme.colors.onSurfaceVariant,
             modifier = Modifier.widthIn(min = 90.dp)
         )
         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             chips.forEach { chip ->
-                Surface(
-                    shape = RoundedCornerShape(4.dp),
-                    color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f)
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(4.dp))
+                        .background(AppTheme.colors.secondaryContainer.copy(alpha = 0.6f))
                 ) {
                     Text(
                         chip,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.onSecondaryContainer,
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)
                     )
                 }
@@ -1079,8 +1061,7 @@ private fun DetailChipsRow(label: String, chips: List<String>) {
 @Composable
 fun DefaultAbilityPluginSelector(
     selection: AbilitySelection,
-    onSelected: (PluginEntry?) -> Unit = { },
-) {
+    onSelected: (PluginEntry?) -> Unit = { }) {
     val plugins = selection.plugins
     val selectedPlugin = selection.selectedPlugin
     val noPluginsText = stringResource(Res.string.settings_plugins_no_plugins)
@@ -1093,8 +1074,7 @@ fun DefaultAbilityPluginSelector(
                     AdaptiveMenuItem(
                         label = plugin.name,
                         onClick = { onSelected(plugin) },
-                        selected = isSelected,
-                    )
+                        selected = isSelected)
                 )
             }
         } else {
@@ -1102,8 +1082,7 @@ fun DefaultAbilityPluginSelector(
                 AdaptiveMenuItem(
                     label = noPluginsText,
                     onClick = { },
-                    enabled = false,
-                )
+                    enabled = false)
             )
         }
     }
@@ -1120,11 +1099,12 @@ fun DefaultAbilityPluginSelector(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Surface(
-                modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                color = selection.ability.accentColor().copy(alpha = 0.1f)
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(selection.ability.accentColor().copy(alpha = 0.1f))
             ) {
-                Icon(
+                MillenniumIcon(
                     imageVector = selection.ability.abilityIcon(),
                     contentDescription = stringResource(
                         Res.string.settings_plugins_plugin_content_description,
@@ -1141,21 +1121,21 @@ fun DefaultAbilityPluginSelector(
                         Res.string.settings_plugins_default_ability_title,
                         selection.ability.displayLabel()
                     ),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = AppTheme.typography.labelLarge,
+                    color = AppTheme.colors.onSurface
                 )
                 if (selectedPlugin != null) {
                     Text(
                         selectedPlugin.name,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.primary,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 } else {
                     Text(
                         stringResource(Res.string.settings_plugins_no_selection),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
@@ -1171,13 +1151,13 @@ fun DefaultAbilityPluginSelector(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    Surface(
-                        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
-                        color = selection.ability.accentColor().copy(alpha = 0.1f)
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(selection.ability.accentColor().copy(alpha = 0.1f))
                     ) {
-                        Icon(
+                        MillenniumIcon(
                             imageVector = selection.ability.abilityIcon(),
                             contentDescription = null,
                             modifier = Modifier.padding(8.dp),
@@ -1190,35 +1170,37 @@ fun DefaultAbilityPluginSelector(
                                 Res.string.settings_plugins_default_ability_title,
                                 selection.ability.displayLabel()
                             ),
-                            style = MaterialTheme.typography.titleMedium,
-                        )
+                            style = AppTheme.typography.titleMedium)
                         selectedPlugin?.let {
                             Text(
                                 it.name,
-                                style = MaterialTheme.typography.bodyMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
+                                style = AppTheme.typography.bodyMedium,
+                                color = AppTheme.colors.primary)
                         }
                     }
                 }
             },
             trigger = { onClick ->
-                OutlineButton(onClick = onClick) {
-                    Text(
-                        if (selectedPlugin != null) {
-                            stringResource(Res.string.settings_plugins_action_change)
-                        } else {
-                            stringResource(Res.string.settings_plugins_action_select) + "  "
-                        },
-                    )
-                    Icon(
-                        imageVector = if (selectedPlugin != null) Iconsax.IconsaxEdit else Iconsax.IconsaxArrowDown4,
-                        contentDescription = null,
-                        modifier = Modifier.size(14.dp),
-                    )
+                MillenniumButton(
+                    onClick = onClick,
+                    style = MillenniumButtonStyle.Secondary) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        Text(
+                            if (selectedPlugin != null) {
+                                stringResource(Res.string.settings_plugins_action_change)
+                            } else {
+                                stringResource(Res.string.settings_plugins_action_select)
+                            })
+                        MillenniumIcon(
+                            imageVector = if (selectedPlugin != null) Iconsax.IconsaxEdit else Iconsax.IconsaxArrowDown4,
+                            contentDescription = null,
+                            modifier = Modifier.size(14.dp))
+                    }
                 }
-            },
-        )
+            })
     }
 }
 

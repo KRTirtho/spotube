@@ -17,6 +17,15 @@
 
 package dev.krtirtho.spotube.modules.library.local_tracks
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumIndeterminateProgress
+import org.spotube.millennium.composables.MillenniumListTile
+import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,22 +38,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.foundation.text.input.rememberTextFieldState
+
+import com.composeunstyled.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.flow.drop
 import dev.krtirtho.spotube.PlatformType
-import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.modules.library.local_tracks.media.rememberLocalMediaPermissionState
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
@@ -77,63 +85,62 @@ fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean 
         PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
     }
 
+    val searchState = rememberTextFieldState(state.query)
+    LaunchedEffect(searchState) {
+        snapshotFlow { searchState.text.toString() }
+            .drop(1)
+            .collect(viewModel::onQueryChange)
+    }
+
     Box(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = modifier.widthIn(max = 1280.dp).align(Alignment.TopCenter),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
+            verticalArrangement = Arrangement.spacedBy(12.dp)) {
             AnimatedVisibility(searchMode) {
-                TextField(
-                    value = state.query,
-                    onValueChange = viewModel::onQueryChange,
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    placeholder = {
-                        Text(
-                            if (state.currentFolderPath == null) {
-                                "Search folders or tracks"
-                            } else {
-                                "Search tracks in folder"
-                            }
-                        )
-                    },
-                    singleLine = true,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Iconsax.IconsaxFilterSearch,
-                            contentDescription = "Search"
-                        )
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Iconsax.IconsaxRefreshRight,
-                            contentDescription = "Refresh",
-                            modifier = Modifier.clickable { viewModel.refresh() }
-                        )
-                    }
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    MillenniumIcon(
+                        imageVector = Iconsax.IconsaxFilterSearch,
+                        contentDescription = "Search")
+                    MillenniumTextField(
+                        state = searchState,
+                        label = "Search",
+                        modifier = Modifier.weight(1f),
+                        placeholder = if (state.currentFolderPath == null) {
+                            "Search folders or tracks"
+                        } else {
+                            "Search tracks in folder"
+                        })
+                    MillenniumIconButton(
+                        icon = Iconsax.IconsaxRefreshRight,
+                        contentDescription = "Refresh",
+                        onClick = { viewModel.refresh() },
+                        style = MillenniumIconButtonStyle.Quiet)
+                }
             }
 
             if (state.currentFolderPath != null) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                ) {
+                    horizontalArrangement = Arrangement.SpaceBetween) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        IconButton(onClick = viewModel::navigateUp) {
-                            Icon(imageVector = Iconsax.ArrowLeft3, contentDescription = "Back")
-                        }
+                        MillenniumIconButton(
+                            icon = Iconsax.ArrowLeft3,
+                            contentDescription = "Back",
+                            onClick = viewModel::navigateUp,
+                            style = MillenniumIconButtonStyle.Quiet)
                         Text(viewModel.currentFolder()?.name ?: "Folder")
                     }
-                    IconButton(onClick = {
-                        viewModel.currentFolder()?.let { viewModel.playFolder(it.path) }
-                    }) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxPlayCircle2,
-                            contentDescription = "Play folder"
-                        )
-                    }
+                    MillenniumIconButton(
+                        icon = Iconsax.IconsaxPlayCircle2,
+                        contentDescription = "Play folder",
+                        onClick = {
+                            viewModel.currentFolder()?.let { viewModel.playFolder(it.path) }
+                        },
+                        style = MillenniumIconButtonStyle.Quiet)
                 }
             }
 
@@ -144,17 +151,18 @@ fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean 
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
+                        verticalArrangement = Arrangement.spacedBy(10.dp)) {
                         Text("Allow audio permission to show local tracks")
-                        TextButton(onClick = permissionState.requestPermission) {
+                        MillenniumButton(
+                            onClick = permissionState.requestPermission,
+                            style = MillenniumButtonStyle.Quiet) {
                             Text("Grant access")
                         }
                     }
                 }
             } else if (state.isRefreshing && folders.isEmpty() && tracks.isEmpty()) {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
+                    MillenniumIndeterminateProgress()
                 }
             } else if (state.currentFolderPath == null) {
                 if (folders.isEmpty()) {
@@ -164,17 +172,16 @@ fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean 
                 } else {
                     LazyColumn(contentPadding = contentPadding) {
                         items(folders, key = { it.path }) { folder ->
-                            ListItem(
-                                headlineContent = { Text(folder.name) },
-                                supportingContent = { Text("${folder.trackCount} track(s)") },
-                                leadingContent = {
-                                    Icon(
+                            MillenniumListTile(
+                                title = { Text(folder.name) },
+                                subtitle = { Text("${folder.trackCount} track(s)") },
+                                leading = {
+                                    MillenniumIcon(
                                         imageVector = Iconsax.IconsaxFolderOpen,
                                         contentDescription = null
                                     )
                                 },
-                                modifier = Modifier.clickable { viewModel.openFolder(folder.path) },
-                            )
+                                onClick = { viewModel.openFolder(folder.path) })
                         }
                     }
                 }
@@ -186,30 +193,28 @@ fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean 
                 } else {
                     LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = contentPadding) {
                         items(tracks, key = { it.path }) { track ->
-                            ListItem(
-                                headlineContent = { Text(track.name) },
-                                supportingContent = {
+                            MillenniumListTile(
+                                title = { Text(track.name) },
+                                subtitle = {
                                     val artists =
                                         track.artists.joinToString().ifBlank { "Unknown artist" }
                                     val album = track.album?.takeIf { it.isNotBlank() }
                                     Text(if (album == null) artists else "$artists - $album")
                                 },
-                                leadingContent = {
-                                    Icon(
+                                leading = {
+                                    MillenniumIcon(
                                         imageVector = Iconsax.IconsaxMusicCircle,
                                         contentDescription = null
                                     )
                                 },
-                                trailingContent = {
-                                    IconButton(onClick = { viewModel.playTrack(track.path) }) {
-                                        Icon(
-                                            imageVector = Iconsax.Play,
-                                            contentDescription = "Play"
-                                        )
-                                    }
+                                trailing = {
+                                    MillenniumIconButton(
+                                        icon = Iconsax.Play,
+                                        contentDescription = "Play",
+                                        onClick = { viewModel.playTrack(track.path) },
+                                        style = MillenniumIconButtonStyle.Quiet)
                                 },
-                                modifier = Modifier.clickable { viewModel.playTrack(track.path) },
-                            )
+                                onClick = { viewModel.playTrack(track.path) })
                         }
                     }
                 }

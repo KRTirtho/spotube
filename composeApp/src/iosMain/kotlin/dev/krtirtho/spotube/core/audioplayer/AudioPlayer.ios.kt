@@ -343,7 +343,6 @@ private fun CMTimeMake(value: Long, timescale: Int): CValue<CMTime> {
     return platform.CoreMedia.CMTimeMake(value, timescale)
 }
 
-
 private fun CMTimeMakeWithSeconds(seconds: Double, preferredTimescale: Int): CValue<CMTime> {
     return platform.CoreMedia.CMTimeMakeWithSeconds(seconds, preferredTimescale)
 }

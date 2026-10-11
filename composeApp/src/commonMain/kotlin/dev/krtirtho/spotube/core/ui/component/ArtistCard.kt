@@ -29,9 +29,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,8 +52,7 @@ import org.koin.compose.koinInject
 fun ArtistCard(
     artist: MetadataArtist.Basic,
     modifier: Modifier = Modifier,
-    isBlacklisted: Boolean = false,
-) {
+    isBlacklisted: Boolean = false) {
     val navigationCommands = koinInject<NavigationCommands>()
 
     AvatarCard(
@@ -64,7 +63,6 @@ fun ArtistCard(
             navigationCommands.navigateTo(Routes.Artist(artist.id))
         },
         modifier = modifier,
-        isBlacklisted = isBlacklisted,
-    )
+        isBlacklisted = isBlacklisted)
 }
 

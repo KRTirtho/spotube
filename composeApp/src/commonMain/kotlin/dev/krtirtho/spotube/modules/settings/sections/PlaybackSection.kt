@@ -17,9 +17,11 @@
 
 package dev.krtirtho.spotube.modules.settings.sections
 
+
+import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import androidx.compose.runtime.Composable
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ChevronRight
@@ -53,13 +55,11 @@ internal fun LazyListScope.playbackSection(
     navigatorCommands: NavigationCommands,
     requestLocalNetworkPermission: () -> Unit,
     includeBlacklist: Boolean = true,
-    includeHeader: Boolean = true,
-) {
+    includeHeader: Boolean = true) {
     val streamingFormats = availableAudioFormats(settings.streamingMusicFormat, streamingFormatPresets)
     val streamingQualities = availableAudioQualities(
         format = settings.streamingMusicFormat,
-        current = settings.streamingMusicQuality,
-    )
+        current = settings.streamingMusicQuality)
 
     val cards: List<@Composable () -> Unit> = buildList {
         add {
@@ -79,8 +79,7 @@ internal fun LazyListScope.playbackSection(
                     settingsViewModel.updateSettings {
                         copy(
                             streamingMusicFormat = format,
-                            streamingMusicQuality = format.resolveQuality(streamingMusicQuality),
-                        )
+                            streamingMusicQuality = format.resolveQuality(streamingMusicQuality))
                     }
                 }
             )
@@ -223,20 +222,17 @@ internal fun LazyListScope.playbackSection(
                     icon = {
                         SettingsItemIcon(
                             Iconsax.IconsaxForbidden,
-                            stringResource(Res.string.settings_blacklist_title),
-                        )
+                            stringResource(Res.string.settings_blacklist_title))
                     },
                     trailingContent = {
-                        Icon(
+                        MillenniumIcon(
                             imageVector = FeatherIcons.ChevronRight,
                             contentDescription = stringResource(Res.string.settings_blacklist_title),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                            tint = AppTheme.colors.onSurfaceVariant)
                     },
                     onClick = {
                         navigatorCommands.navigateTo(Routes.Blacklist)
-                    },
-                )
+                    })
             }
         }
     }

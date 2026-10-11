@@ -46,8 +46,7 @@ sealed interface LibraryPlaylistsState {
         data class Loaded(
             override val query: String = "",
             override val allItems: List<MetadataPlaylist> = emptyList(),
-            override val nextPagination: PaginationStrategy? = null,
-        ) : Data {
+            override val nextPagination: PaginationStrategy? = null) : Data {
             override val items: List<MetadataPlaylist>
                 get() = if (query.isNotBlank()) {
                     allItems.filter {
@@ -61,15 +60,13 @@ sealed interface LibraryPlaylistsState {
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 query = query,
                 allItems = allItems,
-                nextPagination = nextPagination,
-            )
+                nextPagination = nextPagination)
         }
 
         data class LoadingMore(
             override val query: String = "",
             override val allItems: List<MetadataPlaylist> = emptyList(),
-            override val nextPagination: PaginationStrategy? = null,
-        ) : Data {
+            override val nextPagination: PaginationStrategy? = null) : Data {
             override val items: List<MetadataPlaylist>
                 get() = if (query.isNotBlank()) {
                     allItems.filter {
@@ -87,8 +84,7 @@ sealed interface LibraryPlaylistsState {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryPlaylistsViewModel(
-    private val repository: LibraryRepository,
-) : ViewModel(), KoinComponent {
+    private val repository: LibraryRepository) : ViewModel(), KoinComponent {
     private val logger by injectLogger<LibraryPlaylistsViewModel>()
 
     private val _state = MutableStateFlow<LibraryPlaylistsState>(LibraryPlaylistsState.Loading)
@@ -113,8 +109,7 @@ class LibraryPlaylistsViewModel(
         val result = repository.savedPlaylists()
         _state.value = LibraryPlaylistsState.Data.Loaded(
             allItems = result?.items ?: emptyList(),
-            nextPagination = result?.nextPagination,
-        )
+            nextPagination = result?.nextPagination)
     }.onFailure { e ->
         logger.e(e) { "Failed to load playlists" }
         _state.value = LibraryPlaylistsState.Error(e.message ?: "Unknown error")
@@ -128,8 +123,7 @@ class LibraryPlaylistsViewModel(
             _state.value = LibraryPlaylistsState.Data.Loaded(
                 query = currentState.query,
                 allItems = currentState.allItems + (result?.items ?: emptyList()),
-                nextPagination = result?.nextPagination,
-            )
+                nextPagination = result?.nextPagination)
         }
     }.onFailure { e ->
         logger.e(e) { "Failed to load more playlists" }
@@ -159,8 +153,7 @@ class LibraryPlaylistsViewModel(
         isPublic: Boolean,
         isCollaborating: Boolean,
         imageBase64: String,
-        trackIds: List<String>,
-    ) {
+        trackIds: List<String>) {
         viewModelScope.launch {
             runCatching {
                 repository.createPlaylist(
@@ -169,8 +162,7 @@ class LibraryPlaylistsViewModel(
                     isPublic = isPublic,
                     isCollaborating = isCollaborating,
                     imageBase64 = imageBase64,
-                    trackIds = trackIds,
-                )
+                    trackIds = trackIds)
             }.onFailure { e ->
                 logger.e(e) { "Failed to create playlist" }
             }.onSuccess {

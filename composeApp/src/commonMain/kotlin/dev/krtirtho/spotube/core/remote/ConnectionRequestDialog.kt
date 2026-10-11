@@ -17,17 +17,24 @@
 
 package dev.krtirtho.spotube.core.remote
 
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
+import androidx.compose.ui.unit.dp
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
 import org.koin.compose.koinInject
 
 @Composable
@@ -42,50 +49,45 @@ fun ConnectionRequestDialogHost() {
     }
 
     pendingRequest?.let { request ->
-        AdaptiveDialogBottomSheet(
-            onDismiss = {
+        MillenniumDialog(
+            visible = true,
+            onDismissRequest = {
                 handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.Deny)
                 pendingRequest = null
             },
-            title = {
-                Text(
-                    text = "Remote Control Request",
-                    style = MaterialTheme.typography.titleLarge,
-                )
-            },
-            content = {
-                Text(
-                    text = "\"${request.deviceName}\" wants to control playback on this device.",
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Start,
-                )
-            },
-            actions = {
-                Button(
+            title = "Remote Control Request") {
+            Text(
+                text = "\"${request.deviceName}\" wants to control playback on this device.",
+                style = AppTheme.typography.bodyMedium,
+                textAlign = TextAlign.Start)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
+                verticalAlignment = Alignment.CenterVertically) {
+                MillenniumButton(
                     onClick = {
                         handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.Deny)
                         pendingRequest = null
                     },
-                ) {
+                    style = MillenniumButtonStyle.Secondary) {
                     Text("Deny")
                 }
-                Button(
+                MillenniumButton(
                     onClick = {
                         handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.Allow)
                         pendingRequest = null
-                    },
-                ) {
+                    }) {
                     Text("Allow")
                 }
-                Button(
+                MillenniumButton(
                     onClick = {
                         handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.AllowAlways)
                         pendingRequest = null
                     },
-                ) {
+                    style = MillenniumButtonStyle.Quiet) {
                     Text("Allow Always")
                 }
-            },
-        )
+            }
+        }
     }
 }

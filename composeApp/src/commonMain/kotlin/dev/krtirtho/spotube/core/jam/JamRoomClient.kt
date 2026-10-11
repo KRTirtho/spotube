@@ -30,10 +30,8 @@ import com.ditchoom.mqtt.controlpacket.TopicName
 import com.ditchoom.mqtt.controlpacket.WillConfig
 import com.ditchoom.mqtt5.controlpacket.ConnectionRequest
 import dev.krtirtho.spotube.modules.settings.JamBroker
-import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,6 +45,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
 import org.koin.core.component.KoinComponent
+import kotlin.time.Duration.Companion.seconds
 
 /**
  * Thin facade over the Ditchoom MQTT 5 client for one jam room.
@@ -114,8 +113,7 @@ class JamRoomClient : KoinComponent {
         code: String,
         clientId: String,
         displayName: String,
-        isHost: Boolean,
-    ): Result<Unit> {
+        isHost: Boolean): Result<Unit> {
         disconnect()
         if (broker.host.isBlank()) {
             return Result.failure(IllegalArgumentException("No jam broker configured"))
@@ -126,8 +124,7 @@ class JamRoomClient : KoinComponent {
                 clientId = clientId,
                 displayName = displayName,
                 isHost = isHost,
-                left = false,
-            )
+                left = false)
 
             val mqtt = startClient(broker, clientId)
             client = mqtt
@@ -167,8 +164,7 @@ class JamRoomClient : KoinComponent {
         publishJson(
             presenceTopic(code, presence.clientId),
             json.encodeToString(JamPresence.serializer(), presence),
-            retain = true,
-        )
+            retain = true)
     }
 
     /** Marks us as the host in presence (host takeover). */
@@ -186,8 +182,7 @@ class JamRoomClient : KoinComponent {
             publishJson(
                 presenceTopic(code, presence.clientId),
                 json.encodeToString(JamPresence.serializer(), presence.copy(left = true)),
-                retain = true,
-            )
+                retain = true)
         }
     }
 
@@ -208,26 +203,22 @@ class JamRoomClient : KoinComponent {
             host = broker.host,
             port = broker.port,
             tlsEnabled = broker.useTls,
-            connectionTimeout = broker.connectionTimeoutSeconds.seconds,
-        )
+            connectionTimeout = broker.connectionTimeoutSeconds.seconds)
         val code = roomCode ?: "unset"
         val will = WillConfig.Enabled(
             topic = TopicName.fromOrThrow(presenceTopic(code, clientId)),
             payload = json.encodeToString(
                 JamPresence.serializer(),
-                JamPresence(clientId, localPresence?.displayName ?: clientId, isHost = false, left = true),
-            ).toReadBuffer(Charset.UTF8),
+                JamPresence(clientId, localPresence?.displayName ?: clientId, isHost = false, left = true)).toReadBuffer(Charset.UTF8),
             qos = QualityOfService.AT_LEAST_ONCE,
-            retain = true,
-        )
+            retain = true)
         val request = ConnectionRequest(
             clientId = clientId,
             keepAliveSeconds = broker.keepAliveSeconds,
             cleanStart = true,
             userName = broker.username,
             password = broker.password,
-            will = will,
-        )
+            will = will)
         val persistence = request.controlPacketFactory.defaultPersistence(inMemory = true)
         val brokerRef = persistence.addBroker(connection, request)
         return MqttClient.start(scope = scope, broker = brokerRef, persistence = persistence)
@@ -265,8 +256,7 @@ class JamRoomClient : KoinComponent {
         val operation = mqtt.subscribe(
             roomFilter(code),
             OpaquePublishPayloadCodec,
-            QualityOfService.AT_LEAST_ONCE,
-        ) { publish, payload ->
+            QualityOfService.AT_LEAST_ONCE) { publish, payload ->
             route(publish.topic.toString(), payload)
         }
         runCatching { operation.subAck.await() }
@@ -309,8 +299,7 @@ class JamRoomClient : KoinComponent {
                 topicName = topic,
                 qos = QualityOfService.AT_LEAST_ONCE,
                 payload = payload.toReadBuffer(Charset.UTF8),
-                retain = retain,
-            )
+                retain = retain)
         }.onFailure { e ->
             log.w(e) { "Failed to publish to $topic" }
         }

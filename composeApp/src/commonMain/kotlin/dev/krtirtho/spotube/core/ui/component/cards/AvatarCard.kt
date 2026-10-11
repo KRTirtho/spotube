@@ -31,9 +31,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,10 +58,9 @@ fun AvatarCard(
     imageURL: String? = null,
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
-    isBlacklisted: Boolean = false,
-) {
+    isBlacklisted: Boolean = false) {
     val backgroundColor = if (isBlacklisted) {
-        MaterialTheme.colorScheme.error.copy(alpha = 0.1f)
+        AppTheme.colors.error.copy(alpha = 0.1f)
     } else {
         Color.Transparent
     }
@@ -71,20 +70,17 @@ fun AvatarCard(
             .clip(RoundedCornerShape(8.dp))
             .background(backgroundColor)
             .clickable(onClick = { onClick.invoke() }, enabled = true)
-            .width(160.dp),
-    ) {
+            .width(160.dp)) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+            horizontalAlignment = Alignment.CenterHorizontally) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(CircleShape)
                     .padding(12.dp),
-                contentAlignment = Alignment.Center,
-            ) {
+                contentAlignment = Alignment.Center) {
                 AsyncImage(
                     model = imageURL,
                     contentDescription = title,
@@ -93,27 +89,24 @@ fun AvatarCard(
                         .aspectRatio(1f)
                         .clip(CircleShape)
                         .shimmerApply(),
-                    contentScale = ContentScale.Crop,
-                )
+                    contentScale = ContentScale.Crop)
             }
             Column(
                 modifier = Modifier.fillMaxWidth().padding(12.dp)
             ) {
                 TextWithShimmer(
                     text = title,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = AppTheme.typography.titleSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth(),
-                )
+                    modifier = Modifier.fillMaxWidth())
                 subtitle?.let {
                     TextWithShimmer(
                         text = subtitle,
-                        style = MaterialTheme.typography.bodyMedium,
+                        style = AppTheme.typography.bodyMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
+                        modifier = Modifier.fillMaxWidth())
                 }
             }
         }

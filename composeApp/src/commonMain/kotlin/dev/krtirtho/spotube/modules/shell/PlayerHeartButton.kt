@@ -17,18 +17,19 @@
 
 package dev.krtirtho.spotube.modules.shell
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
-import dev.krtirtho.spotube.core.ui.base.IconButton
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.copyShape
 import dev.krtirtho.spotube.modules.saved_tracks.SavedState
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.rememberIsSavedTracks
@@ -40,8 +41,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun PlayerHeartButton(
     audioPlayerQueue: AudioPlayerQueue,
-    savedTracksViewModel: SavedTracksViewModel,
-) {
+    savedTracksViewModel: SavedTracksViewModel) {
     val scope = rememberCoroutineScope()
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     val currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id
@@ -68,15 +68,13 @@ fun PlayerHeartButton(
             }
         }
     }
-    IconButton(
+    MillenniumIconButton(
         onClick = ::onLike,
         enabled = isSavedTrackState is SavedState.Success,
-        theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(CircleShape),
-    ) {
-        Icon(
+        style = MillenniumIconButtonStyle.Secondary) {
+        MillenniumIcon(
             imageVector = if (isLiked) Iconsax.IconsaxHeart2 else Iconsax.IconsaxHeart,
             contentDescription = if (isLiked) "Unlike" else "Like",
-            tint = if (isLiked) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurfaceVariant,
-        )
+            tint = if (isLiked) AppTheme.colors.primary else AppTheme.colors.onSurfaceVariant)
     }
 }

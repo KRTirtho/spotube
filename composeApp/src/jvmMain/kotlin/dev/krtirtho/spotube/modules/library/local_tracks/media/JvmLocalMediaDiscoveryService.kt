@@ -70,8 +70,7 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                                 artists = metadata?.artists?.takeIf { it.isNotEmpty() } ?: emptyList(),
                                 durationMs = metadata?.durationMs ?: 0L,
                                 album = metadata?.album,
-                                coverBytes = metadata?.coverBytes,
-                            )
+                                coverBytes = metadata?.coverBytes)
                             folders.getOrPut(parent) { mutableListOf() }.add(track)
                         }
                 }
@@ -85,16 +84,14 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                 LocalMediaFolder(
                     path = path,
                     name = Path.of(path).fileName?.toString().orEmpty().ifBlank { path },
-                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) },
-                )
+                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) })
             }
             .sortedBy { it.name.lowercase(Locale.getDefault()) }
     }
 
     override fun observeChanges(
         roots: List<String>,
-        onChanged: LocalMediaChangeCallback,
-    ): LocalMediaObservation? {
+        onChanged: LocalMediaChangeCallback): LocalMediaObservation? {
         val resolvedRoots = resolveRoots(roots)
         if (resolvedRoots.isEmpty()) return null
 
@@ -109,8 +106,7 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
                                 watchService,
                                 StandardWatchEventKinds.ENTRY_CREATE,
                                 StandardWatchEventKinds.ENTRY_DELETE,
-                                StandardWatchEventKinds.ENTRY_MODIFY,
-                            )
+                                StandardWatchEventKinds.ENTRY_MODIFY)
                         }
                     }
                 }
@@ -169,8 +165,7 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
         } else {
             listOf(
                 Path.of(home, "Music"),
-                Path.of(home, "Downloads"),
-            )
+                Path.of(home, "Downloads"))
         }
 
         return (defaults + customRoots)
@@ -189,7 +184,6 @@ class JvmLocalMediaDiscoveryService : LocalMediaDiscoveryService {
             "wav",
             "ogg",
             "opus",
-            "wma",
-        )
+            "wma")
     }
 }

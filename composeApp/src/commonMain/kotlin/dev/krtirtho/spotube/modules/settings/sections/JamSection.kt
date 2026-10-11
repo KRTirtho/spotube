@@ -9,9 +9,11 @@
 
 package dev.krtirtho.spotube.modules.settings.sections
 
+
+import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.ChevronRight
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
@@ -28,8 +30,7 @@ import spotube.composeapp.generated.resources.settings_section_jam
 
 internal fun LazyListScope.jamSection(
     settings: UserSettings,
-    navigationCommands: NavigationCommands,
-) {
+    navigationCommands: NavigationCommands) {
     settingsSectionHeader(Res.string.settings_section_jam)
     settingsSectionCard(
         items = listOf(
@@ -39,24 +40,19 @@ internal fun LazyListScope.jamSection(
                     subtitle = stringResource(
                         Res.string.settings_jam_broker_host_subtitle,
                         settings.jamBroker.host.ifBlank { "—" },
-                        settings.jamBroker.port,
-                    ),
+                        settings.jamBroker.port),
                     icon = {
                         SettingsItemIcon(
                             Iconsax.CustomServer,
-                            stringResource(Res.string.settings_jam_broker_title),
-                        )
+                            stringResource(Res.string.settings_jam_broker_title))
                     },
                     trailingContent = {
-                        Icon(
+                        MillenniumIcon(
                             imageVector = FeatherIcons.ChevronRight,
                             contentDescription = stringResource(Res.string.settings_jam_broker_title),
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                            tint = AppTheme.colors.onSurfaceVariant)
                     },
-                    onClick = { navigationCommands.navigateTo(Routes.JamSettings) },
-                )
-            },
-        )
+                    onClick = { navigationCommands.navigateTo(Routes.JamSettings) })
+            })
     )
 }

@@ -17,6 +17,10 @@
 
 package dev.krtirtho.spotube.modules.shell.alternative_track
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIndeterminateProgress
+import org.spotube.millennium.composables.MillenniumListTile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,11 +36,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -56,33 +59,29 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun AlternativeTrackContent(
     viewModel: AlternativeTrackContentViewModel = koinViewModel<AlternativeTrackContentViewModel>(),
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val uiState by viewModel.alternativeTrackUiState.collectAsState()
 
     LaunchedEffect(uiState.currentTrack?.id) {
         viewModel.loadAlternatives()
     }
 
-    Surface(modifier = modifier) {
+    Box(modifier = modifier) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(
                 text = "Alternative Sources",
-                style = MaterialTheme.typography.titleLarge,
-            )
+                style = AppTheme.typography.titleLarge)
 
             val currentTrack = uiState.currentTrack
             if (currentTrack == null) {
                 Text(
                     text = "No track currently playing",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colors.onSurfaceVariant)
                 return@Column
             }
 
@@ -90,18 +89,14 @@ fun AlternativeTrackContent(
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(24.dp),
-                        strokeWidth = 2.dp,
-                    )
+                    verticalAlignment = Alignment.CenterVertically) {
+                    MillenniumIndeterminateProgress(
+                        modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
                         text = "Searching for alternative sources...",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
                 return@Column
             }
@@ -109,25 +104,21 @@ fun AlternativeTrackContent(
             if (uiState.alternatives.isEmpty()) {
                 Text(
                     text = "No alternative sources found",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colors.onSurfaceVariant)
                 return@Column
             }
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
+                verticalArrangement = Arrangement.spacedBy(6.dp)) {
                 items(
                     items = uiState.alternatives,
-                    key = { source -> source.id },
-                ) { source ->
+                    key = { source -> source.id }) { source ->
                     AlternativeSourceRow(
                         source = source,
                         isActive = source.id == uiState.activeSourceId,
-                        onClick = { viewModel.selectAlternative(source) },
-                    )
+                        onClick = { viewModel.selectAlternative(source) })
                 }
             }
         }
@@ -138,67 +129,47 @@ fun AlternativeTrackContent(
 private fun AlternativeSourceRow(
     source: AudioSource,
     isActive: Boolean,
-    onClick: () -> Unit,
-) {
+    onClick: () -> Unit) {
     val thumbnailUrl = source.thumbnails.maxByOrNull { it.width * it.height }?.url
     val rowColor = if (isActive) {
-        MaterialTheme.colorScheme.secondaryContainer
+        AppTheme.colors.secondaryContainer
     } else {
-        MaterialTheme.colorScheme.surfaceContainerHigh
+        AppTheme.colors.surfaceContainerHigh
     }
 
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .clickable(onClick = onClick),
-        tonalElevation = if (isActive) 2.dp else 0.dp,
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(64.dp)
-                .background(rowColor)
-                .padding(horizontal = 12.dp, vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+    MillenniumListTile(
+        onClick = onClick,
+        selected = isActive,
+        leading = {
             Box(
                 modifier = Modifier
                     .size(44.dp)
-                    .clip(MaterialTheme.shapes.small)
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
-                contentAlignment = Alignment.Center,
-            ) {
+                    .clip(AppTheme.shapes.small)
+                    .background(AppTheme.colors.surfaceVariant),
+                contentAlignment = Alignment.Center) {
                 if (thumbnailUrl != null) {
                     AsyncImage(
                         model = thumbnailUrl,
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                    )
+                        contentScale = ContentScale.Crop)
                 } else {
                     Text(
                         text = source.title.firstOrNull()?.uppercase() ?: "?",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.labelMedium,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
             }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = source.title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    color = if (isActive) {
-                        MaterialTheme.colorScheme.onSecondaryContainer
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    },
-                )
+        },
+        title = {
+            Text(
+                text = source.title,
+                style = AppTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)
+        },
+        subtitle = {
+            Column {
                 val subtitle = buildString {
                     source.artist?.let { append(it) }
                     if (source.album != null) {
@@ -209,27 +180,24 @@ private fun AlternativeSourceRow(
                 if (subtitle.isNotEmpty()) {
                     Text(
                         text = subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                        overflow = TextOverflow.Ellipsis)
                 }
                 Text(
                     text = "Confidence: ${(source.confidence * 100).toInt()}%",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.labelSmall,
+                    color = AppTheme.colors.onSurfaceVariant)
             }
-
+        },
+        trailing = {
             if (isActive) {
-                Icon(
+                MillenniumIcon(
                     Iconsax.IconsaxCheckCircle,
                     contentDescription = "Active source",
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(22.dp),
-                )
+                    tint = AppTheme.colors.primary,
+                    modifier = Modifier.size(22.dp))
             }
-        }
-    }
+        })
 }

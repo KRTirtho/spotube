@@ -17,6 +17,10 @@
 
 package dev.krtirtho.spotube.core.ui.component.cards
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.fadeIn
@@ -36,9 +40,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -50,10 +53,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.krtirtho.spotube.core.ui.base.BaseUITheme
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.PrimaryIconButton
-import dev.krtirtho.spotube.core.ui.base.SecondaryIconButton
 import dev.krtirtho.spotube.core.ui.component.LocalAnimatedVisibilityScope
 import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
 import dev.krtirtho.spotube.core.ui.component.sharedElementOrNone
@@ -75,8 +74,7 @@ fun PlayableCard(
     onPlay: (() -> Unit)? = null,
     onAddToQueue: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
-    sharedElementKey: String? = null,
-) {
+    sharedElementKey: String? = null) {
     val interactionSource = remember { MutableInteractionSource() }
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
@@ -86,8 +84,7 @@ fun PlayableCard(
             .clip(RoundedCornerShape(8.dp))
             .clickable(onClick = { onClick?.invoke() }, enabled = true)
             .width(160.dp)
-            .hoverable(interactionSource = interactionSource),
-    ) {
+            .hoverable(interactionSource = interactionSource)) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.fillMaxWidth().shimmerApply()) {
                 AsyncImage(
@@ -100,10 +97,8 @@ fun PlayableCard(
                         .sharedElementOrNone(
                             key = sharedElementKey,
                             sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope,
-                        ),
-                    contentScale = ContentScale.Crop,
-                )
+                            animatedVisibilityScope = animatedVisibilityScope),
+                    contentScale = ContentScale.Crop)
 
                 if (onPlay != null || onAddToQueue != null)
                     Box(
@@ -114,46 +109,35 @@ fun PlayableCard(
                         this@Column.AnimatedVisibility(
                             visible = isHovered,
                             enter = fadeIn(),
-                            exit = fadeOut(),
-                        ) {
+                            exit = fadeOut()) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.padding(4.dp)
                             ) {
                                 onAddToQueue?.let {
-                                    SecondaryIconButton(
+                                    MillenniumIconButton(
                                         onClick = onAddToQueue,
-                                        modifier = Modifier.size(30.dp),
-                                        theme = LocalBaseUITheme.current.iconButtons.secondary.copy(
-                                            shape = BaseUITheme.InteractionState.fromSingleValue(
-                                                CircleShape
-                                            )
-                                        )
+                                        modifier = Modifier.size(34.dp),
+                                        style = MillenniumIconButtonStyle.Secondary
                                     ) {
-                                        Icon(
+                                        MillenniumIcon(
                                             imageVector = Iconsax.IconsaxAddSquare,
-                                            contentDescription = "Add to queue",
-                                        )
+                                            contentDescription = "Add to queue")
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                                 onPlay?.let {
-                                    PrimaryIconButton(
+                                    MillenniumIconButton(
                                         onClick = onPlay,
-                                        modifier = Modifier.size(30.dp),
-                                        theme = LocalBaseUITheme.current.iconButtons.secondary.copy(
-                                            shape = BaseUITheme.InteractionState.fromSingleValue(
-                                                CircleShape
-                                            )
-                                        )
+                                        modifier = Modifier.size(34.dp),
+                                        style = MillenniumIconButtonStyle.Primary
 
                                     ) {
-                                        Icon(
+                                        MillenniumIcon(
                                             imageVector = if (isPlaying) {
                                                 Iconsax.IconsaxPause
                                             } else Iconsax.IconsaxPlay,
-                                            contentDescription = "Play",
-                                        )
+                                            contentDescription = "Play")
                                     }
                                 }
                             }
@@ -165,19 +149,17 @@ fun PlayableCard(
             ) {
                 TextWithShimmer(
                     text = title,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = AppTheme.typography.titleSmall,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                    overflow = TextOverflow.Ellipsis)
                 Spacer(modifier = Modifier.height(4.dp))
                 subtitle?.let {
                     TextWithShimmer(
                         text = subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                        overflow = TextOverflow.Ellipsis)
                 }
             }
         }
@@ -185,11 +167,10 @@ fun PlayableCard(
     }
 }
 
-
 @PreviewLightDark
 @Composable
 private fun PlayableCardPreview() {
-    BaseScaffold {
+    Box {
         PlayableCard(
             title = "Sample Title",
             subtitle = "Sample Subtitle",

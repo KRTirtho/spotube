@@ -299,8 +299,7 @@ class LibraryRepository(
         isPublic: Boolean,
         isCollaborating: Boolean,
         imageBase64: String,
-        trackIds: List<String>,
-    ): MetadataPlaylist? {
+        trackIds: List<String>): MetadataPlaylist? {
         return authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
@@ -310,8 +309,7 @@ class LibraryRepository(
                         isPublic = isPublic,
                         isCollaborating = isCollaborating,
                         imageBase64 = imageBase64,
-                        trackIds = trackIds,
-                    )
+                        trackIds = trackIds)
                     playlistCache.invalidateAll()
                     savedPlaylistIds.value += result.id
                     result
@@ -327,8 +325,7 @@ class LibraryRepository(
         isPublic: Boolean?,
         isCollaborating: Boolean?,
         imageBase64: String?,
-        trackIds: List<String>?,
-    ): MetadataPlaylist? {
+        trackIds: List<String>?): MetadataPlaylist? {
         return authPlugin?.let { plugin ->
             pluginManager.withScope {
                 plugin.use {
@@ -339,8 +336,7 @@ class LibraryRepository(
                         isPublic = isPublic,
                         isCollaborating = isCollaborating,
                         imageBase64 = imageBase64,
-                        trackIds = trackIds,
-                    )
+                        trackIds = trackIds)
                     playlistCache.invalidateAll()
                     result
                 }

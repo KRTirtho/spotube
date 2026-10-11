@@ -35,14 +35,12 @@ import androidx.core.content.ContextCompat
 actual fun rememberLocalNetworkPermissionRequester(): () -> Unit {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { /* result is picked up by discovery/advertising retry loops */ }
+        ActivityResultContracts.RequestPermission()) { /* result is picked up by discovery/advertising retry loops */ }
 
     return {
         val granted = ContextCompat.checkSelfPermission(
             context,
-            Manifest.permission.NEARBY_WIFI_DEVICES,
-        ) == PackageManager.PERMISSION_GRANTED
+            Manifest.permission.NEARBY_WIFI_DEVICES) == PackageManager.PERMISSION_GRANTED
         if (!granted) {
             launcher.launch(Manifest.permission.NEARBY_WIFI_DEVICES)
         }

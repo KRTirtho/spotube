@@ -17,19 +17,20 @@
 
 package dev.krtirtho.spotube.modules.update
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.mikepenz.markdown.m3.Markdown
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
 import org.jetbrains.compose.resources.stringResource
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_update_dialog_current_version
 import spotube.composeapp.generated.resources.plugin_update_dialog_no_notes
@@ -48,42 +49,34 @@ fun PluginUpdateDialog(
     update: AvailablePluginUpdate,
     onDismiss: () -> Unit,
     onIgnore: () -> Unit,
-    onUpdate: () -> Unit,
-) {
-    ThemedDialog(
+    onUpdate: () -> Unit) {
+    MillenniumDialog(
+        visible = true,
         onDismissRequest = onDismiss,
-        title = {
-            Text(
-                text = stringResource(
-                    Res.string.plugin_update_dialog_title,
-                    update.pluginName,
-                    update.info.latestVersion,
-                ),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold,
-            )
-        },
-        actions = {
-            OutlineButton(onClick = onIgnore) {
-                Text(stringResource(Res.string.update_action_ignore))
-            }
-            PrimaryButton(onClick = onUpdate) {
-                Text(stringResource(Res.string.update_action_update))
-            }
-        },
-    ) {
+        title = stringResource(
+            Res.string.plugin_update_dialog_title,
+            update.pluginName,
+            update.info.latestVersion)) {
         Text(
             text = stringResource(Res.string.plugin_update_dialog_current_version, update.currentVersion),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 8.dp),
-        )
+            color = AppTheme.colors.onSurfaceVariant,
+            modifier = Modifier.padding(bottom = 8.dp))
         if (update.info.releaseNotes.isNotBlank()) {
             SelectionContainer {
                 Markdown(content = update.info.releaseNotes)
             }
         } else {
             Text(stringResource(Res.string.plugin_update_dialog_no_notes))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            MillenniumButton(
+                onClick = onIgnore,
+                style = MillenniumButtonStyle.Secondary) {
+                Text(stringResource(Res.string.update_action_ignore))
+            }
+            MillenniumButton(onClick = onUpdate) {
+                Text(stringResource(Res.string.update_action_update))
+            }
         }
     }
 }

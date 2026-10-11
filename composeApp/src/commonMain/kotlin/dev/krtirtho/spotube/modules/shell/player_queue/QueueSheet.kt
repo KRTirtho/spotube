@@ -17,28 +17,19 @@
 
 package dev.krtirtho.spotube.modules.shell.player_queue
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterExitState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.core.animateDp
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
+import com.composeunstyled.DrawerPlacement
+import com.composeunstyled.SheetDetent
+import com.composeunstyled.rememberModalBottomSheetState
+import org.spotube.millennium.composables.MillenniumDrawer
+import org.spotube.millennium.composables.MillenniumDrawerValue
+import org.spotube.millennium.composables.MillenniumModalBottomSheet
+import org.spotube.millennium.composables.rememberMillenniumDrawerState
 
 private val SlidingSheetBreakpoint = 840.dp
 
@@ -47,65 +38,54 @@ fun QueueSheet(
     isVisible: Boolean,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
-) {
+    content: @Composable () -> Unit) {
     BoxWithConstraints(modifier = modifier) {
         if (maxWidth >= SlidingSheetBreakpoint) {
-            SlidingQueueSheet(isVisible, onDismiss, content)
+            EndDrawerSheet(isVisible, onDismiss, content)
         } else {
-            BottomQueueSheet(isVisible, onDismiss, content)
+            BottomSheetContent(isVisible, onDismiss, content)
         }
     }
 }
 
 @Composable
-private fun SlidingQueueSheet(
+internal fun EndDrawerSheet(
     isVisible: Boolean,
     onDismiss: () -> Unit,
-    content: @Composable () -> Unit,
-) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        AnimatedVisibility(
-            visible = isVisible,
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(
-                    top = 12.dp,
-                    end = 12.dp,
-                    bottom = 12.dp + LocalAppShellBottomInset.current,
-                ),
-            enter = slideInHorizontally { fullWidth -> fullWidth / 2 } + fadeIn(),
-            exit = slideOutHorizontally { fullWidth -> fullWidth / 2 } + fadeOut(),
-        ) {
-            val animatedShadowElevation = transition.animateDp(label = "queueShadow") { state ->
-                if (state == EnterExitState.Visible) 20.dp else 0.dp
-            }
-            Surface(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(460.dp),
-                shape = MaterialTheme.shapes.large,
-                tonalElevation = 2.dp,
-                shadowElevation = animatedShadowElevation.value,
-            ) {
-                content()
-            }
+    content: @Composable () -> Unit) {
+    val drawerState = rememberMillenniumDrawerState()
+    LaunchedEffect(isVisible) {
+        drawerState.targetValue =
+            if (isVisible) MillenniumDrawerValue.Open else MillenniumDrawerValue.Closed
+    }
+    LaunchedEffect(drawerState.currentValue) {
+        if (drawerState.currentValue == MillenniumDrawerValue.Closed && isVisible) {
+            onDismiss()
         }
+    }
+    MillenniumDrawer(
+        state = drawerState,
+        placement = DrawerPlacement.End,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)) {
+        content()
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun BottomQueueSheet(
+internal fun BottomSheetContent(
     isVisible: Boolean,
     onDismiss: () -> Unit,
-    content: @Composable () -> Unit,
-) {
-    if (isVisible) {
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-        ) {
-            content()
+    content: @Composable () -> Unit) {
+    if (!isVisible) return
+    val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
+    LaunchedEffect(sheetState.bottomSheetState.currentDetent) {
+        if (sheetState.bottomSheetState.currentDetent == SheetDetent.Hidden) {
+            onDismiss()
         }
+    }
+    MillenniumModalBottomSheet(
+        state = sheetState,
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)) {
+        content()
     }
 }

@@ -37,8 +37,7 @@ import kotlinx.serialization.json.Json
 @Serializable
 data class PluginTaggedAudioSource(
     val pluginId: String,
-    val source: AudioSource.Basic,
-)
+    val source: AudioSource.Basic)
 
 /** Persists (and looks up) the audio source matched to a [MetadataTrack] by a given plugin. */
 interface TrackSourceRepository {

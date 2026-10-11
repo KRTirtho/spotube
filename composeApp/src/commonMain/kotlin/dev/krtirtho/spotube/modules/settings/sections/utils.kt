@@ -17,19 +17,26 @@
 
 package dev.krtirtho.spotube.modules.settings.sections
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.millennium.theme.millenniumPanelBrush
+import org.spotube.millennium.theme.millenniumSurface
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -38,64 +45,52 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioFormat
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioQuality
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
-import dev.krtirtho.spotube.core.ui.base.Card
 
 private val standardLossyQualities = listOf(
     AudioQuality.Lossy(bitrate = 44_000),
     AudioQuality.Lossy(bitrate = 96_000),
     AudioQuality.Lossy(bitrate = 128_000),
-    AudioQuality.Lossy(bitrate = 256_000),
-)
+    AudioQuality.Lossy(bitrate = 256_000))
 
 internal val streamingFormatPresets = listOf(
     AudioFormat(
         codec = "opus",
         container = "webm",
-        qualities = standardLossyQualities,
-    ),
+        qualities = standardLossyQualities),
     AudioFormat(
         codec = "aac",
         container = "mp4",
-        qualities = standardLossyQualities,
-    ),
+        qualities = standardLossyQualities),
     AudioFormat(
         codec = "vorbis",
         container = "ogg",
-        qualities = standardLossyQualities,
-    ),
-)
+        qualities = standardLossyQualities))
 
 internal val downloadFormatPresets = listOf(
     AudioFormat(
         codec = "aac",
         container = "mp4",
-        qualities = standardLossyQualities,
-    ),
+        qualities = standardLossyQualities),
     AudioFormat(
         codec = "mp3",
         container = "mp3",
-        qualities = standardLossyQualities,
-    ),
+        qualities = standardLossyQualities),
     AudioFormat(
         codec = "opus",
         container = "webm",
-        qualities = standardLossyQualities,
-    ),
+        qualities = standardLossyQualities),
     AudioFormat(
         codec = "flac",
         container = "flac",
         qualities = listOf(
             AudioQuality.Lossless(sampleRate = 44_100, channels = 2),
-            AudioQuality.Lossless(sampleRate = 48_000, channels = 2),
-        ),
-    ),
-)
+            AudioQuality.Lossless(sampleRate = 48_000, channels = 2))))
 
 internal fun LazyListScope.settingsSectionHeader(title: StringResource) {
     item {
         Text(
             text = stringResource(title),
-            style = MaterialTheme.typography.labelMedium,
+            style = AppTheme.typography.labelMedium,
             color = Color.Gray,
             modifier = Modifier
                 .fillMaxWidth()
@@ -112,9 +107,9 @@ internal fun LazyListScope.settingsSectionHeader(title: StringResource) {
 internal fun SettingsPageTitle(title: StringResource) {
     Text(
         text = stringResource(title),
-        style = MaterialTheme.typography.headlineSmall,
+        style = AppTheme.typography.headlineSmall,
         fontWeight = FontWeight.SemiBold,
-        color = MaterialTheme.colorScheme.onSurface,
+        color = AppTheme.colors.onSurface,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 12.dp)
@@ -125,18 +120,16 @@ internal fun SettingsPageTitle(title: StringResource) {
 internal fun SettingsItemIcon(
     imageVector: ImageVector,
     contentDescription: String,
-    tint: Color = MaterialTheme.colorScheme.primary,
-) {
-    Surface(
-        shape = RoundedCornerShape(8.dp),
-        color = tint.copy(alpha = 0.12f),
-    ) {
+    tint: Color = AppTheme.colors.primary) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(tint.copy(alpha = 0.12f))) {
         Box(modifier = Modifier.padding(8.dp)) {
-            Icon(
+            MillenniumIcon(
                 imageVector = imageVector,
                 contentDescription = contentDescription,
-                tint = tint,
-            )
+                tint = tint)
         }
     }
 }
@@ -194,27 +187,25 @@ internal fun normalizePath(path: String): String {
 }
 
 internal fun LazyListScope.settingsSectionCard(
-    items: List<@Composable () -> Unit>,
-) {
+    items: List<@Composable () -> Unit>) {
     item {
-        Card(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp),
+                .padding(horizontal = 8.dp, vertical = 4.dp)
+                .millenniumSurface(
+                    background = millenniumPanelBrush(MillenniumTheme.colors),
+                    shape = AppTheme.shapes.medium,
+                    borderColor = MillenniumTheme.colors.border,
+                    borderWidth = 1.dp,
+                    shadowElevation = 6.dp)
+                .padding(top = 4.dp, bottom = 4.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 4.dp)
-            ) {
-                items.forEachIndexed { index, content ->
-                    if (index > 0) {
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                        )
-                    }
-                    content()
+            items.forEachIndexed { index, content ->
+                if (index > 0) {
+                    MillenniumSeparator()
                 }
+                content()
             }
         }
     }

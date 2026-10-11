@@ -17,6 +17,14 @@
 
 package dev.krtirtho.spotube.modules.home
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.theme.MillenniumTheme
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,14 +38,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
+import org.spotube.millennium.composables.MillenniumPullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,7 +59,6 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowse
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseItem
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseSection
 import dev.krtirtho.spotube.PlatformType
-import dev.krtirtho.spotube.core.ui.base.ChipTab
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.core.ui.component.ArtistCard
@@ -79,8 +82,6 @@ import org.koin.compose.koinInject
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel) {
     val navigationCommands = koinInject<NavigationCommands>()
@@ -120,58 +121,56 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
             }
     }
 
-    BaseScaffold(
-        topBar = {
-            ApplicationMainBar(
-                backButton = false,
-                title = {
-                    Text("Browse")
-                },
-                actions = {
-                    if (!isDesktop) {
-                        IconButton(onClick = { navigationCommands.navigateTo(Routes.Devices) }) {
-                            Icon(
-                                imageVector = Iconsax.IconsaxMirroringScreen,
-                                contentDescription = "Devices",
-                            )
-                        }
-                        IconButton(onClick = { navigationCommands.navigateTo(Routes.Jam) }) {
-                            Icon(
-                                imageVector = Iconsax.User,
-                                contentDescription = "Group Jam",
-                            )
-                        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MillenniumTheme.colors.background)) {
+        ApplicationMainBar(
+            backButton = false,
+            title = {
+                Text("Browse")
+            },
+            actions = {
+                if (!isDesktop) {
+                    MillenniumIconButton(
+                        onClick = { navigationCommands.navigateTo(Routes.Devices) },
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
+                            imageVector = Iconsax.IconsaxMirroringScreen,
+                            contentDescription = "Devices")
                     }
-                },
-            )
-        },
-    ) { innerPadding ->
+                    MillenniumIconButton(
+                        onClick = { navigationCommands.navigateTo(Routes.Jam) },
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
+                            imageVector = Iconsax.User,
+                            contentDescription = "Group Jam")
+                    }
+                }
+            })
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .weight(1f)
         ) {
             if (isDesktop) {
                 HomeContent(
                     listState = listState,
                     state = state,
                     onRetry = { viewModel.refresh() },
-                    onGenreSelected = { viewModel.selectGenre(it) },
-                )
+                    onGenreSelected = { viewModel.selectGenre(it) })
             } else {
-                PullToRefreshBox(
+                MillenniumPullToRefreshBox(
                     isRefreshing = state is HomeScreenState.Loading,
                     onRefresh = {
                         viewModel.refresh()
                     },
-                    modifier = Modifier.fillMaxSize(),
-                ) {
+                    modifier = Modifier.fillMaxSize()) {
                     HomeContent(
                         listState = listState,
                         state = state,
                         onRetry = { viewModel.refresh() },
-                        onGenreSelected = { viewModel.selectGenre(it) },
-                    )
+                        onGenreSelected = { viewModel.selectGenre(it) })
                 }
             }
 
@@ -189,8 +188,7 @@ private fun HomeContent(
     listState: androidx.compose.foundation.lazy.LazyListState,
     state: HomeScreenState,
     onRetry: () -> Unit,
-    onGenreSelected: (String) -> Unit,
-) {
+    onGenreSelected: (String) -> Unit) {
     val shellBottomInset = LocalAppShellBottomInset.current
     val contentPadding = remember(shellBottomInset) {
         PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
@@ -200,37 +198,31 @@ private fun HomeContent(
         state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(24.dp),
-    ) {
+        verticalArrangement = Arrangement.spacedBy(24.dp)) {
         when (state) {
             is HomeScreenState.Loading -> {
                 item {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(16.dp),
-                    ) {
+                        verticalArrangement = Arrangement.spacedBy(16.dp)) {
                         repeat(3) {
                             SkeletonTree(true) {
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                                ) {
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .height(180.dp)
-                                            .padding(horizontal = 16.dp),
-                                    )
+                                            .padding(horizontal = 16.dp))
                                     LazyRow(
                                         horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                        contentPadding = PaddingValues(horizontal = 16.dp),
-                                    ) {
+                                        contentPadding = PaddingValues(horizontal = 16.dp)) {
                                         items(4) {
                                             PlayableCard(
                                                 title = "Item Title",
                                                 subtitle = "Subtitle",
-                                                imageURL = "https://placehold.co/600x400",
-                                            )
+                                                imageURL = "https://placehold.co/600x400")
                                         }
                                     }
                                 }
@@ -244,8 +236,7 @@ private fun HomeContent(
                 item {
                     ErrorDisplay(
                         errorMessage = state.message,
-                        onRetry = onRetry,
-                    )
+                        onRetry = onRetry)
                 }
             }
 
@@ -261,8 +252,7 @@ private fun HomeContent(
                         GenreTabs(
                             genres = state.genres,
                             selectedGenreId = state.selectedGenreId,
-                            onGenreSelected = onGenreSelected,
-                        )
+                            onGenreSelected = onGenreSelected)
                     }
                 }
 
@@ -273,24 +263,20 @@ private fun HomeContent(
                         SkeletonTree(true) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
+                                verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(180.dp)
-                                        .padding(horizontal = 16.dp),
-                                )
+                                        .padding(horizontal = 16.dp))
                                 LazyRow(
                                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    contentPadding = PaddingValues(horizontal = 16.dp),
-                                ) {
+                                    contentPadding = PaddingValues(horizontal = 16.dp)) {
                                     items(4) {
                                         PlayableCard(
                                             title = "Item Title",
                                             subtitle = "Subtitle",
-                                            imageURL = "https://placehold.co/600x400",
-                                        )
+                                            imageURL = "https://placehold.co/600x400")
                                     }
                                 }
                             }
@@ -301,8 +287,7 @@ private fun HomeContent(
                         HomeSection(
                             title = section.title,
                             subtitle = section.description,
-                            items = section.items,
-                        )
+                            items = section.items)
                     }
                 }
 
@@ -311,24 +296,20 @@ private fun HomeContent(
                         SkeletonTree(true) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(8.dp),
-                            ) {
+                                verticalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(180.dp)
-                                        .padding(horizontal = 16.dp),
-                                )
+                                        .padding(horizontal = 16.dp))
                                 LazyRow(
                                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    contentPadding = PaddingValues(horizontal = 16.dp),
-                                ) {
+                                    contentPadding = PaddingValues(horizontal = 16.dp)) {
                                     items(4) {
                                         PlayableCard(
                                             title = "Item Title",
                                             subtitle = "Subtitle",
-                                            imageURL = "https://placehold.co/600x400",
-                                        )
+                                            imageURL = "https://placehold.co/600x400")
                                     }
                                 }
                             }
@@ -346,36 +327,30 @@ private fun HomeSection(
     title: String,
     subtitle: String? = null,
     items: List<MetadataBrowseItem>,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val rowState = rememberLazyListState()
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+        verticalArrangement = Arrangement.spacedBy(12.dp)) {
         if (!subtitle.isNullOrEmpty()) Text(
             text = subtitle,
-            style = MaterialTheme.typography.labelMedium.copy(
-                color = MaterialTheme.colorScheme.secondary,
-                fontWeight = FontWeight.Medium,
-            ),
-            modifier = Modifier.padding(horizontal = 16.dp),
-        )
+            style = AppTheme.typography.labelMedium.copy(
+                color = AppTheme.colors.secondary,
+                fontWeight = FontWeight.Medium),
+            modifier = Modifier.padding(horizontal = 16.dp))
         Text(
             text = title,
-            style = MaterialTheme.typography.titleLarge,
+            style = AppTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 16.dp).offset(y = (-12).dp),
-        )
+            modifier = Modifier.padding(horizontal = 16.dp).offset(y = (-12).dp))
 
         LazyRow(
             state = rowState,
             modifier = Modifier.dragScrollable(rowState),
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.Top,
-        ) {
+            verticalAlignment = Alignment.Top) {
             items(items) { browseItem ->
                 when (browseItem) {
                     is MetadataBrowseItem.Album -> AlbumCard(album = browseItem.data)
@@ -393,22 +368,24 @@ private fun HomeSection(
 private fun GenreTabs(
     genres: List<MetadataBrowseGenre>,
     selectedGenreId: String?,
-    onGenreSelected: (String) -> Unit,
-) {
+    onGenreSelected: (String) -> Unit) {
     val rowState = rememberLazyListState()
 
     LazyRow(
         state = rowState,
         modifier = Modifier.dragScrollable(rowState),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
-    ) {
+        horizontalArrangement = Arrangement.spacedBy(6.dp)) {
         items(genres) { genre ->
-            ChipTab(
-                text = genre.name,
-                selected = selectedGenreId == genre.id,
+            MillenniumButton(
                 onClick = { onGenreSelected(genre.id) },
-            )
+                style = if (selectedGenreId == genre.id) {
+                    MillenniumButtonStyle.Primary
+                } else {
+                    MillenniumButtonStyle.Secondary
+                }) {
+                Text(genre.name)
+            }
         }
     }
 }

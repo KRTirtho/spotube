@@ -32,8 +32,7 @@ import java.io.File
 import java.util.Locale
 
 class AndroidLocalMediaDiscoveryService(
-    private val context: Context,
-) : LocalMediaDiscoveryService, KoinComponent {
+    private val context: Context) : LocalMediaDiscoveryService, KoinComponent {
     val logger by injectLogger<AndroidLocalMediaDiscoveryService>()
 
     override suspend fun discoverFolders(roots: List<String>): List<LocalMediaFolder> {
@@ -59,8 +58,7 @@ class AndroidLocalMediaDiscoveryService(
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.MIME_TYPE,
-        ) + if (Build.VERSION.SDK_INT >= 29) {
+            MediaStore.Audio.Media.MIME_TYPE) + if (Build.VERSION.SDK_INT >= 29) {
             arrayOf(MediaStore.Audio.Media.RELATIVE_PATH)
         } else {
             emptyArray()
@@ -131,8 +129,7 @@ class AndroidLocalMediaDiscoveryService(
                     artists = listOfNotNull(artist),
                     durationMs = durationMs,
                     album = album,
-                    coverBytes = null,
-                )
+                    coverBytes = null)
 
                 tracksByFolder.getOrPut(folderPath) { mutableListOf() }.add(track)
                 acceptedRows += 1
@@ -150,8 +147,7 @@ class AndroidLocalMediaDiscoveryService(
                 LocalMediaFolder(
                     path = folderPath,
                     name = normalizeFolderName(folderPath),
-                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) },
-                )
+                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) })
             }
             .sortedBy { it.name.lowercase(Locale.getDefault()) }
 
@@ -172,8 +168,7 @@ class AndroidLocalMediaDiscoveryService(
 
     override fun observeChanges(
         roots: List<String>,
-        onChanged: LocalMediaChangeCallback,
-    ): LocalMediaObservation? {
+        onChanged: LocalMediaChangeCallback): LocalMediaObservation? {
         logger.i { "observeChanges: start roots=${roots.size}" }
         if (!hasReadPermission()) {
             logger.w { "observeChanges: missing media permission, observer not registered" }
@@ -190,8 +185,7 @@ class AndroidLocalMediaDiscoveryService(
         context.contentResolver.registerContentObserver(
             MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
             true,
-            observer,
-        )
+            observer)
 
         logger.i { "observeChanges: observer registered" }
 
@@ -257,8 +251,7 @@ class AndroidLocalMediaDiscoveryService(
                     artists = emptyList(),
                     durationMs = 0L,
                     album = null,
-                    coverBytes = null,
-                )
+                    coverBytes = null)
 
                 tracksByFolder.getOrPut(folderPath) { mutableListOf() }.add(track)
             }
@@ -269,8 +262,7 @@ class AndroidLocalMediaDiscoveryService(
                 LocalMediaFolder(
                     path = folderPath,
                     name = normalizeFolderName(folderPath),
-                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) },
-                )
+                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) })
             }
             .sortedBy { it.name.lowercase(Locale.getDefault()) }
 
@@ -292,8 +284,7 @@ class AndroidLocalMediaDiscoveryService(
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC),
             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
             context.getExternalFilesDir(Environment.DIRECTORY_MUSIC),
-            context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS),
-        )
+            context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS))
 
         return (configured + defaults)
             .map { it.absoluteFile }
@@ -320,8 +311,7 @@ class AndroidLocalMediaDiscoveryService(
 
     private fun mergeFolders(
         mediaStoreFolders: List<LocalMediaFolder>,
-        fallbackFolders: List<LocalMediaFolder>,
-    ): List<LocalMediaFolder> {
+        fallbackFolders: List<LocalMediaFolder>): List<LocalMediaFolder> {
         if (fallbackFolders.isEmpty()) return mediaStoreFolders
         if (mediaStoreFolders.isEmpty()) return fallbackFolders
 
@@ -342,8 +332,7 @@ class AndroidLocalMediaDiscoveryService(
                 LocalMediaFolder(
                     path = path,
                     name = normalizeFolderName(path),
-                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) },
-                )
+                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) })
             }
             .sortedBy { it.name.lowercase(Locale.getDefault()) }
     }
@@ -357,7 +346,6 @@ class AndroidLocalMediaDiscoveryService(
             "wav",
             "ogg",
             "opus",
-            "wma",
-        )
+            "wma")
     }
 }

@@ -33,7 +33,6 @@ import kotlinx.coroutines.SupervisorJob
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-
 fun MainViewController() = ComposeUIViewController(configure = {
     initKoin()
 }) { InitNewPipe { App() } }

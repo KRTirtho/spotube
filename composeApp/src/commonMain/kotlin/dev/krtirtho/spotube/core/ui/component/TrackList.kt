@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -36,6 +37,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -44,12 +46,20 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Text
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.ui.state.ToggleableState
+import org.spotube.millennium.composables.MillenniumCard
+import org.spotube.millennium.composables.MillenniumCheckbox
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumListTile
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumTextField
+import org.spotube.millennium.composables.MillenniumTriStateCheckbox
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -83,16 +93,6 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbumTy
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.Thumbnail
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import dev.krtirtho.spotube.core.ui.base.ButtonGroup
-import dev.krtirtho.spotube.core.ui.base.ButtonGroupDivider
-import dev.krtirtho.spotube.core.ui.base.Card
-import dev.krtirtho.spotube.core.ui.base.CheckBox
-import dev.krtirtho.spotube.core.ui.base.CheckBoxState
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
-import dev.krtirtho.spotube.core.ui.base.GroupIconButton
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.TextField
-import dev.krtirtho.spotube.core.ui.base.highlight
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
@@ -122,7 +122,7 @@ enum class TrackSortOption(val label: String) {
     Duration("Duration"),
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TrackList(
     tracks: List<MetadataTrack> = emptyList(),
@@ -153,9 +153,9 @@ fun TrackList(
     contentPadding: PaddingValues = PaddingValues(bottom = LocalAppShellBottomInset.current),
     simplified: Boolean = false,
     scrollable: Boolean = true,
-    state: LazyListState? = null,
-) {
-    var filterQuery by rememberSaveable { mutableStateOf("") }
+    state: LazyListState? = null) {
+    val filterState = rememberTextFieldState()
+    val filterQuery = filterState.text.toString()
     var sortBy by rememberSaveable { mutableStateOf(TrackSortOption.None) }
     var selectedTrackForOptions by remember { mutableStateOf<MetadataTrack?>(null) }
     var isSelectionMode by rememberSaveable { mutableStateOf(false) }
@@ -216,11 +216,11 @@ fun TrackList(
     val useDropdownForOptions = isDesktop && !isCompact
 
     val trackCardContent: @Composable () -> Unit = {
-        Card(
+        MillenniumCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
-        ) {
+            contentPadding = PaddingValues(0.dp)) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -228,9 +228,7 @@ fun TrackList(
             ) {
                 visibleTracks.forEachIndexed { displayedIndex, track ->
                     if (displayedIndex > 0) {
-                        HorizontalDivider(
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                        )
+                        MillenniumSeparator()
                     }
                     TrackListRow(
                         index = displayedIndex + 1,
@@ -284,38 +282,31 @@ fun TrackList(
                         onShowOptionsClick = { selectedTrackForOptions = track },
                         onArtistClick = onArtistClick,
                         onAlbumClick = onAlbumClick,
-                        onArtistsOverflowClick = { onArtistsOverflowClick(track) },
-                    )
+                        onArtistsOverflowClick = { onArtistsOverflowClick(track) })
                 }
 
                 if (isLoading && tracks.isEmpty()) {
                     repeat(ShimmerRowCount) { shimmerIndex ->
                         if (visibleTracks.isNotEmpty() || shimmerIndex > 0) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = 8.dp),
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                            )
+                            MillenniumSeparator(
+                                modifier = Modifier.padding(horizontal = 8.dp))
                         }
                         ShimmerTrackListRow(
                             index = shimmerIndex + 1,
                             showIndex = showIndex,
                             showAlbum = showAlbum,
-                            useDropdownForOptions = useDropdownForOptions,
-                        )
+                            useDropdownForOptions = useDropdownForOptions)
                     }
                 }
 
                 if (error != null) {
                     if (visibleTracks.isNotEmpty()) {
-                        HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                        )
+                        MillenniumSeparator(
+                            modifier = Modifier.padding(horizontal = 8.dp))
                     }
                     TrackListFeedbackRow(
                         message = error,
-                        isError = true,
-                    )
+                        isError = true)
                 }
 
                 if (showEmptyMessage && !isLoading && visibleTracks.isEmpty() && error == null) {
@@ -324,17 +315,14 @@ fun TrackList(
 
                 if (isLoadingNextPage) {
                     if (visibleTracks.isNotEmpty()) {
-                        HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                        )
+                        MillenniumSeparator(
+                            modifier = Modifier.padding(horizontal = 8.dp))
                     }
                     ShimmerTrackListRow(
                         index = visibleTracks.size + 1,
                         showIndex = showIndex,
                         showAlbum = showAlbum,
-                        useDropdownForOptions = useDropdownForOptions,
-                    )
+                        useDropdownForOptions = useDropdownForOptions)
                 }
             }
         }
@@ -345,19 +333,18 @@ fun TrackList(
             modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
                 .heightIn(max = 60.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End),
-        ) {
+            horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.End)) {
             if (showIndex || isSelectionMode) {
                 val allSelected =
                     visibleTracks.isNotEmpty() && selectedTrackIds.size == visibleTracks.size
                 val anySelected = selectedTrackIds.isNotEmpty()
                 val headerState = when {
-                    allSelected -> CheckBoxState.SELECTED
-                    anySelected -> CheckBoxState.INDETERMINATE
-                    else -> CheckBoxState.UNSELECTED
+                    allSelected -> ToggleableState.On
+                    anySelected -> ToggleableState.Indeterminate
+                    else -> ToggleableState.Off
                 }
-                CheckBox(
-                    state = headerState,
+                MillenniumTriStateCheckbox(
+                    value = headerState,
                     onClick = {
                         if (allSelected) {
                             isSelectionMode = false
@@ -367,58 +354,45 @@ fun TrackList(
                             selectedTrackIds = visibleTracks.map { it.id }.toSet()
                         }
                     },
-                )
+                    label = "")
             }
 
             Box(
                 modifier = Modifier
                     .weight(1f)
             ) {
-                TextField(
-                    value = filterQuery,
-                    onValueChange = { filterQuery = it },
+                MillenniumTextField(
+                    state = filterState,
+                    label = "",
+                    placeholder = "Filter",
                     modifier = Modifier
                         .widthIn(max = 400.dp)
-                        .align(Alignment.CenterEnd),
-                    placeholder = { TextWithShimmer("Filter") },
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Iconsax.IconsaxFilterSearch,
-                            contentDescription = "Filter",
-                        )
-                    },
-                    singleLine = true,
-                )
+                        .align(Alignment.CenterEnd))
             }
 
-            ButtonGroup {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(
-                    contentAlignment = Alignment.Center,
-                ) {
+                    contentAlignment = Alignment.Center) {
                     AdaptiveDropdownBottomSheet(
                         items = TrackSortOption.entries.map { option ->
                             AdaptiveMenuItem(
                                 label = option.label,
                                 onClick = { sortBy = option },
-                                selected = sortBy == option,
-                            )
+                                selected = sortBy == option)
                         },
                         trigger = { onClick ->
-                            GroupIconButton(
+                            MillenniumIconButton(
                                 onClick = onClick,
-                            ) {
-                                Icon(
+                                style = MillenniumIconButtonStyle.Quiet) {
+                                MillenniumIcon(
                                     imageVector = Iconsax.IconsaxSort,
-                                    contentDescription = "Sort",
-                                )
+                                    contentDescription = "Sort")
                             }
-                        },
-                    )
+                        })
                 }
-                ButtonGroupDivider()
+                MillenniumSeparator(modifier = Modifier.height(24.dp), vertical = true)
                 Box(
-                    contentAlignment = Alignment.Center,
-                ) {
+                    contentAlignment = Alignment.Center) {
                     val targetTracks = if (selectedTrackIds.isNotEmpty()) {
                         visibleTracks.filter { selectedTrackIds.contains(it.id) }
                     } else {
@@ -433,54 +407,42 @@ fun TrackList(
                                 AdaptiveMenuItem(
                                     icon = Iconsax.IconsaxDirectboxReceive,
                                     label = if (isAll) "Download All" else "Download $trackCount",
-                                    onClick = { onBulkDownload(targetTracks) },
-                                ),
-                            )
+                                    onClick = { onBulkDownload(targetTracks) }))
                             if (!isJamGuest) {
                                 add(
                                     AdaptiveMenuItem(
                                         icon = Iconsax.IconsaxAddSquare,
                                         label = if (isAll) "Add All to Queue" else "Add $trackCount to Queue",
-                                        onClick = { onBulkAddToQueue(targetTracks) },
-                                    ),
-                                )
+                                        onClick = { onBulkAddToQueue(targetTracks) }))
                                 add(
                                     AdaptiveMenuItem(
                                         icon = Iconsax.IconsaxNext,
                                         label = if (isAll) "Play All Next" else "Play $trackCount Next",
-                                        onClick = { onBulkPlayNext(targetTracks) },
-                                    ),
-                                )
+                                        onClick = { onBulkPlayNext(targetTracks) }))
                             }
                             add(
                                 AdaptiveMenuItem(
                                     icon = Iconsax.IconsaxMusicPlaylist,
                                     label = if (isAll) "Add All to Playlist" else "Add $trackCount to Playlist",
-                                    onClick = { onBulkAddToPlaylist(targetTracks) },
-                                ),
-                            )
+                                    onClick = { onBulkAddToPlaylist(targetTracks) }))
                         } + if (isInJam) {
                             listOf(
                                 AdaptiveMenuItem(
                                     icon = Iconsax.IconsaxAddSquare,
                                     label = if (isAll) "Add All to Jam" else "Add $trackCount to Jam",
-                                    onClick = { onBulkAddToJam(targetTracks) },
-                                ),
-                            )
+                                    onClick = { onBulkAddToJam(targetTracks) }))
                         } else {
                             emptyList()
                         },
                         trigger = { onClick ->
-                            GroupIconButton(
+                            MillenniumIconButton(
                                 onClick = onClick,
-                            ) {
-                                Icon(
+                                style = MillenniumIconButtonStyle.Quiet) {
+                                MillenniumIcon(
                                     imageVector = Iconsax.Iconsax3DotsMore,
-                                    contentDescription = "Bulk actions",
-                                )
+                                    contentDescription = "Bulk actions")
                             }
-                        },
-                    )
+                        })
                 }
             }
         }
@@ -495,8 +457,7 @@ fun TrackList(
                     .align(Alignment.TopCenter)
                     .padding(horizontal = if (isCompact) 6.dp else 16.dp, vertical = 8.dp),
                 contentPadding = contentPadding,
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-            ) {
+                verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 if (headerContent != null) {
                     item {
                         headerContent()
@@ -525,8 +486,7 @@ fun TrackList(
                         },
                         onAlbumClick = { track.album?.let { onAlbumClick(it) } },
                         isInJam = isInJam,
-                        isJamGuest = isJamGuest,
-                    )
+                        isJamGuest = isJamGuest)
                 }
             }
             VerticalScrollbar(listState, modifier = Modifier.align(Alignment.CenterEnd))
@@ -536,8 +496,7 @@ fun TrackList(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = if (isCompact) 6.dp else 16.dp, vertical = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(2.dp),
-        ) {
+            verticalArrangement = Arrangement.spacedBy(2.dp)) {
             if (headerContent != null) {
                 headerContent()
             }
@@ -560,8 +519,7 @@ fun TrackList(
                         onTrackOptionsAction(track, action)
                         selectedTrackForOptions = null
                     },
-                    onAlbumClick = { track.album?.let { onAlbumClick(it) } },
-                )
+                    onAlbumClick = { track.album?.let { onAlbumClick(it) } })
             }
         }
     }
@@ -590,235 +548,198 @@ private fun TrackListRow(
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
     onArtistsOverflowClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val rowTheme = LocalBaseUITheme.current.listRowTile
-    val isLight = MaterialTheme.colorScheme.surface.luminance() > 0.5f
+    modifier: Modifier = Modifier) {
     val artworkInteractionSource = remember { MutableInteractionSource() }
     val isArtworkHovered by artworkInteractionSource.collectIsHoveredAsState()
     val rowInteractionSource = remember { MutableInteractionSource() }
     val isRowHovered by rowInteractionSource.collectIsHoveredAsState()
     val rowBackgroundColor = when {
-        isSelected -> rowTheme.background.selected
-        isCurrentTrack && isCurrentTrackPlaying -> rowTheme.background.hovered
-        isCurrentTrack -> rowTheme.background.focused
-        trackOptionsState.isBlacklisted -> androidx.compose.ui.graphics.SolidColor(MaterialTheme.colorScheme.error.copy(alpha = 0.1f))
-        else -> rowTheme.background.normal
+        isSelected -> AppTheme.colors.secondary.copy(alpha = 0.12f)
+        isCurrentTrack && isCurrentTrackPlaying -> AppTheme.colors.primaryContainer
+        isCurrentTrack -> AppTheme.colors.surfaceVariant
+        trackOptionsState.isBlacklisted -> AppTheme.colors.error.copy(alpha = 0.1f)
+        else -> Color.Transparent
     }
-    val highlightColor = Color.White.copy(
-        alpha = if (isLight) 0.9f else 0.06f
-    )
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .hoverable(rowInteractionSource)
-            .combinedClickable(
-                onClick = onTrackClick,
-                onLongClick = onLongClick,
-            )
-            .background(rowBackgroundColor)
-            .then(
-                if (isRowHovered || isSelected || (isCurrentTrack && isCurrentTrackPlaying)) {
-                    Modifier.highlight(highlightColor)
-                } else {
-                    Modifier
-                }
-            )
-            .clip(MaterialTheme.shapes.small)
-            .padding(horizontal = 8.dp, vertical = 6.dp)
-            .padding(end = 6.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
-        if (isSelectionMode) {
-            CheckBox(
-                state = if (isSelected) CheckBoxState.SELECTED else CheckBoxState.UNSELECTED,
-                onClick = { onSelectionToggle(!isSelected) },
-                modifier = Modifier.shimmerApply()
-            )
-        } else if (showIndex) {
-            Box(
-                modifier = Modifier.width(30.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                AnimatedContent(
-                    targetState = isRowHovered,
-                    transitionSpec = {
-                        fadeIn() togetherWith fadeOut()
-                    },
-                    label = "index-checkbox",
-                ) { hovered ->
-                    if (hovered) {
-                        CheckBox(
-                            state = if (isSelected) CheckBoxState.SELECTED else CheckBoxState.UNSELECTED,
-                            onClick = { onSelectionToggle(!isSelected) },
-                            modifier = Modifier.shimmerApply()
-                        )
-                    } else {
-                        TextWithShimmer(
-                            text = index.toString(),
-                            style = MaterialTheme.typography.labelMedium,
-                            textAlign = TextAlign.Center,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            }
-        }
-
-        Box(
-            modifier = Modifier
-                .size(44.dp)
-                .clip(MaterialTheme.shapes.small)
-                .hoverable(interactionSource = artworkInteractionSource),
-            contentAlignment = Alignment.Center,
-        ) {
-
-            val imageUrl = (track.album?.thumbnails ?: track.thumbnails)?.firstOrNull()?.url
-            val platformContext = LocalPlatformContext.current
-            val imageRequest = remember(imageUrl) {
-                ImageRequest.Builder(platformContext)
-                    .data(imageUrl)
-                    .size(128) // 44.dp * ~3x density = ~132px. 128 is a perfect power-of-2 size.
-                    .crossfade(false) // Crucial for scroll performance
-                    .build()
-            }
-
-            AsyncImage(
-                model = imageRequest,
-                contentDescription = track.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize().shimmerApply(),
-            )
-
-            if (isArtworkHovered || isCurrentTrack) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.10f)),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = if (isCurrentTrack && isCurrentTrackPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                        contentDescription = if (isCurrentTrack && isCurrentTrackPlaying) "Pause" else "Play",
-                        tint = Color.White,
-                        modifier = Modifier.size(18.dp).shimmerApply(),
-                    )
-                }
-            }
-        }
-
-        Column(modifier = Modifier.weight(1.2f)) {
+    MillenniumListTile(
+        modifier = modifier,
+        selected = isSelected || isCurrentTrack,
+        onClick = onTrackClick,
+        title = {
             TextWithShimmer(
                 text = track.title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
+        },
+        subtitle = {
             ArtistChips(
                 artists = track.artists,
                 onArtistClick = onArtistClick,
-                onArtistsOverflowClick = onArtistsOverflowClick,
-            )
-        }
-
-        if (showAlbum && track.album != null) {
-            val interactionSource = remember { MutableInteractionSource() }
-            val isHovered by interactionSource.collectIsHoveredAsState()
-            val isPressed by interactionSource.collectIsPressedAsState()
-            val colorScheme = MaterialTheme.colorScheme
-
+                onArtistsOverflowClick = onArtistsOverflowClick)
+        },
+        leading = {
             Row(
-                modifier = Modifier.weight(1f)
-            ) {
-                TextWithShimmer(
-                    text = track.album!!.title,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier
-                        .hoverable(interactionSource)
-                        .clickable(
-                            indication = null,
-                            interactionSource = interactionSource
-                        ) { onAlbumClick(track.album!!) }
-                        // Hide ripple and show underline on hover/click
-                        .then(
-                            if (isHovered || isPressed) {
-                                Modifier.drawWithCache {
-                                    val underlineHeight = 1.dp.toPx()
-                                    onDrawWithContent {
-                                        drawContent()
-                                        drawLine(
-                                            color = colorScheme.primary,
-                                            start = Offset(0f, size.height - underlineHeight),
-                                            end = Offset(size.width, size.height - underlineHeight),
-                                            strokeWidth = underlineHeight,
-                                        )
-                                    }
-                                }
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (isSelectionMode) {
+                    MillenniumCheckbox(
+                        checked = isSelected,
+                        onCheckedChange = { onSelectionToggle(it) },
+                        label = "",
+                        modifier = Modifier.shimmerApply())
+                } else if (showIndex) {
+                    Box(
+                        modifier = Modifier.width(30.dp),
+                        contentAlignment = Alignment.Center) {
+                        AnimatedContent(
+                            targetState = isRowHovered,
+                            transitionSpec = { fadeIn() togetherWith fadeOut() },
+                            label = "index-checkbox") { hovered ->
+                            if (hovered) {
+                                MillenniumCheckbox(
+                                    checked = isSelected,
+                                    onCheckedChange = { onSelectionToggle(it) },
+                                    label = "",
+                                    modifier = Modifier.shimmerApply())
                             } else {
-                                Modifier
+                                TextWithShimmer(
+                                    text = index.toString(),
+                                    style = AppTheme.typography.labelMedium,
+                                    textAlign = TextAlign.Center,
+                                    color = AppTheme.colors.onSurfaceVariant)
                             }
-                        )
-                )
-            }
-        }
+                        }
+                    }
+                }
 
-        TextWithShimmer(
-            text = track.durationMs.toDurationString(),
-            style = MaterialTheme.typography.bodySmall,
-            textAlign = TextAlign.End,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.width(56.dp),
-        )
+                Box(
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(AppTheme.shapes.small)
+                        .hoverable(interactionSource = artworkInteractionSource),
+                    contentAlignment = Alignment.Center) {
+                    val imageUrl = (track.album?.thumbnails ?: track.thumbnails)?.firstOrNull()?.url
+                    val platformContext = LocalPlatformContext.current
+                    val imageRequest = remember(imageUrl) {
+                        ImageRequest.Builder(platformContext)
+                            .data(imageUrl)
+                            .size(128)
+                            .crossfade(false)
+                            .build()
+                    }
 
-        if (useDropdownForOptions) {
-            TrackOptions(
-                track = track,
-                state = trackOptionsState,
-                onAction = onTrackOptionsAction,
-                onAlbumClick = { track.album?.let { onAlbumClick(it) } },
-                isInJam = isInJam,
-                isJamGuest = isJamGuest,
-            )
-        } else {
-            GhostIconButton(onClick = onShowOptionsClick) {
-                Icon(
-                    imageVector = Iconsax.Iconsax3DotsMore,
-                    contentDescription = "Track options",
-                )
+                    AsyncImage(
+                        model = imageRequest,
+                        contentDescription = track.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize().shimmerApply())
+
+                    if (isArtworkHovered || isCurrentTrack) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(Color.Black.copy(alpha = 0.10f)),
+                            contentAlignment = Alignment.Center) {
+                            MillenniumIcon(
+                                imageVector = if (isCurrentTrack && isCurrentTrackPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
+                                contentDescription = if (isCurrentTrack && isCurrentTrackPlaying) "Pause" else "Play",
+                                tint = Color.White,
+                                modifier = Modifier.size(18.dp).shimmerApply())
+                        }
+                    }
+                }
             }
-        }
-    }
+        },
+        trailing = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (showAlbum && track.album != null) {
+                    val interactionSource = remember { MutableInteractionSource() }
+                    val isHovered by interactionSource.collectIsHoveredAsState()
+                    val isPressed by interactionSource.collectIsPressedAsState()
+                    val colorScheme = AppTheme.colors
+
+                    TextWithShimmer(
+                        text = track.album!!.title,
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.colors.primary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier
+                            .widthIn(max = 220.dp)
+                            .hoverable(interactionSource)
+                            .clickable(
+                                indication = null,
+                                interactionSource = interactionSource) { onAlbumClick(track.album!!) }
+                            .then(
+                                if (isHovered || isPressed) {
+                                    Modifier.drawWithCache {
+                                        val underlineHeight = 1.dp.toPx()
+                                        onDrawWithContent {
+                                            drawContent()
+                                            drawLine(
+                                                color = colorScheme.primary,
+                                                start = Offset(0f, size.height - underlineHeight),
+                                                end = Offset(size.width, size.height - underlineHeight),
+                                                strokeWidth = underlineHeight)
+                                        }
+                                    }
+                                } else {
+                                    Modifier
+                                }))
+                }
+
+                TextWithShimmer(
+                    text = track.durationMs.toDurationString(),
+                    style = AppTheme.typography.bodySmall,
+                    textAlign = TextAlign.End,
+                    color = AppTheme.colors.onSurfaceVariant,
+                    modifier = Modifier.width(56.dp))
+
+                if (useDropdownForOptions) {
+                    TrackOptions(
+                        track = track,
+                        state = trackOptionsState,
+                        onAction = onTrackOptionsAction,
+                        onAlbumClick = { track.album?.let { onAlbumClick(it) } },
+                        isInJam = isInJam,
+                        isJamGuest = isJamGuest)
+                } else {
+                    MillenniumIconButton(
+                        onClick = onShowOptionsClick,
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(
+                            imageVector = Iconsax.Iconsax3DotsMore,
+                            contentDescription = "Track options")
+                    }
+                }
+            }
+        })
 }
 
 @Composable
 private fun ArtistChips(
     artists: List<MetadataArtist.Basic>,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
-    onArtistsOverflowClick: () -> Unit,
-) {
+    onArtistsOverflowClick: () -> Unit) {
     val visibleArtists = artists.take(2)
     Row(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
+        modifier = Modifier.fillMaxWidth()) {
         visibleArtists.forEachIndexed { index, artist ->
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+                verticalAlignment = Alignment.CenterVertically) {
                 val interactionSource = remember { MutableInteractionSource() }
                 val isHovered by interactionSource.collectIsHoveredAsState()
                 val isPressed by interactionSource.collectIsPressedAsState()
 
                 TextWithShimmer(
                     text = artist.name,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.primary,
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.primary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textDecoration = if (isHovered || isPressed) TextDecoration.Underline else null,
@@ -827,13 +748,12 @@ private fun ArtistChips(
                         indication = null,
                         interactionSource = interactionSource
                     ) { onArtistClick(artist) }
-                    ,
-                )
+                    )
                 if (index < visibleArtists.size - 1)
                     Text(
                         ",",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall
+                        color = AppTheme.colors.onSurfaceVariant,
+                        style = AppTheme.typography.bodySmall
                     )
             }
         }
@@ -842,12 +762,11 @@ private fun ArtistChips(
         if (remaining > 0) {
             TextWithShimmer(
                 text = "+$remaining more",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary,
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.primary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.clickable(onClick = onArtistsOverflowClick),
-            )
+                modifier = Modifier.clickable(onClick = onArtistsOverflowClick))
         }
     }
 }
@@ -857,8 +776,7 @@ private fun ShimmerTrackListRow(
     index: Int,
     showIndex: Boolean,
     showAlbum: Boolean,
-    useDropdownForOptions: Boolean,
-) {
+    useDropdownForOptions: Boolean) {
     val dummyTrack = remember(index) { dummyTrackForShimmer(index) }
     SkeletonTree(true) {
         TrackListRow(
@@ -881,8 +799,7 @@ private fun ShimmerTrackListRow(
             onShowOptionsClick = {},
             onArtistClick = {},
             onAlbumClick = {},
-            onArtistsOverflowClick = {},
-        )
+            onArtistsOverflowClick = {})
     }
 }
 
@@ -891,8 +808,7 @@ private fun dummyTrackForShimmer(index: Int): MetadataTrack {
         id = "shimmer_artist_$index",
         name = "Artist Name",
         thumbnails = emptyList(),
-        externalUri = null,
-    )
+        externalUri = null)
     return MetadataTrack(
         id = "shimmer_track_$index",
         title = "Track Title Here",
@@ -913,29 +829,25 @@ private fun dummyTrackForShimmer(index: Int): MetadataTrack {
             thumbnails = emptyList(),
             albumType = MetadataAlbumType.Album,
             artists = listOf(artist),
-            externalUri = null,
-        ),
+            externalUri = null),
         thumbnails = null,
         explicit = false,
         popularity = 0,
         isrcCode = null,
-        externalUri = null,
-    )
+        externalUri = null)
 }
 
 @Composable
 private fun TrackListFeedbackRow(
     message: String,
-    isError: Boolean = false,
-) {
+    isError: Boolean = false) {
     TextWithShimmer(
         text = message,
-        color = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurfaceVariant,
-        style = MaterialTheme.typography.bodyMedium,
+        color = if (isError) AppTheme.colors.error else AppTheme.colors.onSurfaceVariant,
+        style = AppTheme.typography.bodyMedium,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 12.dp),
-    )
+            .padding(horizontal = 8.dp, vertical = 12.dp))
 }
 
 private fun Long.toDurationString(): String {
@@ -951,21 +863,17 @@ fun previewTracks(): List<MetadataTrack> {
             id = "artist_1",
             name = "Aria Vale",
             thumbnails = emptyList(),
-            externalUri = null,
-        ),
+            externalUri = null),
         MetadataArtist.Basic(
             id = "artist_2",
             name = "Neon Harbor",
             thumbnails = emptyList(),
-            externalUri = null,
-        ),
+            externalUri = null),
         MetadataArtist.Basic(
             id = "artist_3",
             name = "Echo Drift",
             thumbnails = emptyList(),
-            externalUri = null,
-        ),
-    )
+            externalUri = null))
 
     val album = MetadataAlbum.Detailed(
         releaseDate = null,
@@ -978,13 +886,11 @@ fun previewTracks(): List<MetadataTrack> {
             Thumbnail(
                 url = "https://picsum.photos/120",
                 width = 120,
-                height = 120,
-            )
+                height = 120)
         ),
         albumType = MetadataAlbumType.Album,
         artists = artists.take(2),
-        externalUri = null,
-    )
+        externalUri = null)
 
     return listOf(
         MetadataTrack(
@@ -999,8 +905,7 @@ fun previewTracks(): List<MetadataTrack> {
             explicit = false,
             popularity = 92,
             isrcCode = null,
-            externalUri = null,
-        ),
+            externalUri = null),
         MetadataTrack(
             id = "track_2",
             title = "Static Horizon",
@@ -1013,8 +918,7 @@ fun previewTracks(): List<MetadataTrack> {
             popularity = 80,
             isrcCode = null,
             externalUri = null,
-            thumbnails = null,
-        ),
+            thumbnails = null),
         MetadataTrack(
             id = "track_3",
             title = "Last Train Echo",
@@ -1027,19 +931,16 @@ fun previewTracks(): List<MetadataTrack> {
             popularity = 77,
             isrcCode = null,
             externalUri = null,
-            thumbnails = null,
-        ),
-    )
+            thumbnails = null))
 }
 
 @Composable
 @Preview
 private fun TrackListPreview() {
-    BaseScaffold {
+    Box(modifier = Modifier.fillMaxSize().background(AppTheme.colors.background)) {
         TrackList(
             tracks = previewTracks(),
             hasMore = true,
-            isLoadingNextPage = true,
-        )
+            isLoadingNextPage = true)
     }
 }

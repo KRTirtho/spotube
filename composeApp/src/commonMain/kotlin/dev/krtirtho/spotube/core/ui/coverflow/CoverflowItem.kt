@@ -41,8 +41,7 @@ internal fun CoverflowItem(
     geometry: Geometry,
     onClickHandler: () -> Unit = {},
     onSelectedHandler: (Boolean) -> Unit,
-    content: @Composable () -> Unit,
-) {
+    content: @Composable () -> Unit) {
     var horizontalPosition by remember { mutableStateOf<Float?>(null) }
     val distanceToCenter = geometry.distanceToCenter(horizontalPosition ?: 0f)
 
@@ -53,8 +52,7 @@ internal fun CoverflowItem(
             .onGloballyPositioned { coordinates ->
                 horizontalPosition = coordinates.positionInParent().x
             },
-        contentAlignment = Alignment.Center,
-    ) {
+        contentAlignment = Alignment.Center) {
         if (horizontalPosition != null) {
             onSelectedHandler(geometry.isSelected(horizontalPosition ?: 0f))
 
@@ -65,20 +63,16 @@ internal fun CoverflowItem(
                         rotationY = geometry.rotation(distanceToCenter),
                         translationX = geometry.translationX(distanceToCenter),
                         scaleY = geometry.scale(distanceToCenter),
-                        scaleX = geometry.scale(distanceToCenter),
-                    ),
-                propagateMinConstraints = true,
-            ) {
+                        scaleX = geometry.scale(distanceToCenter)),
+                propagateMinConstraints = true) {
                 val interactionSource = remember { MutableInteractionSource() }
                 if (geometry.params.mirror) {
                     Mirror(
                         modifier = Modifier.clickable(
                             interactionSource = interactionSource,
                             indication = null,
-                            onClick = onClickHandler,
-                        ),
-                        coverSize = geometry.coverSize,
-                    ) {
+                            onClick = onClickHandler),
+                        coverSize = geometry.coverSize) {
                         content()
                     }
                 } else {
@@ -86,9 +80,7 @@ internal fun CoverflowItem(
                         modifier = Modifier.clickable(
                             interactionSource = interactionSource,
                             indication = null,
-                            onClick = onClickHandler,
-                        ),
-                    ) {
+                            onClick = onClickHandler)) {
                         content()
                     }
                 }

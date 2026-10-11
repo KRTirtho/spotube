@@ -26,5 +26,4 @@ data class CoverflowParams(
     val angle: Float = 45f,
     val shift: Float = 0.4f,
     val zoom: Float = 0.8f,
-    val mirror: Boolean = false,
-)
+    val mirror: Boolean = false)

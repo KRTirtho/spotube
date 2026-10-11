@@ -60,8 +60,7 @@ class AudioPlayerTest {
         val candidates = listOf(
             File("src/jvmTest/resources/test-audio"),
             File("../composeApp/src/jvmTest/resources/test-audio"),
-            File(System.getProperty("user.dir"), "src/jvmTest/resources/test-audio"),
-        )
+            File(System.getProperty("user.dir"), "src/jvmTest/resources/test-audio"))
         for (dir in candidates) {
             if (dir.isDirectory) return dir
         }
@@ -76,8 +75,7 @@ class AudioPlayerTest {
             duration = 10.seconds,
             coverURL = "",
             url = url,
-            protocol = StreamProtocol.PROGRESSIVE,
-        )
+            protocol = StreamProtocol.PROGRESSIVE)
     }
 
     private fun testItems(count: Int = 3): List<MediaItem> {

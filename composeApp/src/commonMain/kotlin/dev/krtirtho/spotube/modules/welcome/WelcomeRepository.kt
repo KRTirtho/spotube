@@ -69,8 +69,7 @@ class WelcomeRepository(private val database: Database) {
      */
     val shouldShowOnboarding: StateFlow<Boolean> = combine(
         onboardingCompleted,
-        sessionDismissed,
-    ) { completed, dismissed ->
+        sessionDismissed) { completed, dismissed ->
         when {
             dismissed -> false
             DebugConfig.FORCE_SHOW_ONBOARDING -> true
@@ -79,8 +78,7 @@ class WelcomeRepository(private val database: Database) {
     }.stateIn(
         scope = scope,
         started = SharingStarted.Eagerly,
-        initialValue = if (DebugConfig.FORCE_SHOW_ONBOARDING) true else !database.isExistingInstall,
-    )
+        initialValue = if (DebugConfig.FORCE_SHOW_ONBOARDING) true else !database.isExistingInstall)
 
     init {
         // One-time migration. When the flag was never written this is either a brand-new install

@@ -46,8 +46,7 @@ sealed class JamMessage {
          */
         val follow: Boolean = false,
         /** Host's live play state — late-joining guests start with it. */
-        val isPlaying: Boolean = false,
-    ) : JamMessage()
+        val isPlaying: Boolean = false) : JamMessage()
 
     @Serializable
     @SerialName("playbackCommand")
@@ -57,22 +56,19 @@ sealed class JamMessage {
     @SerialName("suggestTrack")
     data class SuggestTrack(
         val mediaItem: JamMediaItem,
-        val addedBy: String = "",
-    ) : JamMessage()
+        val addedBy: String = "") : JamMessage()
 
     @Serializable
     @SerialName("suggestPlaylist")
     data class SuggestPlaylist(
         val tracks: List<JamMediaItem>,
-        val addedBy: String = "",
-    ) : JamMessage()
+        val addedBy: String = "") : JamMessage()
 
     @Serializable
     @SerialName("kick")
     data class Kick(
         val participantId: String,
-        val reason: String = "kicked",
-    ) : JamMessage()
+        val reason: String = "kicked") : JamMessage()
 
     @Serializable
     @SerialName("leave")
@@ -104,8 +100,7 @@ data class JamPresence(
     val clientId: String,
     val displayName: String,
     val isHost: Boolean,
-    val left: Boolean = false,
-)
+    val left: Boolean = false)
 
 @Serializable
 data class JamMediaItem(
@@ -117,8 +112,7 @@ data class JamMediaItem(
     val durationMs: Long,
     val coverUrl: String,
     val protocol: String,
-    val addedBy: String = "",
-) {
+    val addedBy: String = "") {
     companion object {
         fun fromQueueEntry(entry: QueueEntry): JamMediaItem = when (entry) {
             is QueueEntry.StreamingTrack -> JamMediaItem(
@@ -132,8 +126,7 @@ data class JamMediaItem(
                     ?: entry.track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
                     .orEmpty(),
                 protocol = entry.protocol.name,
-                addedBy = entry.addedBy,
-            )
+                addedBy = entry.addedBy)
 
             is QueueEntry.LocalTrack -> JamMediaItem(
                 url = entry.url,
@@ -144,8 +137,7 @@ data class JamMediaItem(
                 durationMs = entry.duration,
                 coverUrl = "",
                 protocol = "PROGRESSIVE",
-                addedBy = entry.addedBy,
-            )
+                addedBy = entry.addedBy)
         }
 
         fun fromTrack(track: MetadataTrack): JamMediaItem = JamMediaItem(
@@ -158,8 +150,7 @@ data class JamMediaItem(
             coverUrl = track.thumbnails?.maxByOrNull { it.width * it.height }?.url
                 ?: track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
                 .orEmpty(),
-            protocol = "PROGRESSIVE",
-        )
+            protocol = "PROGRESSIVE")
 
         fun fromMediaItem(item: MediaItem): JamMediaItem = JamMediaItem(
             url = item.url,
@@ -168,8 +159,7 @@ data class JamMediaItem(
             album = item.album,
             durationMs = item.duration.inWholeMilliseconds,
             coverUrl = item.coverURL,
-            protocol = item.protocol.name,
-        )
+            protocol = item.protocol.name)
 
         fun toMediaItem(item: JamMediaItem): MediaItem = MediaItem(
             title = item.title,
@@ -179,8 +169,7 @@ data class JamMediaItem(
             coverURL = item.coverUrl,
             url = item.url,
             protocol = dev.krtirtho.plugin_interfaces.plugin_apis.audio.StreamProtocol
-                .valueOf(item.protocol.ifBlank { "PROGRESSIVE" }),
-        )
+                .valueOf(item.protocol.ifBlank { "PROGRESSIVE" }))
     }
 }
 
@@ -188,8 +177,7 @@ data class JamMediaItem(
 data class JamParticipant(
     val id: String,
     val displayName: String,
-    val isHost: Boolean,
-)
+    val isHost: Boolean)
 
 @Serializable
 enum class JamRole {

@@ -17,11 +17,11 @@
 
 package dev.krtirtho.spotube.modules.settings.components
 
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
+import org.spotube.millennium.composables.MillenniumListTile
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import dev.krtirtho.spotube.core.ui.base.ListRowTile
 
 /**
  * Reusable setting card item component for consistent styling
@@ -37,7 +37,7 @@ fun SettingCardItem(
     onClick: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
-    ListRowTile(
+    MillenniumListTile(
         selected = false,
         enabled = enabled,
         onClick = onClick,
@@ -46,19 +46,18 @@ fun SettingCardItem(
         title = {
             Text(
                 title,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                style = AppTheme.typography.labelLarge,
+                color = AppTheme.colors.onSurface
             )
         },
         subtitle = subtitle?.let {
             {
                 Text(
                     it,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant
                 )
             }
         },
-        trailing = trailingContent,
-    )
+        trailing = trailingContent)
 }

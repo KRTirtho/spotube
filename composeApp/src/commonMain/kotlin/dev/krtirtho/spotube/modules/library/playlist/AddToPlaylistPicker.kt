@@ -17,6 +17,13 @@
 
 package dev.krtirtho.spotube.modules.library.playlist
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumModalBottomSheet
+import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,13 +37,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.SheetDetent
+import com.composeunstyled.Text
+import com.composeunstyled.rememberModalBottomSheetState
+import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -44,6 +51,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,15 +60,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
-import dev.krtirtho.spotube.core.ui.base.TextField
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddToPlaylistPicker(
     visible: Boolean,
@@ -69,8 +75,7 @@ fun AddToPlaylistPicker(
     onPlaylistSelected: (String) -> Unit,
     modifier: Modifier = Modifier,
     libraryRepository: LibraryRepository = koinInject(),
-    breakpointDp: Float = 600f,
-) {
+    breakpointDp: Float = 600f) {
     if (!visible) return
 
     val adaptiveInfo = currentWindowAdaptiveInfo()
@@ -80,6 +85,13 @@ fun AddToPlaylistPicker(
     var isLoading by remember { mutableStateOf(true) }
     var searchQuery by remember { mutableStateOf("") }
     val scope = rememberCoroutineScope()
+    val searchState = rememberTextFieldState(searchQuery)
+
+    LaunchedEffect(searchState) {
+        snapshotFlow { searchState.text.toString() }
+            .drop(1)
+            .collect { searchQuery = it }
+    }
 
     LaunchedEffect(visible, currentUserId) {
         if (visible) {
@@ -107,21 +119,21 @@ fun AddToPlaylistPicker(
 
     val content: @Composable () -> Unit = {
         Column(modifier = Modifier.fillMaxSize()) {
-            TextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 12.dp),
-                placeholder = { Text("Search your playlists...") },
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Iconsax.IconsaxFilterSearch,
-                        contentDescription = "Search",
-                    )
-                },
-            )
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                MillenniumIcon(
+                    imageVector = Iconsax.IconsaxFilterSearch,
+                    contentDescription = "Search")
+                MillenniumTextField(
+                    state = searchState,
+                    label = "Search",
+                    modifier = Modifier.weight(1f),
+                    placeholder = "Search your playlists...")
+            }
 
             PlaylistPickerContent(
                 playlists = filteredPlaylists,
@@ -129,44 +141,36 @@ fun AddToPlaylistPicker(
                 onPlaylistSelected = { playlistId ->
                     onPlaylistSelected(playlistId)
                     onDismiss()
-                },
-            )
+                })
         }
     }
 
     if (isLargeScreen) {
-        AlertDialog(
+        MillenniumDialog(
+            visible = true,
             onDismissRequest = onDismiss,
-            modifier = modifier,
-            title = {
-                Text("Add to Your Playlist")
-            },
-            text = {
-                Box(modifier = Modifier.fillMaxWidth().height(400.dp)) {
-                    content()
-                }
-            },
-            confirmButton = {
-                OutlineButton(onClick = onDismiss) {
-                    Text("Cancel")
-                }
-            },
-        )
+            title = "Add to Your Playlist",
+            modifier = modifier) {
+            Box(modifier = Modifier.fillMaxWidth().height(400.dp)) {
+                content()
+            }
+            MillenniumButton(
+                onClick = onDismiss,
+                style = MillenniumButtonStyle.Secondary) {
+                Text("Cancel")
+            }
+        }
     } else {
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-            dragHandle = null,
-        ) {
+        val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
+        MillenniumModalBottomSheet(state = sheetState) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            ) {
+                    .padding(horizontal = 16.dp, vertical = 8.dp)) {
                 Text(
                     text = "Add to Your Playlist",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                )
+                    style = AppTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = 16.dp))
                 content()
             }
         }
@@ -177,8 +181,7 @@ fun AddToPlaylistPicker(
 private fun PlaylistPickerContent(
     playlists: List<MetadataPlaylist>,
     isLoading: Boolean,
-    onPlaylistSelected: (String) -> Unit,
-) {
+    onPlaylistSelected: (String) -> Unit) {
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("Loading your playlists...")
@@ -190,13 +193,11 @@ private fun PlaylistPickerContent(
     } else {
         LazyColumn(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
+            verticalArrangement = Arrangement.spacedBy(4.dp)) {
             items(playlists, key = { it.id }) { playlist ->
                 PlaylistPickerRow(
                     playlist = playlist,
-                    onClick = { onPlaylistSelected(playlist.id) },
-                )
+                    onClick = { onPlaylistSelected(playlist.id) })
             }
         }
     }
@@ -205,8 +206,7 @@ private fun PlaylistPickerContent(
 @Composable
 private fun PlaylistPickerRow(
     playlist: MetadataPlaylist,
-    onClick: () -> Unit,
-) {
+    onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -214,8 +214,7 @@ private fun PlaylistPickerRow(
             .clickable(onClick = onClick)
             .padding(horizontal = 8.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
+        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         val imageUrl = playlist.thumbnails.firstOrNull()?.url
         if (imageUrl != null) {
             AsyncImage(
@@ -224,34 +223,29 @@ private fun PlaylistPickerRow(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop,
-            )
+                contentScale = ContentScale.Crop)
         } else {
             Box(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                contentAlignment = Alignment.Center,
-            ) {
+                contentAlignment = Alignment.Center) {
                 Text(
                     text = playlist.title.take(1).uppercase(),
-                    style = MaterialTheme.typography.titleMedium,
-                )
+                    style = AppTheme.typography.titleMedium)
             }
         }
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = playlist.title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
             Text(
                 text = "${playlist.trackCount} tracks",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant)
         }
     }
 }

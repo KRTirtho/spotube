@@ -29,8 +29,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
 
 open class BlacklistRepository(
-    private val database: Database,
-) {
+    private val database: Database) {
     companion object {
         private val BLACKLISTED_TRACKS_KEY = stringPreferencesKey("blacklisted_tracks")
         private val BLACKLISTED_ARTISTS_KEY = stringPreferencesKey("blacklisted_artists")

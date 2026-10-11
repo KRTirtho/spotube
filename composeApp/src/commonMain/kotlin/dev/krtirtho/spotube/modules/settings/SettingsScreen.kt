@@ -19,13 +19,13 @@ package dev.krtirtho.spotube.modules.settings
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Text
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,7 +38,6 @@ import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.core.discovery.rememberLocalNetworkPermissionRequester
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import spotube.composeapp.generated.resources.*
 import dev.krtirtho.spotube.modules.settings.sections.appearanceSection
@@ -72,15 +71,13 @@ fun SettingsScreen(settingsViewModel: SettingsViewModel) {
         if (maxWidth >= SettingsDialogMinWidth) {
             SettingsDialog(
                 settingsViewModel = settingsViewModel,
-                onDismiss = { navigatorCommands.pop(Routes.Settings) },
-            )
+                onDismiss = { navigatorCommands.pop(Routes.Settings) })
         } else {
             CompactSettingsScreen(settingsViewModel = settingsViewModel)
         }
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun CompactSettingsScreen(settingsViewModel: SettingsViewModel) {
     val navigatorCommands = koinInject<NavigationCommands>()
@@ -91,24 +88,20 @@ private fun CompactSettingsScreen(settingsViewModel: SettingsViewModel) {
         PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
     }
 
-    BaseScaffold(
-        topBar = {
-            ApplicationMainBar(
-                title = {
-                    Text(stringResource(Res.string.settings_screen_title))
-                },
-                backButton = false
-            )
-        }
-    ) { innerPadding ->
+    Column(modifier = Modifier.fillMaxSize()) {
+        ApplicationMainBar(
+            title = {
+                Text(stringResource(Res.string.settings_screen_title))
+            },
+            backButton = false
+        )
         CompactSettingsContent(
             settings = settingsState,
             settingsViewModel = settingsViewModel,
             navigatorCommands = navigatorCommands,
             requestLocalNetworkPermission = requestLocalNetworkPermission,
             contentPadding = contentPadding,
-            modifier = Modifier.padding(innerPadding),
-        )
+            modifier = Modifier.weight(1f))
     }
 }
 
@@ -119,8 +112,7 @@ private fun CompactSettingsContent(
     navigatorCommands: NavigationCommands,
     requestLocalNetworkPermission: () -> Unit,
     contentPadding: PaddingValues,
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val platformType = remember { getPlatform().type }
     val isDesktopPlatform = platformType == PlatformType.Windows ||
             platformType == PlatformType.Linux ||
@@ -131,48 +123,38 @@ private fun CompactSettingsContent(
             modifier = Modifier
                 .widthIn(max = 1280.dp)
                 .align(Alignment.TopCenter),
-            contentPadding = contentPadding,
-        ) {
+            contentPadding = contentPadding) {
             pluginsSection(
-                navigatorCommands = navigatorCommands,
-            )
+                navigatorCommands = navigatorCommands)
             if (settings != null) {
                 languageRegionSection(
                     settings = settings,
-                    settingsViewModel = settingsViewModel,
-                )
+                    settingsViewModel = settingsViewModel)
                 appearanceSection(
                     settings = settings,
-                    settingsViewModel = settingsViewModel,
-                )
+                    settingsViewModel = settingsViewModel)
                 playbackSection(
                     settings = settings,
                     settingsViewModel = settingsViewModel,
                     navigatorCommands = navigatorCommands,
-                    requestLocalNetworkPermission = requestLocalNetworkPermission,
-                )
+                    requestLocalNetworkPermission = requestLocalNetworkPermission)
                 jamSection(
                     settings = settings,
-                    navigationCommands = navigatorCommands,
-                )
+                    navigationCommands = navigatorCommands)
                 cacheSection(
                     settings = settings,
-                    settingsViewModel = settingsViewModel,
-                )
+                    settingsViewModel = settingsViewModel)
                 downloadsSection(
                     settings = settings,
-                    settingsViewModel = settingsViewModel,
-                )
+                    settingsViewModel = settingsViewModel)
                 if (isDesktopPlatform) {
                     desktopSection(
                         settings = settings,
-                        settingsViewModel = settingsViewModel,
-                    )
+                        settingsViewModel = settingsViewModel)
                 }
                 updatesSection(
                     settings = settings,
-                    settingsViewModel = settingsViewModel,
-                )
+                    settingsViewModel = settingsViewModel)
             }
         }
     }

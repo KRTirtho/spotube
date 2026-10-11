@@ -17,6 +17,10 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -26,12 +30,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.window.WindowDraggableArea
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
+
+import org.spotube.millennium.composables.MillenniumTopAppBar
 import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -41,7 +41,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.WindowPlacement
 import dev.krtirtho.spotube.core.systemtray.SystemTrayService
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUIColors
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import dev.krtirtho.spotube.resources.iconsax.FluentDismiss
 import dev.krtirtho.spotube.resources.iconsax.FluentMaximize
@@ -54,22 +53,18 @@ import dev.nucleusframework.window.WindowDoubleClickAction
 import dev.nucleusframework.window.windowDragArea
 import org.koin.compose.koinInject
 
-
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 actual fun ApplicationMainBar(
     title: @Composable (() -> Unit),
     subtitle: @Composable () -> Unit,
     actions: @Composable (RowScope.() -> Unit),
     backButton: Boolean,
-    transparent: Boolean,
-) {
-    val colors = LocalBaseUIColors.current
+    transparent: Boolean) {
     Box(
         modifier = Modifier.fillMaxWidth()
             .windowDragArea(doubleClickAction = WindowDoubleClickAction.ToggleMaximize)
     ) {
-        TopAppBar(
+        MillenniumTopAppBar(
             title = title,
             actions = {
                 actions()
@@ -80,24 +75,6 @@ actual fun ApplicationMainBar(
                 }
             },
             subtitle = subtitle,
-            colors = if (transparent) {
-                TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
-                    scrolledContainerColor = Color.Transparent,
-                    titleContentColor = colors.onSurface,
-                    actionIconContentColor = colors.onSurfaceVariant,
-                    navigationIconContentColor = colors.onSurfaceVariant,
-                )
-            } else {
-                // The app bar follows the selected surface theme rather than Material's.
-                TopAppBarDefaults.topAppBarColors(
-                    containerColor = colors.surface,
-                    scrolledContainerColor = colors.surfaceContainer,
-                    titleContentColor = colors.onSurface,
-                    actionIconContentColor = colors.onSurfaceVariant,
-                    navigationIconContentColor = colors.onSurfaceVariant,
-                )
-            },
             modifier = Modifier.padding(end = 125.dp) // To avoid overlap with window buttons
         )
         LocalWindowScope.current.WindowControls(
@@ -119,27 +96,33 @@ private fun WindowButtons(modifier: Modifier = Modifier) {
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        IconButton(onClick = { windowState.isMinimized = true }) {
-            Icon(Iconsax.FluentMinus, "Minimize", modifier = Modifier.size(14.dp))
+        MillenniumIconButton(
+            onClick = { windowState.isMinimized = true },
+            style = MillenniumIconButtonStyle.Quiet) {
+            MillenniumIcon(Iconsax.FluentMinus, "Minimize", modifier = Modifier.size(14.dp))
         }
-        IconButton(onClick = {
-            windowState.placement = if (windowState.placement == WindowPlacement.Maximized)
-                WindowPlacement.Floating else WindowPlacement.Maximized
-        }) {
+        MillenniumIconButton(
+            onClick = {
+                windowState.placement = if (windowState.placement == WindowPlacement.Maximized)
+                    WindowPlacement.Floating else WindowPlacement.Maximized
+            },
+            style = MillenniumIconButtonStyle.Quiet) {
             if (windowState.placement == WindowPlacement.Floating) {
-                Icon(Iconsax.FluentMaximize, "Maximize", modifier = Modifier.size(14.dp))
+                MillenniumIcon(Iconsax.FluentMaximize, "Maximize", modifier = Modifier.size(14.dp))
             } else {
-                Icon(Iconsax.FluentSquareMultiple, "Restore", modifier = Modifier.size(14.dp))
+                MillenniumIcon(Iconsax.FluentSquareMultiple, "Restore", modifier = Modifier.size(14.dp))
             }
         }
-        IconButton(onClick = {
-            if (settings?.minimizeToTray == true) {
-                trayService.hideWindow()
-            } else {
-                applicationScope.exitApplication()
-            }
-        }) {
-            Icon(Iconsax.FluentDismiss, "Close", modifier = Modifier.size(14.dp))
+        MillenniumIconButton(
+            onClick = {
+                if (settings?.minimizeToTray == true) {
+                    trayService.hideWindow()
+                } else {
+                    applicationScope.exitApplication()
+                }
+            },
+            style = MillenniumIconButtonStyle.Quiet) {
+            MillenniumIcon(Iconsax.FluentDismiss, "Close", modifier = Modifier.size(14.dp))
         }
     }
 }

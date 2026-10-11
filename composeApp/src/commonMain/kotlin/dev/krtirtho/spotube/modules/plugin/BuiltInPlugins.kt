@@ -36,8 +36,7 @@ val NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN = PluginEntry(
     contact = "",
     repository = "",
     bugs = "",
-    license = "",
-)
+    license = "")
 val LRCLIB_BUILT_IN_PLUGIN = PluginEntry(
     name = "LRCLib Lyrics",
     version = "0.1.0",
@@ -45,18 +44,15 @@ val LRCLIB_BUILT_IN_PLUGIN = PluginEntry(
     description = "LRCLib Lyrics plugin for fetching lyrics.",
     author = "Spotube Team",
     capabilities = listOf(
-        PluginCapability.NETWORK_REQUESTS,
-    ),
+        PluginCapability.NETWORK_REQUESTS),
     abilities = listOf(PluginAbility.LYRICS),
     contact = "",
     repository = "",
     bugs = "",
-    license = "",
-)
+    license = "")
 val BUILT_IN_PLUGINS = listOf(
     NEWPIPE_YOUTUBE_BUILT_IN_PLUGIN,
-    LRCLIB_BUILT_IN_PLUGIN,
-)
+    LRCLIB_BUILT_IN_PLUGIN)
 
 /**
  * The bundled placeholder logo for a built-in plugin, or `null` if it has none.

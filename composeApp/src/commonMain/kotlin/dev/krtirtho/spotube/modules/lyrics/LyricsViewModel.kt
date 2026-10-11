@@ -39,20 +39,17 @@ enum class LyricType {
     SYNCED
 }
 
-
 data class LyricsUiState(
     val mode: LyricType = LyricType.SYNCED,
     val syncedLyrics: List<LyricsLine>? = null,
     val plainLyrics: String? = null,
     val isLoading: Boolean = false,
-    val error: String? = null,
-)
+    val error: String? = null)
 
 class LyricsViewModel(
     private val pluginManager: PluginManager,
     audioPlayer: AudioPlayerInterface,
-    private val audioPlayerQueue: AudioPlayerQueue,
-) : ViewModel() {
+    private val audioPlayerQueue: AudioPlayerQueue) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LyricsUiState())
     val uiState: StateFlow<LyricsUiState> = _uiState.asStateFlow()
@@ -90,8 +87,7 @@ class LyricsViewModel(
                             it.copy(
                                 syncedLyrics = lyrics?.syncedLyrics,
                                 plainLyrics = lyrics?.plainLyrics,
-                                isLoading = false,
-                            )
+                                isLoading = false)
                         }
                     }
                 } ?: run {

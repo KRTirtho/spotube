@@ -68,8 +68,7 @@ data class DownloadItem(
     val totalBytes: Long = 0L,
     val downloadedBytes: Long = 0L,
     val errorMessage: String? = null,
-    val track: MetadataTrack? = null,
-)
+    val track: MetadataTrack? = null)
 
 sealed interface DownloadStatus {
     data object Queued : DownloadStatus
@@ -131,8 +130,7 @@ class DownloadManager(
             title = track.title,
             artists = artistNames,
             album = track.album?.title,
-            track = track,
-        )
+            track = track)
 
         downloadsMap.update { it + (id to item) }
         scope.launch { processQueue() }
@@ -158,8 +156,7 @@ class DownloadManager(
                 status = DownloadStatus.Queued,
                 progress = 0f,
                 downloadedBytes = 0L,
-                errorMessage = null,
-            ))
+                errorMessage = null))
         }
         scope.launch { processQueue() }
     }
@@ -203,8 +200,7 @@ class DownloadManager(
                 map[item.id]?.let {
                     map + (item.id to it.copy(
                         status = DownloadStatus.Failed("No track metadata"),
-                        errorMessage = "No track metadata",
-                    ))
+                        errorMessage = "No track metadata"))
                 } ?: map
             }
             return
@@ -218,8 +214,7 @@ class DownloadManager(
                     map[item.id]?.let {
                         map + (item.id to it.copy(
                             status = DownloadStatus.Failed("Could not resolve stream URL"),
-                            errorMessage = "Could not resolve stream URL. Try playing the track first.",
-                        ))
+                            errorMessage = "Could not resolve stream URL. Try playing the track first."))
                     } ?: map
                 }
                 return
@@ -263,8 +258,7 @@ class DownloadManager(
                 map[item.id]?.let {
                     map + (item.id to it.copy(
                         status = DownloadStatus.Failed(e.message ?: "Unknown error"),
-                        errorMessage = e.message,
-                    ))
+                        errorMessage = e.message))
                 } ?: map
             }
         } finally {
@@ -279,8 +273,7 @@ class DownloadManager(
         item: DownloadItem,
         tempDir: Path,
         downloadDir: Path,
-        totalSize: Long,
-    ) {
+        totalSize: Long) {
         val segmentSize = totalSize / SEGMENT_COUNT
         val segments = (0 until SEGMENT_COUNT).map { i ->
             val start = i * segmentSize
@@ -317,8 +310,7 @@ class DownloadManager(
         item: DownloadItem,
         segment: Segment,
         outputPath: Path,
-        totalSize: Long,
-    ) {
+        totalSize: Long) {
         val response = httpClient.get(url) {
             headers {
                 append(HttpHeaders.Range, "bytes=${segment.start}-${segment.end}")
@@ -341,8 +333,7 @@ class DownloadManager(
         filename: String,
         item: DownloadItem,
         tempDir: Path,
-        downloadDir: Path,
-    ) {
+        downloadDir: Path) {
         val tempFile = tempDir / "${item.id}.tmp"
 
         val response = httpClient.get(url)
@@ -373,8 +364,7 @@ class DownloadManager(
                 map + (id to current.copy(
                     progress = progress,
                     downloadedBytes = newDownloaded,
-                    totalBytes = totalSize,
-                ))
+                    totalBytes = totalSize))
             } ?: map
         }
     }
@@ -423,8 +413,7 @@ class DownloadManager(
                 album = item.album,
                 trackNumber = track.trackNumber,
                 discNumber = track.discNumber,
-                coverBytes = coverBytes,
-            )
+                coverBytes = coverBytes)
         } catch (e: Exception) {
             logger.w(e) { "Failed to write audio metadata for ${item.title}" }
         }

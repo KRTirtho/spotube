@@ -18,6 +18,12 @@
 package dev.krtirtho.spotube.modules.library.playlist
 
 import androidx.compose.foundation.clickable
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumModalBottomSheet
+import org.spotube.millennium.composables.MillenniumSwitch
+import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,32 +36,33 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.SheetDetent
+import com.composeunstyled.Text
+import com.composeunstyled.rememberModalBottomSheetState
+import org.spotube.millennium.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
-import dev.krtirtho.spotube.core.ui.base.PrimaryButton
-import dev.krtirtho.spotube.core.ui.base.TextField
-import dev.krtirtho.spotube.core.ui.base.Toggle
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.ByteString.Companion.toByteString
@@ -66,10 +73,8 @@ data class PlaylistFormData(
     val isPublic: Boolean = true,
     val isCollaborating: Boolean = false,
     val imageBase64: String = "",
-    val imagePreviewUrl: String? = null,
-)
+    val imagePreviewUrl: String? = null)
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistFormSheet(
     visible: Boolean,
@@ -78,8 +83,7 @@ fun PlaylistFormSheet(
     modifier: Modifier = Modifier,
     initialData: PlaylistFormData? = null,
     isEditing: Boolean = false,
-    breakpointDp: Float = 600f,
-) {
+    breakpointDp: Float = 600f) {
     if (!visible) return
 
     val adaptiveInfo = currentWindowAdaptiveInfo()
@@ -91,6 +95,20 @@ fun PlaylistFormSheet(
     var isCollaborating by remember(initialData) { mutableStateOf(initialData?.isCollaborating ?: false) }
     var imageBase64 by remember(initialData) { mutableStateOf(initialData?.imageBase64 ?: "") }
     var imagePreviewUrl by remember(initialData) { mutableStateOf(initialData?.imagePreviewUrl) }
+
+    val nameState = rememberTextFieldState(initialData?.name ?: "")
+    val descriptionState = rememberTextFieldState(initialData?.description ?: "")
+
+    LaunchedEffect(nameState) {
+        snapshotFlow { nameState.text.toString() }
+            .drop(1)
+            .collect { name = it }
+    }
+    LaunchedEffect(descriptionState) {
+        snapshotFlow { descriptionState.text.toString() }
+            .drop(1)
+            .collect { description = it }
+    }
 
     val scope = rememberCoroutineScope()
     val imagePicker = rememberFilePickerLauncher(
@@ -114,93 +132,78 @@ fun PlaylistFormSheet(
         isPublic = isPublic,
         isCollaborating = isCollaborating,
         imageBase64 = imageBase64,
-        imagePreviewUrl = imagePreviewUrl,
-    )
+        imagePreviewUrl = imagePreviewUrl)
 
     val handleImagePick = { imagePicker.launch() }
 
     if (isLargeScreen) {
-        AlertDialog(
+        MillenniumDialog(
+            visible = true,
             onDismissRequest = onDismiss,
-            modifier = modifier,
-            title = {
-                Text(if (isEditing) "Edit Playlist" else "Create Playlist")
-            },
-            text = {
-                PlaylistFormFields(
-                    name = name,
-                    onNameChange = { name = it },
-                    description = description,
-                    onDescriptionChange = { description = it },
-                    isPublic = isPublic,
-                    onIsPublicChange = { isPublic = it },
-                    isCollaborating = isCollaborating,
-                    onIsCollaboratingChange = { isCollaborating = it },
-                    imageBase64 = imageBase64,
-                    imagePreviewUrl = imagePreviewUrl,
-                    onPickImage = handleImagePick,
-                )
-            },
-            confirmButton = {
-                PrimaryButton(
+            title = if (isEditing) "Edit Playlist" else "Create Playlist",
+            modifier = modifier) {
+            PlaylistFormFields(
+                nameState = nameState,
+                descriptionState = descriptionState,
+                isPublic = isPublic,
+                onIsPublicChange = { isPublic = it },
+                isCollaborating = isCollaborating,
+                onIsCollaboratingChange = { isCollaborating = it },
+                imageBase64 = imageBase64,
+                imagePreviewUrl = imagePreviewUrl,
+                onPickImage = handleImagePick)
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                MillenniumButton(
                     onClick = {
                         onSubmit(currentData)
                         onDismiss()
                     },
-                    enabled = name.isNotBlank(),
-                ) {
+                    enabled = name.isNotBlank()) {
                     Text(if (isEditing) "Save" else "Create")
                 }
-            },
-            dismissButton = {
-                OutlineButton(onClick = onDismiss) {
+                MillenniumButton(
+                    onClick = onDismiss,
+                    style = MillenniumButtonStyle.Secondary) {
                     Text("Cancel")
                 }
-            },
-        )
+            }
+        }
     } else {
-        ModalBottomSheet(
-            onDismissRequest = onDismiss,
-            dragHandle = null,
-        ) {
+        val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
+        MillenniumModalBottomSheet(state = sheetState) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-            ) {
+                    .padding(horizontal = 16.dp, vertical = 8.dp)) {
                 Text(
                     text = if (isEditing) "Edit Playlist" else "Create Playlist",
-                    style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 16.dp),
-                )
+                    style = AppTheme.typography.headlineSmall,
+                    modifier = Modifier.padding(bottom = 16.dp))
                 PlaylistFormFields(
-                    name = name,
-                    onNameChange = { name = it },
-                    description = description,
-                    onDescriptionChange = { description = it },
+                    nameState = nameState,
+                    descriptionState = descriptionState,
                     isPublic = isPublic,
                     onIsPublicChange = { isPublic = it },
                     isCollaborating = isCollaborating,
                     onIsCollaboratingChange = { isCollaborating = it },
                     imageBase64 = imageBase64,
                     imagePreviewUrl = imagePreviewUrl,
-                    onPickImage = handleImagePick,
-                )
+                    onPickImage = handleImagePick)
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
-                ) {
-                    OutlineButton(onClick = onDismiss) {
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
+                    MillenniumButton(
+                        onClick = onDismiss,
+                        style = MillenniumButtonStyle.Secondary) {
                         Text("Cancel")
                     }
-                    PrimaryButton(
+                    MillenniumButton(
                         onClick = {
                             onSubmit(currentData)
                             onDismiss()
                         },
-                        enabled = name.isNotBlank(),
-                    ) {
+                        enabled = name.isNotBlank()) {
                         Text(if (isEditing) "Save" else "Create")
                     }
                 }
@@ -212,41 +215,31 @@ fun PlaylistFormSheet(
 
 @Composable
 private fun PlaylistFormFields(
-    name: String,
-    onNameChange: (String) -> Unit,
-    description: String,
-    onDescriptionChange: (String) -> Unit,
+    nameState: TextFieldState,
+    descriptionState: TextFieldState,
     isPublic: Boolean,
     onIsPublicChange: (Boolean) -> Unit,
     isCollaborating: Boolean,
     onIsCollaboratingChange: (Boolean) -> Unit,
     imageBase64: String,
     imagePreviewUrl: String?,
-    onPickImage: () -> Unit,
-) {
+    onPickImage: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-    ) {
-        TextField(
-            value = name,
-            onValueChange = onNameChange,
+        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        MillenniumTextField(
+            state = nameState,
+            label = "Name",
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Playlist name") },
-            singleLine = true,
-            label = { Text("Name") },
-        )
+            placeholder = "Playlist name")
 
-        TextField(
-            value = description,
-            onValueChange = onDescriptionChange,
+        MillenniumTextField(
+            state = descriptionState,
+            label = "Description",
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Description (optional)") },
-            maxLines = 3,
-            label = { Text("Description") },
-        )
+            placeholder = "Description (optional)")
 
         Row(
             modifier = Modifier
@@ -255,17 +248,15 @@ private fun PlaylistFormFields(
                 .clickable { onIsPublicChange(!isPublic) }
                 .padding(horizontal = 4.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+            verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text("Public", style = MaterialTheme.typography.bodyLarge)
+                Text("Public", style = AppTheme.typography.bodyLarge)
                 Text(
                     "Anyone can see this playlist",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant)
             }
-            Toggle(checked = isPublic, onCheckedChange = onIsPublicChange)
+            MillenniumSwitch(checked = isPublic, onCheckedChange = onIsPublicChange, label = "Public")
         }
 
         Row(
@@ -275,58 +266,50 @@ private fun PlaylistFormFields(
                 .clickable { onIsCollaboratingChange(!isCollaborating) }
                 .padding(horizontal = 4.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
+            verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text("Collaborative", style = MaterialTheme.typography.bodyLarge)
+                Text("Collaborative", style = AppTheme.typography.bodyLarge)
                 Text(
                     "Others can add tracks to this playlist",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant)
             }
-            Toggle(checked = isCollaborating, onCheckedChange = onIsCollaboratingChange)
+            MillenniumSwitch(checked = isCollaborating, onCheckedChange = onIsCollaboratingChange, label = "Collaborative")
         }
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-        ) {
-            Text("Cover Image", style = MaterialTheme.typography.bodyLarge)
+            verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("Cover Image", style = AppTheme.typography.bodyLarge)
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+                verticalAlignment = Alignment.CenterVertically) {
                 Box(
                     modifier = Modifier
                         .size(64.dp)
                         .clip(RoundedCornerShape(8.dp)),
-                    contentAlignment = Alignment.Center,
-                ) {
+                    contentAlignment = Alignment.Center) {
                     when {
                         imagePreviewUrl != null -> AsyncImage(
                             model = imagePreviewUrl,
                             contentDescription = "Playlist cover",
                             modifier = Modifier.size(64.dp),
-                            contentScale = ContentScale.Crop,
-                        )
+                            contentScale = ContentScale.Crop)
                         imageBase64.isNotBlank() -> {
                             Text(
                                 "✓",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.primary,
-                            )
+                                style = AppTheme.typography.titleMedium,
+                                color = AppTheme.colors.primary)
                         }
                         else -> {
                             Text(
                                 "No image",
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            )
+                                style = AppTheme.typography.labelSmall,
+                                color = AppTheme.colors.onSurfaceVariant)
                         }
                     }
                 }
-                PrimaryButton(onClick = onPickImage) {
+                MillenniumButton(onClick = onPickImage) {
                     Text(if (imageBase64.isNotBlank() || imagePreviewUrl != null) "Change Image" else "Pick Image")
                 }
             }

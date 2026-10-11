@@ -57,7 +57,6 @@ class ISRCProviders {
         }
     }
 
-
     private var ifpiSessionToken: String? = null
     private val ifpiDefaultHeaders = mapOf(
         "Content-Type" to "application/json",
@@ -75,7 +74,6 @@ class ISRCProviders {
         "sec-fetch-site" to "same-origin",
         "User-Agent" to UserAgents.random()
     )
-
 
     private suspend fun ifpiSessionToken(): String? = withContext(Dispatchers.IO) {
         if (ifpiSessionToken != null) return@withContext ifpiSessionToken

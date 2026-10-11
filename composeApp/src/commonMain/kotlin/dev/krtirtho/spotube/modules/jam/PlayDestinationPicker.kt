@@ -17,12 +17,16 @@
 
 package dev.krtirtho.spotube.modules.jam
 
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumDialog
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+
 import androidx.compose.runtime.Composable
-import dev.krtirtho.spotube.core.ui.base.ThemedDialog
+import androidx.compose.ui.unit.dp
 
 /**
  * Dialog shown when the user tries to play a collection while a jam session is active.
@@ -33,31 +37,30 @@ fun PlayDestinationPicker(
     visible: Boolean,
     onDismiss: () -> Unit,
     onPlayLocally: () -> Unit,
-    onSuggestToJam: () -> Unit,
-) {
+    onSuggestToJam: () -> Unit) {
     if (!visible) return
 
-    ThemedDialog(
+    MillenniumDialog(
+        visible = true,
         onDismissRequest = onDismiss,
-        title = {
-            Text("Play Where?", style = MaterialTheme.typography.titleLarge)
-        },
-        content = {
-            Text(
-                text = "You have an active jam session. Choose where to play this collection.",
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        },
-        actions = {
-            TextButton(onClick = onDismiss) {
+        title = "Play Where?") {
+        Text(
+            text = "You have an active jam session. Choose where to play this collection.",
+            style = AppTheme.typography.bodyMedium)
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            MillenniumButton(
+                onClick = onDismiss,
+                style = MillenniumButtonStyle.Quiet) {
                 Text("Cancel")
             }
-            TextButton(onClick = onPlayLocally) {
+            MillenniumButton(
+                onClick = onPlayLocally,
+                style = MillenniumButtonStyle.Quiet) {
                 Text("Play here")
             }
-            Button(onClick = onSuggestToJam) {
+            MillenniumButton(onClick = onSuggestToJam) {
                 Text("Suggest to Jam")
             }
-        },
-    )
+        }
+    }
 }

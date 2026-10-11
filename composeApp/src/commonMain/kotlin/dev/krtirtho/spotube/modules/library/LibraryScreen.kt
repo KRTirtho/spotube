@@ -17,24 +17,26 @@
 
 package dev.krtirtho.spotube.modules.library
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Text
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import dev.krtirtho.spotube.core.ui.base.ChipTab
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
 import dev.krtirtho.spotube.modules.downloads.DownloadsScreen
 import dev.krtirtho.spotube.modules.library.album.LibraryAlbumsScreen
@@ -47,7 +49,6 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
     libraryState: LibraryState = koinInject(),
@@ -57,57 +58,52 @@ fun LibraryScreen(
     val searchMode by libraryState.searchMode.collectAsState()
     val isLargeScreen = appShellViewModel.useSidebar()
 
-    BaseScaffold(
-        topBar = {
-            Column {
-                ApplicationMainBar(
-                    backButton = false,
-                    title = {
-                        if (!isLargeScreen) Text("Your Library")
-                    },
-                    actions = {
-                        if (!isLargeScreen) {
-                            IconButton(
-                                onClick = {
-                                    libraryState.setSearchMode(!searchMode)
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Iconsax.IconsaxSearchBroken,
-                                    contentDescription = "Search",
-                                )
+    Column(modifier = Modifier.fillMaxSize()) {
+        Column {
+            ApplicationMainBar(
+                backButton = false,
+                title = {
+                    if (!isLargeScreen) Text("Your Library")
+                },
+                actions = {
+                    if (!isLargeScreen) {
+                        MillenniumIconButton(
+                            icon = Iconsax.IconsaxSearchBroken,
+                            contentDescription = "Search",
+                            onClick = {
+                                libraryState.setSearchMode(!searchMode)
+                            },
+                            style = MillenniumIconButtonStyle.Quiet)
+                    }
+                }
+            )
+            if (!isLargeScreen)
+                Column(
+                    modifier = Modifier.padding(horizontal = 12.dp)
+                ) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    LazyRow(
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(LibraryTab.entries.size) { index ->
+                            val tab = LibraryTab.entries[index]
+                            MillenniumButton(
+                                onClick = { libraryState.onTabSelected(tab) },
+                                style = if (currentTab == tab) {
+                                    MillenniumButtonStyle.Primary
+                                } else {
+                                    MillenniumButtonStyle.Secondary
+                                }) {
+                                Text(tab.title)
                             }
                         }
                     }
-                )
-                if (!isLargeScreen)
-                    Column(
-                        modifier = Modifier.padding(horizontal = 12.dp)
-                    ) {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        ) {
-                            items(LibraryTab.entries.size) { index ->
-                                val tab = LibraryTab.entries[index]
-                                ChipTab(
-                                    selected = currentTab == tab,
-                                    onClick = { libraryState.onTabSelected(tab) },
-                                ) {
-                                    Text(tab.title)
-                                }
-                            }
-                        }
-                        Spacer(modifier = Modifier.height(12.dp))
-                    }
-            }
-
-
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
         }
-    ) { innerPadding ->
+
         Column(
             modifier = Modifier
-                .padding(innerPadding)
+                .weight(1f)
                 .padding(horizontal = 12.dp)
         ) {
             when (currentTab) {

@@ -28,19 +28,16 @@ import kotlinx.coroutines.launch
 @Composable
 fun rememberCoverflowState(
     initialIndex: Int = 0,
-    onSelectHandler: (Int) -> Unit = {},
-): CoverflowState {
+    onSelectHandler: (Int) -> Unit = {}): CoverflowState {
     val lazyListState: LazyListState = rememberLazyListState(
-        initialFirstVisibleItemIndex = initialIndex + 1,
-    )
+        initialFirstVisibleItemIndex = initialIndex + 1)
     val coroutineScope: CoroutineScope = rememberCoroutineScope()
     return remember {
         CoverflowState(
             lazyListState,
             coroutineScope,
             onSelectHandler,
-            initialIndex,
-        )
+            initialIndex)
     }
 }
 
@@ -48,8 +45,7 @@ class CoverflowState internal constructor(
     internal val lazyListState: LazyListState,
     private val coroutineScope: CoroutineScope,
     private val onSelectHandler: (Int) -> Unit = {},
-    initialIndex: Int = 0,
-) {
+    initialIndex: Int = 0) {
     internal var geometry: Geometry? = null
     internal var initialScrollDone: Boolean = false
 
@@ -65,8 +61,7 @@ class CoverflowState internal constructor(
             coroutineScope.launch {
                 lazyListState.animateScrollToItem(
                     index + 1,
-                    -geometryCopy.spacerWidth,
-                )
+                    -geometryCopy.spacerWidth)
             }
         }
     }

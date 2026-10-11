@@ -49,5 +49,4 @@ data class MediaStream(
     val container: String,
     val bitrate: Int,
     val isAudio: Boolean,
-    val isVideo: Boolean,
-)
+    val isVideo: Boolean)

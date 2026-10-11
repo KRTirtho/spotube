@@ -17,12 +17,17 @@
 
 package dev.krtirtho.spotube.modules.playlist
 
+
+import androidx.compose.ui.Alignment
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,7 +45,6 @@ import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.jam.JamRoomService
 import org.koin.compose.koinInject
 import dev.krtirtho.spotube.core.navigation.Routes
-import dev.krtirtho.spotube.core.ui.base.OutlineButton
 import dev.krtirtho.spotube.core.ui.component.CollectionView
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormData
@@ -90,14 +94,18 @@ fun PlaylistScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 16.dp),
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                OutlineButton(onClick = { showAddTracksDialog = true }) {
-                    Icon(
-                        imageVector = Iconsax.IconsaxAddSquare,
-                        contentDescription = null,
-                    )
-                    Text("Add Tracks", modifier = Modifier.padding(start = 8.dp))
+                horizontalArrangement = Arrangement.Center) {
+                MillenniumButton(
+                    onClick = { showAddTracksDialog = true },
+                    style = MillenniumButtonStyle.Secondary) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        MillenniumIcon(
+                            imageVector = Iconsax.IconsaxAddSquare,
+                            contentDescription = null)
+                        Text("Add Tracks")
+                    }
                 }
             }
         }
@@ -153,8 +161,7 @@ fun PlaylistScreen(
                         description = it.description.orEmpty(),
                         isPublic = true,
                         isCollaborating = false,
-                        imagePreviewUrl = it.thumbnails.firstOrNull()?.url,
-                    )
+                        imagePreviewUrl = it.thumbnails.firstOrNull()?.url)
                 },
                 onSubmit = { data ->
                     viewModel.updatePlaylist(
@@ -162,17 +169,14 @@ fun PlaylistScreen(
                         description = data.description.ifBlank { null },
                         isPublic = data.isPublic,
                         isCollaborating = data.isCollaborating,
-                        imageBase64 = data.imageBase64.ifBlank { null },
-                    )
-                },
-            )
+                        imageBase64 = data.imageBase64.ifBlank { null })
+                })
 
             AddToPlaylistPicker(
                 visible = showAddToPlaylistPicker,
                 currentUserId = currentUserId,
                 onDismiss = viewModel::dismissAddToPlaylistPicker,
-                onPlaylistSelected = viewModel::addTracksToPlaylist,
-            )
+                onPlaylistSelected = viewModel::addTracksToPlaylist)
 
             AddTracksToPlaylistDialog(
                 visible = showAddTracksDialog,
@@ -180,8 +184,6 @@ fun PlaylistScreen(
                 onDismiss = {
                     showAddTracksDialog = false
                     viewModel.refresh()
-                },
-            )
-        },
-    )
+                })
+        })
 }

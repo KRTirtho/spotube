@@ -17,7 +17,13 @@
 
 package dev.krtirtho.spotube.modules.lyrics
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,17 +34,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import dev.krtirtho.spotube.core.ui.base.BaseScaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -47,6 +51,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -54,7 +59,7 @@ import androidx.compose.ui.unit.sp
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.X
 import dev.krtirtho.plugin_interfaces.plugin_apis.lyrics.LyricsLine
-import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.core.ui.component.ApplicationBackButton
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
@@ -65,60 +70,56 @@ import org.koin.compose.viewmodel.koinViewModel
 fun LyricsScreen(
     viewModel: LyricsViewModel = koinViewModel(),
     modifier: Modifier = Modifier,
-    onClose: (() -> Unit)? = null,
-) {
+    onClose: (() -> Unit)? = null) {
     val uiState by viewModel.uiState.collectAsState()
     val positionMillis by viewModel.positionMillisFlow.collectAsState()
     val scope = rememberCoroutineScope()
 
-    BaseScaffold(
-        topBar = {
-            ApplicationMainBar(
-                backButton = onClose == null,
-                title = {
-                    Box(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
-                    ) {
-                        if (onClose != null) {
-                            IconButton(
-                                onClick = onClose,
-                                modifier = Modifier.align(Alignment.CenterStart)
-                            ) {
-                                Icon(
-                                    imageVector = Iconsax.IconsaxArrowDown4,
-                                    contentDescription = "Close"
-                                )
-                            }
-                        }
-                        Row(
-                            modifier = Modifier
-                                .align(Alignment.Center)
-                                .clip(RoundedCornerShape(50.dp))
-                                .background(MaterialTheme.colorScheme.surfaceContainerHighest)
-                                .padding(10.dp, 4.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            LyricsModeTab(
-                                label = "Synced",
-                                isSelected = uiState.mode == LyricType.SYNCED,
-                                onClick = { viewModel.setMode(LyricType.SYNCED) }
-                            )
-                            LyricsModeTab(
-                                label = "Plain",
-                                isSelected = uiState.mode == LyricType.STATIC,
-                                onClick = { viewModel.setMode(LyricType.STATIC) }
-                            )
-                        }
-                    }
+    Column(modifier = modifier.fillMaxSize().background(AppTheme.colors.background)) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+            if (onClose != null) {
+                MillenniumIconButton(
+                    onClick = onClose,
+                    style = MillenniumIconButtonStyle.Quiet
+                ) {
+                    MillenniumIcon(
+                        imageVector = Iconsax.IconsaxArrowDown4,
+                        contentDescription = "Close"
+                    )
                 }
-            )
-        },
-        modifier = modifier,
-    ) { innerPadding ->
+            } else {
+                ApplicationBackButton()
+            }
+            Spacer(Modifier.weight(1f))
+            Row(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(50.dp))
+                    .background(AppTheme.colors.surfaceVariant)
+                    .padding(3.dp),
+                horizontalArrangement = Arrangement.spacedBy(3.dp)
+            ) {
+                LyricsModeTab(
+                    label = "Synced",
+                    isSelected = uiState.mode == LyricType.SYNCED,
+                    onClick = { viewModel.setMode(LyricType.SYNCED) }
+                )
+                LyricsModeTab(
+                    label = "Plain",
+                    isSelected = uiState.mode == LyricType.STATIC,
+                    onClick = { viewModel.setMode(LyricType.STATIC) }
+                )
+            }
+            Spacer(Modifier.weight(1f))
+            Spacer(Modifier.width(44.dp))
+        }
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+                .weight(1f)
+                .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = LocalAppShellBottomInset.current + 24.dp)
         ) {
@@ -129,7 +130,7 @@ fun LyricsScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator()
+                        MillenniumIndeterminateProgress(modifier = Modifier.fillMaxWidth(0.4f))
                     }
                 }
 
@@ -140,8 +141,8 @@ fun LyricsScreen(
                     ) {
                         Text(
                             text = uiState.error ?: "Unknown error",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.error,
+                            style = AppTheme.typography.bodyLarge,
+                            color = AppTheme.colors.error,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -171,27 +172,29 @@ fun LyricsScreen(
 private fun LyricsModeTab(
     label: String,
     isSelected: Boolean,
-    onClick: () -> Unit,
-) {
-    Surface(
-        onClick = onClick,
-        shape = RoundedCornerShape(20.dp),
-        color = if (isSelected) {
-            MaterialTheme.colorScheme.primary
-        } else {
-            MaterialTheme.colorScheme.surface
-        },
-        contentColor = if (isSelected) {
-            MaterialTheme.colorScheme.onPrimary
-        } else {
-            MaterialTheme.colorScheme.onSurface
-        }
+    onClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50.dp))
+            .background(
+                if (isSelected) {
+                    AppTheme.colors.primary
+                } else {
+                    Color.Transparent
+                }
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 18.dp, vertical = 7.dp)
     ) {
         Text(
             text = label,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
-            style = MaterialTheme.typography.labelLarge,
-            fontWeight = FontWeight.SemiBold
+            style = AppTheme.typography.labelLarge,
+            fontWeight = FontWeight.SemiBold,
+            color = if (isSelected) {
+                AppTheme.colors.onPrimary
+            } else {
+                AppTheme.colors.onSurfaceVariant
+            }
         )
     }
 }
@@ -200,8 +203,7 @@ private fun LyricsModeTab(
 private fun SyncedLyricsContent(
     syncedLyrics: List<LyricsLine>,
     currentIndex: Int,
-    onScrollToIndex: (Int) -> Unit,
-) {
+    onScrollToIndex: (Int) -> Unit) {
     if (syncedLyrics.isEmpty()) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -209,8 +211,8 @@ private fun SyncedLyricsContent(
         ) {
             Text(
                 text = "No synced lyrics available",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodyLarge,
+                color = AppTheme.colors.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
         }
@@ -236,29 +238,58 @@ private fun SyncedLyricsContent(
     ) {
         itemsIndexed(syncedLyrics) { index, line ->
             val isCurrentLine = index == currentIndex
-            Text(
-                text = line.text.ifBlank { "..." },
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 6.dp),
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontWeight = if (isCurrentLine) FontWeight.Bold else FontWeight.Normal,
+                    .clip(RoundedCornerShape(10.dp))
+                    .then(
+                        if (isCurrentLine) {
+                            Modifier.background(AppTheme.colors.primaryContainer)
+                        } else {
+                            Modifier
+                        }
+                    )
+                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(
+                    text = formatLyricTime(line.time),
+                    style = AppTheme.typography.labelSmall,
                     color = if (isCurrentLine) {
-                        MaterialTheme.colorScheme.primary
+                        AppTheme.colors.primary
                     } else {
-                        MaterialTheme.colorScheme.onSurfaceVariant
-                    }
-                ),
-                textAlign = TextAlign.Center
-            )
+                        AppTheme.colors.onSurfaceVariant
+                    },
+                    modifier = Modifier.width(44.dp)
+                )
+                Text(
+                    text = line.text.ifBlank { "..." },
+                    modifier = Modifier.weight(1f),
+                    style = AppTheme.typography.bodyLarge.copy(
+                        fontWeight = if (isCurrentLine) FontWeight.Bold else FontWeight.Normal,
+                        color = if (isCurrentLine) {
+                            AppTheme.colors.primary
+                        } else {
+                            AppTheme.colors.onSurface
+                        }
+                    )
+                )
+            }
         }
     }
 }
 
+private fun formatLyricTime(millis: Long): String {
+    val totalSeconds = (millis / 1000).coerceAtLeast(0)
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return "$minutes:${seconds.toString().padStart(2, '0')}"
+}
+
 @Composable
 private fun PlainLyricsContent(
-    plainLyrics: String,
-) {
+    plainLyrics: String) {
     if (plainLyrics.isBlank()) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -266,8 +297,8 @@ private fun PlainLyricsContent(
         ) {
             Text(
                 text = "No plain lyrics available",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodyLarge,
+                color = AppTheme.colors.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
         }
@@ -281,8 +312,8 @@ private fun PlainLyricsContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                style = MaterialTheme.typography.bodyLarge.copy(lineHeight = 30.sp),
-                color = MaterialTheme.colorScheme.onSurface,
+                style = AppTheme.typography.bodyLarge.copy(lineHeight = 30.sp),
+                color = AppTheme.colors.onSurface,
                 textAlign = TextAlign.Center
             )
         }

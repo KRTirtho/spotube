@@ -35,8 +35,7 @@ actual class Paths {
             inDomain = NSUserDomainMask,
             appropriateForURL = null,
             create = false,
-            error = null,
-        )
+            error = null)
 
         return requireNotNull(cacheDirectory?.path)
     }
@@ -48,8 +47,7 @@ actual class Paths {
             inDomain = NSUserDomainMask,
             appropriateForURL = null,
             create = false,
-            error = null,
-        )
+            error = null)
 
         return requireNotNull(documentDirectory?.path)
     }
@@ -60,8 +58,7 @@ actual class Paths {
             inDomain = NSUserDomainMask,
             appropriateForURL = null,
             create = false,
-            error = null,
-        )
+            error = null)
 
         return (downloadsDirectory?.path ?: getApplicationDataDirPath()) + "/Spotube"
     }

@@ -29,8 +29,7 @@ import kotlinx.coroutines.withContext
 class RealWebViewAPI(
     private val scope: CoroutineScope,
     private val webViewController: WebViewController,
-    private val pluginId: String,
-) : WebViewAPI {
+    private val pluginId: String) : WebViewAPI {
     override fun navigateTo(url: String) {
         scope.launch(Dispatchers.Main) {
             webViewController.navigateTo(url, pluginId)

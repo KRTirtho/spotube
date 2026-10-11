@@ -62,8 +62,7 @@ internal class StreamProxy(
     private val audioPlayerQueue: AudioPlayerQueue,
     private val isCachingEnabled: () -> Boolean,
     private val activePort: () -> Int?,
-    private val scope: CoroutineScope,
-): KoinComponent {
+    private val scope: CoroutineScope): KoinComponent {
     val logger by injectLogger<StreamProxy>()
 
     companion object {
@@ -414,8 +413,7 @@ internal class StreamProxy(
                             trackId = trackIdForCache,
                             filename = cacheFilename,
                             allBytes = allBytes,
-                            contentType = cacheContentType,
-                        )
+                            contentType = cacheContentType)
                         scope.launch {
                             cacheManager.evictIfNeeded()
                         }

@@ -168,8 +168,7 @@ val sharedModules = module {
             blacklistRepository = get(),
             shareService = get(),
             downloadManager = get(),
-            remotePlaybackController = get(),
-        )
+            remotePlaybackController = get())
     }
 
     // Saved Tracks
@@ -183,8 +182,7 @@ val sharedModules = module {
             libraryRepository = get(),
             shareService = get(),
             downloadManager = get(),
-            remotePlaybackController = get(),
-        )
+            remotePlaybackController = get())
     }
 
     // Artist
@@ -199,8 +197,7 @@ val sharedModules = module {
             blacklistRepository = get(),
             shareService = get(),
             downloadManager = get(),
-            remotePlaybackController = get(),
-        )
+            remotePlaybackController = get())
     }
 
     // Blacklist
@@ -212,8 +209,7 @@ val sharedModules = module {
         JamViewModel(
             jamRoomService = get(),
             shareService = get(),
-            settingsProvider = get(),
-        )
+            settingsProvider = get())
     }
 
     // Album
@@ -229,8 +225,7 @@ val sharedModules = module {
             blacklistRepository = get(),
             shareService = get(),
             downloadManager = get(),
-            remotePlaybackController = get(),
-        )
+            remotePlaybackController = get())
     }
 
     // Lyrics
@@ -244,8 +239,7 @@ val sharedModules = module {
             savedTracksRepository = get(),
             artistRepository = get(),
             audioPlayerQueue = get(),
-            blacklistRepository = get(),
-        )
+            blacklistRepository = get())
     }
     singleOf(::MatchedTracksRepository) { bind<TrackSourceRepository>() }
     single {
@@ -253,8 +247,7 @@ val sharedModules = module {
             pluginManager = get(),
             audioPlayerQueue = get(),
             matchedTracksRepository = get(),
-            settingsRepository = get(),
-        )
+            settingsRepository = get())
     }
     singleOf(::CacheManager)
     singleOf(::AlternativeTracksRepository)

@@ -43,14 +43,12 @@ data class JamUiState(
     val roomCode: String? = null,
     val brokerHost: String = "",
     val brokerConfigured: Boolean = false,
-    val error: String? = null,
-)
+    val error: String? = null)
 
 class JamViewModel(
     private val jamRoomService: JamRoomService,
     private val shareService: ShareService,
-    private val settingsProvider: SettingsProvider,
-) : ViewModel() {
+    private val settingsProvider: SettingsProvider) : ViewModel() {
 
     private val _localError = MutableStateFlow<String?>(null)
 
@@ -64,8 +62,7 @@ class JamViewModel(
         jamRoomService.roomCode,
         jamRoomService.connectionError,
         settingsProvider.settingsState,
-        _localError,
-    ) { values ->
+        _localError) { values ->
         @Suppress("UNCHECKED_CAST")
         val role = values[0] as JamRole?
         @Suppress("UNCHECKED_CAST")
@@ -84,8 +81,7 @@ class JamViewModel(
             roomCode = roomCode,
             brokerHost = settings?.jamBroker?.host.orEmpty(),
             brokerConfigured = !settings?.jamBroker?.host.isNullOrBlank(),
-            error = localError ?: connectionError,
-        )
+            error = localError ?: connectionError)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), JamUiState())
 
     // ---------- Session lifecycle ----------

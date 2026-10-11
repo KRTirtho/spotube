@@ -17,9 +17,12 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+
 import androidx.compose.runtime.Composable
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.resources.iconsax.ArrowLeft3
@@ -30,12 +33,12 @@ import org.koin.compose.koinInject
 fun ApplicationBackButton() {
     val navigationCommands: NavigationCommands = koinInject()
 
-    IconButton(
+    MillenniumIconButton(
         onClick = {
             navigationCommands.pop()
         },
-    ) {
-        Icon(
+        style = MillenniumIconButtonStyle.Quiet) {
+        MillenniumIcon(
             imageVector = Iconsax.ArrowLeft3,
             contentDescription = "Back"
         )
@@ -48,5 +51,4 @@ expect fun ApplicationMainBar(
     subtitle: @Composable () -> Unit = {},
     actions: @Composable (RowScope.() -> Unit) = {},
     backButton: Boolean = true,
-    transparent: Boolean = false,
-)
+    transparent: Boolean = false)

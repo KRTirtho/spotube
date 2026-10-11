@@ -55,8 +55,7 @@ data class PluginEntry(
     val contact: String,
     val repository: String,
     val bugs: String,
-    val license: String,
-) {
+    val license: String) {
     @Suppress("REDUNDANT_CALL_OF_CONVERSION_METHOD")
     val id: String = MurmurHash3().hash32x86("$name:$author".encodeToByteArray())
         .toUInt()

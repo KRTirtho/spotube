@@ -58,8 +58,7 @@ data class PlayerTrackDetails(
     val activeStreamMatchesPreference: Boolean? = null,
     val localCacheEntry: CacheEntry? = null,
     val isLoading: Boolean = false,
-    val error: String? = null,
-)
+    val error: String? = null)
 
 data class PlayerOptionsUiState(
     val isMoreOptionsMenuOpen: Boolean = false,
@@ -67,8 +66,7 @@ data class PlayerOptionsUiState(
     val isSleepTimerDialogOpen: Boolean = false,
     val sleepTimerMinutes: String = "30",
     val sleepTimerRemainingMs: Long? = null,
-    val trackDetails: PlayerTrackDetails? = null,
-)
+    val trackDetails: PlayerTrackDetails? = null)
 
 class PlayerOptionsViewModel(
     private val audioPlayer: AudioPlayerInterface,
@@ -77,8 +75,7 @@ class PlayerOptionsViewModel(
     private val streamingUrlRepository: StreamingUrlRepository,
     private val cacheManager: CacheManager,
     private val settingsRepository: SettingsRepository,
-    private val pluginManager: AudioPluginSource,
-) : ViewModel() {
+    private val pluginManager: AudioPluginSource) : ViewModel() {
     private val _uiState = MutableStateFlow(PlayerOptionsUiState())
     val uiState: StateFlow<PlayerOptionsUiState> = _uiState.asStateFlow()
 
@@ -150,8 +147,7 @@ class PlayerOptionsViewModel(
         trackDetailsJob?.cancel()
         _uiState.update {
             it.copy(
-                trackDetails = PlayerTrackDetails(track = track, isLoading = true),
-            )
+                trackDetails = PlayerTrackDetails(track = track, isLoading = true))
         }
         trackDetailsJob = viewModelScope.launch {
             runCatching {
@@ -174,15 +170,13 @@ class PlayerOptionsViewModel(
                     val preferredStream = selectPreferredAudioStream(
                         streams = streams,
                         preferredFormat = settings.streamingMusicFormat,
-                        preferredQuality = settings.streamingMusicQuality,
-                    )
+                        preferredQuality = settings.streamingMusicQuality)
                     val activeStreamUrl = if (cachedStreamSource != null) cachedStream.url else null
                     val activeStreamMatchesPreference = when {
                         activeStreamUrl == null || preferredStream == null -> null
                         else -> activeStreamUrl == normalizeManifestUrl(
                             url = preferredStream.url,
-                            protocol = preferredStream.protocol,
-                        )
+                            protocol = preferredStream.protocol)
                     }
 
                     PlayerTrackDetails(
@@ -199,8 +193,7 @@ class PlayerOptionsViewModel(
                             streams.isEmpty() && localCacheEntry == null ->
                                 "Stream details are not cached yet. Play the track first to load them."
                             else -> null
-                        },
-                    )
+                        })
                 }
             }.onSuccess { details ->
                 _uiState.update { current ->
@@ -216,9 +209,7 @@ class PlayerOptionsViewModel(
                             trackDetails = PlayerTrackDetails(
                                 track = track,
                                 isLoading = false,
-                                error = error.message ?: "Failed to load track details.",
-                            ),
-                        )
+                                error = error.message ?: "Failed to load track details."))
                     } else current
                 }
             }

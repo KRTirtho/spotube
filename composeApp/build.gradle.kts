@@ -119,7 +119,6 @@ kotlin {
                 // Jetpack Compose dependencies
                 implementation(libs.compose.runtime)
                 implementation(libs.compose.foundation)
-                implementation(libs.compose.material3)
                 implementation(libs.compose.ui)
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network.ktor3)
@@ -131,6 +130,9 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.datetime)
                 implementation(libs.dns.sd.kt)
+
+                // Millennium UI
+                implementation(libs.millennium)
 
                 // Navigation
                 implementation(libs.jetbrains.navigation3.ui)
@@ -164,12 +166,6 @@ kotlin {
                 // icons
                 implementation(libs.feather.icons)
 
-                // Material3 adaptive
-                implementation(libs.jetbrains.material3.adaptive)
-                implementation(libs.jetbrains.material3.adaptive.layout)
-                implementation(libs.jetbrains.material3.adaptive.suite)
-                implementation(libs.jetbrains.material3.adaptiveNavigation3)
-                implementation(libs.jetbrains.material3.window.size)
                 // androidx-datastore
                 implementation(libs.androidx.datastore)
                 implementation(libs.androidx.datastore.preferences)
@@ -183,8 +179,6 @@ kotlin {
                 implementation(libs.kermit.koin)
 
                 implementation(libs.semver)
-
-                implementation(libs.material.kolor)
 
                 // crypto
                 implementation(libs.cryptography.core)
@@ -206,7 +200,6 @@ kotlin {
 
                 // Shimmer effect
                 implementation(libs.compose.shimmer)
-                implementation(libs.compose.placeholder.material3)
 
                 // DLNA
                 implementation(libs.dns.sd.kt)

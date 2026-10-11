@@ -17,6 +17,13 @@
 
 package dev.krtirtho.spotube.modules.downloads
 
+
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumProgress
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,12 +38,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+import com.composeunstyled.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -70,26 +75,26 @@ fun DownloadsScreen(modifier: Modifier = Modifier) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = modifier.widthIn(max = 1280.dp).align(Alignment.TopCenter),
-        ) {
+            modifier = modifier.widthIn(max = 1280.dp).align(Alignment.TopCenter)) {
             val hasCompleted = downloads.any { it.status == DownloadStatus.Completed }
             if (hasCompleted) {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 12.dp, vertical = 4.dp),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    TextButton(onClick = viewModel::clearCompleted) {
-                        Icon(
-                            imageVector = Iconsax.IconsaxTrash,
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                        )
-                        Text(
-                            text = " Clear completed",
-                            style = MaterialTheme.typography.labelLarge,
-                        )
+                    horizontalArrangement = Arrangement.End) {
+                    MillenniumButton(
+                        onClick = viewModel::clearCompleted,
+                        style = MillenniumButtonStyle.Quiet) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            MillenniumIcon(
+                                imageVector = Iconsax.IconsaxTrash,
+                                contentDescription = null,
+                                modifier = Modifier.size(16.dp))
+                            Text(
+                                text = " Clear completed",
+                                style = AppTheme.typography.labelLarge)
+                        }
                     }
                 }
             }
@@ -97,26 +102,22 @@ fun DownloadsScreen(modifier: Modifier = Modifier) {
             if (downloads.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
+                    contentAlignment = Alignment.Center) {
                     Text(
                         text = "No downloads yet",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
             } else {
                 LazyColumn(
                     contentPadding = contentPadding,
-                    verticalArrangement = Arrangement.spacedBy(2.dp),
-                ) {
+                    verticalArrangement = Arrangement.spacedBy(2.dp)) {
                     items(downloads, key = { it.id }) { item ->
                         DownloadListRow(
                             item = item,
                             onCancel = { viewModel.cancel(item.id) },
                             onRetry = { viewModel.retry(item.id) },
-                            onRemove = { viewModel.remove(item.id) },
-                        )
+                            onRemove = { viewModel.remove(item.id) })
                     }
                 }
             }
@@ -129,24 +130,22 @@ private fun DownloadListRow(
     item: DownloadItem,
     onCancel: () -> Unit,
     onRetry: () -> Unit,
-    onRemove: () -> Unit,
-) {
+    onRemove: () -> Unit) {
     val rowBackgroundColor = when (item.status) {
-        is DownloadStatus.Failed -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.2f)
-        is DownloadStatus.Downloading -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.15f)
-        else -> MaterialTheme.colorScheme.surface
+        is DownloadStatus.Failed -> AppTheme.colors.errorContainer.copy(alpha = 0.2f)
+        is DownloadStatus.Downloading -> AppTheme.colors.primaryContainer.copy(alpha = 0.15f)
+        else -> AppTheme.colors.surface
     }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 12.dp)
-            .clip(MaterialTheme.shapes.small)
+            .clip(AppTheme.shapes.small)
             .background(rowBackgroundColor)
             .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-    ) {
+        horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         val imageUrl = (item.track?.album?.thumbnails ?: item.track?.thumbnails)
             ?.firstOrNull()?.url
 
@@ -162,117 +161,110 @@ private fun DownloadListRow(
         Box(
             modifier = Modifier
                 .size(44.dp)
-                .clip(MaterialTheme.shapes.small),
-            contentAlignment = Alignment.Center,
-        ) {
+                .clip(AppTheme.shapes.small),
+            contentAlignment = Alignment.Center) {
             AsyncImage(
                 model = imageRequest,
                 contentDescription = item.title,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
-            )
+                modifier = Modifier.fillMaxSize())
 
             if (item.status == DownloadStatus.Downloading) {
-                LinearProgressIndicator(
-                    progress = { item.progress },
+                MillenniumProgress(
+                    progress = item.progress,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(3.dp)
-                        .align(Alignment.BottomCenter),
-                )
+                        .align(Alignment.BottomCenter))
             }
         }
 
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = item.title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
 
             Text(
                 text = item.artists,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary,
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.primary,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
 
             when (item.status) {
                 is DownloadStatus.Downloading -> {
                     val percent = (item.progress * 100).toInt()
                     Text(
                         text = "Downloading... $percent%",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
 
                 is DownloadStatus.Queued -> {
                     Text(
                         text = "Queued",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
 
                 is DownloadStatus.Failed -> {
                     Text(
                         text = "Failed: ${item.errorMessage ?: "Unknown error"}",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.error,
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.error,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                    )
+                        overflow = TextOverflow.Ellipsis)
                 }
 
                 is DownloadStatus.Cancelled -> {
                     Text(
                         text = "Cancelled",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
 
                 is DownloadStatus.Completed -> {
                     Text(
                         text = "Completed",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.primary)
                 }
             }
         }
 
         when (item.status) {
             is DownloadStatus.Downloading, is DownloadStatus.Queued -> {
-                IconButton(onClick = onCancel) {
-                    Icon(
+                MillenniumIconButton(
+                    onClick = onCancel,
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
                         imageVector = Iconsax.IconsaxCloseSquare,
                         contentDescription = "Cancel",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        tint = AppTheme.colors.onSurfaceVariant)
                 }
             }
 
             is DownloadStatus.Failed, is DownloadStatus.Cancelled -> {
-                IconButton(onClick = onRetry) {
-                    Icon(
+                MillenniumIconButton(
+                    onClick = onRetry,
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
                         imageVector = Iconsax.IconsaxRefreshRight,
                         contentDescription = "Retry",
-                        tint = MaterialTheme.colorScheme.primary,
-                    )
+                        tint = AppTheme.colors.primary)
                 }
             }
 
             is DownloadStatus.Completed -> {
-                IconButton(onClick = onRemove) {
-                    Icon(
+                MillenniumIconButton(
+                    onClick = onRemove,
+                    style = MillenniumIconButtonStyle.Quiet) {
+                    MillenniumIcon(
                         imageVector = Iconsax.IconsaxTrash,
                         contentDescription = "Remove",
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        tint = AppTheme.colors.onSurfaceVariant)
                 }
             }
         }

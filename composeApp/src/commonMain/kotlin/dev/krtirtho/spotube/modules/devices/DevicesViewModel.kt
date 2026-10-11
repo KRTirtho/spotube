@@ -39,8 +39,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class DevicesViewModel(
-    private val navigationCommands: NavigationCommands,
-) : ViewModel(), KoinComponent {
+    private val navigationCommands: NavigationCommands) : ViewModel(), KoinComponent {
     private val logger = Logger.withTag("DevicesViewModel")
     private val discoveryService: DeviceDiscoveryService by inject()
     private val remoteControlClient: RemoteControlClient by inject()
@@ -187,8 +186,7 @@ class DevicesViewModel(
                     host = device.host,
                     port = device.port,
                     deviceId = deviceId,
-                    deviceName = deviceName,
-                )
+                    deviceName = deviceName)
                 
                 // Clear connecting state after connection attempt
                 // The connectionState flow will show the actual connection status

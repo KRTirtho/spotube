@@ -27,8 +27,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class BlacklistViewModel(
-    private val repository: BlacklistRepository,
-) : ViewModel() {
+    private val repository: BlacklistRepository) : ViewModel() {
     
     val blacklistedTracks: StateFlow<List<MetadataTrack>> = repository.blacklistedTracks
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())

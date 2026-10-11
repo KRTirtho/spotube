@@ -17,6 +17,17 @@
 
 package dev.krtirtho.spotube.modules.shell.player_queue
 
+
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumCard
+import org.spotube.millennium.composables.MillenniumDropdownMenu
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumListTile
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumTextField
+import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -37,13 +48,10 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
+
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
+
+import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -58,13 +66,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.jam.JamParticipant
-import dev.krtirtho.spotube.core.ui.base.Card
-import dev.krtirtho.spotube.core.ui.base.GhostIconButton
-import dev.krtirtho.spotube.core.ui.base.IconButton
-import dev.krtirtho.spotube.core.ui.base.ListRowTile
-import dev.krtirtho.spotube.core.ui.base.LocalBaseUITheme
-import dev.krtirtho.spotube.core.ui.base.TextField
-import dev.krtirtho.spotube.core.ui.base.copyShape
 import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
@@ -81,8 +82,7 @@ import sh.calvin.reorderable.rememberReorderableLazyListState
 @Composable
 fun PlayerQueueContent(
     viewModel: PlayerQueueContentViewModel = koinViewModel<PlayerQueueContentViewModel>(),
-    modifier: Modifier = Modifier,
-) {
+    modifier: Modifier = Modifier) {
     val state by viewModel.queueContentUiState.collectAsState()
     val displayItems = state.displayItems
     val filterQuery = state.filterQuery
@@ -96,45 +96,35 @@ fun PlayerQueueContent(
         onMove = { from, to ->
             if (isFiltered || isReadOnly) return@rememberReorderableLazyListState
             viewModel.onMove(from.index, to.index)
-        },
-    )
+        })
 
-    Surface(modifier = modifier) {
+    Box(modifier = modifier) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp),
-        ) {
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(
                 text = "Queue",
-                style = MaterialTheme.typography.titleLarge,
-            )
+                style = AppTheme.typography.titleLarge)
 
             Row(
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                TextField(
-                    value = filterQuery,
-                    onValueChange = viewModel::setQueueFilter,
-                    placeholder = { Text("Filter queue...") },
-                    leadingIcon = {
-                        Icon(
-                            Iconsax.IconsaxFilterSearch,
-                            contentDescription = "Search",
-                            modifier = Modifier.size(18.dp),
-                        )
-                    },
-                    singleLine = true,
-                    modifier = Modifier.weight(1f),
-                )
+                verticalAlignment = Alignment.CenterVertically) {
+                val filterState = rememberTextFieldState(filterQuery)
+                LaunchedEffect(filterState.text) {
+                    viewModel.setQueueFilter(filterState.text.toString())
+                }
+                MillenniumTextField(
+                    state = filterState,
+                    label = "",
+                    placeholder = "Filter queue...",
+                    modifier = Modifier.weight(1f))
                 if (!isReadOnly) {
-                    IconButton(
+                    MillenniumIconButton(
                         onClick = viewModel::clearQueue,
-                        theme = LocalBaseUITheme.current.iconButtons.outline.copyShape(MaterialTheme.shapes.small),
-                    ) {
-                        Icon(Iconsax.IconsaxTrash, contentDescription = "Clear Queue")
+                        style = MillenniumIconButtonStyle.Quiet) {
+                        MillenniumIcon(Iconsax.IconsaxTrash, contentDescription = "Clear Queue")
                     }
                 }
             }
@@ -142,16 +132,14 @@ fun PlayerQueueContent(
             if (displayItems.isEmpty()) {
                 Text(
                     text = "No queue entries",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colors.onSurfaceVariant)
             } else {
-                Card {
+                MillenniumCard {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         state = lazyListState,
-                        contentPadding = PaddingValues(bottom = 8.dp),
-                    ) {
+                        contentPadding = PaddingValues(bottom = 8.dp)) {
                         items(displayItems, key = { it.id }) { item ->
                             ReorderableItem(reorderableLazyListState, key = item.id) { isDragging ->
                                 val elevation by animateDpAsState(if (isDragging) 8.dp else 0.dp)
@@ -164,8 +152,7 @@ fun PlayerQueueContent(
                                     onDragStopped = { viewModel.onDragStop() },
                                     showOptions = !isReadOnly,
                                     enabled = !isReadOnly,
-                                    onParticipantClick = { selectedParticipant = it },
-                                )
+                                    onParticipantClick = { selectedParticipant = it })
                             }
                         }
                     }
@@ -179,8 +166,7 @@ fun PlayerQueueContent(
                     onDismiss = { selectedParticipant = null },
                     onKick = { viewModel.kickParticipant(participant.id) },
                     onBan = { viewModel.banParticipant(participant.id) },
-                    onRemoveSuggestions = { viewModel.removeParticipantTracks(participant.id) },
-                )
+                    onRemoveSuggestions = { viewModel.removeParticipantTracks(participant.id) })
             }
         }
     }
@@ -193,83 +179,70 @@ private fun ParticipantDialog(
     onDismiss: () -> Unit,
     onKick: () -> Unit,
     onBan: () -> Unit,
-    onRemoveSuggestions: () -> Unit,
-) {
+    onRemoveSuggestions: () -> Unit) {
     AdaptiveDialogBottomSheet(
         onDismiss = onDismiss,
-        title = { Text(participant.displayName, style = MaterialTheme.typography.titleLarge) },
-    ) {
+        title = { Text(participant.displayName, style = AppTheme.typography.titleLarge) }) {
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
+            verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
-                modifier = Modifier.padding(vertical = 8.dp),
-            ) {
+                modifier = Modifier.padding(vertical = 8.dp)) {
                 ParticipantAvatar(participant, size = 40)
                 Text(
                     text = participant.displayName,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                    style = AppTheme.typography.bodyLarge)
                 if (participant.isHost) {
                     Text(
                         text = "Host",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary,
-                    )
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.primary)
                 }
             }
 
             if (isJamHost && !participant.isHost) {
-                HorizontalDivider(
-                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                )
-                ListRowTile(
+                MillenniumSeparator(
+                    modifier = Modifier.fillMaxWidth())
+                MillenniumListTile(
                     onClick = {
                         onKick()
                         onDismiss()
                     },
                     leading = {
-                        Icon(
+                        MillenniumIcon(
                             imageVector = Iconsax.IconsaxCloseSquare,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.error,
-                        )
+                            tint = AppTheme.colors.error)
                     },
                     title = { Text("Kick") },
-                    subtitle = { Text("Remove them from the session") },
-                )
-                ListRowTile(
+                    subtitle = { Text("Remove them from the session") })
+                MillenniumListTile(
                     onClick = {
                         onBan()
                         onDismiss()
                     },
                     leading = {
-                        Icon(
+                        MillenniumIcon(
                             imageVector = Iconsax.IconsaxUserRemove,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.error,
-                        )
+                            tint = AppTheme.colors.error)
                     },
                     title = { Text("Ban") },
-                    subtitle = { Text("Kick and prevent them from rejoining") },
-                )
-                ListRowTile(
+                    subtitle = { Text("Kick and prevent them from rejoining") })
+                MillenniumListTile(
                     onClick = {
                         onRemoveSuggestions()
                         onDismiss()
                     },
                     leading = {
-                        Icon(
+                        MillenniumIcon(
                             imageVector = Iconsax.IconsaxMusicSquareRemove,
-                            contentDescription = null,
-                        )
+                            contentDescription = null)
                     },
                     title = { Text("Remove suggestions") },
-                    subtitle = { Text("Remove every track they added to the queue") },
-                )
+                    subtitle = { Text("Remove every track they added to the queue") })
             }
         }
     }
@@ -281,14 +254,12 @@ private fun ParticipantAvatar(participant: JamParticipant, size: Int) {
         modifier = Modifier
             .size(size.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.primaryContainer),
-        contentAlignment = Alignment.Center,
-    ) {
+            .background(AppTheme.colors.primaryContainer),
+        contentAlignment = Alignment.Center) {
         Text(
             text = participant.displayName.firstOrNull()?.uppercase()?.take(1) ?: "?",
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-        )
+            style = AppTheme.typography.labelMedium,
+            color = AppTheme.colors.onPrimaryContainer)
     }
 }
 
@@ -302,11 +273,10 @@ private fun QueueItemRow(
     onDragStopped: () -> Unit,
     showOptions: Boolean = true,
     enabled: Boolean = true,
-    onParticipantClick: (JamParticipant) -> Unit = {},
-) {
+    onParticipantClick: (JamParticipant) -> Unit = {}) {
     var showMenu by remember { mutableStateOf(false) }
 
-    ListRowTile(
+    MillenniumListTile(
         onClick = onPlayClick,
         enabled = enabled,
         selected = item.isCurrent,
@@ -315,9 +285,8 @@ private fun QueueItemRow(
             Row(
                 modifier = Modifier
                     .height(72.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
+                verticalAlignment = Alignment.CenterVertically) {
+                MillenniumIcon(
                     Iconsax.IconsaxDragHandle,
                     contentDescription = if (reorderScope != null) "Reorder" else null,
                     modifier = Modifier
@@ -327,36 +296,30 @@ private fun QueueItemRow(
                                 with(reorderScope) {
                                     Modifier.draggableHandle(
                                         onDragStarted = { onDragStarted() },
-                                        onDragStopped = onDragStopped,
-                                    )
+                                        onDragStopped = onDragStopped)
                                 }
                             } else {
                                 Modifier
-                            },
-                        ),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
+                            }),
+                    tint = AppTheme.colors.onSurfaceVariant)
 
                 Box(
                     modifier = Modifier
                         .size(48.dp)
-                        .clip(MaterialTheme.shapes.small)
-                        .background(MaterialTheme.colorScheme.surfaceVariant),
-                    contentAlignment = Alignment.Center,
-                ) {
+                        .clip(AppTheme.shapes.small)
+                        .background(AppTheme.colors.surfaceVariant),
+                    contentAlignment = Alignment.Center) {
                     if (item.imageUrl != null) {
                         AsyncImage(
                             model = item.imageUrl,
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Crop,
-                        )
+                            contentScale = ContentScale.Crop)
                     } else {
                         Text(
                             text = "${item.originalIndex + 1}",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
+                            style = AppTheme.typography.labelMedium,
+                            color = AppTheme.colors.onSurfaceVariant)
                     }
                 }
             }
@@ -364,31 +327,28 @@ private fun QueueItemRow(
         title = {
             Text(
                 text = item.title,
-                style = MaterialTheme.typography.bodyLarge,
+                style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
                 color = if (item.isCurrent) {
-                    MaterialTheme.colorScheme.onSecondaryContainer
+                    AppTheme.colors.onSecondaryContainer
                 } else {
-                    MaterialTheme.colorScheme.onSurface
-                },
-            )
+                    AppTheme.colors.onSurface
+                })
         },
         subtitle = {
             Text(
                 text = item.subtitle,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+                overflow = TextOverflow.Ellipsis)
         },
         trailing = {
             Text(
                 text = item.durationLabel,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant)
 
             Spacer(modifier = Modifier.width(4.dp))
 
@@ -397,47 +357,35 @@ private fun QueueItemRow(
                     modifier = Modifier
                         .size(28.dp)
                         .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .background(AppTheme.colors.surfaceVariant)
                         .clickable { onParticipantClick(participant) },
-                    contentAlignment = Alignment.Center,
-                ) {
+                    contentAlignment = Alignment.Center) {
                     Text(
                         text = participant.displayName.firstOrNull()?.uppercase()?.take(1) ?: "?",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                        style = AppTheme.typography.labelSmall,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
                 Spacer(modifier = Modifier.width(4.dp))
             }
 
             if (showOptions) {
-                Box {
-                    GhostIconButton(
-                        onClick = { showMenu = true },
-                        modifier = Modifier.size(36.dp),
-                    ) {
-                        Icon(
-                            Iconsax.Iconsax3DotsMore,
-                            contentDescription = "More options",
-                            modifier = Modifier.size(18.dp),
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false },
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Remove from queue") },
-                            onClick = {
-                                onRemoveClick()
-                                showMenu = false
-                            },
-                            leadingIcon = {
-                                Icon(Iconsax.IconsaxMusicSquareRemove, contentDescription = null)
-                            },
-                        )
-                    }
-                }
+                MillenniumDropdownMenu(
+                    expanded = showMenu,
+                    onExpandedChange = { showMenu = it },
+                    items = listOf("Remove from queue"),
+                    onItemClick = {
+                        onRemoveClick()
+                        showMenu = false
+                    },
+                    anchor = {
+                        MillenniumIconButton(
+                            onClick = { showMenu = true },
+                            style = MillenniumIconButtonStyle.Quiet) {
+                            MillenniumIcon(
+                                Iconsax.Iconsax3DotsMore,
+                                contentDescription = "More options")
+                        }
+                    })
             }
         }
     )
