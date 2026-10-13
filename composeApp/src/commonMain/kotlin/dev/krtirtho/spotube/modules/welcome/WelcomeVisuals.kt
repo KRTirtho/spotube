@@ -33,13 +33,17 @@ import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.theme.MillenniumTheme
 import spotube.composeapp.generated.resources.*
 
-/** Installs the Millennium theme for the onboarding pages. */
+/**
+ * Reapplies the Millennium theme for the onboarding pages using the app's active configuration,
+ * so onboarding matches the palette and appearance used by the rest of the app.
+ */
 @Composable
 fun WelcomeTheme(content: @Composable () -> Unit) {
     val dark = AppTheme.colors.surface.luminance() < 0.5f
-    MillenniumTheme(dark = dark) {
-        content()
-    }
+    MillenniumTheme(
+        dark = dark,
+        config = MillenniumTheme.config,
+        content = content)
 }
 
 @Composable

@@ -246,7 +246,7 @@
     <string name="welcome_app_name">Spotube</string>
     <string name="welcome_brand_freedom">Music, without the strings.</string>
     <string name="welcome_brand_quiet_description">An open-source player for a world of music.\nYours to explore. Yours to make your own.</string>
-    <string name="welcome_donate_quiet_title">Keep music free.</string>
+    <string name="welcome_donate_quiet_title">Keep this project alive.</string>
     <string name="welcome_donate_letter">Spotube is built by people, not a subscription business. If it becomes part of your everyday life, a little support helps us give it the care it deserves.\n\nThank you for making room for independent software.</string>
     <string name="welcome_plugins_setup_guide">Start with a catalog plugin to find songs and playlists. Choose an audio plugin to play them. Lyrics and listening history are optional. Discover a plugin below, review its permissions, install it, then select it here.</string>
     <string name="welcome_plugins_discover">Discover plugins</string>
@@ -255,12 +255,21 @@
     <string name="welcome_plugins_more">More plugins</string>
     <string name="welcome_plugins_discovery_empty">No new plugins found. You can also install one from a link or a .smplug file above.</string>
     <string name="welcome_plugins_discovery_error">Plugin discovery is unavailable right now. Try again, or install from a link or file.</string>
-    <string name="welcome_how_quiet_title">A familiar player. A different kind of freedom.</string>
-    <string name="welcome_how_quiet_description">Browse through your chosen catalog. Press play and your audio plugin finds the stream.\n\nYour device handles playback and caching. Add synced lyrics, save tracks for later, or listen together with Group Jam.</string>
-    <string name="welcome_demo_streaming">DEMONSTRATION</string>
-    <string name="welcome_demo_paused">PAUSED</string>
-    <string name="welcome_demo_pause_action">Pause demonstration</string>
-    <string name="welcome_demo_play_action">Play demonstration</string>
+    <string name="welcome_step_welcome">Welcome</string>
+    <string name="welcome_step_support">Support</string>
+    <string name="welcome_step_plugins">Plugins</string>
+    <string name="welcome_step_guide">Guide</string>
+
+    <string name="welcome_guide_title">How to use Spotube</string>
+    <string name="welcome_guide_subtitle">Four quick steps and you’re listening.</string>
+    <string name="welcome_guide_signin_title">Sign in</string>
+    <string name="welcome_guide_signin_desc">Connect your Spotify account, or pick your own catalog plugin.</string>
+    <string name="welcome_guide_search_title">Search and play</string>
+    <string name="welcome_guide_search_desc">Find any song, album, or artist, then press play.</string>
+    <string name="welcome_guide_offline_title">Listen offline</string>
+    <string name="welcome_guide_offline_desc">Download tracks to keep playing without a connection.</string>
+    <string name="welcome_guide_lyrics_title">Follow the lyrics</string>
+    <string name="welcome_guide_lyrics_desc">Open synced lyrics from the player while a track plays.</string>
 
     <!-- Page 1: branding -->
     <string name="welcome_brand_tagline">Your music. Your sources. Your rules.</string>

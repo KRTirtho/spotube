@@ -22,7 +22,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,18 +30,16 @@ import kotlinx.coroutines.launch
 class WelcomeViewModel(
     private val repository: WelcomeRepository) : ViewModel() {
     private val currentPageIndex = MutableStateFlow(0)
-    private val demoPlaying = MutableStateFlow(true)
 
     val uiState: StateFlow<WelcomeUiState> =
-        combine(currentPageIndex, demoPlaying) { index, playing ->
+        currentPageIndex.map { index ->
             val pageCount = welcomePrimaryLabels.size
             WelcomeUiState(
                 currentPageIndex = index,
                 pageCount = pageCount,
                 isLastPage = index == pageCount - 1,
                 primaryLabel = welcomePrimaryLabels[index.coerceIn(0, pageCount - 1)],
-                donations = welcomeDonations,
-                demoPlaying = playing)
+                donations = welcomeDonations)
         }
             .stateIn(
                 scope = viewModelScope,
@@ -53,26 +51,22 @@ class WelcomeViewModel(
                     primaryLabel = welcomePrimaryLabels.first(),
                     donations = welcomeDonations))
 
-    fun nextPage() {
-        currentPageIndex.update { (it + 1).coerceAtMost(welcomePrimaryLabels.lastIndex) }
-    }
-
-    fun toggleDemo() {
-        demoPlaying.update { !it }
+    fun goToPage(index: Int) {
+        currentPageIndex.update { index.coerceIn(0, welcomePrimaryLabels.lastIndex) }
     }
 
     fun onPrimary() {
-        if (currentPageIndex.value == welcomePrimaryLabels.lastIndex) completeOnboarding() else nextPage()
+        if (currentPageIndex.value == welcomePrimaryLabels.lastIndex) {
+            completeOnboarding()
+        } else {
+            goToPage(currentPageIndex.value + 1)
+        }
     }
 
     fun openDonation(url: String) {
         // Only destinations owned by our static funding list can be opened here.
         if (welcomeDonations.none { it.url == url }) return
         runCatching { dev.krtirtho.spotube.openUrlInBrowser(url) }
-    }
-
-    fun previousPage() {
-        currentPageIndex.update { (it - 1).coerceAtLeast(0) }
     }
 
     fun completeOnboarding() {

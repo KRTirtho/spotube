@@ -25,10 +25,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.foundation.window.WindowDraggableArea
 
 import org.spotube.millennium.composables.MillenniumTopAppBar
@@ -53,6 +56,8 @@ import dev.nucleusframework.window.WindowDoubleClickAction
 import dev.nucleusframework.window.windowDragArea
 import org.koin.compose.koinInject
 
+private val WindowControlsReservedWidth = 132.dp
+
 @Composable
 actual fun ApplicationMainBar(
     title: @Composable (() -> Unit),
@@ -68,6 +73,9 @@ actual fun ApplicationMainBar(
             title = title,
             actions = {
                 actions()
+                // Reserve room for the platform window controls instead of shrinking the
+                // whole bar, so it spans the full width with no seam under the controls.
+                Spacer(Modifier.width(WindowControlsReservedWidth))
             },
             navigationIcon = {
                 if (backButton) {
@@ -75,7 +83,9 @@ actual fun ApplicationMainBar(
                 }
             },
             subtitle = subtitle,
-            modifier = Modifier.padding(end = 125.dp) // To avoid overlap with window buttons
+            background = if (transparent) SolidColor(Color.Transparent) else null,
+            separatorColor = if (transparent) Color.Transparent else null,
+            modifier = Modifier.fillMaxWidth()
         )
         LocalWindowScope.current.WindowControls(
             modifier = Modifier.align(Alignment.TopEnd).heightIn(max = 48.dp),

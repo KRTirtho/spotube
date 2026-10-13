@@ -107,9 +107,12 @@ fun TextWithShimmer(
     minLines: Int = 1,
     onTextLayout: ((TextLayoutResult) -> Unit)? = null,
     style: TextStyle = LocalTextStyle.current) {
+    // While a skeleton tree is loading, the placeholder glyphs must not be readable:
+    // only the shimmer bars (from `shimmerApply`) should show through.
+    val isLoadingSkeleton = LocalSkeletonLoading.current
     Text(
         text = text,
-        color = color,
+        color = if (isLoadingSkeleton) Color.Transparent else color,
         modifier = Modifier.shimmerApply().then(modifier),
         autoSize = autoSize,
         fontSize = fontSize,

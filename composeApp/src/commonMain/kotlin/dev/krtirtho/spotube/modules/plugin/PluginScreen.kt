@@ -26,6 +26,9 @@ import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumSegmentedButton
+import org.spotube.millennium.composables.MillenniumSegmentedButtonDefaults
+import org.spotube.millennium.composables.MillenniumSegmentedButtonRow
 import org.spotube.millennium.composables.MillenniumTextField
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumPanelBrush
@@ -285,29 +288,19 @@ internal fun PluginScreenContent(
                                 }
                             }
                             item {
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    modifier = Modifier.padding(bottom = 12.dp)
-                                ) {
-                                    MillenniumButton(
+                                MillenniumSegmentedButtonRow(
+                                    modifier = Modifier.padding(bottom = 12.dp)) {
+                                    MillenniumSegmentedButton(
+                                        selected = data.onboardingDiscover,
                                         onClick = { viewModel.showOnboardingDiscovery(true) },
-                                        style = MillenniumButtonStyle.Secondary) {
-                                        Text(
-                                            stringResource(Res.string.welcome_plugins_discover),
-                                            fontWeight = if (data.onboardingDiscover) FontWeight.Bold else FontWeight.Normal
-                                        )
+                                        shape = MillenniumSegmentedButtonDefaults.itemShape(0, 2)) {
+                                        Text(stringResource(Res.string.welcome_plugins_discover))
                                     }
-                                    MillenniumButton(
-                                        onClick = {
-                                            viewModel.showOnboardingDiscovery(
-                                                false
-                                            )
-                                        },
-                                        style = MillenniumButtonStyle.Secondary) {
-                                        Text(
-                                            stringResource(Res.string.welcome_plugins_sources),
-                                            fontWeight = if (!data.onboardingDiscover) FontWeight.Bold else FontWeight.Normal
-                                        )
+                                    MillenniumSegmentedButton(
+                                        selected = !data.onboardingDiscover,
+                                        onClick = { viewModel.showOnboardingDiscovery(false) },
+                                        shape = MillenniumSegmentedButtonDefaults.itemShape(1, 2)) {
+                                        Text(stringResource(Res.string.welcome_plugins_sources))
                                     }
                                 }
                             }

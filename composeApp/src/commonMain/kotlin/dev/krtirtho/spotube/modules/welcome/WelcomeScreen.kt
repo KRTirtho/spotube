@@ -20,28 +20,22 @@ package dev.krtirtho.spotube.modules.welcome
 
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumCard
 import org.spotube.millennium.composables.MillenniumIcon
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
-import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.background
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumTabGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
@@ -49,7 +43,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -63,13 +56,15 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.welcome_back
 import spotube.composeapp.generated.resources.welcome_skip
 
 /**
- * First-run Welcome/Onboarding screen. It is a route ([dev.krtirtho.spotube.core.navigation.Routes.Welcome])
- * rendered inside the app shell. Uses the application's base controls and keeps plugin setup
- * in-place, with a neutral palette independent of the user's chosen accent.
+ * First-run Welcome/Onboarding screen. It is a route
+ * ([dev.krtirtho.spotube.core.navigation.Routes.Welcome]) rendered inside the app shell.
+ *
+ * The steps are exposed through a Millennium tab group rather than ad-hoc dots or a footer
+ * walk-through, so the screen reads as one deliberate panel on every window size.
+ * Each step owns its content and the footer only carries the forward action.
  */
 @Composable
 fun WelcomeScreen(viewModel: WelcomeViewModel) {
@@ -96,99 +91,31 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
                             }
                         }
                     })
-                Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
 
-                    Column(
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 16.dp),
+                    contentAlignment = Alignment.Center) {
+                    MillenniumCard(
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        // Central stage (animated page content)
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .widthIn(max = 1280.dp)
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.Center) {
-                            AnimatedContent(
-                                modifier = Modifier.fillMaxSize(),
-                                targetState = state.currentPageIndex,
-                                transitionSpec = {
-                                    if (targetState > initialState) {
-                                        (slideInHorizontally { it / 4 } + fadeIn()) togetherWith
-                                                (slideOutHorizontally { -it / 4 } + fadeOut())
-                                    } else {
-                                        (slideInHorizontally { -it / 4 } + fadeIn()) togetherWith
-                                                (slideOutHorizontally { it / 4 } + fadeOut())
-                                    }
-                                },
-                                label = "welcome_page") { index ->
-                                when (index) {
-                                    0 -> BrandingPage()
-
-                                    1 -> DonationPage(
-                                        donations = state.donations,
-                                        onDonate = viewModel::openDonation)
-
-                                    2 -> PluginsPage()
-
-                                    else -> HowItWorksPage(
-                                        isPlaying = state.demoPlaying,
-                                        onTogglePlayback = viewModel::toggleDemo
-                                    )
-                                }
-                            }
-                        }
-
-                        Spacer(Modifier.height(10.dp))
-
-                        // Bottom precision navigation bar: Back | Page Dots | Action Button
-                        Row(
-                            modifier = Modifier
-                                .widthIn(max = 680.dp)
-                                .fillMaxWidth()
-                                .padding(horizontal = 12.dp, vertical = 6.dp),
-                            verticalAlignment = Alignment.CenterVertically) {
-                            // Left: Back button
-                            if (state.currentPageIndex > 0) {
-                                MillenniumButton(
-                                    onClick = viewModel::previousPage,
-                                    style = MillenniumButtonStyle.Secondary) {
-                                    Text(
-                                        text = stringResource(Res.string.welcome_back),
-                                        color = AppTheme.colors.onSurface)
-                                }
-                            } else {
-                                Spacer(Modifier.width(76.dp))
-                            }
-
-                            // Center: Precision page dots
-                            Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                                PageIndicator(
-                                    pageCount = state.pageCount,
-                                    currentPageIndex = state.currentPageIndex)
-                            }
-
-                            // Right: Primary Next / Let's Go action
-                            MillenniumButton(
-                                onClick = viewModel::onPrimary,
-                                style = MillenniumButtonStyle.Secondary) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                                    Text(
-                                        text = stringResource(state.primaryLabel),
-                                        fontWeight = FontWeight.SemiBold)
-                                    MillenniumIcon(
-                                        imageVector = if (state.isLastPage) {
-                                            Iconsax.IconsaxCheckCircle
-                                        } else {
-                                            Iconsax.IconsaxNext
-                                        },
-                                        contentDescription = null,
-                                        modifier = Modifier.size(16.dp))
-                                }
-                            }
+                            .widthIn(max = 1040.dp)
+                            .fillMaxWidth()
+                            .fillMaxHeight(),
+                        contentPadding = PaddingValues(0.dp)) {
+                        Column(Modifier.fillMaxSize()) {
+                            WelcomeStepSwitcher(
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 12.dp),
+                                state = state,
+                                viewModel = viewModel)
+                            MillenniumSeparator()
+                            WelcomeActionBar(
+                                state = state,
+                                viewModel = viewModel)
                         }
                     }
                 }
@@ -198,31 +125,59 @@ fun WelcomeScreen(viewModel: WelcomeViewModel) {
 }
 
 @Composable
-private fun PageIndicator(
-    pageCount: Int,
-    currentPageIndex: Int,
+private fun WelcomeStepSwitcher(
+    state: WelcomeUiState,
+    viewModel: WelcomeViewModel,
     modifier: Modifier = Modifier) {
+    val labels = welcomeStepLabels.map { stringResource(it) }
+    MillenniumTabGroup(
+        selectedTab = state.currentPageIndex,
+        onSelectedTabChange = viewModel::goToPage,
+        tabs = labels.indices.toList(),
+        modifier = modifier,
+        tabLabel = { labels[it] }) { index ->
+        when (index) {
+            0 -> BrandingPage()
+
+            1 -> DonationPage(
+                donations = state.donations,
+                onDonate = viewModel::openDonation)
+
+            2 -> PluginsPage()
+
+            else -> HowItWorksPage()
+        }
+    }
+}
+
+@Composable
+private fun WelcomeActionBar(
+    state: WelcomeUiState,
+    viewModel: WelcomeViewModel) {
     Row(
-        modifier = modifier
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(7.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        repeat(pageCount) { index ->
-            val selected = index == currentPageIndex
-            val width by animateDpAsState(
-                targetValue = if (selected) 20.dp else 6.dp,
-                label = "welcome_page_indicator")
-            Box(
-                modifier = Modifier
-                    .size(width = width, height = 6.dp)
-                    .clip(CircleShape)
-                    .background(
-                        if (selected) {
-                            AppTheme.colors.onSurface
-                        } else {
-                            AppTheme.colors.outlineVariant
-                        }
-                    ))
+        Spacer(Modifier.weight(1f))
+        MillenniumButton(
+            onClick = viewModel::onPrimary,
+            style = MillenniumButtonStyle.Secondary) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(
+                    text = stringResource(state.primaryLabel),
+                    fontWeight = FontWeight.SemiBold)
+                MillenniumIcon(
+                    imageVector = if (state.isLastPage) {
+                        Iconsax.IconsaxCheckCircle
+                    } else {
+                        Iconsax.IconsaxNext
+                    },
+                    contentDescription = null,
+                    modifier = Modifier.size(16.dp))
+            }
         }
     }
 }

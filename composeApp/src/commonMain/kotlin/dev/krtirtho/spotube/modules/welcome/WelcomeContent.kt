@@ -32,6 +32,10 @@ import spotube.composeapp.generated.resources.welcome_donate_patreon_title
 import spotube.composeapp.generated.resources.welcome_get_started
 import spotube.composeapp.generated.resources.welcome_lets_go
 import spotube.composeapp.generated.resources.welcome_next
+import spotube.composeapp.generated.resources.welcome_step_guide
+import spotube.composeapp.generated.resources.welcome_step_plugins
+import spotube.composeapp.generated.resources.welcome_step_support
+import spotube.composeapp.generated.resources.welcome_step_welcome
 
 /** Order matches the 4 onboarding pages. */
 internal val welcomePrimaryLabels: List<StringResource> = listOf(
@@ -39,6 +43,13 @@ internal val welcomePrimaryLabels: List<StringResource> = listOf(
     Res.string.welcome_next,
     Res.string.welcome_next,
     Res.string.welcome_get_started)
+
+/** Short labels for the step switcher. Order matches the 4 onboarding pages. */
+internal val welcomeStepLabels: List<StringResource> = listOf(
+    Res.string.welcome_step_welcome,
+    Res.string.welcome_step_support,
+    Res.string.welcome_step_plugins,
+    Res.string.welcome_step_guide)
 
 internal val welcomeDonations: List<DonationOption> = listOf(
     DonationOption(

@@ -33,5 +33,4 @@ data class WelcomeUiState(
     val pageCount: Int,
     val isLastPage: Boolean,
     val primaryLabel: StringResource,
-    val donations: List<DonationOption>,
-    val demoPlaying: Boolean = true)
+    val donations: List<DonationOption>)
