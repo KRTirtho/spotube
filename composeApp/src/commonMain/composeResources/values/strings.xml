@@ -230,6 +230,9 @@
     <string name="player_go_to_album">Go to album</string>
     <string name="player_sleep_timer">Sleep timer</string>
     <string name="player_track_details">Track details</string>
+    <string name="player_play_content_description">Play</string>
+    <string name="player_pause_content_description">Pause</string>
+    <string name="player_add_to_queue_content_description">Add to queue</string>
 
     <string name="update_action_ignore">Ignore</string>
     <string name="update_action_update">Update</string>

@@ -62,6 +62,11 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPause
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.player_add_to_queue_content_description
+import spotube.composeapp.generated.resources.player_pause_content_description
+import spotube.composeapp.generated.resources.player_play_content_description
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -107,14 +112,16 @@ fun PlayableCard(
                     ) {
                         val isHovered by interactionSource.collectIsHoveredAsState()
                         this@Column.AnimatedVisibility(
-                            visible = isHovered,
+                            visible = isHovered || (isPlaying && onPlay != null),
                             enter = fadeIn(),
                             exit = fadeOut()) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.padding(4.dp)
                             ) {
-                                onAddToQueue?.let {
+                                // While this collection is playing the play/pause toggle stays
+                                // visible and the add-to-queue action is hidden entirely.
+                                onAddToQueue?.takeIf { !isPlaying }?.let {
                                     MillenniumIconButton(
                                         onClick = onAddToQueue,
                                         modifier = Modifier.size(34.dp),
@@ -122,10 +129,11 @@ fun PlayableCard(
                                     ) {
                                         MillenniumIcon(
                                             imageVector = Iconsax.IconsaxAddSquare,
-                                            contentDescription = "Add to queue")
+                                            contentDescription = stringResource(
+                                                Res.string.player_add_to_queue_content_description))
                                     }
+                                    Spacer(modifier = Modifier.height(8.dp))
                                 }
-                                Spacer(modifier = Modifier.height(8.dp))
                                 onPlay?.let {
                                     MillenniumIconButton(
                                         onClick = onPlay,
@@ -137,7 +145,12 @@ fun PlayableCard(
                                             imageVector = if (isPlaying) {
                                                 Iconsax.IconsaxPause
                                             } else Iconsax.IconsaxPlay,
-                                            contentDescription = "Play")
+                                            contentDescription = stringResource(
+                                                if (isPlaying) {
+                                                    Res.string.player_pause_content_description
+                                                } else {
+                                                    Res.string.player_play_content_description
+                                                }))
                                     }
                                 }
                             }
