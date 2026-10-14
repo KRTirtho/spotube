@@ -34,6 +34,9 @@ import org.spotube.millennium.composables.MillenniumModalBottomSheet
 import org.spotube.millennium.composables.rememberMillenniumDrawerState
 
 private val SlidingSheetBreakpoint = 840.dp
+private val MaxHeightSheetDetent = SheetDetent("max-height-85-percent") { containerHeight, sheetHeight ->
+    minOf(sheetHeight, containerHeight * 0.85f)
+}
 
 @Composable
 fun QueueSheet(
@@ -85,7 +88,10 @@ internal fun BottomSheetContent(
     content: @Composable () -> Unit
 ) {
     if (!isVisible) return
-    val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
+    val sheetState = rememberModalBottomSheetState(
+        initialDetent = MaxHeightSheetDetent,
+        detents = listOf(SheetDetent.Hidden, MaxHeightSheetDetent)
+    )
     LaunchedEffect(sheetState.bottomSheetState.currentDetent) {
         if (sheetState.bottomSheetState.currentDetent == SheetDetent.Hidden) {
             onDismiss()

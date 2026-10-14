@@ -30,7 +30,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBars
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -128,7 +127,11 @@ fun AppShell(
 
     Box(modifier = Modifier.fillMaxSize()) {
         val useSidebar = viewModel.useSidebar()
-        val bottomOverlayInset = viewModel.bottomOverlayInset(useSidebar)
+        val density = LocalDensity.current
+        val navigationBarInset = with(density) {
+            WindowInsets.navigationBars.getBottom(this).toDp()
+        }
+        val bottomOverlayInset = viewModel.bottomOverlayInset(useSidebar) + navigationBarInset
 
         CompositionLocalProvider(LocalAppShellBottomInset provides bottomOverlayInset) {
             if (useSidebar) {
@@ -278,7 +281,9 @@ private fun CompactPlayerOverlay(
     val floatingPlayerHeightPx = with(density) { viewModel.floatingPlayerHeight.toPx() }
     val bottomBarHeightPx = with(density) { viewModel.bottomBarHeight.toPx() }
     val navBarInsetPx = WindowInsets.navigationBars.getBottom(density).toFloat()
-    val peekHeightPx = floatingPlayerHeightPx + bottomBarHeightPx + navBarInsetPx
+    val playerBarSpacingPx = with(density) { viewModel.floatingPlayerSpacing.toPx() }
+    val peekHeightPx =
+        floatingPlayerHeightPx + bottomBarHeightPx + navBarInsetPx + playerBarSpacingPx
     val peekHeight = with(density) { peekHeightPx.toDp() }
 
     val partialDetent = remember(peekHeight) {
@@ -318,7 +323,6 @@ private fun CompactPlayerOverlay(
                         Column(modifier = Modifier.fillMaxWidth()) {
                             AppFloatingPlayer(
                                 modifier = Modifier
-                                    .offset(y = 12.dp)
                                     .graphicsLayer {
                                         alpha = uiState.floatingPlayerAlpha
                                     })
@@ -332,9 +336,12 @@ private fun CompactPlayerOverlay(
             AppBottombar(
                 navigator = navigator,
                 navigationState = navigationState,
-                modifier = Modifier.fillMaxWidth().align(Alignment.BottomCenter).graphicsLayer {
-                    alpha = uiState.floatingPlayerAlpha
-                })
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .graphicsLayer {
+                        alpha = uiState.floatingPlayerAlpha
+                    })
         }
     }
 }

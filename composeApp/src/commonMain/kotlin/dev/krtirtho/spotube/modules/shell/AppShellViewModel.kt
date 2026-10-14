@@ -42,9 +42,9 @@ data class LyricsOverlayState(
 
 class AppShellViewModel : ViewModel() {
     val sidebarMinWidth = 840.dp
-    val bottomBarEstimatedHeight = 58.dp
     val bottomBarHeight = 80.dp
-    val floatingPlayerHeight = 74.dp
+    val floatingPlayerHeight = 76.dp
+    val floatingPlayerSpacing = 12.dp
     val largePlayerInset = 100.dp
     val floatingPlayerDismissProgress = 0.7f
     val expandedPlayerVisibilityThreshold = 0.001f
@@ -53,11 +53,8 @@ class AppShellViewModel : ViewModel() {
 
     val isLyricsOverlayVisible: StateFlow<Boolean> = lyricsOverlayVisible.asStateFlow()
 
-    val floatingPlayerBottomOffset: Dp
-        get() = bottomBarEstimatedHeight + 8.dp
-
     val compactChromeInset: Dp
-        get() = floatingPlayerBottomOffset + floatingPlayerHeight + 10.dp
+        get() = bottomBarHeight + floatingPlayerHeight + floatingPlayerSpacing
 
     @Composable
     fun useSidebar(maxWidth: Dp? = null): Boolean {

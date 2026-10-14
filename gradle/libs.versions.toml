@@ -14,7 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 [versions]
-agp = "8.13.2"
+agp = "9.1.0"
 android-compileSdk = "37"
 android-minSdk = "28"
 android-targetSdk = "36"

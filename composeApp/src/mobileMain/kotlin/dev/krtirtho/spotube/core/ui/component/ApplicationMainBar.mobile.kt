@@ -18,6 +18,8 @@
 package dev.krtirtho.spotube.core.ui.component
 
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
 import org.spotube.millennium.composables.MillenniumTopAppBar
 import androidx.compose.ui.graphics.Color
 import androidx.compose.runtime.Composable
@@ -33,6 +35,7 @@ actual fun ApplicationMainBar(
         title = title,
         subtitle = subtitle,
         actions = actions,
+        windowInsets = WindowInsets.statusBars,
         navigationIcon = {
             if (backButton) {
                 ApplicationBackButton()
