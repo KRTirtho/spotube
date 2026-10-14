@@ -19,13 +19,12 @@ package dev.krtirtho.spotube.modules.search
 
 
 import org.spotube.millennium.composables.MillenniumIcon
-import org.spotube.millennium.composables.MillenniumIconButton
-import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.composables.MillenniumAutocomplete
+import org.spotube.millennium.composables.MillenniumText
 import org.spotube.millennium.composables.MillenniumTextField
 import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.animation.AnimatedContent
@@ -78,8 +77,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.X
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
@@ -115,6 +112,10 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
 import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
 import dev.krtirtho.spotube.resources.iconsax.InconsaxClock
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.search_clear_history
+import spotube.composeapp.generated.resources.search_placeholder
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -145,8 +146,12 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     var tracksToAddToPlaylist by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
     var currentUserId by remember { mutableStateOf<String?>(null) }
 
-    val blacklistedTracks by blacklistRepository.blacklistedTracks.collectAsStateWithLifecycle(emptyList())
-    val blacklistedArtists by blacklistRepository.blacklistedArtists.collectAsStateWithLifecycle(emptyList())
+    val blacklistedTracks by blacklistRepository.blacklistedTracks.collectAsStateWithLifecycle(
+        emptyList()
+    )
+    val blacklistedArtists by blacklistRepository.blacklistedArtists.collectAsStateWithLifecycle(
+        emptyList()
+    )
 
     fun isTrackBlacklisted(track: MetadataTrack): Boolean {
         val trackIds = blacklistedTracks.map { it.id }.toSet()
@@ -172,7 +177,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                 entries = listOf(QueueEntry.StreamingTrack(track = track, url = "")),
                 autoPlay = true,
                 startPosition = 0,
-                collectionEntry = null)
+                collectionEntry = null
+            )
         }
     }
 
@@ -188,7 +194,14 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                     if (existing != null) {
                         // Already in the local queue: move it to the next position
                         audioPlayerQueue.removeFromQueue(existing)
-                        audioPlayerQueue.addAllAfterCurrent(listOf(QueueEntry.StreamingTrack(track = track, url = "")))
+                        audioPlayerQueue.addAllAfterCurrent(
+                            listOf(
+                                QueueEntry.StreamingTrack(
+                                    track = track,
+                                    url = ""
+                                )
+                            )
+                        )
                     } else {
                         remotePlaybackController.requestTrackPlayNext(track)
                     }
@@ -197,6 +210,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                 is TrackOptionsAction.AddToQueue -> {
                     remotePlaybackController.requestTrackAddToQueue(track)
                 }
+
                 is TrackOptionsAction.AddToJam -> {
                     remotePlaybackController.addTrackToJam(track)
                 }
@@ -217,6 +231,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                         shareService.share(uri, track.title)
                     }
                 }
+
                 is TrackOptionsAction.AddToPlaylist -> {
                     tracksToAddToPlaylist = listOf(track)
                     showAddToPlaylistPicker = true
@@ -236,7 +251,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
             isInQueue = queueTrackIds.contains(track.id),
             isCurrentlyPlaying = track.id == currentTrackId,
             isFavorite = savedTrackIds.contains(track.id),
-            isBlacklisted = isTrackBlacklisted(track))
+            isBlacklisted = isTrackBlacklisted(track)
+        )
     }
 
     val queue by audioPlayerQueue.queueFlow.collectAsStateWithLifecycle(emptyList())
@@ -251,7 +267,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
             isInQueue = queueTrackIds.contains(track.id),
             isCurrentlyPlaying = track.id == currentTrackId,
             isFavorite = savedTrackIds.contains(track.id),
-            isBlacklisted = isTrackBlacklisted(track))
+            isBlacklisted = isTrackBlacklisted(track)
+        )
     }
 
     fun bulkAddToQueue(tracks: List<MetadataTrack>) {
@@ -269,7 +286,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)) {
+            .background(MillenniumTheme.colors.background)
+    ) {
         ApplicationMainBar(backButton = false)
         Column(
             modifier = Modifier
@@ -282,12 +300,11 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                 SearchBar(
                     query = state.query,
                     onQueryChange = viewModel::onQueryChange,
-                    recentSearches = state.recentSearches,
+                    recentSearchSuggestions = state.recentSearchSuggestions,
                     onRecentSearchClick = { search ->
                         viewModel.applyRecentSearch(search)
                         focusManager.clearFocus()
                     },
-                    onRecentSearchRemove = viewModel::removeRecentSearch,
                     onClearAllRecentSearches = {
                         viewModel.clearAllRecentSearches()
                         focusManager.clearFocus()
@@ -297,7 +314,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                     SearchTabs(
                         types = state.supportedSearchTypes,
                         selectedType = selectedType,
-                        onTabSelected = viewModel::onTabSelected)
+                        onTabSelected = viewModel::onTabSelected
+                    )
                 }
             }
 
@@ -305,14 +323,16 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                 state.isLoadingSearchTypes -> {
                     SearchLoadingIndicator(
                         modifier = Modifier
-                            .fillMaxSize())
+                            .fillMaxSize()
+                    )
                 }
 
                 selectedType == null -> {
                     SearchMessage(
                         message = "No search types available",
                         modifier = Modifier
-                            .fillMaxSize())
+                            .fillMaxSize()
+                    )
                 }
 
                 selectedType == MetadataSupportedSearchType.ALL -> {
@@ -348,7 +368,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                             // No-op for now, could show a dialog with all artists
                         },
                         modifier = Modifier
-                            .fillMaxSize())
+                            .fillMaxSize()
+                    )
                 }
 
                 selectedType == MetadataSupportedSearchType.TRACK -> {
@@ -379,7 +400,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                             // No-op for now, could show a dialog with all artists
                         },
                         modifier = Modifier
-                            .fillMaxSize())
+                            .fillMaxSize()
+                    )
                 }
 
                 selectedType == MetadataSupportedSearchType.PLAYLIST -> {
@@ -388,7 +410,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                         playlists = state.playlists,
                         onLoadNextPage = viewModel::loadNextPlaylists,
                         modifier = Modifier
-                            .fillMaxSize())
+                            .fillMaxSize()
+                    )
                 }
 
                 selectedType == MetadataSupportedSearchType.ALBUM -> {
@@ -397,7 +420,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                         albums = state.albums,
                         onLoadNextPage = viewModel::loadNextAlbums,
                         modifier = Modifier
-                            .fillMaxSize())
+                            .fillMaxSize()
+                    )
                 }
 
                 selectedType == MetadataSupportedSearchType.ARTIST -> {
@@ -406,7 +430,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                         artists = state.artists,
                         onLoadNextPage = viewModel::loadNextArtists,
                         modifier = Modifier
-                            .fillMaxSize())
+                            .fillMaxSize()
+                    )
                 }
 
                 selectedType == MetadataSupportedSearchType.USER -> {
@@ -415,7 +440,8 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
                         users = state.users,
                         onLoadNextPage = viewModel::loadNextUsers,
                         modifier = Modifier
-                            .fillMaxSize())
+                            .fillMaxSize()
+                    )
                 }
             }
         }
@@ -439,11 +465,11 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
 private fun SearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    recentSearches: List<String>,
+    recentSearchSuggestions: List<String>,
     onRecentSearchClick: (String) -> Unit,
-    onRecentSearchRemove: (String) -> Unit,
-    onClearAllRecentSearches: () -> Unit) {
-    val showRecentSearches = query.isBlank() && recentSearches.isNotEmpty()
+    onClearAllRecentSearches: () -> Unit
+) {
+    val hasRecentSearchSuggestions = recentSearchSuggestions.isNotEmpty()
     val searchState = rememberTextFieldState(query)
 
     LaunchedEffect(searchState) {
@@ -455,106 +481,61 @@ private fun SearchBar(
         }
     }
 
-    val suggestions = remember(showRecentSearches, recentSearches) {
-        buildList {
-            if (showRecentSearches) {
-                add(SearchDropdownEntry.ClearAll(onClick = onClearAllRecentSearches))
-                recentSearches.forEach { search ->
-                    add(
-                        SearchDropdownEntry.RecentSearch(
-                            query = search,
-                            onClick = { onRecentSearchClick(search) },
-                            onRemove = { onRecentSearchRemove(search) })
-                    )
-                }
-            }
-        }
-    }
-
-    Box(
+    MillenniumAutocomplete(
+        state = searchState,
+        suggestions = recentSearchSuggestions,
+        onSuggestionSelected = onRecentSearchClick,
+        suggestionLabel = { it },
+        leadingContent = {
+            MillenniumIcon(
+                imageVector = Iconsax.InconsaxClock,
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = AppTheme.colors.onSurfaceVariant
+            )
+        },
+        placeholder = stringResource(Res.string.search_placeholder),
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
-            .padding(bottom = 8.dp)) {
-        MillenniumAutocomplete(
-            state = searchState,
-            
-            suggestions = suggestions,
-            onSuggestionSelected = { entry -> entry.onClick() },
-            suggestionLabel = { entry ->
-                when (entry) {
-                    is SearchDropdownEntry.ClearAll -> "Clear all history"
-                    is SearchDropdownEntry.RecentSearch -> entry.query
-                }
-            },
-            placeholder = "Search songs, artists, albums...",
-            modifier = Modifier.fillMaxWidth(),
-            suggestionContent = { entry, _ -> SearchSuggestionRow(entry) })
-    }
-}
-
-private sealed interface SearchDropdownEntry {
-    val onClick: () -> Unit
-
-    data class ClearAll(override val onClick: () -> Unit) : SearchDropdownEntry
-    data class RecentSearch(
-        val query: String,
-        override val onClick: () -> Unit,
-        val onRemove: () -> Unit) : SearchDropdownEntry
-}
-
-@Composable
-private fun SearchSuggestionRow(entry: SearchDropdownEntry) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 12.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-        when (entry) {
-            is SearchDropdownEntry.ClearAll -> {
-                MillenniumIcon(
-                    imageVector = Iconsax.IconsaxTrash,
-                    contentDescription = null,
-                    tint = AppTheme.colors.error,
-                    modifier = Modifier.size(16.dp))
-                Text(
-                    "Clear all history",
-                    color = AppTheme.colors.error,
-                    style = AppTheme.typography.bodyMedium)
+            .padding(bottom = 8.dp),
+        menuHeader = if (hasRecentSearchSuggestions) {
+            {
+                MillenniumListTile(
+                    title = {
+                        MillenniumText(
+                            text = stringResource(Res.string.search_clear_history),
+                            color = AppTheme.colors.error,
+                            style = AppTheme.typography.bodyMedium
+                        )
+                    },
+                    leading = {
+                        MillenniumIcon(
+                            imageVector = Iconsax.IconsaxTrash,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = AppTheme.colors.error
+                        )
+                    },
+                    onClick = onClearAllRecentSearches,
+                    minimumHeight = 36.dp,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                    leadingSpacing = 8.dp,
+                    shape = AppTheme.shapes.small
+                )
             }
-
-            is SearchDropdownEntry.RecentSearch -> {
-                MillenniumIcon(
-                    imageVector = Iconsax.InconsaxClock,
-                    contentDescription = null,
-                    modifier = Modifier.size(16.dp),
-                    tint = AppTheme.colors.onSurfaceVariant)
-                Text(
-                    entry.query,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = AppTheme.typography.bodyMedium,
-                    modifier = Modifier.weight(1f))
-                MillenniumIconButton(
-                    onClick = entry.onRemove,
-                    style = MillenniumIconButtonStyle.Quiet) {
-                    MillenniumIcon(
-                        imageVector = FeatherIcons.X,
-                        contentDescription = "Remove",
-                        modifier = Modifier.size(14.dp),
-                        tint = AppTheme.colors.onSurfaceVariant.copy(alpha = 0.6f))
-                }
-            }
+        } else {
+            null
         }
-    }
+    )
 }
 
 @Composable
 private fun SearchTabs(
     types: List<MetadataSupportedSearchType>,
     selectedType: MetadataSupportedSearchType?,
-    onTabSelected: (MetadataSupportedSearchType) -> Unit) {
+    onTabSelected: (MetadataSupportedSearchType) -> Unit
+) {
     val listState = rememberLazyListState()
     LazyRow(
         state = listState,
@@ -570,7 +551,8 @@ private fun SearchTabs(
                     MillenniumButtonStyle.Primary
                 } else {
                     MillenniumButtonStyle.Secondary
-                }) {
+                }
+            ) {
                 Text(type.tabTitle())
             }
         }
@@ -600,7 +582,8 @@ private fun SearchAllTab(
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
     onArtistsOverflowClick: (MetadataTrack) -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     if (query.isBlank()) {
         SearchMessage(message = "Start typing to search", modifier = modifier)
         return
@@ -624,7 +607,8 @@ private fun SearchAllTab(
         ErrorDisplay(
             errorMessage = hasAnyError,
             onRetry = { },
-            modifier = modifier)
+            modifier = modifier
+        )
         return
     }
 
@@ -665,7 +649,8 @@ private fun SearchAllTab(
                     text = "Tracks",
                     style = AppTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
-                    modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 12.dp))
+                    modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 12.dp)
+                )
             }
             if (MetadataSupportedSearchType.TRACK in supportedSearchTypes) {
                 if (tracks.isLoading && tracks.items.isEmpty()) {
@@ -743,7 +728,8 @@ private fun SearchTracksTab(
     onArtistClick: (MetadataArtist.Basic) -> Unit,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
     onArtistsOverflowClick: (MetadataTrack) -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     if (query.isBlank()) {
         SearchMessage(message = "Start typing to search tracks", modifier = modifier)
         return
@@ -775,7 +761,8 @@ private fun SearchTracksTab(
         onAlbumClick = onAlbumClick,
         onArtistsOverflowClick = onArtistsOverflowClick,
         simplified = true,
-        modifier = modifier)
+        modifier = modifier
+    )
 }
 
 @Composable
@@ -783,7 +770,8 @@ private fun SearchAlbumsTab(
     query: String,
     albums: SearchPagedState<MetadataAlbum.Basic>,
     onLoadNextPage: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     SearchGridTab(
         query = query,
         items = albums.items,
@@ -793,7 +781,8 @@ private fun SearchAlbumsTab(
         onLoadNextPage = onLoadNextPage,
         emptyMessage = "No albums found",
         loadingMessage = "Loading albums...",
-        modifier = modifier) { album ->
+        modifier = modifier
+    ) { album ->
         AlbumCard(album = album, modifier = Modifier.fillMaxWidth())
     }
 }
@@ -803,7 +792,8 @@ private fun SearchArtistsTab(
     query: String,
     artists: SearchPagedState<MetadataArtist.Basic>,
     onLoadNextPage: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     SearchGridTab(
         query = query,
         items = artists.items,
@@ -813,7 +803,8 @@ private fun SearchArtistsTab(
         onLoadNextPage = onLoadNextPage,
         emptyMessage = "No artists found",
         loadingMessage = "Loading artists...",
-        modifier = modifier) { artist ->
+        modifier = modifier
+    ) { artist ->
         ArtistCard(artist = artist, modifier = Modifier.fillMaxWidth())
     }
 }
@@ -823,7 +814,8 @@ private fun SearchPlaylistsTab(
     query: String,
     playlists: SearchPagedState<MetadataPlaylist>,
     onLoadNextPage: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     SearchGridTab(
         query = query,
         items = playlists.items,
@@ -833,7 +825,8 @@ private fun SearchPlaylistsTab(
         onLoadNextPage = onLoadNextPage,
         emptyMessage = "No playlists found",
         loadingMessage = "Loading playlists...",
-        modifier = modifier) { playlist ->
+        modifier = modifier
+    ) { playlist ->
         PlaylistCard(playlist = playlist, modifier = Modifier.fillMaxWidth())
     }
 }
@@ -843,7 +836,8 @@ private fun SearchUsersTab(
     query: String,
     users: SearchPagedState<MetadataUser>,
     onLoadNextPage: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     SearchGridTab(
         query = query,
         items = users.items,
@@ -853,7 +847,8 @@ private fun SearchUsersTab(
         onLoadNextPage = onLoadNextPage,
         emptyMessage = "No users found",
         loadingMessage = "Loading users...",
-        modifier = modifier) { user ->
+        modifier = modifier
+    ) { user ->
         UserCard(user = user, modifier = Modifier.fillMaxWidth())
     }
 }
@@ -870,7 +865,8 @@ private fun <T> SearchGridTab(
     emptyMessage: String,
     loadingMessage: String,
     modifier: Modifier = Modifier,
-    itemContent: @Composable (T) -> Unit) {
+    itemContent: @Composable (T) -> Unit
+) {
     if (query.isBlank()) {
         SearchMessage(message = "Start typing to search", modifier = modifier)
         return
@@ -897,14 +893,16 @@ private fun <T> SearchGridTab(
         isLoading && items.isEmpty() -> {
             SearchLoadingIndicator(
                 message = loadingMessage,
-                modifier = modifier)
+                modifier = modifier
+            )
         }
 
         error != null && items.isEmpty() -> {
             ErrorDisplay(
                 errorMessage = error,
                 onRetry = onLoadNextPage,
-                modifier = modifier)
+                modifier = modifier
+            )
         }
 
         !isLoading && items.isEmpty() -> {
@@ -918,7 +916,8 @@ private fun <T> SearchGridTab(
                 modifier = modifier.padding(horizontal = 12.dp),
                 contentPadding = PaddingValues(top = 12.dp, bottom = 16.dp + bottomInset),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 items(items) { item ->
                     itemContent(item)
                 }
@@ -929,7 +928,8 @@ private fun <T> SearchGridTab(
                             PlayableCard(
                                 title = "Sample Title",
                                 subtitle = "Sample Subtitle",
-                                imageURL = "https://placehold.co/600x400")
+                                imageURL = "https://placehold.co/600x400"
+                            )
                         }
                     }
                 }
@@ -942,32 +942,38 @@ private fun <T> SearchGridTab(
 private fun SearchHorizontalSection(
     title: String,
     onSeeAll: () -> Unit,
-    content: androidx.compose.foundation.lazy.LazyListScope.() -> Unit) {
+    content: androidx.compose.foundation.lazy.LazyListScope.() -> Unit
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween) {
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Text(
                 text = title,
                 style = AppTheme.typography.titleLarge,
-                fontWeight = FontWeight.SemiBold)
+                fontWeight = FontWeight.SemiBold
+            )
 
             Text(
                 text = "See all",
                 style = AppTheme.typography.labelLarge,
                 color = AppTheme.colors.primary,
-                modifier = Modifier.clickable(onClick = onSeeAll))
+                modifier = Modifier.clickable(onClick = onSeeAll)
+            )
         }
 
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            content = content)
+            content = content
+        )
     }
 }
 
@@ -975,31 +981,37 @@ private fun SearchHorizontalSection(
 private fun SearchTrackRow(
     index: Int,
     track: MetadataTrack,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
         Text(
             text = (index + 1).toString(),
             style = AppTheme.typography.labelMedium,
             color = AppTheme.colors.onSurfaceVariant,
-            textAlign = TextAlign.End)
+            textAlign = TextAlign.End
+        )
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(2.dp)) {
+            verticalArrangement = Arrangement.spacedBy(2.dp)
+        ) {
             Text(
                 text = track.title,
                 style = AppTheme.typography.bodyLarge,
-                maxLines = 1)
+                maxLines = 1
+            )
             Text(
                 text = track.artists.joinToString { it.name },
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.onSurfaceVariant,
-                maxLines = 1)
+                maxLines = 1
+            )
         }
 
         if (track.album != null) Text(
@@ -1007,7 +1019,8 @@ private fun SearchTrackRow(
             style = AppTheme.typography.bodyMedium,
             color = AppTheme.colors.onSurfaceVariant,
             maxLines = 1,
-            modifier = Modifier.weight(1f))
+            modifier = Modifier.weight(1f)
+        )
     }
 }
 
@@ -1018,27 +1031,33 @@ private val WarmSearchMessages = listOf(
     "Dusting off the vinyl...",
     "Consulting the music gods...",
     "Tuning the antennas...",
-    "Flipping through the records...")
+    "Flipping through the records..."
+)
 
 @Composable
 private fun SearchLoadingIndicator(
     message: String? = null,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     val infiniteTransition = rememberInfiniteTransition(label = "search-loading")
     val rotation by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = 360f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 1500, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart),
-        label = "icon-rotation")
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "icon-rotation"
+    )
     val bounce by infiniteTransition.animateFloat(
         initialValue = -8f,
         targetValue = 8f,
         animationSpec = infiniteRepeatable(
             animation = tween(durationMillis = 800, easing = LinearEasing),
-            repeatMode = RepeatMode.Reverse),
-        label = "icon-bounce")
+            repeatMode = RepeatMode.Reverse
+        ),
+        label = "icon-bounce"
+    )
     val messageIndex by infiniteTransition.animateFloat(
         initialValue = 0f,
         targetValue = WarmSearchMessages.size.toFloat(),
@@ -1047,18 +1066,22 @@ private fun SearchLoadingIndicator(
                 durationMillis = WarmSearchMessages.size * 2000,
                 easing = LinearEasing
             ),
-            repeatMode = RepeatMode.Restart),
-        label = "message-cycle")
+            repeatMode = RepeatMode.Restart
+        ),
+        label = "message-cycle"
+    )
     val displayMessage =
         message ?: WarmSearchMessages[messageIndex.toInt() % WarmSearchMessages.size]
 
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center) {
+        verticalArrangement = Arrangement.Center
+    ) {
         Box(
             modifier = Modifier.size(64.dp),
-            contentAlignment = Alignment.Center) {
+            contentAlignment = Alignment.Center
+        ) {
             MillenniumIcon(
                 imageVector = Iconsax.IconsaxSearchBroken,
                 contentDescription = "Searching",
@@ -1073,18 +1096,21 @@ private fun SearchLoadingIndicator(
         MillenniumIndeterminateProgress(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 32.dp, vertical = 16.dp))
+                .padding(horizontal = 32.dp, vertical = 16.dp)
+        )
         AnimatedContent(
             targetState = displayMessage,
             transitionSpec = {
                 fadeIn(tween(300)) togetherWith fadeOut(tween(300))
             },
-            label = "message-transition") { msg ->
+            label = "message-transition"
+        ) { msg ->
             Text(
                 text = msg,
                 color = AppTheme.colors.onSurfaceVariant,
                 style = AppTheme.typography.bodyMedium,
-                textAlign = TextAlign.Center)
+                textAlign = TextAlign.Center
+            )
         }
     }
 }
@@ -1093,30 +1119,35 @@ private fun SearchLoadingIndicator(
 private fun SearchMessage(
     message: String,
     modifier: Modifier = Modifier,
-    isError: Boolean = false) {
+    isError: Boolean = false
+) {
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center) {
+        contentAlignment = Alignment.Center
+    ) {
         Text(
             text = message,
             color = if (isError) AppTheme.colors.error else AppTheme.colors.onSurfaceVariant,
             style = AppTheme.typography.bodyMedium,
             textAlign = TextAlign.Center,
-            modifier = Modifier.padding(16.dp))
+            modifier = Modifier.padding(16.dp)
+        )
     }
 }
 
 @Composable
 private fun SearchMessageInline(
     message: String,
-    isError: Boolean = false) {
+    isError: Boolean = false
+) {
     Text(
         text = message,
         color = if (isError) AppTheme.colors.error else AppTheme.colors.onSurfaceVariant,
         style = AppTheme.typography.bodyMedium,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp))
+            .padding(horizontal = 16.dp)
+    )
 }
 
 @Composable

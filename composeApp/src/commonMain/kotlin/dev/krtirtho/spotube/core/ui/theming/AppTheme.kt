@@ -36,7 +36,12 @@ import androidx.compose.ui.unit.sp
 import dev.krtirtho.spotube.modules.settings.Theme
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import org.spotube.millennium.composables.MillenniumTooltipHost
+import org.spotube.millennium.composables.MillenniumTopAppBarTheme
+import org.spotube.millennium.composables.MillenniumTopAppBarThemeProperties
+import org.spotube.millennium.composables.defaultMillenniumTopAppBarTheme
 import org.spotube.millennium.theme.MillenniumColors
+import org.spotube.millennium.theme.MillenniumDarkThemeComponents
+import org.spotube.millennium.theme.MillenniumLightThemeComponents
 import org.spotube.millennium.theme.MillenniumPalette
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.MillenniumThemeConfig
@@ -201,7 +206,29 @@ fun SpotubeTheme(
     }
     val palette: MillenniumPalette = settings.palette
 
-    MillenniumTheme(dark = isDarkTheme, config = MillenniumThemeConfig(palette = palette)) {
+    val darkTheme = MillenniumDarkThemeComponents
+    val lightTheme = MillenniumLightThemeComponents
+
+    MillenniumTheme(
+        dark = isDarkTheme,
+        config = MillenniumThemeConfig(
+            palette = palette,
+            dark = darkTheme.copy(
+                topAppBarTheme = MillenniumTopAppBarTheme(
+                    properties = darkTheme.topAppBarTheme.properties.copy(
+                        separatorColor = Color.Transparent
+                    )
+                )
+            ),
+            light = lightTheme.copy(
+                topAppBarTheme = MillenniumTopAppBarTheme(
+                    properties = lightTheme.topAppBarTheme.properties.copy(
+                        separatorColor = Color.Transparent
+                    )
+                )
+            )
+        )
+    ) {
         val colors = appColorsFrom(MillenniumTheme.colors)
         MillenniumTooltipHost {
             CompositionLocalProvider(

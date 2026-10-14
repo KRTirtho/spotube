@@ -21,6 +21,12 @@
     <string name="queue_filter_queue">Filter queue...</string>
     <string name="queue_no_queue_entries">No queue entries</string>
 
+    <string name="search_placeholder">Search songs, artists, albums...</string>
+    <string name="search_clear_history">Clear all history</string>
+    <string name="search_filter_placeholder">Search...</string>
+
+    <string name="accessibility_selected">Selected</string>
+
     <string name="settings_screen_title">Settings</string>
 
     <string name="settings_section_plugins">Plugins</string>

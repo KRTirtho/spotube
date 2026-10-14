@@ -59,7 +59,14 @@ data class SearchScreenState(
     val albums: SearchPagedState<MetadataAlbum.Basic> = SearchPagedState(),
     val artists: SearchPagedState<MetadataArtist.Basic> = SearchPagedState(),
     val playlists: SearchPagedState<MetadataPlaylist> = SearchPagedState(),
-    val users: SearchPagedState<MetadataUser> = SearchPagedState())
+    val users: SearchPagedState<MetadataUser> = SearchPagedState()) {
+    val recentSearchSuggestions: List<String>
+        get() = if (query.isBlank()) {
+            recentSearches
+        } else {
+            recentSearches.filter { it.contains(query, ignoreCase = true) }
+        }
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SearchScreenViewModel(

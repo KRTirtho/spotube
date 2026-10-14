@@ -50,10 +50,14 @@ import dev.krtirtho.spotube.modules.support.LocalSupportPrompt
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSetting2
+import dev.krtirtho.spotube.resources.iconsax.IconsaxSidebarLeftBroken
+import dev.krtirtho.spotube.resources.iconsax.IconsaxSidebarRightBroken
 import dev.krtirtho.spotube.sidebarTabs
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumSidebar
 import org.spotube.millennium.composables.MillenniumSidebarContent
 import org.spotube.millennium.composables.MillenniumSidebarFooter
@@ -89,7 +93,7 @@ fun AppSidebar(
     ) {
         MillenniumSidebarHeader {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 8.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = if (expanded) Arrangement.SpaceBetween else Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -104,7 +108,14 @@ fun AppSidebar(
                         color = AppTheme.colors.onSurface
                     )
                 }
-                MillenniumSidebarTrigger()
+                MillenniumSidebarTrigger {
+                    MillenniumIconButton(
+                        if (it.collapsed) Iconsax.IconsaxSidebarRightBroken else Iconsax.IconsaxSidebarLeftBroken,
+                        contentDescription = "Toggle Sidebar",
+                        style = MillenniumIconButtonStyle.Quiet,
+                        onClick = { it.toggle() }
+                    )
+                }
             }
         }
         MillenniumSidebarContent {
@@ -120,8 +131,9 @@ fun AppSidebar(
                             MillenniumSidebarGroupContent {
                                 MillenniumSidebarMenu {
                                     entry.items.forEach { item ->
-                                        val selected = navigationState.topLevelRoute == item.route &&
-                                            (item.route != Routes.Library || currentLibraryTab == item.data)
+                                        val selected =
+                                            navigationState.topLevelRoute == item.route &&
+                                                    (item.route != Routes.Library || currentLibraryTab == item.data)
                                         SidebarNavItem(
                                             item = item,
                                             selected = selected,
@@ -154,13 +166,15 @@ fun AppSidebar(
                 label = supportLabel,
                 onClick = { openSupport() },
                 contentDescription = supportLabel,
-                icon = Iconsax.IconsaxHeart2)
+                icon = Iconsax.IconsaxHeart2
+            )
             MillenniumSidebarItem(
                 label = stringResource(Res.string.settings_screen_title),
                 onClick = { navigator.navigate(Routes.Settings) },
                 selected = navigationState.topLevelRoute == Routes.Settings,
                 contentDescription = stringResource(Res.string.settings_screen_title),
-                icon = Iconsax.IconsaxSetting2)
+                icon = Iconsax.IconsaxSetting2
+            )
         }
     }
 }
@@ -169,11 +183,13 @@ fun AppSidebar(
 private fun SidebarNavItem(
     item: NavigationItem.Tab<*>,
     selected: Boolean,
-    onClick: () -> Unit) {
+    onClick: () -> Unit
+) {
     MillenniumSidebarItem(
         label = item.title,
         onClick = onClick,
         selected = selected,
         contentDescription = item.title,
-        icon = item.icon)
+        icon = item.icon
+    )
 }
