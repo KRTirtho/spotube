@@ -18,8 +18,6 @@
 package dev.krtirtho.spotube.modules.settings.components
 
 
-
-
 import androidx.compose.foundation.layout.Box
 import com.composeunstyled.currentWindowWidthBreakpoint
 import org.spotube.millennium.adaptive.WindowBreakpoints
@@ -65,7 +63,8 @@ internal fun SwitchSettingCard(
     subtitle: String? = null,
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    icon: (@Composable () -> Unit)? = null) {
+    icon: (@Composable () -> Unit)? = null
+) {
     SettingCardItem(
         title = title,
         subtitle = subtitle,
@@ -74,10 +73,8 @@ internal fun SwitchSettingCard(
             MillenniumSwitch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
-                // The row itself already renders the title/subtitle, so the switch must not
-                // draw a second visible label next to it.
-                label = "",
-                contentSpacing = 0.dp)
+                contentSpacing = 0.dp
+            )
         },
         onClick = {
             onCheckedChange(!checked)
@@ -96,7 +93,8 @@ internal fun <T> SelectionSettingCard(
     dialogTitle: String = title,
     icon: (@Composable () -> Unit)? = null,
     inlineSelectorMinWidth: Dp = 700.dp,
-    filter: ((AdaptiveMenuItem, String) -> Boolean)? = null) {
+    filter: ((AdaptiveMenuItem, String) -> Boolean)? = null
+) {
     var isDialogOpen by remember { mutableStateOf(false) }
 
     Box {
@@ -112,24 +110,29 @@ internal fun <T> SelectionSettingCard(
                         AdaptiveMenuItem(
                             label = optionLabel(option),
                             onClick = { onOptionSelected(option) },
-                            selected = option == selectedOption)
+                            selected = option == selectedOption
+                        )
                     },
                     trigger = { onClick ->
                         MillenniumButton(
                             onClick = onClick,
-                            style = MillenniumButtonStyle.Secondary) {
+                            style = MillenniumButtonStyle.Secondary
+                        ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                horizontalArrangement = Arrangement.spacedBy(6.dp)
+                            ) {
                                 Text(optionLabel(selectedOption))
                                 MillenniumIcon(
                                     imageVector = Iconsax.IconsaxArrowDown4,
                                     contentDescription = null,
-                                    modifier = Modifier.size(14.dp))
+                                    modifier = Modifier.size(14.dp)
+                                )
                             }
                         }
                     },
-                    filter = filter)
+                    filter = filter
+                )
             },
             onClick = {
                 if (isWideLayout) {
@@ -143,7 +146,8 @@ internal fun <T> SelectionSettingCard(
             MillenniumDialog(
                 visible = true,
                 onDismissRequest = { isDialogOpen = false },
-                title = dialogTitle) {
+                title = dialogTitle
+            ) {
                 MillenniumRadioGroup(
                     value = selectedOption,
                     onValueChange = { option ->
@@ -155,7 +159,8 @@ internal fun <T> SelectionSettingCard(
                     optionLabel = { option -> labels[options.indexOf(option)] })
                 MillenniumButton(
                     onClick = { isDialogOpen = false },
-                    style = MillenniumButtonStyle.Quiet) {
+                    style = MillenniumButtonStyle.Quiet
+                ) {
                     Text(stringResource(Res.string.settings_action_close))
                 }
             }
@@ -177,7 +182,8 @@ internal fun TextInputSettingCard(
     icon: (@Composable () -> Unit)? = null,
     inlineTextFieldMinWidth: Dp = 700.dp,
     inlineTextFieldWidth: Dp = 220.dp,
-    enabled: Boolean = true) {
+    enabled: Boolean = true
+) {
     var isDialogOpen by remember { mutableStateOf(false) }
 
     Box {
@@ -204,10 +210,10 @@ internal fun TextInputSettingCard(
                 {
                     MillenniumTextField(
                         state = inlineState,
-                        label = title,
                         modifier = Modifier.width(inlineTextFieldWidth),
                         placeholder = placeholder,
-                        enabled = enabled)
+                        enabled = enabled
+                    )
                 }
             } else {
                 null
@@ -235,19 +241,22 @@ internal fun TextInputSettingCard(
             MillenniumDialog(
                 visible = true,
                 onDismissRequest = { isDialogOpen = false },
-                title = dialogTitle) {
+                title = dialogTitle
+            ) {
                 if (dialogDescription != null) {
                     Text(
                         text = dialogDescription,
                         style = AppTheme.typography.bodySmall,
-                        color = AppTheme.colors.onSurfaceVariant)
+                        color = AppTheme.colors.onSurfaceVariant
+                    )
                 }
                 MillenniumTextField(
                     state = dialogState,
                     label = title,
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = placeholder,
-                    error = errorMessage)
+                    error = errorMessage
+                )
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     MillenniumButton(
                         onClick = {
@@ -256,12 +265,14 @@ internal fun TextInputSettingCard(
                                 isDialogOpen = false
                             }
                         },
-                        enabled = errorMessage == null) {
+                        enabled = errorMessage == null
+                    ) {
                         Text(stringResource(Res.string.settings_action_save))
                     }
                     MillenniumButton(
                         onClick = { isDialogOpen = false },
-                        style = MillenniumButtonStyle.Secondary) {
+                        style = MillenniumButtonStyle.Secondary
+                    ) {
                         Text(stringResource(Res.string.settings_action_cancel))
                     }
                 }

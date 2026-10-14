@@ -255,7 +255,7 @@ private fun PlaylistFormFields(
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colors.onSurfaceVariant)
             }
-            MillenniumSwitch(checked = isPublic, onCheckedChange = onIsPublicChange, label = "Public")
+            MillenniumSwitch(checked = isPublic, onCheckedChange = onIsPublicChange)
         }
 
         Row(
@@ -273,7 +273,7 @@ private fun PlaylistFormFields(
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colors.onSurfaceVariant)
             }
-            MillenniumSwitch(checked = isCollaborating, onCheckedChange = onIsCollaboratingChange, label = "Collaborative")
+            MillenniumSwitch(checked = isCollaborating, onCheckedChange = onIsCollaboratingChange)
         }
 
         Column(

@@ -118,7 +118,9 @@ fun AppSidebar(
                 }
             }
         }
-        MillenniumSidebarContent {
+        MillenniumSidebarContent(
+            contentSpacing = 0.dp
+        ) {
             sidebarTabs.forEach { entry ->
                 when (entry) {
                     is NavigationItem.Group<*> -> {
@@ -126,10 +128,13 @@ fun AppSidebar(
                         MillenniumSidebarGroup(
                             expanded = isGroupExpanded,
                             collapsible = true,
+                            groupSpacing = 0.dp,
                             onExpandedChange = { groupExpansion[entry.title] = it }) {
                             MillenniumSidebarGroupLabel(entry.title)
-                            MillenniumSidebarGroupContent {
-                                MillenniumSidebarMenu {
+                            MillenniumSidebarGroupContent(
+                                contentSpacing = 0.dp
+                            ) {
+                                MillenniumSidebarMenu(contentSpacing = 0.dp) {
                                     entry.items.forEach { item ->
                                         val selected =
                                             navigationState.topLevelRoute == item.route &&
