@@ -18,68 +18,45 @@
 package dev.krtirtho.spotube.modules.library.playlist
 
 
-import org.spotube.millennium.composables.MillenniumIcon
-import org.spotube.millennium.composables.MillenniumIconButton
-import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumTextField
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-
-import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composeunstyled.Text
 import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
 import dev.krtirtho.spotube.core.ui.component.LikedTracksCard
 import dev.krtirtho.spotube.core.ui.component.PlaylistCard
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
-import dev.krtirtho.spotube.resources.iconsax.Iconsax
-import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
-import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LibraryPlaylistsScreen(
     modifier: Modifier = Modifier,
-    searchMode: Boolean = false,
-    viewModel: LibraryPlaylistsViewModel = koinViewModel()) {
+    showCreatePlaylist: Boolean = false,
+    onDismissCreatePlaylist: () -> Unit = {},
+    viewModel: LibraryPlaylistsViewModel = koinViewModel()
+) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
-    var showCreatePlaylist by remember { mutableStateOf(false) }
-
-    val searchState = rememberTextFieldState((state as? LibraryPlaylistsState.Data)?.query ?: "")
-    LaunchedEffect(searchState) {
-        snapshotFlow { searchState.text.toString() }
-            .drop(1)
-            .collect(viewModel::onQueryChange)
-    }
 
     LaunchedEffect(gridState) {
         snapshotFlow { gridState.layoutInfo }
@@ -101,26 +78,6 @@ fun LibraryPlaylistsScreen(
     }
 
     Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-            AnimatedVisibility(
-                visible = searchMode,
-                modifier = Modifier.weight(1f)) {
-                MillenniumTextField(
-                    state = searchState,
-                    
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = "Search saved playlists...")
-            }
-            MillenniumIconButton(
-                icon = Iconsax.IconsaxAddSquare,
-                contentDescription = "Create Playlist",
-                onClick = { showCreatePlaylist = true },
-                modifier = Modifier.size(48.dp))
-        }
-        Spacer(modifier = Modifier.height(12.dp))
         when (state) {
             is LibraryPlaylistsState.Loading -> {
                 val shellBottomInset = LocalAppShellBottomInset.current
@@ -139,7 +96,8 @@ fun LibraryPlaylistsScreen(
                             PlayableCard(
                                 title = "Playlist Name",
                                 subtitle = "By Artist",
-                                imageURL = "https://placehold.co/600x400")
+                                imageURL = "https://placehold.co/600x400"
+                            )
                         }
                     }
                 }
@@ -195,7 +153,8 @@ fun LibraryPlaylistsScreen(
                                     PlayableCard(
                                         title = "Playlist Name",
                                         subtitle = "By Artist",
-                                        imageURL = "https://placehold.co/600x400")
+                                        imageURL = "https://placehold.co/600x400"
+                                    )
                                 }
                             }
                         }
@@ -206,7 +165,7 @@ fun LibraryPlaylistsScreen(
 
         PlaylistFormSheet(
             visible = showCreatePlaylist,
-            onDismiss = { showCreatePlaylist = false },
+            onDismiss = onDismissCreatePlaylist,
             onSubmit = { data ->
                 viewModel.createPlaylist(
                     name = data.name,
@@ -214,7 +173,8 @@ fun LibraryPlaylistsScreen(
                     isPublic = data.isPublic,
                     isCollaborating = data.isCollaborating,
                     imageBase64 = data.imageBase64,
-                    trackIds = emptyList())
+                    trackIds = emptyList()
+                )
             })
     }
 }

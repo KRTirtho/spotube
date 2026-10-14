@@ -21,13 +21,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
+import dev.krtirtho.spotube.modules.library.LibraryState
+import dev.krtirtho.spotube.modules.library.LibraryTab
 import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaFolder
 import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaLibraryCoordinator
 import dev.krtirtho.spotube.modules.library.local_tracks.media.LocalMediaTrack
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 data class LibraryLocalTracksState(
@@ -35,24 +39,34 @@ data class LibraryLocalTracksState(
     val folders: List<LocalMediaFolder> = emptyList(),
     val currentFolderPath: String? = null,
     val query: String = "",
-    val error: String? = null)
+    val error: String? = null
+)
 
 class LibraryLocalTracksViewModel(
     private val coordinator: LocalMediaLibraryCoordinator,
-    private val audioPlayerQueue: AudioPlayerQueue) : ViewModel() {
+    private val audioPlayerQueue: AudioPlayerQueue,
+    private val libraryState: LibraryState
+) : ViewModel() {
     private val _state = MutableStateFlow(LibraryLocalTracksState())
-    val state: StateFlow<LibraryLocalTracksState> = _state.asStateFlow()
+    val state: StateFlow<LibraryLocalTracksState> = combine(
+        _state, libraryState.queryFlow(LibraryTab.LocalTracks)
+    ) { state, query -> state.copy(query = query) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LibraryLocalTracksState())
 
     init {
         viewModelScope.launch {
+            libraryState.localRefreshRequests.collect { refresh() }
+        }
+        viewModelScope.launch {
             coordinator.cacheState
                 .collect { cache ->
-                _state.update {
-                    it.copy(
-                        folders = cache.folders,
-                        error = null)
+                    _state.update {
+                        it.copy(
+                            folders = cache.folders,
+                            error = null
+                        )
+                    }
                 }
-            }
         }
 
         refreshIfEmpty()
@@ -60,7 +74,7 @@ class LibraryLocalTracksViewModel(
     }
 
     fun onQueryChange(query: String) {
-        _state.update { it.copy(query = query) }
+        libraryState.setQuery(LibraryTab.LocalTracks, query)
     }
 
     fun openFolder(folderPath: String) {
@@ -87,7 +101,7 @@ class LibraryLocalTracksViewModel(
 
     fun playFolder(folderPath: String) {
         val folder = _state.value.folders.firstOrNull { it.path == folderPath } ?: return
-        val tracks = filterTracks(folder.tracks, _state.value.query)
+        val tracks = filterTracks(folder.tracks, state.value.query)
         if (tracks.isEmpty()) return
 
         viewModelScope.launch {
@@ -95,13 +109,14 @@ class LibraryLocalTracksViewModel(
                 entries = tracks.map { it.toQueueEntry() },
                 autoPlay = true,
                 startPosition = 0,
-                collectionEntry = null)
+                collectionEntry = null
+            )
         }
     }
 
     fun playTrack(trackPath: String) {
         val folder = currentFolder() ?: return
-        val tracks = filterTracks(folder.tracks, _state.value.query)
+        val tracks = filterTracks(folder.tracks, state.value.query)
         val selectedIndex = tracks.indexOfFirst { it.path == trackPath }
         if (selectedIndex < 0) return
 
@@ -110,7 +125,8 @@ class LibraryLocalTracksViewModel(
                 entries = tracks.map { it.toQueueEntry() },
                 autoPlay = true,
                 startPosition = selectedIndex,
-                collectionEntry = null)
+                collectionEntry = null
+            )
         }
     }
 
@@ -120,10 +136,10 @@ class LibraryLocalTracksViewModel(
 
         return state.value.folders.filter { folder ->
             folder.name.contains(query, ignoreCase = true) ||
-                folder.tracks.any { track ->
-                    track.name.contains(query, ignoreCase = true) ||
-                        track.artists.any { it.contains(query, ignoreCase = true) }
-                }
+                    folder.tracks.any { track ->
+                        track.name.contains(query, ignoreCase = true) ||
+                                track.artists.any { it.contains(query, ignoreCase = true) }
+                    }
         }
     }
 
@@ -156,8 +172,8 @@ class LibraryLocalTracksViewModel(
 
         return tracks.filter { track ->
             track.name.contains(normalizedQuery, ignoreCase = true) ||
-                track.album?.contains(normalizedQuery, ignoreCase = true) == true ||
-                track.artists.any { it.contains(normalizedQuery, ignoreCase = true) }
+                    track.album?.contains(normalizedQuery, ignoreCase = true) == true ||
+                    track.artists.any { it.contains(normalizedQuery, ignoreCase = true) }
         }
     }
 
@@ -168,6 +184,7 @@ class LibraryLocalTracksViewModel(
             duration = durationMs,
             album = album,
             coverBytes = coverBytes,
-            url = path)
+            url = path
+        )
     }
 }

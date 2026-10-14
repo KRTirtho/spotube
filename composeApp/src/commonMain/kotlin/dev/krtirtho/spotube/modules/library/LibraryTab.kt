@@ -24,11 +24,31 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicDashboard
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicLibrary
 import dev.krtirtho.spotube.resources.iconsax.User
+import org.jetbrains.compose.resources.StringResource
+import spotube.composeapp.generated.resources.*
 
 enum class LibraryTab(val title: String, val icon: ImageVector) {
     Playlists("Playlists", Iconsax.IconsaxMusicDashboard),
     Albums("Albums", Iconsax.IconsaxCd),
     Artists("Artists", Iconsax.User),
     LocalTracks("Local Tracks", Iconsax.IconsaxMusicLibrary),
-    Downloads("Downloads", Iconsax.IconsaxDirectboxReceive),
+    Downloads("Downloads", Iconsax.IconsaxDirectboxReceive);
+
+    val titleResource: StringResource
+        get() = when (this) {
+            Playlists -> Res.string.library_tab_playlists
+            Albums -> Res.string.library_tab_albums
+            Artists -> Res.string.library_tab_artists
+            LocalTracks -> Res.string.library_tab_local_tracks
+            Downloads -> Res.string.library_tab_downloads
+        }
+
+    val filterPlaceholder: StringResource
+        get() = when (this) {
+            Playlists -> Res.string.library_filter_playlists
+            Albums -> Res.string.library_filter_albums
+            Artists -> Res.string.library_filter_artists
+            LocalTracks -> Res.string.library_filter_local_tracks
+            Downloads -> Res.string.search_filter_placeholder
+        }
 }

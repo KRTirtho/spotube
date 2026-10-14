@@ -17,17 +17,90 @@
 
 package dev.krtirtho.spotube.modules.library
 
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
+import androidx.compose.runtime.snapshotFlow
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 
-class LibraryState {
-    val searchMode = MutableStateFlow(false)
+data class LibraryToolbarUiState(
+    val currentTab: LibraryTab = LibraryTab.Playlists,
+    val searchMode: Boolean = false,
+    val searchState: TextFieldState = TextFieldState(),
+    val canFilter: Boolean = true,
+    val canCreatePlaylist: Boolean = true,
+    val canRefresh: Boolean = false,
+    val showCreatePlaylist: Boolean = false
+)
+
+/** Shared with the sidebar for the app lifetime; each library tab retains its own filter. */
+@OptIn(ExperimentalCoroutinesApi::class)
+class LibraryState : ViewModel() {
+    private val searchMode = MutableStateFlow(false)
     val currentTab = MutableStateFlow(LibraryTab.Playlists)
+    private val searchStates = LibraryTab.entries.associateWith { TextFieldState() }
+    private val createPlaylistVisible = MutableStateFlow(false)
+    private val refreshRequests = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
+    val localRefreshRequests = refreshRequests.asSharedFlow()
+
+    val uiState = combine(
+        currentTab.flatMapLatest { tab -> queryFlow(tab).map { query -> tab to query } },
+        searchMode,
+        createPlaylistVisible
+    ) { (tab, query), searching, creating ->
+        LibraryToolbarUiState(
+            currentTab = tab,
+            searchMode = tab != LibraryTab.Downloads && (searching || query.isNotEmpty()),
+            searchState = searchStates.getValue(tab),
+            canFilter = tab != LibraryTab.Downloads,
+            canCreatePlaylist = tab == LibraryTab.Playlists,
+            canRefresh = tab == LibraryTab.LocalTracks,
+            showCreatePlaylist = tab == LibraryTab.Playlists && creating
+        )
+    }.stateIn(
+        viewModelScope, SharingStarted.Eagerly,
+        LibraryToolbarUiState(searchState = searchStates.getValue(LibraryTab.Playlists))
+    )
+
+    fun queryFlow(tab: LibraryTab) = snapshotFlow { searchStates.getValue(tab).text.toString() }
+
+    fun setQuery(tab: LibraryTab, query: String) {
+        searchStates.getValue(tab).setTextAndPlaceCursorAtEnd(query)
+    }
 
     fun onTabSelected(tab: LibraryTab) {
         currentTab.value = tab
+        createPlaylistVisible.value = false
+        if (tab == LibraryTab.Downloads) searchMode.value = false
     }
 
-    fun setSearchMode(enabled: Boolean) {
-        searchMode.value = enabled
+    fun openSearch() {
+        if (currentTab.value != LibraryTab.Downloads) searchMode.value = true
+    }
+
+    fun closeSearch() {
+        setQuery(currentTab.value, "")
+        searchMode.value = false
+    }
+
+    fun showCreatePlaylist() {
+        if (currentTab.value == LibraryTab.Playlists) createPlaylistVisible.value = true
+    }
+
+    fun dismissCreatePlaylist() {
+        createPlaylistVisible.value = false
+    }
+
+    fun refreshLocalTracks() {
+        refreshRequests.tryEmit(Unit)
     }
 }

@@ -18,17 +18,12 @@
 package dev.krtirtho.spotube.modules.library.album
 
 
-import org.spotube.millennium.composables.MillenniumIcon
-import org.spotube.millennium.composables.MillenniumTextField
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -43,35 +38,24 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
-import dev.krtirtho.spotube.resources.iconsax.Iconsax
-import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LibraryAlbumsScreen(
     modifier: Modifier = Modifier,
-    searchMode: Boolean = false,
     viewModel: LibraryAlbumsViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val gridState = rememberLazyGridState()
 
-    val searchState = rememberTextFieldState((state as? LibraryAlbumsState.Data)?.query ?: "")
-    LaunchedEffect(searchState) {
-        snapshotFlow { searchState.text.toString() }
-            .drop(1)
-            .collect(viewModel::onQueryChange)
-    }
 
     LaunchedEffect(gridState) {
         snapshotFlow { gridState.layoutInfo }
@@ -93,15 +77,6 @@ fun LibraryAlbumsScreen(
     }
 
     Column(modifier = modifier) {
-        AnimatedVisibility(searchMode) {
-            MillenniumTextField(
-                state = searchState,
-
-                modifier = Modifier.fillMaxWidth(),
-                placeholder = "Search saved albums..."
-            )
-        }
-        Spacer(modifier = Modifier.height(12.dp))
         when (state) {
             is LibraryAlbumsState.Loading -> {
                 val shellBottomInset = LocalAppShellBottomInset.current

@@ -45,10 +45,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -77,12 +80,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composeunstyled.currentWindowWidthBreakpoint
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.search.MetadataSupportedSearchType
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.user.MetadataUser
+import dev.krtirtho.spotube.Platform
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.jam.JamRole
@@ -103,6 +108,8 @@ import dev.krtirtho.spotube.core.ui.component.UserCard
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.component.dragScrollable
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
+import dev.krtirtho.spotube.getPlatform
+import dev.krtirtho.spotube.isDesktop
 import dev.krtirtho.spotube.modules.blacklist.BlacklistRepository
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
@@ -121,6 +128,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.spotube.millennium.adaptive.WindowBreakpoints
 
 private val GridMinCellSize = 180.dp
 
@@ -152,6 +160,9 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     val blacklistedArtists by blacklistRepository.blacklistedArtists.collectAsStateWithLifecycle(
         emptyList()
     )
+
+    val isExpanded =
+        currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Expanded && getPlatform().isDesktop()
 
     fun isTrackBlacklisted(track: MetadataTrack): Boolean {
         val trackIds = blacklistedTracks.map { it.id }.toSet()
@@ -287,8 +298,25 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
         modifier = Modifier
             .fillMaxSize()
             .background(MillenniumTheme.colors.background)
+            .windowInsetsPadding(WindowInsets.statusBars)
     ) {
-        ApplicationMainBar(backButton = false)
+        if (!isExpanded) {
+            SearchBar(
+                query = state.query,
+                onQueryChange = viewModel::onQueryChange,
+                recentSearchSuggestions = state.recentSearchSuggestions,
+                onRecentSearchClick = { search ->
+                    viewModel.applyRecentSearch(search)
+                    focusManager.clearFocus()
+                },
+                onClearAllRecentSearches = {
+                    viewModel.clearAllRecentSearches()
+                    focusManager.clearFocus()
+                },
+            )
+        } else {
+            ApplicationMainBar(backButton = false)
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -297,18 +325,21 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
             Column(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                SearchBar(
-                    query = state.query,
-                    onQueryChange = viewModel::onQueryChange,
-                    recentSearchSuggestions = state.recentSearchSuggestions,
-                    onRecentSearchClick = { search ->
-                        viewModel.applyRecentSearch(search)
-                        focusManager.clearFocus()
-                    },
-                    onClearAllRecentSearches = {
-                        viewModel.clearAllRecentSearches()
-                        focusManager.clearFocus()
-                    })
+                if (isExpanded) {
+                    SearchBar(
+                        query = state.query,
+                        onQueryChange = viewModel::onQueryChange,
+                        recentSearchSuggestions = state.recentSearchSuggestions,
+                        onRecentSearchClick = { search ->
+                            viewModel.applyRecentSearch(search)
+                            focusManager.clearFocus()
+                        },
+                        onClearAllRecentSearches = {
+                            viewModel.clearAllRecentSearches()
+                            focusManager.clearFocus()
+                        }
+                    )
+                }
 
                 if (state.supportedSearchTypes.isNotEmpty()) {
                     SearchTabs(

@@ -25,8 +25,6 @@ import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumListTile
-import org.spotube.millennium.composables.MillenniumTextField
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,7 +36,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.input.rememberTextFieldState
 
 import com.composeunstyled.Text
 
@@ -46,28 +43,24 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.flow.drop
 import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.modules.library.local_tracks.media.rememberLocalMediaPermissionState
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.ArrowLeft3
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
-import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFolderOpen
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicCircle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlayCircle2
-import dev.krtirtho.spotube.resources.iconsax.IconsaxRefreshRight
 import dev.krtirtho.spotube.resources.iconsax.Play
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean = false) {
+fun LibraryLocalTracksScreen(modifier: Modifier = Modifier) {
     val viewModel = koinViewModel<LibraryLocalTracksViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val permissionState = rememberLocalMediaPermissionState()
@@ -85,53 +78,25 @@ fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean 
         PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
     }
 
-    val searchState = rememberTextFieldState(state.query)
-    LaunchedEffect(searchState) {
-        snapshotFlow { searchState.text.toString() }
-            .drop(1)
-            .collect(viewModel::onQueryChange)
-    }
 
     Box(modifier = modifier.fillMaxWidth()) {
         Column(
             modifier = modifier.widthIn(max = 1280.dp).align(Alignment.TopCenter),
-            verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            AnimatedVisibility(searchMode) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    MillenniumIcon(
-                        imageVector = Iconsax.IconsaxFilterSearch,
-                        contentDescription = "Search")
-                    MillenniumTextField(
-                        state = searchState,
-                        
-                        modifier = Modifier.weight(1f),
-                        placeholder = if (state.currentFolderPath == null) {
-                            "Search folders or tracks"
-                        } else {
-                            "Search tracks in folder"
-                        })
-                    MillenniumIconButton(
-                        icon = Iconsax.IconsaxRefreshRight,
-                        contentDescription = "Refresh",
-                        onClick = { viewModel.refresh() },
-                        style = MillenniumIconButtonStyle.Quiet)
-                }
-            }
-
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
             if (state.currentFolderPath != null) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         MillenniumIconButton(
                             icon = Iconsax.ArrowLeft3,
                             contentDescription = "Back",
                             onClick = viewModel::navigateUp,
-                            style = MillenniumIconButtonStyle.Quiet)
+                            style = MillenniumIconButtonStyle.Quiet
+                        )
                         Text(viewModel.currentFolder()?.name ?: "Folder")
                     }
                     MillenniumIconButton(
@@ -140,7 +105,8 @@ fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean 
                         onClick = {
                             viewModel.currentFolder()?.let { viewModel.playFolder(it.path) }
                         },
-                        style = MillenniumIconButtonStyle.Quiet)
+                        style = MillenniumIconButtonStyle.Quiet
+                    )
                 }
             }
 
@@ -151,11 +117,13 @@ fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean 
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
                         Text("Allow audio permission to show local tracks")
                         MillenniumButton(
                             onClick = permissionState.requestPermission,
-                            style = MillenniumButtonStyle.Quiet) {
+                            style = MillenniumButtonStyle.Quiet
+                        ) {
                             Text("Grant access")
                         }
                     }
@@ -212,7 +180,8 @@ fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean 
                                         icon = Iconsax.Play,
                                         contentDescription = "Play",
                                         onClick = { viewModel.playTrack(track.path) },
-                                        style = MillenniumIconButtonStyle.Quiet)
+                                        style = MillenniumIconButtonStyle.Quiet
+                                    )
                                 },
                                 onClick = { viewModel.playTrack(track.path) })
                         }

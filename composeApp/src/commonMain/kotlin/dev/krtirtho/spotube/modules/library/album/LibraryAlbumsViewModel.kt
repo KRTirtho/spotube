@@ -23,14 +23,17 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.common.PaginationStrategy
 import dev.krtirtho.spotube.core.di.injectLogger
 import dev.krtirtho.spotube.modules.library.LibraryRepository
+import dev.krtirtho.spotube.modules.library.LibraryState
+import dev.krtirtho.spotube.modules.library.LibraryTab
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -46,7 +49,8 @@ sealed interface LibraryAlbumsState {
         data class Loaded(
             override val query: String = "",
             override val allItems: List<MetadataAlbum.Detailed> = emptyList(),
-            override val nextPagination: PaginationStrategy? = null) : Data {
+            override val nextPagination: PaginationStrategy? = null
+        ) : Data {
             override val items: List<MetadataAlbum.Detailed>
                 get() = if (query.isNotBlank()) {
                     allItems.filter { album ->
@@ -62,13 +66,15 @@ sealed interface LibraryAlbumsState {
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 query = query,
                 allItems = allItems,
-                nextPagination = nextPagination)
+                nextPagination = nextPagination
+            )
         }
 
         data class LoadingMore(
             override val query: String = "",
             override val allItems: List<MetadataAlbum.Detailed> = emptyList(),
-            override val nextPagination: PaginationStrategy? = null) : Data {
+            override val nextPagination: PaginationStrategy? = null
+        ) : Data {
             override val items: List<MetadataAlbum.Detailed>
                 get() = if (query.isNotBlank()) {
                     allItems.filter { album ->
@@ -88,11 +94,21 @@ sealed interface LibraryAlbumsState {
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryAlbumsViewModel(
-    private val repository: LibraryRepository) : ViewModel(), KoinComponent {
+    private val repository: LibraryRepository,
+    private val libraryState: LibraryState
+) : ViewModel(), KoinComponent {
     private val logger by injectLogger<LibraryAlbumsViewModel>()
 
     private val _state = MutableStateFlow<LibraryAlbumsState>(LibraryAlbumsState.Loading)
-    val uiState: StateFlow<LibraryAlbumsState> = _state.asStateFlow()
+    val uiState: StateFlow<LibraryAlbumsState> = combine(
+        _state, libraryState.queryFlow(LibraryTab.Albums)
+    ) { state, query ->
+        when (state) {
+            is LibraryAlbumsState.Data.Loaded -> state.copy(query = query)
+            is LibraryAlbumsState.Data.LoadingMore -> state.copy(query = query)
+            else -> state
+        }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LibraryAlbumsState.Loading)
 
     init {
         viewModelScope.launch {
@@ -113,7 +129,8 @@ class LibraryAlbumsViewModel(
         val result = repository.savedAlbums()
         _state.value = LibraryAlbumsState.Data.Loaded(
             allItems = result?.items ?: emptyList(),
-            nextPagination = result?.nextPagination)
+            nextPagination = result?.nextPagination
+        )
     }.onFailure { e ->
         logger.e(e) { "Failed to load albums" }
         _state.value = LibraryAlbumsState.Error(e.message ?: "Unknown error")
@@ -127,7 +144,8 @@ class LibraryAlbumsViewModel(
             _state.value = LibraryAlbumsState.Data.Loaded(
                 query = currentState.query,
                 allItems = currentState.allItems + (result?.items ?: emptyList()),
-                nextPagination = result?.nextPagination)
+                nextPagination = result?.nextPagination
+            )
         }
     }.onFailure { e ->
         logger.e(e) { "Failed to load more albums" }
@@ -135,13 +153,7 @@ class LibraryAlbumsViewModel(
     }
 
     fun onQueryChange(query: String) {
-        val currentState = _state.value
-        if (currentState is LibraryAlbumsState.Data) {
-            _state.value = when (currentState) {
-                is LibraryAlbumsState.Data.Loaded -> currentState.copy(query = query)
-                is LibraryAlbumsState.Data.LoadingMore -> currentState.copy(query = query)
-            }
-        }
+        libraryState.setQuery(LibraryTab.Albums, query)
     }
 
     fun refresh() {
