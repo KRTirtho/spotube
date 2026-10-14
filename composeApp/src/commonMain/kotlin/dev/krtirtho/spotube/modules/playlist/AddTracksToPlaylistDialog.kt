@@ -143,7 +143,6 @@ fun AddTracksToPlaylistDialog(
                 verticalAlignment = Alignment.CenterVertically) {
                 MillenniumTextField(
                     state = queryState,
-                    label = "Search",
                     modifier = Modifier.weight(1f),
                     placeholder = "Search tracks...")
                 MillenniumIconButton(

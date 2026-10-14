@@ -478,7 +478,7 @@ private fun SearchBar(
             .padding(bottom = 8.dp)) {
         MillenniumAutocomplete(
             state = searchState,
-            label = "Search",
+            
             suggestions = suggestions,
             onSuggestionSelected = { entry -> entry.onClick() },
             suggestionLabel = { entry ->

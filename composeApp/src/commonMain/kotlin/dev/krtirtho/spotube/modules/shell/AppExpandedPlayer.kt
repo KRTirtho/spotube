@@ -481,12 +481,13 @@ fun AppExpandedPlayer(
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Center)
-                    Text(
-                        text = playerUiState.artists,
+                    PlayerArtistsText(
+                        artists = playerUiState.artistList,
+                        onArtistClick = { artistId ->
+                            navigationCommands.navigateTo(Routes.Artist(artistId))
+                        },
                         style = AppTheme.typography.bodyLarge,
                         color = AppTheme.colors.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
                         textAlign = TextAlign.Center)
                 }
                 MillenniumIconButton(

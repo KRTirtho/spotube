@@ -252,19 +252,24 @@ fun AppLargePlayer(
                             contentScale = ContentScale.Crop
                         )
                     }
-                    Column(modifier = Modifier.padding(start = 12.dp)) {
+                    Column(
+                        modifier = Modifier
+                            .weight(1f, fill = false)
+                            .padding(start = 12.dp)
+                    ) {
                         Text(
                             text = playerUiState.title,
                             style = AppTheme.typography.bodyLarge,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Text(
-                            text = playerUiState.artists,
+                        PlayerArtistsText(
+                            artists = playerUiState.artistList,
+                            onArtistClick = { artistId ->
+                                navigationCommands.navigateTo(Routes.Artist(artistId))
+                            },
                             style = AppTheme.typography.bodySmall,
-                            color = AppTheme.colors.onSurfaceVariant,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            color = AppTheme.colors.onSurfaceVariant
                         )
                     }
                     Spacer(modifier = Modifier.width(10.dp))

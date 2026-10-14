@@ -93,12 +93,13 @@ fun LibraryAlbumsScreen(
     }
 
     Column(modifier = modifier) {
-        AnimatedVisibility(searchMode){
+        AnimatedVisibility(searchMode) {
             MillenniumTextField(
                 state = searchState,
-                label = "Search",
+
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = "Search saved albums...")
+                placeholder = "Search saved albums..."
+            )
         }
         Spacer(modifier = Modifier.height(12.dp))
         when (state) {
@@ -119,7 +120,8 @@ fun LibraryAlbumsScreen(
                             PlayableCard(
                                 title = "Album Title",
                                 subtitle = "Artist Name",
-                                imageURL = "https://placehold.co/600x400")
+                                imageURL = "https://placehold.co/600x400"
+                            )
                         }
                     }
                 }
@@ -168,7 +170,8 @@ fun LibraryAlbumsScreen(
                                     PlayableCard(
                                         title = "Album Title",
                                         subtitle = "Artist Name",
-                                        imageURL = "https://placehold.co/600x400")
+                                        imageURL = "https://placehold.co/600x400"
+                                    )
                                 }
                             }
                         }

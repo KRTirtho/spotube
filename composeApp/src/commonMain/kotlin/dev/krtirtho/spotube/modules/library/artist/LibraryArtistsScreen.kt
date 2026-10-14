@@ -95,7 +95,7 @@ fun LibraryArtistsScreen(
         AnimatedVisibility(searchMode){
             MillenniumTextField(
                 state = searchState,
-                label = "Search",
+                
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = "Search saved artists...")
         }

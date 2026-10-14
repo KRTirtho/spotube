@@ -20,21 +20,25 @@ package dev.krtirtho.spotube.modules.shell
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.LoopState
 import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
-import dev.krtirtho.spotube.core.di.rememberLogger
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+
+internal data class PlayerArtist(
+    val id: String?,
+    val name: String
+)
 
 internal data class PlayerUiState(
     val queue: List<QueueEntry> = emptyList(),
     val currentQueueEntry: QueueEntry? = null,
     val title: String = "No-op track title",
     val artists: String = "No-op artists",
+    val artistList: List<PlayerArtist> = emptyList(),
     val album: String = "",
     val coverUrl: String = "",
     val position: Duration = 0.milliseconds,
@@ -43,7 +47,8 @@ internal data class PlayerUiState(
     val playerState: PlayerState = PlayerState.IDLE,
     val loopState: LoopState = LoopState.NONE,
     val isShuffling: Boolean = false,
-    val volume: Float = 0f) {
+    val volume: Float = 0f
+) {
     val isPlaying: Boolean get() = playerState == PlayerState.PLAYING
     val displayDuration: Duration
         get() = if (actualDuration.inWholeMilliseconds > 0L) actualDuration else metadataDuration
@@ -73,7 +78,8 @@ internal data class PlayerUiState(
 @Composable
 internal fun rememberPlayerUiState(
     audioPlayer: AudioPlayerInterface,
-    audioPlayerQueue: AudioPlayerQueue): PlayerUiState {
+    audioPlayerQueue: AudioPlayerQueue
+): PlayerUiState {
     val queue by audioPlayerQueue.queueFlow.collectAsState(initial = emptyList())
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsState(initial = null)
     val playerState by audioPlayer.playerStateFlow.collectAsState()
@@ -89,6 +95,7 @@ internal fun rememberPlayerUiState(
         currentQueueEntry = currentQueueEntry,
         title = currentQueueEntry?.displayTitle().orEmpty().ifBlank { "No-op track title" },
         artists = currentQueueEntry?.displayArtists().orEmpty().ifBlank { "No-op artists" },
+        artistList = currentQueueEntry?.displayArtistList().orEmpty(),
         album = currentQueueEntry?.displayAlbum().orEmpty(),
         coverUrl = currentQueueEntry?.coverUrl().orEmpty(),
         position = position,
@@ -97,7 +104,8 @@ internal fun rememberPlayerUiState(
         playerState = playerState,
         loopState = loopState,
         isShuffling = isShuffling,
-        volume = volume)
+        volume = volume
+    )
 
 //    val logger = rememberLogger<PlayerUiState>()
 //    logger.d { state.toDebugString() }
@@ -115,6 +123,14 @@ private fun QueueEntry.displayArtists(): String {
     return when (this) {
         is QueueEntry.StreamingTrack -> track.artists.joinToString(", ") { artist -> artist.name }
         is QueueEntry.LocalTrack -> artists.joinToString(", ")
+    }
+}
+
+private fun QueueEntry.displayArtistList(): List<PlayerArtist> {
+    return when (this) {
+        is QueueEntry.StreamingTrack -> track.artists.map { PlayerArtist(it.id, it.name) }
+        // Local tracks have no artist ids, so they are shown but not navigable.
+        is QueueEntry.LocalTrack -> artists.map { PlayerArtist(id = null, name = it) }
     }
 }
 

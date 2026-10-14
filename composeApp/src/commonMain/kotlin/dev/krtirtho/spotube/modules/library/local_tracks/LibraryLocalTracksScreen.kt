@@ -106,7 +106,7 @@ fun LibraryLocalTracksScreen(modifier: Modifier = Modifier, searchMode: Boolean 
                         contentDescription = "Search")
                     MillenniumTextField(
                         state = searchState,
-                        label = "Search",
+                        
                         modifier = Modifier.weight(1f),
                         placeholder = if (state.currentFolderPath == null) {
                             "Search folders or tracks"

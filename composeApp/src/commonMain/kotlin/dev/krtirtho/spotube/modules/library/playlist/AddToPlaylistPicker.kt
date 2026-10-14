@@ -129,7 +129,7 @@ fun AddToPlaylistPicker(
                     contentDescription = "Search")
                 MillenniumTextField(
                     state = searchState,
-                    label = "Search",
+                    
                     modifier = Modifier.weight(1f),
                     placeholder = "Search your playlists...")
             }

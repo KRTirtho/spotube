@@ -110,7 +110,7 @@ fun LibraryPlaylistsScreen(
                 modifier = Modifier.weight(1f)) {
                 MillenniumTextField(
                     state = searchState,
-                    label = "Search",
+                    
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = "Search saved playlists...")
             }
