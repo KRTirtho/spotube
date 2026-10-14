@@ -23,7 +23,8 @@ import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumProgress
 import org.spotube.millennium.theme.millenniumSurface
-import androidx.compose.ui.graphics.SolidColor
+import org.spotube.millennium.theme.millenniumPanelBrush
+import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
@@ -38,42 +39,39 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import dev.krtirtho.spotube.core.audioplayer.AudioPlayer
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
-import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
-import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
-import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPause
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusic
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.player_play_content_description
+import spotube.composeapp.generated.resources.player_pause_content_description
+import spotube.composeapp.generated.resources.player_nothing_playing
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.krtirtho.spotube.core.audioplayer.AudioPlayerInterface
+
+internal val FloatingPlayerContentHeight = 64.dp
+internal val FloatingPlayerBottomBleed = 16.dp
 
 // The floating player on small screens that appears above the floating AppBottombar
 //
@@ -94,17 +92,12 @@ fun AppFloatingPlayer(
     savedTracksViewModel: SavedTracksViewModel = koinViewModel<SavedTracksViewModel>(
         key = SAVED_TRACKS_COLLECTION_ID,
         parameters = { parametersOf() }
-    )) {
+    )
+) {
     val playerUiState = rememberPlayerUiState(audioPlayer, audioPlayerQueue)
     val scope = rememberCoroutineScope()
     val albumArtModifier =
         rememberSharedAlbumArtModifier(sharedTransitionScope, animatedVisibilityScope)
-    val coverModel = playerUiState.coverUrl.takeIf { it.isNotBlank() }
-    var seekProgress by remember { mutableFloatStateOf(playerUiState.progress) }
-
-    LaunchedEffect(playerUiState.progress) {
-        seekProgress = playerUiState.progress
-    }
 
     fun onPlayPause() {
         scope.launch {
@@ -116,29 +109,58 @@ fun AppFloatingPlayer(
         }
     }
 
+    FloatingPlayerContent(
+        playerUiState = playerUiState,
+        modifier = modifier,
+        albumArtModifier = albumArtModifier,
+        onPlayPause = ::onPlayPause,
+        heartButton = {
+            PlayerHeartButton(
+                audioPlayerQueue = audioPlayerQueue,
+                savedTracksViewModel = savedTracksViewModel
+            )
+        }
+    )
+}
+
+@Composable
+internal fun FloatingPlayerContent(
+    playerUiState: PlayerUiState,
+    modifier: Modifier = Modifier,
+    albumArtModifier: Modifier = Modifier,
+    onPlayPause: () -> Unit,
+    heartButton: @Composable () -> Unit
+) {
+    val coverModel = playerUiState.coverUrl.takeIf { it.isNotBlank() }
+
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(76.dp)
+            .height(FloatingPlayerContentHeight + FloatingPlayerBottomBleed)
             .millenniumSurface(
-                background = SolidColor(AppTheme.colors.inverseSurface),
-                shape = RoundedCornerShape(24.dp, 24.dp))) {
-        Box(
+                background = millenniumPanelBrush(MillenniumTheme.colors),
+                shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp),
+                borderColor = MillenniumTheme.colors.border,
+                borderWidth = 1.dp,
+            )
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxSize()) {
+                .fillMaxSize()
+                // Only the surface extends beneath the navigation bar, not the controls.
+                .padding(bottom = FloatingPlayerBottomBleed)
+        ) {
             MillenniumProgress(
-                progress = seekProgress.coerceIn(0f, 1f),
+                progress = playerUiState.progress,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(2.dp)
             )
-
+            Spacer(modifier = Modifier.height(10.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-                    .padding(bottom = 22.dp, top = 8.dp)
-                    .align(Alignment.Center),
+                    .padding(horizontal = 12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -148,30 +170,36 @@ fun AppFloatingPlayer(
                 ) {
                     Box(
                         modifier = Modifier
-                            .size(48.dp)
+                            .size(42.dp)
                             .then(albumArtModifier)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(AppTheme.colors.onSurface.copy(alpha = 0.12f))
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(AppTheme.colors.onSurface.copy(alpha = 0.12f)),
+                        contentAlignment = Alignment.Center
                     ) {
-                        AsyncImage(
+                        if (coverModel != null) AsyncImage(
                             model = coverModel,
                             contentDescription = playerUiState.title,
                             modifier = Modifier
                                 .fillMaxSize(),
-                            contentScale = ContentScale.Crop)
+                            contentScale = ContentScale.Crop
+                        )
+                        else MillenniumIcon(
+                            Iconsax.IconsaxMusic, contentDescription = null,
+                            tint = AppTheme.colors.onSurfaceVariant, modifier = Modifier.size(22.dp)
+                        )
                     }
                     Column(modifier = Modifier.padding(start = 10.dp)) {
                         Text(
-                            text = playerUiState.title,
+                            text = if (playerUiState.queue.isEmpty()) stringResource(Res.string.player_nothing_playing) else playerUiState.title,
                             style = AppTheme.typography.bodyMedium,
-                            color = AppTheme.colors.inverseOnSurface,
+                            color = AppTheme.colors.onSurface,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Text(
+                        if (playerUiState.queue.isNotEmpty()) Text(
                             text = playerUiState.artists,
                             style = AppTheme.typography.bodySmall,
-                            color = AppTheme.colors.inverseOnSurface.copy(alpha = 0.72f),
+                            color = AppTheme.colors.onSurfaceVariant,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
@@ -179,17 +207,17 @@ fun AppFloatingPlayer(
                 }
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    PlayerHeartButton(
-                        audioPlayerQueue = audioPlayerQueue,
-                        savedTracksViewModel = savedTracksViewModel)
+                    heartButton()
                     Spacer(modifier = Modifier.size(8.dp))
                     MillenniumIconButton(
-                        onClick = ::onPlayPause,
+                        onClick = onPlayPause,
                         enabled = playerUiState.queue.isNotEmpty(),
-                        style = MillenniumIconButtonStyle.Secondary) {
+                        style = MillenniumIconButtonStyle.Secondary
+                    ) {
                         MillenniumIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                            contentDescription = if (playerUiState.isPlaying) "Pause" else "Play")
+                            contentDescription = stringResource(if (playerUiState.isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description)
+                        )
                     }
                 }
             }
@@ -201,12 +229,14 @@ fun AppFloatingPlayer(
 @Composable
 private fun rememberSharedAlbumArtModifier(
     sharedTransitionScope: SharedTransitionScope?,
-    animatedVisibilityScope: AnimatedVisibilityScope?): Modifier {
+    animatedVisibilityScope: AnimatedVisibilityScope?
+): Modifier {
     if (sharedTransitionScope == null || animatedVisibilityScope == null) return Modifier
 
     with(sharedTransitionScope) {
         return Modifier.sharedElement(
             sharedContentState = rememberSharedContentState(key = "player_album_art"),
-            animatedVisibilityScope = animatedVisibilityScope)
+            animatedVisibilityScope = animatedVisibilityScope
+        )
     }
 }

@@ -234,11 +234,45 @@
     <string name="settings_jam_section_identity">Identity</string>
     <string name="settings_jam_section_diagnostics">Diagnostics</string>
 
+    <!-- Group Jam -->
+    <string name="jam_screen_title">Group Jam</string>
+    <string name="jam_setup_create_tab">Create</string>
+    <string name="jam_setup_join_tab">Join</string>
+    <string name="jam_setup_create_hint">Create a room, then share its code with your friends.</string>
+    <string name="jam_setup_create_button">Create room</string>
+    <string name="jam_setup_join_button">Join room</string>
+    <string name="jam_setup_working">Connecting…</string>
+    <string name="jam_setup_code_label">Room code</string>
+    <string name="jam_setup_code_placeholder">ABC123</string>
+    <string name="jam_connection_host">Broker: %1$s</string>
+    <string name="jam_connection_missing">Set up a broker in Settings to host or join a room.</string>
+    <string name="jam_connection_settings">Broker settings</string>
+    <string name="jam_session_connected">Connected</string>
+    <string name="jam_session_connecting">Reconnecting…</string>
+    <string name="jam_invite_copy">Copy code</string>
+    <string name="jam_invite_copied">Copied!</string>
+    <string name="jam_invite_share">Share</string>
+    <string name="jam_participants_heading">Participants (%1$d)</string>
+    <string name="jam_participants_host">Host</string>
+    <string name="jam_participants_guest">Listener</string>
+    <string name="jam_participants_waiting">Waiting for listeners…</string>
+    <string name="jam_participants_remove">Remove</string>
+    <string name="jam_participants_ban">Ban</string>
+    <string name="jam_participants_manage">Manage</string>
+    <string name="jam_session_leave">Leave room</string>
+    <string name="jam_error_title">Couldn’t connect</string>
+    <string name="jam_error_dismiss">Dismiss</string>
+    <string name="jam_error_create">Failed to create jam session</string>
+    <string name="jam_error_join">Failed to join jam session</string>
+    <string name="jam_error_invalid_code">Enter a six-character room code using letters and digits.</string>
+    <string name="jam_share_message">Join my Spotube Jam with code: %1$s</string>
+
     <string name="player_go_to_album">Go to album</string>
     <string name="player_sleep_timer">Sleep timer</string>
     <string name="player_track_details">Track details</string>
     <string name="player_play_content_description">Play</string>
     <string name="player_pause_content_description">Pause</string>
+    <string name="player_nothing_playing">Nothing playing</string>
     <string name="player_add_to_queue_content_description">Add to queue</string>
 
     <string name="update_action_ignore">Ignore</string>

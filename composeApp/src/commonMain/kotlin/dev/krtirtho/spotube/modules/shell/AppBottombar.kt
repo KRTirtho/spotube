@@ -35,7 +35,9 @@ import dev.krtirtho.spotube.modules.downloads.DownloadBadgeIndicator
 fun AppBottombar(
     navigator: Navigator,
     navigationState: NavigationState,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    libraryBadge: @Composable () -> Unit = { DownloadBadgeIndicator() }
+) {
     MillenniumBottomNavigationBar(modifier = modifier) {
         bottombarTabs.filterIsInstance<NavigationItem.Tab<*>>()
             .forEach { tab ->
@@ -48,14 +50,16 @@ fun AppBottombar(
                         MillenniumIcon(
                             imageVector = tab.icon,
                             contentDescription = null,
-                            tint = LocalTextStyle.current.color)
+                            tint = LocalTextStyle.current.color
+                        )
                     },
                     label = { Text(tab.title) },
                     badge = if (tab.route == Routes.Library) {
-                        { DownloadBadgeIndicator() }
+                        libraryBadge
                     } else {
                         null
-                    })
+                    }
+                )
             }
     }
 }

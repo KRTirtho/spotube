@@ -19,6 +19,8 @@ package dev.krtirtho.spotube.modules.jam
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.snapshotFlow
 import dev.krtirtho.spotube.PlatformType
 import dev.krtirtho.spotube.core.jam.JamParticipant
 import dev.krtirtho.spotube.core.jam.JamRole
@@ -30,27 +32,57 @@ import dev.krtirtho.spotube.modules.settings.SettingsProvider
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.*
+
+enum class JamSetupMode { Create, Join }
+
+data class JamParticipantUi(
+    val id: String,
+    val displayName: String,
+    val initial: String,
+    val isHost: Boolean,
+    val canModerate: Boolean,
+    val menuExpanded: Boolean = false
+)
 
 data class JamUiState(
     val isActive: Boolean = false,
     val isConnected: Boolean = false,
     val role: JamRole? = null,
-    val participants: List<JamParticipant> = emptyList(),
+    val participants: List<JamParticipantUi> = emptyList(),
     val roomCode: String? = null,
     val brokerHost: String = "",
     val brokerConfigured: Boolean = false,
-    val error: String? = null)
+    val error: String? = null,
+    val setupMode: JamSetupMode = JamSetupMode.Create,
+    val codeInput: TextFieldState = TextFieldState(),
+    val canCreate: Boolean = false,
+    val canJoin: Boolean = false,
+    val isBusy: Boolean = false,
+    val isHost: Boolean = false,
+    val supportsNativeShare: Boolean = false,
+    val codeCopied: Boolean = false
+)
 
 class JamViewModel(
     private val jamRoomService: JamRoomService,
     private val shareService: ShareService,
-    private val settingsProvider: SettingsProvider) : ViewModel() {
+    private val settingsProvider: SettingsProvider
+) : ViewModel() {
 
     private val _localError = MutableStateFlow<String?>(null)
+    private val setupMode = MutableStateFlow(JamSetupMode.Create)
+    private val isBusy = MutableStateFlow(false)
+    private val codeCopied = MutableStateFlow(false)
+    private val codeInput = TextFieldState()
+    private var copyFeedbackJob: Job? = null
+    private val participantMenu = MutableStateFlow<String?>(null)
 
     val supportsNativeShare: Boolean =
         getPlatform().type == PlatformType.Android || getPlatform().type == PlatformType.IOS
@@ -62,9 +94,16 @@ class JamViewModel(
         jamRoomService.roomCode,
         jamRoomService.connectionError,
         settingsProvider.settingsState,
-        _localError) { values ->
+        _localError,
+        setupMode,
+        isBusy,
+        codeCopied,
+        snapshotFlow { codeInput.text.toString() },
+        participantMenu
+    ) { values ->
         @Suppress("UNCHECKED_CAST")
         val role = values[0] as JamRole?
+
         @Suppress("UNCHECKED_CAST")
         val participants = values[1] as List<JamParticipant>
         val isConnected = values[2] as Boolean
@@ -72,48 +111,108 @@ class JamViewModel(
         val connectionError = values[4] as String?
         val settings = values[5] as? dev.krtirtho.spotube.modules.settings.UserSettings
         val localError = values[6] as String?
+        val busy = values[8] as Boolean
+        val brokerConfigured = !settings?.jamBroker?.host.isNullOrBlank()
 
         JamUiState(
             isActive = role != null,
             isConnected = isConnected,
             role = role,
-            participants = participants,
+            participants = participants.sortedByDescending { it.isHost }.map { participant ->
+                JamParticipantUi(
+                    id = participant.id,
+                    displayName = participant.displayName,
+                    initial = participant.displayName.firstOrNull()?.uppercase() ?: "?",
+                    isHost = participant.isHost,
+                    canModerate = role == JamRole.Host && !participant.isHost,
+                    menuExpanded = values[11] == participant.id
+                )
+            },
             roomCode = roomCode,
             brokerHost = settings?.jamBroker?.host.orEmpty(),
-            brokerConfigured = !settings?.jamBroker?.host.isNullOrBlank(),
-            error = localError ?: connectionError)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), JamUiState())
+            brokerConfigured = brokerConfigured,
+            error = localError ?: connectionError,
+            setupMode = values[7] as JamSetupMode,
+            isBusy = busy,
+            codeCopied = values[9] as Boolean,
+            codeInput = codeInput,
+            canCreate = brokerConfigured && !busy,
+            canJoin = brokerConfigured && !busy &&
+                    JamRoomCode.isValid(JamRoomCode.normalize(values[10] as String)),
+            isHost = role == JamRole.Host,
+            supportsNativeShare = supportsNativeShare
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5_000),
+        JamUiState(codeInput = codeInput)
+    )
 
     // ---------- Session lifecycle ----------
 
     fun createSession() {
+        if (isBusy.value) return
+        isBusy.value = true
         viewModelScope.launch {
-            jamRoomService.createRoom()
-                .onFailure { e ->
-                    _localError.value = e.message ?: "Failed to create jam session"
-                }
-                .onSuccess { _localError.value = null }
+            try {
+                jamRoomService.createRoom()
+                    .onFailure { e ->
+                        _localError.value = e.message ?: getString(Res.string.jam_error_create)
+                    }
+                    .onSuccess { _localError.value = null }
+            } finally {
+                isBusy.value = false
+            }
+        }
+    }
+
+    fun selectSetupMode(mode: JamSetupMode) {
+        setupMode.value = mode
+        _localError.value = null
+    }
+
+    fun joinSession() = joinWithCode(codeInput.text.toString())
+
+    fun onCodeCopied() {
+        copyFeedbackJob?.cancel()
+        copyFeedbackJob = viewModelScope.launch {
+            codeCopied.value = true
+            delay(2_000)
+            codeCopied.value = false
         }
     }
 
     fun joinWithCode(input: String) {
+        if (isBusy.value) return
         val code = JamRoomCode.normalize(input)
         if (!JamRoomCode.isValid(code)) {
-            _localError.value = "Room codes are ${JamRoomCode.LENGTH} characters (letters and digits)"
+            viewModelScope.launch {
+                _localError.value = getString(Res.string.jam_error_invalid_code)
+            }
             return
         }
+        isBusy.value = true
         viewModelScope.launch {
-            jamRoomService.joinRoom(code)
-                .onFailure { e ->
-                    _localError.value = e.message ?: "Failed to join jam session"
-                }
-                .onSuccess { _localError.value = null }
+            try {
+                jamRoomService.joinRoom(code)
+                    .onFailure { e ->
+                        _localError.value = e.message ?: getString(Res.string.jam_error_join)
+                    }
+                    .onSuccess { _localError.value = null }
+            } finally {
+                isBusy.value = false
+            }
         }
     }
 
     fun shareRoomCode() {
         val code = uiState.value.roomCode ?: return
-        shareService.share("Join my Spotube Jam with code: $code", "Spotube Group Jam")
+        viewModelScope.launch {
+            shareService.share(
+                getString(Res.string.jam_share_message, code),
+                getString(Res.string.jam_screen_title)
+            )
+        }
     }
 
     fun leave() {
@@ -130,10 +229,16 @@ class JamViewModel(
     // ---------- Host moderation ----------
 
     fun kickParticipant(participantId: String) {
+        participantMenu.value = null
         viewModelScope.launch { jamRoomService.kickParticipant(participantId) }
     }
 
     fun banParticipant(participantId: String) {
+        participantMenu.value = null
         viewModelScope.launch { jamRoomService.banParticipant(participantId) }
+    }
+
+    fun showParticipantMenu(participantId: String?) {
+        participantMenu.value = participantId
     }
 }
