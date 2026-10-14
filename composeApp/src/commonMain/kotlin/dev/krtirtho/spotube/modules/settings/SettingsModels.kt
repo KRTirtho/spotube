@@ -87,7 +87,11 @@ data class UserSettings(
     // Updates
     val autoCheckForUpdates: Boolean = true,
     val ignoredAppUpdateVersion: String? = null,
-    val ignoredPluginUpdateVersions: Map<String, String> = emptyMap())
+    val ignoredPluginUpdateVersions: Map<String, String> = emptyMap(),
+
+    // Support
+    val supportRemindersEnabled: Boolean = true,
+    val lastSupportReminderEpochMs: Long = 0L)
 
 /**
  * Configuration for the MQTT broker used by Group Jam. The host is a placeholder

@@ -17,16 +17,8 @@
 
 package dev.krtirtho.spotube.modules.welcome
 
-import androidx.compose.ui.graphics.vector.ImageVector
+import dev.krtirtho.spotube.modules.support.DonationOption
 import org.jetbrains.compose.resources.StringResource
-
-/** A single donation destination shown on the support page. */
-data class DonationOption(
-    val id: String,
-    val title: StringResource,
-    val subtitle: StringResource,
-    val url: String,
-    val icon: ImageVector)
 
 data class WelcomeUiState(
     val currentPageIndex: Int,

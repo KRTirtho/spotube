@@ -74,7 +74,10 @@ internal fun SwitchSettingCard(
             MillenniumSwitch(
                 checked = checked,
                 onCheckedChange = onCheckedChange,
-                label = title)
+                // The row itself already renders the title/subtitle, so the switch must not
+                // draw a second visible label next to it.
+                label = "",
+                contentSpacing = 0.dp)
         },
         onClick = {
             onCheckedChange(!checked)

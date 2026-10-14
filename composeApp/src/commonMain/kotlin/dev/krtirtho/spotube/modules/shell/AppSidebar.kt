@@ -46,10 +46,13 @@ import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import dev.krtirtho.spotube.modules.library.LibraryState
 import dev.krtirtho.spotube.modules.library.LibraryTab
+import dev.krtirtho.spotube.modules.support.LocalSupportPrompt
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSetting2
 import dev.krtirtho.spotube.sidebarTabs
 import org.jetbrains.compose.resources.Font
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.spotube.millennium.composables.MillenniumSidebar
 import org.spotube.millennium.composables.MillenniumSidebarContent
@@ -63,6 +66,8 @@ import org.spotube.millennium.composables.MillenniumSidebarMenu
 import org.spotube.millennium.composables.MillenniumSidebarTrigger
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.cookie_regular
+import spotube.composeapp.generated.resources.settings_screen_title
+import spotube.composeapp.generated.resources.support_button_label
 
 @Composable
 fun AppSidebar(
@@ -74,6 +79,7 @@ fun AppSidebar(
     var expanded by rememberSaveable { mutableStateOf(true) }
     val groupExpansion = remember { mutableStateMapOf<String, Boolean>() }
     val currentLibraryTab by libraryState.currentTab.collectAsState()
+    val openSupport = LocalSupportPrompt.current
 
     MillenniumSidebar(
         modifier = modifier,
@@ -143,10 +149,17 @@ fun AppSidebar(
             }
         }
         MillenniumSidebarFooter {
+            val supportLabel = stringResource(Res.string.support_button_label)
             MillenniumSidebarItem(
-                label = "Settings",
+                label = supportLabel,
+                onClick = { openSupport() },
+                contentDescription = supportLabel,
+                icon = Iconsax.IconsaxHeart2)
+            MillenniumSidebarItem(
+                label = stringResource(Res.string.settings_screen_title),
                 onClick = { navigator.navigate(Routes.Settings) },
                 selected = navigationState.topLevelRoute == Routes.Settings,
+                contentDescription = stringResource(Res.string.settings_screen_title),
                 icon = Iconsax.IconsaxSetting2)
         }
     }

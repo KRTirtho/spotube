@@ -50,6 +50,7 @@ import dev.krtirtho.spotube.modules.settings.sections.jamSection
 import dev.krtirtho.spotube.modules.settings.sections.languageRegionSection
 import dev.krtirtho.spotube.modules.settings.sections.playbackSection
 import dev.krtirtho.spotube.modules.settings.sections.pluginsSection
+import dev.krtirtho.spotube.modules.settings.sections.supportSection
 import dev.krtirtho.spotube.modules.settings.sections.updatesSection
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import org.jetbrains.compose.resources.stringResource
@@ -154,6 +155,9 @@ private fun CompactSettingsContent(
                         settings = settings,
                         settingsViewModel = settingsViewModel)
                 }
+                supportSection(
+                    settings = settings,
+                    settingsViewModel = settingsViewModel)
                 updatesSection(
                     settings = settings,
                     settingsViewModel = settingsViewModel)

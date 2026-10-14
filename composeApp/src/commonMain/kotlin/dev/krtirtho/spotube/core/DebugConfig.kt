@@ -29,5 +29,14 @@ object DebugConfig {
      *
      * Keep it `false` when committing.
      */
-    const val FORCE_SHOW_ONBOARDING: Boolean = true
+    const val FORCE_SHOW_ONBOARDING: Boolean = false
+
+    /**
+     * Flip to `true` while developing to show the support reminder dialog on the next eligible
+     * app launch, ignoring both the 7-day interval and the "Support reminders" opt-out toggle.
+     * It still waits until onboarding is dismissed, and only fires once per launch.
+     *
+     * Keep it `false` when committing.
+     */
+    const val FORCE_SUPPORT_REMINDER: Boolean = false
 }

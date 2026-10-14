@@ -17,18 +17,8 @@
 
 package dev.krtirtho.spotube.modules.welcome
 
-import dev.krtirtho.spotube.resources.iconsax.BrandBuyMeACoffee
-import dev.krtirtho.spotube.resources.iconsax.BrandOpencollective
-import dev.krtirtho.spotube.resources.iconsax.BrandPatreon
-import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import org.jetbrains.compose.resources.StringResource
 import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.welcome_donate_bmac_subtitle
-import spotube.composeapp.generated.resources.welcome_donate_bmac_title
-import spotube.composeapp.generated.resources.welcome_donate_opencollective_subtitle
-import spotube.composeapp.generated.resources.welcome_donate_opencollective_title
-import spotube.composeapp.generated.resources.welcome_donate_patreon_subtitle
-import spotube.composeapp.generated.resources.welcome_donate_patreon_title
 import spotube.composeapp.generated.resources.welcome_get_started
 import spotube.composeapp.generated.resources.welcome_lets_go
 import spotube.composeapp.generated.resources.welcome_next
@@ -50,23 +40,3 @@ internal val welcomeStepLabels: List<StringResource> = listOf(
     Res.string.welcome_step_support,
     Res.string.welcome_step_plugins,
     Res.string.welcome_step_guide)
-
-internal val welcomeDonations: List<DonationOption> = listOf(
-    DonationOption(
-        id = "patreon",
-        title = Res.string.welcome_donate_patreon_title,
-        subtitle = Res.string.welcome_donate_patreon_subtitle,
-        url = "https://patreon.com/krtirtho",
-        icon = Iconsax.BrandPatreon),
-    DonationOption(
-        id = "buymeacoffee",
-        title = Res.string.welcome_donate_bmac_title,
-        subtitle = Res.string.welcome_donate_bmac_subtitle,
-        url = "https://www.buymeacoffee.com/krtirtho",
-        icon = Iconsax.BrandBuyMeACoffee),
-    DonationOption(
-        id = "opencollective",
-        title = Res.string.welcome_donate_opencollective_title,
-        subtitle = Res.string.welcome_donate_opencollective_subtitle,
-        url = "https://opencollective.com/spotube",
-        icon = Iconsax.BrandOpencollective))

@@ -50,11 +50,13 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composeunstyled.currentWindowWidthBreakpoint
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseGenre
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseItem
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.browse.MetadataBrowseSection
@@ -75,21 +77,26 @@ import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
+import dev.krtirtho.spotube.modules.support.LocalSupportPrompt
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
 import dev.krtirtho.spotube.resources.iconsax.User
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.support_button_label
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import org.jetbrains.compose.resources.Font
+import org.spotube.millennium.adaptive.WindowBreakpoints
+import spotube.composeapp.generated.resources.cookie_regular
 
 @Composable
 fun HomeScreen(viewModel: HomeScreenViewModel) {
     val navigationCommands = koinInject<NavigationCommands>()
-    val platform = getPlatform()
-    val isDesktop = platform.type == PlatformType.Windows ||
-            platform.type == PlatformType.Linux ||
-            platform.type == PlatformType.MacOS
-
+    val openSupport = LocalSupportPrompt.current
+    val isSmallScreen = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
 
@@ -124,27 +131,55 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)) {
+            .background(MillenniumTheme.colors.background)
+    ) {
         ApplicationMainBar(
             backButton = false,
             title = {
-                Text("Browse")
+                if (isSmallScreen) {
+                    Text(
+                        "Spotube",
+                        style = AppTheme.typography.headlineLarge.copy(
+                            fontFamily = FontFamily(
+                                listOf(Font(Res.font.cookie_regular, weight = FontWeight.Normal))
+                            )
+                        ),
+                        color = AppTheme.colors.onSurface
+                    )
+                } else {
+                    Text("Browse")
+                }
+
             },
             actions = {
-                if (!isDesktop) {
+                if (isSmallScreen) {
                     MillenniumIconButton(
                         onClick = { navigationCommands.navigateTo(Routes.Devices) },
-                        style = MillenniumIconButtonStyle.Quiet) {
+                        style = MillenniumIconButtonStyle.Quiet
+                    ) {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxMirroringScreen,
-                            contentDescription = "Devices")
+                            contentDescription = "Devices"
+                        )
                     }
                     MillenniumIconButton(
                         onClick = { navigationCommands.navigateTo(Routes.Jam) },
-                        style = MillenniumIconButtonStyle.Quiet) {
+                        style = MillenniumIconButtonStyle.Quiet
+                    ) {
                         MillenniumIcon(
                             imageVector = Iconsax.User,
-                            contentDescription = "Group Jam")
+                            contentDescription = "Group Jam"
+                        )
+                    }
+                    val supportLabel = stringResource(Res.string.support_button_label)
+                    MillenniumIconButton(
+                        onClick = openSupport,
+                        style = MillenniumIconButtonStyle.Quiet
+                    ) {
+                        MillenniumIcon(
+                            imageVector = Iconsax.IconsaxHeart2,
+                            contentDescription = supportLabel
+                        )
                     }
                 }
             })
@@ -153,7 +188,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                 .fillMaxSize()
                 .weight(1f)
         ) {
-            if (isDesktop) {
+            if (!isSmallScreen) {
                 HomeContent(
                     listState = listState,
                     state = state,
@@ -165,7 +200,8 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     onRefresh = {
                         viewModel.refresh()
                     },
-                    modifier = Modifier.fillMaxSize()) {
+                    modifier = Modifier.fillMaxSize()
+                ) {
                     HomeContent(
                         listState = listState,
                         state = state,
@@ -188,7 +224,8 @@ private fun HomeContent(
     listState: androidx.compose.foundation.lazy.LazyListState,
     state: HomeScreenState,
     onRetry: () -> Unit,
-    onGenreSelected: (String) -> Unit) {
+    onGenreSelected: (String) -> Unit
+) {
     val shellBottomInset = LocalAppShellBottomInset.current
     val contentPadding = remember(shellBottomInset) {
         PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
@@ -198,31 +235,37 @@ private fun HomeContent(
         state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(24.dp)) {
+        verticalArrangement = Arrangement.spacedBy(24.dp)
+    ) {
         when (state) {
             is HomeScreenState.Loading -> {
                 item {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
                         repeat(3) {
                             SkeletonTree(true) {
                                 Column(
                                     modifier = Modifier.fillMaxWidth(),
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
                                     Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .height(180.dp)
-                                            .padding(horizontal = 16.dp))
+                                            .padding(horizontal = 16.dp)
+                                    )
                                     LazyRow(
                                         horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                        contentPadding = PaddingValues(horizontal = 16.dp)) {
+                                        contentPadding = PaddingValues(horizontal = 16.dp)
+                                    ) {
                                         items(4) {
                                             PlayableCard(
                                                 title = "Item Title",
                                                 subtitle = "Subtitle",
-                                                imageURL = "https://placehold.co/600x400")
+                                                imageURL = "https://placehold.co/600x400"
+                                            )
                                         }
                                     }
                                 }
@@ -236,7 +279,8 @@ private fun HomeContent(
                 item {
                     ErrorDisplay(
                         errorMessage = state.message,
-                        onRetry = onRetry)
+                        onRetry = onRetry
+                    )
                 }
             }
 
@@ -252,7 +296,8 @@ private fun HomeContent(
                         GenreTabs(
                             genres = state.genres,
                             selectedGenreId = state.selectedGenreId,
-                            onGenreSelected = onGenreSelected)
+                            onGenreSelected = onGenreSelected
+                        )
                     }
                 }
 
@@ -263,20 +308,24 @@ private fun HomeContent(
                         SkeletonTree(true) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(180.dp)
-                                        .padding(horizontal = 16.dp))
+                                        .padding(horizontal = 16.dp)
+                                )
                                 LazyRow(
                                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    contentPadding = PaddingValues(horizontal = 16.dp)) {
+                                    contentPadding = PaddingValues(horizontal = 16.dp)
+                                ) {
                                     items(4) {
                                         PlayableCard(
                                             title = "Item Title",
                                             subtitle = "Subtitle",
-                                            imageURL = "https://placehold.co/600x400")
+                                            imageURL = "https://placehold.co/600x400"
+                                        )
                                     }
                                 }
                             }
@@ -287,7 +336,8 @@ private fun HomeContent(
                         HomeSection(
                             title = section.title,
                             subtitle = section.description,
-                            items = section.items)
+                            items = section.items
+                        )
                     }
                 }
 
@@ -296,20 +346,24 @@ private fun HomeContent(
                         SkeletonTree(true) {
                             Column(
                                 modifier = Modifier.fillMaxWidth(),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
                                 Box(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(180.dp)
-                                        .padding(horizontal = 16.dp))
+                                        .padding(horizontal = 16.dp)
+                                )
                                 LazyRow(
                                     horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                    contentPadding = PaddingValues(horizontal = 16.dp)) {
+                                    contentPadding = PaddingValues(horizontal = 16.dp)
+                                ) {
                                     items(4) {
                                         PlayableCard(
                                             title = "Item Title",
                                             subtitle = "Subtitle",
-                                            imageURL = "https://placehold.co/600x400")
+                                            imageURL = "https://placehold.co/600x400"
+                                        )
                                     }
                                 }
                             }
@@ -327,30 +381,36 @@ private fun HomeSection(
     title: String,
     subtitle: String? = null,
     items: List<MetadataBrowseItem>,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     val rowState = rememberLazyListState()
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         if (!subtitle.isNullOrEmpty()) Text(
             text = subtitle,
             style = AppTheme.typography.labelMedium.copy(
                 color = AppTheme.colors.secondary,
-                fontWeight = FontWeight.Medium),
-            modifier = Modifier.padding(horizontal = 16.dp))
+                fontWeight = FontWeight.Medium
+            ),
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
         Text(
             text = title,
             style = AppTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold,
-            modifier = Modifier.padding(horizontal = 16.dp).offset(y = (-12).dp))
+            modifier = Modifier.padding(horizontal = 16.dp).offset(y = (-12).dp)
+        )
 
         LazyRow(
             state = rowState,
             modifier = Modifier.dragScrollable(rowState),
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.Top) {
+            verticalAlignment = Alignment.Top
+        ) {
             items(items) { browseItem ->
                 when (browseItem) {
                     is MetadataBrowseItem.Album -> AlbumCard(album = browseItem.data)
@@ -368,14 +428,16 @@ private fun HomeSection(
 private fun GenreTabs(
     genres: List<MetadataBrowseGenre>,
     selectedGenreId: String?,
-    onGenreSelected: (String) -> Unit) {
+    onGenreSelected: (String) -> Unit
+) {
     val rowState = rememberLazyListState()
 
     LazyRow(
         state = rowState,
         modifier = Modifier.dragScrollable(rowState),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
         items(genres) { genre ->
             MillenniumButton(
                 onClick = { onGenreSelected(genre.id) },
@@ -383,7 +445,8 @@ private fun GenreTabs(
                     MillenniumButtonStyle.Primary
                 } else {
                     MillenniumButtonStyle.Secondary
-                }) {
+                }
+            ) {
                 Text(genre.name)
             }
         }

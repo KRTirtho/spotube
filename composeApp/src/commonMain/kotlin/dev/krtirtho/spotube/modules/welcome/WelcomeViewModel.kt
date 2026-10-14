@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.modules.welcome
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.krtirtho.spotube.modules.support.donationOptions
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -39,7 +40,7 @@ class WelcomeViewModel(
                 pageCount = pageCount,
                 isLastPage = index == pageCount - 1,
                 primaryLabel = welcomePrimaryLabels[index.coerceIn(0, pageCount - 1)],
-                donations = welcomeDonations)
+                donations = donationOptions)
         }
             .stateIn(
                 scope = viewModelScope,
@@ -49,7 +50,7 @@ class WelcomeViewModel(
                     pageCount = welcomePrimaryLabels.size,
                     isLastPage = welcomePrimaryLabels.size == 1,
                     primaryLabel = welcomePrimaryLabels.first(),
-                    donations = welcomeDonations))
+                    donations = donationOptions))
 
     fun goToPage(index: Int) {
         currentPageIndex.update { index.coerceIn(0, welcomePrimaryLabels.lastIndex) }
@@ -65,7 +66,7 @@ class WelcomeViewModel(
 
     fun openDonation(url: String) {
         // Only destinations owned by our static funding list can be opened here.
-        if (welcomeDonations.none { it.url == url }) return
+        if (donationOptions.none { it.url == url }) return
         runCatching { dev.krtirtho.spotube.openUrlInBrowser(url) }
     }
 

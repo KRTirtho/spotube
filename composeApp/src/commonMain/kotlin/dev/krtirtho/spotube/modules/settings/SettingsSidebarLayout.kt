@@ -71,6 +71,7 @@ import dev.krtirtho.spotube.modules.settings.sections.desktopSection
 import dev.krtirtho.spotube.modules.settings.sections.downloadsSection
 import dev.krtirtho.spotube.modules.settings.sections.languageRegionSection
 import dev.krtirtho.spotube.modules.settings.sections.playbackSection
+import dev.krtirtho.spotube.modules.settings.sections.supportSection
 import dev.krtirtho.spotube.modules.settings.sections.SettingsPageTitle
 import dev.krtirtho.spotube.modules.settings.sections.updatesSection
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
@@ -81,6 +82,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxColorSwatch
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDocumentDownload
 import dev.krtirtho.spotube.resources.iconsax.IconsaxForbidden
+import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxImportArrow2
 import dev.krtirtho.spotube.resources.iconsax.IconsaxInformation
 import dev.krtirtho.spotube.resources.iconsax.IconsaxLanguageSquare
@@ -102,6 +104,7 @@ import spotube.composeapp.generated.resources.settings_section_jam
 import spotube.composeapp.generated.resources.settings_section_language_region
 import spotube.composeapp.generated.resources.settings_section_playback
 import spotube.composeapp.generated.resources.settings_section_plugins
+import spotube.composeapp.generated.resources.settings_section_support
 
 private val SettingsSidebarWidth = 236.dp
 
@@ -123,6 +126,7 @@ internal enum class SettingsTab(
     Caching(Res.string.settings_section_caching, Iconsax.IconsaxDocumentDownload),
     Downloads(Res.string.settings_section_downloads, Iconsax.IconsaxDirectboxReceive),
     Desktop(Res.string.settings_section_desktop, Iconsax.IconsaxImportArrow2),
+    Support(Res.string.settings_section_support, Iconsax.IconsaxHeart2),
     About(Res.string.settings_section_about, Iconsax.IconsaxInformation),
 }
 
@@ -316,6 +320,12 @@ private fun SettingsTabContent(
 
                             SettingsTab.Desktop ->
                                 desktopSection(settings, settingsViewModel, includeHeader = false)
+
+                            SettingsTab.Support ->
+                                supportSection(
+                                    settings = settings,
+                                    settingsViewModel = settingsViewModel,
+                                    includeHeader = false)
 
                             SettingsTab.About ->
                                 updatesSection(settings, settingsViewModel, includeHeader = false)
