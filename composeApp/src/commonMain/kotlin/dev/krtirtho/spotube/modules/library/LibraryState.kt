@@ -31,6 +31,9 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+
+enum class LibraryViewMode { Grid, List }
 
 data class LibraryToolbarUiState(
     val currentTab: LibraryTab = LibraryTab.Playlists,
@@ -39,7 +42,9 @@ data class LibraryToolbarUiState(
     val canFilter: Boolean = true,
     val canCreatePlaylist: Boolean = true,
     val canRefresh: Boolean = false,
-    val showCreatePlaylist: Boolean = false
+    val showCreatePlaylist: Boolean = false,
+    val canChangeView: Boolean = true,
+    val viewModeOverride: LibraryViewMode? = null
 )
 
 /** Shared with the sidebar for the app lifetime; each library tab retains its own filter. */
@@ -49,14 +54,16 @@ class LibraryState : ViewModel() {
     val currentTab = MutableStateFlow(LibraryTab.Playlists)
     private val searchStates = LibraryTab.entries.associateWith { TextFieldState() }
     private val createPlaylistVisible = MutableStateFlow(false)
+    private val viewModes = MutableStateFlow<Map<LibraryTab, LibraryViewMode>>(emptyMap())
     private val refreshRequests = MutableSharedFlow<Unit>(extraBufferCapacity = 1)
     val localRefreshRequests = refreshRequests.asSharedFlow()
 
     val uiState = combine(
         currentTab.flatMapLatest { tab -> queryFlow(tab).map { query -> tab to query } },
         searchMode,
-        createPlaylistVisible
-    ) { (tab, query), searching, creating ->
+        createPlaylistVisible,
+        viewModes
+    ) { (tab, query), searching, creating, modes ->
         LibraryToolbarUiState(
             currentTab = tab,
             searchMode = tab != LibraryTab.Downloads && (searching || query.isNotEmpty()),
@@ -64,7 +71,9 @@ class LibraryState : ViewModel() {
             canFilter = tab != LibraryTab.Downloads,
             canCreatePlaylist = tab == LibraryTab.Playlists,
             canRefresh = tab == LibraryTab.LocalTracks,
-            showCreatePlaylist = tab == LibraryTab.Playlists && creating
+            showCreatePlaylist = tab == LibraryTab.Playlists && creating,
+            canChangeView = tab == LibraryTab.Playlists || tab == LibraryTab.Albums || tab == LibraryTab.Artists,
+            viewModeOverride = modes[tab]
         )
     }.stateIn(
         viewModelScope, SharingStarted.Eagerly,
@@ -103,4 +112,16 @@ class LibraryState : ViewModel() {
     fun refreshLocalTracks() {
         refreshRequests.tryEmit(Unit)
     }
+
+    fun toggleViewMode(isCompact: Boolean) {
+        val tab = currentTab.value
+        if (tab != LibraryTab.Playlists && tab != LibraryTab.Albums && tab != LibraryTab.Artists) return
+        viewModes.update { modes ->
+            val current = modes[tab] ?: defaultLibraryViewMode(isCompact)
+            modes + (tab to if (current == LibraryViewMode.Grid) LibraryViewMode.List else LibraryViewMode.Grid)
+        }
+    }
 }
+
+internal fun defaultLibraryViewMode(isCompact: Boolean) =
+    if (isCompact) LibraryViewMode.List else LibraryViewMode.Grid

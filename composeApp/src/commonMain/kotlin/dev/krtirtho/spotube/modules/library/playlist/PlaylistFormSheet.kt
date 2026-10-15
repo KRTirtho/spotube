@@ -74,7 +74,8 @@ data class PlaylistFormData(
     val isPublic: Boolean = true,
     val isCollaborating: Boolean = false,
     val imageBase64: String = "",
-    val imagePreviewUrl: String? = null)
+    val imagePreviewUrl: String? = null
+)
 
 @Composable
 fun PlaylistFormSheet(
@@ -83,7 +84,8 @@ fun PlaylistFormSheet(
     onSubmit: (PlaylistFormData) -> Unit,
     modifier: Modifier = Modifier,
     initialData: PlaylistFormData? = null,
-    isEditing: Boolean = false) {
+    isEditing: Boolean = false
+) {
     if (!visible) return
 
     val isLargeScreen = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
@@ -91,7 +93,11 @@ fun PlaylistFormSheet(
     var name by remember(initialData) { mutableStateOf(initialData?.name ?: "") }
     var description by remember(initialData) { mutableStateOf(initialData?.description ?: "") }
     var isPublic by remember(initialData) { mutableStateOf(initialData?.isPublic ?: true) }
-    var isCollaborating by remember(initialData) { mutableStateOf(initialData?.isCollaborating ?: false) }
+    var isCollaborating by remember(initialData) {
+        mutableStateOf(
+            initialData?.isCollaborating ?: false
+        )
+    }
     var imageBase64 by remember(initialData) { mutableStateOf(initialData?.imageBase64 ?: "") }
     var imagePreviewUrl by remember(initialData) { mutableStateOf(initialData?.imagePreviewUrl) }
 
@@ -131,7 +137,8 @@ fun PlaylistFormSheet(
         isPublic = isPublic,
         isCollaborating = isCollaborating,
         imageBase64 = imageBase64,
-        imagePreviewUrl = imagePreviewUrl)
+        imagePreviewUrl = imagePreviewUrl
+    )
 
     val handleImagePick = { imagePicker.launch() }
 
@@ -140,7 +147,8 @@ fun PlaylistFormSheet(
             visible = true,
             onDismissRequest = onDismiss,
             title = if (isEditing) "Edit Playlist" else "Create Playlist",
-            modifier = modifier) {
+            modifier = modifier
+        ) {
             PlaylistFormFields(
                 nameState = nameState,
                 descriptionState = descriptionState,
@@ -150,19 +158,22 @@ fun PlaylistFormSheet(
                 onIsCollaboratingChange = { isCollaborating = it },
                 imageBase64 = imageBase64,
                 imagePreviewUrl = imagePreviewUrl,
-                onPickImage = handleImagePick)
+                onPickImage = handleImagePick
+            )
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 MillenniumButton(
                     onClick = {
                         onSubmit(currentData)
                         onDismiss()
                     },
-                    enabled = name.isNotBlank()) {
+                    enabled = name.isNotBlank()
+                ) {
                     Text(if (isEditing) "Save" else "Create")
                 }
                 MillenniumButton(
                     onClick = onDismiss,
-                    style = MillenniumButtonStyle.Secondary) {
+                    style = MillenniumButtonStyle.Secondary
+                ) {
                     Text("Cancel")
                 }
             }
@@ -173,11 +184,13 @@ fun PlaylistFormSheet(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)) {
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
                 Text(
                     text = if (isEditing) "Edit Playlist" else "Create Playlist",
                     style = AppTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 16.dp))
+                    modifier = Modifier.padding(bottom = 16.dp)
+                )
                 PlaylistFormFields(
                     nameState = nameState,
                     descriptionState = descriptionState,
@@ -187,14 +200,17 @@ fun PlaylistFormSheet(
                     onIsCollaboratingChange = { isCollaborating = it },
                     imageBase64 = imageBase64,
                     imagePreviewUrl = imagePreviewUrl,
-                    onPickImage = handleImagePick)
+                    onPickImage = handleImagePick
+                )
                 Spacer(modifier = Modifier.height(12.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
+                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
+                ) {
                     MillenniumButton(
                         onClick = onDismiss,
-                        style = MillenniumButtonStyle.Secondary) {
+                        style = MillenniumButtonStyle.Secondary
+                    ) {
                         Text("Cancel")
                     }
                     MillenniumButton(
@@ -202,7 +218,8 @@ fun PlaylistFormSheet(
                             onSubmit(currentData)
                             onDismiss()
                         },
-                        enabled = name.isNotBlank()) {
+                        enabled = name.isNotBlank()
+                    ) {
                         Text(if (isEditing) "Save" else "Create")
                     }
                 }
@@ -222,23 +239,27 @@ private fun PlaylistFormFields(
     onIsCollaboratingChange: (Boolean) -> Unit,
     imageBase64: String,
     imagePreviewUrl: String?,
-    onPickImage: () -> Unit) {
+    onPickImage: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
         MillenniumTextField(
             state = nameState,
             label = "Name",
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Playlist name")
+            placeholder = "Playlist name"
+        )
 
         MillenniumTextField(
             state = descriptionState,
             label = "Description",
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Description (optional)")
+            placeholder = "Description (optional)"
+        )
 
         Row(
             modifier = Modifier
@@ -253,7 +274,8 @@ private fun PlaylistFormFields(
                 Text(
                     "Anyone can see this playlist",
                     style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.onSurfaceVariant)
+                    color = AppTheme.colors.onSurfaceVariant
+                )
             }
             MillenniumSwitch(checked = isPublic, onCheckedChange = onIsPublicChange)
         }
@@ -271,40 +293,49 @@ private fun PlaylistFormFields(
                 Text(
                     "Others can add tracks to this playlist",
                     style = AppTheme.typography.bodySmall,
-                    color = AppTheme.colors.onSurfaceVariant)
+                    color = AppTheme.colors.onSurfaceVariant
+                )
             }
             MillenniumSwitch(checked = isCollaborating, onCheckedChange = onIsCollaboratingChange)
         }
 
         Column(
             modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text("Cover Image", style = AppTheme.typography.bodyLarge)
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically) {
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Box(
                     modifier = Modifier
                         .size(64.dp)
                         .clip(RoundedCornerShape(8.dp)),
-                    contentAlignment = Alignment.Center) {
+                    contentAlignment = Alignment.Center
+                ) {
                     when {
                         imagePreviewUrl != null -> AsyncImage(
                             model = imagePreviewUrl,
                             contentDescription = "Playlist cover",
                             modifier = Modifier.size(64.dp),
-                            contentScale = ContentScale.Crop)
+                            contentScale = ContentScale.Crop
+                        )
+
                         imageBase64.isNotBlank() -> {
                             Text(
                                 "✓",
                                 style = AppTheme.typography.titleMedium,
-                                color = AppTheme.colors.primary)
+                                color = AppTheme.colors.primary
+                            )
                         }
+
                         else -> {
                             Text(
                                 "No image",
                                 style = AppTheme.typography.labelSmall,
-                                color = AppTheme.colors.onSurfaceVariant)
+                                color = AppTheme.colors.onSurfaceVariant
+                            )
                         }
                     }
                 }

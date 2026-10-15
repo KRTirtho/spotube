@@ -27,6 +27,7 @@
 
     <!-- Library toolbar -->
     <string name="library_screen_title">Your Library</string>
+    <string name="library_toolbar_compact_title">Library</string>
     <string name="library_tab_playlists">Playlists</string>
     <string name="library_tab_albums">Albums</string>
     <string name="library_tab_artists">Artists</string>
@@ -40,6 +41,59 @@
     <string name="library_action_close_search">Close filter</string>
     <string name="library_action_create_playlist">Create playlist</string>
     <string name="library_action_refresh_local_tracks">Refresh local tracks</string>
+    <string name="library_action_grid_view">Switch to grid view</string>
+    <string name="library_action_list_view">Switch to list view</string>
+    <string name="library_playlists_empty">No saved playlists</string>
+    <string name="library_playlists_no_results">No playlists match “%1$s”</string>
+    <string name="library_albums_empty">No saved albums</string>
+    <string name="library_albums_no_results">No albums match “%1$s”</string>
+    <string name="library_artists_empty">No saved artists</string>
+    <string name="library_artists_no_results">No artists match “%1$s”</string>
+
+    <!-- Local media -->
+    <string name="library_local_folders">Folders</string>
+    <string name="library_local_folder">Folder</string>
+    <string name="library_local_summary">%1$s • %2$s</string>
+    <plurals name="library_local_tracks_count">
+        <item quantity="one">%1$d track</item>
+        <item quantity="other">%1$d tracks</item>
+    </plurals>
+    <plurals name="library_local_folders_count">
+        <item quantity="one">%1$d folder</item>
+        <item quantity="other">%1$d folders</item>
+    </plurals>
+    <string name="library_local_back">Back to folders</string>
+    <string name="library_local_play_folder">Play folder</string>
+    <string name="library_local_permission_title">Audio access required</string>
+    <string name="library_local_permission_description">Allow audio access to browse music on your device.</string>
+    <string name="library_local_grant_access">Grant access</string>
+    <string name="library_local_empty_folders">No local folders found</string>
+    <string name="library_local_empty_tracks">No tracks in this folder</string>
+    <string name="library_local_no_results">No matching folders or tracks</string>
+    <string name="library_local_refresh_failed">Failed to refresh local media</string>
+
+    <!-- Downloads -->
+    <string name="downloads_summary">%1$d active • %2$d completed</string>
+    <string name="downloads_clear_completed">Clear completed</string>
+    <string name="downloads_empty">No downloads yet</string>
+    <string name="downloads_status_downloading">Downloading %1$d%</string>
+    <string name="downloads_status_queued">Queued</string>
+    <string name="downloads_status_completed">Completed</string>
+    <string name="downloads_status_cancelled">Cancelled</string>
+    <string name="downloads_status_failed">Failed</string>
+    <string name="downloads_status_failed_error">Failed: %1$s</string>
+    <string name="downloads_action_cancel">Cancel download</string>
+    <string name="downloads_action_retry">Retry download</string>
+    <string name="downloads_action_remove">Remove download</string>
+
+    <!-- Shared media items -->
+    <string name="media_artist">Artist</string>
+    <string name="media_blacklisted">Blacklisted</string>
+    <string name="media_liked_tracks">Liked Tracks</string>
+    <string name="media_saved_songs">Your saved songs</string>
+    <string name="media_unknown_artist">Unknown artist</string>
+    <string name="media_preview_title">Track title</string>
+    <string name="media_preview_subtitle">Artist name</string>
 
     <string name="accessibility_selected">Selected</string>
 
@@ -122,11 +176,21 @@
     <string name="settings_local_media_folders_title">Local media folders</string>
     <string name="settings_local_media_folders_subtitle_current">Custom folders to scan on desktop. Added: %1$d</string>
     <string name="settings_local_media_folders_subtitle_empty">No custom folder added yet</string>
-    <string name="settings_local_media_folders_description">Use the picker to add folders. Download folder override is included automatically.</string>
+    <string name="settings_local_media_folders_description">Custom folders for your local music library.</string>
     <string name="settings_local_media_folders_manage">Manage</string>
     <string name="settings_local_media_folders_add_action">Add folder</string>
     <string name="settings_local_media_folders_remove_action">Remove folder</string>
     <string name="settings_local_media_folders_none_added">No custom folders added.</string>
+    <string name="settings_local_media_folders_remove_named">Remove %1$s from the scan list</string>
+    <string name="settings_local_media_folders_automatic_both">Download and music cache folders are included automatically.</string>
+    <string name="settings_local_media_folders_automatic_downloads">Your download folder is included automatically.</string>
+    <string name="settings_local_media_folders_automatic_cache">The music cache folder is included automatically.</string>
+    <string name="settings_local_media_folders_saving">Saving…</string>
+    <string name="settings_local_media_folders_save_error">Couldn’t save folders. Your changes are still here; try again.</string>
+    <plurals name="settings_local_media_folders_count">
+        <item quantity="one">%1$d folder</item>
+        <item quantity="other">%1$d folders</item>
+    </plurals>
     <string name="settings_download_format_title">Download music format</string>
     <string name="settings_download_format_subtitle_current">Preferred codec and container for downloads. Current: %1$s</string>
     <string name="settings_download_quality_title">Download music quality</string>

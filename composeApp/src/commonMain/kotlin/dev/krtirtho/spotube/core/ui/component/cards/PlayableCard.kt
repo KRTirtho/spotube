@@ -25,10 +25,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -38,21 +34,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.InputMode
+import androidx.compose.ui.platform.LocalInputModeManager
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.ui.component.LocalAnimatedVisibilityScope
 import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
 import dev.krtirtho.spotube.core.ui.component.sharedElementOrNone
@@ -67,6 +60,8 @@ import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.player_add_to_queue_content_description
 import spotube.composeapp.generated.resources.player_pause_content_description
 import spotube.composeapp.generated.resources.player_play_content_description
+import spotube.composeapp.generated.resources.media_preview_title
+import spotube.composeapp.generated.resources.media_preview_subtitle
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -79,22 +74,37 @@ fun PlayableCard(
     onPlay: (() -> Unit)? = null,
     onAddToQueue: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
-    sharedElementKey: String? = null) {
-    val interactionSource = remember { MutableInteractionSource() }
+    sharedElementKey: String? = null,
+    listMode: Boolean = false
+) {
+    if (listMode) {
+        PlayableListTile(
+            title,
+            subtitle,
+            imageURL,
+            isPlaying,
+            onClick,
+            onPlay,
+            onAddToQueue,
+            modifier,
+            sharedElementKey
+        )
+        return
+    }
+    val touchInput = LocalInputModeManager.current.inputMode == InputMode.Touch
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = { onClick?.invoke() }, enabled = true)
-            .width(160.dp)
-            .hoverable(interactionSource = interactionSource)) {
+    MediaCardSurface(
+        modifier = modifier.width(160.dp),
+        onClick = onClick ?: onPlay,
+        interactive = onClick != null || onPlay != null || onAddToQueue != null
+    ) { highlighted ->
         Column(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.fillMaxWidth().shimmerApply()) {
-                AsyncImage(
+                MediaArtwork(
                     model = imageURL,
-                    contentDescription = title,
+                    title = title,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
@@ -102,19 +112,21 @@ fun PlayableCard(
                         .sharedElementOrNone(
                             key = sharedElementKey,
                             sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope),
-                    contentScale = ContentScale.Crop)
+                            animatedVisibilityScope = animatedVisibilityScope
+                        ),
+                    shape = RoundedCornerShape(8.dp)
+                )
 
                 if (onPlay != null || onAddToQueue != null)
                     Box(
                         modifier = Modifier.fillMaxWidth().aspectRatio(1f).padding(8.dp),
                         contentAlignment = Alignment.BottomEnd
                     ) {
-                        val isHovered by interactionSource.collectIsHoveredAsState()
                         this@Column.AnimatedVisibility(
-                            visible = isHovered || (isPlaying && onPlay != null),
+                            visible = highlighted || touchInput || (isPlaying && onPlay != null),
                             enter = fadeIn(),
-                            exit = fadeOut()) {
+                            exit = fadeOut()
+                        ) {
                             Column(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 modifier = Modifier.padding(4.dp)
@@ -130,7 +142,9 @@ fun PlayableCard(
                                         MillenniumIcon(
                                             imageVector = Iconsax.IconsaxAddSquare,
                                             contentDescription = stringResource(
-                                                Res.string.player_add_to_queue_content_description))
+                                                Res.string.player_add_to_queue_content_description
+                                            )
+                                        )
                                     }
                                     Spacer(modifier = Modifier.height(8.dp))
                                 }
@@ -150,7 +164,9 @@ fun PlayableCard(
                                                     Res.string.player_pause_content_description
                                                 } else {
                                                     Res.string.player_play_content_description
-                                                }))
+                                                }
+                                            )
+                                        )
                                     }
                                 }
                             }
@@ -164,7 +180,8 @@ fun PlayableCard(
                     text = title,
                     style = AppTheme.typography.titleSmall,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
+                    overflow = TextOverflow.Ellipsis
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 subtitle?.let {
                     TextWithShimmer(
@@ -172,7 +189,8 @@ fun PlayableCard(
                         style = AppTheme.typography.bodySmall,
                         color = AppTheme.colors.onSurfaceVariant,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis)
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
         }
@@ -185,8 +203,8 @@ fun PlayableCard(
 private fun PlayableCardPreview() {
     Box {
         PlayableCard(
-            title = "Sample Title",
-            subtitle = "Sample Subtitle",
+            title = stringResource(Res.string.media_preview_title),
+            subtitle = stringResource(Res.string.media_preview_subtitle),
             imageURL = "https://placehold.co/600x400",
             isPlaying = true,
             onClick = {},

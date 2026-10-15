@@ -1,158 +1,76 @@
-/*
- * Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+/* Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 package dev.krtirtho.spotube.modules.library.album
 
-
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-
-import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composeunstyled.Text
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.album.MetadataAlbum
 import dev.krtirtho.spotube.core.ui.component.AlbumCard
 import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
-import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
-import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import dev.krtirtho.spotube.modules.library.LibraryMediaCollection
+import dev.krtirtho.spotube.modules.library.LibraryViewMode
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun LibraryAlbumsScreen(
     modifier: Modifier = Modifier,
+    viewMode: LibraryViewMode = LibraryViewMode.Grid,
     viewModel: LibraryAlbumsViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val gridState = rememberLazyGridState()
+    when (val current = state) {
+        is LibraryAlbumsState.Error -> Box(
+            modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            ErrorDisplay(errorMessage = current.message, onRetry = viewModel::refresh)
+        }
 
-
-    LaunchedEffect(gridState) {
-        snapshotFlow { gridState.layoutInfo }
-            .map { layoutInfo ->
-                val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                val totalItems = layoutInfo.totalItemsCount
-                Pair(lastVisibleIndex, totalItems)
-            }
-            .distinctUntilChanged()
-            .collect { (lastVisibleIndex, totalItems) ->
-                if (
-                    lastVisibleIndex != null &&
-                    totalItems > 0 &&
-                    lastVisibleIndex >= totalItems - 4
-                ) {
-                    viewModel.loadMoreData()
+        else -> {
+            val data = current as? LibraryAlbumsState.Data
+            if (data != null && data.items.isEmpty() && current !is LibraryAlbumsState.Data.LoadingMore) {
+                Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        if (data.query.isNotBlank()) stringResource(
+                            Res.string.library_albums_no_results,
+                            data.query
+                        )
+                        else stringResource(Res.string.library_albums_empty)
+                    )
                 }
-            }
-    }
-
-    Column(modifier = modifier) {
-        when (state) {
-            is LibraryAlbumsState.Loading -> {
-                val shellBottomInset = LocalAppShellBottomInset.current
-                val contentPadding = remember(shellBottomInset) {
-                    PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
-                }
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(160.dp),
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = contentPadding,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(8) {
-                        SkeletonTree(true) {
-                            PlayableCard(
-                                title = "Album Title",
-                                subtitle = "Artist Name",
-                                imageURL = "https://placehold.co/600x400"
-                            )
-                        }
-                    }
-                }
-            }
-
-            is LibraryAlbumsState.Error -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    ErrorDisplay(
-                        errorMessage = (state as LibraryAlbumsState.Error).message,
-                        onRetry = { viewModel.refresh() })
-                }
-            }
-
-            is LibraryAlbumsState.Data -> {
-                val dataState = state as LibraryAlbumsState.Data
-                if (dataState.items.isEmpty() && state !is LibraryAlbumsState.Data.LoadingMore) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        when {
-                            dataState.query.isNotBlank() -> Text("No albums found for '${dataState.query}'")
-                            else -> Text("No saved albums")
-                        }
-                    }
-                } else {
-                    val shellBottomInset = LocalAppShellBottomInset.current
-                    val contentPadding = remember(shellBottomInset) {
-                        PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
-                    }
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(160.dp),
-                        state = gridState,
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = contentPadding,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        items(dataState.items, key = { it.id }) { album ->
-                            AlbumCard(
-                                album = album,
-                                modifier = Modifier.fillMaxWidth()
-                            )
-                        }
-
-                        if (state is LibraryAlbumsState.Data.LoadingMore) {
-                            items(4) {
-                                SkeletonTree(true) {
-                                    PlayableCard(
-                                        title = "Album Title",
-                                        subtitle = "Artist Name",
-                                        imageURL = "https://placehold.co/600x400"
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            } else LibraryMediaCollection<MetadataAlbum.Detailed>(
+                items = data?.items.orEmpty(), itemKey = { it.id }, viewMode = viewMode,
+                loading = current is LibraryAlbumsState.Loading,
+                loadingMore = current is LibraryAlbumsState.Data.LoadingMore,
+                onViewportChanged = viewModel::onItemsVisible,
+                itemContent = { item, list ->
+                    AlbumCard(
+                        item,
+                        Modifier.fillMaxWidth(),
+                        listMode = list
+                    )
+                },
+                skeleton = { list ->
+                    PlayableCard(
+                        stringResource(Res.string.media_preview_title),
+                        stringResource(Res.string.media_preview_subtitle),
+                        modifier = Modifier.fillMaxWidth(),
+                        listMode = list
+                    )
+                },
+                modifier = modifier
+            )
         }
     }
 }

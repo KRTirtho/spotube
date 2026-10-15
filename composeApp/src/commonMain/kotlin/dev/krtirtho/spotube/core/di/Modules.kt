@@ -82,6 +82,7 @@ import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import dev.krtirtho.spotube.modules.settings.UserSettingsSource
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.JamSettingsViewModel
+import dev.krtirtho.spotube.modules.settings.LocalMediaFoldersViewModel
 import dev.krtirtho.spotube.modules.shell.AppShellViewModel
 import dev.krtirtho.spotube.modules.shell.PlayerOptionsViewModel
 import dev.krtirtho.spotube.modules.shell.alternative_track.AlternativeTrackContentViewModel
@@ -142,6 +143,13 @@ val sharedModules = module {
     singleOf(::SettingsRepository) { bind<UserSettingsSource>() }
     viewModelOf(::SettingsViewModel) { bind<SettingsProvider>() }
     viewModelOf(::JamSettingsViewModel)
+    viewModel {
+        val repository = get<SettingsRepository>()
+        LocalMediaFoldersViewModel(repository.userSettings) { folders ->
+            val current = repository.getCurrentSettings()
+            repository.updateSettings(current.copy(localMediaFolders = folders))
+        }
+    }
 
     // Welcome / Onboarding
     singleOf(::WelcomeRepository)

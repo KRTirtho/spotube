@@ -51,15 +51,14 @@ sealed interface LibraryPlaylistsState {
             override val allItems: List<MetadataPlaylist> = emptyList(),
             override val nextPagination: PaginationStrategy? = null
         ) : Data {
-            override val items: List<MetadataPlaylist>
-                get() = if (query.isNotBlank()) {
-                    allItems.filter {
-                        it.title.contains(query, ignoreCase = true) ||
-                                (it.description?.contains(query, ignoreCase = true) == true)
-                    }
-                } else {
-                    allItems
+            override val items: List<MetadataPlaylist> = if (query.isNotBlank()) {
+                allItems.filter {
+                    it.title.contains(query, ignoreCase = true) ||
+                            (it.description?.contains(query, ignoreCase = true) == true)
                 }
+            } else {
+                allItems
+            }
 
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 query = query,
@@ -73,15 +72,14 @@ sealed interface LibraryPlaylistsState {
             override val allItems: List<MetadataPlaylist> = emptyList(),
             override val nextPagination: PaginationStrategy? = null
         ) : Data {
-            override val items: List<MetadataPlaylist>
-                get() = if (query.isNotBlank()) {
-                    allItems.filter {
-                        it.title.contains(query, ignoreCase = true) ||
-                                (it.description?.contains(query, ignoreCase = true) == true)
-                    }
-                } else {
-                    allItems
+            override val items: List<MetadataPlaylist> = if (query.isNotBlank()) {
+                allItems.filter {
+                    it.title.contains(query, ignoreCase = true) ||
+                            (it.description?.contains(query, ignoreCase = true) == true)
                 }
+            } else {
+                allItems
+            }
         }
     }
 
@@ -151,6 +149,17 @@ class LibraryPlaylistsViewModel(
     fun onQueryChange(query: String) {
         libraryState.setQuery(LibraryTab.Playlists, query)
     }
+
+    fun onItemsVisible(lastVisibleIndex: Int?, totalItems: Int) {
+        if (lastVisibleIndex != null && totalItems > 0 && lastVisibleIndex >= totalItems - 4) {
+            viewModelScope.launch { loadMoreData() }
+        }
+    }
+
+    fun createPlaylist(data: PlaylistFormData) = createPlaylist(
+        data.name, data.description.ifBlank { null }, data.isPublic,
+        data.isCollaborating, data.imageBase64, emptyList()
+    )
 
     fun refresh() {
         viewModelScope.launch {

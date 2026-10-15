@@ -17,52 +17,34 @@
 
 package dev.krtirtho.spotube.core.ui.component
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-
-import dev.krtirtho.spotube.core.ui.theming.AppTheme
-import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.component.cards.AvatarCard
 import org.koin.compose.koinInject
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun ArtistCard(
     artist: MetadataArtist.Basic,
     modifier: Modifier = Modifier,
-    isBlacklisted: Boolean = false) {
+    isBlacklisted: Boolean = false,
+    listMode: Boolean = false
+) {
     val navigationCommands = koinInject<NavigationCommands>()
 
     AvatarCard(
         title = artist.name,
-        subtitle = if (isBlacklisted) "Blacklisted" else "Artist",
+        subtitle = stringResource(if (isBlacklisted) Res.string.media_blacklisted else Res.string.media_artist),
         imageURL = artist.thumbnails.firstOrNull()?.url,
         onClick = {
             navigationCommands.navigateTo(Routes.Artist(artist.id))
         },
         modifier = modifier,
-        isBlacklisted = isBlacklisted)
+        isBlacklisted = isBlacklisted,
+        listMode = listMode
+    )
 }
-

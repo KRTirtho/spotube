@@ -23,13 +23,64 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.map
+
+enum class DownloadRowAction { Cancel, Retry, Remove }
+
+data class DownloadRowUiState(
+    val id: String,
+    val title: String,
+    val artists: String,
+    val artworkUrl: String?,
+    val status: DownloadStatus,
+    val progress: Float,
+    val percent: Int,
+    val error: String?,
+    val action: DownloadRowAction
+)
+
+data class DownloadsUiState(
+    val items: List<DownloadRowUiState> = emptyList(),
+    val activeCount: Int = 0,
+    val completedCount: Int = 0,
+    val canClearCompleted: Boolean = false
+)
+
+internal fun downloadsUiState(items: List<DownloadItem>): DownloadsUiState {
+    val completedCount = items.count { it.status == DownloadStatus.Completed }
+    return DownloadsUiState(
+        items = items.map { item ->
+            val progress = item.progress.takeIf { it.isFinite() }?.coerceIn(0f, 1f) ?: 0f
+            DownloadRowUiState(
+                item.id, item.title, item.artists,
+                (item.track?.album?.thumbnails
+                    ?: item.track?.thumbnails)?.firstOrNull()?.url?.takeIf { it.isNotBlank() },
+                item.status, progress, (progress * 100).toInt(),
+                item.errorMessage ?: (item.status as? DownloadStatus.Failed)?.error,
+                when (item.status) {
+                    DownloadStatus.Completed -> DownloadRowAction.Remove
+                    is DownloadStatus.Failed, DownloadStatus.Cancelled -> DownloadRowAction.Retry
+                    else -> DownloadRowAction.Cancel
+                }
+            )
+        },
+        activeCount = items.count { it.status == DownloadStatus.Downloading || it.status == DownloadStatus.Queued },
+        completedCount = completedCount,
+        canClearCompleted = completedCount > 0
+    )
+}
 
 class DownloadsViewModel(
-    private val downloadManager: DownloadManager) : ViewModel() {
+    private val downloadManager: DownloadManager
+) : ViewModel() {
     val downloads: StateFlow<List<DownloadItem>> = downloadManager.downloadsFlow.stateIn(
         viewModelScope,
         SharingStarted.WhileSubscribed(5000),
-        emptyList())
+        emptyList()
+    )
+
+    val uiState = downloadManager.downloadsFlow.map(::downloadsUiState)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DownloadsUiState())
 
     fun downloadTrack(track: MetadataTrack) {
         downloadManager.enqueue(track)

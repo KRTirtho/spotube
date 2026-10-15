@@ -51,14 +51,13 @@ sealed interface LibraryArtistsState {
             override val allItems: List<MetadataArtist.Basic> = emptyList(),
             override val nextPagination: PaginationStrategy? = null
         ) : Data {
-            override val items: List<MetadataArtist.Basic>
-                get() = if (query.isNotBlank()) {
-                    allItems.filter { artist ->
-                        artist.name.contains(query, ignoreCase = true)
-                    }
-                } else {
-                    allItems
+            override val items: List<MetadataArtist.Basic> = if (query.isNotBlank()) {
+                allItems.filter { artist ->
+                    artist.name.contains(query, ignoreCase = true)
                 }
+            } else {
+                allItems
+            }
 
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 query = query,
@@ -72,14 +71,13 @@ sealed interface LibraryArtistsState {
             override val allItems: List<MetadataArtist.Basic> = emptyList(),
             override val nextPagination: PaginationStrategy? = null
         ) : Data {
-            override val items: List<MetadataArtist.Basic>
-                get() = if (query.isNotBlank()) {
-                    allItems.filter { artist ->
-                        artist.name.contains(query, ignoreCase = true)
-                    }
-                } else {
-                    allItems
+            override val items: List<MetadataArtist.Basic> = if (query.isNotBlank()) {
+                allItems.filter { artist ->
+                    artist.name.contains(query, ignoreCase = true)
                 }
+            } else {
+                allItems
+            }
         }
     }
 
@@ -162,6 +160,12 @@ class LibraryArtistsViewModel(
 
     fun onQueryChange(query: String) {
         libraryState.setQuery(LibraryTab.Artists, query)
+    }
+
+    fun onItemsVisible(lastVisibleIndex: Int?, totalItems: Int) {
+        if (lastVisibleIndex != null && totalItems > 0 && lastVisibleIndex >= totalItems - 4) {
+            viewModelScope.launch { loadMoreData() }
+        }
     }
 
     fun refresh() {

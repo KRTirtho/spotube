@@ -1,180 +1,94 @@
-/*
- * Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Affero General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+/* Copyright (C) 2026 Kingkor Roy Tirtho and Spotube Contributors
+ * SPDX-License-Identifier: AGPL-3.0-or-later
  */
-
 package dev.krtirtho.spotube.modules.library.playlist
 
-
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composeunstyled.Text
+import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.playlist.MetadataPlaylist
 import dev.krtirtho.spotube.core.ui.component.ErrorDisplay
 import dev.krtirtho.spotube.core.ui.component.LikedTracksCard
 import dev.krtirtho.spotube.core.ui.component.PlaylistCard
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
-import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
-import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
+import dev.krtirtho.spotube.modules.library.LibraryMediaCollection
+import dev.krtirtho.spotube.modules.library.LibraryViewMode
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun LibraryPlaylistsScreen(
     modifier: Modifier = Modifier,
     showCreatePlaylist: Boolean = false,
     onDismissCreatePlaylist: () -> Unit = {},
+    viewMode: LibraryViewMode = LibraryViewMode.Grid,
     viewModel: LibraryPlaylistsViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val gridState = rememberLazyGridState()
-
-    LaunchedEffect(gridState) {
-        snapshotFlow { gridState.layoutInfo }
-            .map { layoutInfo ->
-                val lastVisibleIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                val totalItems = layoutInfo.totalItemsCount
-                Pair(lastVisibleIndex, totalItems)
+    Column(modifier) {
+        when (val current = state) {
+            is LibraryPlaylistsState.Error -> Box(
+                Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                ErrorDisplay(errorMessage = current.message, onRetry = viewModel::refresh)
             }
-            .distinctUntilChanged()
-            .collect { (lastVisibleIndex, totalItems) ->
-                if (
-                    lastVisibleIndex != null &&
-                    totalItems > 0 &&
-                    lastVisibleIndex >= totalItems - 4
-                ) {
-                    viewModel.loadMoreData()
-                }
-            }
-    }
 
-    Column(modifier = modifier) {
-        when (state) {
-            is LibraryPlaylistsState.Loading -> {
-                val shellBottomInset = LocalAppShellBottomInset.current
-                val contentPadding = remember(shellBottomInset) {
-                    PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
-                }
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(160.dp),
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = contentPadding,
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    items(8) {
-                        SkeletonTree(true) {
-                            PlayableCard(
-                                title = "Playlist Name",
-                                subtitle = "By Artist",
-                                imageURL = "https://placehold.co/600x400"
+            else -> {
+                val data = current as? LibraryPlaylistsState.Data
+                if (data != null && data.items.isEmpty() && current !is LibraryPlaylistsState.Data.LoadingMore) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            if (data.query.isNotBlank()) stringResource(
+                                Res.string.library_playlists_no_results,
+                                data.query
                             )
-                        }
-                    }
-                }
-            }
-
-            is LibraryPlaylistsState.Error -> {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    ErrorDisplay(
-                        errorMessage = (state as LibraryPlaylistsState.Error).message,
-                        onRetry = { viewModel.refresh() })
-                }
-            }
-
-            is LibraryPlaylistsState.Data -> {
-                val dataState = state as LibraryPlaylistsState.Data
-                if (dataState.items.isEmpty() && state !is LibraryPlaylistsState.Data.LoadingMore) {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        when {
-                            dataState.query.isNotEmpty() -> Text("No playlists found for '${dataState.query}'")
-                            else -> Text("No saved playlists")
-                        }
+                            else stringResource(Res.string.library_playlists_empty)
+                        )
                     }
                 } else {
-                    val shellBottomInset = LocalAppShellBottomInset.current
-                    val contentPadding = remember(shellBottomInset) {
-                        PaddingValues(top = 16.dp, bottom = 16.dp + shellBottomInset)
-                    }
-
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(160.dp),
-                        state = gridState,
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = contentPadding,
-                        horizontalArrangement = Arrangement.spacedBy(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        item {
+                    LibraryMediaCollection<MetadataPlaylist>(
+                        items = data?.items.orEmpty(), itemKey = { it.id }, viewMode = viewMode,
+                        loading = current is LibraryPlaylistsState.Loading,
+                        loadingMore = current is LibraryPlaylistsState.Data.LoadingMore,
+                        onViewportChanged = viewModel::onItemsVisible,
+                        header = { list ->
                             LikedTracksCard(
-                                modifier = Modifier.fillMaxWidth()
+                                Modifier.fillMaxWidth(),
+                                listMode = list
                             )
-                        }
-
-                        items(dataState.items, key = { it.id }) { playlist ->
+                        },
+                        itemContent = { item, list ->
                             PlaylistCard(
-                                playlist = playlist,
-                                modifier = Modifier.fillMaxWidth()
+                                item,
+                                Modifier.fillMaxWidth(),
+                                listMode = list
+                            )
+                        },
+                        skeleton = { list ->
+                            PlayableCard(
+                                stringResource(Res.string.media_preview_title),
+                                stringResource(Res.string.media_preview_subtitle),
+                                modifier = Modifier.fillMaxWidth(),
+                                listMode = list
                             )
                         }
-
-                        if (state is LibraryPlaylistsState.Data.LoadingMore) {
-                            items(4) {
-                                SkeletonTree(true) {
-                                    PlayableCard(
-                                        title = "Playlist Name",
-                                        subtitle = "By Artist",
-                                        imageURL = "https://placehold.co/600x400"
-                                    )
-                                }
-                            }
-                        }
-                    }
+                    )
                 }
             }
         }
-
         PlaylistFormSheet(
             visible = showCreatePlaylist,
             onDismiss = onDismissCreatePlaylist,
-            onSubmit = { data ->
-                viewModel.createPlaylist(
-                    name = data.name,
-                    description = data.description.ifBlank { null },
-                    isPublic = data.isPublic,
-                    isCollaborating = data.isCollaborating,
-                    imageBase64 = data.imageBase64,
-                    trackIds = emptyList()
-                )
-            })
+            onSubmit = viewModel::createPlaylist
+        )
     }
 }

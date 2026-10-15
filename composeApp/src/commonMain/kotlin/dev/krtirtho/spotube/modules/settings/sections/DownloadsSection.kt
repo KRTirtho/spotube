@@ -18,61 +18,42 @@
 package dev.krtirtho.spotube.modules.settings.sections
 
 
-import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 
-import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.UserSettings
+import dev.krtirtho.spotube.modules.settings.LocalMediaFoldersViewModel
+import dev.krtirtho.spotube.modules.settings.LocalMediaFoldersUiState
+import dev.krtirtho.spotube.modules.settings.components.LocalMediaFoldersEditorContent
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
 import dev.krtirtho.spotube.modules.settings.components.SelectionSettingCard
 import dev.krtirtho.spotube.modules.settings.components.SettingCardItem
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
-import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFolder
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFolderAdd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicPlay
-import dev.krtirtho.spotube.resources.iconsax.IconsaxTrash
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVerticalSetting
 import io.github.vinceglb.filekit.dialogs.compose.rememberDirectoryPickerLauncher
 import io.github.vinceglb.filekit.path
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.settings_action_cancel
-import spotube.composeapp.generated.resources.settings_action_save
 import spotube.composeapp.generated.resources.settings_download_folder_current
 import spotube.composeapp.generated.resources.settings_download_folder_default
 import spotube.composeapp.generated.resources.settings_download_folder_title
 import spotube.composeapp.generated.resources.settings_download_format_subtitle_current
 import spotube.composeapp.generated.resources.settings_download_format_title
 import spotube.composeapp.generated.resources.settings_download_quality_title
-import spotube.composeapp.generated.resources.settings_local_media_folders_add_action
-import spotube.composeapp.generated.resources.settings_local_media_folders_description
 import spotube.composeapp.generated.resources.settings_local_media_folders_manage
-import spotube.composeapp.generated.resources.settings_local_media_folders_none_added
-import spotube.composeapp.generated.resources.settings_local_media_folders_remove_action
 import spotube.composeapp.generated.resources.settings_local_media_folders_subtitle_current
 import spotube.composeapp.generated.resources.settings_local_media_folders_subtitle_empty
 import spotube.composeapp.generated.resources.settings_local_media_folders_title
@@ -82,11 +63,13 @@ import spotube.composeapp.generated.resources.settings_subtitle_current
 internal fun LazyListScope.downloadsSection(
     settings: UserSettings,
     settingsViewModel: SettingsViewModel,
-    includeHeader: Boolean = true) {
+    includeHeader: Boolean = true
+) {
     val downloadFormats = availableAudioFormats(settings.downloadMusicFormat, downloadFormatPresets)
     val downloadQualities = availableAudioQualities(
         format = settings.downloadMusicFormat,
-        current = settings.downloadMusicQuality)
+        current = settings.downloadMusicQuality
+    )
 
     if (includeHeader) {
         settingsSectionHeader(Res.string.settings_section_downloads)
@@ -104,14 +87,7 @@ internal fun LazyListScope.downloadsSection(
                 )
             },
             {
-                LocalMediaFoldersSettingCard(
-                    folders = settings.localMediaFolders,
-                    onFoldersSaved = { folders ->
-                        settingsViewModel.updateSettings {
-                            copy(localMediaFolders = folders)
-                        }
-                    }
-                )
+                LocalMediaFoldersSettingCard()
             },
             {
                 SelectionSettingCard(
@@ -121,7 +97,10 @@ internal fun LazyListScope.downloadsSection(
                         settings.downloadMusicFormat.displayLabel()
                     ),
                     icon = {
-                        SettingsItemIcon(Iconsax.IconsaxMusicPlay, stringResource(Res.string.settings_download_format_title))
+                        SettingsItemIcon(
+                            Iconsax.IconsaxMusicPlay,
+                            stringResource(Res.string.settings_download_format_title)
+                        )
                     },
                     selectedOption = settings.downloadMusicFormat,
                     options = downloadFormats,
@@ -130,7 +109,8 @@ internal fun LazyListScope.downloadsSection(
                         settingsViewModel.updateSettings {
                             copy(
                                 downloadMusicFormat = format,
-                                downloadMusicQuality = format.resolveQuality(downloadMusicQuality))
+                                downloadMusicQuality = format.resolveQuality(downloadMusicQuality)
+                            )
                         }
                     }
                 )
@@ -143,7 +123,10 @@ internal fun LazyListScope.downloadsSection(
                         settings.downloadMusicQuality.displayLabel()
                     ),
                     icon = {
-                        SettingsItemIcon(Iconsax.IconsaxVerticalSetting, stringResource(Res.string.settings_download_quality_title))
+                        SettingsItemIcon(
+                            Iconsax.IconsaxVerticalSetting,
+                            stringResource(Res.string.settings_download_quality_title)
+                        )
                     },
                     selectedOption = settings.downloadMusicQuality,
                     options = downloadQualities,
@@ -161,7 +144,8 @@ internal fun LazyListScope.downloadsSection(
 @Composable
 private fun DownloadFolderSettingCard(
     folder: String?,
-    onFolderSelected: (String?) -> Unit) {
+    onFolderSelected: (String?) -> Unit
+) {
     val pickerLauncher = rememberDirectoryPickerLauncher { directory ->
         if (directory != null) {
             val normalized = normalizePath(directory.path)
@@ -177,14 +161,18 @@ private fun DownloadFolderSettingCard(
             stringResource(Res.string.settings_download_folder_current, it)
         } ?: stringResource(Res.string.settings_download_folder_default),
         icon = {
-            SettingsItemIcon(Iconsax.IconsaxDirectboxReceive, stringResource(Res.string.settings_download_folder_title))
+            SettingsItemIcon(
+                Iconsax.IconsaxDirectboxReceive,
+                stringResource(Res.string.settings_download_folder_title)
+            )
         },
         trailingContent = {
             MillenniumIconButton(
                 icon = Iconsax.IconsaxFolderAdd,
                 contentDescription = stringResource(Res.string.settings_download_folder_title),
                 onClick = { pickerLauncher.launch() },
-                style = MillenniumIconButtonStyle.Quiet)
+                style = MillenniumIconButtonStyle.Quiet
+            )
         },
         onClick = {
             pickerLauncher.launch()
@@ -194,17 +182,17 @@ private fun DownloadFolderSettingCard(
 
 @Composable
 private fun LocalMediaFoldersSettingCard(
-    folders: List<String>,
-    onFoldersSaved: (List<String>) -> Unit) {
-    var isDialogOpen by remember { mutableStateOf(false) }
-
-    val subtitlePreview = when {
-        folders.isEmpty() -> stringResource(Res.string.settings_local_media_folders_subtitle_empty)
-        folders.size == 1 -> folders.first()
-        else -> stringResource(
-            Res.string.settings_local_media_folders_subtitle_current,
-            folders.size)
-    }
+    viewModel: LocalMediaFoldersViewModel = koinViewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val pickerLauncher =
+        rememberDirectoryPickerLauncher { directory -> viewModel.addFolder(directory?.path) }
+    val subtitlePreview = state.singleConfiguredPath ?: if (state.configuredCount == 0) {
+        stringResource(Res.string.settings_local_media_folders_subtitle_empty)
+    } else stringResource(
+        Res.string.settings_local_media_folders_subtitle_current,
+        state.configuredCount
+    )
 
     SettingCardItem(
         title = stringResource(Res.string.settings_local_media_folders_title),
@@ -212,117 +200,44 @@ private fun LocalMediaFoldersSettingCard(
         icon = {
             SettingsItemIcon(
                 Iconsax.IconsaxFolder,
-                stringResource(Res.string.settings_local_media_folders_title))
+                stringResource(Res.string.settings_local_media_folders_title)
+            )
         },
         trailingContent = {
             MillenniumButton(
-                onClick = { isDialogOpen = true },
-                style = MillenniumButtonStyle.Secondary) {
+                onClick = viewModel::open,
+                style = MillenniumButtonStyle.Secondary
+            ) {
                 Text(stringResource(Res.string.settings_local_media_folders_manage))
             }
         },
-        onClick = {
-            isDialogOpen = true
-        }
+        onClick = viewModel::open
     )
 
-    if (isDialogOpen) {
+    if (state.isOpen) {
         LocalMediaFoldersDialog(
-            folders = folders,
-            onDismiss = { isDialogOpen = false },
-            onFoldersSaved = onFoldersSaved)
+            state = state,
+            onAddFolder = { pickerLauncher.launch() },
+            onRemoveFolder = viewModel::removeFolder,
+            onSave = viewModel::save,
+            onDismiss = viewModel::dismiss
+        )
     }
 }
 
 @Composable
 private fun LocalMediaFoldersDialog(
-    folders: List<String>,
-    onDismiss: () -> Unit,
-    onFoldersSaved: (List<String>) -> Unit) {
-    val draftFolders = remember(folders) {
-        mutableStateListOf<String>().apply { addAll(folders) }
-    }
-    val pickerLauncher = rememberDirectoryPickerLauncher { directory ->
-        if (directory != null) {
-            val normalized = normalizePath(directory.path)
-            if (normalized.isNotEmpty() && draftFolders.none { normalizePath(it) == normalized }) {
-                draftFolders.add(normalized)
-            }
-        }
-    }
-
+    state: LocalMediaFoldersUiState,
+    onAddFolder: () -> Unit,
+    onRemoveFolder: (String) -> Unit,
+    onSave: () -> Unit,
+    onDismiss: () -> Unit
+) {
     MillenniumDialog(
         visible = true,
         onDismissRequest = onDismiss,
-        title = stringResource(Res.string.settings_local_media_folders_title)) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(
-                text = stringResource(Res.string.settings_local_media_folders_description),
-                style = AppTheme.typography.bodySmall,
-                color = AppTheme.colors.onSurfaceVariant)
-
-            MillenniumButton(
-                onClick = { pickerLauncher.launch() },
-                style = MillenniumButtonStyle.Secondary) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically) {
-                    MillenniumIcon(Iconsax.IconsaxAddSquare, contentDescription = null)
-                    Text(stringResource(Res.string.settings_local_media_folders_add_action))
-                }
-            }
-
-            if (draftFolders.isEmpty()) {
-                Box(modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)) {
-                    Text(
-                        text = stringResource(Res.string.settings_local_media_folders_none_added),
-                        style = AppTheme.typography.bodySmall,
-                        color = AppTheme.colors.onSurfaceVariant)
-                }
-            } else {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    draftFolders.forEachIndexed { index, folder ->
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                text = folder,
-                                modifier = Modifier.weight(1f),
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                style = AppTheme.typography.bodySmall)
-                            MillenniumIconButton(
-                                onClick = {
-                                    if (index in draftFolders.indices) {
-                                        draftFolders.removeAt(index)
-                                    }
-                                },
-                                style = MillenniumIconButtonStyle.Quiet) {
-                                MillenniumIcon(
-                                    imageVector = Iconsax.IconsaxTrash,
-                                    contentDescription = stringResource(
-                                        Res.string.settings_local_media_folders_remove_action))
-                            }
-                        }
-                    }
-                }
-            }
-
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                MillenniumButton(
-                    onClick = {
-                        onFoldersSaved(draftFolders.map(::normalizePath).filter { it.isNotBlank() }.distinct())
-                        onDismiss()
-                    }) {
-                    Text(stringResource(Res.string.settings_action_save))
-                }
-                MillenniumButton(
-                    onClick = onDismiss,
-                    style = MillenniumButtonStyle.Secondary) {
-                    Text(stringResource(Res.string.settings_action_cancel))
-                }
-            }
-        }
+        title = stringResource(Res.string.settings_local_media_folders_title)
+    ) {
+        LocalMediaFoldersEditorContent(state, onAddFolder, onRemoveFolder, onSave, onDismiss)
     }
 }
-

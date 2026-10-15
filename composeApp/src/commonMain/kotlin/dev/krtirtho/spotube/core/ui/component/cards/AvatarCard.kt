@@ -17,79 +17,67 @@
 
 package dev.krtirtho.spotube.core.ui.component.cards
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
-import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
-import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.artist.MetadataArtist
-import dev.krtirtho.spotube.core.navigation.NavigationCommands
-import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.misc.TextWithShimmer
 import dev.krtirtho.spotube.core.ui.misc.shimmerApply
-import org.koin.compose.koinInject
+import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import dev.krtirtho.spotube.resources.iconsax.User
 
 @Composable
 fun AvatarCard(
     title: String,
     subtitle: String? = null,
     imageURL: String? = null,
-    onClick: () -> Unit = {},
+    onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
-    isBlacklisted: Boolean = false) {
-    val backgroundColor = if (isBlacklisted) {
-        AppTheme.colors.error.copy(alpha = 0.1f)
-    } else {
-        Color.Transparent
+    isBlacklisted: Boolean = false,
+    listMode: Boolean = false
+) {
+    if (listMode) {
+        AvatarListTile(title, subtitle, imageURL, onClick, modifier, isBlacklisted)
+        return
     }
-    
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(backgroundColor)
-            .clickable(onClick = { onClick.invoke() }, enabled = true)
-            .width(160.dp)) {
+
+    MediaCardSurface(modifier.width(160.dp), onClick, isBlacklisted = isBlacklisted) {
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(CircleShape)
                     .padding(12.dp),
-                contentAlignment = Alignment.Center) {
-                AsyncImage(
+                contentAlignment = Alignment.Center
+            ) {
+                MediaArtwork(
                     model = imageURL,
-                    contentDescription = title,
+                    title = title,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
                         .clip(CircleShape)
                         .shimmerApply(),
-                    contentScale = ContentScale.Crop)
+                    shape = CircleShape,
+                    placeholderIcon = Iconsax.User
+                )
             }
             Column(
                 modifier = Modifier.fillMaxWidth().padding(12.dp)
@@ -99,17 +87,20 @@ fun AvatarCard(
                     style = AppTheme.typography.titleSmall,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.fillMaxWidth())
+                    modifier = Modifier.fillMaxWidth()
+                )
                 subtitle?.let {
+                    Spacer(Modifier.height(4.dp))
                     TextWithShimmer(
                         text = subtitle,
-                        style = AppTheme.typography.bodyMedium,
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.fillMaxWidth())
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
     }
 }
-

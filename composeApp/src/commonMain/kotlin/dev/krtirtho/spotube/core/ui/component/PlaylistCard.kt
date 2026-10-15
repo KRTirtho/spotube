@@ -40,7 +40,9 @@ fun PlaylistCard(
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     playbackHelper: CollectionPlaybackHelper = koinInject(),
     navigationCommands: NavigationCommands = koinInject(),
-    remotePlaybackController: RemotePlaybackController = koinInject()) {
+    remotePlaybackController: RemotePlaybackController = koinInject(),
+    listMode: Boolean = false
+) {
     val scope = rememberCoroutineScope()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
 
@@ -57,14 +59,18 @@ fun PlaylistCard(
             remotePlaybackController.requestCollectionPlay(
                 RemoteCollectionType.Playlist,
                 playlist.id,
-                playlist.title)
+                playlist.title
+            )
         },
         onAddToQueue = {
             remotePlaybackController.requestCollectionAddToQueue(
                 RemoteCollectionType.Playlist,
                 playlist.id,
-                playlist.title)
+                playlist.title
+            )
         },
         modifier = modifier,
-        sharedElementKey = "playlist_art_${playlist.id}")
+        sharedElementKey = "playlist_art_${playlist.id}",
+        listMode = listMode
+    )
 }

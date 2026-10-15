@@ -38,6 +38,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import kotlin.test.assertNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class LibraryToolbarTest {
@@ -109,6 +110,29 @@ class LibraryToolbarTest {
         assertEquals("Radiohead", library.uiState.value.searchState.text.toString())
     }
 
+    @Test
+    fun viewModeDefaultsAndOverridesArePerTab() = runTest {
+        assertEquals(LibraryViewMode.List, defaultLibraryViewMode(true))
+        assertEquals(LibraryViewMode.Grid, defaultLibraryViewMode(false))
+        library.toggleViewMode(isCompact = true)
+        runCurrent()
+        assertEquals(LibraryViewMode.Grid, library.uiState.value.viewModeOverride)
+        library.onTabSelected(LibraryTab.Albums)
+        runCurrent()
+        assertNull(library.uiState.value.viewModeOverride)
+        library.toggleViewMode(isCompact = false)
+        runCurrent()
+        assertEquals(LibraryViewMode.List, library.uiState.value.viewModeOverride)
+        library.onTabSelected(LibraryTab.Playlists)
+        runCurrent()
+        assertEquals(LibraryViewMode.Grid, library.uiState.value.viewModeOverride)
+        library.onTabSelected(LibraryTab.LocalTracks)
+        library.toggleViewMode(isCompact = true)
+        runCurrent()
+        assertFalse(library.uiState.value.canChangeView)
+        assertNull(library.uiState.value.viewModeOverride)
+    }
+
     @OptIn(ExperimentalComposeUiApi::class)
     @Test
     fun renderExpandedCompactAndSearchToolbars() {
@@ -128,14 +152,29 @@ class LibraryToolbarTest {
                     searchMode = searching,
                     searchState = TextFieldState(if (searching) "Muse" else ""),
                     canCreatePlaylist = tab == LibraryTab.Playlists,
-                    canRefresh = tab == LibraryTab.LocalTracks
+                    canRefresh = tab == LibraryTab.LocalTracks,
+                    canChangeView = tab != LibraryTab.LocalTracks
                 )
                 ImageComposeScene(width, 88) {
                     SpotubeTheme(UserSettings(theme = Theme.DARK)) {
                         MillenniumTopAppBar(
-                            title = { LibraryToolbarTitle(state, expandedDesktop) },
+                            title = {
+                                LibraryToolbarTitle(
+                                    state,
+                                    expandedDesktop,
+                                    mode.startsWith("compact-desktop")
+                                )
+                            },
                             actions = {
-                                LibraryToolbarActions(state, expandedDesktop, {}, {}, {}, {})
+                                LibraryToolbarActions(
+                                    state,
+                                    expandedDesktop,
+                                    {},
+                                    {},
+                                    {},
+                                    {},
+                                    compactDesktop = mode.startsWith("compact-desktop")
+                                )
                                 if (expandedDesktop || mode.startsWith("compact-desktop")) Spacer(
                                     Modifier.width(132.dp)
                                 )

@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.input.TextFieldState
@@ -38,6 +39,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composeunstyled.Text
 import com.composeunstyled.currentWindowWidthBreakpoint
@@ -63,6 +65,9 @@ import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumTextField
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.Grid
+import compose.icons.feathericons.List
 import spotube.composeapp.generated.resources.*
 
 @Composable
@@ -70,13 +75,24 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
     val state by libraryState.uiState.collectAsStateWithLifecycle()
     val expandedDesktop = getPlatform().isDesktop() &&
             (currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Expanded)
+    val isCompact = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Expanded
+    val compactDesktop = getPlatform().isDesktop() && isCompact
+    val viewMode = state.viewModeOverride ?: defaultLibraryViewMode(isCompact)
     val focusManager = LocalFocusManager.current
     val keyboard = LocalSoftwareKeyboardController.current
+
+    if (state.currentTab == LibraryTab.Downloads && !isCompact) {
+        DownloadsScreen(
+            headerInAppBar = true,
+            topContent = { if (!expandedDesktop) LibraryTabs(state, libraryState::onTabSelected) }
+        )
+        return
+    }
 
     Column(Modifier.fillMaxSize()) {
         ApplicationMainBar(
             backButton = false,
-            title = { LibraryToolbarTitle(state, expandedDesktop) },
+            title = { LibraryToolbarTitle(state, expandedDesktop, compactDesktop) },
             actions = {
                 LibraryToolbarActions(
                     state = state,
@@ -88,32 +104,26 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
                         libraryState.closeSearch()
                     },
                     onCreatePlaylist = libraryState::showCreatePlaylist,
-                    onRefresh = libraryState::refreshLocalTracks
+                    onRefresh = libraryState::refreshLocalTracks,
+                    onToggleView = { libraryState.toggleViewMode(isCompact) },
+                    viewMode = viewMode,
+                    compactDesktop = compactDesktop
                 )
             }
         )
         if (!expandedDesktop) {
-            LazyRow(
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(LibraryTab.entries) { tab ->
-                    MillenniumButton(
-                        onClick = { libraryState.onTabSelected(tab) },
-                        style = if (state.currentTab == tab) MillenniumButtonStyle.Primary else MillenniumButtonStyle.Secondary
-                    ) { Text(stringResource(tab.titleResource)) }
-                }
-            }
+            LibraryTabs(state, libraryState::onTabSelected)
         }
         Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
             when (state.currentTab) {
                 LibraryTab.Playlists -> LibraryPlaylistsScreen(
                     showCreatePlaylist = state.showCreatePlaylist,
-                    onDismissCreatePlaylist = libraryState::dismissCreatePlaylist
+                    onDismissCreatePlaylist = libraryState::dismissCreatePlaylist,
+                    viewMode = viewMode
                 )
 
-                LibraryTab.Albums -> LibraryAlbumsScreen()
-                LibraryTab.Artists -> LibraryArtistsScreen()
+                LibraryTab.Albums -> LibraryAlbumsScreen(viewMode = viewMode)
+                LibraryTab.Artists -> LibraryArtistsScreen(viewMode = viewMode)
                 LibraryTab.LocalTracks -> LibraryLocalTracksScreen()
                 LibraryTab.Downloads -> DownloadsScreen()
             }
@@ -122,7 +132,26 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
 }
 
 @Composable
-internal fun LibraryToolbarTitle(state: LibraryToolbarUiState, expandedDesktop: Boolean) {
+private fun LibraryTabs(state: LibraryToolbarUiState, onTabSelected: (LibraryTab) -> Unit) {
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(LibraryTab.entries) { tab ->
+            MillenniumButton(
+                onClick = { onTabSelected(tab) },
+                style = if (state.currentTab == tab) MillenniumButtonStyle.Primary else MillenniumButtonStyle.Secondary
+            ) { Text(stringResource(tab.titleResource)) }
+        }
+    }
+}
+
+@Composable
+internal fun LibraryToolbarTitle(
+    state: LibraryToolbarUiState,
+    expandedDesktop: Boolean,
+    compactDesktop: Boolean = false
+) {
     if (!expandedDesktop && state.searchMode) {
         LibraryFilterField(
             state.searchState,
@@ -131,7 +160,11 @@ internal fun LibraryToolbarTitle(state: LibraryToolbarUiState, expandedDesktop: 
             autoFocus = true
         )
     } else if (!expandedDesktop) {
-        Text(stringResource(Res.string.library_screen_title))
+        Text(
+            stringResource(if (compactDesktop) Res.string.library_toolbar_compact_title else Res.string.library_screen_title),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
     }
 }
 
@@ -142,13 +175,18 @@ internal fun RowScope.LibraryToolbarActions(
     onOpenSearch: () -> Unit,
     onCloseSearch: () -> Unit,
     onCreatePlaylist: () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
+    onToggleView: () -> Unit = {},
+    viewMode: LibraryViewMode = state.viewModeOverride ?: defaultLibraryViewMode(!expandedDesktop),
+    compactDesktop: Boolean = false
 ) {
+    val actionModifier = Modifier.size(if (compactDesktop) 32.dp else 40.dp)
     if (!expandedDesktop && state.searchMode) {
         MillenniumIconButton(
             icon = Iconsax.IconsaxCloseSquare,
             contentDescription = stringResource(Res.string.library_action_close_search),
             onClick = onCloseSearch,
+            modifier = actionModifier,
             style = MillenniumIconButtonStyle.Quiet
         )
     } else {
@@ -164,6 +202,7 @@ internal fun RowScope.LibraryToolbarActions(
                     icon = Iconsax.IconsaxSearchBroken,
                     contentDescription = stringResource(Res.string.library_action_search),
                     onClick = onOpenSearch,
+                    modifier = actionModifier,
                     style = MillenniumIconButtonStyle.Quiet
                 )
             }
@@ -173,6 +212,7 @@ internal fun RowScope.LibraryToolbarActions(
                 icon = Iconsax.IconsaxAddSquare,
                 contentDescription = stringResource(Res.string.library_action_create_playlist),
                 onClick = onCreatePlaylist,
+                modifier = actionModifier,
                 style = MillenniumIconButtonStyle.Quiet
             )
         }
@@ -181,6 +221,16 @@ internal fun RowScope.LibraryToolbarActions(
                 icon = Iconsax.IconsaxRefreshRight,
                 contentDescription = stringResource(Res.string.library_action_refresh_local_tracks),
                 onClick = onRefresh,
+                modifier = actionModifier,
+                style = MillenniumIconButtonStyle.Quiet
+            )
+        }
+        if (state.canChangeView) {
+            MillenniumIconButton(
+                icon = if (viewMode == LibraryViewMode.List) FeatherIcons.Grid else FeatherIcons.List,
+                contentDescription = stringResource(if (viewMode == LibraryViewMode.List) Res.string.library_action_grid_view else Res.string.library_action_list_view),
+                onClick = onToggleView,
+                modifier = actionModifier,
                 style = MillenniumIconButtonStyle.Quiet
             )
         }

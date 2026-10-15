@@ -51,17 +51,16 @@ sealed interface LibraryAlbumsState {
             override val allItems: List<MetadataAlbum.Detailed> = emptyList(),
             override val nextPagination: PaginationStrategy? = null
         ) : Data {
-            override val items: List<MetadataAlbum.Detailed>
-                get() = if (query.isNotBlank()) {
-                    allItems.filter { album ->
-                        album.title.contains(query, ignoreCase = true) ||
-                                album.artists.any { artist ->
-                                    artist.name.contains(query, ignoreCase = true)
-                                }
-                    }
-                } else {
-                    allItems
+            override val items: List<MetadataAlbum.Detailed> = if (query.isNotBlank()) {
+                allItems.filter { album ->
+                    album.title.contains(query, ignoreCase = true) ||
+                            album.artists.any { artist ->
+                                artist.name.contains(query, ignoreCase = true)
+                            }
                 }
+            } else {
+                allItems
+            }
 
             fun toLoadingMore(): LoadingMore = LoadingMore(
                 query = query,
@@ -75,17 +74,16 @@ sealed interface LibraryAlbumsState {
             override val allItems: List<MetadataAlbum.Detailed> = emptyList(),
             override val nextPagination: PaginationStrategy? = null
         ) : Data {
-            override val items: List<MetadataAlbum.Detailed>
-                get() = if (query.isNotBlank()) {
-                    allItems.filter { album ->
-                        album.title.contains(query, ignoreCase = true) ||
-                                album.artists.any { artist ->
-                                    artist.name.contains(query, ignoreCase = true)
-                                }
-                    }
-                } else {
-                    allItems
+            override val items: List<MetadataAlbum.Detailed> = if (query.isNotBlank()) {
+                allItems.filter { album ->
+                    album.title.contains(query, ignoreCase = true) ||
+                            album.artists.any { artist ->
+                                artist.name.contains(query, ignoreCase = true)
+                            }
                 }
+            } else {
+                allItems
+            }
         }
     }
 
@@ -154,6 +152,12 @@ class LibraryAlbumsViewModel(
 
     fun onQueryChange(query: String) {
         libraryState.setQuery(LibraryTab.Albums, query)
+    }
+
+    fun onItemsVisible(lastVisibleIndex: Int?, totalItems: Int) {
+        if (lastVisibleIndex != null && totalItems > 0 && lastVisibleIndex >= totalItems - 4) {
+            viewModelScope.launch { loadMoreData() }
+        }
     }
 
     fun refresh() {

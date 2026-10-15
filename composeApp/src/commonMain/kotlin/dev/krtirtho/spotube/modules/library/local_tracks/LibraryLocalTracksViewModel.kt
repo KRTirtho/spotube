@@ -33,25 +33,103 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import dev.krtirtho.spotube.PlatformType
+import dev.krtirtho.spotube.getPlatform
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.library_local_refresh_failed
+
+data class LocalFolderUi(
+    val path: String,
+    val name: String,
+    val trackCount: Int,
+    val artwork: ByteArray?
+)
+
+data class LocalTrackUi(
+    val path: String,
+    val title: String,
+    val subtitle: String?,
+    val durationLabel: String?,
+    val artwork: ByteArray?
+)
 
 data class LibraryLocalTracksState(
     val isRefreshing: Boolean = false,
     val folders: List<LocalMediaFolder> = emptyList(),
     val currentFolderPath: String? = null,
     val query: String = "",
-    val error: String? = null
+    val error: String? = null,
+    val canAccessMedia: Boolean = true,
+    val visibleFolders: List<LocalFolderUi> = emptyList(),
+    val visibleTracks: List<LocalTrackUi> = emptyList(),
+    val currentFolder: LocalMediaFolder? = null,
+    val totalFolderCount: Int = 0,
+    val totalTrackCount: Int = 0,
+    val canPlayFolder: Boolean = false
 )
+
+internal fun localTracksUiState(
+    source: LibraryLocalTracksState,
+    query: String
+): LibraryLocalTracksState {
+    val normalized = query.trim()
+    val folder = source.folders.firstOrNull { it.path == source.currentFolderPath }
+    val folders = source.folders.filter {
+        normalized.isEmpty() || it.name.contains(
+            normalized,
+            true
+        ) || it.tracks.any { track -> localTrackMatches(track, normalized) }
+    }
+    val tracks = folder?.tracks.orEmpty().filter { localTrackMatches(it, normalized) }
+    return source.copy(
+        query = query,
+        currentFolder = folder,
+        visibleFolders = folders.map {
+            LocalFolderUi(
+                it.path,
+                it.name,
+                it.trackCount,
+                it.tracks.firstOrNull { track -> track.coverBytes?.isNotEmpty() == true }?.coverBytes
+            )
+        },
+        visibleTracks = tracks.map { track ->
+            val seconds = track.durationMs / 1000
+            LocalTrackUi(
+                track.path, track.name,
+                listOfNotNull(
+                    track.artists.joinToString(", ").takeIf { it.isNotBlank() },
+                    track.album?.takeIf { it.isNotBlank() }).joinToString(" • ")
+                    .takeIf { it.isNotBlank() },
+                if (seconds > 0) "${seconds / 60}:${
+                    (seconds % 60).toString().padStart(2, '0')
+                }" else null,
+                track.coverBytes?.takeIf { it.isNotEmpty() })
+        },
+        totalFolderCount = source.folders.size,
+        totalTrackCount = source.folders.sumOf { it.trackCount },
+        canPlayFolder = source.canAccessMedia && tracks.isNotEmpty()
+    )
+}
+
+private fun localTrackMatches(track: LocalMediaTrack, query: String): Boolean = query.isBlank() ||
+        track.name.contains(query, true) || track.album?.contains(
+    query,
+    true
+) == true || track.artists.any { it.contains(query, true) }
 
 class LibraryLocalTracksViewModel(
     private val coordinator: LocalMediaLibraryCoordinator,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val libraryState: LibraryState
 ) : ViewModel() {
-    private val _state = MutableStateFlow(LibraryLocalTracksState())
+    private val requiresPermission = getPlatform().type == PlatformType.Android
+    private val _state =
+        MutableStateFlow(LibraryLocalTracksState(canAccessMedia = !requiresPermission))
     val state: StateFlow<LibraryLocalTracksState> = combine(
         _state, libraryState.queryFlow(LibraryTab.LocalTracks)
-    ) { state, query -> state.copy(query = query) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), LibraryLocalTracksState())
+    ) { state, query -> localTracksUiState(state, query) }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), _state.value)
 
     init {
         viewModelScope.launch {
@@ -85,14 +163,28 @@ class LibraryLocalTracksViewModel(
         _state.update { it.copy(currentFolderPath = null) }
     }
 
+    fun onPermissionChanged(granted: Boolean) {
+        val accessible = !requiresPermission || granted
+        val wasAccessible = _state.value.canAccessMedia
+        _state.update { it.copy(canAccessMedia = accessible) }
+        if (accessible && !wasAccessible) refresh()
+    }
+
+    fun playCurrentFolder() {
+        _state.value.currentFolderPath?.let(::playFolder)
+    }
+
     fun refresh() {
+        if (!_state.value.canAccessMedia) return
         viewModelScope.launch {
             _state.update { it.copy(isRefreshing = true, error = null) }
             runCatching {
                 coordinator.refreshNow("manual")
             }.onFailure { throwable ->
+                val message =
+                    throwable.message ?: getString(Res.string.library_local_refresh_failed)
                 _state.update {
-                    it.copy(error = throwable.message ?: "Failed to refresh local media")
+                    it.copy(error = message)
                 }
             }
             _state.update { it.copy(isRefreshing = false) }
@@ -100,6 +192,7 @@ class LibraryLocalTracksViewModel(
     }
 
     fun playFolder(folderPath: String) {
+        if (!_state.value.canAccessMedia) return
         val folder = _state.value.folders.firstOrNull { it.path == folderPath } ?: return
         val tracks = filterTracks(folder.tracks, state.value.query)
         if (tracks.isEmpty()) return
@@ -115,6 +208,7 @@ class LibraryLocalTracksViewModel(
     }
 
     fun playTrack(trackPath: String) {
+        if (!_state.value.canAccessMedia) return
         val folder = currentFolder() ?: return
         val tracks = filterTracks(folder.tracks, state.value.query)
         val selectedIndex = tracks.indexOfFirst { it.path == trackPath }
@@ -130,28 +224,7 @@ class LibraryLocalTracksViewModel(
         }
     }
 
-    fun visibleFolders(): List<LocalMediaFolder> {
-        val query = state.value.query.trim()
-        if (query.isBlank()) return state.value.folders
-
-        return state.value.folders.filter { folder ->
-            folder.name.contains(query, ignoreCase = true) ||
-                    folder.tracks.any { track ->
-                        track.name.contains(query, ignoreCase = true) ||
-                                track.artists.any { it.contains(query, ignoreCase = true) }
-                    }
-        }
-    }
-
-    fun visibleTracks(): List<LocalMediaTrack> {
-        val folder = currentFolder() ?: return emptyList()
-        return filterTracks(folder.tracks, state.value.query)
-    }
-
-    fun currentFolder(): LocalMediaFolder? {
-        val path = state.value.currentFolderPath ?: return null
-        return state.value.folders.firstOrNull { it.path == path }
-    }
+    private fun currentFolder(): LocalMediaFolder? = state.value.currentFolder
 
     private fun refreshIfEmpty() {
         if (_state.value.folders.isNotEmpty()) return
@@ -159,6 +232,7 @@ class LibraryLocalTracksViewModel(
     }
 
     private fun refreshIfStale() {
+        if (!_state.value.canAccessMedia) return
         viewModelScope.launch {
             runCatching {
                 coordinator.refreshIfStale()
@@ -170,11 +244,7 @@ class LibraryLocalTracksViewModel(
         val normalizedQuery = query.trim()
         if (normalizedQuery.isBlank()) return tracks
 
-        return tracks.filter { track ->
-            track.name.contains(normalizedQuery, ignoreCase = true) ||
-                    track.album?.contains(normalizedQuery, ignoreCase = true) == true ||
-                    track.artists.any { it.contains(normalizedQuery, ignoreCase = true) }
-        }
+        return tracks.filter { localTrackMatches(it, normalizedQuery) }
     }
 
     private fun LocalMediaTrack.toQueueEntry(): QueueEntry.LocalTrack {

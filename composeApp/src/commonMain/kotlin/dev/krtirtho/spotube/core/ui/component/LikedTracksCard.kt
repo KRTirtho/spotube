@@ -21,14 +21,7 @@ package dev.krtirtho.spotube.core.ui.component
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsHoveredAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -44,7 +37,6 @@ import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,19 +50,21 @@ import dev.krtirtho.spotube.core.audioplayer.QueueCollectionEntry
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.playback.CollectionPlaybackHelper
-import dev.krtirtho.spotube.core.ui.component.LocalAnimatedVisibilityScope
-import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
-import dev.krtirtho.spotube.core.ui.component.sharedElementOrNone
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPauseCircle
-import dev.krtirtho.spotube.resources.iconsax.IconsaxPlayCircle
 import dev.krtirtho.spotube.resources.iconsax.Play
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.liked_tracks
+import spotube.composeapp.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+import dev.krtirtho.spotube.core.ui.component.cards.PlayableListTile
+import dev.krtirtho.spotube.core.ui.component.cards.MediaCardSurface
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.input.InputMode
+import androidx.compose.ui.platform.LocalInputModeManager
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -78,27 +72,49 @@ fun LikedTracksCard(
     modifier: Modifier = Modifier,
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
     playbackHelper: CollectionPlaybackHelper = koinInject(),
-    navigationCommands: NavigationCommands = koinInject()) {
+    navigationCommands: NavigationCommands = koinInject(),
+    listMode: Boolean = false
+) {
     val scope = rememberCoroutineScope()
-    val interactionSource = remember { MutableInteractionSource() }
-    val isHovered by interactionSource.collectIsHoveredAsState()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
     val isPlaying = currentCollectionEntry is QueueCollectionEntry.SavedTracks
+    val title = stringResource(Res.string.media_liked_tracks)
+    val subtitle = stringResource(Res.string.media_saved_songs)
+    if (listMode) {
+        PlayableListTile(
+            title = title,
+            subtitle = subtitle,
+            isPlaying = isPlaying,
+            onClick = { navigationCommands.navigateTo(Routes.SavedTracks) },
+            onPlay = { scope.launch { playbackHelper.playSavedTracks() } },
+            onAddToQueue = { scope.launch { playbackHelper.addSavedTracksToQueue() } },
+            modifier = modifier,
+            sharedElementKey = "saved_tracks_art",
+            artwork = {
+                Image(
+                    painterResource(Res.drawable.liked_tracks),
+                    title,
+                    Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+            }
+        )
+        return
+    }
+    val touchInput = LocalInputModeManager.current.inputMode == InputMode.Touch
 
     val sharedTransitionScope = LocalSharedTransitionScope.current
     val animatedVisibilityScope = LocalAnimatedVisibilityScope.current
 
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .clickable(onClick = { navigationCommands.navigateTo(Routes.SavedTracks) })
-            .width(160.dp)
-            .hoverable(interactionSource = interactionSource)) {
+    MediaCardSurface(
+        modifier = modifier.width(160.dp),
+        onClick = { navigationCommands.navigateTo(Routes.SavedTracks) }
+    ) { isHovered ->
         Column(modifier = Modifier.fillMaxWidth()) {
             Box(modifier = Modifier.fillMaxWidth()) {
                 androidx.compose.foundation.Image(
                     painter = painterResource(Res.drawable.liked_tracks),
-                    contentDescription = "Liked Tracks",
+                    contentDescription = title,
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(1f)
@@ -106,14 +122,16 @@ fun LikedTracksCard(
                         .sharedElementOrNone(
                             key = "saved_tracks_art",
                             sharedTransitionScope = sharedTransitionScope,
-                            animatedVisibilityScope = animatedVisibilityScope),
-                    contentScale = ContentScale.Crop)
+                            animatedVisibilityScope = animatedVisibilityScope
+                        ),
+                    contentScale = ContentScale.Crop
+                )
 
                 Box(
                     modifier = Modifier.fillMaxWidth().aspectRatio(1f).padding(8.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    if (isHovered) {
+                    if (isHovered || touchInput || isPlaying) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.padding(4.dp)
@@ -125,7 +143,7 @@ fun LikedTracksCard(
                             ) {
                                 MillenniumIcon(
                                     imageVector = Iconsax.IconsaxAddSquare,
-                                    contentDescription = "Add to queue",
+                                    contentDescription = stringResource(Res.string.player_add_to_queue_content_description),
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -139,7 +157,7 @@ fun LikedTracksCard(
                                     imageVector = if (isPlaying) {
                                         Iconsax.IconsaxPauseCircle
                                     } else Iconsax.Play,
-                                    contentDescription = "Play",
+                                    contentDescription = stringResource(Res.string.player_play_content_description),
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -151,17 +169,19 @@ fun LikedTracksCard(
                 modifier = Modifier.fillMaxWidth().padding(12.dp)
             ) {
                 Text(
-                    text = "Liked Tracks",
+                    text = title,
                     style = AppTheme.typography.titleSmall,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
+                    overflow = TextOverflow.Ellipsis
+                )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Your saved songs",
+                    text = subtitle,
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colors.onSurfaceVariant,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }
