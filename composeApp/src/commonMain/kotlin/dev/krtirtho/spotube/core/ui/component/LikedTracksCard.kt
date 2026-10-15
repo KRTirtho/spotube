@@ -35,6 +35,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
+import com.composeunstyled.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
@@ -158,7 +159,8 @@ fun LikedTracksCard(
                                         Iconsax.IconsaxPauseCircle
                                     } else Iconsax.Play,
                                     contentDescription = stringResource(Res.string.player_play_content_description),
-                                    modifier = Modifier.size(16.dp)
+                                    modifier = Modifier.size(16.dp),
+                                    tint = LocalTextStyle.current.color
                                 )
                             }
                         }

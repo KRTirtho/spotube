@@ -18,12 +18,6 @@
 package dev.krtirtho.spotube.modules.shell
 
 
-import org.spotube.millennium.composables.MillenniumIcon
-import org.spotube.millennium.composables.MillenniumDropdownMenu
-import org.spotube.millennium.composables.MillenniumIconButton
-import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumSeparator
-import org.spotube.millennium.composables.MillenniumSlider
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,12 +32,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-
-import dev.krtirtho.spotube.core.ui.theming.AppTheme
-
-import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,13 +44,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.composeunstyled.AnchorSide
+import com.composeunstyled.Text
+import com.composeunstyled.LocalTextStyle
 import dev.chrisbanes.haze.HazeState
 import dev.chrisbanes.haze.blur.HazeColorEffect
 import dev.chrisbanes.haze.blur.blurEffect
@@ -74,15 +64,14 @@ import dev.krtirtho.spotube.core.jam.JamRole
 import dev.krtirtho.spotube.core.jam.JamRoomService
 import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.core.navigation.Routes
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.Iconsax3DotsMore
-import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
-import dev.krtirtho.spotube.resources.iconsax.IconsaxInformation
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusic
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicFilter
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
@@ -96,7 +85,6 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxShuffle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeCross
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeHigh
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeLow
-import dev.krtirtho.spotube.resources.iconsax.InconsaxClock
 import dev.krtirtho.spotube.resources.iconsax.SwapHorizontal2
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -104,6 +92,12 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import org.spotube.millennium.composables.MillenniumDropdownMenu
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumSeparator
+import org.spotube.millennium.composables.MillenniumSlider
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.player_go_to_album
 import spotube.composeapp.generated.resources.player_sleep_timer
@@ -346,7 +340,8 @@ fun AppLargePlayer(
                         ) {
                             MillenniumIcon(
                                 if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                                contentDescription = if (playerUiState.isPlaying) "Pause" else "Play or pause"
+                                contentDescription = if (playerUiState.isPlaying) "Pause" else "Play or pause",
+                                tint = LocalTextStyle.current.color
                             )
                         }
                         MillenniumIconButton(

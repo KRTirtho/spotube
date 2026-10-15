@@ -21,6 +21,7 @@ package dev.krtirtho.spotube.core.ui.component.cards
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import com.composeunstyled.LocalTextStyle
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.fadeIn
@@ -143,7 +144,7 @@ fun PlayableCard(
                                             imageVector = Iconsax.IconsaxAddSquare,
                                             contentDescription = stringResource(
                                                 Res.string.player_add_to_queue_content_description
-                                            )
+                                            ),
                                         )
                                     }
                                     Spacer(modifier = Modifier.height(8.dp))
@@ -165,7 +166,8 @@ fun PlayableCard(
                                                 } else {
                                                     Res.string.player_play_content_description
                                                 }
-                                            )
+                                            ),
+                                            tint = LocalTextStyle.current.color
                                         )
                                     }
                                 }

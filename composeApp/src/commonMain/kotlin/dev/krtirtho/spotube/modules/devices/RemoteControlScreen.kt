@@ -50,6 +50,7 @@ import androidx.compose.foundation.verticalScroll
 
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
+import com.composeunstyled.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -86,7 +87,8 @@ import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun RemoteControlScreen(
-    onDisconnect: () -> Unit) {
+    onDisconnect: () -> Unit
+) {
     val viewModel = koinViewModel<RemoteControlViewModel>()
     val playerState by viewModel.playerState.collectAsStateWithLifecycle()
     val connectionState by viewModel.connectionState.collectAsStateWithLifecycle()
@@ -98,18 +100,21 @@ fun RemoteControlScreen(
     // stretch awkwardly on large screens.
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter) {
+        contentAlignment = Alignment.TopCenter
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxHeight()
-                .background(MillenniumTheme.colors.background)) {
+                .background(MillenniumTheme.colors.background)
+        ) {
             ApplicationMainBar(
                 title = { Text("Remote Control") },
                 backButton = true,
                 actions = {
                     MillenniumIconButton(
                         onClick = viewModel::toggleQueueVisibility,
-                        style = MillenniumIconButtonStyle.Quiet) {
+                        style = MillenniumIconButtonStyle.Quiet
+                    ) {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxMusicFilter,
                             contentDescription = "Queue",
@@ -117,66 +122,72 @@ fun RemoteControlScreen(
                                 AppTheme.colors.primary
                             } else {
                                 AppTheme.colors.onSurfaceVariant
-                            })
+                            }
+                        )
                     }
                     MillenniumIconButton(
                         onClick = {
                             viewModel.disconnect()
                             onDisconnect()
                         },
-                        style = MillenniumIconButtonStyle.Quiet) {
+                        style = MillenniumIconButtonStyle.Quiet
+                    ) {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxCloseSquare,
-                            contentDescription = "Disconnect")
+                            contentDescription = "Disconnect"
+                        )
                     }
                 }
             )
             Box(modifier = Modifier.weight(1f)) {
-            when (connectionState) {
-                is ConnectionState.Connected -> {
-                    RemoteControlContent(
-                        playerState = playerState,
-                        onTogglePlayPause = viewModel::togglePlayPause,
-                        onSkipNext = viewModel::skipNext,
-                        onSkipPrevious = viewModel::skipPrevious,
-                        onSeek = viewModel::seek,
-                        onSetVolume = viewModel::setVolume,
-                        onToggleShuffle = viewModel::toggleShuffle,
-                        onCycleLoopMode = viewModel::cycleLoopMode,
-                        modifier = Modifier.padding(bottom = shellBottomInset)
-                    )
-                }
-                is ConnectionState.Connecting -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = shellBottomInset),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("Connecting...")
+                when (connectionState) {
+                    is ConnectionState.Connected -> {
+                        RemoteControlContent(
+                            playerState = playerState,
+                            onTogglePlayPause = viewModel::togglePlayPause,
+                            onSkipNext = viewModel::skipNext,
+                            onSkipPrevious = viewModel::skipPrevious,
+                            onSeek = viewModel::seek,
+                            onSetVolume = viewModel::setVolume,
+                            onToggleShuffle = viewModel::toggleShuffle,
+                            onCycleLoopMode = viewModel::cycleLoopMode,
+                            modifier = Modifier.padding(bottom = shellBottomInset)
+                        )
+                    }
+
+                    is ConnectionState.Connecting -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = shellBottomInset),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Connecting...")
+                        }
+                    }
+
+                    is ConnectionState.Disconnected -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = shellBottomInset),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Disconnected")
+                        }
+                    }
+
+                    is ConnectionState.Error -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = shellBottomInset),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("Connection error: ${(connectionState as ConnectionState.Error).message}")
+                        }
                     }
                 }
-                is ConnectionState.Disconnected -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = shellBottomInset),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("Disconnected")
-                    }
-                }
-                is ConnectionState.Error -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = shellBottomInset),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text("Connection error: ${(connectionState as ConnectionState.Error).message}")
-                    }
-                }
-            }
             }
         }
     }
@@ -198,15 +209,18 @@ fun RemoteControlScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = shellBottomInset)) {
+            .padding(bottom = shellBottomInset)
+    ) {
         QueueSheet(
             isVisible = isQueueVisible,
             onDismiss = { viewModel.toggleQueueVisibility() },
-            modifier = Modifier.fillMaxSize()) {
+            modifier = Modifier.fillMaxSize()
+        ) {
             RemoteQueueSection(
                 queueState = queueState,
                 onPlayQueueItem = viewModel::playQueueItem,
-                onRemoveQueueItem = viewModel::removeQueueItem)
+                onRemoveQueueItem = viewModel::removeQueueItem
+            )
         }
     }
 }
@@ -221,15 +235,17 @@ private fun RemoteControlContent(
     onSetVolume: (Float) -> Unit,
     onToggleShuffle: () -> Unit,
     onCycleLoopMode: () -> Unit,
-    modifier: Modifier = Modifier) {
-    Box (modifier = Modifier.fillMaxSize()) {
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = modifier
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
                 .widthIn(max = 480.dp)
                 .align(Alignment.TopCenter),
-            horizontalAlignment = Alignment.CenterHorizontally) {
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Spacer(modifier = Modifier.height(32.dp))
 
             // Album art
@@ -238,22 +254,26 @@ private fun RemoteControlContent(
                     .fillMaxWidth()
                     .aspectRatio(1f)
                     .clip(RoundedCornerShape(16.dp))
-                    .background(AppTheme.colors.surfaceVariant)) {
+                    .background(AppTheme.colors.surfaceVariant)
+            ) {
                 if (playerState.currentTrackCoverUrl != null) {
                     AsyncImage(
                         model = playerState.currentTrackCoverUrl,
                         contentDescription = "Album cover",
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop)
+                        contentScale = ContentScale.Crop
+                    )
                 } else {
                     Box(
                         modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center) {
+                        contentAlignment = Alignment.Center
+                    ) {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxMusicFilter,
                             contentDescription = null,
                             tint = AppTheme.colors.onSurfaceVariant,
-                            modifier = Modifier.size(48.dp))
+                            modifier = Modifier.size(48.dp)
+                        )
                     }
                 }
             }
@@ -263,14 +283,16 @@ private fun RemoteControlContent(
             // Track info
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally) {
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
                     text = playerState.currentTrackTitle ?: "Unknown Track",
                     style = AppTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis)
+                    overflow = TextOverflow.Ellipsis
+                )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
@@ -280,7 +302,8 @@ private fun RemoteControlContent(
                     color = AppTheme.colors.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
+                    overflow = TextOverflow.Ellipsis
+                )
 
                 if (playerState.currentTrackAlbum != null) {
                     Spacer(modifier = Modifier.height(4.dp))
@@ -290,7 +313,8 @@ private fun RemoteControlContent(
                         color = AppTheme.colors.onSurfaceVariant.copy(alpha = 0.7f),
                         textAlign = TextAlign.Center,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis)
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
 
@@ -298,25 +322,30 @@ private fun RemoteControlContent(
 
             // Seek bar
             Column(
-                modifier = Modifier.fillMaxWidth()) {
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 MillenniumSlider(
                     value = playerState.positionMs.toFloat(),
                     onValueChange = { onSeek(it.toLong()) },
                     label = "Seek",
                     valueRange = 0f..playerState.durationMs.toFloat().coerceAtLeast(1f),
-                    modifier = Modifier.fillMaxWidth())
+                    modifier = Modifier.fillMaxWidth()
+                )
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween) {
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
                     Text(
                         text = formatDuration(playerState.positionMs),
                         style = AppTheme.typography.bodySmall,
-                        color = AppTheme.colors.onSurfaceVariant)
+                        color = AppTheme.colors.onSurfaceVariant
+                    )
                     Text(
                         text = formatDuration(playerState.durationMs),
                         style = AppTheme.typography.bodySmall,
-                        color = AppTheme.colors.onSurfaceVariant)
+                        color = AppTheme.colors.onSurfaceVariant
+                    )
                 }
             }
 
@@ -326,11 +355,13 @@ private fun RemoteControlContent(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically) {
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 // Shuffle
                 MillenniumIconButton(
                     onClick = onToggleShuffle,
-                    style = MillenniumIconButtonStyle.Quiet) {
+                    style = MillenniumIconButtonStyle.Quiet
+                ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxShuffle,
                         contentDescription = "Shuffle",
@@ -338,23 +369,27 @@ private fun RemoteControlContent(
                             AppTheme.colors.primary
                         } else {
                             AppTheme.colors.onSurfaceVariant
-                        })
+                        }
+                    )
                 }
 
                 // Skip previous
                 MillenniumIconButton(
                     onClick = onSkipPrevious,
-                    style = MillenniumIconButtonStyle.Quiet) {
+                    style = MillenniumIconButtonStyle.Quiet
+                ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxPrevious,
                         contentDescription = "Previous",
-                        modifier = Modifier.size(32.dp))
+                        modifier = Modifier.size(32.dp)
+                    )
                 }
 
                 // Play/Pause
                 MillenniumIconButton(
                     onClick = onTogglePlayPause,
-                    style = MillenniumIconButtonStyle.Primary) {
+                    style = MillenniumIconButtonStyle.Primary
+                ) {
                     MillenniumIcon(
                         imageVector = if (playerState.isPlaying) {
                             Iconsax.IconsaxPause
@@ -362,23 +397,28 @@ private fun RemoteControlContent(
                             Iconsax.IconsaxPlay
                         },
                         contentDescription = if (playerState.isPlaying) "Pause" else "Play",
-                        modifier = Modifier.size(40.dp))
+                        modifier = Modifier.size(40.dp),
+                        tint = LocalTextStyle.current.color
+                    )
                 }
 
                 // Skip next
                 MillenniumIconButton(
                     onClick = onSkipNext,
-                    style = MillenniumIconButtonStyle.Quiet) {
+                    style = MillenniumIconButtonStyle.Quiet
+                ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxNext,
                         contentDescription = "Next",
-                        modifier = Modifier.size(32.dp))
+                        modifier = Modifier.size(32.dp)
+                    )
                 }
 
                 // Loop mode
                 MillenniumIconButton(
                     onClick = onCycleLoopMode,
-                    style = MillenniumIconButtonStyle.Quiet) {
+                    style = MillenniumIconButtonStyle.Quiet
+                ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxRepeateMusic,
                         contentDescription = "Loop mode",
@@ -386,7 +426,8 @@ private fun RemoteControlContent(
                             AppTheme.colors.primary
                         } else {
                             AppTheme.colors.onSurfaceVariant
-                        })
+                        }
+                    )
                 }
             }
 
@@ -396,19 +437,22 @@ private fun RemoteControlContent(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
                 MillenniumIcon(
                     imageVector = Iconsax.IconsaxVolumeHigh,
                     contentDescription = "Volume",
                     tint = AppTheme.colors.onSurfaceVariant,
-                    modifier = Modifier.size(24.dp))
+                    modifier = Modifier.size(24.dp)
+                )
 
                 MillenniumSlider(
                     value = playerState.volume,
                     onValueChange = onSetVolume,
                     label = "Volume",
                     valueRange = 0f..1f,
-                    modifier = Modifier.weight(1f))
+                    modifier = Modifier.weight(1f)
+                )
             }
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -420,26 +464,31 @@ private fun RemoteControlContent(
 private fun RemoteQueueSection(
     queueState: RemoteQueueState,
     onPlayQueueItem: (Int) -> Unit,
-    onRemoveQueueItem: (String) -> Unit) {
+    onRemoveQueueItem: (String) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
         Text(
             text = "Queue",
-            style = AppTheme.typography.titleLarge)
+            style = AppTheme.typography.titleLarge
+        )
 
         if (queueState.entries.isEmpty()) {
             Text(
                 text = "No queue entries",
                 style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colors.onSurfaceVariant)
+                color = AppTheme.colors.onSurfaceVariant
+            )
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(bottom = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 itemsIndexed(
                     items = queueState.entries,
                     key = { index, entry -> "${entry.mediaUrl}@$index" }) { index, entry ->
@@ -461,7 +510,8 @@ private fun RemoteQueueItemRow(
     index: Int,
     isCurrent: Boolean,
     onPlayClick: () -> Unit,
-    onRemoveClick: () -> Unit) {
+    onRemoveClick: () -> Unit
+) {
     var showMenu by remember { mutableStateOf(false) }
 
     MillenniumListTile(
@@ -474,18 +524,21 @@ private fun RemoteQueueItemRow(
                     .size(48.dp)
                     .clip(AppTheme.shapes.small)
                     .background(AppTheme.colors.surfaceVariant),
-                contentAlignment = Alignment.Center) {
+                contentAlignment = Alignment.Center
+            ) {
                 if (entry.coverUrl != null) {
                     AsyncImage(
                         model = entry.coverUrl,
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop)
+                        contentScale = ContentScale.Crop
+                    )
                 } else {
                     Text(
                         text = "${index + 1}",
                         style = AppTheme.typography.labelMedium,
-                        color = AppTheme.colors.onSurfaceVariant)
+                        color = AppTheme.colors.onSurfaceVariant
+                    )
                 }
             }
         },
@@ -499,7 +552,8 @@ private fun RemoteQueueItemRow(
                     AppTheme.colors.onSecondaryContainer
                 } else {
                     AppTheme.colors.onSurface
-                })
+                }
+            )
         },
         subtitle = {
             Text(
@@ -507,13 +561,15 @@ private fun RemoteQueueItemRow(
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.onSurfaceVariant,
                 maxLines = 1,
-                overflow = TextOverflow.Ellipsis)
+                overflow = TextOverflow.Ellipsis
+            )
         },
         trailing = {
             Text(
                 text = formatDuration(entry.durationMs),
                 style = AppTheme.typography.bodySmall,
-                color = AppTheme.colors.onSurfaceVariant)
+                color = AppTheme.colors.onSurfaceVariant
+            )
 
             MillenniumDropdownMenu(
                 expanded = showMenu,
@@ -526,11 +582,13 @@ private fun RemoteQueueItemRow(
                 anchor = {
                     MillenniumIconButton(
                         onClick = { showMenu = true },
-                        style = MillenniumIconButtonStyle.Quiet) {
+                        style = MillenniumIconButtonStyle.Quiet
+                    ) {
                         MillenniumIcon(
                             Iconsax.Iconsax3DotsMore,
                             contentDescription = "More options",
-                            modifier = Modifier.size(18.dp))
+                            modifier = Modifier.size(18.dp)
+                        )
                     }
                 })
         }

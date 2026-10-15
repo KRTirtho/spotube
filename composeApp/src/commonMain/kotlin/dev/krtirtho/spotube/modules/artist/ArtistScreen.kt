@@ -48,6 +48,7 @@ import androidx.compose.foundation.shape.CircleShape
 
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
+import com.composeunstyled.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -117,87 +118,67 @@ fun ArtistScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)) {
+            .background(MillenniumTheme.colors.background)
+    ) {
         ApplicationMainBar()
         Box(modifier = Modifier.fillMaxWidth().weight(1f)) {
-        when (val currentState = state) {
-            is ArtistScreenState.Loading -> {
-                ArtistLoadingContent()
-            }
+            when (val currentState = state) {
+                is ArtistScreenState.Loading -> {
+                    ArtistLoadingContent()
+                }
 
-            is ArtistScreenState.Error -> {
-                ArtistErrorContent(
-                    message = currentState.message,
-                    onRetry = { viewModel.refresh() }
-                )
-            }
+                is ArtistScreenState.Error -> {
+                    ArtistErrorContent(
+                        message = currentState.message,
+                        onRetry = { viewModel.refresh() }
+                    )
+                }
 
-            is ArtistScreenState.Loaded -> {
-                val listState = rememberLazyListState()
+                is ArtistScreenState.Loaded -> {
+                    val listState = rememberLazyListState()
 
-                LazyColumn(
-                    state = listState,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = LocalAppShellBottomInset.current + 24.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)) {
-                    item {
-                        ArtistHeaderCard(
-                            artist = currentState.artist,
-                            isSaved = savedArtistIds.contains(currentState.artist.id),
-                            onFollowClick = viewModel::toggleSavedArtist,
-                            isBlacklisted = currentState.artist.id in blacklistedArtistIds,
-                            onBlacklistClick = { viewModel.toggleArtistBlacklist(currentState.artist) })
-                    }
-
-                    item {
-                        TopTracksHeader(
-                            onPlay = viewModel::playTopTracks,
-                            onAddToQueue = viewModel::addTopTracksToQueue)
-                    }
-
-                    item {
-                        TrackList(
-                            tracks = currentState.topTracks,
-                            error = null,
-                            hasMore = false,
-                            isLoading = false,
-                            isLoadingNextPage = false,
-                            currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
-                            isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
-                            onTrackClick = viewModel::playTopTracksFromTrack,
-                            onTrackOptionsAction = viewModel::handleTrackOptionsAction,
-                            trackOptionsState = trackOptionsContext::stateFor,
-                            onArtistClick = { trackArtist ->
-                                navigationCommands.navigateTo(
-                                    Routes.Artist(
-                                        trackArtist.id
-                                    )
-                                )
-                            },
-                            onAlbumClick = { album ->
-                                navigationCommands.navigateTo(
-                                    Routes.Album(
-                                        album.id
-                                    )
-                                )
-                            },
-                            onLoadNextPage = {},
-                            simplified = true,
-                            scrollable = false,
-                            onBulkDownload = viewModel::downloadTracks,
-                            onBulkAddToQueue = viewModel::addTracksToQueue,
-                            onBulkPlayNext = viewModel::playTracksNext,
-                            onBulkAddToPlaylist = viewModel::showAddToPlaylistPicker,
-                            onBulkAddToJam = viewModel::addTracksToJam,
-                            isInJam = jamActive,
-                            isJamGuest = isJamGuest)
-                    }
-
-                    if (currentState.albums.isNotEmpty() || currentState.albumsNextPagination != null) {
+                    LazyColumn(
+                        state = listState,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = LocalAppShellBottomInset.current + 24.dp),
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
                         item {
-                            AlbumsSection(
-                                albums = currentState.albums,
+                            ArtistHeaderCard(
+                                artist = currentState.artist,
+                                isSaved = savedArtistIds.contains(currentState.artist.id),
+                                onFollowClick = viewModel::toggleSavedArtist,
+                                isBlacklisted = currentState.artist.id in blacklistedArtistIds,
+                                onBlacklistClick = { viewModel.toggleArtistBlacklist(currentState.artist) })
+                        }
+
+                        item {
+                            TopTracksHeader(
+                                onPlay = viewModel::playTopTracks,
+                                onAddToQueue = viewModel::addTopTracksToQueue
+                            )
+                        }
+
+                        item {
+                            TrackList(
+                                tracks = currentState.topTracks,
+                                error = null,
+                                hasMore = false,
+                                isLoading = false,
+                                isLoadingNextPage = false,
+                                currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id,
+                                isCurrentTrackPlaying = playerState == PlayerState.PLAYING,
+                                onTrackClick = viewModel::playTopTracksFromTrack,
+                                onTrackOptionsAction = viewModel::handleTrackOptionsAction,
+                                trackOptionsState = trackOptionsContext::stateFor,
+                                onArtistClick = { trackArtist ->
+                                    navigationCommands.navigateTo(
+                                        Routes.Artist(
+                                            trackArtist.id
+                                        )
+                                    )
+                                },
                                 onAlbumClick = { album ->
                                     navigationCommands.navigateTo(
                                         Routes.Album(
@@ -205,49 +186,74 @@ fun ArtistScreen(
                                         )
                                     )
                                 },
-                                onLoadMore = { viewModel.loadMoreAlbums() })
+                                onLoadNextPage = {},
+                                simplified = true,
+                                scrollable = false,
+                                onBulkDownload = viewModel::downloadTracks,
+                                onBulkAddToQueue = viewModel::addTracksToQueue,
+                                onBulkPlayNext = viewModel::playTracksNext,
+                                onBulkAddToPlaylist = viewModel::showAddToPlaylistPicker,
+                                onBulkAddToJam = viewModel::addTracksToJam,
+                                isInJam = jamActive,
+                                isJamGuest = isJamGuest
+                            )
                         }
-                    }
 
-                    if (currentState.relatedArtists.isNotEmpty() || currentState.relatedArtistsNextPagination != null) {
-                        item {
-                            RelatedArtistsSection(
-                                artists = currentState.relatedArtists,
-                                onArtistClick = { artist ->
-                                    navigationCommands.navigateTo(
-                                        Routes.Artist(
-                                            artist.id
+                        if (currentState.albums.isNotEmpty() || currentState.albumsNextPagination != null) {
+                            item {
+                                AlbumsSection(
+                                    albums = currentState.albums,
+                                    onAlbumClick = { album ->
+                                        navigationCommands.navigateTo(
+                                            Routes.Album(
+                                                album.id
+                                            )
                                         )
-                                    )
-                                },
-                                onLoadMore = { viewModel.loadMoreRelatedArtists() })
+                                    },
+                                    onLoadMore = { viewModel.loadMoreAlbums() })
+                            }
                         }
-                    }
 
-                    if (currentState.featuredPlaylists.isNotEmpty() || currentState.featuredPlaylistsNextPagination != null) {
-                        item {
-                            FeaturedPlaylistsSection(
-                                playlists = currentState.featuredPlaylists,
-                                onPlaylistClick = { playlist ->
-                                    navigationCommands.navigateTo(
-                                        Routes.Playlist(
-                                            playlist.id
+                        if (currentState.relatedArtists.isNotEmpty() || currentState.relatedArtistsNextPagination != null) {
+                            item {
+                                RelatedArtistsSection(
+                                    artists = currentState.relatedArtists,
+                                    onArtistClick = { artist ->
+                                        navigationCommands.navigateTo(
+                                            Routes.Artist(
+                                                artist.id
+                                            )
                                         )
-                                    )
-                                },
-                                onLoadMore = { viewModel.loadMoreFeaturedPlaylists() })
+                                    },
+                                    onLoadMore = { viewModel.loadMoreRelatedArtists() })
+                            }
+                        }
+
+                        if (currentState.featuredPlaylists.isNotEmpty() || currentState.featuredPlaylistsNextPagination != null) {
+                            item {
+                                FeaturedPlaylistsSection(
+                                    playlists = currentState.featuredPlaylists,
+                                    onPlaylistClick = { playlist ->
+                                        navigationCommands.navigateTo(
+                                            Routes.Playlist(
+                                                playlist.id
+                                            )
+                                        )
+                                    },
+                                    onLoadMore = { viewModel.loadMoreFeaturedPlaylists() })
+                            }
                         }
                     }
                 }
             }
-        }
         }
 
         AddToPlaylistPicker(
             visible = showAddToPlaylistPicker,
             currentUserId = currentUserId,
             onDismiss = viewModel::dismissAddToPlaylistPicker,
-            onPlaylistSelected = viewModel::addTracksToPlaylist)
+            onPlaylistSelected = viewModel::addTracksToPlaylist
+        )
     }
 }
 
@@ -256,41 +262,50 @@ private fun ArtistLoadingContent() {
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.Center) {
+        contentAlignment = Alignment.Center
+    ) {
         SkeletonTree(true) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.spacedBy(24.dp)) {
+                verticalArrangement = Arrangement.spacedBy(24.dp)
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp)) {
+                        .padding(horizontal = 16.dp)
+                ) {
                     Box(
                         modifier = Modifier
                             .size(200.dp)
                             .clip(CircleShape)
-                            .background(AppTheme.colors.surfaceContainerHighest))
+                            .background(AppTheme.colors.surfaceContainerHighest)
+                    )
                 }
                 Column(
                     modifier = Modifier.fillMaxWidth(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp)) {
+                            .padding(horizontal = 16.dp)
+                    ) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 8.dp))
+                                .padding(vertical = 8.dp)
+                        )
                     }
                     LazyRow(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        contentPadding = PaddingValues(horizontal = 16.dp)) {
+                        contentPadding = PaddingValues(horizontal = 16.dp)
+                    ) {
                         items(4) {
                             PlayableCard(
                                 title = "Item Title",
                                 subtitle = "Subtitle",
-                                imageURL = "https://placehold.co/600x400")
+                                imageURL = "https://placehold.co/600x400"
+                            )
                         }
                     }
                 }
@@ -302,18 +317,22 @@ private fun ArtistLoadingContent() {
 @Composable
 private fun ArtistErrorContent(
     message: String,
-    onRetry: () -> Unit) {
+    onRetry: () -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxSize(),
-        contentAlignment = Alignment.Center) {
+        contentAlignment = Alignment.Center
+    ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(16.dp)) {
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
             Text(
                 text = message,
                 color = AppTheme.colors.error,
-                style = AppTheme.typography.bodyLarge)
+                style = AppTheme.typography.bodyLarge
+            )
             MillenniumButton(onClick = onRetry) {
                 Text("Retry")
             }
@@ -327,34 +346,40 @@ private fun ArtistHeaderCard(
     isSaved: Boolean,
     onFollowClick: () -> Unit,
     isBlacklisted: Boolean,
-    onBlacklistClick: () -> Unit) {
+    onBlacklistClick: () -> Unit
+) {
     Box(modifier = Modifier.fillMaxWidth()) {
         val isCompact = currentWindowWidthBreakpoint() isBelow WindowBreakpoints.Medium
 
         MillenniumCard(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 8.dp)) {
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+        ) {
             if (isCompact) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(14.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     ArtistAvatar(
                         artist = artist,
-                        size = 180.dp)
+                        size = 180.dp
+                    )
 
                     ArtistMeta(
                         artist = artist,
-                        isCompact = true)
+                        isCompact = true
+                    )
 
                     ArtistHeaderActions(
                         isSaved = isSaved,
                         onFollowClick = onFollowClick,
                         isBlacklisted = isBlacklisted,
-                        onBlacklistClick = onBlacklistClick)
+                        onBlacklistClick = onBlacklistClick
+                    )
                 }
             } else {
                 Row(
@@ -362,23 +387,28 @@ private fun ArtistHeaderCard(
                         .fillMaxWidth()
                         .padding(20.dp),
                     horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalAlignment = Alignment.Top) {
+                    verticalAlignment = Alignment.Top
+                ) {
                     ArtistAvatar(
                         artist = artist,
-                        size = 220.dp)
+                        size = 220.dp
+                    )
 
                     Column(
                         modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(14.dp)) {
+                        verticalArrangement = Arrangement.spacedBy(14.dp)
+                    ) {
                         ArtistMeta(
                             artist = artist,
-                            isCompact = false)
+                            isCompact = false
+                        )
 
                         ArtistHeaderActions(
                             isSaved = isSaved,
                             onFollowClick = onFollowClick,
                             isBlacklisted = isBlacklisted,
-                            onBlacklistClick = onBlacklistClick)
+                            onBlacklistClick = onBlacklistClick
+                        )
                     }
                 }
             }
@@ -389,26 +419,30 @@ private fun ArtistHeaderCard(
 @Composable
 private fun ArtistAvatar(
     artist: MetadataArtist.Detailed,
-    size: androidx.compose.ui.unit.Dp) {
+    size: androidx.compose.ui.unit.Dp
+) {
     Box(
         modifier = Modifier
             .size(size)
             .clip(CircleShape)
             .background(AppTheme.colors.surfaceContainerHighest),
-        contentAlignment = Alignment.Center) {
+        contentAlignment = Alignment.Center
+    ) {
         val imageUrl = artist.thumbnails.firstOrNull()?.url.orEmpty()
         if (imageUrl.isNotBlank()) {
             AsyncImage(
                 model = imageUrl,
                 contentDescription = artist.name,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop)
+                contentScale = ContentScale.Crop
+            )
         } else {
             MillenniumIcon(
                 imageVector = Iconsax.User,
                 contentDescription = artist.name,
                 tint = AppTheme.colors.onSurfaceVariant,
-                modifier = Modifier.size(size * 0.4f))
+                modifier = Modifier.size(size * 0.4f)
+            )
         }
     }
 }
@@ -416,18 +450,21 @@ private fun ArtistAvatar(
 @Composable
 private fun ArtistMeta(
     artist: MetadataArtist.Detailed,
-    isCompact: Boolean) {
+    isCompact: Boolean
+) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = if (isCompact) Alignment.CenterHorizontally else Alignment.Start,
-        verticalArrangement = Arrangement.spacedBy(10.dp)) {
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
         Text(
             text = artist.name,
             style = if (isCompact) AppTheme.typography.headlineSmall else AppTheme.typography.headlineLarge,
             fontWeight = FontWeight.SemiBold,
             textAlign = if (isCompact) TextAlign.Center else TextAlign.Start,
             maxLines = 2,
-            overflow = TextOverflow.Ellipsis)
+            overflow = TextOverflow.Ellipsis
+        )
 
         Text(
             text = buildString {
@@ -439,7 +476,8 @@ private fun ArtistMeta(
             },
             style = AppTheme.typography.bodyMedium,
             color = AppTheme.colors.onSurfaceVariant,
-            textAlign = if (isCompact) TextAlign.Center else TextAlign.Start)
+            textAlign = if (isCompact) TextAlign.Center else TextAlign.Start
+        )
 
         artist.biography?.takeIf { it.isNotBlank() }?.let {
             Text(
@@ -448,7 +486,8 @@ private fun ArtistMeta(
                 color = AppTheme.colors.onSurfaceVariant,
                 maxLines = if (isCompact) 4 else 6,
                 overflow = TextOverflow.Ellipsis,
-                textAlign = if (isCompact) TextAlign.Center else TextAlign.Start)
+                textAlign = if (isCompact) TextAlign.Center else TextAlign.Start
+            )
         }
     }
 }
@@ -458,19 +497,23 @@ private fun ArtistHeaderActions(
     isSaved: Boolean,
     onFollowClick: () -> Unit,
     isBlacklisted: Boolean,
-    onBlacklistClick: () -> Unit) {
+    onBlacklistClick: () -> Unit
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         if (isSaved) {
             MillenniumButton(
                 onClick = onFollowClick,
-                style = MillenniumButtonStyle.Secondary) {
+                style = MillenniumButtonStyle.Secondary
+            ) {
                 Text(
                     "Following",
                     textAlign = TextAlign.Center,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         } else {
             MillenniumButton(onClick = onFollowClick) {
@@ -484,19 +527,23 @@ private fun ArtistHeaderActions(
             if (isBlacklisted) {
                 MillenniumIconButton(
                     onClick = onBlacklistClick,
-                    style = MillenniumIconButtonStyle.Secondary) {
+                    style = MillenniumIconButtonStyle.Secondary
+                ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxUserRemove,
                         contentDescription = "Remove from blacklist",
-                        tint = AppTheme.colors.error)
+                        tint = AppTheme.colors.error
+                    )
                 }
             } else {
                 MillenniumIconButton(
                     onClick = onBlacklistClick,
-                    style = MillenniumIconButtonStyle.Secondary) {
+                    style = MillenniumIconButtonStyle.Secondary
+                ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxUserRemove,
-                        contentDescription = "Add to blacklist")
+                        contentDescription = "Add to blacklist"
+                    )
                 }
             }
         }
@@ -506,32 +553,40 @@ private fun ArtistHeaderActions(
 @Composable
 private fun TopTracksHeader(
     onPlay: () -> Unit,
-    onAddToQueue: () -> Unit) {
+    onAddToQueue: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween) {
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Text(
             text = "Top Tracks",
             style = AppTheme.typography.titleLarge,
-            fontWeight = FontWeight.SemiBold)
+            fontWeight = FontWeight.SemiBold
+        )
 
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             MillenniumIconButton(
                 onClick = onPlay,
-                style = MillenniumIconButtonStyle.Primary) {
+                style = MillenniumIconButtonStyle.Primary
+            ) {
                 MillenniumIcon(
                     imageVector = Iconsax.IconsaxPlay,
-                    contentDescription = "Play top tracks")
+                    contentDescription = "Play top tracks",
+                    tint = LocalTextStyle.current.color
+                )
             }
             MillenniumIconButton(
                 onClick = onAddToQueue,
-                style = MillenniumIconButtonStyle.Secondary) {
+                style = MillenniumIconButtonStyle.Secondary
+            ) {
                 MillenniumIcon(
                     imageVector = Iconsax.IconsaxAddSquare,
-                    contentDescription = "Add top tracks to queue")
+                    contentDescription = "Add top tracks to queue"
+                )
             }
         }
     }
@@ -541,7 +596,8 @@ private fun TopTracksHeader(
 private fun AlbumsSection(
     albums: List<MetadataAlbum.Detailed>,
     onAlbumClick: (MetadataAlbum.Detailed) -> Unit,
-    onLoadMore: () -> Unit) {
+    onLoadMore: () -> Unit
+) {
     val rowState = rememberLazyListState()
 
     LaunchedEffect(rowState) {
@@ -566,7 +622,8 @@ private fun AlbumsSection(
         modifier = Modifier.dragScrollable(rowState),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top) {
+        verticalAlignment = Alignment.Top
+    ) {
         items(albums, key = { it.id }) { album ->
             AlbumCard(album = album)
         }
@@ -577,7 +634,8 @@ private fun AlbumsSection(
 private fun RelatedArtistsSection(
     artists: List<MetadataArtist.Basic>,
     onArtistClick: (MetadataArtist.Basic) -> Unit,
-    onLoadMore: () -> Unit) {
+    onLoadMore: () -> Unit
+) {
     val rowState = rememberLazyListState()
 
     LaunchedEffect(rowState) {
@@ -602,7 +660,8 @@ private fun RelatedArtistsSection(
         modifier = Modifier.dragScrollable(rowState),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top) {
+        verticalAlignment = Alignment.Top
+    ) {
         items(artists, key = { it.id }) { artist ->
             ArtistCard(artist = artist)
         }
@@ -613,7 +672,8 @@ private fun RelatedArtistsSection(
 private fun FeaturedPlaylistsSection(
     playlists: List<MetadataPlaylist>,
     onPlaylistClick: (MetadataPlaylist) -> Unit,
-    onLoadMore: () -> Unit) {
+    onLoadMore: () -> Unit
+) {
     val rowState = rememberLazyListState()
 
     LaunchedEffect(rowState) {
@@ -638,7 +698,8 @@ private fun FeaturedPlaylistsSection(
         modifier = Modifier.dragScrollable(rowState),
         contentPadding = PaddingValues(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.Top) {
+        verticalAlignment = Alignment.Top
+    ) {
         items(playlists, key = { it.id }) { playlist ->
             PlaylistCard(playlist = playlist)
         }
@@ -651,7 +712,8 @@ private fun SectionHeader(title: String) {
         text = title,
         style = AppTheme.typography.titleLarge,
         fontWeight = FontWeight.SemiBold,
-        modifier = Modifier.padding(horizontal = 16.dp))
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
 }
 
 private fun formatFollowers(count: Int?): String {

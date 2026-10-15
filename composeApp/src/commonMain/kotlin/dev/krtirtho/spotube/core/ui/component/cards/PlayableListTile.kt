@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.composeunstyled.LocalTextStyle
 import coil3.compose.AsyncImage
 import dev.krtirtho.spotube.core.ui.component.LocalAnimatedVisibilityScope
 import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
@@ -130,7 +131,8 @@ fun PlayableListTile(
                         ) {
                             MillenniumIcon(
                                 if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                                stringResource(if (isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description)
+                                stringResource(if (isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description),
+                                tint = LocalTextStyle.current.color
                             )
                         }
                     }
