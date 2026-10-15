@@ -19,10 +19,6 @@ package dev.krtirtho.spotube.modules.settings.sections
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.Globe
-import compose.icons.feathericons.MapPin
-import spotube.composeapp.generated.resources.*
 import dev.krtirtho.spotube.modules.settings.CountryCode
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.SupportedLanguages
@@ -32,6 +28,14 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxGlobe
 import dev.krtirtho.spotube.resources.iconsax.IconsaxLanguageSquare
 import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.settings_country_subtitle_current
+import spotube.composeapp.generated.resources.settings_country_title
+import spotube.composeapp.generated.resources.settings_language_subtitle_current
+import spotube.composeapp.generated.resources.settings_language_system_default
+import spotube.composeapp.generated.resources.settings_language_title
+import spotube.composeapp.generated.resources.settings_option_name_and_code
+import spotube.composeapp.generated.resources.settings_section_language_region
 
 internal fun LazyListScope.languageRegionSection(
     settings: UserSettings,
