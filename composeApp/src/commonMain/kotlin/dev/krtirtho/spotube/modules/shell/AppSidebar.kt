@@ -72,6 +72,7 @@ import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.cookie_regular
 import spotube.composeapp.generated.resources.settings_screen_title
 import spotube.composeapp.generated.resources.support_button_label
+import spotube.composeapp.generated.resources.shell_sidebar_toggle_content_description
 
 @Composable
 fun AppSidebar(
@@ -111,7 +112,7 @@ fun AppSidebar(
                 MillenniumSidebarTrigger {
                     MillenniumIconButton(
                         if (it.collapsed) Iconsax.IconsaxSidebarRightBroken else Iconsax.IconsaxSidebarLeftBroken,
-                        contentDescription = "Toggle Sidebar",
+                        contentDescription = stringResource(Res.string.shell_sidebar_toggle_content_description),
                         style = MillenniumIconButtonStyle.Quiet,
                         onClick = { it.toggle() }
                     )
@@ -124,13 +125,13 @@ fun AppSidebar(
             sidebarTabs.forEach { entry ->
                 when (entry) {
                     is NavigationItem.Group<*> -> {
-                        val isGroupExpanded = groupExpansion[entry.title] ?: true
+                        val isGroupExpanded = groupExpansion[entry.title.key] ?: true
                         MillenniumSidebarGroup(
                             expanded = isGroupExpanded,
                             collapsible = true,
                             groupSpacing = 0.dp,
-                            onExpandedChange = { groupExpansion[entry.title] = it }) {
-                            MillenniumSidebarGroupLabel(entry.title)
+                            onExpandedChange = { groupExpansion[entry.title.key] = it }) {
+                            MillenniumSidebarGroupLabel(stringResource(entry.title))
                             MillenniumSidebarGroupContent(
                                 contentSpacing = 0.dp
                             ) {
@@ -190,11 +191,12 @@ private fun SidebarNavItem(
     selected: Boolean,
     onClick: () -> Unit
 ) {
+    val title = stringResource(item.title)
     MillenniumSidebarItem(
-        label = item.title,
+        label = title,
         onClick = onClick,
         selected = selected,
-        contentDescription = item.title,
+        contentDescription = title,
         icon = item.icon
     )
 }

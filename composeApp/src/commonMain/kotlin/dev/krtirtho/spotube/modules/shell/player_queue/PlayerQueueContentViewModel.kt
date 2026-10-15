@@ -75,7 +75,7 @@ class PlayerQueueContentViewModel(
         }
         queue.mapIndexed { index, entry ->
             val title: String
-            var subtitle: String
+            val subtitle: String
             val durationMs: Long
             val imageUrl: String?
 
@@ -97,9 +97,6 @@ class PlayerQueueContentViewModel(
             }
 
             val addedByParticipant = participants.firstOrNull { it.id == entry.addedBy }
-            if (addedByParticipant != null) {
-                subtitle = "$subtitle • Added by ${addedByParticipant.displayName}"
-            }
 
             QueueItemUi(
                 id = "${entry.url}@$index",
@@ -127,7 +124,8 @@ class PlayerQueueContentViewModel(
         val filtered = if (isFiltered) {
             items.filter { item ->
                 item.title.lowercase().contains(normalizedFilter) ||
-                    item.subtitle.lowercase().contains(normalizedFilter)
+                    item.subtitle.lowercase().contains(normalizedFilter) ||
+                    item.addedByParticipant?.displayName?.lowercase()?.contains(normalizedFilter) == true
             }
         } else {
             items

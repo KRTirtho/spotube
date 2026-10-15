@@ -54,7 +54,13 @@ import dev.nucleusframework.window.WindowControls
 import dev.nucleusframework.window.WindowControlsRenderer
 import dev.nucleusframework.window.WindowDoubleClickAction
 import dev.nucleusframework.window.windowDragArea
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.app_window_close
+import spotube.composeapp.generated.resources.app_window_maximize
+import spotube.composeapp.generated.resources.app_window_minimize
+import spotube.composeapp.generated.resources.app_window_restore
 
 private val WindowControlsReservedWidth = 132.dp
 
@@ -109,7 +115,7 @@ private fun WindowButtons(modifier: Modifier = Modifier) {
         MillenniumIconButton(
             onClick = { windowState.isMinimized = true },
             style = MillenniumIconButtonStyle.Quiet) {
-            MillenniumIcon(Iconsax.FluentMinus, "Minimize", modifier = Modifier.size(14.dp))
+            MillenniumIcon(Iconsax.FluentMinus, stringResource(Res.string.app_window_minimize), modifier = Modifier.size(14.dp))
         }
         MillenniumIconButton(
             onClick = {
@@ -118,9 +124,9 @@ private fun WindowButtons(modifier: Modifier = Modifier) {
             },
             style = MillenniumIconButtonStyle.Quiet) {
             if (windowState.placement == WindowPlacement.Floating) {
-                MillenniumIcon(Iconsax.FluentMaximize, "Maximize", modifier = Modifier.size(14.dp))
+                MillenniumIcon(Iconsax.FluentMaximize, stringResource(Res.string.app_window_maximize), modifier = Modifier.size(14.dp))
             } else {
-                MillenniumIcon(Iconsax.FluentSquareMultiple, "Restore", modifier = Modifier.size(14.dp))
+                MillenniumIcon(Iconsax.FluentSquareMultiple, stringResource(Res.string.app_window_restore), modifier = Modifier.size(14.dp))
             }
         }
         MillenniumIconButton(
@@ -132,7 +138,7 @@ private fun WindowButtons(modifier: Modifier = Modifier) {
                 }
             },
             style = MillenniumIconButtonStyle.Quiet) {
-            MillenniumIcon(Iconsax.FluentDismiss, "Close", modifier = Modifier.size(14.dp))
+            MillenniumIcon(Iconsax.FluentDismiss, stringResource(Res.string.app_window_close), modifier = Modifier.size(14.dp))
         }
     }
 }

@@ -83,6 +83,8 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxPlayCircle
 import dev.krtirtho.spotube.resources.iconsax.Play
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun FeaturedCarousel(
@@ -166,7 +168,7 @@ private fun FeaturedCarouselCard(
     val subtitle = when (item) {
         is MetadataBrowseItem.Album -> item.data.artists.joinToString { it.name }
         is MetadataBrowseItem.Playlist -> item.data.owner?.displayName ?: item.data.owner?.username
-        ?: "Playlist"
+        ?: stringResource(Res.string.media_playlist)
 
         is MetadataBrowseItem.Track -> item.data.artists.joinToString { it.name }
         else -> ""

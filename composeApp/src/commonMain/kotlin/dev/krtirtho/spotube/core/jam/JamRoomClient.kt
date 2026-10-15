@@ -44,6 +44,13 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeout
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.jam_error_broker_host_empty
+import spotube.composeapp.generated.resources.jam_error_connection_failed
+import spotube.composeapp.generated.resources.jam_error_connection_lost
+import spotube.composeapp.generated.resources.jam_error_no_broker
+import spotube.composeapp.generated.resources.settings_jam_broker_test_ok
 import org.koin.core.component.KoinComponent
 import kotlin.time.Duration.Companion.seconds
 
@@ -92,7 +99,7 @@ class JamRoomClient : KoinComponent {
 
     /** One-off connection check used by the settings screen. Returns latency description. */
     suspend fun testConnection(broker: JamBroker): Result<String> {
-        if (broker.host.isBlank()) return Result.failure(IllegalArgumentException("Broker host is empty"))
+        if (broker.host.isBlank()) return Result.failure(IllegalArgumentException(getString(Res.string.jam_error_broker_host_empty)))
         val started = kotlin.time.TimeSource.Monotonic.markNow()
         return runCatching {
             val client = startClient(broker, clientId = "${broker.clientIdPrefix}-test")
@@ -100,7 +107,7 @@ class JamRoomClient : KoinComponent {
                 withTimeout(broker.connectionTimeoutSeconds.seconds) {
                     client.awaitConnectivity()
                 }
-                "Connected in ${started.elapsedNow().inWholeMilliseconds} ms"
+                getString(Res.string.settings_jam_broker_test_ok, started.elapsedNow().inWholeMilliseconds)
             } finally {
                 runCatching { client.shutdown(sendDisconnect = true, drain = false) }
             }
@@ -116,7 +123,7 @@ class JamRoomClient : KoinComponent {
         isHost: Boolean): Result<Unit> {
         disconnect()
         if (broker.host.isBlank()) {
-            return Result.failure(IllegalArgumentException("No jam broker configured"))
+            return Result.failure(IllegalArgumentException(getString(Res.string.jam_error_no_broker)))
         }
         return runCatching {
             roomCode = code
@@ -140,7 +147,7 @@ class JamRoomClient : KoinComponent {
             Unit
         }.onFailure { e ->
             log.w(e) { "Failed to connect to jam broker" }
-            _connectionError.value = e.message ?: "Connection failed"
+            _connectionError.value = e.message ?: getString(Res.string.jam_error_connection_failed)
             _isConnected.value = false
             runCatching { client?.shutdown(sendDisconnect = true, drain = false) }
             client = null
@@ -245,7 +252,10 @@ class JamRoomClient : KoinComponent {
 
             else -> {
                 _isConnected.value = false
-                _connectionError.value = "Connection lost"
+                scope.launch {
+                    val message = getString(Res.string.jam_error_connection_lost)
+                    if (!_isConnected.value) _connectionError.value = message
+                }
             }
         }
     }

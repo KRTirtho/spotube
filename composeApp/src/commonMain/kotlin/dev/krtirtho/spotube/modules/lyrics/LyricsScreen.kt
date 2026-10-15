@@ -64,7 +64,15 @@ import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.common_unknown_error
+import spotube.composeapp.generated.resources.lyrics_mode_plain
+import spotube.composeapp.generated.resources.lyrics_mode_synced
+import spotube.composeapp.generated.resources.lyrics_no_plain
+import spotube.composeapp.generated.resources.lyrics_no_synced
+import spotube.composeapp.generated.resources.common_close
 
 @Composable
 fun LyricsScreen(
@@ -88,7 +96,7 @@ fun LyricsScreen(
                 ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxArrowDown4,
-                        contentDescription = "Close"
+                        contentDescription = stringResource(Res.string.common_close)
                     )
                 }
             } else {
@@ -103,12 +111,12 @@ fun LyricsScreen(
                 horizontalArrangement = Arrangement.spacedBy(3.dp)
             ) {
                 LyricsModeTab(
-                    label = "Synced",
+                    label = stringResource(Res.string.lyrics_mode_synced),
                     isSelected = uiState.mode == LyricType.SYNCED,
                     onClick = { viewModel.setMode(LyricType.SYNCED) }
                 )
                 LyricsModeTab(
-                    label = "Plain",
+                    label = stringResource(Res.string.lyrics_mode_plain),
                     isSelected = uiState.mode == LyricType.STATIC,
                     onClick = { viewModel.setMode(LyricType.STATIC) }
                 )
@@ -140,7 +148,7 @@ fun LyricsScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = uiState.error ?: "Unknown error",
+                            text = uiState.error ?: stringResource(Res.string.common_unknown_error),
                             style = AppTheme.typography.bodyLarge,
                             color = AppTheme.colors.error,
                             textAlign = TextAlign.Center
@@ -210,7 +218,7 @@ private fun SyncedLyricsContent(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "No synced lyrics available",
+                text = stringResource(Res.string.lyrics_no_synced),
                 style = AppTheme.typography.bodyLarge,
                 color = AppTheme.colors.onSurfaceVariant,
                 textAlign = TextAlign.Center
@@ -296,7 +304,7 @@ private fun PlainLyricsContent(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "No plain lyrics available",
+                text = stringResource(Res.string.lyrics_no_plain),
                 style = AppTheme.typography.bodyLarge,
                 color = AppTheme.colors.onSurfaceVariant,
                 textAlign = TextAlign.Center

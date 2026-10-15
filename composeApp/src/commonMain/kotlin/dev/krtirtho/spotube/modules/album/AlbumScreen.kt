@@ -31,6 +31,10 @@ import org.koin.compose.koinInject
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.ui.component.CollectionView
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.album_loading_title
+import spotube.composeapp.generated.resources.media_unknown_artist
 
 @Composable
 fun AlbumScreen(
@@ -56,7 +60,7 @@ fun AlbumScreen(
     val dataState = state as? AlbumScreenState.Data
     val album = dataState?.album
     val ownerName =
-        album?.artists?.joinToString { it.name }.orEmpty().ifBlank { "Unknown artist" }
+        album?.artists?.joinToString { it.name }.orEmpty().ifBlank { stringResource(Res.string.media_unknown_artist) }
     val ownerImageURL = album?.artists?.firstOrNull()?.thumbnails?.firstOrNull()?.url
     val firstArtistId = album?.artists?.firstOrNull()?.id
     val artworkUrl = album?.thumbnails?.firstOrNull()?.url.orEmpty()
@@ -67,7 +71,7 @@ fun AlbumScreen(
     val isLoading = state is AlbumScreenState.Loading && (dataState == null || dataState.tracks.isEmpty())
 
     CollectionView(
-        title = album?.title ?: "Loading album...",
+        title = album?.title ?: stringResource(Res.string.album_loading_title),
         description = album?.description ?: "${album?.albumType?.name.orEmpty()} • ${album?.releaseDate.orEmpty()}",
         imageURL = artworkUrl,
         ownerName = ownerName,

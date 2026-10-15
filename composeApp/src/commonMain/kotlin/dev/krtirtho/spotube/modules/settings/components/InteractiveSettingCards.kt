@@ -161,7 +161,7 @@ internal fun <T> SelectionSettingCard(
                     onClick = { isDialogOpen = false },
                     style = MillenniumButtonStyle.Quiet
                 ) {
-                    Text(stringResource(Res.string.settings_action_close))
+                    Text(stringResource(Res.string.common_close))
                 }
             }
         }
@@ -267,13 +267,13 @@ internal fun TextInputSettingCard(
                         },
                         enabled = errorMessage == null
                     ) {
-                        Text(stringResource(Res.string.settings_action_save))
+                        Text(stringResource(Res.string.common_save))
                     }
                     MillenniumButton(
                         onClick = { isDialogOpen = false },
                         style = MillenniumButtonStyle.Secondary
                     ) {
-                        Text(stringResource(Res.string.settings_action_cancel))
+                        Text(stringResource(Res.string.common_cancel))
                     }
                 }
             }

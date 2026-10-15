@@ -55,6 +55,14 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioSource
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
 import org.koin.compose.viewmodel.koinViewModel
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.alternative_track_active_source
+import spotube.composeapp.generated.resources.alternative_track_confidence
+import spotube.composeapp.generated.resources.alternative_track_empty
+import spotube.composeapp.generated.resources.alternative_track_no_track
+import spotube.composeapp.generated.resources.alternative_track_searching
+import spotube.composeapp.generated.resources.alternative_track_title
 
 @Composable
 fun AlternativeTrackContent(
@@ -73,13 +81,13 @@ fun AlternativeTrackContent(
                 .padding(horizontal = 8.dp, vertical = 4.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(
-                text = "Alternative Sources",
+                text = stringResource(Res.string.alternative_track_title),
                 style = AppTheme.typography.titleLarge)
 
             val currentTrack = uiState.currentTrack
             if (currentTrack == null) {
                 Text(
-                    text = "No track currently playing",
+                    text = stringResource(Res.string.alternative_track_no_track),
                     style = AppTheme.typography.bodyMedium,
                     color = AppTheme.colors.onSurfaceVariant)
                 return@Column
@@ -94,7 +102,7 @@ fun AlternativeTrackContent(
                         modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(12.dp))
                     Text(
-                        text = "Searching for alternative sources...",
+                        text = stringResource(Res.string.alternative_track_searching),
                         style = AppTheme.typography.bodyMedium,
                         color = AppTheme.colors.onSurfaceVariant)
                 }
@@ -103,7 +111,7 @@ fun AlternativeTrackContent(
 
             if (uiState.alternatives.isEmpty()) {
                 Text(
-                    text = "No alternative sources found",
+                    text = stringResource(Res.string.alternative_track_empty),
                     style = AppTheme.typography.bodyMedium,
                     color = AppTheme.colors.onSurfaceVariant)
                 return@Column
@@ -186,7 +194,7 @@ private fun AlternativeSourceRow(
                         overflow = TextOverflow.Ellipsis)
                 }
                 Text(
-                    text = "Confidence: ${(source.confidence * 100).toInt()}%",
+                    text = stringResource(Res.string.alternative_track_confidence, (source.confidence * 100).toInt()),
                     style = AppTheme.typography.labelSmall,
                     color = AppTheme.colors.onSurfaceVariant)
             }
@@ -195,7 +203,7 @@ private fun AlternativeSourceRow(
             if (isActive) {
                 MillenniumIcon(
                     Iconsax.IconsaxCheckCircle,
-                    contentDescription = "Active source",
+                    contentDescription = stringResource(Res.string.alternative_track_active_source),
                     tint = AppTheme.colors.primary,
                     modifier = Modifier.size(22.dp))
             }

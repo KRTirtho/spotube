@@ -41,6 +41,15 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.search_error_capabilities
+import spotube.composeapp.generated.resources.search_error_search
+import spotube.composeapp.generated.resources.search_error_tracks
+import spotube.composeapp.generated.resources.search_error_albums
+import spotube.composeapp.generated.resources.search_error_artists
+import spotube.composeapp.generated.resources.search_error_playlists
+import spotube.composeapp.generated.resources.search_error_users
 
 data class SearchPagedState<T>(
     val items: List<T> = emptyList(),
@@ -243,7 +252,7 @@ class SearchScreenViewModel(
                     isLoadingSearchTypes = false,
                     supportedSearchTypes = emptyList(),
                     selectedSearchType = null,
-                    tracks = SearchPagedState(error = it.message ?: "Failed to load search capabilities"))
+                    tracks = SearchPagedState(error = it.message ?: getString(Res.string.search_error_capabilities)))
             }
         }
     }
@@ -324,12 +333,13 @@ class SearchScreenViewModel(
                         hasNextPage = false,
                         isLoading = false))
             }.onFailure {
+                val message = it.message ?: getString(Res.string.search_error_search)
                 _state.value = _state.value.copy(
-                    tracks = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"),
-                    playlists = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"),
-                    albums = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"),
-                    artists = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"),
-                    users = SearchPagedState(isLoading = false, error = it.message ?: "Failed to search"))
+                    tracks = SearchPagedState(isLoading = false, error = message),
+                    playlists = SearchPagedState(isLoading = false, error = message),
+                    albums = SearchPagedState(isLoading = false, error = message),
+                    artists = SearchPagedState(isLoading = false, error = message),
+                    users = SearchPagedState(isLoading = false, error = message))
             }
             return@coroutineScope
         }
@@ -386,7 +396,7 @@ class SearchScreenViewModel(
                 tracks = _state.value.tracks.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search tracks")
+                    error = throwable.message ?: getString(Res.string.search_error_tracks))
             )
         }
     }
@@ -426,7 +436,7 @@ class SearchScreenViewModel(
                 albums = _state.value.albums.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search albums")
+                    error = throwable.message ?: getString(Res.string.search_error_albums))
             )
         }
     }
@@ -466,7 +476,7 @@ class SearchScreenViewModel(
                 artists = _state.value.artists.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search artists")
+                    error = throwable.message ?: getString(Res.string.search_error_artists))
             )
         }
     }
@@ -506,7 +516,7 @@ class SearchScreenViewModel(
                 playlists = _state.value.playlists.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search playlists")
+                    error = throwable.message ?: getString(Res.string.search_error_playlists))
             )
         }
     }
@@ -546,7 +556,7 @@ class SearchScreenViewModel(
                 users = _state.value.users.copy(
                     isLoading = false,
                     hasNextPage = false,
-                    error = throwable.message ?: "Failed to search users")
+                    error = throwable.message ?: getString(Res.string.search_error_users))
             )
         }
     }

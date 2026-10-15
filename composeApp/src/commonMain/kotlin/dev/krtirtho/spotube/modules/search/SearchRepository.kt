@@ -34,6 +34,9 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.search_error_no_metadata_plugin
 
 class SearchRepository(
     private val pluginManager: PluginManager
@@ -70,7 +73,7 @@ class SearchRepository(
     suspend fun loadSupportedSearchTypes(): List<MetadataSupportedSearchType> {
         return supportedTypesCache.get(Unit) {
             val plugin = pluginManager.selectedMetadataPlugin.value
-                ?: throw IllegalStateException("No metadata plugin selected")
+                ?: throw IllegalStateException(getString(Res.string.search_error_no_metadata_plugin))
             pluginManager.withScope {
                 plugin.use { metadataSearchAPI.supportedSearchTypes }
             }
@@ -80,7 +83,7 @@ class SearchRepository(
     suspend fun searchAll(query: String): List<MetadataSearchResult> {
         return allSearchCache.get(query) {
             val plugin = pluginManager.selectedMetadataPlugin.value
-                ?: throw IllegalStateException("No metadata plugin selected")
+                ?: throw IllegalStateException(getString(Res.string.search_error_no_metadata_plugin))
             pluginManager.withScope {
                 plugin.use { metadataSearchAPI.search(query) }
             }
@@ -94,7 +97,7 @@ class SearchRepository(
         val key = query to pagination
         return trackSearchCache.get(key) {
             val plugin = pluginManager.selectedMetadataPlugin.value
-                ?: throw IllegalStateException("No metadata plugin selected")
+                ?: throw IllegalStateException(getString(Res.string.search_error_no_metadata_plugin))
             pluginManager.withScope {
                 plugin.use { metadataSearchAPI.searchTracks(query, pagination) }
             }
@@ -108,7 +111,7 @@ class SearchRepository(
         val key = query to pagination
         return albumSearchCache.get(key) {
             val plugin = pluginManager.selectedMetadataPlugin.value
-                ?: throw IllegalStateException("No metadata plugin selected")
+                ?: throw IllegalStateException(getString(Res.string.search_error_no_metadata_plugin))
             pluginManager.withScope {
                 plugin.use { metadataSearchAPI.searchAlbums(query, pagination) }
             }
@@ -122,7 +125,7 @@ class SearchRepository(
         val key = query to pagination
         return artistSearchCache.get(key) {
             val plugin = pluginManager.selectedMetadataPlugin.value
-                ?: throw IllegalStateException("No metadata plugin selected")
+                ?: throw IllegalStateException(getString(Res.string.search_error_no_metadata_plugin))
             pluginManager.withScope {
                 plugin.use { metadataSearchAPI.searchArtists(query, pagination) }
             }
@@ -136,7 +139,7 @@ class SearchRepository(
         val key = query to pagination
         return playlistSearchCache.get(key) {
             val plugin = pluginManager.selectedMetadataPlugin.value
-                ?: throw IllegalStateException("No metadata plugin selected")
+                ?: throw IllegalStateException(getString(Res.string.search_error_no_metadata_plugin))
             pluginManager.withScope {
                 plugin.use { metadataSearchAPI.searchPlaylists(query, pagination) }
             }
@@ -150,7 +153,7 @@ class SearchRepository(
         val key = query to pagination
         return userSearchCache.get(key) {
             val plugin = pluginManager.selectedMetadataPlugin.value
-                ?: throw IllegalStateException("No metadata plugin selected")
+                ?: throw IllegalStateException(getString(Res.string.search_error_no_metadata_plugin))
             pluginManager.withScope {
                 plugin.use { metadataSearchAPI.searchUsers(query, pagination) }
             }

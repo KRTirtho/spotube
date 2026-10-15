@@ -42,7 +42,20 @@ import dev.krtirtho.spotube.core.remote.RemotePlaybackController
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.devices_destination_action_add_to_queue
+import spotube.composeapp.generated.resources.devices_destination_action_play
+import spotube.composeapp.generated.resources.devices_destination_action_play_next
+import spotube.composeapp.generated.resources.common_cancel
+import spotube.composeapp.generated.resources.devices_destination_prompt
+import spotube.composeapp.generated.resources.devices_destination_remote_device
+import spotube.composeapp.generated.resources.devices_destination_remote_device_host
+import spotube.composeapp.generated.resources.devices_destination_remote_subtitle
+import spotube.composeapp.generated.resources.devices_destination_this_device
+import spotube.composeapp.generated.resources.devices_destination_this_device_subtitle
+import spotube.composeapp.generated.resources.devices_destination_title
 
 /**
  * Globally hosted dialog shown when the user tries to play / add to queue /
@@ -59,25 +72,25 @@ fun PlayDestinationPickerHost() {
     val pendingRequest = request ?: return
 
     val remoteDeviceName = when (val state = connectionState) {
-        is ConnectionState.Connected -> "Remote Device (${state.host})"
-        else -> "Remote Device"
+        is ConnectionState.Connected -> stringResource(Res.string.devices_destination_remote_device_host, state.host)
+        else -> stringResource(Res.string.devices_destination_remote_device)
     }
 
     val actionLabel = when (pendingRequest.action) {
-        PlaybackDestinationAction.Play -> "Play"
-        PlaybackDestinationAction.AddToQueue -> "Add to queue"
-        PlaybackDestinationAction.PlayNext -> "Play next"
+        PlaybackDestinationAction.Play -> stringResource(Res.string.devices_destination_action_play)
+        PlaybackDestinationAction.AddToQueue -> stringResource(Res.string.devices_destination_action_add_to_queue)
+        PlaybackDestinationAction.PlayNext -> stringResource(Res.string.devices_destination_action_play_next)
     }
 
     MillenniumDialog(
         visible = true,
         onDismissRequest = controller::dismissPicker,
-        title = "Where to $actionLabel?") {
+        title = stringResource(Res.string.devices_destination_title)) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text(
-                text = "$actionLabel \"${pendingRequest.title}\" on:",
+                text = stringResource(Res.string.devices_destination_prompt, actionLabel, pendingRequest.title),
                 style = AppTheme.typography.bodyMedium,
                 color = AppTheme.colors.onSurfaceVariant)
 
@@ -92,12 +105,12 @@ fun PlayDestinationPickerHost() {
                 },
                 title = {
                     Text(
-                        text = "This Device",
+                        text = stringResource(Res.string.devices_destination_this_device),
                         style = AppTheme.typography.bodyLarge)
                 },
                 subtitle = {
                     Text(
-                        text = "$actionLabel here",
+                        text = stringResource(Res.string.devices_destination_this_device_subtitle),
                         style = AppTheme.typography.bodySmall,
                         color = AppTheme.colors.onSurfaceVariant)
                 })
@@ -119,7 +132,7 @@ fun PlayDestinationPickerHost() {
                     },
                     subtitle = {
                         Text(
-                            text = "$actionLabel on the connected device",
+                            text = stringResource(Res.string.devices_destination_remote_subtitle),
                             style = AppTheme.typography.bodySmall,
                             color = AppTheme.colors.onSurfaceVariant)
                     })
@@ -128,7 +141,7 @@ fun PlayDestinationPickerHost() {
             MillenniumButton(
                 onClick = controller::dismissPicker,
                 style = MillenniumButtonStyle.Quiet) {
-                Text("Cancel")
+                Text(stringResource(Res.string.common_cancel))
             }
         }
     }

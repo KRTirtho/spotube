@@ -51,6 +51,11 @@ import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormData
 import dev.krtirtho.spotube.modules.library.playlist.PlaylistFormSheet
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.playlist_add_tracks_button
+import spotube.composeapp.generated.resources.playlist_loading_title
+import spotube.composeapp.generated.resources.playlist_owner_unknown
 
 @Composable
 fun PlaylistScreen(
@@ -78,7 +83,7 @@ fun PlaylistScreen(
     val dataState = state as? PlaylistScreenState.Data
     val playlist = dataState?.playlist
     val owner = playlist?.owner
-    val ownerName = owner?.displayName ?: owner?.username ?: "Unknown"
+    val ownerName = owner?.displayName ?: owner?.username ?: stringResource(Res.string.playlist_owner_unknown)
     val ownerImageURL = owner?.thumbnails?.firstOrNull()?.url
     val isOwner = currentUserId != null && playlist?.owner?.id == currentUserId
     val artworkUrl = playlist?.thumbnails?.firstOrNull()?.url.orEmpty()
@@ -104,7 +109,7 @@ fun PlaylistScreen(
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxAddSquare,
                             contentDescription = null)
-                        Text("Add Tracks")
+                        Text(stringResource(Res.string.playlist_add_tracks_button))
                     }
                 }
             }
@@ -112,7 +117,7 @@ fun PlaylistScreen(
     } else null
 
     CollectionView(
-        title = playlist?.title ?: "Loading playlist...",
+        title = playlist?.title ?: stringResource(Res.string.playlist_loading_title),
         description = playlist?.description.orEmpty(),
         imageURL = artworkUrl,
         ownerName = ownerName,

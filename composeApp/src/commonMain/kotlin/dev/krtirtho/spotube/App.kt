@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation3.ui.NavDisplay
 import dev.krtirtho.spotube.core.DebugConfig
+import dev.krtirtho.spotube.core.i18n.AppLocaleProvider
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.navigation.TOP_LEVEL_ROUTES
@@ -73,48 +74,63 @@ import kotlin.time.Clock
 import org.koin.compose.koinInject
 import org.koin.compose.navigation3.koinEntryProvider
 import org.koin.core.annotation.KoinExperimentalAPI
+import org.jetbrains.compose.resources.StringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.jam_screen_title
+import spotube.composeapp.generated.resources.library_tab_albums
+import spotube.composeapp.generated.resources.library_tab_artists
+import spotube.composeapp.generated.resources.library_tab_downloads
+import spotube.composeapp.generated.resources.library_tab_local_tracks
+import spotube.composeapp.generated.resources.library_tab_playlists
+import spotube.composeapp.generated.resources.library_toolbar_compact_title
+import spotube.composeapp.generated.resources.nav_devices
+import spotube.composeapp.generated.resources.nav_group_connect
+import spotube.composeapp.generated.resources.nav_group_on_device
+import spotube.composeapp.generated.resources.nav_home
+import spotube.composeapp.generated.resources.nav_search
+import spotube.composeapp.generated.resources.settings_screen_title
 
 interface NavigationItem {
     data class Tab<T : Any>(
-        val title: String, val icon: ImageVector, val route: Routes,
+        val title: StringResource, val icon: ImageVector, val route: Routes,
         val data: T? = null
     ) : NavigationItem
 
     data class Group<T : Any>(
-        val title: String, val items: List<Tab<T>>
+        val title: StringResource, val items: List<Tab<T>>
     ) : NavigationItem
 }
 
 private val tabs = listOf<NavigationItem>(
-    NavigationItem.Tab<Any>("Home", Iconsax.IconsaxHome, Routes.Home),
-    NavigationItem.Tab<Any>("Search", Iconsax.IconsaxSearch, Routes.Search)
+    NavigationItem.Tab<Any>(Res.string.nav_home, Iconsax.IconsaxHome, Routes.Home),
+    NavigationItem.Tab<Any>(Res.string.nav_search, Iconsax.IconsaxSearch, Routes.Search)
 )
 
 val sidebarTabs = tabs + listOf(
     NavigationItem.Group(
-        "Library",
+        Res.string.library_toolbar_compact_title,
         items = listOf(
             NavigationItem.Tab(
-                "Playlists",
+                Res.string.library_tab_playlists,
                 Iconsax.IconsaxMusicDashboard,
                 Routes.Library,
                 LibraryTab.Playlists
             ),
-            NavigationItem.Tab("Albums", Iconsax.IconsaxCd, Routes.Library, LibraryTab.Albums),
-            NavigationItem.Tab("Artists", Iconsax.User, Routes.Library, LibraryTab.Artists)
+            NavigationItem.Tab(Res.string.library_tab_albums, Iconsax.IconsaxCd, Routes.Library, LibraryTab.Albums),
+            NavigationItem.Tab(Res.string.library_tab_artists, Iconsax.User, Routes.Library, LibraryTab.Artists)
         )
     ),
     NavigationItem.Group(
-        "On Device",
+        Res.string.nav_group_on_device,
         items = listOf(
             NavigationItem.Tab(
-                "Local Tracks",
+                Res.string.library_tab_local_tracks,
                 Iconsax.IconsaxMusicLibrary,
                 Routes.Library,
                 LibraryTab.LocalTracks
             ),
             NavigationItem.Tab(
-                "Downloads",
+                Res.string.library_tab_downloads,
                 Iconsax.IconsaxDirectboxReceive,
                 Routes.Library,
                 LibraryTab.Downloads
@@ -122,16 +138,16 @@ val sidebarTabs = tabs + listOf(
         )
     ),
     NavigationItem.Group(
-        "Connect",
+        Res.string.nav_group_connect,
         items = listOf(
-            NavigationItem.Tab("Devices", Iconsax.IconsaxMirrorScreenRegular, Routes.Devices),
-            NavigationItem.Tab("Group Jam", Iconsax.IconsaxSoundTwotone, Routes.Jam)
+            NavigationItem.Tab(Res.string.nav_devices, Iconsax.IconsaxMirrorScreenRegular, Routes.Devices),
+            NavigationItem.Tab(Res.string.jam_screen_title, Iconsax.IconsaxSoundTwotone, Routes.Jam)
         )
     )
 )
 val bottombarTabs = tabs + listOf(
-    NavigationItem.Tab<Any>("Library", Iconsax.IconsaxMusicLibrary, Routes.Library),
-    NavigationItem.Tab("Settings", Iconsax.IconsaxSetting2, Routes.Settings)
+    NavigationItem.Tab<Any>(Res.string.library_toolbar_compact_title, Iconsax.IconsaxMusicLibrary, Routes.Library),
+    NavigationItem.Tab(Res.string.settings_screen_title, Iconsax.IconsaxSetting2, Routes.Settings)
 )
 
 @OptIn(KoinExperimentalAPI::class)
@@ -194,65 +210,68 @@ fun App(
         Navigator(navigationState)
     }
 
-    SpotubeTheme(settings = userSettings) {
-        CompositionLocalProvider(LocalSupportPrompt provides {
-            supportDialogIsReminder = false
-            showSupportDialog = true
-        }) {
-            Box(modifier = Modifier.fillMaxSize()) {
-                val currentRoute =
-                    navigationState.backStacks[navigationState.topLevelRoute]?.last()
+    // Below the navigation state, so switching languages keeps the current screen.
+    AppLocaleProvider(userSettings.language) {
+        SpotubeTheme(settings = userSettings) {
+            CompositionLocalProvider(LocalSupportPrompt provides {
+                supportDialogIsReminder = false
+                showSupportDialog = true
+            }) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    val currentRoute =
+                        navigationState.backStacks[navigationState.topLevelRoute]?.last()
 
-                Box(Modifier.fillMaxSize()) {
-                    AppShell(navigator, navigationState) {
-                        SharedTransitionLayout {
-                            CompositionLocalProvider(
-                                LocalSharedTransitionScope provides this@SharedTransitionLayout
-                            ) {
-                                Column {
-                                    NavDisplay(
-                                        modifier = Modifier.fillMaxSize(),
-                                        onBack = navigator::pop,
-                                        entries = navigationState.toEntries(koinEntryProvider()),
-                                        transitionSpec = navPushTransitionSpec,
-                                        popTransitionSpec = navPopTransitionSpec,
-                                        predictivePopTransitionSpec = navPredictivePopTransitionSpec
-                                    )
+                    Box(Modifier.fillMaxSize()) {
+                        AppShell(navigator, navigationState) {
+                            SharedTransitionLayout {
+                                CompositionLocalProvider(
+                                    LocalSharedTransitionScope provides this@SharedTransitionLayout
+                                ) {
+                                    Column {
+                                        NavDisplay(
+                                            modifier = Modifier.fillMaxSize(),
+                                            onBack = navigator::pop,
+                                            entries = navigationState.toEntries(koinEntryProvider()),
+                                            transitionSpec = navPushTransitionSpec,
+                                            popTransitionSpec = navPopTransitionSpec,
+                                            predictivePopTransitionSpec = navPredictivePopTransitionSpec
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                    when (currentRoute) {
-                        Routes.WebView -> WebViewScreen(koinInject())
-                        else -> {}
+                        when (currentRoute) {
+                            Routes.WebView -> WebViewScreen(koinInject())
+                            else -> {}
+                        }
                     }
                 }
+                content()
+                availableAppUpdate?.let { update ->
+                    AppUpdateDialog(
+                        update = update,
+                        onDismiss = appUpdateService::dismissUpdate,
+                        onIgnore = appUpdateService::ignoreUpdate,
+                        onUpdate = {
+                            runCatching { openUrlInBrowser("https://spotube.cc/downloads/") }
+                            appUpdateService.dismissUpdate()
+                        })
+                }
+                availablePluginUpdate?.let { update ->
+                    PluginUpdateDialog(
+                        update = update,
+                        onDismiss = pluginUpdateService::dismissUpdate,
+                        onIgnore = pluginUpdateService::ignoreUpdate,
+                        onUpdate = {
+                            runCatching { openUrlInBrowser(update.info.directDownloadUrl) }
+                            pluginUpdateService.dismissUpdate()
+                        })
+                }
+                SupportDialog(
+                    visible = showSupportDialog,
+                    onDismissRequest = { showSupportDialog = false },
+                    isReminder = supportDialogIsReminder)
             }
-            content()
-            availableAppUpdate?.let { update ->
-                AppUpdateDialog(
-                    update = update,
-                    onDismiss = appUpdateService::dismissUpdate,
-                    onIgnore = appUpdateService::ignoreUpdate,
-                    onUpdate = {
-                        runCatching { openUrlInBrowser("https://spotube.cc/downloads/") }
-                        appUpdateService.dismissUpdate()
-                    })
-            }
-            availablePluginUpdate?.let { update ->
-                PluginUpdateDialog(
-                    update = update,
-                    onDismiss = pluginUpdateService::dismissUpdate,
-                    onIgnore = pluginUpdateService::ignoreUpdate,
-                    onUpdate = {
-                        runCatching { openUrlInBrowser(update.info.directDownloadUrl) }
-                        pluginUpdateService.dismissUpdate()
-                    })
-            }
-            SupportDialog(
-                visible = showSupportDialog,
-                onDismissRequest = { showSupportDialog = false },
-                isReminder = supportDialogIsReminder)
         }
     }
 }

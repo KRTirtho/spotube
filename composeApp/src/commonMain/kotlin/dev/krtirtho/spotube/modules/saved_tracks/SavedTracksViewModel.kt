@@ -57,6 +57,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.*
 
 const val SAVED_TRACKS_COLLECTION_ID = "saved_tracks"
 
@@ -171,7 +173,7 @@ class SavedTracksViewModel(
                 totalCount = totalCount)
         }.onFailure { e ->
             logger.e(e) { "Failed to load saved tracks" }
-            _state.value = SavedTracksScreenState.Error(e.message ?: "Unknown error")
+            _state.value = SavedTracksScreenState.Error(e.message ?: getString(Res.string.common_unknown_error))
         }
     }
 
@@ -188,7 +190,7 @@ class SavedTracksViewModel(
                         totalCount = currentState.totalCount)
                 }.onFailure { e ->
                     logger.e(e) { "Failed to load more tracks" }
-                    _state.value = SavedTracksScreenState.Error(e.message ?: "Unknown error")
+                    _state.value = SavedTracksScreenState.Error(e.message ?: getString(Res.string.common_unknown_error))
                 }
             }
         }
@@ -367,7 +369,7 @@ fun rememberIsSavedTracks(
                 val result = repository.isSavedTracks(trackIds)
                 state = SavedState.Success(result)
             }.onFailure { e ->
-                state = SavedState.Error(e.message ?: "Unknown error")
+                state = SavedState.Error(e.message ?: getString(Res.string.common_unknown_error))
             }
         }
     }

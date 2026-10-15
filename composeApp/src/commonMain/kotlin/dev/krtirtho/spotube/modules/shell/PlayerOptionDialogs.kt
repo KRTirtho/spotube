@@ -54,6 +54,50 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxCheckCircle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxDirectboxReceive
 import dev.krtirtho.spotube.core.server.CacheEntry
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.library_tab_artists
+import spotube.composeapp.generated.resources.media_artist
+import spotube.composeapp.generated.resources.player_sleep_timer
+import spotube.composeapp.generated.resources.player_sleep_timer_cancel
+import spotube.composeapp.generated.resources.player_sleep_timer_description
+import spotube.composeapp.generated.resources.player_sleep_timer_minutes_label
+import spotube.composeapp.generated.resources.player_sleep_timer_minutes_placeholder
+import spotube.composeapp.generated.resources.player_sleep_timer_remaining
+import spotube.composeapp.generated.resources.player_sleep_timer_start
+import spotube.composeapp.generated.resources.player_track_details
+import spotube.composeapp.generated.resources.player_track_details_active_url
+import spotube.composeapp.generated.resources.player_track_details_album
+import spotube.composeapp.generated.resources.player_track_details_album_genres
+import spotube.composeapp.generated.resources.player_track_details_album_id
+import spotube.composeapp.generated.resources.player_track_details_album_release_date
+import spotube.composeapp.generated.resources.player_track_details_album_track_count
+import spotube.composeapp.generated.resources.player_track_details_album_type
+import spotube.composeapp.generated.resources.player_track_details_available_streams
+import spotube.composeapp.generated.resources.player_track_details_confidence
+import spotube.composeapp.generated.resources.player_track_details_disc_number
+import spotube.composeapp.generated.resources.player_track_details_duration
+import spotube.composeapp.generated.resources.player_track_details_explicit
+import spotube.composeapp.generated.resources.player_track_details_external_uri
+import spotube.composeapp.generated.resources.player_track_details_id
+import spotube.composeapp.generated.resources.player_track_details_isrc
+import spotube.composeapp.generated.resources.player_track_details_loading_source
+import spotube.composeapp.generated.resources.player_track_details_loading_streams
+import spotube.composeapp.generated.resources.player_track_details_matched_source
+import spotube.composeapp.generated.resources.player_track_details_matches_preference
+import spotube.composeapp.generated.resources.player_track_details_metadata_track
+import spotube.composeapp.generated.resources.player_track_details_no_source
+import spotube.composeapp.generated.resources.player_track_details_no_streams
+import spotube.composeapp.generated.resources.player_track_details_popularity
+import spotube.composeapp.generated.resources.player_track_details_selected_stream_content_description
+import spotube.composeapp.generated.resources.player_track_details_served_from_cache
+import spotube.composeapp.generated.resources.player_track_details_served_from_cache_description
+import spotube.composeapp.generated.resources.player_track_details_source_not_needed
+import spotube.composeapp.generated.resources.player_track_details_stream_mismatch
+import spotube.composeapp.generated.resources.player_track_details_thumbnail_urls
+import spotube.composeapp.generated.resources.player_track_details_title
+import spotube.composeapp.generated.resources.player_track_details_track_number
+import spotube.composeapp.generated.resources.common_close
 
 @Composable
 fun PlayerOptionDialogs(viewModel: PlayerOptionsViewModel) {
@@ -87,16 +131,16 @@ private fun SleepTimerDialog(
     MillenniumDialog(
         visible = true,
         onDismissRequest = onDismiss,
-        title = "Sleep timer") {
+        title = stringResource(Res.string.player_sleep_timer)) {
         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
             if (remainingMs != null) {
                 Text(
-                    text = "Playback will pause in ${formatRemainingTime(remainingMs)}.",
+                    text = stringResource(Res.string.player_sleep_timer_remaining, formatRemainingTime(remainingMs)),
                     style = AppTheme.typography.bodyMedium,
                     color = AppTheme.colors.primary)
             } else {
                 Text(
-                    text = "Pause playback after the selected number of minutes.",
+                    text = stringResource(Res.string.player_sleep_timer_description),
                     style = AppTheme.typography.bodyMedium)
             }
             val minutesState = rememberTextFieldState(minutes)
@@ -105,23 +149,23 @@ private fun SleepTimerDialog(
             }
             MillenniumTextField(
                 state = minutesState,
-                label = "Minutes",
-                placeholder = "Choose between 1 and 600 minutes",
+                label = stringResource(Res.string.player_sleep_timer_minutes_label),
+                placeholder = stringResource(Res.string.player_sleep_timer_minutes_placeholder),
                 modifier = Modifier.fillMaxWidth())
 
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 if (remainingMs != null) {
                     MillenniumButton(
                         onClick = onCancelTimer,
-                        style = MillenniumButtonStyle.Secondary) { Text("Cancel timer") }
+                        style = MillenniumButtonStyle.Secondary) { Text(stringResource(Res.string.player_sleep_timer_cancel)) }
                 }
                 MillenniumButton(
                     onClick = onDismiss,
-                    style = MillenniumButtonStyle.Secondary) { Text("Close") }
+                    style = MillenniumButtonStyle.Secondary) { Text(stringResource(Res.string.common_close)) }
                 MillenniumButton(
                     onClick = onStart,
                     enabled = minutes.toLongOrNull()?.let { it in 1L..600L } == true) {
-                    Text("Start")
+                    Text(stringResource(Res.string.player_sleep_timer_start))
                 }
             }
         }
@@ -135,7 +179,7 @@ private fun TrackDetailsDialog(
     MillenniumDialog(
         visible = true,
         onDismissRequest = onDismiss,
-        title = "Track details") {
+        title = stringResource(Res.string.player_track_details)) {
         Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
             Text(
                 details.track.title,
@@ -161,7 +205,7 @@ private fun TrackDetailsDialog(
                             background = SolidColor(AppTheme.colors.tertiaryContainer),
                             shape = RoundedCornerShape(12.dp))) {
                     Text(
-                        "The playback URL was resolved with different streaming settings. The highlighted stream matches your current preference; the active URL refreshes on the next stream request.",
+                        stringResource(Res.string.player_track_details_stream_mismatch),
                         modifier = Modifier.padding(12.dp),
                         style = AppTheme.typography.bodySmall,
                         color = AppTheme.colors.onTertiaryContainer)
@@ -171,43 +215,43 @@ private fun TrackDetailsDialog(
             TrackMetadataSection(details.track)
 
             Text(
-                "Matched audio source",
+                stringResource(Res.string.player_track_details_matched_source),
                 style = AppTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold)
             val source = details.matchedSource
             if (details.isLoading) {
-                Text("Loading matched source…", style = AppTheme.typography.bodySmall)
+                Text(stringResource(Res.string.player_track_details_loading_source), style = AppTheme.typography.bodySmall)
             } else if (source == null) {
                 Text(
-                    details.error ?: if (details.localCacheEntry != null) {
-                        "A matched remote source is not needed while playing the local cached file."
+                    details.error ?: details.errorRes?.let { stringResource(it) } ?: if (details.localCacheEntry != null) {
+                        stringResource(Res.string.player_track_details_source_not_needed)
                     } else {
-                        "No matched source is available."
+                        stringResource(Res.string.player_track_details_no_source)
                     },
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colors.onSurfaceVariant)
             } else {
-                DetailRow("Title", source.title)
-                DetailRow("ID", source.id)
-                DetailRow("Artist", source.artist)
-                DetailRow("Album", source.album)
-                DetailRow("Confidence", "${(source.confidence * 100).toInt()}%")
-                DetailRow("External URI", source.externalUri)
+                DetailRow(stringResource(Res.string.player_track_details_title), source.title)
+                DetailRow(stringResource(Res.string.player_track_details_id), source.id)
+                DetailRow(stringResource(Res.string.media_artist), source.artist)
+                DetailRow(stringResource(Res.string.player_track_details_album), source.album)
+                DetailRow(stringResource(Res.string.player_track_details_confidence), "${(source.confidence * 100).toInt()}%")
+                DetailRow(stringResource(Res.string.player_track_details_external_uri), source.externalUri)
             }
 
             Text(
-                "Available streams",
+                stringResource(Res.string.player_track_details_available_streams),
                 style = AppTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold)
             when {
                 details.localCacheEntry != null && details.streams.isEmpty() -> Text(
-                    "This track is being served from the local cache. Stream variants are not used for this playback.",
+                    stringResource(Res.string.player_track_details_served_from_cache_description),
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colors.onSurfaceVariant)
 
-                details.isLoading -> Text("Loading streams…", style = AppTheme.typography.bodySmall)
+                details.isLoading -> Text(stringResource(Res.string.player_track_details_loading_streams), style = AppTheme.typography.bodySmall)
                 details.streams.isEmpty() -> Text(
-                    details.error ?: "No streams are available for this source.",
+                    details.error ?: details.errorRes?.let { stringResource(it) } ?: stringResource(Res.string.player_track_details_no_streams),
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colors.onSurfaceVariant)
 
@@ -244,7 +288,7 @@ private fun TrackDetailsDialog(
                                 if (isSelected) {
                                     MillenniumIcon(
                                         imageVector = Iconsax.IconsaxCheckCircle,
-                                        contentDescription = "Currently selected stream",
+                                        contentDescription = stringResource(Res.string.player_track_details_selected_stream_content_description),
                                         tint = AppTheme.colors.primary)
                                 }
                             }
@@ -258,7 +302,7 @@ private fun TrackDetailsDialog(
                                 color = AppTheme.colors.onSurfaceVariant)
                             if (isSelected) {
                                 Text(
-                                    "Matches your streaming format & quality preference",
+                                    stringResource(Res.string.player_track_details_matches_preference),
                                     style = AppTheme.typography.labelSmall,
                                     color = AppTheme.colors.primary)
                             }
@@ -268,12 +312,12 @@ private fun TrackDetailsDialog(
             }
 
             details.activeStreamUrl?.let { activeUrl ->
-                DetailRow("Active playback URL", activeUrl)
+                DetailRow(stringResource(Res.string.player_track_details_active_url), activeUrl)
             }
 
             MillenniumButton(
                 onClick = onDismiss,
-                style = MillenniumButtonStyle.Secondary) { Text("Close") }
+                style = MillenniumButtonStyle.Secondary) { Text(stringResource(Res.string.common_close)) }
         }
     }
 }
@@ -296,7 +340,7 @@ private fun LocalCacheBanner(entry: CacheEntry) {
                 tint = AppTheme.colors.onSecondaryContainer)
             Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
                 Text(
-                    "Served from local cache",
+                    stringResource(Res.string.player_track_details_served_from_cache),
                     style = AppTheme.typography.labelLarge,
                     fontWeight = FontWeight.SemiBold,
                     color = AppTheme.colors.onSecondaryContainer)
@@ -312,26 +356,26 @@ private fun LocalCacheBanner(entry: CacheEntry) {
 @Composable
 private fun TrackMetadataSection(track: MetadataTrack) {
     Text(
-        "Metadata track",
+        stringResource(Res.string.player_track_details_metadata_track),
         style = AppTheme.typography.titleSmall,
         fontWeight = FontWeight.SemiBold)
-    DetailRow("ID", track.id)
-    DetailRow("Title", track.title)
-    DetailRow("Artists", track.artists.joinToString { it.name })
-    DetailRow("Album", track.album?.title)
-    DetailRow("Album ID", track.album?.id)
-    DetailRow("Album type", track.album?.albumType?.name)
-    DetailRow("Album release date", track.album?.releaseDate)
-    DetailRow("Album track count", track.album?.trackCount?.toString())
-    DetailRow("Album genres", track.album?.genres?.joinToString())
-    DetailRow("Duration", formatRemainingTime(track.durationMs))
-    DetailRow("Track number", track.trackNumber?.toString())
-    DetailRow("Disc number", track.discNumber?.toString())
-    DetailRow("Explicit", track.explicit?.toString())
-    DetailRow("Popularity", track.popularity?.toString())
-    DetailRow("ISRC", track.isrcCode)
-    DetailRow("External URI", track.externalUri)
-    DetailRow("Thumbnail URLs", track.thumbnails?.joinToString { it.url })
+    DetailRow(stringResource(Res.string.player_track_details_id), track.id)
+    DetailRow(stringResource(Res.string.player_track_details_title), track.title)
+    DetailRow(stringResource(Res.string.library_tab_artists), track.artists.joinToString { it.name })
+    DetailRow(stringResource(Res.string.player_track_details_album), track.album?.title)
+    DetailRow(stringResource(Res.string.player_track_details_album_id), track.album?.id)
+    DetailRow(stringResource(Res.string.player_track_details_album_type), track.album?.albumType?.name)
+    DetailRow(stringResource(Res.string.player_track_details_album_release_date), track.album?.releaseDate)
+    DetailRow(stringResource(Res.string.player_track_details_album_track_count), track.album?.trackCount?.toString())
+    DetailRow(stringResource(Res.string.player_track_details_album_genres), track.album?.genres?.joinToString())
+    DetailRow(stringResource(Res.string.player_track_details_duration), formatRemainingTime(track.durationMs))
+    DetailRow(stringResource(Res.string.player_track_details_track_number), track.trackNumber?.toString())
+    DetailRow(stringResource(Res.string.player_track_details_disc_number), track.discNumber?.toString())
+    DetailRow(stringResource(Res.string.player_track_details_explicit), track.explicit?.toString())
+    DetailRow(stringResource(Res.string.player_track_details_popularity), track.popularity?.toString())
+    DetailRow(stringResource(Res.string.player_track_details_isrc), track.isrcCode)
+    DetailRow(stringResource(Res.string.player_track_details_external_uri), track.externalUri)
+    DetailRow(stringResource(Res.string.player_track_details_thumbnail_urls), track.thumbnails?.joinToString { it.url })
 }
 
 @Composable

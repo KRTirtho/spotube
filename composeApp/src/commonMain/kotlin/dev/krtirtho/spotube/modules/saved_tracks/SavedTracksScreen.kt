@@ -34,6 +34,9 @@ import dev.krtirtho.spotube.core.ui.component.CollectionView
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.liked_tracks
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun SavedTracksScreen(
@@ -62,11 +65,11 @@ fun SavedTracksScreen(
     val isLoading = state is SavedTracksScreenState.Loading && (dataState == null || dataState.tracks.isEmpty())
 
     CollectionView(
-        title = "Saved Tracks",
-        description = dataState?.let { "${it.totalCount} tracks" } ?: "",
+        title = stringResource(Res.string.saved_tracks_title),
+        description = dataState?.let { pluralStringResource(Res.plurals.library_local_tracks_count, it.totalCount, it.totalCount) } ?: "",
         imageURL = "",
         imageResource = Res.drawable.liked_tracks,
-        ownerName = "You",
+        ownerName = stringResource(Res.string.saved_tracks_owner_you),
         ownerImageURL = null,
         onOwnerClick = {},
         onPlay = viewModel::playSavedTracks,

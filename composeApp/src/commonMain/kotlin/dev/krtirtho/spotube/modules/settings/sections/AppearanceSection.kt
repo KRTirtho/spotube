@@ -182,12 +182,12 @@ private fun AppearanceSettingCard(
                         onSaved(draftPalette)
                         isDialogOpen = false
                     }) {
-                    MillenniumText(stringResource(Res.string.settings_action_save))
+                    MillenniumText(stringResource(Res.string.common_save))
                 }
                 MillenniumButton(
                     onClick = { isDialogOpen = false },
                     style = MillenniumButtonStyle.Secondary) {
-                    MillenniumText(stringResource(Res.string.settings_action_cancel))
+                    MillenniumText(stringResource(Res.string.common_cancel))
                 }
             }
         }

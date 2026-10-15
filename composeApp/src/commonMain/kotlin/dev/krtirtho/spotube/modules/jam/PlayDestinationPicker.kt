@@ -27,6 +27,13 @@ import androidx.compose.foundation.layout.Row
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.jam_destination_message
+import spotube.composeapp.generated.resources.jam_destination_play_here
+import spotube.composeapp.generated.resources.jam_destination_suggest
+import spotube.composeapp.generated.resources.jam_destination_title
+import spotube.composeapp.generated.resources.common_cancel
 
 /**
  * Dialog shown when the user tries to play a collection while a jam session is active.
@@ -43,23 +50,23 @@ fun PlayDestinationPicker(
     MillenniumDialog(
         visible = true,
         onDismissRequest = onDismiss,
-        title = "Play Where?") {
+        title = stringResource(Res.string.jam_destination_title)) {
         Text(
-            text = "You have an active jam session. Choose where to play this collection.",
+            text = stringResource(Res.string.jam_destination_message),
             style = AppTheme.typography.bodyMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             MillenniumButton(
                 onClick = onDismiss,
                 style = MillenniumButtonStyle.Quiet) {
-                Text("Cancel")
+                Text(stringResource(Res.string.common_cancel))
             }
             MillenniumButton(
                 onClick = onPlayLocally,
                 style = MillenniumButtonStyle.Quiet) {
-                Text("Play here")
+                Text(stringResource(Res.string.jam_destination_play_here))
             }
             MillenniumButton(onClick = onSuggestToJam) {
-                Text("Suggest to Jam")
+                Text(stringResource(Res.string.jam_destination_suggest))
             }
         }
     }

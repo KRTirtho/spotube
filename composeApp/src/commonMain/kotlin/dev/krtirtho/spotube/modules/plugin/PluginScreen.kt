@@ -109,9 +109,26 @@ import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
 import okio.Path
 import kotlinx.coroutines.flow.collect
+import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.plugin_discover_badge_official
+import spotube.composeapp.generated.resources.plugin_discover_badge_verified
+import spotube.composeapp.generated.resources.plugin_discover_repository_content_description
+import spotube.composeapp.generated.resources.plugin_discover_stars_content_description
+import spotube.composeapp.generated.resources.plugin_info_abilities
+import spotube.composeapp.generated.resources.plugin_info_api_version
+import spotube.composeapp.generated.resources.plugin_info_author
+import spotube.composeapp.generated.resources.plugin_info_capabilities
+import spotube.composeapp.generated.resources.plugin_info_contact
+import spotube.composeapp.generated.resources.plugin_info_label_format
+import spotube.composeapp.generated.resources.plugin_info_license
+import spotube.composeapp.generated.resources.plugin_info_report_bugs
+import spotube.composeapp.generated.resources.plugin_info_repository
+import spotube.composeapp.generated.resources.plugin_info_version
+import spotube.composeapp.generated.resources.plugin_support_dialog_title
+import spotube.composeapp.generated.resources.common_close
 import spotube.composeapp.generated.resources.welcome_plugins_title
 import spotube.composeapp.generated.resources.welcome_plugins_setup_guide
 import spotube.composeapp.generated.resources.welcome_plugins_discover
@@ -129,9 +146,7 @@ import spotube.composeapp.generated.resources.plugin_error_download_failed
 import spotube.composeapp.generated.resources.plugin_error_enter_url
 import spotube.composeapp.generated.resources.plugin_error_url_scheme
 import spotube.composeapp.generated.resources.plugin_install_section_title
-import spotube.composeapp.generated.resources.plugin_installed_count
-import spotube.composeapp.generated.resources.plugin_installed_plural
-import spotube.composeapp.generated.resources.plugin_installed_singular
+import spotube.composeapp.generated.resources.plugin_installed_plugins_count
 import spotube.composeapp.generated.resources.plugin_screen_title
 import spotube.composeapp.generated.resources.plugin_section_file_title
 import spotube.composeapp.generated.resources.plugin_section_install
@@ -385,16 +400,11 @@ internal fun PluginScreenContent(
                                 }
                             } else {
                                 item {
-                                    val noun = if (data.plugins.size == 1) {
-                                        stringResource(Res.string.plugin_installed_singular)
-                                    } else {
-                                        stringResource(Res.string.plugin_installed_plural)
-                                    }
                                     Text(
-                                        stringResource(
-                                            Res.string.plugin_installed_count,
+                                        pluralStringResource(
+                                            Res.plurals.plugin_installed_plugins_count,
                                             data.plugins.size,
-                                            noun
+                                            data.plugins.size
                                         ),
                                         style = AppTheme.typography.labelMedium,
                                         color = AppTheme.colors.onSurfaceVariant,
@@ -720,47 +730,44 @@ private fun PluginInfoDialog(
                 )
             }
 
-            DetailRow("Version", plugin.version)
-            DetailRow("API Version", plugin.apiVersion)
-            DetailRow("Author", plugin.author)
+            DetailRow(stringResource(Res.string.plugin_info_version), plugin.version)
+            DetailRow(stringResource(Res.string.plugin_info_api_version), plugin.apiVersion)
+            DetailRow(stringResource(Res.string.plugin_info_author), plugin.author)
             if (plugin.license.isNotBlank()) {
-                DetailRow("License", plugin.license)
+                DetailRow(stringResource(Res.string.plugin_info_license), plugin.license)
             }
 
             if (plugin.capabilities.isNotEmpty()) {
-                DetailChipsRow("Capabilities", plugin.capabilities.map { it.name })
+                DetailChipsRow(
+                    stringResource(Res.string.plugin_info_capabilities),
+                    plugin.capabilities.map { it.name })
             }
 
             if (plugin.abilities.isNotEmpty()) {
-                DetailChipsRow("Abilities", plugin.abilities.map { ability ->
-                    when (ability) {
-                        PluginAbility.METADATA -> "Metadata"
-                        PluginAbility.AUDIO -> "Audio"
-                        PluginAbility.LYRICS -> "Lyrics"
-                        PluginAbility.SCROBBLE -> "Scrobble"
-                    }
-                })
+                DetailChipsRow(
+                    stringResource(Res.string.plugin_info_abilities),
+                    plugin.abilities.map { ability -> ability.displayLabel() })
             }
 
             if (plugin.repository.isNotBlank()) {
-                ClickableDetailRow(label = "Repository", value = plugin.repository) {
+                ClickableDetailRow(label = stringResource(Res.string.plugin_info_repository), value = plugin.repository) {
                     openUrlInBrowser(plugin.repository)
                 }
             }
 
             if (plugin.contact.isNotBlank()) {
-                DetailRow("Contact", plugin.contact)
+                DetailRow(stringResource(Res.string.plugin_info_contact), plugin.contact)
             }
 
             if (plugin.bugs.isNotBlank()) {
-                ClickableDetailRow(label = "Report Bugs", value = plugin.bugs) {
+                ClickableDetailRow(label = stringResource(Res.string.plugin_info_report_bugs), value = plugin.bugs) {
                     openUrlInBrowser(plugin.bugs)
                 }
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             MillenniumButton(onClick = onDismiss) {
-                Text("Close")
+                Text(stringResource(Res.string.common_close))
             }
         }
     }
@@ -775,7 +782,7 @@ private fun SupportDialog(
     MillenniumDialog(
         visible = true,
         onDismissRequest = onDismiss,
-        title = "Support ${plugin.name}") {
+        title = stringResource(Res.string.plugin_support_dialog_title, plugin.name)) {
         if (isLoading) {
             Box(
                 modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
@@ -792,7 +799,7 @@ private fun SupportDialog(
         }
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             MillenniumButton(onClick = onDismiss) {
-                Text("Close")
+                Text(stringResource(Res.string.common_close))
             }
         }
     }
@@ -861,7 +868,7 @@ private fun DiscoverRepoCard(
                                 .background(AppTheme.colors.primary.copy(alpha = 0.15f))
                         ) {
                             Text(
-                                "Official",
+                                stringResource(Res.string.plugin_discover_badge_official),
                                 style = AppTheme.typography.labelSmall,
                                 color = AppTheme.colors.primary,
                                 modifier = Modifier.padding(horizontal = 5.dp, vertical = 1.dp)
@@ -885,7 +892,7 @@ private fun DiscoverRepoCard(
                                     tint = Color(0xFF4CAF50)
                                 )
                                 Text(
-                                    "Verified",
+                                    stringResource(Res.string.plugin_discover_badge_verified),
                                     style = AppTheme.typography.labelSmall,
                                     color = Color(0xFF4CAF50)
                                 )
@@ -917,7 +924,7 @@ private fun DiscoverRepoCard(
                     ) {
                         MillenniumIcon(
                             Iconsax.IconsaxHeart,
-                            contentDescription = "Github Stars",
+                            contentDescription = stringResource(Res.string.plugin_discover_stars_content_description),
                             modifier = Modifier.size(11.dp),
                             tint = AppTheme.colors.onSurfaceVariant
                         )
@@ -942,7 +949,7 @@ private fun DiscoverRepoCard(
                         ) {
                             MillenniumIcon(
                                 Iconsax.CarbonGithubLogo,
-                                contentDescription = "Github Repository URL",
+                                contentDescription = stringResource(Res.string.plugin_discover_repository_content_description),
                                 modifier = Modifier.size(10.dp),
                                 tint = AppTheme.colors.onSurfaceVariant
                             )
@@ -985,7 +992,7 @@ private fun DetailRow(label: String, value: String) {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            "$label:",
+            stringResource(Res.string.plugin_info_label_format, label),
             style = AppTheme.typography.labelMedium,
             color = AppTheme.colors.onSurfaceVariant,
             modifier = Modifier.widthIn(min = 90.dp)
@@ -1005,7 +1012,7 @@ private fun ClickableDetailRow(label: String, value: String, onClick: () -> Unit
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            "$label:",
+            stringResource(Res.string.plugin_info_label_format, label),
             style = AppTheme.typography.labelMedium,
             color = AppTheme.colors.onSurfaceVariant,
             modifier = Modifier.widthIn(min = 90.dp)
@@ -1027,7 +1034,7 @@ private fun DetailChipsRow(label: String, chips: List<String>) {
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
-            "$label:",
+            stringResource(Res.string.plugin_info_label_format, label),
             style = AppTheme.typography.labelMedium,
             color = AppTheme.colors.onSurfaceVariant,
             modifier = Modifier.widthIn(min = 90.dp)

@@ -58,6 +58,8 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemoveFilled
 import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShare
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 sealed interface TrackOptionsAction {
     data object AddToJam : TrackOptionsAction
@@ -116,7 +118,7 @@ fun TrackOptions(
                 style = MillenniumIconButtonStyle.Quiet) {
                 MillenniumIcon(
                     imageVector = Iconsax.Iconsax3DotsMore,
-                    contentDescription = "Track options",
+                    contentDescription = stringResource(Res.string.track_options_title),
                     modifier = Modifier.shimmerApply()
                 )
             }
@@ -238,6 +240,7 @@ fun TrackOptionsSheetHeader(track: MetadataTrack) {
     }
 }
 
+@Composable
 private fun buildTrackMenuItems(
     track: MetadataTrack,
     state: TrackOptionsState,
@@ -249,14 +252,14 @@ private fun buildTrackMenuItems(
         add(
             AdaptiveMenuItem(
                 icon = Iconsax.IconsaxAddSquare,
-                label = "Add to Jam",
+                label = stringResource(Res.string.track_options_add_to_jam),
                 onClick = { onAction(TrackOptionsAction.AddToJam) }))
     }
 
     add(
         AdaptiveMenuItem(
             icon = Iconsax.IconsaxMusicCircle,
-            label = "Start radio",
+            label = stringResource(Res.string.track_options_start_radio),
             onClick = { onAction(TrackOptionsAction.StartRadio) }))
 
     // A guest's queue is the shared jam queue — mutating it locally is not
@@ -266,13 +269,13 @@ private fun buildTrackMenuItems(
             add(
                 AdaptiveMenuItem(
                     icon = Iconsax.IconsaxNext,
-                    label = "Play next",
+                    label = stringResource(Res.string.track_options_play_next),
                     onClick = { onAction(TrackOptionsAction.PlayNext) }))
         } else if (state.isInQueue && !state.isCurrentlyPlaying) {
             add(
                 AdaptiveMenuItem(
                     icon = Iconsax.IconsaxNext,
-                    label = "Move to next",
+                    label = stringResource(Res.string.track_options_move_to_next),
                     onClick = { onAction(TrackOptionsAction.PlayNext) }))
         }
 
@@ -280,13 +283,13 @@ private fun buildTrackMenuItems(
             add(
                 AdaptiveMenuItem(
                     icon = Iconsax.IconsaxAddSquare,
-                    label = "Add to queue",
+                    label = stringResource(Res.string.player_add_to_queue_content_description),
                     onClick = { onAction(TrackOptionsAction.AddToQueue) }))
         } else {
             add(
                 AdaptiveMenuItem(
                     icon = Iconsax.IconsaxMusicSquareRemove,
-                    label = "Remove from queue",
+                    label = stringResource(Res.string.track_options_remove_from_queue),
                     onClick = { onAction(TrackOptionsAction.RemoveFromQueue) }))
         }
     }
@@ -294,32 +297,32 @@ private fun buildTrackMenuItems(
     add(
         AdaptiveMenuItem(
             icon = if (state.isFavorite) Iconsax.IconsaxHeart2 else Iconsax.IconsaxHeart,
-            label = if (state.isFavorite) "Remove from favorites" else "Save as favorite",
+            label = if (state.isFavorite) stringResource(Res.string.track_options_remove_from_favorites) else stringResource(Res.string.track_options_save_as_favorite),
             onClick = { onAction(TrackOptionsAction.ToggleFavorite) }))
 
     add(
         AdaptiveMenuItem(
             icon = Iconsax.IconsaxMusicPlaylist,
-            label = "Add to playlist",
+            label = stringResource(Res.string.track_options_add_to_playlist),
             onClick = { onAction(TrackOptionsAction.AddToPlaylist) }))
 
     add(
         AdaptiveMenuItem(
             icon = Iconsax.IconsaxDirectboxReceive,
-            label = "Download",
+            label = stringResource(Res.string.track_options_download),
             onClick = { onAction(TrackOptionsAction.Download) }))
 
     add(
         AdaptiveMenuItem(
             icon = Iconsax.IconsaxMusicSquareRemoveFilled,
-            label = if (state.isBlacklisted) "Remove from blacklist" else "Add to blacklist",
+            label = if (state.isBlacklisted) stringResource(Res.string.blacklist_remove) else stringResource(Res.string.blacklist_add),
             onClick = { onAction(TrackOptionsAction.ToggleBlacklist) }))
 
     if (!track.externalUri.isNullOrBlank()) {
         add(
             AdaptiveMenuItem(
                 icon = Iconsax.IconsaxShare,
-                label = "Share",
+                label = stringResource(Res.string.track_options_share),
                 onClick = { onAction(TrackOptionsAction.Share) }))
     }
 
@@ -327,7 +330,7 @@ private fun buildTrackMenuItems(
         add(
             AdaptiveMenuItem(
                 icon = Iconsax.IconsaxCd,
-                label = "Go to album",
+                label = stringResource(Res.string.player_go_to_album),
                 onClick = onAlbumClick))
     }
 }

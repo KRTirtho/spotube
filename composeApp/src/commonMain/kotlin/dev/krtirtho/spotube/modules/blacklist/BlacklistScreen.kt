@@ -63,6 +63,8 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemoveFilled
 import dev.krtirtho.spotube.resources.iconsax.IconsaxUserRemove
 import dev.krtirtho.spotube.resources.iconsax.User
 import org.koin.compose.viewmodel.koinViewModel
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun BlacklistScreen() {
@@ -70,7 +72,7 @@ fun BlacklistScreen() {
     Column(modifier = Modifier.fillMaxSize()) {
         ApplicationMainBar(
             backButton = true,
-            title = { Text("Blacklist") })
+            title = { Text(stringResource(Res.string.settings_blacklist_title)) })
         BlacklistContent(
             viewModel = viewModel,
             modifier = Modifier.weight(1f))
@@ -130,7 +132,7 @@ internal fun BlacklistContent(
             state = filterState,
             label = "",
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Filter blacklist...")
+            placeholder = stringResource(Res.string.blacklist_filter_placeholder))
 
         if (isEmpty) {
             Box(
@@ -140,9 +142,9 @@ internal fun BlacklistContent(
                 contentAlignment = Alignment.Center) {
                 Text(
                     text = if (hasActiveFilter) {
-                        "No blacklisted items match '$filterQuery'"
+                        stringResource(Res.string.blacklist_no_results, filterQuery)
                     } else {
-                        "No blacklisted items"
+                        stringResource(Res.string.blacklist_empty)
                     },
                     style = AppTheme.typography.bodyMedium,
                     color = AppTheme.colors.onSurfaceVariant)
@@ -156,7 +158,7 @@ internal fun BlacklistContent(
                 if (filteredTracks.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Tracks",
+                            text = stringResource(Res.string.blacklist_section_tracks),
                             style = AppTheme.typography.titleSmall,
                             color = AppTheme.colors.onSurfaceVariant,
                             modifier = Modifier.padding(vertical = 8.dp))
@@ -171,7 +173,7 @@ internal fun BlacklistContent(
                 if (filteredArtists.isNotEmpty()) {
                     item {
                         Text(
-                            text = "Artists",
+                            text = stringResource(Res.string.library_tab_artists),
                             style = AppTheme.typography.titleSmall,
                             color = AppTheme.colors.onSurfaceVariant,
                             modifier = Modifier.padding(vertical = 8.dp))
@@ -199,7 +201,7 @@ private fun BlacklistedTrackRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         MillenniumIcon(
             imageVector = Iconsax.IconsaxMusicCircle,
-            contentDescription = "Track",
+            contentDescription = stringResource(Res.string.blacklist_item_track),
             modifier = Modifier.size(20.dp),
             tint = AppTheme.colors.onSurfaceVariant)
 
@@ -231,7 +233,7 @@ private fun BlacklistedTrackRow(
             style = MillenniumIconButtonStyle.Quiet) {
             MillenniumIcon(
                 imageVector = Iconsax.IconsaxMusicSquareRemoveFilled,
-                contentDescription = "Remove from blacklist",
+                contentDescription = stringResource(Res.string.blacklist_remove),
                 tint = AppTheme.colors.error)
         }
     }
@@ -249,7 +251,7 @@ private fun BlacklistedArtistRow(
         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         MillenniumIcon(
             imageVector = Iconsax.User,
-            contentDescription = "Artist",
+            contentDescription = stringResource(Res.string.media_artist),
             modifier = Modifier.size(20.dp),
             tint = AppTheme.colors.onSurfaceVariant)
 
@@ -284,7 +286,7 @@ private fun BlacklistedArtistRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis)
             Text(
-                text = "Artist",
+                text = stringResource(Res.string.media_artist),
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.onSurfaceVariant)
         }
@@ -294,7 +296,7 @@ private fun BlacklistedArtistRow(
             style = MillenniumIconButtonStyle.Quiet) {
             MillenniumIcon(
                 imageVector = Iconsax.IconsaxUserRemove,
-                contentDescription = "Remove from blacklist",
+                contentDescription = stringResource(Res.string.blacklist_remove),
                 tint = AppTheme.colors.error)
         }
     }

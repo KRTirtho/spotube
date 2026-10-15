@@ -57,6 +57,8 @@ import okio.SYSTEM
 import okio.buffer
 import okio.use
 import kotlin.time.Clock
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.*
 
 data class DownloadItem(
     val id: String,
@@ -196,11 +198,12 @@ class DownloadManager(
     private suspend fun executeDownload(item: DownloadItem) {
         val track = item.track ?: run {
             logger.e { "Download item has no track metadata" }
+            val noMetadataMessage = getString(Res.string.downloads_error_no_metadata)
             downloadsMap.update { map ->
                 map[item.id]?.let {
                     map + (item.id to it.copy(
-                        status = DownloadStatus.Failed("No track metadata"),
-                        errorMessage = "No track metadata"))
+                        status = DownloadStatus.Failed(noMetadataMessage),
+                        errorMessage = noMetadataMessage))
                 } ?: map
             }
             return
@@ -210,11 +213,13 @@ class DownloadManager(
             val streamInfo = streamingUrlRepository.resolveStreamInfo(track)
             if (streamInfo == null) {
                 logger.w { "Could not resolve stream URL for ${track.title}" }
+                val unresolvedStatus = getString(Res.string.downloads_error_stream_unresolved_short)
+                val unresolvedMessage = getString(Res.string.downloads_error_stream_unresolved)
                 downloadsMap.update { map ->
                     map[item.id]?.let {
                         map + (item.id to it.copy(
-                            status = DownloadStatus.Failed("Could not resolve stream URL"),
-                            errorMessage = "Could not resolve stream URL. Try playing the track first."))
+                            status = DownloadStatus.Failed(unresolvedStatus),
+                            errorMessage = unresolvedMessage))
                     } ?: map
                 }
                 return
@@ -254,10 +259,11 @@ class DownloadManager(
             throw e
         } catch (e: Exception) {
             logger.e(e) { "Download failed: ${item.title}" }
+            val failureMessage = e.message ?: getString(Res.string.common_unknown_error)
             downloadsMap.update { map ->
                 map[item.id]?.let {
                     map + (item.id to it.copy(
-                        status = DownloadStatus.Failed(e.message ?: "Unknown error"),
+                        status = DownloadStatus.Failed(failureMessage),
                         errorMessage = e.message))
                 } ?: map
             }

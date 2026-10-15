@@ -35,6 +35,9 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.common_unknown_error
 
 sealed interface HomeScreenState {
     data object Loading : HomeScreenState
@@ -111,7 +114,7 @@ class HomeScreenViewModel(
             paginationStrategies = paginationStrategies)
     }.onFailure { e ->
         logger.e(e) { "Failed to load home screen data" }
-        state.value = HomeScreenState.Error(e.message ?: "Unknown error")
+        state.value = HomeScreenState.Error(e.message ?: getString(Res.string.common_unknown_error))
     }
 
     fun selectGenre(genreId: String) {
@@ -155,7 +158,7 @@ class HomeScreenViewModel(
         }
     }.onFailure { e ->
         logger.e(e) { "Failed to load more home screen data" }
-        state.value = HomeScreenState.Error(e.message ?: "Unknown error")
+        state.value = HomeScreenState.Error(e.message ?: getString(Res.string.common_unknown_error))
     }
 
     fun refresh() {

@@ -52,6 +52,8 @@ import org.jetbrains.compose.resources.painterResource
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun CollectionView(
@@ -124,7 +126,7 @@ fun CollectionView(
                         style = MillenniumIconButtonStyle.Quiet) {
                         MillenniumIcon(
                             imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
-                            contentDescription = if (isPlaying) "Pause" else "Play")
+                            contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
                     }
                 }
             } else {
@@ -145,11 +147,11 @@ fun CollectionView(
                     if (isLoading && tracks.isEmpty()) {
                         dev.krtirtho.spotube.core.ui.misc.SkeletonTree(true) {
                             CollectionDetails(
-                                title = title.ifBlank { "Loading..." },
+                                title = title.ifBlank { stringResource(Res.string.common_loading) },
                                 description = description,
                                 imageURL = imageURL,
                                 imageResource = imageResource,
-                                ownerName = ownerName.ifBlank { "Unknown" },
+                                ownerName = ownerName.ifBlank { stringResource(Res.string.common_unknown) },
                                 ownerImageURL = ownerImageURL,
                                 onOwnerClick = onOwnerClick,
                                 onPlay = onPlay,

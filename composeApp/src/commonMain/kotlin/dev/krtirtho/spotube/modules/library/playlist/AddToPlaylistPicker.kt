@@ -67,6 +67,16 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxFilterSearch
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.library_add_to_playlist_empty
+import spotube.composeapp.generated.resources.library_add_to_playlist_loading
+import spotube.composeapp.generated.resources.library_add_to_playlist_search_content_description
+import spotube.composeapp.generated.resources.library_add_to_playlist_search_placeholder
+import spotube.composeapp.generated.resources.library_add_to_playlist_title
+import spotube.composeapp.generated.resources.library_local_tracks_count
+import spotube.composeapp.generated.resources.common_cancel
 
 @Composable
 fun AddToPlaylistPicker(
@@ -126,12 +136,12 @@ fun AddToPlaylistPicker(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 MillenniumIcon(
                     imageVector = Iconsax.IconsaxFilterSearch,
-                    contentDescription = "Search")
+                    contentDescription = stringResource(Res.string.library_add_to_playlist_search_content_description))
                 MillenniumTextField(
                     state = searchState,
                     
                     modifier = Modifier.weight(1f),
-                    placeholder = "Search your playlists...")
+                    placeholder = stringResource(Res.string.library_add_to_playlist_search_placeholder))
             }
 
             PlaylistPickerContent(
@@ -148,7 +158,7 @@ fun AddToPlaylistPicker(
         MillenniumDialog(
             visible = true,
             onDismissRequest = onDismiss,
-            title = "Add to Your Playlist",
+            title = stringResource(Res.string.library_add_to_playlist_title),
             modifier = modifier) {
             Box(modifier = Modifier.fillMaxWidth().height(400.dp)) {
                 content()
@@ -156,7 +166,7 @@ fun AddToPlaylistPicker(
             MillenniumButton(
                 onClick = onDismiss,
                 style = MillenniumButtonStyle.Secondary) {
-                Text("Cancel")
+                Text(stringResource(Res.string.common_cancel))
             }
         }
     } else {
@@ -167,7 +177,7 @@ fun AddToPlaylistPicker(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)) {
                 Text(
-                    text = "Add to Your Playlist",
+                    text = stringResource(Res.string.library_add_to_playlist_title),
                     style = AppTheme.typography.headlineSmall,
                     modifier = Modifier.padding(bottom = 16.dp))
                 content()
@@ -183,11 +193,11 @@ private fun PlaylistPickerContent(
     onPlaylistSelected: (String) -> Unit) {
     if (isLoading) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("Loading your playlists...")
+            Text(stringResource(Res.string.library_add_to_playlist_loading))
         }
     } else if (playlists.isEmpty()) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text("You don't own any playlists yet.\nCreate one to add tracks.")
+            Text(stringResource(Res.string.library_add_to_playlist_empty))
         }
     } else {
         LazyColumn(
@@ -242,7 +252,7 @@ private fun PlaylistPickerRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis)
             Text(
-                text = "${playlist.trackCount} tracks",
+                text = pluralStringResource(Res.plurals.library_local_tracks_count, playlist.trackCount, playlist.trackCount),
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.onSurfaceVariant)
         }

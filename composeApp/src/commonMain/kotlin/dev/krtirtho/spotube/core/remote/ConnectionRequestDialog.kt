@@ -35,7 +35,14 @@ import androidx.compose.ui.unit.dp
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.remote_request_allow
+import spotube.composeapp.generated.resources.remote_request_allow_always
+import spotube.composeapp.generated.resources.remote_request_deny
+import spotube.composeapp.generated.resources.remote_request_message
+import spotube.composeapp.generated.resources.remote_request_title
 
 @Composable
 fun ConnectionRequestDialogHost() {
@@ -55,9 +62,9 @@ fun ConnectionRequestDialogHost() {
                 handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.Deny)
                 pendingRequest = null
             },
-            title = "Remote Control Request") {
+            title = stringResource(Res.string.remote_request_title)) {
             Text(
-                text = "\"${request.deviceName}\" wants to control playback on this device.",
+                text = stringResource(Res.string.remote_request_message, request.deviceName),
                 style = AppTheme.typography.bodyMedium,
                 textAlign = TextAlign.Start)
             Row(
@@ -70,14 +77,14 @@ fun ConnectionRequestDialogHost() {
                         pendingRequest = null
                     },
                     style = MillenniumButtonStyle.Secondary) {
-                    Text("Deny")
+                    Text(stringResource(Res.string.remote_request_deny))
                 }
                 MillenniumButton(
                     onClick = {
                         handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.Allow)
                         pendingRequest = null
                     }) {
-                    Text("Allow")
+                    Text(stringResource(Res.string.remote_request_allow))
                 }
                 MillenniumButton(
                     onClick = {
@@ -85,7 +92,7 @@ fun ConnectionRequestDialogHost() {
                         pendingRequest = null
                     },
                     style = MillenniumButtonStyle.Quiet) {
-                    Text("Allow Always")
+                    Text(stringResource(Res.string.remote_request_allow_always))
                 }
             }
         }

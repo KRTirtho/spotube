@@ -45,6 +45,10 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioFormat
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioQuality
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.settings_audio_format_label
+import spotube.composeapp.generated.resources.settings_audio_quality_lossless
+import spotube.composeapp.generated.resources.settings_audio_quality_lossy
 
 private val standardLossyQualities = listOf(
     AudioQuality.Lossy(bitrate = 44_000),
@@ -156,8 +160,9 @@ internal fun availableAudioQualities(format: AudioFormat, current: AudioQuality)
     return options
 }
 
+@Composable
 internal fun AudioFormat.displayLabel(): String {
-    return "${codec.uppercase()} in ${container.uppercase()}"
+    return stringResource(Res.string.settings_audio_format_label, codec.uppercase(), container.uppercase())
 }
 
 internal fun AudioFormat.preferredQuality(): AudioQuality {
@@ -168,16 +173,17 @@ internal fun AudioFormat.resolveQuality(preferred: AudioQuality): AudioQuality {
     return qualities.firstOrNull { it == preferred } ?: preferredQuality()
 }
 
+@Composable
 internal fun AudioQuality.displayLabel(): String {
     return when (this) {
-        is AudioQuality.Lossy -> "${bitrate / 1000} kbps"
+        is AudioQuality.Lossy -> stringResource(Res.string.settings_audio_quality_lossy, bitrate / 1000)
         is AudioQuality.Lossless -> {
             val sampleRateLabel = if (sampleRate % 1000 == 0) {
                 "${sampleRate / 1000}"
             } else {
                 "${sampleRate / 1000.0}"
             }
-            "$sampleRateLabel kHz • $channels ch"
+            stringResource(Res.string.settings_audio_quality_lossless, sampleRateLabel, channels)
         }
     }
 }

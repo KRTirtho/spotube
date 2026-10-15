@@ -123,6 +123,36 @@ import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.search_clear_history
 import spotube.composeapp.generated.resources.search_placeholder
+import spotube.composeapp.generated.resources.library_tab_albums
+import spotube.composeapp.generated.resources.library_tab_artists
+import spotube.composeapp.generated.resources.library_tab_playlists
+import spotube.composeapp.generated.resources.search_results_title
+import spotube.composeapp.generated.resources.search_no_search_types
+import spotube.composeapp.generated.resources.search_start_typing
+import spotube.composeapp.generated.resources.search_no_results
+import spotube.composeapp.generated.resources.search_section_tracks
+import spotube.composeapp.generated.resources.search_section_users
+import spotube.composeapp.generated.resources.search_start_typing_tracks
+import spotube.composeapp.generated.resources.search_loading_tracks
+import spotube.composeapp.generated.resources.search_no_albums
+import spotube.composeapp.generated.resources.search_loading_albums
+import spotube.composeapp.generated.resources.search_no_artists
+import spotube.composeapp.generated.resources.search_loading_artists
+import spotube.composeapp.generated.resources.search_no_playlists
+import spotube.composeapp.generated.resources.search_loading_playlists
+import spotube.composeapp.generated.resources.search_no_users
+import spotube.composeapp.generated.resources.search_loading_users
+import spotube.composeapp.generated.resources.search_see_all
+import spotube.composeapp.generated.resources.search_searching
+import spotube.composeapp.generated.resources.search_warm_crates
+import spotube.composeapp.generated.resources.search_warm_cosmos
+import spotube.composeapp.generated.resources.search_warm_speakers
+import spotube.composeapp.generated.resources.search_warm_vinyl
+import spotube.composeapp.generated.resources.search_warm_music_gods
+import spotube.composeapp.generated.resources.search_warm_antennas
+import spotube.composeapp.generated.resources.search_warm_records
+import spotube.composeapp.generated.resources.search_tab_all
+import org.jetbrains.compose.resources.StringResource
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -137,6 +167,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     val audioPlayerQueue: AudioPlayerQueue = koinInject()
     val shareService: ShareService = koinInject()
     val remotePlaybackController: RemotePlaybackController = koinInject()
+    val searchResultsTitle = stringResource(Res.string.search_results_title)
     val downloadsViewModel: DownloadsViewModel = koinViewModel()
     val libraryRepository: LibraryRepository = koinInject()
     val blacklistRepository: BlacklistRepository = koinInject()
@@ -283,7 +314,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     }
 
     fun bulkAddToQueue(tracks: List<MetadataTrack>) {
-        remotePlaybackController.requestTracksAddToQueue(tracks, "Search results")
+        remotePlaybackController.requestTracksAddToQueue(tracks, searchResultsTitle)
     }
 
     fun bulkAddToJam(tracks: List<MetadataTrack>) {
@@ -291,7 +322,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
     }
 
     fun bulkPlayNext(tracks: List<MetadataTrack>) {
-        remotePlaybackController.requestTracksPlayNext(tracks, "Search results")
+        remotePlaybackController.requestTracksPlayNext(tracks, searchResultsTitle)
     }
 
     Column(
@@ -360,7 +391,7 @@ fun SearchScreen(viewModel: SearchScreenViewModel = koinViewModel()) {
 
                 selectedType == null -> {
                     SearchMessage(
-                        message = "No search types available",
+                        message = stringResource(Res.string.search_no_search_types),
                         modifier = Modifier
                             .fillMaxSize()
                     )
@@ -616,7 +647,7 @@ private fun SearchAllTab(
     modifier: Modifier = Modifier
 ) {
     if (query.isBlank()) {
-        SearchMessage(message = "Start typing to search", modifier = modifier)
+        SearchMessage(message = stringResource(Res.string.search_start_typing), modifier = modifier)
         return
     }
 
@@ -644,7 +675,7 @@ private fun SearchAllTab(
     }
 
     if (!hasAnyContent && !isLoadingAll) {
-        SearchMessage(message = "No results found", modifier = modifier)
+        SearchMessage(message = stringResource(Res.string.search_no_results), modifier = modifier)
         return
     }
 
@@ -677,7 +708,7 @@ private fun SearchAllTab(
         headerContent = {
             if (showTracks) {
                 Text(
-                    text = "Tracks",
+                    text = stringResource(Res.string.search_section_tracks),
                     style = AppTheme.typography.titleLarge,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(horizontal = 16.dp).padding(bottom = 12.dp)
@@ -699,7 +730,7 @@ private fun SearchAllTab(
             ) {
                 if (MetadataSupportedSearchType.PLAYLIST in supportedSearchTypes && playlists.items.isNotEmpty()) {
                     SearchHorizontalSection(
-                        title = "Playlists",
+                        title = stringResource(Res.string.library_tab_playlists),
                         onSeeAll = { onSeeAll(MetadataSupportedSearchType.PLAYLIST) }) {
                         playlists.items.forEach { playlist ->
                             item(key = playlist.id) { PlaylistCard(playlist = playlist) }
@@ -709,7 +740,7 @@ private fun SearchAllTab(
 
                 if (MetadataSupportedSearchType.ALBUM in supportedSearchTypes && albums.items.isNotEmpty()) {
                     SearchHorizontalSection(
-                        title = "Albums",
+                        title = stringResource(Res.string.library_tab_albums),
                         onSeeAll = { onSeeAll(MetadataSupportedSearchType.ALBUM) }) {
                         albums.items.forEach { album ->
                             item(key = album.id) { AlbumCard(album = album) }
@@ -719,7 +750,7 @@ private fun SearchAllTab(
 
                 if (MetadataSupportedSearchType.ARTIST in supportedSearchTypes && artists.items.isNotEmpty()) {
                     SearchHorizontalSection(
-                        title = "Artists",
+                        title = stringResource(Res.string.library_tab_artists),
                         onSeeAll = { onSeeAll(MetadataSupportedSearchType.ARTIST) }) {
                         artists.items.forEach { artist ->
                             item(key = artist.id) { ArtistCard(artist = artist) }
@@ -729,7 +760,7 @@ private fun SearchAllTab(
 
                 if (MetadataSupportedSearchType.USER in supportedSearchTypes && users.items.isNotEmpty()) {
                     SearchHorizontalSection(
-                        title = "Users",
+                        title = stringResource(Res.string.search_section_users),
                         onSeeAll = { onSeeAll(MetadataSupportedSearchType.USER) }) {
                         users.items.forEach { user ->
                             item(key = user.id) { UserCard(user = user) }
@@ -762,12 +793,12 @@ private fun SearchTracksTab(
     modifier: Modifier = Modifier
 ) {
     if (query.isBlank()) {
-        SearchMessage(message = "Start typing to search tracks", modifier = modifier)
+        SearchMessage(message = stringResource(Res.string.search_start_typing_tracks), modifier = modifier)
         return
     }
 
     if (tracks.isLoading && tracks.items.isEmpty()) {
-        SearchLoadingIndicator(message = "Loading tracks...", modifier = modifier)
+        SearchLoadingIndicator(message = stringResource(Res.string.search_loading_tracks), modifier = modifier)
         return
     }
 
@@ -810,8 +841,8 @@ private fun SearchAlbumsTab(
         error = albums.error,
         hasNextPage = albums.hasNextPage,
         onLoadNextPage = onLoadNextPage,
-        emptyMessage = "No albums found",
-        loadingMessage = "Loading albums...",
+        emptyMessage = stringResource(Res.string.search_no_albums),
+        loadingMessage = stringResource(Res.string.search_loading_albums),
         modifier = modifier
     ) { album ->
         AlbumCard(album = album, modifier = Modifier.fillMaxWidth())
@@ -832,8 +863,8 @@ private fun SearchArtistsTab(
         error = artists.error,
         hasNextPage = artists.hasNextPage,
         onLoadNextPage = onLoadNextPage,
-        emptyMessage = "No artists found",
-        loadingMessage = "Loading artists...",
+        emptyMessage = stringResource(Res.string.search_no_artists),
+        loadingMessage = stringResource(Res.string.search_loading_artists),
         modifier = modifier
     ) { artist ->
         ArtistCard(artist = artist, modifier = Modifier.fillMaxWidth())
@@ -854,8 +885,8 @@ private fun SearchPlaylistsTab(
         error = playlists.error,
         hasNextPage = playlists.hasNextPage,
         onLoadNextPage = onLoadNextPage,
-        emptyMessage = "No playlists found",
-        loadingMessage = "Loading playlists...",
+        emptyMessage = stringResource(Res.string.search_no_playlists),
+        loadingMessage = stringResource(Res.string.search_loading_playlists),
         modifier = modifier
     ) { playlist ->
         PlaylistCard(playlist = playlist, modifier = Modifier.fillMaxWidth())
@@ -876,8 +907,8 @@ private fun SearchUsersTab(
         error = users.error,
         hasNextPage = users.hasNextPage,
         onLoadNextPage = onLoadNextPage,
-        emptyMessage = "No users found",
-        loadingMessage = "Loading users...",
+        emptyMessage = stringResource(Res.string.search_no_users),
+        loadingMessage = stringResource(Res.string.search_loading_users),
         modifier = modifier
     ) { user ->
         UserCard(user = user, modifier = Modifier.fillMaxWidth())
@@ -899,7 +930,7 @@ private fun <T> SearchGridTab(
     itemContent: @Composable (T) -> Unit
 ) {
     if (query.isBlank()) {
-        SearchMessage(message = "Start typing to search", modifier = modifier)
+        SearchMessage(message = stringResource(Res.string.search_start_typing), modifier = modifier)
         return
     }
 
@@ -993,7 +1024,7 @@ private fun SearchHorizontalSection(
             )
 
             Text(
-                text = "See all",
+                text = stringResource(Res.string.search_see_all),
                 style = AppTheme.typography.labelLarge,
                 color = AppTheme.colors.primary,
                 modifier = Modifier.clickable(onClick = onSeeAll)
@@ -1055,14 +1086,14 @@ private fun SearchTrackRow(
     }
 }
 
-private val WarmSearchMessages = listOf(
-    "Digging through the crates...",
-    "Searching the cosmos...",
-    "Warming up the speakers...",
-    "Dusting off the vinyl...",
-    "Consulting the music gods...",
-    "Tuning the antennas...",
-    "Flipping through the records..."
+private val WarmSearchMessages: List<StringResource> = listOf(
+    Res.string.search_warm_crates,
+    Res.string.search_warm_cosmos,
+    Res.string.search_warm_speakers,
+    Res.string.search_warm_vinyl,
+    Res.string.search_warm_music_gods,
+    Res.string.search_warm_antennas,
+    Res.string.search_warm_records
 )
 
 @Composable
@@ -1102,7 +1133,7 @@ private fun SearchLoadingIndicator(
         label = "message-cycle"
     )
     val displayMessage =
-        message ?: WarmSearchMessages[messageIndex.toInt() % WarmSearchMessages.size]
+        message ?: stringResource(WarmSearchMessages[messageIndex.toInt() % WarmSearchMessages.size])
 
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -1115,7 +1146,7 @@ private fun SearchLoadingIndicator(
         ) {
             MillenniumIcon(
                 imageVector = Iconsax.IconsaxSearchBroken,
-                contentDescription = "Searching",
+                contentDescription = stringResource(Res.string.search_searching),
                 tint = AppTheme.colors.primary,
                 modifier = Modifier
                     .size(48.dp)
@@ -1183,10 +1214,10 @@ private fun SearchMessageInline(
 
 @Composable
 private fun MetadataSupportedSearchType.tabTitle(): String = when (this) {
-    MetadataSupportedSearchType.ALL -> "All"
-    MetadataSupportedSearchType.TRACK -> "Tracks"
-    MetadataSupportedSearchType.PLAYLIST -> "Playlists"
-    MetadataSupportedSearchType.ALBUM -> "Albums"
-    MetadataSupportedSearchType.ARTIST -> "Artists"
-    MetadataSupportedSearchType.USER -> "Users"
+    MetadataSupportedSearchType.ALL -> stringResource(Res.string.search_tab_all)
+    MetadataSupportedSearchType.TRACK -> stringResource(Res.string.search_section_tracks)
+    MetadataSupportedSearchType.PLAYLIST -> stringResource(Res.string.library_tab_playlists)
+    MetadataSupportedSearchType.ALBUM -> stringResource(Res.string.library_tab_albums)
+    MetadataSupportedSearchType.ARTIST -> stringResource(Res.string.library_tab_artists)
+    MetadataSupportedSearchType.USER -> stringResource(Res.string.search_section_users)
 }

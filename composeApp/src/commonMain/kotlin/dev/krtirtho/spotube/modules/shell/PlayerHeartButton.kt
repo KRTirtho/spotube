@@ -37,6 +37,10 @@ import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart
 import dev.krtirtho.spotube.resources.iconsax.IconsaxHeart2
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.player_like_content_description
+import spotube.composeapp.generated.resources.player_unlike_content_description
 
 @Composable
 fun PlayerHeartButton(
@@ -74,7 +78,7 @@ fun PlayerHeartButton(
         style = MillenniumIconButtonStyle.Secondary) {
         MillenniumIcon(
             imageVector = if (isLiked) Iconsax.IconsaxHeart2 else Iconsax.IconsaxHeart,
-            contentDescription = if (isLiked) "Unlike" else "Like",
+            contentDescription = stringResource(if (isLiked) Res.string.player_unlike_content_description else Res.string.player_like_content_description),
             tint = if (isLiked) AppTheme.colors.primary else AppTheme.colors.onSurfaceVariant)
     }
 }

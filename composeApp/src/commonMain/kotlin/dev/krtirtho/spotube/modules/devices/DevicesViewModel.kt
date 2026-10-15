@@ -37,6 +37,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.jetbrains.compose.resources.StringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.devices_error_connect_failed
+import spotube.composeapp.generated.resources.devices_error_discovery_failed
+
+/**
+ * A user-facing error for the devices screen. [rawMessage] (an untranslated
+ * cause reported by the transport) takes precedence when present; otherwise the
+ * composable resolves [message] with [args].
+ */
+data class DevicesError(
+    val message: StringResource,
+    val args: List<String> = emptyList(),
+    val rawMessage: String? = null)
 
 class DevicesViewModel(
     private val navigationCommands: NavigationCommands) : ViewModel(), KoinComponent {
@@ -58,8 +72,8 @@ class DevicesViewModel(
     private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
     val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
 
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error.asStateFlow()
+    private val _error = MutableStateFlow<DevicesError?>(null)
+    val error: StateFlow<DevicesError?> = _error.asStateFlow()
 
     private var discoveryJob: Job? = null
 
@@ -69,7 +83,7 @@ class DevicesViewModel(
             remoteControlClient.connectionState.collect { state ->
                 _connectionState.value = state
                 if (state is ConnectionState.Error) {
-                    _error.value = state.message
+                    _error.value = DevicesError(message = state.fallback, rawMessage = state.message)
                     _connectingToDevice.value = null
                 } else if (state is ConnectionState.Disconnected) {
                     _connectingToDevice.value = null
@@ -125,7 +139,7 @@ class DevicesViewModel(
                 }
             } catch (e: Exception) {
                 logger.e(e) { "Discovery failed" }
-                _error.value = "Discovery failed: ${e.message}"
+                _error.value = DevicesError(Res.string.devices_error_discovery_failed, listOf(e.message.toString()))
                 _isDiscovering.value = false
             }
         }
@@ -193,7 +207,7 @@ class DevicesViewModel(
                 _connectingToDevice.value = null
             } catch (e: Exception) {
                 logger.e(e) { "Failed to connect to device" }
-                _error.value = "Failed to connect: ${e.message}"
+                _error.value = DevicesError(Res.string.devices_error_connect_failed, listOf(e.message.toString()))
                 _connectingToDevice.value = null
             }
         }

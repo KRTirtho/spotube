@@ -36,6 +36,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.common_unknown_error
 
 sealed interface LibraryArtistsState {
     data object Loading : LibraryArtistsState
@@ -131,7 +134,7 @@ class LibraryArtistsViewModel(
             nextPagination = result?.nextPagination)
     }.onFailure { e ->
         logger.e(e) { "Failed to load artists" }
-        _state.value = LibraryArtistsState.Error(e.message ?: "Unknown error")
+        _state.value = LibraryArtistsState.Error(e.message ?: getString(Res.string.common_unknown_error))
     }
 
     suspend fun loadMoreData() = runCatching {
@@ -155,7 +158,7 @@ class LibraryArtistsViewModel(
         }
     }.onFailure { e ->
         logger.e(e) { "Failed to load more artists" }
-        _state.value = LibraryArtistsState.Error(e.message ?: "Unknown error")
+        _state.value = LibraryArtistsState.Error(e.message ?: getString(Res.string.common_unknown_error))
     }
 
     fun onQueryChange(query: String) {

@@ -46,6 +46,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.*
 
 sealed interface ArtistScreenState {
     data object Loading : ArtistScreenState
@@ -380,11 +382,11 @@ class ArtistViewModel(
                         featuredPlaylists = overview.featuredPlaylists.items,
                         featuredPlaylistsNextPagination = overview.featuredPlaylists.nextPagination)
                 } else {
-                    _state.value = ArtistScreenState.Error("Failed to load artist overview")
+                    _state.value = ArtistScreenState.Error(getString(Res.string.artist_error_load_failed))
                 }
             }.onFailure { e ->
                 logger.e(e) { "Failed to load artist overview" }
-                _state.value = ArtistScreenState.Error(e.message ?: "Unknown error")
+                _state.value = ArtistScreenState.Error(e.message ?: getString(Res.string.common_unknown_error))
             }
         }
     }

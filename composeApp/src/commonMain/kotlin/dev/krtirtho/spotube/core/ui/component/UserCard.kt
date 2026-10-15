@@ -40,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import dev.krtirtho.plugin_interfaces.plugin_apis.metadata.user.MetadataUser
 import dev.krtirtho.spotube.core.ui.component.cards.AvatarCard
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun UserCard(
@@ -47,7 +49,7 @@ fun UserCard(
     modifier: Modifier = Modifier) {
     AvatarCard(
         title = user.displayName ?: user.username,
-        subtitle = "User",
+        subtitle = stringResource(Res.string.media_user),
         imageURL = user.thumbnails.firstOrNull()?.url,
         onClick = {
             // TODO: Route to user details screen.

@@ -70,8 +70,8 @@ import spotube.composeapp.generated.resources.plugin_permissions_none
 import spotube.composeapp.generated.resources.plugin_permissions_requested_title
 import spotube.composeapp.generated.resources.plugin_permissions_supplied_label
 import spotube.composeapp.generated.resources.plugin_version_label
-import spotube.composeapp.generated.resources.settings_action_cancel
-import spotube.composeapp.generated.resources.settings_action_close
+import spotube.composeapp.generated.resources.common_cancel
+import spotube.composeapp.generated.resources.common_close
 
 @Composable
 fun PluginPermissionDialog(
@@ -197,9 +197,9 @@ fun PluginPermissionDialog(
                 style = MillenniumButtonStyle.Secondary) {
                 Text(
                     if (confirmLabel == null) {
-                        stringResource(Res.string.settings_action_close)
+                        stringResource(Res.string.common_close)
                     } else {
-                        stringResource(Res.string.settings_action_cancel)
+                        stringResource(Res.string.common_cancel)
                     }
                 )
             }

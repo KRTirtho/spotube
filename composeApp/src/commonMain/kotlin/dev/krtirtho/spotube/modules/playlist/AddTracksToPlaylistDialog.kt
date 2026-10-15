@@ -72,6 +72,16 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxSearch
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.playlist_add_tracks_add
+import spotube.composeapp.generated.resources.playlist_add_tracks_added_content_description
+import spotube.composeapp.generated.resources.playlist_add_tracks_done
+import spotube.composeapp.generated.resources.playlist_add_tracks_hint
+import spotube.composeapp.generated.resources.playlist_add_tracks_no_results
+import spotube.composeapp.generated.resources.playlist_add_tracks_search_content_description
+import spotube.composeapp.generated.resources.playlist_add_tracks_search_placeholder
+import spotube.composeapp.generated.resources.playlist_add_tracks_title
 
 @Composable
 fun AddTracksToPlaylistDialog(
@@ -144,10 +154,10 @@ fun AddTracksToPlaylistDialog(
                 MillenniumTextField(
                     state = queryState,
                     modifier = Modifier.weight(1f),
-                    placeholder = "Search tracks...")
+                    placeholder = stringResource(Res.string.playlist_add_tracks_search_placeholder))
                 MillenniumIconButton(
                     icon = Iconsax.IconsaxSearch,
-                    contentDescription = "Search",
+                    contentDescription = stringResource(Res.string.playlist_add_tracks_search_content_description),
                     onClick = handleSearch,
                     style = MillenniumIconButtonStyle.Secondary)
             }
@@ -168,7 +178,7 @@ fun AddTracksToPlaylistDialog(
                             .fillMaxWidth()
                             .weight(1f),
                         contentAlignment = Alignment.Center) {
-                        Text("No tracks found")
+                        Text(stringResource(Res.string.playlist_add_tracks_no_results))
                     }
                 }
                 searchResults.isNotEmpty() -> {
@@ -192,7 +202,7 @@ fun AddTracksToPlaylistDialog(
                             .fillMaxWidth()
                             .weight(1f),
                         contentAlignment = Alignment.Center) {
-                        Text("Search for tracks to add")
+                        Text(stringResource(Res.string.playlist_add_tracks_hint))
                     }
                 }
             }
@@ -203,13 +213,13 @@ fun AddTracksToPlaylistDialog(
         MillenniumDialog(
             visible = true,
             onDismissRequest = onDismiss,
-            title = "Add Tracks to Playlist",
+            title = stringResource(Res.string.playlist_add_tracks_title),
             modifier = modifier) {
             Box(modifier = Modifier.fillMaxWidth().height(500.dp)) {
                 content()
             }
             MillenniumButton(onClick = onDismiss) {
-                Text("Done")
+                Text(stringResource(Res.string.playlist_add_tracks_done))
             }
         }
     } else {
@@ -221,7 +231,7 @@ fun AddTracksToPlaylistDialog(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .height(600.dp)) {
                 Text(
-                    text = "Add Tracks to Playlist",
+                    text = stringResource(Res.string.playlist_add_tracks_title),
                     style = AppTheme.typography.headlineSmall,
                     modifier = Modifier.padding(bottom = 16.dp))
                 content()
@@ -282,7 +292,7 @@ private fun TrackSearchResultRow(
             isAdded -> {
                 MillenniumIcon(
                     imageVector = Iconsax.IconsaxCheckCircle,
-                    contentDescription = "Added",
+                    contentDescription = stringResource(Res.string.playlist_add_tracks_added_content_description),
                     tint = AppTheme.colors.primary,
                     modifier = Modifier.size(24.dp))
             }
@@ -294,7 +304,7 @@ private fun TrackSearchResultRow(
                 MillenniumButton(
                     onClick = onAdd,
                     style = MillenniumButtonStyle.Secondary) {
-                    Text("Add")
+                    Text(stringResource(Res.string.playlist_add_tracks_add))
                 }
             }
         }

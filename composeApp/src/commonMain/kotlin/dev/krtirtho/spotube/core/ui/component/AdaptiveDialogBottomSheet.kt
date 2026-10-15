@@ -43,6 +43,8 @@ import org.spotube.millennium.adaptive.WindowBreakpoints
 import androidx.compose.ui.unit.dp
 import dev.krtirtho.spotube.resources.iconsax.FluentDismiss
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun AdaptiveDialogBottomSheet(
@@ -92,7 +94,7 @@ fun AdaptiveDialogBottomSheet(
                             style = MillenniumIconButtonStyle.Quiet) {
                             MillenniumIcon(
                                 Iconsax.FluentDismiss,
-                                contentDescription = "Close dialog")
+                                contentDescription = stringResource(Res.string.common_close_dialog))
                         }
                     }
                     Spacer(Modifier.height(12.dp))

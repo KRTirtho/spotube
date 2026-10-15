@@ -61,7 +61,35 @@ import okio.Path.Companion.toPath
 import okio.SYSTEM
 import okio.buffer
 import okio.use
+import org.jetbrains.compose.resources.getString
 import org.koin.core.component.KoinComponent
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.plugin_action_install
+import spotube.composeapp.generated.resources.plugin_action_replace
+import spotube.composeapp.generated.resources.plugin_error_api_incompatible
+import spotube.composeapp.generated.resources.plugin_error_api_version_invalid
+import spotube.composeapp.generated.resources.plugin_error_app_api_version_invalid
+import spotube.composeapp.generated.resources.plugin_error_builtin_add
+import spotube.composeapp.generated.resources.plugin_error_builtin_remove
+import spotube.composeapp.generated.resources.plugin_error_install_failed
+import spotube.composeapp.generated.resources.plugin_error_invalid_plugin_json
+import spotube.composeapp.generated.resources.plugin_error_plugin_json_missing
+import spotube.composeapp.generated.resources.plugin_error_read_failed
+import spotube.composeapp.generated.resources.plugin_error_replace_needs_confirmation
+import spotube.composeapp.generated.resources.plugin_error_update_needs_confirmation
+import spotube.composeapp.generated.resources.plugin_error_zipline_manifest_missing
+import spotube.composeapp.generated.resources.plugin_prompt_incompatible_title
+import spotube.composeapp.generated.resources.plugin_prompt_install_message
+import spotube.composeapp.generated.resources.plugin_prompt_install_title
+import spotube.composeapp.generated.resources.plugin_prompt_replace_downgrade
+import spotube.composeapp.generated.resources.plugin_prompt_replace_generic
+import spotube.composeapp.generated.resources.plugin_prompt_replace_invalid_incoming
+import spotube.composeapp.generated.resources.plugin_prompt_replace_invalid_installed
+import spotube.composeapp.generated.resources.plugin_prompt_replace_same_version
+import spotube.composeapp.generated.resources.plugin_prompt_replace_title
+import spotube.composeapp.generated.resources.plugin_prompt_update_message
+import spotube.composeapp.generated.resources.plugin_prompt_update_title
+import spotube.composeapp.generated.resources.update_action_update
 
 const val PLUGIN_API_VERSION = "0.0.1"
 
@@ -328,7 +356,7 @@ class PluginManager(
 
                 val pluginJsonPath = tempDir / "plugin.json".toPath()
                 if (!FileSystem.SYSTEM.exists(pluginJsonPath)) {
-                    throw IllegalArgumentException("plugin.json not found in the zip file")
+                    throw IllegalArgumentException(getString(Res.string.plugin_error_plugin_json_missing))
                 }
 
                 val pluginJson =
@@ -336,7 +364,7 @@ class PluginManager(
                 val pluginEntry = try {
                     Json.decodeFromString<PluginEntry>(pluginJson)
                 } catch (e: Exception) {
-                    throw IllegalArgumentException("Invalid plugin.json format: ${e.message}")
+                    throw IllegalArgumentException(getString(Res.string.plugin_error_invalid_plugin_json, e.message.orEmpty()))
                 }
 
                 // Preserve logo.png before deleting temp dir so the permission dialog can show it
@@ -350,7 +378,7 @@ class PluginManager(
 
                 pendingPlugin.value = buildPendingPlugin(pluginEntry, bytes)
             } catch (e: Exception) {
-                throw Exception("Failed to read plugin: ${e.message}", e)
+                throw Exception(getString(Res.string.plugin_error_read_failed, e.message.orEmpty()), e)
             } finally {
                 if (FileSystem.SYSTEM.exists(tempDir)) {
                     try {
@@ -436,11 +464,11 @@ class PluginManager(
 
                 val pluginJsonPath = tempDir / "plugin.json".toPath()
                 if (!FileSystem.SYSTEM.exists(pluginJsonPath)) {
-                    throw IllegalArgumentException("plugin.json not found in the zip file")
+                    throw IllegalArgumentException(getString(Res.string.plugin_error_plugin_json_missing))
                 }
                 val pluginManifestPath = tempDir / "manifest.zipline.json".toPath()
                 if (!FileSystem.SYSTEM.exists(pluginManifestPath)) {
-                    throw IllegalArgumentException("manifest.zipline.json not found in the zip file")
+                    throw IllegalArgumentException(getString(Res.string.plugin_error_zipline_manifest_missing))
                 }
 
                 val pluginJson = FileSystem.SYSTEM.source(pluginJsonPath).buffer().use { source ->
@@ -450,7 +478,7 @@ class PluginManager(
                 val pluginEntry = try {
                     Json.decodeFromString<PluginEntry>(pluginJson)
                 } catch (e: Exception) {
-                    throw IllegalArgumentException("Invalid plugin.json format: ${e.message}")
+                    throw IllegalArgumentException(getString(Res.string.plugin_error_invalid_plugin_json, e.message.orEmpty()))
                 }
 
                 ensurePluginApiCompatible(pluginEntry)
@@ -459,8 +487,8 @@ class PluginManager(
                 if (installedPlugin != null && !allowReplacingInstalled) {
                     throw IllegalArgumentException(
                         when (compareVersions(installedPlugin, pluginEntry)) {
-                            VersionRelation.Update -> "A newer version of ${pluginEntry.name} is available. Confirm the update before installing."
-                            VersionRelation.Replace -> "${pluginEntry.name} is already installed. Confirm replacing it before installing."
+                            VersionRelation.Update -> getString(Res.string.plugin_error_update_needs_confirmation, pluginEntry.name)
+                            VersionRelation.Replace -> getString(Res.string.plugin_error_replace_needs_confirmation, pluginEntry.name)
                         }
                     )
                 }
@@ -490,7 +518,7 @@ class PluginManager(
 
                 addPlugin(pluginEntry)
             } catch (e: Exception) {
-                throw Exception("Failed to install plugin: ${e.message}", e)
+                throw Exception(getString(Res.string.plugin_error_install_failed, e.message.orEmpty()), e)
             } finally {
                 if (FileSystem.SYSTEM.exists(tempDir)) {
                     try {
@@ -521,7 +549,7 @@ class PluginManager(
 
     private suspend fun addPlugin(plugin: PluginEntry) {
         if (plugin in BUILT_IN_PLUGINS) {
-            throw IllegalArgumentException("Built-in plugins are already included and can't be added again.")
+            throw IllegalArgumentException(getString(Res.string.plugin_error_builtin_add))
         }
 
         val currentState = state.value
@@ -543,7 +571,7 @@ class PluginManager(
 
     suspend fun removePlugin(plugin: PluginEntry) {
         if (plugin in BUILT_IN_PLUGINS) {
-            throw IllegalArgumentException("Built-in plugins can't be removed.")
+            throw IllegalArgumentException(getString(Res.string.plugin_error_builtin_remove))
         }
 
         val currentState = state.value
@@ -589,46 +617,49 @@ class PluginManager(
         Replace,
     }
 
-    private fun buildPendingPlugin(pluginEntry: PluginEntry, bytes: ByteArray): PendingPlugin {
+    private suspend fun buildPendingPlugin(pluginEntry: PluginEntry, bytes: ByteArray): PendingPlugin {
         val apiError = getPluginApiCompatibilityError(pluginEntry)
         if (apiError != null) {
             return PendingPlugin(
                 entry = pluginEntry,
                 kind = InstallPromptKind.INFO,
-                title = "Plugin API not compatible",
+                title = getString(Res.string.plugin_prompt_incompatible_title),
                 message = apiError)
         }
 
         val installedPlugin = findInstalledPlugin(pluginEntry.id) ?: return PendingPlugin(
             entry = pluginEntry,
             kind = InstallPromptKind.INSTALL,
-            title = "Install plugin?",
-            message = "${pluginEntry.name} will be added to your installed plugins.",
+            title = getString(Res.string.plugin_prompt_install_title),
+            message = getString(Res.string.plugin_prompt_install_message, pluginEntry.name),
             bytes = bytes,
-            confirmLabel = "Install")
+            confirmLabel = getString(Res.string.plugin_action_install))
 
         return when (compareVersions(installedPlugin, pluginEntry)) {
             VersionRelation.Update -> PendingPlugin(
                 entry = pluginEntry,
                 kind = InstallPromptKind.UPDATE,
-                title = "Update plugin?",
-                message = "An older version is installed (${installedPlugin.version}). Update to ${pluginEntry.version}?",
+                title = getString(Res.string.plugin_prompt_update_title),
+                message = getString(
+                    Res.string.plugin_prompt_update_message,
+                    installedPlugin.version,
+                    pluginEntry.version),
                 bytes = bytes,
                 existingEntry = installedPlugin,
-                confirmLabel = "Update")
+                confirmLabel = getString(Res.string.update_action_update))
 
             VersionRelation.Replace -> PendingPlugin(
                 entry = pluginEntry,
                 kind = InstallPromptKind.REPLACE,
-                title = "Replace installed plugin?",
+                title = getString(Res.string.plugin_prompt_replace_title),
                 message = buildReplaceMessage(installedPlugin, pluginEntry),
                 bytes = bytes,
                 existingEntry = installedPlugin,
-                confirmLabel = "Replace")
+                confirmLabel = getString(Res.string.plugin_action_replace))
         }
     }
 
-    private fun buildReplaceMessage(
+    private suspend fun buildReplaceMessage(
         installedPlugin: PluginEntry,
         incomingPlugin: PluginEntry
     ): String {
@@ -636,11 +667,22 @@ class PluginManager(
         val installedVersion = parseSemVerOrNull(installedPlugin.version)
 
         return when {
-            incomingVersion == null -> "${incomingPlugin.name} uses an invalid semantic version (${incomingPlugin.version}) and can't be compared as an update. Replace the installed plugin anyway?"
-            installedVersion == null -> "The installed version (${installedPlugin.version}) can't be compared using semantic versioning. Replace it with ${incomingPlugin.version}?"
-            incomingVersion == installedVersion -> "Version ${incomingPlugin.version} is already installed. Replace the existing plugin with the supplied copy?"
-            incomingVersion < installedVersion -> "Installed version ${installedPlugin.version} is newer than the supplied version ${incomingPlugin.version}. Replace it anyway?"
-            else -> "Replace the installed plugin with the supplied copy?"
+            incomingVersion == null -> getString(
+                Res.string.plugin_prompt_replace_invalid_incoming,
+                incomingPlugin.name,
+                incomingPlugin.version)
+            installedVersion == null -> getString(
+                Res.string.plugin_prompt_replace_invalid_installed,
+                installedPlugin.version,
+                incomingPlugin.version)
+            incomingVersion == installedVersion -> getString(
+                Res.string.plugin_prompt_replace_same_version,
+                incomingPlugin.version)
+            incomingVersion < installedVersion -> getString(
+                Res.string.plugin_prompt_replace_downgrade,
+                installedPlugin.version,
+                incomingPlugin.version)
+            else -> getString(Res.string.plugin_prompt_replace_generic)
         }
     }
 
@@ -671,17 +713,21 @@ class PluginManager(
         }
     }
 
-    private fun ensurePluginApiCompatible(pluginEntry: PluginEntry) {
+    private suspend fun ensurePluginApiCompatible(pluginEntry: PluginEntry) {
         getPluginApiCompatibilityError(pluginEntry)?.let { error ->
             throw IllegalArgumentException(error)
         }
     }
 
-    private fun getPluginApiCompatibilityError(pluginEntry: PluginEntry): String? {
+    private suspend fun getPluginApiCompatibilityError(pluginEntry: PluginEntry): String? {
         val pluginApiVersion = parseSemVerOrNull(pluginEntry.apiVersion)
-            ?: return "${pluginEntry.name} declares an invalid apiVersion (${pluginEntry.apiVersion}). Expected semantic versioning compatible with $PLUGIN_API_VERSION."
+            ?: return getString(
+                Res.string.plugin_error_api_version_invalid,
+                pluginEntry.name,
+                pluginEntry.apiVersion,
+                PLUGIN_API_VERSION)
         val appApiVersion = parseSemVerOrNull(PLUGIN_API_VERSION)
-            ?: return "Spotube plugin API version $PLUGIN_API_VERSION is invalid."
+            ?: return getString(Res.string.plugin_error_app_api_version_invalid, PLUGIN_API_VERSION)
 
         val compatible = if (pluginApiVersion.major == 0 || appApiVersion.major == 0) {
             pluginApiVersion.major == appApiVersion.major && pluginApiVersion.minor == appApiVersion.minor
@@ -692,7 +738,11 @@ class PluginManager(
         return if (compatible) {
             null
         } else {
-            "${pluginEntry.name} targets plugin API ${pluginEntry.apiVersion}, but Spotube supports breaking plugin API $PLUGIN_API_VERSION. Install a plugin built for the same breaking API version."
+            getString(
+                Res.string.plugin_error_api_incompatible,
+                pluginEntry.name,
+                pluginEntry.apiVersion,
+                PLUGIN_API_VERSION)
         }
     }
 }

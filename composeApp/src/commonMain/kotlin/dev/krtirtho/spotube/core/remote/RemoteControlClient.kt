@@ -38,6 +38,11 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import org.jetbrains.compose.resources.StringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.devices_error_connection_failed
+import spotube.composeapp.generated.resources.devices_error_connection_lost
+import spotube.composeapp.generated.resources.devices_error_send_failed
 
 /**
  * WebSocket client for controlling a remote Spotube instance.
@@ -94,7 +99,7 @@ class RemoteControlClient {
             }
         } catch (e: Exception) {
             logger.e(e) { "Failed to connect to $host:$port" }
-            _connectionState.value = ConnectionState.Error(e.message ?: "Connection failed")
+            _connectionState.value = ConnectionState.Error(e.message, Res.string.devices_error_connection_failed)
             disconnect()
         }
     }
@@ -150,7 +155,7 @@ class RemoteControlClient {
             logger.d { "Receive loop exited normally" }
         } catch (e: Exception) {
             logger.e(e) { "Error in receive loop" }
-            _connectionState.value = ConnectionState.Error(e.message ?: "Connection lost")
+            _connectionState.value = ConnectionState.Error(e.message, Res.string.devices_error_connection_lost)
         }
     }
 
@@ -170,7 +175,7 @@ class RemoteControlClient {
             logger.d { "Sent command: $command" }
         } catch (e: Exception) {
             logger.e(e) { "Failed to send command" }
-            _connectionState.value = ConnectionState.Error(e.message ?: "Send failed")
+            _connectionState.value = ConnectionState.Error(e.message, Res.string.devices_error_send_failed)
         }
     }
 
@@ -195,5 +200,9 @@ sealed interface ConnectionState {
     data object Disconnected : ConnectionState
     data object Connecting : ConnectionState
     data class Connected(val host: String, val port: Int) : ConnectionState
-    data class Error(val message: String) : ConnectionState
+    /**
+     * [message] is the raw (untranslated) cause when available; [fallback] is the
+     * localized description to show when it isn't.
+     */
+    data class Error(val message: String?, val fallback: StringResource) : ConnectionState
 }

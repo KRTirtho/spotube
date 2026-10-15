@@ -93,6 +93,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.common_close
 import spotube.composeapp.generated.resources.settings_blacklist_title
 import spotube.composeapp.generated.resources.settings_screen_title
 import spotube.composeapp.generated.resources.settings_section_about
@@ -211,7 +212,7 @@ private fun SettingsPane(
                         style = MillenniumIconButtonStyle.Quiet) {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxCloseSquare,
-                            contentDescription = "Close")
+                            contentDescription = stringResource(Res.string.common_close))
                     }
                 }
                 MillenniumSeparator()

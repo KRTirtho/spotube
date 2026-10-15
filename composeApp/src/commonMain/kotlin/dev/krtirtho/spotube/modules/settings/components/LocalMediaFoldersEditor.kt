@@ -180,10 +180,10 @@ internal fun LocalMediaFoldersEditorContent(
                 enabled = !state.isSaving,
                 style = MillenniumButtonStyle.Secondary
             ) {
-                Text(stringResource(Res.string.settings_action_cancel))
+                Text(stringResource(Res.string.common_cancel))
             }
             MillenniumButton(onClick = onSave, enabled = state.canSave) {
-                Text(stringResource(if (state.isSaving) Res.string.settings_local_media_folders_saving else Res.string.settings_action_save))
+                Text(stringResource(if (state.isSaving) Res.string.settings_local_media_folders_saving else Res.string.common_save))
             }
         }
     }

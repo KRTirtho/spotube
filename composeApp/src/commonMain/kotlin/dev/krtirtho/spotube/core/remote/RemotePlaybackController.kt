@@ -36,6 +36,11 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.jetbrains.compose.resources.getPluralString
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.jam_queue_added_track
+import spotube.composeapp.generated.resources.jam_queue_added_tracks
 
 enum class PlaybackDestinationAction {
     Play,
@@ -179,7 +184,7 @@ class RemotePlaybackController(
                     JamRole.Guest -> jamRoomService.suggestTrack(track)
                     null -> return@launch
                 }
-                _events.emit("Added to the jam queue")
+                _events.emit(getString(Res.string.jam_queue_added_track))
             } catch (e: Exception) {
                 logger.e(e) { "Failed to add track to jam session" }
             }
@@ -207,7 +212,7 @@ class RemotePlaybackController(
                     JamRole.Guest -> jamRoomService.suggestPlaylist(tracks)
                     null -> return@launch
                 }
-                _events.emit("Added ${tracks.size} to the jam queue")
+                _events.emit(getPluralString(Res.plurals.jam_queue_added_tracks, tracks.size, tracks.size))
             } catch (e: Exception) {
                 logger.e(e) { "Failed to add tracks to jam session" }
             }

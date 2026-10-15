@@ -111,17 +111,20 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxNext
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPause
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSort
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 private val CompactTrackListBreakpoint = 600.dp
 private val LargeTrackListBreakpoint = 840.dp
 private const val ShimmerRowCount = 6
 
-enum class TrackSortOption(val label: String) {
-    None("Original"),
-    Title("Title"),
-    Artist("Artist"),
-    Album("Album"),
-    Duration("Duration"),
+enum class TrackSortOption(val label: StringResource) {
+    None(Res.string.track_list_sort_original),
+    Title(Res.string.track_list_sort_title),
+    Artist(Res.string.track_list_sort_artist),
+    Album(Res.string.track_list_sort_album),
+    Duration(Res.string.track_list_sort_duration),
 }
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -311,7 +314,7 @@ fun TrackList(
                 }
 
                 if (showEmptyMessage && !isLoading && visibleTracks.isEmpty() && error == null) {
-                    TrackListFeedbackRow("No tracks found")
+                    TrackListFeedbackRow(stringResource(Res.string.track_list_no_tracks))
                 }
 
                 if (isLoadingNextPage) {
@@ -365,7 +368,7 @@ fun TrackList(
                 MillenniumTextField(
                     state = filterState,
                     label = "",
-                    placeholder = "Filter",
+                    placeholder = stringResource(Res.string.track_list_filter_placeholder),
                     modifier = Modifier
                         .widthIn(max = 400.dp)
                         .align(Alignment.CenterEnd))
@@ -377,7 +380,7 @@ fun TrackList(
                     AdaptiveDropdownBottomSheet(
                         items = TrackSortOption.entries.map { option ->
                             AdaptiveMenuItem(
-                                label = option.label,
+                                label = stringResource(option.label),
                                 onClick = { sortBy = option },
                                 selected = sortBy == option)
                         },
@@ -387,7 +390,7 @@ fun TrackList(
                                 style = MillenniumIconButtonStyle.Quiet) {
                                 MillenniumIcon(
                                     imageVector = Iconsax.IconsaxSort,
-                                    contentDescription = "Sort")
+                                    contentDescription = stringResource(Res.string.track_list_sort))
                             }
                         })
                 }
@@ -407,30 +410,30 @@ fun TrackList(
                             add(
                                 AdaptiveMenuItem(
                                     icon = Iconsax.IconsaxDirectboxReceive,
-                                    label = if (isAll) "Download All" else "Download $trackCount",
+                                    label = if (isAll) stringResource(Res.string.track_list_download_all) else stringResource(Res.string.track_list_download_count, trackCount),
                                     onClick = { onBulkDownload(targetTracks) }))
                             if (!isJamGuest) {
                                 add(
                                     AdaptiveMenuItem(
                                         icon = Iconsax.IconsaxAddSquare,
-                                        label = if (isAll) "Add All to Queue" else "Add $trackCount to Queue",
+                                        label = if (isAll) stringResource(Res.string.track_list_add_all_to_queue) else stringResource(Res.string.track_list_add_count_to_queue, trackCount),
                                         onClick = { onBulkAddToQueue(targetTracks) }))
                                 add(
                                     AdaptiveMenuItem(
                                         icon = Iconsax.IconsaxNext,
-                                        label = if (isAll) "Play All Next" else "Play $trackCount Next",
+                                        label = if (isAll) stringResource(Res.string.track_list_play_all_next) else stringResource(Res.string.track_list_play_count_next, trackCount),
                                         onClick = { onBulkPlayNext(targetTracks) }))
                             }
                             add(
                                 AdaptiveMenuItem(
                                     icon = Iconsax.IconsaxMusicPlaylist,
-                                    label = if (isAll) "Add All to Playlist" else "Add $trackCount to Playlist",
+                                    label = if (isAll) stringResource(Res.string.track_list_add_all_to_playlist) else stringResource(Res.string.track_list_add_count_to_playlist, trackCount),
                                     onClick = { onBulkAddToPlaylist(targetTracks) }))
                         } + if (isInJam) {
                             listOf(
                                 AdaptiveMenuItem(
                                     icon = Iconsax.IconsaxAddSquare,
-                                    label = if (isAll) "Add All to Jam" else "Add $trackCount to Jam",
+                                    label = if (isAll) stringResource(Res.string.track_list_add_all_to_jam) else stringResource(Res.string.track_list_add_count_to_jam, trackCount),
                                     onClick = { onBulkAddToJam(targetTracks) }))
                         } else {
                             emptyList()
@@ -441,7 +444,7 @@ fun TrackList(
                                 style = MillenniumIconButtonStyle.Quiet) {
                                 MillenniumIcon(
                                     imageVector = Iconsax.Iconsax3DotsMore,
-                                    contentDescription = "Bulk actions")
+                                    contentDescription = stringResource(Res.string.track_list_bulk_actions))
                             }
                         })
                 }
@@ -644,7 +647,7 @@ private fun TrackListRow(
                             contentAlignment = Alignment.Center) {
                             MillenniumIcon(
                                 imageVector = if (isCurrentTrack && isCurrentTrackPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                                contentDescription = if (isCurrentTrack && isCurrentTrackPlaying) "Pause" else "Play",
+                                contentDescription = if (isCurrentTrack && isCurrentTrackPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description),
                                 tint = Color.White,
                                 modifier = Modifier.size(18.dp).shimmerApply())
                         }
@@ -713,7 +716,7 @@ private fun TrackListRow(
                         style = MillenniumIconButtonStyle.Quiet) {
                         MillenniumIcon(
                             imageVector = Iconsax.Iconsax3DotsMore,
-                            contentDescription = "Track options")
+                            contentDescription = stringResource(Res.string.track_options_title))
                     }
                 }
             }
@@ -762,7 +765,7 @@ private fun ArtistChips(
         val remaining = artists.size - visibleArtists.size
         if (remaining > 0) {
             TextWithShimmer(
-                text = "+$remaining more",
+                text = stringResource(Res.string.track_list_more_artists, remaining),
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.primary,
                 maxLines = 1,

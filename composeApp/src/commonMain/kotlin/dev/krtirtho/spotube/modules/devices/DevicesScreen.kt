@@ -56,7 +56,21 @@ import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxMirroringScreen
 import dev.krtirtho.spotube.resources.iconsax.IconsaxRefreshRight
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.devices_connected_to
+import spotube.composeapp.generated.resources.devices_connecting
+import spotube.composeapp.generated.resources.devices_device_id
+import spotube.composeapp.generated.resources.devices_disconnect
+import spotube.composeapp.generated.resources.devices_empty
+import spotube.composeapp.generated.resources.devices_empty_hint
+import spotube.composeapp.generated.resources.devices_refresh
+import spotube.composeapp.generated.resources.devices_resolving
+import spotube.composeapp.generated.resources.devices_searching
+import spotube.composeapp.generated.resources.devices_title
+import spotube.composeapp.generated.resources.devices_unknown_device
+import spotube.composeapp.generated.resources.jam_error_dismiss
 
 @Composable
 fun DevicesScreen(
@@ -86,7 +100,7 @@ fun DevicesScreen(
             .background(MillenniumTheme.colors.background)) {
         ApplicationMainBar(
             backButton = true,
-            title = { Text("Devices") },
+            title = { Text(stringResource(Res.string.devices_title)) },
             actions = {
                 if (isDiscovering && connectingToDevice == null) {
                     MillenniumIndeterminateProgress(
@@ -96,7 +110,7 @@ fun DevicesScreen(
                 } else {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxRefreshRight,
-                        contentDescription = "Refresh",
+                        contentDescription = stringResource(Res.string.devices_refresh),
                         modifier = Modifier
                             .size(24.dp)
                             .clickable(enabled = connectingToDevice == null) {
@@ -111,7 +125,9 @@ fun DevicesScreen(
                 .fillMaxSize()
                 .weight(1f)) {
             // Error banner
-            error?.let { errorMessage ->
+            error?.let { devicesError ->
+                val errorMessage = devicesError.rawMessage
+                    ?: stringResource(devicesError.message, *devicesError.args.toTypedArray())
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -125,7 +141,7 @@ fun DevicesScreen(
                             onClick = { viewModel.clearError() },
                             modifier = Modifier.padding(top = 8.dp),
                             style = MillenniumButtonStyle.Secondary) {
-                            Text("Dismiss")
+                            Text(stringResource(Res.string.jam_error_dismiss))
                         }
                     }
                 }
@@ -140,14 +156,14 @@ fun DevicesScreen(
                             .padding(16.dp)) {
                         Column {
                             Text(
-                                text = "Connected to ${state.host}:${state.port}",
+                                text = stringResource(Res.string.devices_connected_to, state.host, state.port),
                                 style = AppTheme.typography.bodyMedium,
                                 color = AppTheme.colors.primary)
                             MillenniumButton(
                                 onClick = { viewModel.disconnect() },
                                 modifier = Modifier.padding(top = 8.dp),
                                 style = MillenniumButtonStyle.Secondary) {
-                                Text("Disconnect")
+                                Text(stringResource(Res.string.devices_disconnect))
                             }
                         }
                     }
@@ -164,7 +180,7 @@ fun DevicesScreen(
                             MillenniumIndeterminateProgress(
                                 modifier = Modifier.size(24.dp))
                             Text(
-                                text = "Connecting...",
+                                text = stringResource(Res.string.devices_connecting),
                                 style = AppTheme.typography.bodyMedium)
                         }
                     }
@@ -182,15 +198,15 @@ fun DevicesScreen(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = if (isDiscovering) {
-                                "Searching for devices on the network..."
+                                stringResource(Res.string.devices_searching)
                             } else {
-                                "No devices found"
+                                stringResource(Res.string.devices_empty)
                             },
                             style = AppTheme.typography.bodyMedium,
                             color = AppTheme.colors.onSurfaceVariant)
                         if (!isDiscovering) {
                             Text(
-                                text = "Make sure the other device has \"Allow remote control\" enabled in settings.",
+                                text = stringResource(Res.string.devices_empty_hint),
                                 style = AppTheme.typography.bodySmall,
                                 color = AppTheme.colors.onSurfaceVariant,
                                 modifier = Modifier.padding(top = 8.dp, start = 32.dp, end = 32.dp))
@@ -244,7 +260,7 @@ private fun DeviceRow(
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = device.name.ifBlank { "Unknown Device" },
+                text = device.name.ifBlank { stringResource(Res.string.devices_unknown_device) },
                 style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis)
@@ -252,7 +268,7 @@ private fun DeviceRow(
                 text = if (device.host.isNotBlank() && device.port > 0) {
                     "${device.host}:${device.port}"
                 } else {
-                    "Resolving..."
+                    stringResource(Res.string.devices_resolving)
                 },
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.onSurfaceVariant,
@@ -260,7 +276,7 @@ private fun DeviceRow(
                 overflow = TextOverflow.Ellipsis)
             if (device.deviceId.isNotBlank()) {
                 Text(
-                    text = "ID: ${device.deviceId.take(8)}...",
+                    text = stringResource(Res.string.devices_device_id, device.deviceId.take(8)),
                     style = AppTheme.typography.labelSmall,
                     color = AppTheme.colors.onSurfaceVariant.copy(alpha = 0.6f),
                     maxLines = 1,

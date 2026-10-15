@@ -45,6 +45,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.Duration.Companion.milliseconds
+import org.jetbrains.compose.resources.StringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.player_track_details_load_failed
+import spotube.composeapp.generated.resources.player_track_details_no_cached_source
+import spotube.composeapp.generated.resources.player_track_details_streams_not_cached
 
 data class PlayerTrackDetails(
     val track: MetadataTrack,
@@ -58,7 +63,10 @@ data class PlayerTrackDetails(
     val activeStreamMatchesPreference: Boolean? = null,
     val localCacheEntry: CacheEntry? = null,
     val isLoading: Boolean = false,
-    val error: String? = null)
+    /** Raw error message (e.g. from an exception); takes precedence over [errorRes]. */
+    val error: String? = null,
+    /** Localized error to show when [error] is null. */
+    val errorRes: StringResource? = null)
 
 data class PlayerOptionsUiState(
     val isMoreOptionsMenuOpen: Boolean = false,
@@ -187,11 +195,11 @@ class PlayerOptionsViewModel(
                         activeStreamUrl = activeStreamUrl,
                         activeStreamMatchesPreference = activeStreamMatchesPreference,
                         localCacheEntry = localCacheEntry,
-                        error = when {
+                        errorRes = when {
                             source == null && localCacheEntry == null ->
-                                "No matched audio source is cached for this track."
+                                Res.string.player_track_details_no_cached_source
                             streams.isEmpty() && localCacheEntry == null ->
-                                "Stream details are not cached yet. Play the track first to load them."
+                                Res.string.player_track_details_streams_not_cached
                             else -> null
                         })
                 }
@@ -209,7 +217,8 @@ class PlayerOptionsViewModel(
                             trackDetails = PlayerTrackDetails(
                                 track = track,
                                 isLoading = false,
-                                error = error.message ?: "Failed to load track details."))
+                                error = error.message,
+                                errorRes = Res.string.player_track_details_load_failed))
                     } else current
                 }
             }

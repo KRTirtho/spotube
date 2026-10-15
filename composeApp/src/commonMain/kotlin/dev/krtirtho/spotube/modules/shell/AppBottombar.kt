@@ -25,6 +25,7 @@ import org.spotube.millennium.composables.MillenniumIcon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import dev.krtirtho.spotube.NavigationItem
+import org.jetbrains.compose.resources.stringResource
 import dev.krtirtho.spotube.bottombarTabs
 import dev.krtirtho.spotube.core.navigation.NavigationState
 import dev.krtirtho.spotube.core.navigation.Navigator
@@ -42,10 +43,11 @@ fun AppBottombar(
         bottombarTabs.filterIsInstance<NavigationItem.Tab<*>>()
             .forEach { tab ->
                 val selected = navigationState.topLevelRoute == tab.route
+                val title = stringResource(tab.title)
                 MillenniumBottomNavigationItem(
                     selected = selected,
                     onClick = { navigator.navigate(tab.route) },
-                    contentDescription = tab.title,
+                    contentDescription = title,
                     icon = {
                         MillenniumIcon(
                             imageVector = tab.icon,
@@ -53,7 +55,7 @@ fun AppBottombar(
                             tint = LocalTextStyle.current.color
                         )
                     },
-                    label = { Text(tab.title) },
+                    label = { Text(title) },
                     badge = if (tab.route == Routes.Library) {
                         libraryBadge
                     } else {

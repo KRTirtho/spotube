@@ -279,20 +279,50 @@ enum class CountryCode(val code: String, val displayName: String) {
     }
 }
 
+/**
+ * App UI languages. Each one (except [SYSTEM]) must have a matching
+ * `composeResources/values-<qualifier>/strings.xml`. [displayName] is the language's own name
+ * (endonym), so it is intentionally not localized.
+ */
 @Serializable
 enum class SupportedLanguages(
     val locale: String,
     val country: String,
-    val displayName: String
+    val displayName: String,
+    val isRtl: Boolean = false
 ) {
-    EN("en", "US", "English"),
-    BN("bn", "BD", "Bengali");
+    /** Follow the device/OS language. */
+    SYSTEM("", "", ""),
+    EN("en", "", "English"),
+    AR("ar", "", "العربية", isRtl = true),
+    BN("bn", "", "বাংলা"),
+    DE("de", "", "Deutsch"),
+    ES("es", "", "Español"),
+    FA("fa", "", "فارسی", isRtl = true),
+    FR("fr", "", "Français"),
+    HI("hi", "", "हिन्दी"),
+    ID("id", "", "Bahasa Indonesia"),
+    IT("it", "", "Italiano"),
+    JA("ja", "", "日本語"),
+    KO("ko", "", "한국어"),
+    NL("nl", "", "Nederlands"),
+    PL("pl", "", "Polski"),
+    PT_BR("pt", "BR", "Português (Brasil)"),
+    RU("ru", "", "Русский"),
+    TH("th", "", "ไทย"),
+    TR("tr", "", "Türkçe"),
+    UK("uk", "", "Українська"),
+    VI("vi", "", "Tiếng Việt"),
+    ZH_CN("zh", "CN", "简体中文"),
+    ZH_TW("zh", "TW", "繁體中文");
 
-    companion object {
-        fun fromLocale(locale: String): SupportedLanguages? {
-            return entries.find { it.locale == locale }
+    /** BCP 47 tag (e.g. "zh-TW"), or null for [SYSTEM]. */
+    val languageTag: String?
+        get() = when {
+            this == SYSTEM -> null
+            country.isEmpty() -> locale
+            else -> "$locale-$country"
         }
-    }
 }
 
 @Serializable

@@ -18,6 +18,7 @@
 package dev.krtirtho.spotube.modules.settings.sections
 
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.runtime.Composable
 import compose.icons.FeatherIcons
 import compose.icons.feathericons.Globe
 import compose.icons.feathericons.MapPin
@@ -46,7 +47,7 @@ internal fun LazyListScope.languageRegionSection(
                     title = stringResource(Res.string.settings_language_title),
                     subtitle = stringResource(
                         Res.string.settings_language_subtitle_current,
-                        settings.language.displayName
+                        languageLabel(settings.language)
                     ),
                     icon = {
                         SettingsItemIcon(
@@ -56,9 +57,7 @@ internal fun LazyListScope.languageRegionSection(
                     },
                     selectedOption = settings.language,
                     options = SupportedLanguages.entries,
-                    optionLabel = {
-                        stringResource(Res.string.settings_option_name_and_code, it.displayName, it.locale)
-                    },
+                    optionLabel = { languageLabel(it) },
                     onOptionSelected = { value ->
                         settingsViewModel.updateSettings {
                             copy(language = value)
@@ -93,4 +92,12 @@ internal fun LazyListScope.languageRegionSection(
             })
     )
 }
+
+@Composable
+private fun languageLabel(language: SupportedLanguages): String =
+    if (language == SupportedLanguages.SYSTEM) {
+        stringResource(Res.string.settings_language_system_default)
+    } else {
+        stringResource(Res.string.settings_option_name_and_code, language.displayName, language.languageTag!!)
+    }
 

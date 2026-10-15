@@ -86,6 +86,9 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.support_button_label
+import spotube.composeapp.generated.resources.devices_title
+import spotube.composeapp.generated.resources.home_title_browse
+import spotube.composeapp.generated.resources.jam_screen_title
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.jetbrains.compose.resources.Font
@@ -147,7 +150,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                         color = AppTheme.colors.onSurface
                     )
                 } else {
-                    Text("Browse")
+                    Text(stringResource(Res.string.home_title_browse))
                 }
 
             },
@@ -159,7 +162,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     ) {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxMirroringScreen,
-                            contentDescription = "Devices"
+                            contentDescription = stringResource(Res.string.devices_title)
                         )
                     }
                     MillenniumIconButton(
@@ -168,7 +171,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     ) {
                         MillenniumIcon(
                             imageVector = Iconsax.User,
-                            contentDescription = "Group Jam"
+                            contentDescription = stringResource(Res.string.jam_screen_title)
                         )
                     }
                     val supportLabel = stringResource(Res.string.support_button_label)

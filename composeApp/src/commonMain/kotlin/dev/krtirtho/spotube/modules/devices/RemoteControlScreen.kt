@@ -82,7 +82,29 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxPrevious
 import dev.krtirtho.spotube.resources.iconsax.IconsaxRepeateMusic
 import dev.krtirtho.spotube.resources.iconsax.IconsaxShuffle
 import dev.krtirtho.spotube.resources.iconsax.IconsaxVolumeHigh
+import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.devices_connecting
+import spotube.composeapp.generated.resources.devices_disconnect
+import spotube.composeapp.generated.resources.devices_remote_album_cover
+import spotube.composeapp.generated.resources.devices_remote_connection_error
+import spotube.composeapp.generated.resources.devices_remote_disconnected
+import spotube.composeapp.generated.resources.devices_remote_loop_mode
+import spotube.composeapp.generated.resources.devices_remote_more_options
+import spotube.composeapp.generated.resources.devices_remote_next
+import spotube.composeapp.generated.resources.devices_remote_previous
+import spotube.composeapp.generated.resources.devices_remote_remove_from_queue
+import spotube.composeapp.generated.resources.devices_remote_seek
+import spotube.composeapp.generated.resources.devices_remote_shuffle
+import spotube.composeapp.generated.resources.devices_remote_title
+import spotube.composeapp.generated.resources.devices_remote_unknown_artist
+import spotube.composeapp.generated.resources.devices_remote_unknown_track
+import spotube.composeapp.generated.resources.devices_remote_volume
+import spotube.composeapp.generated.resources.player_pause_content_description
+import spotube.composeapp.generated.resources.player_play_content_description
+import spotube.composeapp.generated.resources.queue_no_queue_entries
+import spotube.composeapp.generated.resources.queue_title
 import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
@@ -108,7 +130,7 @@ fun RemoteControlScreen(
                 .background(MillenniumTheme.colors.background)
         ) {
             ApplicationMainBar(
-                title = { Text("Remote Control") },
+                title = { Text(stringResource(Res.string.devices_remote_title)) },
                 backButton = true,
                 actions = {
                     MillenniumIconButton(
@@ -117,7 +139,7 @@ fun RemoteControlScreen(
                     ) {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxMusicFilter,
-                            contentDescription = "Queue",
+                            contentDescription = stringResource(Res.string.queue_title),
                             tint = if (isQueueVisible) {
                                 AppTheme.colors.primary
                             } else {
@@ -134,7 +156,7 @@ fun RemoteControlScreen(
                     ) {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxCloseSquare,
-                            contentDescription = "Disconnect"
+                            contentDescription = stringResource(Res.string.devices_disconnect)
                         )
                     }
                 }
@@ -162,7 +184,7 @@ fun RemoteControlScreen(
                                 .padding(bottom = shellBottomInset),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Connecting...")
+                            Text(stringResource(Res.string.devices_connecting))
                         }
                     }
 
@@ -173,7 +195,7 @@ fun RemoteControlScreen(
                                 .padding(bottom = shellBottomInset),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Disconnected")
+                            Text(stringResource(Res.string.devices_remote_disconnected))
                         }
                     }
 
@@ -184,7 +206,11 @@ fun RemoteControlScreen(
                                 .padding(bottom = shellBottomInset),
                             contentAlignment = Alignment.Center
                         ) {
-                            Text("Connection error: ${(connectionState as ConnectionState.Error).message}")
+                            val errorState = connectionState as ConnectionState.Error
+                            Text(
+                                stringResource(
+                                    Res.string.devices_remote_connection_error,
+                                    errorState.message ?: stringResource(errorState.fallback)))
                         }
                     }
                 }
@@ -259,7 +285,7 @@ private fun RemoteControlContent(
                 if (playerState.currentTrackCoverUrl != null) {
                     AsyncImage(
                         model = playerState.currentTrackCoverUrl,
-                        contentDescription = "Album cover",
+                        contentDescription = stringResource(Res.string.devices_remote_album_cover),
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
@@ -286,7 +312,7 @@ private fun RemoteControlContent(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = playerState.currentTrackTitle ?: "Unknown Track",
+                    text = playerState.currentTrackTitle ?: stringResource(Res.string.devices_remote_unknown_track),
                     style = AppTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
@@ -297,7 +323,7 @@ private fun RemoteControlContent(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = playerState.currentTrackArtists ?: "Unknown Artist",
+                    text = playerState.currentTrackArtists ?: stringResource(Res.string.devices_remote_unknown_artist),
                     style = AppTheme.typography.bodyLarge,
                     color = AppTheme.colors.onSurfaceVariant,
                     textAlign = TextAlign.Center,
@@ -327,7 +353,7 @@ private fun RemoteControlContent(
                 MillenniumSlider(
                     value = playerState.positionMs.toFloat(),
                     onValueChange = { onSeek(it.toLong()) },
-                    label = "Seek",
+                    label = stringResource(Res.string.devices_remote_seek),
                     valueRange = 0f..playerState.durationMs.toFloat().coerceAtLeast(1f),
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -364,7 +390,7 @@ private fun RemoteControlContent(
                 ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxShuffle,
-                        contentDescription = "Shuffle",
+                        contentDescription = stringResource(Res.string.devices_remote_shuffle),
                         tint = if (playerState.shuffleEnabled) {
                             AppTheme.colors.primary
                         } else {
@@ -380,7 +406,7 @@ private fun RemoteControlContent(
                 ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxPrevious,
-                        contentDescription = "Previous",
+                        contentDescription = stringResource(Res.string.devices_remote_previous),
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -396,7 +422,11 @@ private fun RemoteControlContent(
                         } else {
                             Iconsax.IconsaxPlay
                         },
-                        contentDescription = if (playerState.isPlaying) "Pause" else "Play",
+                        contentDescription = if (playerState.isPlaying) {
+                            stringResource(Res.string.player_pause_content_description)
+                        } else {
+                            stringResource(Res.string.player_play_content_description)
+                        },
                         modifier = Modifier.size(40.dp),
                         tint = LocalTextStyle.current.color
                     )
@@ -409,7 +439,7 @@ private fun RemoteControlContent(
                 ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxNext,
-                        contentDescription = "Next",
+                        contentDescription = stringResource(Res.string.devices_remote_next),
                         modifier = Modifier.size(32.dp)
                     )
                 }
@@ -421,7 +451,7 @@ private fun RemoteControlContent(
                 ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxRepeateMusic,
-                        contentDescription = "Loop mode",
+                        contentDescription = stringResource(Res.string.devices_remote_loop_mode),
                         tint = if (playerState.loopMode != "none") {
                             AppTheme.colors.primary
                         } else {
@@ -441,7 +471,7 @@ private fun RemoteControlContent(
             ) {
                 MillenniumIcon(
                     imageVector = Iconsax.IconsaxVolumeHigh,
-                    contentDescription = "Volume",
+                    contentDescription = stringResource(Res.string.devices_remote_volume),
                     tint = AppTheme.colors.onSurfaceVariant,
                     modifier = Modifier.size(24.dp)
                 )
@@ -449,7 +479,7 @@ private fun RemoteControlContent(
                 MillenniumSlider(
                     value = playerState.volume,
                     onValueChange = onSetVolume,
-                    label = "Volume",
+                    label = stringResource(Res.string.devices_remote_volume),
                     valueRange = 0f..1f,
                     modifier = Modifier.weight(1f)
                 )
@@ -473,13 +503,13 @@ private fun RemoteQueueSection(
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(
-            text = "Queue",
+            text = stringResource(Res.string.queue_title),
             style = AppTheme.typography.titleLarge
         )
 
         if (queueState.entries.isEmpty()) {
             Text(
-                text = "No queue entries",
+                text = stringResource(Res.string.queue_no_queue_entries),
                 style = AppTheme.typography.bodyMedium,
                 color = AppTheme.colors.onSurfaceVariant
             )
@@ -574,7 +604,7 @@ private fun RemoteQueueItemRow(
             MillenniumDropdownMenu(
                 expanded = showMenu,
                 onExpandedChange = { showMenu = it },
-                items = listOf("Remove from queue"),
+                items = listOf(stringResource(Res.string.devices_remote_remove_from_queue)),
                 onItemClick = {
                     onRemoveClick()
                     showMenu = false
@@ -586,7 +616,7 @@ private fun RemoteQueueItemRow(
                     ) {
                         MillenniumIcon(
                             Iconsax.Iconsax3DotsMore,
-                            contentDescription = "More options",
+                            contentDescription = stringResource(Res.string.devices_remote_more_options),
                             modifier = Modifier.size(18.dp)
                         )
                     }

@@ -54,6 +54,10 @@ import spotube.composeapp.generated.resources.settings_jam_section_diagnostics
 import spotube.composeapp.generated.resources.settings_jam_section_identity
 import spotube.composeapp.generated.resources.settings_jam_broker_username
 import spotube.composeapp.generated.resources.settings_section_jam
+import spotube.composeapp.generated.resources.settings_jam_broker_content_description
+import spotube.composeapp.generated.resources.settings_jam_broker_username_placeholder
+import spotube.composeapp.generated.resources.settings_jam_broker_test_fail
+import spotube.composeapp.generated.resources.jam_error_connection_failed
 
 @Composable
 fun JamSettingsScreen(
@@ -98,7 +102,7 @@ internal fun JamSettingsContent(
                             title = stringResource(Res.string.settings_jam_broker_host),
                             value = broker.host,
                             placeholder = "broker.example.com",
-                            icon = { SettingsItemIcon(Iconsax.CustomServer, "Broker") },
+                            icon = { SettingsItemIcon(Iconsax.CustomServer, stringResource(Res.string.settings_jam_broker_content_description)) },
                             onValueSaved = { host ->
                                 viewModel.update {
                                     copy(
@@ -160,7 +164,7 @@ internal fun JamSettingsContent(
                         TextInputSettingCard(
                             title = stringResource(Res.string.settings_jam_broker_username),
                             value = broker.username.orEmpty(),
-                            placeholder = "anonymous",
+                            placeholder = stringResource(Res.string.settings_jam_broker_username_placeholder),
                             onValueSaved = { username ->
                                 viewModel.update {
                                     copy(jamBroker = jamBroker.copy(username = username.ifBlank { null }))
@@ -218,7 +222,11 @@ internal fun JamSettingsContent(
                         val canTest = broker.host.isNotBlank() && !uiState.isTesting
                         val resultMessage = uiState.testResult?.fold(
                             onSuccess = { it },
-                            onFailure = { "Failed: ${it.message ?: "Connection failed"}" })
+                            onFailure = {
+                                stringResource(
+                                    Res.string.settings_jam_broker_test_fail,
+                                    it.message ?: stringResource(Res.string.jam_error_connection_failed))
+                            })
 
                         SettingCardItem(
                             enabled = canTest,

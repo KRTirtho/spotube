@@ -66,6 +66,8 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxShuffle
 import dev.krtirtho.spotube.resources.iconsax.User
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
@@ -107,8 +109,8 @@ fun CollectionDetails(
                             onClick = onAddToJam!!) {
                             MillenniumIcon(
                                 imageVector = Iconsax.IconsaxAddSquare,
-                                contentDescription = "Add to Jam")
-                            TextWithShimmer(text = "Add to Jam")
+                                contentDescription = stringResource(Res.string.track_options_add_to_jam))
+                            TextWithShimmer(text = stringResource(Res.string.track_options_add_to_jam))
                         }
                     }
                 }
@@ -127,16 +129,16 @@ fun CollectionDetails(
                         onClick = onPlay) {
                         MillenniumIcon(
                             imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
-                            contentDescription = if (isPlaying) "Pause" else "Play")
-                        TextWithShimmer(text = if (isPlaying) "Pause" else "Play")
+                            contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
+                        TextWithShimmer(text = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
                     }
                     MillenniumButton(
                         modifier = modifier,
                         onClick = onShufflePlay,
                         style = MillenniumButtonStyle.Secondary
                     ) {
-                        MillenniumIcon(imageVector = Iconsax.IconsaxShuffle, contentDescription = "Shuffle play")
-                        TextWithShimmer(text = "Shuffle")
+                        MillenniumIcon(imageVector = Iconsax.IconsaxShuffle, contentDescription = stringResource(Res.string.collection_details_shuffle_play))
+                        TextWithShimmer(text = stringResource(Res.string.collection_details_shuffle))
                     }
                 }
             }
@@ -149,7 +151,7 @@ fun CollectionDetails(
                     style = MillenniumIconButtonStyle.Quiet) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxAddSquare,
-                        contentDescription = "Add to queue"
+                        contentDescription = stringResource(Res.string.player_add_to_queue_content_description)
                     )
                 }
                 MillenniumSeparator(modifier = Modifier.height(24.dp), vertical = true)
@@ -160,7 +162,7 @@ fun CollectionDetails(
                             style = MillenniumIconButtonStyle.Quiet) {
                             MillenniumIcon(
                                 imageVector = Iconsax.IconsaxHeart2,
-                                contentDescription = "Unfollow")
+                                contentDescription = stringResource(Res.string.collection_details_unfollow))
                         }
                     } else {
                         MillenniumIconButton(
@@ -168,7 +170,7 @@ fun CollectionDetails(
                             style = MillenniumIconButtonStyle.Quiet) {
                             MillenniumIcon(
                                 imageVector = Iconsax.IconsaxHeart,
-                                contentDescription = "Follow",
+                                contentDescription = stringResource(Res.string.collection_details_follow),
                                 tint = AppTheme.colors.onSurfaceVariant)
                         }
                     }
@@ -180,7 +182,7 @@ fun CollectionDetails(
                         style = MillenniumIconButtonStyle.Quiet) {
                         MillenniumIcon(
                             imageVector = Iconsax.IconsaxEdit,
-                            contentDescription = "Edit playlist")
+                            contentDescription = stringResource(Res.string.collection_details_edit_playlist))
                     }
                 }
             }
@@ -213,7 +215,7 @@ fun CollectionDetails(
                         tint = AppTheme.colors.onPrimaryContainer)
                 }
                 TextWithShimmer(
-                    text = "By $ownerName",
+                    text = stringResource(Res.string.collection_details_by_owner, ownerName),
                     style = AppTheme.typography.labelSmall,
                     color = AppTheme.colors.onSurfaceVariant)
             }

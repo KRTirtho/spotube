@@ -127,6 +127,38 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.milliseconds
+import org.jetbrains.compose.resources.getString
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.downloads_status_cancelled
+import spotube.composeapp.generated.resources.downloads_status_failed
+import spotube.composeapp.generated.resources.downloads_status_queued
+import spotube.composeapp.generated.resources.player_alternative_source
+import spotube.composeapp.generated.resources.player_collapse_content_description
+import spotube.composeapp.generated.resources.player_disable_shuffle_content_description
+import spotube.composeapp.generated.resources.player_download
+import spotube.composeapp.generated.resources.player_download_already_downloaded
+import spotube.composeapp.generated.resources.player_download_retrying
+import spotube.composeapp.generated.resources.player_download_started
+import spotube.composeapp.generated.resources.player_download_status_downloaded
+import spotube.composeapp.generated.resources.player_download_status_downloading
+import spotube.composeapp.generated.resources.player_enable_shuffle_content_description
+import spotube.composeapp.generated.resources.player_expand_lyrics_content_description
+import spotube.composeapp.generated.resources.player_go_to_album
+import spotube.composeapp.generated.resources.player_loop_mode_all
+import spotube.composeapp.generated.resources.player_loop_mode_none
+import spotube.composeapp.generated.resources.player_loop_mode_one
+import spotube.composeapp.generated.resources.player_lyrics
+import spotube.composeapp.generated.resources.player_next_content_description
+import spotube.composeapp.generated.resources.player_now_playing
+import spotube.composeapp.generated.resources.player_options_content_description
+import spotube.composeapp.generated.resources.player_pause_content_description
+import spotube.composeapp.generated.resources.player_play_content_description
+import spotube.composeapp.generated.resources.player_previous_content_description
+import spotube.composeapp.generated.resources.player_seek_label
+import spotube.composeapp.generated.resources.player_sleep_timer
+import spotube.composeapp.generated.resources.player_track_details
+import spotube.composeapp.generated.resources.queue_title
 
 // The expanded player on small screens
 // on the top left it has a angle/chevron down that can be used to collapse the player back to the
@@ -270,7 +302,7 @@ fun AppExpandedPlayer(
                     item {
                         OptionTile(
                             icon = Iconsax.SwapHorizontal2,
-                            label = "Alternative Source",
+                            label = stringResource(Res.string.player_alternative_source),
                             onClick = {
                                 playerOptionsViewModel.dismissMoreOptionsSheet()
                                 onAlternativeSource()
@@ -280,12 +312,12 @@ fun AppExpandedPlayer(
                         val download = currentDownload
                         val status = download?.status
                         val statusLabel = when (status) {
-                            is DownloadStatus.Completed -> "Downloaded"
-                            is DownloadStatus.Failed -> "Failed"
-                            is DownloadStatus.Cancelled -> "Cancelled"
-                            is DownloadStatus.Queued -> "Queued"
-                            is DownloadStatus.Downloading -> "Downloading..."
-                            null -> "Download"
+                            is DownloadStatus.Completed -> stringResource(Res.string.player_download_status_downloaded)
+                            is DownloadStatus.Failed -> stringResource(Res.string.downloads_status_failed)
+                            is DownloadStatus.Cancelled -> stringResource(Res.string.downloads_status_cancelled)
+                            is DownloadStatus.Queued -> stringResource(Res.string.downloads_status_queued)
+                            is DownloadStatus.Downloading -> stringResource(Res.string.player_download_status_downloading)
+                            null -> stringResource(Res.string.player_download)
                         }
                         val statusColor = when (status) {
                             is DownloadStatus.Completed -> AppTheme.colors.primary
@@ -308,14 +340,14 @@ fun AppExpandedPlayer(
                                     when (status) {
                                         is DownloadStatus.Completed -> {
                                             scope.launch {
-                                                snackbarHostState.showSnackbar("Already downloaded")
+                                                snackbarHostState.showSnackbar(getString(Res.string.player_download_already_downloaded))
                                             }
                                         }
 
                                         is DownloadStatus.Failed, is DownloadStatus.Cancelled -> {
                                             download?.let { downloadsViewModel.retry(it.id) }
                                             scope.launch {
-                                                snackbarHostState.showSnackbar("Retrying download...")
+                                                snackbarHostState.showSnackbar(getString(Res.string.player_download_retrying))
                                             }
                                         }
 
@@ -329,7 +361,7 @@ fun AppExpandedPlayer(
                                                 downloadsViewModel.downloadTrack(track)
                                                 scope.launch {
                                                     snackbarHostState.showSnackbar(
-                                                        message = "Downloading ${track.title}"
+                                                        message = getString(Res.string.player_download_started, track.title)
                                                     )
                                                 }
                                             }
@@ -348,7 +380,7 @@ fun AppExpandedPlayer(
                                     DownloadProgressIcon(
                                         track = currentTrack,
                                         icon = Iconsax.IconsaxDirectboxReceive,
-                                        contentDescription = "Download",
+                                        contentDescription = stringResource(Res.string.player_download),
                                         modifier = Modifier.size(28.dp),
                                         tint = AppTheme.colors.onSurface
                                     )
@@ -386,7 +418,7 @@ fun AppExpandedPlayer(
                     item {
                         OptionTile(
                             icon = Iconsax.InconsaxClock,
-                            label = "Sleep Timer",
+                            label = stringResource(Res.string.player_sleep_timer),
                             onClick = {
                                 playerOptionsViewModel.dismissMoreOptionsSheet()
                                 playerOptionsViewModel.showSleepTimerDialog()
@@ -396,7 +428,7 @@ fun AppExpandedPlayer(
                     item {
                         OptionTile(
                             icon = Iconsax.IconsaxCd,
-                            label = "Go to Album",
+                            label = stringResource(Res.string.player_go_to_album),
                             onClick = {
                                 playerOptionsViewModel.dismissMoreOptionsSheet()
                                 val albumId = currentTrack?.album?.id
@@ -409,7 +441,7 @@ fun AppExpandedPlayer(
                     item {
                         OptionTile(
                             icon = Iconsax.Iconsax3DotsMore,
-                            label = "Track Details",
+                            label = stringResource(Res.string.player_track_details),
                             onClick = {
                                 playerOptionsViewModel.dismissMoreOptionsSheet()
                                 playerOptionsViewModel.showTrackDetails()
@@ -439,11 +471,11 @@ fun AppExpandedPlayer(
                 ) {
                     MillenniumIcon(
                         Iconsax.IconsaxArrowDown4,
-                        contentDescription = "Collapse player"
+                        contentDescription = stringResource(Res.string.player_collapse_content_description)
                     )
                 }
                 Text(
-                    text = "Now Playing",
+                    text = stringResource(Res.string.player_now_playing),
                     style = AppTheme.typography.titleMedium,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
@@ -453,7 +485,7 @@ fun AppExpandedPlayer(
                     onClick = playerOptionsViewModel::showMoreOptionsSheet,
                     style = MillenniumIconButtonStyle.Quiet
                 ) {
-                    MillenniumIcon(Iconsax.Iconsax3DotsMore, contentDescription = "Player options")
+                    MillenniumIcon(Iconsax.Iconsax3DotsMore, contentDescription = stringResource(Res.string.player_options_content_description))
                 }
             }
 
@@ -516,7 +548,7 @@ fun AppExpandedPlayer(
                     onClick = onQueue,
                     style = MillenniumIconButtonStyle.Secondary
                 ) {
-                    MillenniumIcon(Iconsax.IconsaxMusicFilter, contentDescription = "Queue")
+                    MillenniumIcon(Iconsax.IconsaxMusicFilter, contentDescription = stringResource(Res.string.queue_title))
                 }
             }
 
@@ -532,7 +564,7 @@ fun AppExpandedPlayer(
                         onSeekFinished()
                     },
                     enabled = playerUiState.seekDuration.inWholeMilliseconds > 0L,
-                    label = "Seek",
+                    label = stringResource(Res.string.player_seek_label),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Row(
@@ -567,7 +599,7 @@ fun AppExpandedPlayer(
                     ) {
                         MillenniumIcon(
                             Iconsax.IconsaxShuffle,
-                            contentDescription = if (playerUiState.isShuffling) "Disable shuffle" else "Enable shuffle",
+                            contentDescription = stringResource(if (playerUiState.isShuffling) Res.string.player_disable_shuffle_content_description else Res.string.player_enable_shuffle_content_description),
                             tint = if (playerUiState.isShuffling) {
                                 AppTheme.colors.primary
                             } else {
@@ -580,7 +612,7 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(Iconsax.IconsaxPrevious, contentDescription = "Previous")
+                        MillenniumIcon(Iconsax.IconsaxPrevious, contentDescription = stringResource(Res.string.player_previous_content_description))
                     }
                     MillenniumIconButton(
                         onClick = ::onPlayPause,
@@ -588,7 +620,7 @@ fun AppExpandedPlayer(
                     ) {
                         MillenniumIcon(
                             if (playerUiState.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
-                            contentDescription = if (playerUiState.isPlaying) "Pause" else "Play",
+                            contentDescription = stringResource(if (playerUiState.isPlaying) Res.string.player_pause_content_description else Res.string.player_play_content_description),
                             modifier = Modifier.size(30.dp),
                             tint = LocalTextStyle.current.color
                         )
@@ -598,7 +630,7 @@ fun AppExpandedPlayer(
                         enabled = !isJamGuest,
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
-                        MillenniumIcon(Iconsax.IconsaxNext, contentDescription = "Next")
+                        MillenniumIcon(Iconsax.IconsaxNext, contentDescription = stringResource(Res.string.player_next_content_description))
                     }
                     MillenniumIconButton(
                         onClick = ::onLoopToggle,
@@ -611,7 +643,7 @@ fun AppExpandedPlayer(
                                 LoopState.ONE -> Iconsax.IconsaxRepeateOne
                                 LoopState.ALL -> Iconsax.IconsaxRepeatMusic
                             },
-                            contentDescription = "Loop mode ${playerUiState.loopState.name}",
+                            contentDescription = stringResource(when (playerUiState.loopState) { LoopState.NONE -> Res.string.player_loop_mode_none; LoopState.ONE -> Res.string.player_loop_mode_one; LoopState.ALL -> Res.string.player_loop_mode_all }),
                             tint = if (playerUiState.loopState == LoopState.NONE) {
                                 AppTheme.colors.onSurfaceVariant
                             } else {
@@ -708,7 +740,7 @@ private fun LyricsPreviewCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Lyrics",
+                    text = stringResource(Res.string.player_lyrics),
                     style = AppTheme.typography.labelMedium,
                     color = AppTheme.colors.onSurfaceVariant
                 )
@@ -718,7 +750,7 @@ private fun LyricsPreviewCard(
                 ) {
                     MillenniumIcon(
                         Iconsax.IconsaxArrowSquareUp,
-                        contentDescription = "Expand lyrics",
+                        contentDescription = stringResource(Res.string.player_expand_lyrics_content_description),
                         tint = AppTheme.colors.onSurfaceVariant
                     )
                 }

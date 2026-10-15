@@ -28,6 +28,8 @@ import dev.krtirtho.spotube.core.navigation.NavigationCommands
 import dev.krtirtho.spotube.resources.iconsax.ArrowLeft3
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import org.koin.compose.koinInject
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun ApplicationBackButton() {
@@ -40,7 +42,7 @@ fun ApplicationBackButton() {
         style = MillenniumIconButtonStyle.Quiet) {
         MillenniumIcon(
             imageVector = Iconsax.ArrowLeft3,
-            contentDescription = "Back"
+            contentDescription = stringResource(Res.string.common_back)
         )
     }
 }

@@ -63,6 +63,8 @@ import dev.nucleusframework.webview.web.WebView
 import dev.nucleusframework.webview.web.WebViewNavigator
 import dev.nucleusframework.webview.web.WebViewState
 import dev.nucleusframework.webview.web.rememberWebViewNavigator
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 class PostMessageHandler(
     private val onMessageReceived: (String) -> Unit = {}
@@ -83,7 +85,7 @@ class PostMessageHandler(
 fun PlatformWebViewScreen(webViewController: WebViewController) {
     if (webViewController.getContent() == null) {
         // This should never happen, but just in case
-        Text("No URL to load")
+        Text(stringResource(Res.string.webview_no_url))
         return
     }
 
@@ -173,7 +175,7 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
                             ) {
                                 MillenniumIcon(
                                     FeatherIcons.ChevronLeft,
-                                    contentDescription = "Go back to browser history"
+                                    contentDescription = stringResource(Res.string.webview_go_back)
                                 )
                             }
                             MillenniumIconButton(
@@ -185,7 +187,7 @@ fun PlatformWebViewScreen(webViewController: WebViewController) {
                             ) {
                                 MillenniumIcon(
                                     FeatherIcons.ChevronRight,
-                                    contentDescription = "Go forward to browser history"
+                                    contentDescription = stringResource(Res.string.webview_go_forward)
                                 )
                             }
                         }

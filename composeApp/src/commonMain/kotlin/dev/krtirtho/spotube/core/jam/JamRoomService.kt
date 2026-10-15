@@ -40,6 +40,10 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlin.random.Random
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.jam_error_invalid_code
+import spotube.composeapp.generated.resources.jam_error_no_broker
 import kotlin.time.Clock
 
 /**
@@ -157,7 +161,7 @@ class JamRoomService(
     suspend fun createRoom(): Result<String> {
         val broker = settingsRepository.userSettings.value.jamBroker
         if (broker.host.isBlank()) {
-            return Result.failure(IllegalStateException("No jam broker configured"))
+            return Result.failure(IllegalStateException(getString(Res.string.jam_error_no_broker)))
         }
         val code = JamRoomCode.generate()
         localClientId = newClientId(broker)
@@ -188,11 +192,11 @@ class JamRoomService(
     suspend fun joinRoom(code: String): Result<Unit> {
         val broker = settingsRepository.userSettings.value.jamBroker
         if (broker.host.isBlank()) {
-            return Result.failure(IllegalStateException("No jam broker configured"))
+            return Result.failure(IllegalStateException(getString(Res.string.jam_error_no_broker)))
         }
         val normalized = JamRoomCode.normalize(code)
         if (!JamRoomCode.isValid(normalized)) {
-            return Result.failure(IllegalArgumentException("Invalid room code"))
+            return Result.failure(IllegalArgumentException(getString(Res.string.jam_error_invalid_code)))
         }
         localClientId = newClientId(broker)
         val name = participantName("Guest")

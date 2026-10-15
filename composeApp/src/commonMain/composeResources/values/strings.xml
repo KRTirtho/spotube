@@ -103,19 +103,20 @@
     <string name="settings_section_language_region">Language and Region</string>
     <string name="settings_section_appearance">Appearance</string>
     <string name="settings_section_playback">Playback</string>
-    <string name="settings_section_downloads">Downloads</string>f
+    <string name="settings_section_downloads">Downloads</string>
     <string name="settings_section_caching">Caching</string>
     <string name="settings_section_desktop">Desktop</string>
     <string name="settings_section_updates">Updates</string>
     <string name="settings_section_support">Support</string>
     <string name="settings_section_about">About</string>
 
-    <string name="settings_action_close">Close</string>
-    <string name="settings_action_save">Save</string>
-    <string name="settings_action_cancel">Cancel</string>
+    <string name="common_close">Close</string>
+    <string name="common_save">Save</string>
+    <string name="common_cancel">Cancel</string>
 
     <string name="settings_language_title">Language</string>
     <string name="settings_language_subtitle_current">Language for the app interface. Current: %1$s</string>
+    <string name="settings_language_system_default">System default</string>
     <string name="settings_country_title">Country</string>
     <string name="settings_country_subtitle_current">Regional country for content and availability. Current: %1$s</string>
     <string name="settings_option_name_and_code">%1$s (%2$s)</string>
@@ -262,9 +263,10 @@
     <string name="plugin_error_download_failed">Failed to download plugin</string>
     <string name="plugin_empty_title">No plugins installed yet</string>
     <string name="plugin_empty_subtitle">Paste a download URL or pick a file above.</string>
-    <string name="plugin_installed_count">%1$d %2$s installed</string>
-    <string name="plugin_installed_singular">plugin</string>
-    <string name="plugin_installed_plural">plugins</string>
+    <plurals name="plugin_installed_plugins_count">
+        <item quantity="one">%1$d plugin installed</item>
+        <item quantity="other">%1$d plugins installed</item>
+    </plurals>
     <string name="plugin_install_section_title">Install a Plugin</string>
     <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
     <string name="plugin_action_download">Download</string>
@@ -470,4 +472,467 @@
     <string name="welcome_how_step_lyrics_title">4. Synced Lyrics &amp; Jam</string>
     <string name="welcome_how_step_lyrics_desc">Karaoke lyrics track the playback timestamp, with LAN remote control and Group Jam.</string>
     <string name="welcome_how_footer">No middleman servers. Playback happens right on your device — private by design.</string>
+
+    <!-- Devices: play destination picker -->
+    <string name="devices_destination_title">Choose a device</string>
+    <string name="devices_destination_prompt">%1$s: \"%2$s\"</string>
+    <string name="devices_destination_action_play">Play</string>
+    <string name="devices_destination_action_add_to_queue">Add to queue</string>
+    <string name="devices_destination_action_play_next">Play next</string>
+    <string name="devices_destination_this_device">This Device</string>
+    <string name="devices_destination_this_device_subtitle">On this device</string>
+    <string name="devices_destination_remote_device">Remote Device</string>
+    <string name="devices_destination_remote_device_host">Remote Device (%1$s)</string>
+    <string name="devices_destination_remote_subtitle">On the connected device</string>
+
+    <!-- Devices: connection errors -->
+    <string name="devices_error_connection_failed">Connection failed</string>
+    <string name="devices_error_connection_lost">Connection lost</string>
+    <string name="devices_error_send_failed">Send failed</string>
+    <string name="devices_error_discovery_failed">Discovery failed: %1$s</string>
+    <string name="devices_error_connect_failed">Failed to connect: %1$s</string>
+
+    <!-- Devices: discovery screen -->
+    <string name="devices_title">Devices</string>
+    <string name="devices_refresh">Refresh</string>
+    <string name="devices_connected_to">Connected to %1$s:%2$d</string>
+    <string name="devices_disconnect">Disconnect</string>
+    <string name="devices_connecting">Connecting...</string>
+    <string name="devices_searching">Searching for devices on the network...</string>
+    <string name="devices_empty">No devices found</string>
+    <string name="devices_empty_hint">Make sure the other device has \"Allow remote control\" enabled in settings.</string>
+    <string name="devices_unknown_device">Unknown Device</string>
+    <string name="devices_resolving">Resolving...</string>
+    <string name="devices_device_id">ID: %1$s...</string>
+
+    <!-- Devices: remote control screen -->
+    <string name="devices_remote_title">Remote Control</string>
+    <string name="devices_remote_disconnected">Disconnected</string>
+    <string name="devices_remote_connection_error">Connection error: %1$s</string>
+    <string name="devices_remote_album_cover">Album cover</string>
+    <string name="devices_remote_unknown_track">Unknown Track</string>
+    <string name="devices_remote_unknown_artist">Unknown Artist</string>
+    <string name="devices_remote_seek">Seek</string>
+    <string name="devices_remote_shuffle">Shuffle</string>
+    <string name="devices_remote_previous">Previous</string>
+    <string name="devices_remote_next">Next</string>
+    <string name="devices_remote_loop_mode">Loop mode</string>
+    <string name="devices_remote_volume">Volume</string>
+    <string name="devices_remote_remove_from_queue">Remove from queue</string>
+    <string name="devices_remote_more_options">More options</string>
+
+    <!-- Group Jam: play destination picker -->
+    <string name="jam_destination_title">Play Where?</string>
+    <string name="jam_destination_message">You have an active jam session. Choose where to play this collection.</string>
+    <string name="jam_destination_play_here">Play here</string>
+    <string name="jam_destination_suggest">Suggest to Jam</string>
+
+    <!-- Group Jam: connection errors -->
+    <string name="jam_error_no_broker">No jam broker configured</string>
+    <string name="jam_error_broker_host_empty">Broker host is empty</string>
+    <string name="jam_error_connection_failed">Connection failed</string>
+    <string name="jam_error_connection_lost">Connection lost</string>
+
+    <!-- Settings: Group Jam broker -->
+    <string name="settings_jam_broker_content_description">Broker</string>
+    <string name="settings_jam_broker_username_placeholder">anonymous</string>
+
+    <!-- Group Jam: queue snackbar -->
+    <string name="jam_queue_added_track">Added to the jam queue</string>
+    <plurals name="jam_queue_added_tracks">
+        <item quantity="one">Added %1$d to the jam queue</item>
+        <item quantity="other">Added %1$d to the jam queue</item>
+    </plurals>
+
+    <!-- Remote control: connection request dialog -->
+    <string name="remote_request_title">Remote Control Request</string>
+    <string name="remote_request_message">\"%1$s\" wants to control playback on this device.</string>
+    <string name="remote_request_deny">Deny</string>
+    <string name="remote_request_allow">Allow</string>
+    <string name="remote_request_allow_always">Allow Always</string>
+
+    <!-- Search -->
+    <string name="search_results_title">Search results</string>
+    <string name="search_tab_all">All</string>
+    <string name="search_section_tracks">Tracks</string>
+    <string name="search_section_users">Users</string>
+    <string name="search_no_search_types">No search types available</string>
+    <string name="search_start_typing">Start typing to search</string>
+    <string name="search_start_typing_tracks">Start typing to search tracks</string>
+    <string name="search_no_results">No results found</string>
+    <string name="search_see_all">See all</string>
+    <string name="search_searching">Searching</string>
+    <string name="search_loading_tracks">Loading tracks...</string>
+    <string name="search_loading_albums">Loading albums...</string>
+    <string name="search_loading_artists">Loading artists...</string>
+    <string name="search_loading_playlists">Loading playlists...</string>
+    <string name="search_loading_users">Loading users...</string>
+    <string name="search_no_albums">No albums found</string>
+    <string name="search_no_artists">No artists found</string>
+    <string name="search_no_playlists">No playlists found</string>
+    <string name="search_no_users">No users found</string>
+    <string name="search_warm_crates">Digging through the crates...</string>
+    <string name="search_warm_cosmos">Searching the cosmos...</string>
+    <string name="search_warm_speakers">Warming up the speakers...</string>
+    <string name="search_warm_vinyl">Dusting off the vinyl...</string>
+    <string name="search_warm_music_gods">Consulting the music gods...</string>
+    <string name="search_warm_antennas">Tuning the antennas...</string>
+    <string name="search_warm_records">Flipping through the records...</string>
+    <string name="search_error_capabilities">Failed to load search capabilities</string>
+    <string name="search_error_search">Failed to search</string>
+    <string name="search_error_tracks">Failed to search tracks</string>
+    <string name="search_error_albums">Failed to search albums</string>
+    <string name="search_error_artists">Failed to search artists</string>
+    <string name="search_error_playlists">Failed to search playlists</string>
+    <string name="search_error_users">Failed to search users</string>
+
+    <!-- Home -->
+    <string name="home_title_browse">Browse</string>
+
+    <!-- Lyrics -->
+    <string name="lyrics_mode_synced">Synced</string>
+    <string name="lyrics_mode_plain">Plain</string>
+    <string name="lyrics_no_synced">No synced lyrics available</string>
+    <string name="lyrics_no_plain">No plain lyrics available</string>
+
+    <!-- Settings: audio format/quality labels -->
+    <string name="settings_audio_format_label">%1$s in %2$s</string>
+    <string name="settings_audio_quality_lossy">%1$d kbps</string>
+    <string name="settings_audio_quality_lossless">%1$s kHz • %2$d ch</string>
+    <string name="search_error_no_metadata_plugin">No metadata plugin selected</string>
+
+    <!-- Common -->
+    <string name="common_back">Back</string>
+    <string name="common_retry">Retry</string>
+    <string name="common_close_dialog">Close dialog</string>
+    <string name="common_loading">Loading...</string>
+    <string name="common_unknown">Unknown</string>
+    <string name="common_unknown_error">Unknown error</string>
+
+    <!-- Media cards -->
+    <string name="media_user">User</string>
+    <string name="media_playlist">Playlist</string>
+
+    <!-- Error display -->
+    <string name="error_title">We\'re Truly Sorry</string>
+    <string name="error_description">Something isn\'t working right now. Your experience matters to us, and we\'re doing our best to fix this. Please try again or check the error details below.</string>
+    <string name="error_details">Error Details</string>
+    <string name="error_copy_to_clipboard">Copy to clipboard</string>
+    <string name="error_view_full_log">View full log</string>
+    <string name="error_full_log_title">Full Error Log</string>
+
+    <!-- Collection details -->
+    <string name="collection_details_shuffle">Shuffle</string>
+    <string name="collection_details_shuffle_play">Shuffle play</string>
+    <string name="collection_details_follow">Follow</string>
+    <string name="collection_details_unfollow">Unfollow</string>
+    <string name="collection_details_edit_playlist">Edit playlist</string>
+    <string name="collection_details_by_owner">By %1$s</string>
+
+    <!-- Track options -->
+    <string name="track_options_title">Track options</string>
+    <string name="track_options_add_to_jam">Add to Jam</string>
+    <string name="track_options_start_radio">Start radio</string>
+    <string name="track_options_play_next">Play next</string>
+    <string name="track_options_move_to_next">Move to next</string>
+    <string name="track_options_remove_from_queue">Remove from queue</string>
+    <string name="track_options_remove_from_favorites">Remove from favorites</string>
+    <string name="track_options_save_as_favorite">Save as favorite</string>
+    <string name="track_options_add_to_playlist">Add to playlist</string>
+    <string name="track_options_download">Download</string>
+    <string name="track_options_share">Share</string>
+
+    <!-- Track list -->
+    <string name="track_list_sort_original">Original</string>
+    <string name="track_list_sort_title">Title</string>
+    <string name="track_list_sort_artist">Artist</string>
+    <string name="track_list_sort_album">Album</string>
+    <string name="track_list_sort_duration">Duration</string>
+    <string name="track_list_sort">Sort</string>
+    <string name="track_list_no_tracks">No tracks found</string>
+    <string name="track_list_filter_placeholder">Filter</string>
+    <string name="track_list_bulk_actions">Bulk actions</string>
+    <string name="track_list_download_all">Download All</string>
+    <string name="track_list_download_count">Download %1$d</string>
+    <string name="track_list_add_all_to_queue">Add All to Queue</string>
+    <string name="track_list_add_count_to_queue">Add %1$d to Queue</string>
+    <string name="track_list_play_all_next">Play All Next</string>
+    <string name="track_list_play_count_next">Play %1$d Next</string>
+    <string name="track_list_add_all_to_playlist">Add All to Playlist</string>
+    <string name="track_list_add_count_to_playlist">Add %1$d to Playlist</string>
+    <string name="track_list_add_all_to_jam">Add All to Jam</string>
+    <string name="track_list_add_count_to_jam">Add %1$d to Jam</string>
+    <string name="track_list_more_artists">+%1$d more</string>
+
+    <!-- WebView -->
+    <string name="webview_no_url">No URL to load</string>
+    <string name="webview_go_back">Go back to browser history</string>
+    <string name="webview_go_forward">Go forward to browser history</string>
+
+    <!-- Blacklist -->
+    <string name="blacklist_filter_placeholder">Filter blacklist...</string>
+    <string name="blacklist_empty">No blacklisted items</string>
+    <string name="blacklist_no_results">No blacklisted items match \'%1$s\'</string>
+    <string name="blacklist_section_tracks">Tracks</string>
+    <string name="blacklist_item_track">Track</string>
+    <string name="blacklist_add">Add to blacklist</string>
+    <string name="blacklist_remove">Remove from blacklist</string>
+
+    <!-- Downloads -->
+    <string name="downloads_error_no_metadata">No track metadata</string>
+    <string name="downloads_error_stream_unresolved_short">Could not resolve stream URL</string>
+    <string name="downloads_error_stream_unresolved">Could not resolve stream URL. Try playing the track first.</string>
+
+    <!-- Saved tracks -->
+    <string name="saved_tracks_title">Saved Tracks</string>
+    <string name="saved_tracks_owner_you">You</string>
+
+    <!-- Artist -->
+    <string name="artist_following">Following</string>
+    <string name="artist_top_tracks">Top Tracks</string>
+    <string name="artist_play_top_tracks">Play top tracks</string>
+    <string name="artist_add_top_tracks_to_queue">Add top tracks to queue</string>
+    <string name="artist_related_artists">Related Artists</string>
+    <string name="artist_featured_playlists">Featured Playlists</string>
+    <string name="artist_error_load_failed">Failed to load artist overview</string>
+    <string name="artist_followers_unavailable">Followers unavailable</string>
+    <string name="artist_followers_thousands">%1$sK followers</string>
+    <string name="artist_followers_millions">%1$sM followers</string>
+    <string name="artist_followers_billions">%1$sB followers</string>
+    <plurals name="artist_followers_count">
+        <item quantity="one">%1$d follower</item>
+        <item quantity="other">%1$d followers</item>
+    </plurals>
+
+    <!-- Player -->
+    <string name="player_like_content_description">Like</string>
+    <string name="player_unlike_content_description">Unlike</string>
+    <string name="player_fallback_title">No-op track title</string>
+    <string name="player_fallback_artists">No-op artists</string>
+    <string name="player_unknown_album">Unknown Album</string>
+    <string name="player_seek_label">Seek</string>
+    <string name="player_volume_label">Volume</string>
+    <string name="player_enable_shuffle_content_description">Enable shuffle</string>
+    <string name="player_disable_shuffle_content_description">Disable shuffle</string>
+    <string name="player_previous_content_description">Previous</string>
+    <string name="player_next_content_description">Next</string>
+    <string name="player_play_or_pause_content_description">Play or pause</string>
+    <string name="player_loop_mode_none">Loop mode off</string>
+    <string name="player_loop_mode_one">Loop mode one</string>
+    <string name="player_loop_mode_all">Loop mode all</string>
+    <string name="player_mute_content_description">Mute</string>
+    <string name="player_unmute_content_description">Unmute</string>
+    <string name="player_more_options_content_description">More options</string>
+    <string name="player_options_content_description">Player options</string>
+    <string name="player_collapse_content_description">Collapse player</string>
+    <string name="player_expand_lyrics_content_description">Expand lyrics</string>
+    <string name="player_now_playing">Now Playing</string>
+    <string name="player_lyrics">Lyrics</string>
+    <string name="player_alternative_source">Alternative Source</string>
+    <string name="player_alternative_source_content_description">Alternative source</string>
+    <string name="player_download">Download</string>
+    <string name="player_download_status_downloaded">Downloaded</string>
+    <string name="player_download_status_downloading">Downloading...</string>
+    <string name="player_download_already_downloaded">Already downloaded</string>
+    <string name="player_download_retrying">Retrying download...</string>
+    <string name="player_download_started">Downloading %1$s</string>
+    <string name="player_sleep_timer_remaining">Playback will pause in %1$s.</string>
+    <string name="player_sleep_timer_description">Pause playback after the selected number of minutes.</string>
+    <string name="player_sleep_timer_minutes_label">Minutes</string>
+    <string name="player_sleep_timer_minutes_placeholder">Choose between 1 and 600 minutes</string>
+    <string name="player_sleep_timer_cancel">Cancel timer</string>
+    <string name="player_sleep_timer_start">Start</string>
+    <string name="player_track_details_stream_mismatch">The playback URL was resolved with different streaming settings. The highlighted stream matches your current preference; the active URL refreshes on the next stream request.</string>
+    <string name="player_track_details_matched_source">Matched audio source</string>
+    <string name="player_track_details_loading_source">Loading matched source…</string>
+    <string name="player_track_details_source_not_needed">A matched remote source is not needed while playing the local cached file.</string>
+    <string name="player_track_details_no_source">No matched source is available.</string>
+    <string name="player_track_details_no_cached_source">No matched audio source is cached for this track.</string>
+    <string name="player_track_details_streams_not_cached">Stream details are not cached yet. Play the track first to load them.</string>
+    <string name="player_track_details_load_failed">Failed to load track details.</string>
+    <string name="player_track_details_available_streams">Available streams</string>
+    <string name="player_track_details_served_from_cache_description">This track is being served from the local cache. Stream variants are not used for this playback.</string>
+    <string name="player_track_details_loading_streams">Loading streams…</string>
+    <string name="player_track_details_no_streams">No streams are available for this source.</string>
+    <string name="player_track_details_selected_stream_content_description">Currently selected stream</string>
+    <string name="player_track_details_matches_preference">Matches your streaming format &amp; quality preference</string>
+    <string name="player_track_details_active_url">Active playback URL</string>
+    <string name="player_track_details_served_from_cache">Served from local cache</string>
+    <string name="player_track_details_metadata_track">Metadata track</string>
+    <string name="player_track_details_title">Title</string>
+    <string name="player_track_details_id">ID</string>
+    <string name="player_track_details_album">Album</string>
+    <string name="player_track_details_confidence">Confidence</string>
+    <string name="player_track_details_external_uri">External URI</string>
+    <string name="player_track_details_album_id">Album ID</string>
+    <string name="player_track_details_album_type">Album type</string>
+    <string name="player_track_details_album_release_date">Album release date</string>
+    <string name="player_track_details_album_track_count">Album track count</string>
+    <string name="player_track_details_album_genres">Album genres</string>
+    <string name="player_track_details_duration">Duration</string>
+    <string name="player_track_details_track_number">Track number</string>
+    <string name="player_track_details_disc_number">Disc number</string>
+    <string name="player_track_details_explicit">Explicit</string>
+    <string name="player_track_details_popularity">Popularity</string>
+    <string name="player_track_details_isrc">ISRC</string>
+    <string name="player_track_details_thumbnail_urls">Thumbnail URLs</string>
+
+    <!-- Shell -->
+    <string name="shell_sidebar_toggle_content_description">Toggle Sidebar</string>
+
+    <!-- Alternative track -->
+    <string name="alternative_track_title">Alternative Sources</string>
+    <string name="alternative_track_no_track">No track currently playing</string>
+    <string name="alternative_track_searching">Searching for alternative sources...</string>
+    <string name="alternative_track_empty">No alternative sources found</string>
+    <string name="alternative_track_confidence">Confidence: %1$d%</string>
+    <string name="alternative_track_active_source">Active source</string>
+
+    <!-- Queue -->
+    <string name="queue_participant_kick">Kick</string>
+    <string name="queue_participant_kick_description">Remove them from the session</string>
+    <string name="queue_participant_ban_description">Kick and prevent them from rejoining</string>
+    <string name="queue_participant_remove_suggestions">Remove suggestions</string>
+    <string name="queue_participant_remove_suggestions_description">Remove every track they added to the queue</string>
+    <string name="queue_reorder_content_description">Reorder</string>
+    <string name="queue_remove_from_queue">Remove from queue</string>
+    <string name="queue_item_subtitle_added_by">%1$s • Added by %2$s</string>
+
+    <!-- Playlist -->
+    <string name="playlist_owner_unknown">Unknown</string>
+    <string name="playlist_loading_title">Loading playlist...</string>
+    <string name="playlist_add_tracks_button">Add Tracks</string>
+    <string name="playlist_add_tracks_title">Add Tracks to Playlist</string>
+    <string name="playlist_add_tracks_search_placeholder">Search tracks...</string>
+    <string name="playlist_add_tracks_search_content_description">Search</string>
+    <string name="playlist_add_tracks_no_results">No tracks found</string>
+    <string name="playlist_add_tracks_hint">Search for tracks to add</string>
+    <string name="playlist_add_tracks_done">Done</string>
+    <string name="playlist_add_tracks_add">Add</string>
+    <string name="playlist_add_tracks_added_content_description">Added</string>
+
+    <!-- Album -->
+    <string name="album_loading_title">Loading album...</string>
+
+    <!-- Library -->
+    <string name="library_add_to_playlist_title">Add to Your Playlist</string>
+    <string name="library_add_to_playlist_search_content_description">Search</string>
+    <string name="library_add_to_playlist_search_placeholder">Search your playlists...</string>
+    <string name="library_add_to_playlist_loading">Loading your playlists...</string>
+    <string name="library_add_to_playlist_empty">You don\'t own any playlists yet.\nCreate one to add tracks.</string>
+    <string name="library_playlist_form_create_title">Create Playlist</string>
+    <string name="library_playlist_form_edit_title">Edit Playlist</string>
+    <string name="library_playlist_form_create">Create</string>
+    <string name="library_playlist_form_name_label">Name</string>
+    <string name="library_playlist_form_name_placeholder">Playlist name</string>
+    <string name="library_playlist_form_description_label">Description</string>
+    <string name="library_playlist_form_description_placeholder">Description (optional)</string>
+    <string name="library_playlist_form_public">Public</string>
+    <string name="library_playlist_form_public_description">Anyone can see this playlist</string>
+    <string name="library_playlist_form_collaborative">Collaborative</string>
+    <string name="library_playlist_form_collaborative_description">Others can add tracks to this playlist</string>
+    <string name="library_playlist_form_cover_image">Cover Image</string>
+    <string name="library_playlist_form_cover_content_description">Playlist cover</string>
+    <string name="library_playlist_form_no_image">No image</string>
+    <string name="library_playlist_form_change_image">Change Image</string>
+    <string name="library_playlist_form_pick_image">Pick Image</string>
+
+    <!-- Plugin install / errors -->
+    <string name="plugin_action_install">Install</string>
+    <string name="plugin_action_replace">Replace</string>
+    <string name="plugin_error_plugin_json_missing">plugin.json not found in the zip file</string>
+    <string name="plugin_error_zipline_manifest_missing">manifest.zipline.json not found in the zip file</string>
+    <string name="plugin_error_invalid_plugin_json">Invalid plugin.json format: %1$s</string>
+    <string name="plugin_error_read_failed">Failed to read plugin: %1$s</string>
+    <string name="plugin_error_install_failed">Failed to install plugin: %1$s</string>
+    <string name="plugin_error_update_needs_confirmation">A newer version of %1$s is available. Confirm the update before installing.</string>
+    <string name="plugin_error_replace_needs_confirmation">%1$s is already installed. Confirm replacing it before installing.</string>
+    <string name="plugin_error_builtin_add">Built-in plugins are already included and can\'t be added again.</string>
+    <string name="plugin_error_builtin_remove">Built-in plugins can\'t be removed.</string>
+    <string name="plugin_error_api_version_invalid">%1$s declares an invalid apiVersion (%2$s). Expected semantic versioning compatible with %3$s.</string>
+    <string name="plugin_error_app_api_version_invalid">Spotube plugin API version %1$s is invalid.</string>
+    <string name="plugin_error_api_incompatible">%1$s targets plugin API %2$s, but Spotube supports breaking plugin API %3$s. Install a plugin built for the same breaking API version.</string>
+
+    <!-- Plugin install prompts -->
+    <string name="plugin_prompt_incompatible_title">Plugin API not compatible</string>
+    <string name="plugin_prompt_install_title">Install plugin?</string>
+    <string name="plugin_prompt_install_message">%1$s will be added to your installed plugins.</string>
+    <string name="plugin_prompt_update_title">Update plugin?</string>
+    <string name="plugin_prompt_update_message">An older version is installed (%1$s). Update to %2$s?</string>
+    <string name="plugin_prompt_replace_title">Replace installed plugin?</string>
+    <string name="plugin_prompt_replace_invalid_incoming">%1$s uses an invalid semantic version (%2$s) and can\'t be compared as an update. Replace the installed plugin anyway?</string>
+    <string name="plugin_prompt_replace_invalid_installed">The installed version (%1$s) can\'t be compared using semantic versioning. Replace it with %2$s?</string>
+    <string name="plugin_prompt_replace_same_version">Version %1$s is already installed. Replace the existing plugin with the supplied copy?</string>
+    <string name="plugin_prompt_replace_downgrade">Installed version %1$s is newer than the supplied version %2$s. Replace it anyway?</string>
+    <string name="plugin_prompt_replace_generic">Replace the installed plugin with the supplied copy?</string>
+
+    <!-- Plugin info dialog -->
+    <string name="plugin_info_label_format">%1$s:</string>
+    <string name="plugin_info_version">Version</string>
+    <string name="plugin_info_api_version">API Version</string>
+    <string name="plugin_info_author">Author</string>
+    <string name="plugin_info_license">License</string>
+    <string name="plugin_info_capabilities">Capabilities</string>
+    <string name="plugin_info_abilities">Abilities</string>
+    <string name="plugin_info_repository">Repository</string>
+    <string name="plugin_info_contact">Contact</string>
+    <string name="plugin_info_report_bugs">Report Bugs</string>
+    <string name="plugin_support_dialog_title">Support %1$s</string>
+
+    <!-- Plugin discovery -->
+    <string name="plugin_discover_badge_official">Official</string>
+    <string name="plugin_discover_badge_verified">Verified</string>
+    <string name="plugin_discover_stars_content_description">GitHub stars</string>
+    <string name="plugin_discover_repository_content_description">GitHub repository URL</string>
+
+    <!-- Plugin release install dialog -->
+    <string name="plugin_install_no_releases">No releases found</string>
+    <string name="plugin_install_select_release_label">Select Release</string>
+    <string name="plugin_install_select_release_placeholder">Select a release</string>
+    <string name="plugin_install_prerelease">Pre-release</string>
+    <string name="plugin_install_release_notes">Release Notes</string>
+
+    <!-- App navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+    <string name="nav_group_on_device">On Device</string>
+    <string name="nav_group_connect">Connect</string>
+    <string name="nav_devices">Devices</string>
+
+    <!-- System tray (desktop) -->
+    <string name="tray_hide_window">Hide Window</string>
+    <string name="tray_show_window">Show Window</string>
+    <string name="tray_next_track">Next Track</string>
+    <string name="tray_previous_track">Previous Track</string>
+    <string name="tray_shuffle">Shuffle</string>
+    <string name="tray_loop">Loop</string>
+    <string name="tray_loop_off">Loop: OFF</string>
+    <string name="tray_loop_one">Loop: ONE</string>
+    <string name="tray_loop_all">Loop: ALL</string>
+    <string name="tray_volume">Volume: %1$d%</string>
+    <string name="tray_volume_up">Volume +</string>
+    <string name="tray_volume_down">Volume -</string>
+    <string name="tray_mute">Mute</string>
+    <string name="tray_unmute">Unmute</string>
+    <string name="tray_like_track">Like Track</string>
+    <string name="tray_unlike_track">Unlike Track</string>
+    <string name="tray_exit">Exit</string>
+
+    <!-- Desktop window controls -->
+    <string name="app_window_minimize">Minimize</string>
+    <string name="app_window_maximize">Maximize</string>
+    <string name="app_window_restore">Restore</string>
+    <string name="app_window_close">Close</string>
+
+    <!-- Android playback notification -->
+    <string name="notification_playback_service_text">Playback service</string>
+    <string name="notification_playback_channel_name">Playback</string>
+    <string name="notification_playback_channel_description">Media playback controls</string>
+
+    <!-- Android Auto / media browser -->
+    <string name="media_browser_browse">Browse</string>
+    <string name="media_browser_now_playing">Now Playing</string>
+    <string name="media_browser_featured">Featured</string>
+    <string name="media_browser_saved_tracks">Saved Tracks</string>
+    <string name="media_browser_top_tracks">Top Tracks</string>
 </resources>

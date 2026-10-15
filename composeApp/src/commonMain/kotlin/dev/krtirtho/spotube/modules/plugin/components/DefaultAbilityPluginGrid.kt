@@ -66,6 +66,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxTextalignLeft
 import okio.Path
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.plugin_version_label
 import spotube.composeapp.generated.resources.settings_plugins_ability_audio
 import spotube.composeapp.generated.resources.settings_plugins_ability_lyrics
 import spotube.composeapp.generated.resources.settings_plugins_ability_metadata
@@ -110,8 +111,9 @@ internal fun PluginAbility.displayLabel(): String = when (this) {
 }
 
 /** A short "v1.2.3 · Author" summary shown under a plugin in the picker. */
+@Composable
 private fun PluginEntry.metadataLabel(): String = buildString {
-    append("v").append(version)
+    append(stringResource(Res.string.plugin_version_label, version))
     if (author.isNotBlank()) {
         append(" · ").append(author)
     }
@@ -326,7 +328,7 @@ private fun AbilityPluginTile(
                     text = buildString {
                         append(ability.displayLabel())
                         if (!version.isNullOrBlank()) {
-                            append(" · v").append(version)
+                            append(" · ").append(stringResource(Res.string.plugin_version_label, version))
                         }
                     },
                     style = AppTheme.typography.labelMedium,

@@ -37,7 +37,9 @@ import dev.krtirtho.spotube.core.systemtray.SystemTrayService
 import dev.krtirtho.spotube.core.ui.component.LocalApplicationScope
 import dev.krtirtho.spotube.core.ui.component.LocalWindowScope
 import dev.krtirtho.spotube.core.ui.component.LocalWindowState
+import dev.krtirtho.spotube.core.i18n.AppLocaleProvider
 import dev.krtirtho.spotube.modules.settings.SettingsProvider
+import dev.krtirtho.spotube.modules.settings.SupportedLanguages
 import dev.nucleusframework.application.DecoratedWindow
 import dev.nucleusframework.application.NucleusBackend
 import dev.nucleusframework.application.nucleusApplication
@@ -89,10 +91,13 @@ fun main() {
         trayService.setCallbacks(onToggleWindowVisibility)
 
         if (minimizeToTray) {
-            SystemTray(
-                isWindowVisible = isWindowVisible,
-                onToggleWindowVisibility = onToggleWindowVisibility,
-                onExit = onExit)
+            // The tray lives outside App(), so it needs its own provider to follow the app language.
+            AppLocaleProvider(settings?.language ?: SupportedLanguages.SYSTEM) {
+                SystemTray(
+                    isWindowVisible = isWindowVisible,
+                    onToggleWindowVisibility = onToggleWindowVisibility,
+                    onExit = onExit)
+            }
         }
 
         DecoratedWindow(

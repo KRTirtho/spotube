@@ -49,9 +49,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.notification_playback_channel_description
+import spotube.composeapp.generated.resources.notification_playback_channel_name
+import spotube.composeapp.generated.resources.notification_playback_service_text
 
 @OptIn(UnstableApi::class)
 class PlaybackService : MediaLibraryService(), KoinComponent {
@@ -80,7 +86,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Spotube")
-            .setContentText("Playback service")
+            .setContentText(runBlocking { getString(Res.string.notification_playback_service_text) })
             .setSmallIcon(android.R.drawable.ic_media_play)
             .setContentIntent(sessionActivity)
             .setOngoing(true)
@@ -112,10 +118,12 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
-                "Playback",
+                runBlocking { getString(Res.string.notification_playback_channel_name) },
                 NotificationManager.IMPORTANCE_LOW
             ).apply {
-                description = "Media playback controls"
+                description = runBlocking {
+                    getString(Res.string.notification_playback_channel_description)
+                }
                 setShowBadge(false)
             }
             val manager = getSystemService(NotificationManager::class.java)

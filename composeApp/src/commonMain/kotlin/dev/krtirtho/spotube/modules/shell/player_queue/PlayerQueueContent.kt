@@ -81,6 +81,17 @@ import spotube.composeapp.generated.resources.queue_clear_queue
 import spotube.composeapp.generated.resources.queue_filter_queue
 import spotube.composeapp.generated.resources.queue_no_queue_entries
 import spotube.composeapp.generated.resources.queue_title
+import spotube.composeapp.generated.resources.jam_participants_ban
+import spotube.composeapp.generated.resources.jam_participants_host
+import spotube.composeapp.generated.resources.player_more_options_content_description
+import spotube.composeapp.generated.resources.queue_item_subtitle_added_by
+import spotube.composeapp.generated.resources.queue_participant_ban_description
+import spotube.composeapp.generated.resources.queue_participant_kick
+import spotube.composeapp.generated.resources.queue_participant_kick_description
+import spotube.composeapp.generated.resources.queue_participant_remove_suggestions
+import spotube.composeapp.generated.resources.queue_participant_remove_suggestions_description
+import spotube.composeapp.generated.resources.queue_remove_from_queue
+import spotube.composeapp.generated.resources.queue_reorder_content_description
 
 @Composable
 fun PlayerQueueContent(
@@ -214,7 +225,7 @@ private fun ParticipantDialog(
                 )
                 if (participant.isHost) {
                     Text(
-                        text = "Host",
+                        text = stringResource(Res.string.jam_participants_host),
                         style = AppTheme.typography.labelSmall,
                         color = AppTheme.colors.primary
                     )
@@ -237,8 +248,8 @@ private fun ParticipantDialog(
                             tint = AppTheme.colors.error
                         )
                     },
-                    title = { Text("Kick") },
-                    subtitle = { Text("Remove them from the session") })
+                    title = { Text(stringResource(Res.string.queue_participant_kick)) },
+                    subtitle = { Text(stringResource(Res.string.queue_participant_kick_description)) })
                 MillenniumListTile(
                     onClick = {
                         onBan()
@@ -251,8 +262,8 @@ private fun ParticipantDialog(
                             tint = AppTheme.colors.error
                         )
                     },
-                    title = { Text("Ban") },
-                    subtitle = { Text("Kick and prevent them from rejoining") })
+                    title = { Text(stringResource(Res.string.jam_participants_ban)) },
+                    subtitle = { Text(stringResource(Res.string.queue_participant_ban_description)) })
                 MillenniumListTile(
                     onClick = {
                         onRemoveSuggestions()
@@ -264,8 +275,8 @@ private fun ParticipantDialog(
                             contentDescription = null
                         )
                     },
-                    title = { Text("Remove suggestions") },
-                    subtitle = { Text("Remove every track they added to the queue") })
+                    title = { Text(stringResource(Res.string.queue_participant_remove_suggestions)) },
+                    subtitle = { Text(stringResource(Res.string.queue_participant_remove_suggestions_description)) })
             }
         }
     }
@@ -315,7 +326,7 @@ private fun QueueItemRow(
             ) {
                 MillenniumIcon(
                     Iconsax.IconsaxDragHandle,
-                    contentDescription = if (reorderScope != null) "Reorder" else null,
+                    contentDescription = if (reorderScope != null) stringResource(Res.string.queue_reorder_content_description) else null,
                     modifier = Modifier
                         .size(24.dp)
                         .then(
@@ -370,7 +381,7 @@ private fun QueueItemRow(
         },
         subtitle = {
             Text(
-                text = item.subtitle,
+                text = item.addedByParticipant?.let { stringResource(Res.string.queue_item_subtitle_added_by, item.subtitle, it.displayName) } ?: item.subtitle,
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.onSurfaceVariant,
                 maxLines = 1,
@@ -408,7 +419,7 @@ private fun QueueItemRow(
                 MillenniumDropdownMenu(
                     expanded = showMenu,
                     onExpandedChange = { showMenu = it },
-                    items = listOf("Remove from queue"),
+                    items = listOf(stringResource(Res.string.queue_remove_from_queue)),
                     onItemClick = {
                         onRemoveClick()
                         showMenu = false
@@ -420,7 +431,7 @@ private fun QueueItemRow(
                         ) {
                             MillenniumIcon(
                                 Iconsax.Iconsax3DotsMore,
-                                contentDescription = "More options"
+                                contentDescription = stringResource(Res.string.player_more_options_content_description)
                             )
                         }
                     })

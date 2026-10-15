@@ -19,6 +19,7 @@ package dev.krtirtho.spotube.modules.settings
 
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioFormat
 import dev.krtirtho.plugin_interfaces.plugin_apis.audio.AudioQuality
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.spotube.millennium.theme.MillenniumPalette
 
@@ -30,7 +31,10 @@ enum class Theme {
 @Serializable
 data class UserSettings(
     // Language and Region
-    val language: SupportedLanguages = SupportedLanguages.EN,
+    // Stored under a new name: the old "language" field was persisted as EN for everyone while
+    // it had no effect, so reading it would force English on existing users.
+    @SerialName("appLanguage")
+    val language: SupportedLanguages = SupportedLanguages.SYSTEM,
     val country: CountryCode = CountryCode.BD,
 
     // Appearance

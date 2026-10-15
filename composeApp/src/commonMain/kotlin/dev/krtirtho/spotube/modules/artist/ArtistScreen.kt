@@ -93,6 +93,9 @@ import dev.krtirtho.spotube.resources.iconsax.User
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlin.math.roundToInt
+import org.jetbrains.compose.resources.pluralStringResource
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun ArtistScreen(
@@ -334,7 +337,7 @@ private fun ArtistErrorContent(
                 style = AppTheme.typography.bodyLarge
             )
             MillenniumButton(onClick = onRetry) {
-                Text("Retry")
+                Text(stringResource(Res.string.common_retry))
             }
         }
     }
@@ -509,7 +512,7 @@ private fun ArtistHeaderActions(
                 style = MillenniumButtonStyle.Secondary
             ) {
                 Text(
-                    "Following",
+                    stringResource(Res.string.artist_following),
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -517,12 +520,12 @@ private fun ArtistHeaderActions(
             }
         } else {
             MillenniumButton(onClick = onFollowClick) {
-                Text("Follow", modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
+                Text(stringResource(Res.string.collection_details_follow), modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
             }
         }
 
         MillenniumTooltip(
-            text = if (isBlacklisted) "Remove from blacklist" else "Add to blacklist"
+            text = if (isBlacklisted) stringResource(Res.string.blacklist_remove) else stringResource(Res.string.blacklist_add)
         ) {
             if (isBlacklisted) {
                 MillenniumIconButton(
@@ -531,7 +534,7 @@ private fun ArtistHeaderActions(
                 ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxUserRemove,
-                        contentDescription = "Remove from blacklist",
+                        contentDescription = stringResource(Res.string.blacklist_remove),
                         tint = AppTheme.colors.error
                     )
                 }
@@ -542,7 +545,7 @@ private fun ArtistHeaderActions(
                 ) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxUserRemove,
-                        contentDescription = "Add to blacklist"
+                        contentDescription = stringResource(Res.string.blacklist_add)
                     )
                 }
             }
@@ -563,7 +566,7 @@ private fun TopTracksHeader(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "Top Tracks",
+            text = stringResource(Res.string.artist_top_tracks),
             style = AppTheme.typography.titleLarge,
             fontWeight = FontWeight.SemiBold
         )
@@ -575,7 +578,7 @@ private fun TopTracksHeader(
             ) {
                 MillenniumIcon(
                     imageVector = Iconsax.IconsaxPlay,
-                    contentDescription = "Play top tracks",
+                    contentDescription = stringResource(Res.string.artist_play_top_tracks),
                     tint = LocalTextStyle.current.color
                 )
             }
@@ -585,7 +588,7 @@ private fun TopTracksHeader(
             ) {
                 MillenniumIcon(
                     imageVector = Iconsax.IconsaxAddSquare,
-                    contentDescription = "Add top tracks to queue"
+                    contentDescription = stringResource(Res.string.artist_add_top_tracks_to_queue)
                 )
             }
         }
@@ -615,7 +618,7 @@ private fun AlbumsSection(
             }
     }
 
-    SectionHeader(title = "Albums")
+    SectionHeader(title = stringResource(Res.string.library_tab_albums))
     Spacer(modifier = Modifier.size(8.dp))
     LazyRow(
         state = rowState,
@@ -653,7 +656,7 @@ private fun RelatedArtistsSection(
             }
     }
 
-    SectionHeader(title = "Related Artists")
+    SectionHeader(title = stringResource(Res.string.artist_related_artists))
     Spacer(modifier = Modifier.size(8.dp))
     LazyRow(
         state = rowState,
@@ -691,7 +694,7 @@ private fun FeaturedPlaylistsSection(
             }
     }
 
-    SectionHeader(title = "Featured Playlists")
+    SectionHeader(title = stringResource(Res.string.artist_featured_playlists))
     Spacer(modifier = Modifier.size(8.dp))
     LazyRow(
         state = rowState,
@@ -716,13 +719,14 @@ private fun SectionHeader(title: String) {
     )
 }
 
+@Composable
 private fun formatFollowers(count: Int?): String {
-    if (count == null) return "Followers unavailable"
+    if (count == null) return stringResource(Res.string.artist_followers_unavailable)
     return when {
-        count >= 1_000_000_000 -> "${formatAbbreviatedCount(count, 1_000_000_000)}B followers"
-        count >= 1_000_000 -> "${formatAbbreviatedCount(count, 1_000_000)}M followers"
-        count >= 1_000 -> "${formatAbbreviatedCount(count, 1_000)}K followers"
-        else -> "$count followers"
+        count >= 1_000_000_000 -> stringResource(Res.string.artist_followers_billions, formatAbbreviatedCount(count, 1_000_000_000))
+        count >= 1_000_000 -> stringResource(Res.string.artist_followers_millions, formatAbbreviatedCount(count, 1_000_000))
+        count >= 1_000 -> stringResource(Res.string.artist_followers_thousands, formatAbbreviatedCount(count, 1_000))
+        else -> pluralStringResource(Res.plurals.artist_followers_count, count, count)
     }
 }
 

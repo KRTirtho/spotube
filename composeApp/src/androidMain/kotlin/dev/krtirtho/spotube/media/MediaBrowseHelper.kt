@@ -41,6 +41,17 @@ import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
 import dev.krtirtho.spotube.modules.search.SearchRepository
 import dev.krtirtho.spotube.modules.settings.SettingsRepository
 import kotlinx.coroutines.flow.first
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.library_tab_albums
+import spotube.composeapp.generated.resources.library_tab_artists
+import spotube.composeapp.generated.resources.library_tab_playlists
+import spotube.composeapp.generated.resources.library_toolbar_compact_title
+import spotube.composeapp.generated.resources.media_browser_browse
+import spotube.composeapp.generated.resources.media_browser_featured
+import spotube.composeapp.generated.resources.media_browser_now_playing
+import spotube.composeapp.generated.resources.media_browser_saved_tracks
+import spotube.composeapp.generated.resources.media_browser_top_tracks
 
 class MediaBrowseHelper(
     private val pluginManager: PluginManager,
@@ -221,13 +232,13 @@ class MediaBrowseHelper(
         }
     }
 
-    private fun buildRootChildren(): List<MediaItem> {
+    private suspend fun buildRootChildren(): List<MediaItem> {
         return listOf(
             MediaItem.Builder()
                 .setMediaId(MEDIA_ID_BROWSE)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Browse")
+                        .setTitle(getString(Res.string.media_browser_browse))
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
                         .build()
@@ -237,7 +248,7 @@ class MediaBrowseHelper(
                 .setMediaId(MEDIA_ID_LIBRARY)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Library")
+                        .setTitle(getString(Res.string.library_toolbar_compact_title))
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
                         .build()
@@ -247,7 +258,7 @@ class MediaBrowseHelper(
                 .setMediaId(MEDIA_ID_QUEUE)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Now Playing")
+                        .setTitle(getString(Res.string.media_browser_now_playing))
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
                         .build()
@@ -264,7 +275,7 @@ class MediaBrowseHelper(
                 .setMediaId(MEDIA_ID_BROWSE_FEATURED)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Featured")
+                        .setTitle(getString(Res.string.media_browser_featured))
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
                         .setExtras(gridExtras)
@@ -353,7 +364,7 @@ class MediaBrowseHelper(
                 .setMediaId(MEDIA_ID_SAVED_PLAYLISTS)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Playlists")
+                        .setTitle(getString(Res.string.library_tab_playlists))
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
                         .build()
@@ -363,7 +374,7 @@ class MediaBrowseHelper(
                 .setMediaId(MEDIA_ID_SAVED_ALBUMS)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Albums")
+                        .setTitle(getString(Res.string.library_tab_albums))
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
                         .build()
@@ -373,7 +384,7 @@ class MediaBrowseHelper(
                 .setMediaId(MEDIA_ID_SAVED_ARTISTS)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Artists")
+                        .setTitle(getString(Res.string.library_tab_artists))
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
                         .build()
@@ -383,7 +394,7 @@ class MediaBrowseHelper(
                 .setMediaId(MEDIA_ID_SAVED_TRACKS)
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Saved Tracks")
+                        .setTitle(getString(Res.string.media_browser_saved_tracks))
                         .setIsPlayable(false)
                         .setIsBrowsable(true)
                         .build()
@@ -457,7 +468,7 @@ class MediaBrowseHelper(
                 .setMediaId("$MEDIA_ID_ARTIST_TRACKS:$artistId")
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Top Tracks")
+                        .setTitle(getString(Res.string.media_browser_top_tracks))
                         .setIsPlayable(false)
                         .setIsBrowsable(true)
                         .build()
@@ -467,7 +478,7 @@ class MediaBrowseHelper(
                 .setMediaId("$MEDIA_ID_ARTIST_ALBUMS:$artistId")
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setTitle("Albums")
+                        .setTitle(getString(Res.string.library_tab_albums))
                         .setIsBrowsable(true)
                         .setIsPlayable(false)
                         .build()

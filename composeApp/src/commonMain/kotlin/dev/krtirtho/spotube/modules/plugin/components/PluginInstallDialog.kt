@@ -57,12 +57,20 @@ import dev.krtirtho.spotube.modules.plugin.GitHubRelease
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import dev.krtirtho.spotube.resources.iconsax.IconsaxBox
+import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
 import org.spotube.millennium.composables.MillenniumDropdownMenu
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIndeterminateProgress
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.plugin_action_install
+import spotube.composeapp.generated.resources.plugin_install_no_releases
+import spotube.composeapp.generated.resources.plugin_install_prerelease
+import spotube.composeapp.generated.resources.plugin_install_release_notes
+import spotube.composeapp.generated.resources.plugin_install_select_release_label
+import spotube.composeapp.generated.resources.plugin_install_select_release_placeholder
 
 @Composable
 fun PluginInstallDialog(
@@ -135,13 +143,13 @@ fun PluginInstallDialog(
             }
         } else if (releases.isEmpty()) {
             Text(
-                "No releases found",
+                stringResource(Res.string.plugin_install_no_releases),
                 style = AppTheme.typography.bodyMedium,
                 color = AppTheme.colors.onSurfaceVariant
             )
         } else {
             Text(
-                "Select Release",
+                stringResource(Res.string.plugin_install_select_release_label),
                 style = AppTheme.typography.labelMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = AppTheme.colors.onSurface
@@ -168,7 +176,8 @@ fun PluginInstallDialog(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                selectedRelease?.tagName ?: "Select a release",
+                                selectedRelease?.tagName
+                                    ?: stringResource(Res.string.plugin_install_select_release_placeholder),
                                 style = AppTheme.typography.bodyMedium
                             )
                             MillenniumIcon(
@@ -184,14 +193,14 @@ fun PluginInstallDialog(
             selectedRelease?.let { release ->
                 if (release.prerelease) {
                     Text(
-                        "Pre-release",
+                        stringResource(Res.string.plugin_install_prerelease),
                         style = AppTheme.typography.labelSmall,
                         color = AppTheme.colors.error
                     )
                 }
                 if (!release.body.isNullOrBlank()) {
                     Text(
-                        "Release Notes",
+                        stringResource(Res.string.plugin_install_release_notes),
                         style = AppTheme.typography.labelMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = AppTheme.colors.onSurface
@@ -225,7 +234,7 @@ fun PluginInstallDialog(
                 onClick = { selectedRelease?.let { onInstall(it) } },
                 enabled = selectedRelease != null && !isLoadingReleases
             ) {
-                Text("Install")
+                Text(stringResource(Res.string.plugin_action_install))
             }
         }
     }

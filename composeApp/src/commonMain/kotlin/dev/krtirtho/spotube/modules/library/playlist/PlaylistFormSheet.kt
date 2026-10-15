@@ -67,6 +67,26 @@ import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.ByteString.Companion.toByteString
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.library_playlist_form_change_image
+import spotube.composeapp.generated.resources.library_playlist_form_collaborative
+import spotube.composeapp.generated.resources.library_playlist_form_collaborative_description
+import spotube.composeapp.generated.resources.library_playlist_form_cover_content_description
+import spotube.composeapp.generated.resources.library_playlist_form_cover_image
+import spotube.composeapp.generated.resources.library_playlist_form_create
+import spotube.composeapp.generated.resources.library_playlist_form_create_title
+import spotube.composeapp.generated.resources.library_playlist_form_description_label
+import spotube.composeapp.generated.resources.library_playlist_form_description_placeholder
+import spotube.composeapp.generated.resources.library_playlist_form_edit_title
+import spotube.composeapp.generated.resources.library_playlist_form_name_label
+import spotube.composeapp.generated.resources.library_playlist_form_name_placeholder
+import spotube.composeapp.generated.resources.library_playlist_form_no_image
+import spotube.composeapp.generated.resources.library_playlist_form_pick_image
+import spotube.composeapp.generated.resources.library_playlist_form_public
+import spotube.composeapp.generated.resources.library_playlist_form_public_description
+import spotube.composeapp.generated.resources.common_cancel
+import spotube.composeapp.generated.resources.common_save
 
 data class PlaylistFormData(
     val name: String = "",
@@ -146,7 +166,7 @@ fun PlaylistFormSheet(
         MillenniumDialog(
             visible = true,
             onDismissRequest = onDismiss,
-            title = if (isEditing) "Edit Playlist" else "Create Playlist",
+            title = stringResource(if (isEditing) Res.string.library_playlist_form_edit_title else Res.string.library_playlist_form_create_title),
             modifier = modifier
         ) {
             PlaylistFormFields(
@@ -168,13 +188,13 @@ fun PlaylistFormSheet(
                     },
                     enabled = name.isNotBlank()
                 ) {
-                    Text(if (isEditing) "Save" else "Create")
+                    Text(stringResource(if (isEditing) Res.string.common_save else Res.string.library_playlist_form_create))
                 }
                 MillenniumButton(
                     onClick = onDismiss,
                     style = MillenniumButtonStyle.Secondary
                 ) {
-                    Text("Cancel")
+                    Text(stringResource(Res.string.common_cancel))
                 }
             }
         }
@@ -187,7 +207,7 @@ fun PlaylistFormSheet(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Text(
-                    text = if (isEditing) "Edit Playlist" else "Create Playlist",
+                    text = stringResource(if (isEditing) Res.string.library_playlist_form_edit_title else Res.string.library_playlist_form_create_title),
                     style = AppTheme.typography.headlineSmall,
                     modifier = Modifier.padding(bottom = 16.dp)
                 )
@@ -211,7 +231,7 @@ fun PlaylistFormSheet(
                         onClick = onDismiss,
                         style = MillenniumButtonStyle.Secondary
                     ) {
-                        Text("Cancel")
+                        Text(stringResource(Res.string.common_cancel))
                     }
                     MillenniumButton(
                         onClick = {
@@ -220,7 +240,7 @@ fun PlaylistFormSheet(
                         },
                         enabled = name.isNotBlank()
                     ) {
-                        Text(if (isEditing) "Save" else "Create")
+                        Text(stringResource(if (isEditing) Res.string.common_save else Res.string.library_playlist_form_create))
                     }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
@@ -249,16 +269,16 @@ private fun PlaylistFormFields(
     ) {
         MillenniumTextField(
             state = nameState,
-            label = "Name",
+            label = stringResource(Res.string.library_playlist_form_name_label),
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Playlist name"
+            placeholder = stringResource(Res.string.library_playlist_form_name_placeholder)
         )
 
         MillenniumTextField(
             state = descriptionState,
-            label = "Description",
+            label = stringResource(Res.string.library_playlist_form_description_label),
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Description (optional)"
+            placeholder = stringResource(Res.string.library_playlist_form_description_placeholder)
         )
 
         Row(
@@ -270,9 +290,9 @@ private fun PlaylistFormFields(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text("Public", style = AppTheme.typography.bodyLarge)
+                Text(stringResource(Res.string.library_playlist_form_public), style = AppTheme.typography.bodyLarge)
                 Text(
-                    "Anyone can see this playlist",
+                    stringResource(Res.string.library_playlist_form_public_description),
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colors.onSurfaceVariant
                 )
@@ -289,9 +309,9 @@ private fun PlaylistFormFields(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
-                Text("Collaborative", style = AppTheme.typography.bodyLarge)
+                Text(stringResource(Res.string.library_playlist_form_collaborative), style = AppTheme.typography.bodyLarge)
                 Text(
-                    "Others can add tracks to this playlist",
+                    stringResource(Res.string.library_playlist_form_collaborative_description),
                     style = AppTheme.typography.bodySmall,
                     color = AppTheme.colors.onSurfaceVariant
                 )
@@ -303,7 +323,7 @@ private fun PlaylistFormFields(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("Cover Image", style = AppTheme.typography.bodyLarge)
+            Text(stringResource(Res.string.library_playlist_form_cover_image), style = AppTheme.typography.bodyLarge)
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -317,7 +337,7 @@ private fun PlaylistFormFields(
                     when {
                         imagePreviewUrl != null -> AsyncImage(
                             model = imagePreviewUrl,
-                            contentDescription = "Playlist cover",
+                            contentDescription = stringResource(Res.string.library_playlist_form_cover_content_description),
                             modifier = Modifier.size(64.dp),
                             contentScale = ContentScale.Crop
                         )
@@ -332,7 +352,7 @@ private fun PlaylistFormFields(
 
                         else -> {
                             Text(
-                                "No image",
+                                stringResource(Res.string.library_playlist_form_no_image),
                                 style = AppTheme.typography.labelSmall,
                                 color = AppTheme.colors.onSurfaceVariant
                             )
@@ -340,7 +360,7 @@ private fun PlaylistFormFields(
                     }
                 }
                 MillenniumButton(onClick = onPickImage) {
-                    Text(if (imageBase64.isNotBlank() || imagePreviewUrl != null) "Change Image" else "Pick Image")
+                    Text(stringResource(if (imageBase64.isNotBlank() || imagePreviewUrl != null) Res.string.library_playlist_form_change_image else Res.string.library_playlist_form_pick_image))
                 }
             }
         }

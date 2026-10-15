@@ -27,12 +27,12 @@ import dev.krtirtho.spotube.resources.iconsax.User
 import org.jetbrains.compose.resources.StringResource
 import spotube.composeapp.generated.resources.*
 
-enum class LibraryTab(val title: String, val icon: ImageVector) {
-    Playlists("Playlists", Iconsax.IconsaxMusicDashboard),
-    Albums("Albums", Iconsax.IconsaxCd),
-    Artists("Artists", Iconsax.User),
-    LocalTracks("Local Tracks", Iconsax.IconsaxMusicLibrary),
-    Downloads("Downloads", Iconsax.IconsaxDirectboxReceive);
+enum class LibraryTab(val icon: ImageVector) {
+    Playlists(Iconsax.IconsaxMusicDashboard),
+    Albums(Iconsax.IconsaxCd),
+    Artists(Iconsax.User),
+    LocalTracks(Iconsax.IconsaxMusicLibrary),
+    Downloads(Iconsax.IconsaxDirectboxReceive);
 
     val titleResource: StringResource
         get() = when (this) {

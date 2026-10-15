@@ -65,6 +65,8 @@ import compose.icons.feathericons.AlertCircle
 import compose.icons.feathericons.Copy
 import compose.icons.feathericons.Maximize2
 import compose.icons.feathericons.RefreshCw
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.*
 
 @Composable
 fun ErrorDisplay(
@@ -87,14 +89,14 @@ fun ErrorDisplay(
             tint = AppTheme.colors.error.copy(alpha = 0.7f))
 
         Text(
-            text = "We're Truly Sorry",
+            text = stringResource(Res.string.error_title),
             style = AppTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
             color = AppTheme.colors.onSurface,
             textAlign = TextAlign.Center)
 
         Text(
-            text = "Something isn't working right now. Your experience matters to us, and we're doing our best to fix this. Please try again or check the error details below.",
+            text = stringResource(Res.string.error_description),
             style = AppTheme.typography.bodyMedium,
             color = AppTheme.colors.onSurfaceVariant,
             textAlign = TextAlign.Center,
@@ -112,7 +114,7 @@ fun ErrorDisplay(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Error Details",
+                        text = stringResource(Res.string.error_details),
                         style = AppTheme.typography.labelMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = AppTheme.colors.onSurfaceVariant)
@@ -127,7 +129,7 @@ fun ErrorDisplay(
                             style = MillenniumIconButtonStyle.Quiet) {
                             MillenniumIcon(
                                 imageVector = FeatherIcons.Copy,
-                                contentDescription = "Copy to clipboard",
+                                contentDescription = stringResource(Res.string.error_copy_to_clipboard),
                                 modifier = Modifier.size(16.dp))
                         }
 
@@ -137,7 +139,7 @@ fun ErrorDisplay(
                             style = MillenniumIconButtonStyle.Quiet) {
                             MillenniumIcon(
                                 imageVector = FeatherIcons.Maximize2,
-                                contentDescription = "View full log",
+                                contentDescription = stringResource(Res.string.error_view_full_log),
                                 modifier = Modifier.size(16.dp))
                         }
                     }
@@ -170,7 +172,7 @@ fun ErrorDisplay(
                         imageVector = FeatherIcons.RefreshCw,
                         contentDescription = null,
                         modifier = Modifier.padding(end = 8.dp).size(18.dp))
-                    Text("Retry")
+                    Text(stringResource(Res.string.common_retry))
                 }
             }
         }
@@ -198,7 +200,7 @@ private fun ErrorLogDialog(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically) {
             Text(
-                text = "Full Error Log",
+                text = stringResource(Res.string.error_full_log_title),
                 style = AppTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold)
 
@@ -209,7 +211,7 @@ private fun ErrorLogDialog(
                 style = MillenniumIconButtonStyle.Quiet) {
                 MillenniumIcon(
                     imageVector = FeatherIcons.Copy,
-                    contentDescription = "Copy to clipboard")
+                    contentDescription = stringResource(Res.string.error_copy_to_clipboard))
             }
         }
         Box(
@@ -236,7 +238,7 @@ private fun ErrorLogDialog(
             MillenniumButton(
                 onClick = onDismiss,
                 style = MillenniumButtonStyle.Quiet) {
-                Text("Close")
+                Text(stringResource(Res.string.common_close))
             }
         }
     }

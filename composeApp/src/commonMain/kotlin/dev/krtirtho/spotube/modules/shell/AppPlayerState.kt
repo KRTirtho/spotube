@@ -27,6 +27,11 @@ import dev.krtirtho.spotube.core.audioplayer.PlayerState
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
+import org.jetbrains.compose.resources.stringResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.player_fallback_artists
+import spotube.composeapp.generated.resources.player_fallback_title
+import spotube.composeapp.generated.resources.player_unknown_album
 
 internal data class PlayerArtist(
     val id: String?,
@@ -89,14 +94,17 @@ internal fun rememberPlayerUiState(
     val isShuffling by audioPlayer.shuffleModeFlow.collectAsState()
     val volume by audioPlayer.volumeFlow.collectAsState()
     val metadataDuration = (currentQueueEntry?.durationInMilliseconds() ?: 0L).milliseconds
+    val fallbackTitle = stringResource(Res.string.player_fallback_title)
+    val fallbackArtists = stringResource(Res.string.player_fallback_artists)
+    val unknownAlbum = stringResource(Res.string.player_unknown_album)
 
     val state = PlayerUiState(
         queue = queue,
         currentQueueEntry = currentQueueEntry,
-        title = currentQueueEntry?.displayTitle().orEmpty().ifBlank { "No-op track title" },
-        artists = currentQueueEntry?.displayArtists().orEmpty().ifBlank { "No-op artists" },
+        title = currentQueueEntry?.displayTitle().orEmpty().ifBlank { fallbackTitle },
+        artists = currentQueueEntry?.displayArtists().orEmpty().ifBlank { fallbackArtists },
         artistList = currentQueueEntry?.displayArtistList().orEmpty(),
-        album = currentQueueEntry?.displayAlbum().orEmpty(),
+        album = currentQueueEntry?.displayAlbum(unknownAlbum).orEmpty(),
         coverUrl = currentQueueEntry?.coverUrl().orEmpty(),
         position = position,
         actualDuration = duration,
@@ -134,9 +142,9 @@ private fun QueueEntry.displayArtistList(): List<PlayerArtist> {
     }
 }
 
-private fun QueueEntry.displayAlbum(): String {
+private fun QueueEntry.displayAlbum(unknownAlbum: String): String {
     return when (this) {
-        is QueueEntry.StreamingTrack -> track.album?.title ?: "Unknown Album"
+        is QueueEntry.StreamingTrack -> track.album?.title ?: unknownAlbum
         is QueueEntry.LocalTrack -> album.orEmpty()
     }
 }

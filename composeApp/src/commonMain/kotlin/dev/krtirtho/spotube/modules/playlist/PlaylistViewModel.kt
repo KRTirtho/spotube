@@ -50,6 +50,9 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
+import org.jetbrains.compose.resources.getString
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.common_unknown_error
 
 sealed interface PlaylistScreenState {
     data object Loading : PlaylistScreenState
@@ -174,7 +177,7 @@ class PlaylistViewModel(
             nextPagination = tracksResult?.nextPagination)
     }.onFailure { e ->
         logger.e(e) { "Failed to load playlist" }
-        _state.value = PlaylistScreenState.Error(e.message ?: "Unknown error")
+        _state.value = PlaylistScreenState.Error(e.message ?: getString(Res.string.common_unknown_error))
     }
 
     suspend fun loadMoreTracks() = runCatching {
@@ -193,7 +196,7 @@ class PlaylistViewModel(
         }
     }.onFailure { e ->
         logger.e(e) { "Failed to load more tracks" }
-        _state.value = PlaylistScreenState.Error(e.message ?: "Unknown error")
+        _state.value = PlaylistScreenState.Error(e.message ?: getString(Res.string.common_unknown_error))
     }
 
     fun loadNextTracksPage() {
