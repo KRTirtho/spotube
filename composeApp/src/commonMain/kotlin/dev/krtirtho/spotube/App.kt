@@ -37,6 +37,9 @@ import dev.krtirtho.spotube.core.DebugConfig
 import dev.krtirtho.spotube.core.navigation.Navigator
 import dev.krtirtho.spotube.core.navigation.Routes
 import dev.krtirtho.spotube.core.navigation.TOP_LEVEL_ROUTES
+import dev.krtirtho.spotube.core.navigation.navPopTransitionSpec
+import dev.krtirtho.spotube.core.navigation.navPredictivePopTransitionSpec
+import dev.krtirtho.spotube.core.navigation.navPushTransitionSpec
 import dev.krtirtho.spotube.core.navigation.rememberNavigationState
 import dev.krtirtho.spotube.core.navigation.toEntries
 import dev.krtirtho.spotube.core.ui.component.LocalSharedTransitionScope
@@ -210,7 +213,10 @@ fun App(
                                     NavDisplay(
                                         modifier = Modifier.fillMaxSize(),
                                         onBack = navigator::pop,
-                                        entries = navigationState.toEntries(koinEntryProvider())
+                                        entries = navigationState.toEntries(koinEntryProvider()),
+                                        transitionSpec = navPushTransitionSpec,
+                                        popTransitionSpec = navPopTransitionSpec,
+                                        predictivePopTransitionSpec = navPredictivePopTransitionSpec
                                     )
                                 }
                             }
