@@ -6,23 +6,23 @@ enclosed in quotation marks, you should use an editor that supports UTF-8, not t
     <!-- == PACKAGE SPECIFIC SECTION == -->
     <id>spotube</id>
     <version>%{{SPOTUBE_VERSION}}%</version>
-    <packageSourceUrl>https://github.com/KRTirtho/spotube/tree/master/choco-struct</packageSourceUrl>
+    <packageSourceUrl>https://github.com/team-spotube/spotube/tree/master/choco-struct</packageSourceUrl>
     <owners>Kingkor Roy Tirtho</owners>
     <!-- ============================== -->
 
     <!-- == SOFTWARE SPECIFIC SECTION == -->
     <title>spotube (Install)</title>
     <authors>Kingkor Roy Tirtho</authors>
-    <projectUrl>https://spotube.cc</projectUrl>
+    <projectUrl>https://spotube.org</projectUrl>
     <iconUrl>
-      https://rawcdn.githack.com/KRTirtho/spotube/7edb0bb834eb18c05551e30a891720a6abf53dbe/assets/branding/spotube-logo.png</iconUrl>
+      https://rawcdn.githack.com/team-spotube/spotube/7edb0bb834eb18c05551e30a891720a6abf53dbe/assets/branding/spotube-logo.png</iconUrl>
     <copyright>2022 Spotube</copyright>
     <!-- If there is a license Url available, it is required for the community feed -->
-    <licenseUrl>https://github.com/KRTirtho/spotube/blob/master/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/team-spotube/spotube/blob/master/LICENSE</licenseUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <projectSourceUrl>https://github.com/KRTirtho/spotube</projectSourceUrl>
-    <docsUrl>https://spotube.cc</docsUrl>
-    <bugTrackerUrl>https://github.com/KRTirtho/spotube/issues/new</bugTrackerUrl>
+    <projectSourceUrl>https://github.com/team-spotube/spotube</projectSourceUrl>
+    <docsUrl>https://spotube.org</docsUrl>
+    <bugTrackerUrl>https://github.com/team-spotube/spotube/issues/new</bugTrackerUrl>
     <tags>spotube music audio youtube flutter</tags>
     <summary>🎧 Open source music client that doesn't require Premium nor uses Electron! Available
       for both desktop &amp; mobile! </summary>
@@ -47,7 +47,7 @@ enclosed in quotation marks, you should use an editor that supports UTF-8, not t
       - Time synced lyrics
       - Downloadable tracks
     </description>
-    <releaseNotes>https://github.com/KRTirtho/spotube/releases/tag/v%{{SPOTUBE_VERSION}}%</releaseNotes>
+    <releaseNotes>https://github.com/team-spotube/spotube/releases/tag/v%{{SPOTUBE_VERSION}}%</releaseNotes>
   </metadata>
   <files>
     <file src="tools\**" target="tools" />

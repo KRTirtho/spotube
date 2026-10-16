@@ -40,11 +40,11 @@ plugins {
     kotlin("plugin.atomicfu") version libs.versions.kotlin
 }
 
-val bundleId = "dev.krtirtho.spotube"
+val bundleId = "org.spotube.spotube"
 val version = "6.0.0"
 val buildNumber = 46
 val targetName = "Spotube"
-val homePageUrl = "https://spotube.cc"
+val homePageUrl = "https://spotube.org"
 val repositoryUrl = "https://github.com/team-spotube/spotube"
 val appVersionName = version
 val appBuildNumber = buildNumber
@@ -55,7 +55,7 @@ val generatedAppInfoDir = layout.buildDirectory.dir("generated/appBuildInfo/comm
 val generateAppBuildInfo by tasks.registering(Copy::class) {
     description = "Generate AppBuildInfo.kt"
     from(layout.projectDirectory.file("src/commonMain/templates/AppBuildInfo.kt.template"))
-    into(layout.buildDirectory.dir("generated/appBuildInfo/commonMain/kotlin/dev/krtirtho/spotube"))
+    into(layout.buildDirectory.dir("generated/appBuildInfo/commonMain/kotlin/org/spotube/spotube"))
     rename("AppBuildInfo.kt.template", "AppBuildInfo.kt")
     expand(
         mapOf(
@@ -287,7 +287,7 @@ kotlin {
 }
 
 android {
-    namespace = "dev.krtirtho.spotube"
+    namespace = "org.spotube.spotube"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
@@ -350,7 +350,7 @@ dependencies {
 }
 
 nucleus.application {
-    mainClass = "dev.krtirtho.spotube.MainKt"
+    mainClass = "org.spotube.spotube.MainKt"
 
     jvmArgs += listOf(
         "--enable-native-access=ALL-UNNAMED", // need for JNA for compose-webview (wry) to work

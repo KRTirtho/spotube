@@ -23,7 +23,7 @@ plugins {
     alias(libs.plugins.zipline.gradle.plugin)
 }
 
-group = "dev.krtirtho.spotube"
+group = "org.spotube.spotube"
 version = "0.1.0"
 
 kotlin {
@@ -32,7 +32,7 @@ kotlin {
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "dev.krtirtho.spotube.plugin_interfaces"
+        namespace = "org.spotube.spotube.plugin_interfaces"
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
@@ -105,7 +105,7 @@ mavenPublishing {
         name = "plugin_interfaces"
         description = "Plugin interfaces for Spotube"
         inceptionYear = "2026"
-        url = "https://github.com/KRTirtho/spotube"
+        url = "https://github.com/team-spotube/spotube"
         licenses {
             license {
                 name = "AGPL-3.0-or-later"
@@ -117,13 +117,13 @@ mavenPublishing {
             developer {
                 id = "KRTirtho"
                 name = "Kingkor Roy Tirtho"
-                url = "https://github.com/KRTirtho/"
+                url = "https://github.com/team-spotube/"
             }
         }
         scm {
-            url = "https://github.com/KRTirtho/spotube"
-            connection = "scm:git:git://github.com/KRTirtho/spotube.git"
-            developerConnection = "scm:git:ssh://git@github.com/KRTirtho/spotube.git"
+            url = "https://github.com/team-spotube/spotube"
+            connection = "scm:git:git://github.com/team-spotube/spotube.git"
+            developerConnection = "scm:git:ssh://git@github.com/team-spotube/spotube.git"
         }
     }
 }

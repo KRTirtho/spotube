@@ -5,9 +5,9 @@
 - `:composeApp` uses custom KMP source sets (`mobileMain`, `androidJvmMain`) with explicit `dependsOn`; Gradle prints "Default Kotlin Hierarchy Template Not Applied Correctly" warning. Treat as known/expected.
 
 ## Real app entrypoints
-- Desktop/JVM: `composeApp/src/jvmMain/kotlin/dev/krtirtho/spotube/main.kt` (`mainClass = dev.krtirtho.spotube.MainKt`).
-- Android: `composeApp/src/androidMain/kotlin/dev/krtirtho/spotube/MainActivity.kt`.
-- iOS bridge: `composeApp/src/iosMain/kotlin/dev/krtirtho/spotube/MainViewController.kt` and `iosApp/iosApp/ContentView.swift`.
+- Desktop/JVM: `composeApp/src/jvmMain/kotlin/org/spotube/spotube/main.kt` (`mainClass = org.spotube.spotube.MainKt`).
+- Android: `composeApp/src/androidMain/kotlin/org/spotube/spotube/MainActivity.kt`.
+- iOS bridge: `composeApp/src/iosMain/kotlin/org/spotube/spotube/MainViewController.kt` and `iosApp/iosApp/ContentView.swift`.
 
 ## High-value commands
 - Use Gradle wrapper (`./gradlew` or `./gradlew.bat`) only.
@@ -24,7 +24,7 @@
 
 ## Codegen and plugin packaging
 - JS plugin bundles: `:js_plugin_example:packageDevelopmentPlugin` and `:js_plugin_example:packageProductionPlugin`. Output is `.smplug` files in `js_plugin_example/build/distributions/`.
-- Zipline plugin entrypoint: `mainFunction = "dev.krtirtho.js_plugin_example.main"` in `js_plugin_example/build.gradle.kts`. Plugin metadata from `js_plugin_example/plugin.json`.
+- Zipline plugin entrypoint: `mainFunction = "org.spotube.js_plugin_example.main"` in `js_plugin_example/build.gradle.kts`. Plugin metadata from `js_plugin_example/plugin.json`.
 
 ## Plugin architecture
 - `plugin_interfaces` exports `zipline.core` and `semver` as API. `composeApp` depends on it for the plugin system.

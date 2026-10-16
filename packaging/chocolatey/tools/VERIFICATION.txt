@@ -5,10 +5,10 @@ in verifying that this package's contents are trustworthy.
 1. The embedded files are also available as a release in GitHub.
 
 Please go to releases page
-https://github.com/KRTirtho/spotube/releases
+https://github.com/team-spotube/spotube/releases
 
 Download same version as this choco package (example for v%{{SPOTUBE_VERSION}}%)
-https://github.com/KRTirtho/spotube/releases/tag/v%{{SPOTUBE_VERSION}}%
+https://github.com/team-spotube/spotube/releases/tag/v%{{SPOTUBE_VERSION}}%
 
 1. get hashes. Run:
 powershell -command Get-FileHash tools\Spotube-windows-x86_64-setup.exe
