@@ -18,6 +18,12 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.krtirtho.spotube.modules.settings.LocalMediaFoldersViewModel
+import io.github.vinceglb.filekit.dialogs.compose.rememberDirectoryPickerLauncher
+import io.github.vinceglb.filekit.path
+import org.spotube.millennium.composables.MillenniumDialog
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
@@ -252,6 +258,27 @@ private fun LocalMediaFolderEditorRow(
             ) {
                 MillenniumIcon(Iconsax.IconsaxTrash, removeLabel, modifier = Modifier.size(16.dp))
             }
+        }
+    }
+}
+
+/** Renders the "manage local folders" dialog (folder picker included) while [viewModel] has it open.
+ * Shared by Settings and the Local Tracks screen; callers trigger it via [LocalMediaFoldersViewModel.open]. */
+@Composable
+fun LocalMediaFoldersDialogHost(viewModel: LocalMediaFoldersViewModel) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val pickerLauncher =
+        rememberDirectoryPickerLauncher { directory -> viewModel.addFolder(directory?.path) }
+    if (state.isOpen) {
+        MillenniumDialog(
+            visible = true,
+            onDismissRequest = viewModel::dismiss,
+            title = stringResource(Res.string.settings_local_media_folders_title)
+        ) {
+            LocalMediaFoldersEditorContent(
+                state, { pickerLauncher.launch() }, viewModel::removeFolder,
+                viewModel::save, viewModel::dismiss
+            )
         }
     }
 }

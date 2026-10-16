@@ -70,6 +70,7 @@ import dev.krtirtho.spotube.modules.plugin.AudioPluginSource
 import dev.krtirtho.spotube.modules.plugin.PluginManager
 import dev.krtirtho.spotube.modules.plugin.PluginProvider
 import dev.krtirtho.spotube.modules.plugin.PluginViewModel
+import dev.krtirtho.spotube.modules.plugin.guard.MetadataPluginGuardViewModel
 import dev.krtirtho.spotube.modules.plugin.ScrobblePluginSource
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksRepository
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
@@ -138,6 +139,7 @@ val sharedModules = module {
         bind<ScrobblePluginSource>()
     }
     viewModelOf(::PluginViewModel)
+    viewModelOf(::MetadataPluginGuardViewModel)
 
     // Settings
     singleOf(::SettingsRepository) { bind<UserSettingsSource>() }

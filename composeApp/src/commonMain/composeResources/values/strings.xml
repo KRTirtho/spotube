@@ -68,6 +68,8 @@
     <string name="library_local_permission_description">Allow audio access to browse music on your device.</string>
     <string name="library_local_grant_access">Grant access</string>
     <string name="library_local_empty_folders">No local folders found</string>
+    <string name="library_local_empty_folders_description">Add a folder with music to play it right here. No plugin needed.</string>
+    <string name="library_local_add_folder">Add folder</string>
     <string name="library_local_empty_tracks">No tracks in this folder</string>
     <string name="library_local_no_results">No matching folders or tracks</string>
     <string name="library_local_refresh_failed">Failed to refresh local media</string>
@@ -263,6 +265,16 @@
     <string name="plugin_error_download_failed">Failed to download plugin</string>
     <string name="plugin_empty_title">No plugins installed yet</string>
     <string name="plugin_empty_subtitle">Paste a download URL or pick a file above.</string>
+    <string name="no_metadata_plugin_title">No metadata plugin selected</string>
+    <string name="no_metadata_plugin_description_install">Spotube needs a metadata plugin to browse, search and show your music. Install one to get started.</string>
+    <string name="no_metadata_plugin_description_select">You already have plugins installed, but none is set as your metadata source. Pick one to start browsing.</string>
+    <string name="no_metadata_plugin_step_discover">Discover a metadata plugin</string>
+    <string name="no_metadata_plugin_step_install">Review its permissions and install it</string>
+    <string name="no_metadata_plugin_step_select">Select it as your metadata source</string>
+    <string name="no_metadata_plugin_action_install">Install a plugin</string>
+    <string name="no_metadata_plugin_action_select">Choose a plugin</string>
+    <string name="no_metadata_plugin_action_local">Play local music</string>
+    <string name="no_metadata_plugin_local_hint">Your local tracks and downloads work without a plugin.</string>
     <plurals name="plugin_installed_plugins_count">
         <item quantity="one">%1$d plugin installed</item>
         <item quantity="other">%1$d plugins installed</item>

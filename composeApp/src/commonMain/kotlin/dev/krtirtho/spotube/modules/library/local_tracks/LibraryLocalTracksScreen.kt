@@ -36,6 +36,9 @@ import dev.krtirtho.spotube.core.ui.component.cards.MediaEmptyState
 import dev.krtirtho.spotube.core.ui.component.cards.PlayableListTile
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import dev.krtirtho.spotube.modules.library.local_tracks.media.rememberLocalMediaPermissionState
+import dev.krtirtho.spotube.modules.settings.LocalMediaFoldersViewModel
+import dev.krtirtho.spotube.modules.settings.components.LocalMediaFoldersDialogHost
+import dev.krtirtho.spotube.resources.iconsax.IconsaxFolderAdd
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxFolderOpen
@@ -58,7 +61,8 @@ import spotube.composeapp.generated.resources.*
 @Composable
 fun LibraryLocalTracksScreen(
     modifier: Modifier = Modifier,
-    viewModel: LibraryLocalTracksViewModel = koinViewModel()
+    viewModel: LibraryLocalTracksViewModel = koinViewModel(),
+    foldersViewModel: LocalMediaFoldersViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val permission = rememberLocalMediaPermissionState()
@@ -66,8 +70,10 @@ fun LibraryLocalTracksScreen(
     LaunchedEffect(permission.isGranted) { viewModel.onPermissionChanged(permission.isGranted) }
     LocalTracksContent(
         state, viewModel::openFolder, viewModel::playTrack, viewModel::navigateUp,
-        viewModel::playCurrentFolder, permission.requestPermission, modifier
+        viewModel::playCurrentFolder, permission.requestPermission, modifier,
+        onManageFolders = foldersViewModel::open
     )
+    LocalMediaFoldersDialogHost(foldersViewModel)
 }
 
 @Composable
@@ -78,14 +84,15 @@ internal fun LocalTracksContent(
     onNavigateUp: () -> Unit,
     onPlayFolder: () -> Unit,
     onRequestPermission: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onManageFolders: () -> Unit = {}
 ) {
     val inset = LocalAppShellBottomInset.current
     Box(modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
         Column(
             Modifier.widthIn(max = 960.dp).fillMaxSize()
         ) {
-            LocalTracksBreadcrumb(state, onNavigateUp, onPlayFolder)
+            LocalTracksBreadcrumb(state, onNavigateUp, onPlayFolder, onManageFolders = onManageFolders)
             when {
                 !state.canAccessMedia -> MediaEmptyState(
                     Iconsax.IconsaxFolderOpen,
@@ -143,16 +150,35 @@ internal fun LocalTracksContent(
                     }
                 }
 
-                else -> MediaEmptyState(
-                    Iconsax.IconsaxFolderOpen,
-                    state.error ?: stringResource(
-                        when {
-                            state.query.isNotBlank() -> Res.string.library_local_no_results
-                            state.currentFolderPath == null -> Res.string.library_local_empty_folders
-                            else -> Res.string.library_local_empty_tracks
-                        }
-                    ), Modifier.padding(bottom = inset)
-                )
+                else -> {
+                    val noFolders = state.currentFolderPath == null && state.query.isBlank()
+                    MediaEmptyState(
+                        Iconsax.IconsaxFolderOpen,
+                        state.error ?: stringResource(
+                            when {
+                                state.query.isNotBlank() -> Res.string.library_local_no_results
+                                state.currentFolderPath == null -> Res.string.library_local_empty_folders
+                                else -> Res.string.library_local_empty_tracks
+                            }
+                        ), Modifier.padding(bottom = inset),
+                        description = if (noFolders && state.error == null)
+                            stringResource(Res.string.library_local_empty_folders_description) else null,
+                        action = if (noFolders) ({
+                            MillenniumButton(onClick = onManageFolders) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    MillenniumIcon(
+                                        Iconsax.IconsaxFolderAdd, null,
+                                        modifier = Modifier.size(18.dp)
+                                    )
+                                    Text(stringResource(Res.string.library_local_add_folder))
+                                }
+                            }
+                        }) else null
+                    )
+                }
             }
         }
     }
@@ -163,7 +189,8 @@ internal fun LocalTracksBreadcrumb(
     state: LibraryLocalTracksState,
     onNavigateUp: () -> Unit,
     onPlayFolder: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onManageFolders: (() -> Unit)? = null
 ) {
     val backDescription = stringResource(Res.string.library_local_back)
     Row(
@@ -238,6 +265,16 @@ internal fun LocalTracksBreadcrumb(
             maxLines = 1
         )
         if (state.isRefreshing) MillenniumIndeterminateProgress(Modifier.size(14.dp))
+        if (state.currentFolderPath == null && onManageFolders != null) MillenniumIconButton(
+            onClick = onManageFolders,
+            modifier = Modifier.size(28.dp), style = MillenniumIconButtonStyle.Quiet
+        ) {
+            MillenniumIcon(
+                Iconsax.IconsaxFolderAdd,
+                stringResource(Res.string.library_local_add_folder),
+                modifier = Modifier.size(14.dp)
+            )
+        }
         if (state.currentFolderPath != null) MillenniumIconButton(
             onClick = onPlayFolder, enabled = state.canPlayFolder,
             modifier = Modifier.size(28.dp), style = MillenniumIconButtonStyle.Quiet

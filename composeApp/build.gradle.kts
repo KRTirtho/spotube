@@ -336,6 +336,14 @@ android {
 
 }
 
+// ditchoom's socket-quic-quiche ships libquiche_jni.so with 4 KB LOAD segment alignment
+// (not 16 KB compatible), even in the latest release. It is only an optional QUIC transport
+// pulled in transitively by mqtt-client, so drop it on Android until upstream fixes it.
+configurations.matching { it.name.startsWith("debug") || it.name.startsWith("release") }.configureEach {
+    exclude(group = "com.ditchoom", module = "socket-quic-quiche")
+    exclude(group = "com.ditchoom", module = "socket-quic-quiche-android")
+}
+
 dependencies {
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     debugImplementation(libs.compose.uiTooling)

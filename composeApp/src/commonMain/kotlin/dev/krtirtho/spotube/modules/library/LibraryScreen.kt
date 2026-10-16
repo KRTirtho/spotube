@@ -57,6 +57,7 @@ import dev.krtirtho.spotube.resources.iconsax.IconsaxCloseSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxRefreshRight
 import dev.krtirtho.spotube.resources.iconsax.IconsaxSearchBroken
 import org.jetbrains.compose.resources.StringResource
+import dev.krtirtho.spotube.modules.plugin.guard.MetadataPluginGuard
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import org.spotube.millennium.adaptive.WindowBreakpoints
@@ -116,14 +117,20 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
         }
         Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
             when (state.currentTab) {
-                LibraryTab.Playlists -> LibraryPlaylistsScreen(
-                    showCreatePlaylist = state.showCreatePlaylist,
-                    onDismissCreatePlaylist = libraryState::dismissCreatePlaylist,
-                    viewMode = viewMode
-                )
+                LibraryTab.Playlists -> MetadataPluginGuard(showTopBar = false) {
+                    LibraryPlaylistsScreen(
+                        showCreatePlaylist = state.showCreatePlaylist,
+                        onDismissCreatePlaylist = libraryState::dismissCreatePlaylist,
+                        viewMode = viewMode
+                    )
+                }
 
-                LibraryTab.Albums -> LibraryAlbumsScreen(viewMode = viewMode)
-                LibraryTab.Artists -> LibraryArtistsScreen(viewMode = viewMode)
+                LibraryTab.Albums -> MetadataPluginGuard(showTopBar = false) {
+                    LibraryAlbumsScreen(viewMode = viewMode)
+                }
+                LibraryTab.Artists -> MetadataPluginGuard(showTopBar = false) {
+                    LibraryArtistsScreen(viewMode = viewMode)
+                }
                 LibraryTab.LocalTracks -> LibraryLocalTracksScreen()
                 LibraryTab.Downloads -> DownloadsScreen()
             }

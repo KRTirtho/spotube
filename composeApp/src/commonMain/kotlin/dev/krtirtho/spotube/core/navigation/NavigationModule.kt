@@ -29,6 +29,7 @@ import dev.krtirtho.spotube.modules.library.LibraryScreen
 import dev.krtirtho.spotube.modules.lyrics.LyricsScreen
 import dev.krtirtho.spotube.modules.playlist.PlaylistScreen
 import dev.krtirtho.spotube.modules.plugin.PluginScreen
+import dev.krtirtho.spotube.modules.plugin.guard.MetadataPluginGuard
 import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksScreen
 import dev.krtirtho.spotube.modules.search.SearchScreen
@@ -101,12 +102,17 @@ sealed interface Routes : NavKey {
 val navigationModule = module {
     singleOf(::NavigationCommands)
     navigation<Routes.Home> {
-        HomeScreen(viewModel = koinViewModel())
+        MetadataPluginGuard {
+            HomeScreen(viewModel = koinViewModel())
+        }
     }
     navigation<Routes.Search> {
-        SearchScreen()
+        MetadataPluginGuard {
+            SearchScreen()
+        }
     }
     navigation<Routes.Library> {
+        // Not guarded as a whole: Local tracks and Downloads work without a plugin.
         LibraryScreen()
     }
     navigation<Routes.Settings> {
@@ -117,49 +123,57 @@ val navigationModule = module {
     }
     navigation<Routes.WebView> {}
     navigation<Routes.Playlist> {
-        PlaylistScreen(
-            playlistId = it.playlistId,
-            viewModel = koinViewModel(
-                key = it.playlistId,
-                parameters = { parametersOf(it.playlistId) }
-            ),
-            audioPlayerQueue = get(),
-            audioPlayer = get(),
-            navigationCommands = get())
+        MetadataPluginGuard(backButton = true) {
+            PlaylistScreen(
+                playlistId = it.playlistId,
+                viewModel = koinViewModel(
+                    key = it.playlistId,
+                    parameters = { parametersOf(it.playlistId) }
+                ),
+                audioPlayerQueue = get(),
+                audioPlayer = get(),
+                navigationCommands = get())
+        }
     }
     navigation<Routes.Artist> {
-        ArtistScreen(
-            viewModel = koinViewModel(
-                key = it.artistId,
-                parameters = { parametersOf(it.artistId) }
-            ),
-            audioPlayerQueue = get(),
-            audioPlayer = get(),
-            navigationCommands = get())
+        MetadataPluginGuard(backButton = true) {
+            ArtistScreen(
+                viewModel = koinViewModel(
+                    key = it.artistId,
+                    parameters = { parametersOf(it.artistId) }
+                ),
+                audioPlayerQueue = get(),
+                audioPlayer = get(),
+                navigationCommands = get())
+        }
     }
     navigation<Routes.Album> {
-        AlbumScreen(
-            albumId = it.albumId,
-            viewModel = koinViewModel(
-                key = it.albumId,
-                parameters = { parametersOf(it.albumId) }
-            ),
-            audioPlayerQueue = get(),
-            audioPlayer = get(),
-            navigationCommands = get())
+        MetadataPluginGuard(backButton = true) {
+            AlbumScreen(
+                albumId = it.albumId,
+                viewModel = koinViewModel(
+                    key = it.albumId,
+                    parameters = { parametersOf(it.albumId) }
+                ),
+                audioPlayerQueue = get(),
+                audioPlayer = get(),
+                navigationCommands = get())
+        }
     }
     navigation<Routes.Lyrics> {
         LyricsScreen(viewModel = koinViewModel())
     }
     navigation<Routes.SavedTracks> {
-        SavedTracksScreen(
-            viewModel = koinViewModel(
-                key = SAVED_TRACKS_COLLECTION_ID,
-                parameters = { parametersOf(SAVED_TRACKS_COLLECTION_ID) }
-            ),
-            audioPlayerQueue = get(),
-            audioPlayer = get(),
-            navigationCommands = get())
+        MetadataPluginGuard(backButton = true) {
+            SavedTracksScreen(
+                viewModel = koinViewModel(
+                    key = SAVED_TRACKS_COLLECTION_ID,
+                    parameters = { parametersOf(SAVED_TRACKS_COLLECTION_ID) }
+                ),
+                audioPlayerQueue = get(),
+                audioPlayer = get(),
+                navigationCommands = get())
+        }
     }
     navigation<Routes.Blacklist> {
         BlacklistScreen()

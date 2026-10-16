@@ -20,7 +20,6 @@ package dev.krtirtho.spotube.modules.settings.sections
 
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumDialog
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import androidx.compose.foundation.lazy.LazyListScope
@@ -31,8 +30,7 @@ import androidx.compose.runtime.getValue
 import dev.krtirtho.spotube.modules.settings.SettingsViewModel
 import dev.krtirtho.spotube.modules.settings.UserSettings
 import dev.krtirtho.spotube.modules.settings.LocalMediaFoldersViewModel
-import dev.krtirtho.spotube.modules.settings.LocalMediaFoldersUiState
-import dev.krtirtho.spotube.modules.settings.components.LocalMediaFoldersEditorContent
+import dev.krtirtho.spotube.modules.settings.components.LocalMediaFoldersDialogHost
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.koin.compose.viewmodel.koinViewModel
 import dev.krtirtho.spotube.modules.settings.components.SelectionSettingCard
@@ -185,8 +183,6 @@ private fun LocalMediaFoldersSettingCard(
     viewModel: LocalMediaFoldersViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    val pickerLauncher =
-        rememberDirectoryPickerLauncher { directory -> viewModel.addFolder(directory?.path) }
     val subtitlePreview = state.singleConfiguredPath ?: if (state.configuredCount == 0) {
         stringResource(Res.string.settings_local_media_folders_subtitle_empty)
     } else stringResource(
@@ -214,30 +210,5 @@ private fun LocalMediaFoldersSettingCard(
         onClick = viewModel::open
     )
 
-    if (state.isOpen) {
-        LocalMediaFoldersDialog(
-            state = state,
-            onAddFolder = { pickerLauncher.launch() },
-            onRemoveFolder = viewModel::removeFolder,
-            onSave = viewModel::save,
-            onDismiss = viewModel::dismiss
-        )
-    }
-}
-
-@Composable
-private fun LocalMediaFoldersDialog(
-    state: LocalMediaFoldersUiState,
-    onAddFolder: () -> Unit,
-    onRemoveFolder: (String) -> Unit,
-    onSave: () -> Unit,
-    onDismiss: () -> Unit
-) {
-    MillenniumDialog(
-        visible = true,
-        onDismissRequest = onDismiss,
-        title = stringResource(Res.string.settings_local_media_folders_title)
-    ) {
-        LocalMediaFoldersEditorContent(state, onAddFolder, onRemoveFolder, onSave, onDismiss)
-    }
+    LocalMediaFoldersDialogHost(viewModel)
 }
