@@ -77,6 +77,12 @@ class Database(val paths: Paths) {
         )
     }
 
+    val windowStateDataStore: DataStore<Preferences> by lazy {
+        PreferenceDataStoreFactory.createWithPath(
+            produceFile = { "${paths.getApplicationDataDirPath()}/spotube_window.preferences_pb".toPath() }
+        )
+    }
+
     private companion object {
         /** Preference files written by previous launches; their presence means an upgrade. */
         val EXISTING_INSTALL_PROBE_FILES = listOf(
@@ -95,4 +101,5 @@ object DatabaseKeys {
     val AUDIO_PLAYER_QUEUE_STATE_KEY = stringPreferencesKey("audio_player_queue_state")
     val LOCAL_MEDIA_CACHE_STATE_KEY = stringPreferencesKey("local_media_cache_state")
     val LOCAL_MEDIA_LAST_SCAN_AT_KEY = longPreferencesKey("local_media_last_scan_at")
+    val WINDOW_STATE_KEY = stringPreferencesKey("window_state")
 }

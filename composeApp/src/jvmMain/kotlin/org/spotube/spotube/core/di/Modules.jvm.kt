@@ -30,9 +30,12 @@ import org.koin.core.module.dsl.createdAtStart
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.module
+import org.spotube.spotube.core.db.Database
+import org.spotube.spotube.core.window.WindowStateRepository
 
 actual val platformModules = module {
     singleOf(::Paths)
+    single { WindowStateRepository(get<Database>()) }
     single<AudioPlayerInterface> { AudioPlayer(Unit) }
     single<LocalMediaDiscoveryService> { JvmLocalMediaDiscoveryService() }
     single<ShareService> { JvmShareService() }
