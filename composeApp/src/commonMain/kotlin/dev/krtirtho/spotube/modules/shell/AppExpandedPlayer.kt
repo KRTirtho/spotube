@@ -289,7 +289,8 @@ fun AppExpandedPlayer(
         if (playerOptionsUiState.isMoreOptionsSheetOpen) {
             MillenniumModalBottomSheet(
                 state = moreOptionsSheetState,
-                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp)
+                contentPadding = PaddingValues(horizontal = 0.dp, vertical = 8.dp),
+                contentSpacing = 4.dp
             ) {
                 // Grid of Options
                 LazyVerticalGrid(

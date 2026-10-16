@@ -30,6 +30,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 
@@ -144,7 +145,10 @@ fun TrackOptionsBottomSheet(
             onDismiss()
         }
     }
-    MillenniumModalBottomSheet(state = sheetState) {
+    MillenniumModalBottomSheet(
+        state = sheetState,
+        contentPadding = PaddingValues(top = 10.dp, bottom = 8.dp),
+        contentSpacing = 4.dp) {
         Column(modifier = Modifier.fillMaxWidth()) {
             TrackOptionsSheetHeader(track = track)
 

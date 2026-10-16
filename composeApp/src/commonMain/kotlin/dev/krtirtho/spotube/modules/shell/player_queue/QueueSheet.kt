@@ -99,7 +99,8 @@ internal fun BottomSheetContent(
     }
     MillenniumModalBottomSheet(
         state = sheetState,
-        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp)
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
+        contentSpacing = 8.dp
     ) {
         content()
     }

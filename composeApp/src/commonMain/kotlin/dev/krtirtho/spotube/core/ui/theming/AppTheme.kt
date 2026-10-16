@@ -18,6 +18,7 @@
 package dev.krtirtho.spotube.core.ui.theming
 
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -35,9 +36,11 @@ import androidx.compose.ui.unit.sp
 
 import dev.krtirtho.spotube.modules.settings.Theme
 import dev.krtirtho.spotube.modules.settings.UserSettings
+import org.spotube.millennium.composables.MillenniumModalBottomSheetTheme
 import org.spotube.millennium.composables.MillenniumTooltipHost
 import org.spotube.millennium.composables.MillenniumTopAppBarTheme
 import org.spotube.millennium.composables.MillenniumTopAppBarThemeProperties
+import org.spotube.millennium.composables.defaultMillenniumModalBottomSheetTheme
 import org.spotube.millennium.composables.defaultMillenniumTopAppBarTheme
 import org.spotube.millennium.theme.MillenniumColors
 import org.spotube.millennium.theme.MillenniumDarkThemeComponents
@@ -218,14 +221,16 @@ fun SpotubeTheme(
                     properties = darkTheme.topAppBarTheme.properties.copy(
                         separatorColor = Color.Transparent
                     )
-                )
+                ),
+                modalBottomSheetTheme = compactModalBottomSheetTheme()
             ),
             light = lightTheme.copy(
                 topAppBarTheme = MillenniumTopAppBarTheme(
                     properties = lightTheme.topAppBarTheme.properties.copy(
                         separatorColor = Color.Transparent
                     )
-                )
+                ),
+                modalBottomSheetTheme = compactModalBottomSheetTheme()
             )
         )
     ) {
@@ -239,6 +244,23 @@ fun SpotubeTheme(
             )
         }
     }
+}
+
+/** Library default is 24dp padding + 16dp spacing, which is far too roomy on phones. */
+private fun compactModalBottomSheetTheme(): MillenniumModalBottomSheetTheme {
+    val padding = PaddingValues(start = 16.dp, end = 16.dp, top = 10.dp, bottom = 8.dp)
+    fun org.spotube.millennium.composables.MillenniumModalBottomSheetThemeProperties.compact() =
+        copy(contentPadding = padding, contentSpacing = 8.dp)
+    val states = defaultMillenniumModalBottomSheetTheme().states
+    return MillenniumModalBottomSheetTheme(
+        states = org.spotube.millennium.theme.MillenniumControlStateProperty(
+            default = states.default.compact(),
+            hovered = states.hovered.compact(),
+            focused = states.focused.compact(),
+            pressed = states.pressed.compact(),
+            disabled = states.disabled.compact(),
+            selected = states.selected.compact(),
+            error = states.error.compact()))
 }
 
 /** Whether the active Millennium appearance is light. */

@@ -40,7 +40,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import com.composeunstyled.SheetDetent
 import com.composeunstyled.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -94,10 +93,7 @@ fun AdaptiveDialogBottomSheet(
         }
         MillenniumModalBottomSheet(state = sheetState) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.Start) {
                 title?.let {
                     Row(
@@ -130,7 +126,6 @@ fun AdaptiveDialogBottomSheet(
                     it()
                 }
             }
-            Spacer(Modifier.height(24.dp))
         }
     }
 }

@@ -22,6 +22,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.widthIn
@@ -165,7 +166,10 @@ private fun AdaptiveBottomSheetContent(
             onDismiss()
         }
     }
-    MillenniumModalBottomSheet(state = sheetState) {
+    MillenniumModalBottomSheet(
+        state = sheetState,
+        contentPadding = PaddingValues(top = 10.dp, bottom = 8.dp),
+        contentSpacing = 4.dp) {
         Column(
             modifier = Modifier.fillMaxWidth()) {
             header?.invoke()
