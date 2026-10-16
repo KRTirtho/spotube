@@ -84,6 +84,8 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     private var disposed = false
 
     private val currentPlaylist = mutableListOf<MediaItem>()
+    private val originalPlaylist = mutableListOf<MediaItem>()
+    private var shuffleEnabled = false
     private val urlIndexMap = mutableMapOf<String, Int>()
 
     private val _playerState = MutableStateFlow(PlayerState.IDLE)
@@ -141,10 +143,6 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
                         else -> LoopState.NONE
                     }
                 )
-            }
-
-            override fun onShuffleModeEnabledChanged(shuffleModeEnabled: Boolean) {
-                _shuffleMode.tryEmit(shuffleModeEnabled)
             }
 
             override fun onVolumeChanged(volume: Float) {
@@ -260,8 +258,37 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
 
     actual override suspend fun shuffle(enabled: Boolean) {
         withContext(Dispatchers.Main) {
-            exoPlayer.shuffleModeEnabled = enabled
+            if (disposed || currentPlaylist.isEmpty() || shuffleEnabled == enabled) return@withContext
+
+            val currentIndex = exoPlayer.currentMediaItemIndex
+            val current = currentPlaylist.getOrNull(currentIndex) ?: return@withContext
+
+            val rest = if (enabled) {
+                originalPlaylist.filterNot { it.url == current.url }.shuffled()
+            } else {
+                originalPlaylist.filterNot { it.url == current.url }
+            }
+            // Disabling restores original order around the current item.
+            val before = if (enabled) emptyList() else originalPlaylist.takeWhile { it.url != current.url }
+            val after = if (enabled) rest else originalPlaylist.dropWhile { it.url != current.url }.drop(1)
+
+            // Reorder in place around the playing item so playback is not interrupted.
+            if (currentIndex < exoPlayer.mediaItemCount - 1) {
+                exoPlayer.removeMediaItems(currentIndex + 1, exoPlayer.mediaItemCount)
+            }
+            if (currentIndex > 0) exoPlayer.removeMediaItems(0, currentIndex)
+            exoPlayer.addMediaItems(0, before.map { it.toExoMediaItem() })
+            exoPlayer.addMediaItems(after.map { it.toExoMediaItem() })
+
+            currentPlaylist.clear()
+            currentPlaylist.addAll(before + current + after)
+            urlIndexMap.clear()
+            currentPlaylist.forEachIndexed { i, item -> urlIndexMap[item.url] = i }
+
+            shuffleEnabled = enabled
             _shuffleMode.tryEmit(enabled)
+            _playlist.tryEmit(currentPlaylist.toList())
+            syncCurrentItem()
         }
     }
 
@@ -273,6 +300,10 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         withContext(Dispatchers.Main) {
             currentPlaylist.clear()
             currentPlaylist.addAll(playlist)
+            originalPlaylist.clear()
+            originalPlaylist.addAll(playlist)
+            shuffleEnabled = false
+            _shuffleMode.tryEmit(false)
             urlIndexMap.clear()
             playlist.forEachIndexed { index, item ->
                 urlIndexMap[item.url] = index
@@ -305,6 +336,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     actual override suspend fun addMediaItem(mediaItem: MediaItem) {
         withContext(Dispatchers.Main) {
             currentPlaylist.add(mediaItem)
+            originalPlaylist.add(mediaItem)
             urlIndexMap[mediaItem.url] = currentPlaylist.lastIndex
             _playlist.tryEmit(currentPlaylist.toList())
             exoPlayer.addMediaItem(mediaItem.toExoMediaItem())
@@ -317,6 +349,8 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
             val insertIndex = (currentIndex + 1).coerceAtMost(currentPlaylist.size)
 
             currentPlaylist.add(insertIndex, mediaItem)
+            val origCurrent = currentPlaylist.getOrNull(currentIndex)?.let { c -> originalPlaylist.indexOfFirst { it.url == c.url } } ?: -1
+            originalPlaylist.add((origCurrent + 1).coerceIn(0, originalPlaylist.size), mediaItem)
             urlIndexMap.clear()
             currentPlaylist.forEachIndexed { index, item ->
                 urlIndexMap[item.url] = index
@@ -331,6 +365,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         withContext(Dispatchers.Main) {
             val index = urlIndexMap[mediaItem.url] ?: return@withContext
             currentPlaylist.removeAt(index)
+            originalPlaylist.removeAll { it.url == mediaItem.url }
             urlIndexMap.clear()
             currentPlaylist.forEachIndexed { i, item ->
                 urlIndexMap[item.url] = i
@@ -346,6 +381,9 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
 
             val item = currentPlaylist.removeAt(fromIndex)
             currentPlaylist.add(toIndex, item)
+            if (!shuffleEnabled && fromIndex in originalPlaylist.indices && toIndex in originalPlaylist.indices) {
+                originalPlaylist.add(toIndex, originalPlaylist.removeAt(fromIndex))
+            }
             urlIndexMap.clear()
             currentPlaylist.forEachIndexed { i, it ->
                 urlIndexMap[it.url] = i
@@ -398,6 +436,7 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
         disposed = true
         exoPlayer.release()
         currentPlaylist.clear()
+        originalPlaylist.clear()
         urlIndexMap.clear()
 
         _playerState.tryEmit(PlayerState.IDLE)
