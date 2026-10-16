@@ -17,6 +17,11 @@
 
 package dev.krtirtho.spotube.modules.settings.sections
 
+import org.spotube.millennium.composables.MillenniumDialogHeader
+import org.spotube.millennium.composables.MillenniumDialogTitle
+import org.spotube.millennium.composables.MillenniumDialogClose
+import org.spotube.millennium.composables.MillenniumDialogBody
+import org.spotube.millennium.composables.MillenniumDialogFooter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -151,10 +156,12 @@ private fun AppearanceSettingCard(
             mutableStateOf(selectedPalette)
         }
 
-        MillenniumDialog(
-            visible = true,
-            onDismissRequest = { isDialogOpen = false },
-            title = stringResource(Res.string.settings_palette_dialog_title)) {
+        MillenniumDialog(visible = true, onDismissRequest = { isDialogOpen = false }) {
+            MillenniumDialogHeader {
+                MillenniumDialogTitle(stringResource(Res.string.settings_palette_dialog_title))
+                MillenniumDialogClose()
+            }
+            MillenniumDialogBody {
             MillenniumText(
                 stringResource(Res.string.settings_palette_dialog_description),
                 color = AppTheme.colors.onSurfaceVariant)
@@ -174,20 +181,19 @@ private fun AppearanceSettingCard(
             }
 
             PalettePreview(draftPalette)
-
-            MillenniumSeparator()
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            }
+            MillenniumDialogFooter {
+                MillenniumButton(
+                    onClick = { isDialogOpen = false },
+                    style = MillenniumButtonStyle.Secondary) {
+                    MillenniumText(stringResource(Res.string.common_cancel))
+                }
                 MillenniumButton(
                     onClick = {
                         onSaved(draftPalette)
                         isDialogOpen = false
                     }) {
                     MillenniumText(stringResource(Res.string.common_save))
-                }
-                MillenniumButton(
-                    onClick = { isDialogOpen = false },
-                    style = MillenniumButtonStyle.Secondary) {
-                    MillenniumText(stringResource(Res.string.common_cancel))
                 }
             }
         }

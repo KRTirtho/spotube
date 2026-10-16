@@ -18,11 +18,16 @@
 package dev.krtirtho.spotube.modules.shell
 
 
+import org.spotube.millennium.composables.MillenniumDialogHeader
+import org.spotube.millennium.composables.MillenniumDialogTitle
+import org.spotube.millennium.composables.MillenniumDialogClose
+import org.spotube.millennium.composables.MillenniumDialogBody
+import org.spotube.millennium.composables.MillenniumDialogFooter
+import org.spotube.millennium.composables.MillenniumMarqueeProgress
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
-import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumTextField
 import org.spotube.millennium.theme.millenniumSurface
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -128,11 +133,12 @@ private fun SleepTimerDialog(
     onStart: () -> Unit,
     onCancelTimer: () -> Unit,
     onDismiss: () -> Unit) {
-    MillenniumDialog(
-        visible = true,
-        onDismissRequest = onDismiss,
-        title = stringResource(Res.string.player_sleep_timer)) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+    MillenniumDialog(visible = true, onDismissRequest = onDismiss) {
+        MillenniumDialogHeader {
+            MillenniumDialogTitle(stringResource(Res.string.player_sleep_timer))
+            MillenniumDialogClose()
+        }
+        MillenniumDialogBody {
             if (remainingMs != null) {
                 Text(
                     text = stringResource(Res.string.player_sleep_timer_remaining, formatRemainingTime(remainingMs)),
@@ -152,21 +158,20 @@ private fun SleepTimerDialog(
                 label = stringResource(Res.string.player_sleep_timer_minutes_label),
                 placeholder = stringResource(Res.string.player_sleep_timer_minutes_placeholder),
                 modifier = Modifier.fillMaxWidth())
-
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                if (remainingMs != null) {
-                    MillenniumButton(
-                        onClick = onCancelTimer,
-                        style = MillenniumButtonStyle.Secondary) { Text(stringResource(Res.string.player_sleep_timer_cancel)) }
-                }
+        }
+        MillenniumDialogFooter {
+            if (remainingMs != null) {
                 MillenniumButton(
-                    onClick = onDismiss,
-                    style = MillenniumButtonStyle.Secondary) { Text(stringResource(Res.string.common_close)) }
-                MillenniumButton(
-                    onClick = onStart,
-                    enabled = minutes.toLongOrNull()?.let { it in 1L..600L } == true) {
-                    Text(stringResource(Res.string.player_sleep_timer_start))
-                }
+                    onClick = onCancelTimer,
+                    style = MillenniumButtonStyle.Quiet) { Text(stringResource(Res.string.player_sleep_timer_cancel)) }
+            }
+            MillenniumButton(
+                onClick = onDismiss,
+                style = MillenniumButtonStyle.Secondary) { Text(stringResource(Res.string.common_close)) }
+            MillenniumButton(
+                onClick = onStart,
+                enabled = minutes.toLongOrNull()?.let { it in 1L..600L } == true) {
+                Text(stringResource(Res.string.player_sleep_timer_start))
             }
         }
     }
@@ -176,11 +181,12 @@ private fun SleepTimerDialog(
 private fun TrackDetailsDialog(
     details: PlayerTrackDetails,
     onDismiss: () -> Unit) {
-    MillenniumDialog(
-        visible = true,
-        onDismissRequest = onDismiss,
-        title = stringResource(Res.string.player_track_details)) {
-        Column(verticalArrangement = Arrangement.spacedBy(14.dp)) {
+    MillenniumDialog(visible = true, onDismissRequest = onDismiss) {
+        MillenniumDialogHeader {
+            MillenniumDialogTitle(stringResource(Res.string.player_track_details))
+            MillenniumDialogClose()
+        }
+        MillenniumDialogBody(contentSpacing = 14.dp) {
             Text(
                 details.track.title,
                 style = AppTheme.typography.bodyMedium,
@@ -189,8 +195,7 @@ private fun TrackDetailsDialog(
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp),
                     horizontalArrangement = Arrangement.Center) {
-                    MillenniumIndeterminateProgress(
-                        modifier = Modifier.fillMaxWidth())
+                    MillenniumMarqueeProgress(modifier = Modifier.fillMaxWidth())
                 }
             }
 
@@ -315,6 +320,8 @@ private fun TrackDetailsDialog(
                 DetailRow(stringResource(Res.string.player_track_details_active_url), activeUrl)
             }
 
+        }
+        MillenniumDialogFooter {
             MillenniumButton(
                 onClick = onDismiss,
                 style = MillenniumButtonStyle.Secondary) { Text(stringResource(Res.string.common_close)) }

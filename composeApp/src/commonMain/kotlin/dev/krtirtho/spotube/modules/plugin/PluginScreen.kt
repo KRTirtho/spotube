@@ -18,13 +18,15 @@
 package dev.krtirtho.spotube.modules.plugin
 
 
+import org.spotube.millennium.composables.MillenniumCircularProgress
+import org.spotube.millennium.composables.MillenniumDotsLoader
+import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumSegmentedButton
 import org.spotube.millennium.composables.MillenniumSegmentedButtonDefaults
@@ -85,6 +87,22 @@ import dev.krtirtho.spotube.core.ui.component.HeaderDisplayMode
 import dev.krtirtho.spotube.getPlatform
 import dev.krtirtho.spotube.modules.plugin.components.DefaultAbilityPluginGrid
 import dev.krtirtho.spotube.modules.plugin.components.PluginCard
+import dev.krtirtho.spotube.modules.plugin.components.PluginDialogActions
+import dev.krtirtho.spotube.modules.plugin.components.PluginDialogBody
+import dev.krtirtho.spotube.modules.plugin.components.PluginDialogTitle
+import dev.krtirtho.spotube.modules.plugin.components.PluginIconTile
+import dev.krtirtho.spotube.modules.plugin.components.PluginLogoTile
+import dev.krtirtho.spotube.modules.plugin.components.PluginPanel
+import dev.krtirtho.spotube.modules.plugin.components.PluginPill
+import dev.krtirtho.spotube.resources.iconsax.IconsaxBoxAdd
+import dev.krtirtho.spotube.resources.iconsax.User
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ChevronRight
+import spotube.composeapp.generated.resources.plugin_install_sheet_subtitle
+import spotube.composeapp.generated.resources.plugin_install_file_hint
+import spotube.composeapp.generated.resources.plugin_install_or
+import spotube.composeapp.generated.resources.plugin_info_dialog_title
+import spotube.composeapp.generated.resources.plugin_version_label
 import dev.krtirtho.spotube.modules.plugin.components.PluginInstallDialog
 import dev.krtirtho.spotube.modules.plugin.components.PluginLogo
 import dev.krtirtho.spotube.modules.plugin.components.PluginPermissionDialog
@@ -267,7 +285,7 @@ internal fun PluginScreenContent(
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
-                ) { MillenniumIndeterminateProgress(modifier = Modifier.widthIn(max = 160.dp)) }
+                ) { MillenniumCircularProgress(size = 40.dp) }
             }
 
             is PluginUiState.Data -> {
@@ -492,7 +510,7 @@ internal fun PluginScreenContent(
                                         Modifier.fillMaxWidth().padding(16.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        MillenniumIndeterminateProgress(Modifier.widthIn(max = 120.dp))
+                                        MillenniumDotsLoader()
                                     }
                                 }
                             }
@@ -524,7 +542,7 @@ internal fun PluginScreenContent(
                                             .padding(vertical = 16.dp),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        MillenniumIndeterminateProgress(modifier = Modifier.widthIn(max = 120.dp))
+                                        MillenniumDotsLoader()
                                     }
                                 }
                             }
@@ -606,24 +624,17 @@ private fun InstallSheet(
     AdaptiveDialogBottomSheet(
         onDismiss = onDismiss,
         title = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                MillenniumIcon(
-                    Iconsax.IconsaxImportArrow2Bulk,
-                    contentDescription = null,
-                    modifier = Modifier.size(18.dp),
-                    tint = AppTheme.colors.primary
-                )
-                Text(
-                    stringResource(Res.string.plugin_install_section_title),
-                    style = AppTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-        }) {
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            PluginDialogTitle(
+                title = stringResource(Res.string.plugin_install_section_title),
+                icon = Iconsax.IconsaxBoxAdd)
+        },
+        dialogTitle = stringResource(Res.string.plugin_install_section_title)) {
+        PluginDialogBody {
+            Text(
+                stringResource(Res.string.plugin_install_sheet_subtitle),
+                style = AppTheme.typography.bodySmall,
+                color = AppTheme.colors.onSurfaceVariant)
+
             val urlState = rememberTextFieldState(urlInput)
             LaunchedEffect(urlInput) {
                 if (urlState.text.toString() != urlInput) {
@@ -636,51 +647,82 @@ private fun InstallSheet(
                 }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                MillenniumTextField(
-                    state = urlState,
-                    label = stringResource(Res.string.plugin_section_url_title),
-                    modifier = Modifier.weight(1f),
-                    placeholder = stringResource(Res.string.plugin_url_placeholder),
-                    error = urlError?.text())
-                MillenniumIconButton(
-                    onClick = onSubmitUrl,
-                    enabled = !isLoadingUrl,
-                    style = MillenniumIconButtonStyle.Secondary) {
-                    if (isLoadingUrl) {
-                        MillenniumIndeterminateProgress(modifier = Modifier.size(16.dp))
-                    } else {
-                        MillenniumIcon(
-                            Iconsax.IconsaxImportArrow2Bulk,
-                            contentDescription = stringResource(Res.string.plugin_action_download))
+            PluginPanel {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        PluginIconTile(Iconsax.IconsaxLink)
+                        Text(
+                            stringResource(Res.string.plugin_section_url_title),
+                            style = AppTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold)
+                    }
+                    MillenniumTextField(
+                        state = urlState,
+                        label = "",
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = stringResource(Res.string.plugin_url_placeholder),
+                        error = urlError?.text())
+                    MillenniumButton(
+                        onClick = onSubmitUrl,
+                        enabled = !isLoadingUrl,
+                        modifier = Modifier.fillMaxWidth(),
+                        style = MillenniumButtonStyle.Primary) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            if (isLoadingUrl) {
+                                MillenniumSpokeSpinner(size = 16.dp, color = MillenniumTheme.colors.onAccent)
+                            } else {
+                                MillenniumIcon(
+                                    Iconsax.IconsaxImportArrow2Bulk,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(18.dp))
+                            }
+                            Text(stringResource(Res.string.plugin_action_download))
+                        }
                     }
                 }
             }
 
-            MillenniumSeparator()
-
-            Text(
-                stringResource(Res.string.plugin_section_file_title),
-                style = AppTheme.typography.labelLarge,
-                color = AppTheme.colors.onSurfaceVariant
-            )
-            MillenniumButton(
-                onClick = onPickFile,
+            Row(
                 modifier = Modifier.fillMaxWidth(),
-                style = MillenniumButtonStyle.Secondary) {
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                MillenniumSeparator(modifier = Modifier.weight(1f))
+                Text(
+                    stringResource(Res.string.plugin_install_or),
+                    style = AppTheme.typography.labelSmall,
+                    color = AppTheme.colors.onSurfaceVariant)
+                MillenniumSeparator(modifier = Modifier.weight(1f))
+            }
+
+            PluginPanel(modifier = Modifier.clickable(onClick = onPickFile)) {
                 Row(
+                    modifier = Modifier.fillMaxWidth().padding(14.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    PluginIconTile(Iconsax.IconsaxExportArrowBulk)
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        Text(
+                            stringResource(Res.string.plugin_action_install_from_file),
+                            style = AppTheme.typography.titleSmall,
+                            fontWeight = FontWeight.SemiBold)
+                        Text(
+                            stringResource(Res.string.plugin_install_file_hint),
+                            style = AppTheme.typography.labelSmall,
+                            color = AppTheme.colors.onSurfaceVariant)
+                    }
                     MillenniumIcon(
-                        Iconsax.IconsaxExportArrowBulk,
-                        contentDescription = stringResource(Res.string.plugin_action_install_from_file)
-                    )
-                    Text(stringResource(Res.string.plugin_action_install_from_file))
+                        FeatherIcons.ChevronRight,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                        tint = AppTheme.colors.onSurfaceVariant)
                 }
             }
         }
@@ -692,82 +734,80 @@ private fun PluginInfoDialog(
     plugin: PluginEntry,
     logoPath: Path?,
     onDismiss: () -> Unit) {
-    MillenniumDialog(
-        visible = true,
-        onDismissRequest = onDismiss,
-        title = plugin.name) {
-        Box(
-            modifier = Modifier
-                .size(48.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(AppTheme.colors.primary.copy(alpha = 0.12f))
-        ) {
-            PluginLogo(
-                plugin = plugin,
-                logoPath = logoPath,
-                contentDescription = plugin.name,
-                modifier = Modifier.fillMaxSize(),
-                fallback = {
-                    Box(contentAlignment = Alignment.Center) {
-                        MillenniumIcon(
-                            Iconsax.IconsaxBox,
-                            contentDescription = null,
-                            modifier = Modifier.size(24.dp),
-                            tint = AppTheme.colors.primary
-                        )
+    AdaptiveDialogBottomSheet(
+        onDismiss = onDismiss,
+        title = { PluginDialogTitle(stringResource(Res.string.plugin_info_dialog_title)) },
+        dialogTitle = stringResource(Res.string.plugin_info_dialog_title),
+        actions = {
+            PluginDialogActions(
+                secondaryLabel = stringResource(Res.string.common_close),
+                onSecondary = onDismiss)
+        }) {
+        PluginDialogBody {
+            PluginPanel {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                    PluginLogoTile(plugin = plugin, logoPath = logoPath)
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(
+                            plugin.name,
+                            style = AppTheme.typography.titleMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis)
+                        Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                            PluginPill(plugin.author, icon = Iconsax.User)
+                            PluginPill(
+                                stringResource(Res.string.plugin_version_label, plugin.version),
+                                tint = AppTheme.colors.primary)
+                        }
                     }
-                })
-        }
-        Column(
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            if (plugin.description.isNotBlank()) {
-                Text(
-                    plugin.description,
-                    style = AppTheme.typography.bodyMedium,
-                    color = AppTheme.colors.onSurface
-                )
-            }
-
-            DetailRow(stringResource(Res.string.plugin_info_version), plugin.version)
-            DetailRow(stringResource(Res.string.plugin_info_api_version), plugin.apiVersion)
-            DetailRow(stringResource(Res.string.plugin_info_author), plugin.author)
-            if (plugin.license.isNotBlank()) {
-                DetailRow(stringResource(Res.string.plugin_info_license), plugin.license)
-            }
-
-            if (plugin.capabilities.isNotEmpty()) {
-                DetailChipsRow(
-                    stringResource(Res.string.plugin_info_capabilities),
-                    plugin.capabilities.map { it.name })
-            }
-
-            if (plugin.abilities.isNotEmpty()) {
-                DetailChipsRow(
-                    stringResource(Res.string.plugin_info_abilities),
-                    plugin.abilities.map { ability -> ability.displayLabel() })
-            }
-
-            if (plugin.repository.isNotBlank()) {
-                ClickableDetailRow(label = stringResource(Res.string.plugin_info_repository), value = plugin.repository) {
-                    openUrlInBrowser(plugin.repository)
+                }
+                if (plugin.description.isNotBlank()) {
+                    Text(
+                        plugin.description,
+                        modifier = Modifier.padding(start = 14.dp, end = 14.dp, bottom = 14.dp),
+                        style = AppTheme.typography.bodySmall,
+                        color = AppTheme.colors.onSurfaceVariant)
                 }
             }
 
-            if (plugin.contact.isNotBlank()) {
-                DetailRow(stringResource(Res.string.plugin_info_contact), plugin.contact)
-            }
-
-            if (plugin.bugs.isNotBlank()) {
-                ClickableDetailRow(label = stringResource(Res.string.plugin_info_report_bugs), value = plugin.bugs) {
-                    openUrlInBrowser(plugin.bugs)
+            PluginPanel {
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(14.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    DetailRow(stringResource(Res.string.plugin_info_api_version), plugin.apiVersion)
+                    if (plugin.license.isNotBlank()) {
+                        DetailRow(stringResource(Res.string.plugin_info_license), plugin.license)
+                    }
+                    if (plugin.capabilities.isNotEmpty()) {
+                        DetailChipsRow(
+                            stringResource(Res.string.plugin_info_capabilities),
+                            plugin.capabilities.map { it.name })
+                    }
+                    if (plugin.abilities.isNotEmpty()) {
+                        DetailChipsRow(
+                            stringResource(Res.string.plugin_info_abilities),
+                            plugin.abilities.map { ability -> ability.displayLabel() })
+                    }
+                    if (plugin.repository.isNotBlank()) {
+                        ClickableDetailRow(label = stringResource(Res.string.plugin_info_repository), value = plugin.repository) {
+                            openUrlInBrowser(plugin.repository)
+                        }
+                    }
+                    if (plugin.contact.isNotBlank()) {
+                        DetailRow(stringResource(Res.string.plugin_info_contact), plugin.contact)
+                    }
+                    if (plugin.bugs.isNotBlank()) {
+                        ClickableDetailRow(label = stringResource(Res.string.plugin_info_report_bugs), value = plugin.bugs) {
+                            openUrlInBrowser(plugin.bugs)
+                        }
+                    }
                 }
-            }
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            MillenniumButton(onClick = onDismiss) {
-                Text(stringResource(Res.string.common_close))
             }
         }
     }
@@ -779,27 +819,30 @@ private fun SupportDialog(
     supportText: String?,
     isLoading: Boolean,
     onDismiss: () -> Unit) {
-    MillenniumDialog(
-        visible = true,
-        onDismissRequest = onDismiss,
-        title = stringResource(Res.string.plugin_support_dialog_title, plugin.name)) {
-        if (isLoading) {
-            Box(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                MillenniumIndeterminateProgress(modifier = Modifier.widthIn(max = 160.dp))
-            }
-        } else {
-            Text(
-                supportText ?: "",
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colors.onSurface
-            )
-        }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            MillenniumButton(onClick = onDismiss) {
-                Text(stringResource(Res.string.common_close))
+    AdaptiveDialogBottomSheet(
+        onDismiss = onDismiss,
+        title = { PluginDialogTitle(stringResource(Res.string.plugin_support_dialog_title, plugin.name)) },
+        dialogTitle = stringResource(Res.string.plugin_support_dialog_title, plugin.name),
+        actions = {
+            PluginDialogActions(
+                secondaryLabel = stringResource(Res.string.common_close),
+                onSecondary = onDismiss)
+        }) {
+        PluginDialogBody {
+            if (isLoading) {
+                Box(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 24.dp),
+                    contentAlignment = Alignment.Center) {
+                    MillenniumCircularProgress(size = 36.dp)
+                }
+            } else {
+                PluginPanel {
+                    Text(
+                        supportText ?: "",
+                        modifier = Modifier.padding(14.dp),
+                        style = AppTheme.typography.bodyMedium,
+                        color = AppTheme.colors.onSurface)
+                }
             }
         }
     }
@@ -972,7 +1015,7 @@ private fun DiscoverRepoCard(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     if (isInstalling) {
-                        MillenniumIndeterminateProgress(modifier = Modifier.size(16.dp))
+                        MillenniumSpokeSpinner(size = 16.dp)
                     } else {
                         MillenniumIcon(
                             Iconsax.IconsaxAdd,

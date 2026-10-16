@@ -279,6 +279,10 @@
         <item quantity="one">%1$d plugin installed</item>
         <item quantity="other">%1$d plugins installed</item>
     </plurals>
+    <string name="plugin_install_sheet_subtitle">Add a plugin from a link or a file on your device.</string>
+    <string name="plugin_install_file_hint">Pick a .smplug file from your device</string>
+    <string name="plugin_install_or">or</string>
+    <string name="plugin_info_dialog_title">Plugin details</string>
     <string name="plugin_install_section_title">Install a Plugin</string>
     <string name="plugin_url_placeholder">https://example.com/plugin.smplug</string>
     <string name="plugin_action_download">Download</string>
@@ -572,6 +576,7 @@
     <string name="search_start_typing">Start typing to search</string>
     <string name="search_start_typing_tracks">Start typing to search tracks</string>
     <string name="search_no_results">No results found</string>
+    <string name="common_no_results">No results</string>
     <string name="search_see_all">See all</string>
     <string name="search_searching">Searching</string>
     <string name="search_loading_tracks">Loading tracks...</string>

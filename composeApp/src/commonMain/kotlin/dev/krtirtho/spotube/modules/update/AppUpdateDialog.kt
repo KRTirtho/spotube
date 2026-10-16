@@ -17,19 +17,14 @@
 
 package dev.krtirtho.spotube.modules.update
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.selection.SelectionContainer
-import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.composeunstyled.Text
 import com.mikepenz.markdown.m3.Markdown
 import org.jetbrains.compose.resources.stringResource
+import org.spotube.millennium.composables.MillenniumAlertDialog
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumDialog
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.app_update_dialog_no_notes
 import spotube.composeapp.generated.resources.app_update_dialog_title
@@ -47,28 +42,26 @@ fun AppUpdateDialog(
     onDismiss: () -> Unit,
     onIgnore: () -> Unit,
     onUpdate: () -> Unit) {
-    MillenniumDialog(
+    MillenniumAlertDialog(
         visible = true,
         onDismissRequest = onDismiss,
-        title = stringResource(Res.string.app_update_dialog_title, update.tag)) {
-        if (update.releaseNotesMarkdown.isNotBlank()) {
-            SelectionContainer {
-                Markdown(
-                    content = update.releaseNotesMarkdown,
-                    modifier = Modifier.padding(bottom = 8.dp))
+        title = { Text(stringResource(Res.string.app_update_dialog_title, update.tag)) },
+        content = {
+            if (update.releaseNotesMarkdown.isNotBlank()) {
+                SelectionContainer {
+                    Markdown(content = update.releaseNotesMarkdown)
+                }
+            } else {
+                Text(stringResource(Res.string.app_update_dialog_no_notes))
             }
-        } else {
-            Text(stringResource(Res.string.app_update_dialog_no_notes))
+        }) {
+        MillenniumButton(
+            onClick = onIgnore,
+            style = MillenniumButtonStyle.Secondary) {
+            Text(stringResource(Res.string.update_action_ignore))
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            MillenniumButton(
-                onClick = onIgnore,
-                style = MillenniumButtonStyle.Secondary) {
-                Text(stringResource(Res.string.update_action_ignore))
-            }
-            MillenniumButton(onClick = onUpdate) {
-                Text(stringResource(Res.string.update_action_update))
-            }
+        MillenniumButton(onClick = onUpdate) {
+            Text(stringResource(Res.string.update_action_update))
         }
     }
 }

@@ -19,6 +19,15 @@ package dev.krtirtho.spotube.core.ui.component
 
 
 import org.spotube.millennium.composables.MillenniumDialog
+import org.spotube.millennium.composables.MillenniumDialogBody
+import org.spotube.millennium.composables.MillenniumDialogClose
+import org.spotube.millennium.composables.MillenniumDialogFooter
+import org.spotube.millennium.composables.MillenniumDialogHeader
+import org.spotube.millennium.composables.MillenniumDialogTitle
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
@@ -50,6 +59,9 @@ import spotube.composeapp.generated.resources.*
 fun AdaptiveDialogBottomSheet(
     onDismiss: () -> Unit,
     title: @Composable (() -> Unit)? = null,
+    // Plain-text title for the large-screen dialog's own titlebar; when set it replaces [title]
+    // there so the titlebar isn't left empty above a duplicated in-body title.
+    dialogTitle: String? = null,
     modifier: Modifier = Modifier,
     actions: @Composable (() -> Unit)? = null,
     content: @Composable () -> Unit) {
@@ -59,14 +71,19 @@ fun AdaptiveDialogBottomSheet(
         MillenniumDialog(
             visible = true,
             onDismissRequest = onDismiss,
-            title = "",
-            modifier = modifier) {
-            title?.let { it() }
-            content()
-            actions?.let {
-                MillenniumSeparator()
-                it()
+            modifier = modifier,
+            paneTitle = dialogTitle ?: "") {
+            MillenniumDialogHeader {
+                if (dialogTitle != null) {
+                    MillenniumDialogTitle(text = dialogTitle, textStyle = AppTheme.typography.titleMedium)
+                } else {
+                    MillenniumDialogTitle { title?.invoke() }
+                }
+                MillenniumDialogClose(
+                    contentDescription = stringResource(Res.string.common_close_dialog))
             }
+            MillenniumDialogBody { content() }
+            actions?.let { MillenniumDialogFooter(content = { it() }) }
         }
     } else {
         val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
@@ -99,7 +116,13 @@ fun AdaptiveDialogBottomSheet(
                     }
                     Spacer(Modifier.height(12.dp))
                 }
-                content()
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 560.dp)
+                        .verticalScroll(rememberScrollState())) {
+                    content()
+                }
                 actions?.let {
                     Spacer(Modifier.height(8.dp))
                     MillenniumSeparator()

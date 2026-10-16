@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.modules.library.playlist
 
+import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import androidx.compose.foundation.clickable
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
@@ -162,90 +163,42 @@ fun PlaylistFormSheet(
 
     val handleImagePick = { imagePicker.launch() }
 
-    if (isLargeScreen) {
-        MillenniumDialog(
-            visible = true,
-            onDismissRequest = onDismiss,
-            title = stringResource(if (isEditing) Res.string.library_playlist_form_edit_title else Res.string.library_playlist_form_create_title),
-            modifier = modifier
-        ) {
-            PlaylistFormFields(
-                nameState = nameState,
-                descriptionState = descriptionState,
-                isPublic = isPublic,
-                onIsPublicChange = { isPublic = it },
-                isCollaborating = isCollaborating,
-                onIsCollaboratingChange = { isCollaborating = it },
-                imageBase64 = imageBase64,
-                imagePreviewUrl = imagePreviewUrl,
-                onPickImage = handleImagePick
-            )
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+    val formTitle = stringResource(
+        if (isEditing) Res.string.library_playlist_form_edit_title else Res.string.library_playlist_form_create_title)
+    AdaptiveDialogBottomSheet(
+        onDismiss = onDismiss,
+        modifier = modifier,
+        dialogTitle = formTitle,
+        title = { Text(formTitle, style = AppTheme.typography.headlineSmall) },
+        actions = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
+                MillenniumButton(
+                    onClick = onDismiss,
+                    style = MillenniumButtonStyle.Secondary) {
+                    Text(stringResource(Res.string.common_cancel))
+                }
                 MillenniumButton(
                     onClick = {
                         onSubmit(currentData)
                         onDismiss()
                     },
-                    enabled = name.isNotBlank()
-                ) {
+                    enabled = name.isNotBlank()) {
                     Text(stringResource(if (isEditing) Res.string.common_save else Res.string.library_playlist_form_create))
                 }
-                MillenniumButton(
-                    onClick = onDismiss,
-                    style = MillenniumButtonStyle.Secondary
-                ) {
-                    Text(stringResource(Res.string.common_cancel))
-                }
             }
-        }
-    } else {
-        val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
-        MillenniumModalBottomSheet(state = sheetState) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                Text(
-                    text = stringResource(if (isEditing) Res.string.library_playlist_form_edit_title else Res.string.library_playlist_form_create_title),
-                    style = AppTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 16.dp)
-                )
-                PlaylistFormFields(
-                    nameState = nameState,
-                    descriptionState = descriptionState,
-                    isPublic = isPublic,
-                    onIsPublicChange = { isPublic = it },
-                    isCollaborating = isCollaborating,
-                    onIsCollaboratingChange = { isCollaborating = it },
-                    imageBase64 = imageBase64,
-                    imagePreviewUrl = imagePreviewUrl,
-                    onPickImage = handleImagePick
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
-                ) {
-                    MillenniumButton(
-                        onClick = onDismiss,
-                        style = MillenniumButtonStyle.Secondary
-                    ) {
-                        Text(stringResource(Res.string.common_cancel))
-                    }
-                    MillenniumButton(
-                        onClick = {
-                            onSubmit(currentData)
-                            onDismiss()
-                        },
-                        enabled = name.isNotBlank()
-                    ) {
-                        Text(stringResource(if (isEditing) Res.string.common_save else Res.string.library_playlist_form_create))
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-            }
-        }
+        }) {
+        PlaylistFormFields(
+            nameState = nameState,
+            descriptionState = descriptionState,
+            isPublic = isPublic,
+            onIsPublicChange = { isPublic = it },
+            isCollaborating = isCollaborating,
+            onIsCollaboratingChange = { isCollaborating = it },
+            imageBase64 = imageBase64,
+            imagePreviewUrl = imagePreviewUrl,
+            onPickImage = handleImagePick)
     }
 }
 

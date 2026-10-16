@@ -18,6 +18,11 @@
 package dev.krtirtho.spotube.modules.devices
 
 
+import org.spotube.millennium.composables.MillenniumDialogHeader
+import org.spotube.millennium.composables.MillenniumDialogTitle
+import org.spotube.millennium.composables.MillenniumDialogClose
+import org.spotube.millennium.composables.MillenniumDialogBody
+import org.spotube.millennium.composables.MillenniumDialogFooter
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumDialog
 import org.spotube.millennium.composables.MillenniumListTile
@@ -82,10 +87,12 @@ fun PlayDestinationPickerHost() {
         PlaybackDestinationAction.PlayNext -> stringResource(Res.string.devices_destination_action_play_next)
     }
 
-    MillenniumDialog(
-        visible = true,
-        onDismissRequest = controller::dismissPicker,
-        title = stringResource(Res.string.devices_destination_title)) {
+    MillenniumDialog(visible = true, onDismissRequest = controller::dismissPicker) {
+        MillenniumDialogHeader {
+            MillenniumDialogTitle(stringResource(Res.string.devices_destination_title))
+            MillenniumDialogClose()
+        }
+        MillenniumDialogBody {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -138,6 +145,9 @@ fun PlayDestinationPickerHost() {
                     })
             }
 
+        }
+        }
+        MillenniumDialogFooter {
             MillenniumButton(
                 onClick = controller::dismissPicker,
                 style = MillenniumButtonStyle.Quiet) {

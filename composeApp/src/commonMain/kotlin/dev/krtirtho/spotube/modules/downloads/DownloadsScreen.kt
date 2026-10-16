@@ -3,6 +3,7 @@
  */
 package dev.krtirtho.spotube.modules.downloads
 
+import org.spotube.millennium.composables.MillenniumStripedProgress
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,7 +43,6 @@ import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumProgress
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
@@ -225,9 +225,10 @@ internal fun DownloadListRow(
                 },
                 maxLines = 1, overflow = TextOverflow.Ellipsis
             )
-            if (item.status == DownloadStatus.Downloading) MillenniumProgress(
-                item.progress,
-                Modifier.fillMaxWidth().height(4.dp)
+            if (item.status == DownloadStatus.Downloading) MillenniumStripedProgress(
+                progress = item.progress,
+                modifier = Modifier.fillMaxWidth(),
+                height = 6.dp
             )
         }
         MillenniumIconButton(

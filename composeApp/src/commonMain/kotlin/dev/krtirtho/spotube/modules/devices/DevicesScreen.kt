@@ -18,10 +18,10 @@
 package dev.krtirtho.spotube.modules.devices
 
 
+import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -103,10 +103,9 @@ fun DevicesScreen(
             title = { Text(stringResource(Res.string.devices_title)) },
             actions = {
                 if (isDiscovering && connectingToDevice == null) {
-                    MillenniumIndeterminateProgress(
-                        modifier = Modifier
-                            .size(24.dp)
-                            .padding(end = 8.dp))
+                    MillenniumSpokeSpinner(
+                        size = 24.dp,
+                        modifier = Modifier.padding(end = 8.dp))
                 } else {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxRefreshRight,
@@ -177,8 +176,7 @@ fun DevicesScreen(
                         Row(
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalAlignment = Alignment.CenterVertically) {
-                            MillenniumIndeterminateProgress(
-                                modifier = Modifier.size(24.dp))
+                            MillenniumSpokeSpinner(size = 24.dp)
                             Text(
                                 text = stringResource(Res.string.devices_connecting),
                                 style = AppTheme.typography.bodyMedium)
@@ -250,8 +248,7 @@ private fun DeviceRow(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         if (isConnecting) {
-            MillenniumIndeterminateProgress(
-                modifier = Modifier.size(24.dp))
+            MillenniumSpokeSpinner(size = 24.dp)
         } else {
             MillenniumIcon(
                 imageVector = Iconsax.IconsaxMirroringScreen,

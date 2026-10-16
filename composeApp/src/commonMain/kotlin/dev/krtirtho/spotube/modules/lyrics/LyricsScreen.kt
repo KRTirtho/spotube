@@ -18,10 +18,10 @@
 package dev.krtirtho.spotube.modules.lyrics
 
 
+import org.spotube.millennium.composables.MillenniumBarsLoader
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -138,7 +138,7 @@ fun LyricsScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        MillenniumIndeterminateProgress(modifier = Modifier.fillMaxWidth(0.4f))
+                        MillenniumBarsLoader(size = 48.dp)
                     }
                 }
 

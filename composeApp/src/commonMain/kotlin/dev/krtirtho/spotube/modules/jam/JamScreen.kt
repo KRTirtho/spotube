@@ -17,6 +17,9 @@
 
 package dev.krtirtho.spotube.modules.jam
 
+import org.spotube.millennium.composables.MillenniumDropdownMenuItem
+import dev.krtirtho.spotube.resources.iconsax.IconsaxUserRemove
+import dev.krtirtho.spotube.resources.iconsax.IconsaxForbidden
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -421,25 +424,27 @@ internal fun SessionPanel(
                         )
                     }
                     if (participant.canModerate) {
-                        val removeLabel = stringResource(Res.string.jam_participants_remove)
-                        val banLabel = stringResource(Res.string.jam_participants_ban)
                         // Keep destructive moderation out of the participant's primary row.
                         org.spotube.millennium.composables.MillenniumDropdownMenu(
                             expanded = participant.menuExpanded,
                             onExpandedChange = { expanded -> onMenuChange(if (expanded) participant.id else null) },
-                            items = listOf(removeLabel, banLabel),
-                            onItemClick = { label ->
-                                if (label == removeLabel) onKick(participant.id) else onBan(
-                                    participant.id
-                                )
-                            },
                             anchor = {
                                 MillenniumButton(
                                     onClick = { onMenuChange(participant.id) },
                                     style = MillenniumButtonStyle.Secondary
                                 ) { Text(stringResource(Res.string.jam_participants_manage)) }
                             }
-                        )
+                        ) {
+                            MillenniumDropdownMenuItem(
+                                label = stringResource(Res.string.jam_participants_remove),
+                                icon = Iconsax.IconsaxUserRemove,
+                                onClick = { onKick(participant.id) })
+                            MillenniumDropdownMenuItem(
+                                label = stringResource(Res.string.jam_participants_ban),
+                                icon = Iconsax.IconsaxForbidden,
+                                destructive = true,
+                                onClick = { onBan(participant.id) })
+                        }
                     }
                 }
             }

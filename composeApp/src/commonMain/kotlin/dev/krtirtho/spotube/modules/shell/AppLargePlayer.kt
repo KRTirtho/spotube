@@ -18,6 +18,10 @@
 package dev.krtirtho.spotube.modules.shell
 
 
+import org.spotube.millennium.composables.MillenniumDropdownMenuItem
+import dev.krtirtho.spotube.resources.iconsax.IconsaxCd
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMoon
+import dev.krtirtho.spotube.resources.iconsax.IconsaxInformation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -436,27 +440,6 @@ fun AppLargePlayer(
                             onExpandedChange = { expanded ->
                                 if (!expanded) playerOptionsViewModel.dismissMoreOptionsMenu()
                             },
-                            items = listOf(goToAlbumLabel, sleepTimerLabel, trackDetailsLabel),
-                            onItemClick = { label ->
-                                when (label) {
-                                    goToAlbumLabel -> {
-                                        playerOptionsViewModel.dismissMoreOptionsMenu()
-                                        currentTrack?.album?.id?.let { albumId ->
-                                            navigationCommands.navigateTo(Routes.Album(albumId))
-                                        }
-                                    }
-
-                                    sleepTimerLabel -> {
-                                        playerOptionsViewModel.dismissMoreOptionsMenu()
-                                        playerOptionsViewModel.showSleepTimerDialog()
-                                    }
-
-                                    trackDetailsLabel -> {
-                                        playerOptionsViewModel.dismissMoreOptionsMenu()
-                                        playerOptionsViewModel.showTrackDetails()
-                                    }
-                                }
-                            },
                             side = AnchorSide.Top,
                             anchor = {
                                 MillenniumIconButton(
@@ -471,7 +454,31 @@ fun AppLargePlayer(
                                         contentDescription = stringResource(Res.string.player_more_options_content_description)
                                     )
                                 }
-                            })
+                            }) {
+                            MillenniumDropdownMenuItem(
+                                label = goToAlbumLabel,
+                                icon = Iconsax.IconsaxCd,
+                                onClick = {
+                                    playerOptionsViewModel.dismissMoreOptionsMenu()
+                                    currentTrack?.album?.id?.let { albumId ->
+                                        navigationCommands.navigateTo(Routes.Album(albumId))
+                                    }
+                                })
+                            MillenniumDropdownMenuItem(
+                                label = sleepTimerLabel,
+                                icon = Iconsax.IconsaxMoon,
+                                onClick = {
+                                    playerOptionsViewModel.dismissMoreOptionsMenu()
+                                    playerOptionsViewModel.showSleepTimerDialog()
+                                })
+                            MillenniumDropdownMenuItem(
+                                label = trackDetailsLabel,
+                                icon = Iconsax.IconsaxInformation,
+                                onClick = {
+                                    playerOptionsViewModel.dismissMoreOptionsMenu()
+                                    playerOptionsViewModel.showTrackDetails()
+                                })
+                        }
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         MillenniumIconButton(

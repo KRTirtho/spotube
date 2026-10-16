@@ -18,6 +18,11 @@
 package dev.krtirtho.spotube.core.ui.component
 
 
+import org.spotube.millennium.composables.MillenniumDialogHeader
+import org.spotube.millennium.composables.MillenniumDialogTitle
+import org.spotube.millennium.composables.MillenniumDialogClose
+import org.spotube.millennium.composables.MillenniumDialogBody
+import org.spotube.millennium.composables.MillenniumDialogFooter
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -191,19 +196,11 @@ private fun ErrorLogDialog(
     onDismiss: () -> Unit) {
     val clipboardManager = LocalClipboardManager.current
 
-    MillenniumDialog(
-        visible = true,
-        onDismissRequest = onDismiss,
-        title = "") {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically) {
-            Text(
+    MillenniumDialog(visible = true, onDismissRequest = onDismiss) {
+        MillenniumDialogHeader {
+            MillenniumDialogTitle(
                 text = stringResource(Res.string.error_full_log_title),
-                style = AppTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold)
-
+                textStyle = AppTheme.typography.titleMedium)
             MillenniumIconButton(
                 onClick = {
                     clipboardManager.setText(AnnotatedString(errorMessage))
@@ -213,31 +210,32 @@ private fun ErrorLogDialog(
                     imageVector = FeatherIcons.Copy,
                     contentDescription = stringResource(Res.string.error_copy_to_clipboard))
             }
+            MillenniumDialogClose()
         }
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(400.dp)
-                .clip(AppTheme.shapes.small)
-                .background(AppTheme.colors.surfaceContainerHighest.copy(alpha = 0.3f))) {
-            SelectionContainer {
-                Text(
-                    text = errorMessage,
-                    style = AppTheme.typography.bodySmall.copy(
-                        fontFamily = FontFamily.Monospace),
-                    color = AppTheme.colors.onSurfaceVariant,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                        .padding(12.dp))
+        MillenniumDialogBody(scrollable = false) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(400.dp)
+                    .clip(AppTheme.shapes.small)
+                    .background(AppTheme.colors.surfaceContainerHighest.copy(alpha = 0.3f))) {
+                SelectionContainer {
+                    Text(
+                        text = errorMessage,
+                        style = AppTheme.typography.bodySmall.copy(
+                            fontFamily = FontFamily.Monospace),
+                        color = AppTheme.colors.onSurfaceVariant,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(12.dp))
+                }
             }
         }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.End) {
+        MillenniumDialogFooter {
             MillenniumButton(
                 onClick = onDismiss,
-                style = MillenniumButtonStyle.Quiet) {
+                style = MillenniumButtonStyle.Secondary) {
                 Text(stringResource(Res.string.common_close))
             }
         }

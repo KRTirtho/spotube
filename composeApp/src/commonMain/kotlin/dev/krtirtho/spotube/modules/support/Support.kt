@@ -17,6 +17,12 @@
 
 package dev.krtirtho.spotube.modules.support
 
+import org.spotube.millennium.composables.MillenniumDialogHeader
+import org.spotube.millennium.composables.MillenniumDialogTitle
+import org.spotube.millennium.composables.MillenniumDialogClose
+import org.spotube.millennium.composables.MillenniumDialogBody
+import org.spotube.millennium.composables.MillenniumDialogDescription
+import org.spotube.millennium.composables.MillenniumDialogFooter
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -103,49 +109,50 @@ fun SupportDialog(
     onDismissRequest: () -> Unit,
     isReminder: Boolean = false) {
     if (!visible) return
-    MillenniumDialog(
-        visible = true,
-        onDismissRequest = onDismissRequest,
-        title = stringResource(Res.string.support_dialog_title)) {
-        Text(
-            stringResource(Res.string.support_dialog_message),
-            style = AppTheme.typography.bodyMedium,
-            color = AppTheme.colors.onSurfaceVariant)
-        if (isReminder) {
-            Text(
-                stringResource(Res.string.support_dialog_reminder_hint),
-                style = AppTheme.typography.bodySmall,
-                color = AppTheme.colors.onSurfaceVariant)
+    MillenniumDialog(visible = true, onDismissRequest = onDismissRequest) {
+        MillenniumDialogHeader {
+            MillenniumDialogTitle(stringResource(Res.string.support_dialog_title))
+            MillenniumDialogClose()
         }
-        donationOptions.forEach { option ->
-            MillenniumButton(
-                onClick = {
-                    openDonation(option)
-                    onDismissRequest()
-                },
-                modifier = Modifier.fillMaxWidth(),
-                style = MillenniumButtonStyle.Secondary) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    MillenniumIcon(
-                        imageVector = option.icon,
-                        contentDescription = null,
-                        modifier = Modifier.size(20.dp),
-                        tint = if (option.id == "patreon") {
-                            AppTheme.colors.onSurface
-                        } else {
-                            Color.Unspecified
-                        })
-                    Text(stringResource(option.title))
+        MillenniumDialogBody {
+            MillenniumDialogDescription(stringResource(Res.string.support_dialog_message))
+            if (isReminder) {
+                Text(
+                    stringResource(Res.string.support_dialog_reminder_hint),
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant)
+            }
+            donationOptions.forEach { option ->
+                MillenniumButton(
+                    onClick = {
+                        openDonation(option)
+                        onDismissRequest()
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    style = MillenniumButtonStyle.Secondary) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        MillenniumIcon(
+                            imageVector = option.icon,
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = if (option.id == "patreon") {
+                                AppTheme.colors.onSurface
+                            } else {
+                                Color.Unspecified
+                            })
+                        Text(stringResource(option.title))
+                    }
                 }
             }
         }
-        MillenniumButton(
-            onClick = onDismissRequest,
-            modifier = Modifier.fillMaxWidth(),
-            style = MillenniumButtonStyle.Quiet) {
-            Text(stringResource(Res.string.support_dialog_dismiss))
+        MillenniumDialogFooter {
+            MillenniumButton(
+                onClick = onDismissRequest,
+                style = MillenniumButtonStyle.Quiet) {
+                Text(stringResource(Res.string.support_dialog_dismiss))
+            }
         }
     }
 }

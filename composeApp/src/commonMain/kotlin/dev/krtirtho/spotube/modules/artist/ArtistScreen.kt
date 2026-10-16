@@ -84,7 +84,6 @@ import dev.krtirtho.spotube.core.ui.component.cards.PlayableCard
 import dev.krtirtho.spotube.core.ui.component.dragScrollable
 import dev.krtirtho.spotube.core.ui.misc.SkeletonTree
 import dev.krtirtho.spotube.modules.library.playlist.AddToPlaylistPicker
-import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxAddSquare
 import dev.krtirtho.spotube.resources.iconsax.IconsaxPlay
@@ -143,8 +142,7 @@ fun ArtistScreen(
                     LazyColumn(
                         state = listState,
                         modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = LocalAppShellBottomInset.current + 24.dp),
+                            .fillMaxSize(),
                         verticalArrangement = Arrangement.spacedBy(24.dp)
                     ) {
                         item {

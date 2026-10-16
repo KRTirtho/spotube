@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.modules.update
 
+import org.spotube.millennium.composables.MillenniumAlertDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -30,7 +31,6 @@ import com.mikepenz.markdown.m3.Markdown
 import org.jetbrains.compose.resources.stringResource
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumDialog
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_update_dialog_current_version
 import spotube.composeapp.generated.resources.plugin_update_dialog_no_notes
@@ -50,33 +50,35 @@ fun PluginUpdateDialog(
     onDismiss: () -> Unit,
     onIgnore: () -> Unit,
     onUpdate: () -> Unit) {
-    MillenniumDialog(
+    MillenniumAlertDialog(
         visible = true,
         onDismissRequest = onDismiss,
-        title = stringResource(
-            Res.string.plugin_update_dialog_title,
-            update.pluginName,
-            update.info.latestVersion)) {
-        Text(
-            text = stringResource(Res.string.plugin_update_dialog_current_version, update.currentVersion),
-            color = AppTheme.colors.onSurfaceVariant,
-            modifier = Modifier.padding(bottom = 8.dp))
-        if (update.info.releaseNotes.isNotBlank()) {
-            SelectionContainer {
-                Markdown(content = update.info.releaseNotes)
+        title = {
+            Text(
+                stringResource(
+                    Res.string.plugin_update_dialog_title,
+                    update.pluginName,
+                    update.info.latestVersion))
+        },
+        description = {
+            Text(stringResource(Res.string.plugin_update_dialog_current_version, update.currentVersion))
+        },
+        content = {
+            if (update.info.releaseNotes.isNotBlank()) {
+                SelectionContainer {
+                    Markdown(content = update.info.releaseNotes)
+                }
+            } else {
+                Text(stringResource(Res.string.plugin_update_dialog_no_notes))
             }
-        } else {
-            Text(stringResource(Res.string.plugin_update_dialog_no_notes))
+        }) {
+        MillenniumButton(
+            onClick = onIgnore,
+            style = MillenniumButtonStyle.Secondary) {
+            Text(stringResource(Res.string.update_action_ignore))
         }
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            MillenniumButton(
-                onClick = onIgnore,
-                style = MillenniumButtonStyle.Secondary) {
-                Text(stringResource(Res.string.update_action_ignore))
-            }
-            MillenniumButton(onClick = onUpdate) {
-                Text(stringResource(Res.string.update_action_update))
-            }
+        MillenniumButton(onClick = onUpdate) {
+            Text(stringResource(Res.string.update_action_update))
         }
     }
 }

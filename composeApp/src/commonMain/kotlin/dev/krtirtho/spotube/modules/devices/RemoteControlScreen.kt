@@ -18,6 +18,8 @@
 package dev.krtirtho.spotube.modules.devices
 
 
+import org.spotube.millennium.composables.MillenniumDropdownMenuItem
+import dev.krtirtho.spotube.resources.iconsax.IconsaxMusicSquareRemove
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
@@ -604,11 +606,6 @@ private fun RemoteQueueItemRow(
             MillenniumDropdownMenu(
                 expanded = showMenu,
                 onExpandedChange = { showMenu = it },
-                items = listOf(stringResource(Res.string.devices_remote_remove_from_queue)),
-                onItemClick = {
-                    onRemoveClick()
-                    showMenu = false
-                },
                 anchor = {
                     MillenniumIconButton(
                         onClick = { showMenu = true },
@@ -620,7 +617,16 @@ private fun RemoteQueueItemRow(
                             modifier = Modifier.size(18.dp)
                         )
                     }
-                })
+                }) {
+                MillenniumDropdownMenuItem(
+                    label = stringResource(Res.string.devices_remote_remove_from_queue),
+                    icon = Iconsax.IconsaxMusicSquareRemove,
+                    destructive = true,
+                    onClick = {
+                        onRemoveClick()
+                        showMenu = false
+                    })
+            }
         }
     )
 }

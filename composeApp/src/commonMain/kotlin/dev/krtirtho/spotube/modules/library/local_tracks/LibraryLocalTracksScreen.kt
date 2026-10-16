@@ -3,6 +3,8 @@
  */
 package dev.krtirtho.spotube.modules.library.local_tracks
 
+import org.spotube.millennium.composables.MillenniumCircularProgress
+import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,7 +53,6 @@ import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.theme.MillenniumTheme
 import org.spotube.millennium.theme.millenniumPanelBrush
@@ -113,7 +114,7 @@ internal fun LocalTracksContent(
                     Modifier.fillMaxSize().padding(bottom = inset),
                     contentAlignment = Alignment.Center
                 ) {
-                    MillenniumIndeterminateProgress()
+                    MillenniumCircularProgress(size = 40.dp)
                 }
 
                 state.currentFolderPath == null && state.visibleFolders.isNotEmpty() -> LazyColumn(
@@ -264,7 +265,7 @@ internal fun LocalTracksBreadcrumb(
             style = AppTheme.typography.labelSmall, color = AppTheme.colors.onSurfaceVariant,
             maxLines = 1
         )
-        if (state.isRefreshing) MillenniumIndeterminateProgress(Modifier.size(14.dp))
+        if (state.isRefreshing) MillenniumSpokeSpinner(size = 14.dp)
         if (state.currentFolderPath == null && onManageFolders != null) MillenniumIconButton(
             onClick = onManageFolders,
             modifier = Modifier.size(28.dp), style = MillenniumIconButtonStyle.Quiet

@@ -18,6 +18,7 @@
 package dev.krtirtho.spotube.modules.library.playlist
 
 
+import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
@@ -154,34 +155,25 @@ fun AddToPlaylistPicker(
         }
     }
 
-    if (isLargeScreen) {
-        MillenniumDialog(
-            visible = true,
-            onDismissRequest = onDismiss,
-            title = stringResource(Res.string.library_add_to_playlist_title),
-            modifier = modifier) {
-            Box(modifier = Modifier.fillMaxWidth().height(400.dp)) {
-                content()
+    val pickerTitle = stringResource(Res.string.library_add_to_playlist_title)
+    AdaptiveDialogBottomSheet(
+        onDismiss = onDismiss,
+        modifier = modifier,
+        dialogTitle = pickerTitle,
+        title = { Text(pickerTitle, style = AppTheme.typography.headlineSmall) },
+        actions = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End) {
+                MillenniumButton(
+                    onClick = onDismiss,
+                    style = MillenniumButtonStyle.Secondary) {
+                    Text(stringResource(Res.string.common_cancel))
+                }
             }
-            MillenniumButton(
-                onClick = onDismiss,
-                style = MillenniumButtonStyle.Secondary) {
-                Text(stringResource(Res.string.common_cancel))
-            }
-        }
-    } else {
-        val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
-        MillenniumModalBottomSheet(state = sheetState) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)) {
-                Text(
-                    text = stringResource(Res.string.library_add_to_playlist_title),
-                    style = AppTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 16.dp))
-                content()
-            }
+        }) {
+        Box(modifier = Modifier.fillMaxWidth().height(400.dp)) {
+            content()
         }
     }
 }

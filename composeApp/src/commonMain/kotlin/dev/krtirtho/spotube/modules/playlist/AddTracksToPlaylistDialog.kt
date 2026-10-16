@@ -18,13 +18,15 @@
 package dev.krtirtho.spotube.modules.playlist
 
 
+import dev.krtirtho.spotube.core.ui.component.AdaptiveDialogBottomSheet
+import org.spotube.millennium.composables.MillenniumCircularProgress
+import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumDialog
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumModalBottomSheet
 import org.spotube.millennium.composables.MillenniumTextField
 import androidx.compose.foundation.layout.Arrangement
@@ -169,7 +171,7 @@ fun AddTracksToPlaylistDialog(
                             .fillMaxWidth()
                             .weight(1f),
                         contentAlignment = Alignment.Center) {
-                        MillenniumIndeterminateProgress()
+                        MillenniumCircularProgress(size = 40.dp)
                     }
                 }
                 hasSearched && searchResults.isEmpty() -> {
@@ -209,33 +211,23 @@ fun AddTracksToPlaylistDialog(
         }
     }
 
-    if (isLargeScreen) {
-        MillenniumDialog(
-            visible = true,
-            onDismissRequest = onDismiss,
-            title = stringResource(Res.string.playlist_add_tracks_title),
-            modifier = modifier) {
-            Box(modifier = Modifier.fillMaxWidth().height(500.dp)) {
-                content()
+    val dialogTitle = stringResource(Res.string.playlist_add_tracks_title)
+    AdaptiveDialogBottomSheet(
+        onDismiss = onDismiss,
+        modifier = modifier,
+        dialogTitle = dialogTitle,
+        title = { Text(dialogTitle, style = AppTheme.typography.headlineSmall) },
+        actions = {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End) {
+                MillenniumButton(onClick = onDismiss) {
+                    Text(stringResource(Res.string.playlist_add_tracks_done))
+                }
             }
-            MillenniumButton(onClick = onDismiss) {
-                Text(stringResource(Res.string.playlist_add_tracks_done))
-            }
-        }
-    } else {
-        val sheetState = rememberModalBottomSheetState(initialDetent = SheetDetent.FullyExpanded)
-        MillenniumModalBottomSheet(state = sheetState) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 8.dp)
-                    .height(600.dp)) {
-                Text(
-                    text = stringResource(Res.string.playlist_add_tracks_title),
-                    style = AppTheme.typography.headlineSmall,
-                    modifier = Modifier.padding(bottom = 16.dp))
-                content()
-            }
+        }) {
+        Box(modifier = Modifier.fillMaxWidth().height(500.dp)) {
+            content()
         }
     }
 }
@@ -297,8 +289,7 @@ private fun TrackSearchResultRow(
                     modifier = Modifier.size(24.dp))
             }
             isAdding -> {
-                MillenniumIndeterminateProgress(
-                    modifier = Modifier.size(24.dp))
+                MillenniumSpokeSpinner(size = 24.dp)
             }
             else -> {
                 MillenniumButton(

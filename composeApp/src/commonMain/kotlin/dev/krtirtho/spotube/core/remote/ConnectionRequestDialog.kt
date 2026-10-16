@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.core.remote
 
+import org.spotube.millennium.composables.MillenniumAlertDialog
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,7 +35,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumDialog
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import spotube.composeapp.generated.resources.Res
@@ -56,21 +56,25 @@ fun ConnectionRequestDialogHost() {
     }
 
     pendingRequest?.let { request ->
-        MillenniumDialog(
+        MillenniumAlertDialog(
             visible = true,
             onDismissRequest = {
                 handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.Deny)
                 pendingRequest = null
             },
-            title = stringResource(Res.string.remote_request_title)) {
-            Text(
-                text = stringResource(Res.string.remote_request_message, request.deviceName),
-                style = AppTheme.typography.bodyMedium,
-                textAlign = TextAlign.Start)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
-                verticalAlignment = Alignment.CenterVertically) {
+            title = { Text(stringResource(Res.string.remote_request_title)) },
+            description = {
+                Text(stringResource(Res.string.remote_request_message, request.deviceName))
+            },
+            ) {
+                MillenniumButton(
+                    onClick = {
+                        handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.AllowAlways)
+                        pendingRequest = null
+                    },
+                    style = MillenniumButtonStyle.Quiet) {
+                    Text(stringResource(Res.string.remote_request_allow_always))
+                }
                 MillenniumButton(
                     onClick = {
                         handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.Deny)
@@ -86,15 +90,6 @@ fun ConnectionRequestDialogHost() {
                     }) {
                     Text(stringResource(Res.string.remote_request_allow))
                 }
-                MillenniumButton(
-                    onClick = {
-                        handler.resolveConnectionRequest(request.sessionId, ConnectionRequestResponse.AllowAlways)
-                        pendingRequest = null
-                    },
-                    style = MillenniumButtonStyle.Quiet) {
-                    Text(stringResource(Res.string.remote_request_allow_always))
-                }
             }
-        }
     }
 }

@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.TextUnit
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
+import org.spotube.millennium.theme.MillenniumTheme
+import org.spotube.millennium.theme.millenniumBevelBrush
 
 val LocalSkeletonLoading = compositionLocalOf { false }
 
@@ -80,11 +82,16 @@ fun SkeletonTree(
 }
 
 fun Modifier.shimmerApply(
-    color: Color = Color.LightGray.copy(alpha = 0.5f) // Adjust alpha/color to match your theme
+    color: Color? = null // defaults to Millennium's recessed skeleton fill
 ): Modifier = composed {
     val isTreeLoading = LocalSkeletonLoading.current
+    val skeletonBrush = millenniumBevelBrush(MillenniumTheme.colors, sunken = true)
 
-    if (isTreeLoading) this.background(color) else this
+    when {
+        !isTreeLoading -> this
+        color != null -> this.background(color)
+        else -> this.background(skeletonBrush)
+    }
 }
 
 @Composable

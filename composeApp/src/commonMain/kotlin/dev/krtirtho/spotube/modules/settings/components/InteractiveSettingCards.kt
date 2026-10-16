@@ -18,6 +18,12 @@
 package dev.krtirtho.spotube.modules.settings.components
 
 
+import org.spotube.millennium.composables.MillenniumDialogHeader
+import org.spotube.millennium.composables.MillenniumDialogTitle
+import org.spotube.millennium.composables.MillenniumDialogClose
+import org.spotube.millennium.composables.MillenniumDialogBody
+import org.spotube.millennium.composables.MillenniumDialogFooter
+import org.spotube.millennium.composables.MillenniumDialogDescription
 import androidx.compose.foundation.layout.Box
 import com.composeunstyled.currentWindowWidthBreakpoint
 import org.spotube.millennium.adaptive.WindowBreakpoints
@@ -238,26 +244,30 @@ internal fun TextInputSettingCard(
             val normalizedValue = normalize(draft)
             val errorMessage = validate(normalizedValue)
 
-            MillenniumDialog(
-                visible = true,
-                onDismissRequest = { isDialogOpen = false },
-                title = dialogTitle
-            ) {
-                if (dialogDescription != null) {
-                    Text(
-                        text = dialogDescription,
-                        style = AppTheme.typography.bodySmall,
-                        color = AppTheme.colors.onSurfaceVariant
+            MillenniumDialog(visible = true, onDismissRequest = { isDialogOpen = false }) {
+                MillenniumDialogHeader {
+                    MillenniumDialogTitle(dialogTitle)
+                    MillenniumDialogClose()
+                }
+                MillenniumDialogBody {
+                    if (dialogDescription != null) {
+                        MillenniumDialogDescription(dialogDescription)
+                    }
+                    MillenniumTextField(
+                        state = dialogState,
+                        label = title,
+                        modifier = Modifier.fillMaxWidth(),
+                        placeholder = placeholder,
+                        error = errorMessage
                     )
                 }
-                MillenniumTextField(
-                    state = dialogState,
-                    label = title,
-                    modifier = Modifier.fillMaxWidth(),
-                    placeholder = placeholder,
-                    error = errorMessage
-                )
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                MillenniumDialogFooter {
+                    MillenniumButton(
+                        onClick = { isDialogOpen = false },
+                        style = MillenniumButtonStyle.Secondary
+                    ) {
+                        Text(stringResource(Res.string.common_cancel))
+                    }
                     MillenniumButton(
                         onClick = {
                             if (errorMessage == null) {
@@ -268,12 +278,6 @@ internal fun TextInputSettingCard(
                         enabled = errorMessage == null
                     ) {
                         Text(stringResource(Res.string.common_save))
-                    }
-                    MillenniumButton(
-                        onClick = { isDialogOpen = false },
-                        style = MillenniumButtonStyle.Secondary
-                    ) {
-                        Text(stringResource(Res.string.common_cancel))
                     }
                 }
             }

@@ -18,10 +18,10 @@
 package dev.krtirtho.spotube.modules.settings
 
 
+import org.spotube.millennium.composables.MillenniumCircularProgress
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
-import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumSeparator
 import org.spotube.millennium.composables.MillenniumSidebarItem
 import org.spotube.millennium.theme.MillenniumTheme
@@ -288,7 +288,7 @@ private fun SettingsTabContent(
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center) {
-                    MillenniumIndeterminateProgress()
+                    MillenniumCircularProgress(size = 40.dp)
                 }
             } else {
                 Box(modifier = Modifier.fillMaxSize()) {

@@ -18,10 +18,10 @@
 package dev.krtirtho.spotube.modules.search
 
 
+import org.spotube.millennium.composables.MillenniumMarqueeProgress
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
-import org.spotube.millennium.composables.MillenniumIndeterminateProgress
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.composables.MillenniumAutocomplete
 import org.spotube.millennium.composables.MillenniumText
@@ -1155,7 +1155,7 @@ private fun SearchLoadingIndicator(
                         translationY = bounce
                     })
         }
-        MillenniumIndeterminateProgress(
+        MillenniumMarqueeProgress(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 32.dp, vertical = 16.dp)

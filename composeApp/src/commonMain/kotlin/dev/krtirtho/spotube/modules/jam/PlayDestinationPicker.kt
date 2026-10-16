@@ -17,6 +17,7 @@
 
 package dev.krtirtho.spotube.modules.jam
 
+import org.spotube.millennium.composables.MillenniumAlertDialog
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
 import org.spotube.millennium.composables.MillenniumButton
@@ -47,27 +48,23 @@ fun PlayDestinationPicker(
     onSuggestToJam: () -> Unit) {
     if (!visible) return
 
-    MillenniumDialog(
+    MillenniumAlertDialog(
         visible = true,
         onDismissRequest = onDismiss,
-        title = stringResource(Res.string.jam_destination_title)) {
-        Text(
-            text = stringResource(Res.string.jam_destination_message),
-            style = AppTheme.typography.bodyMedium)
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            MillenniumButton(
-                onClick = onDismiss,
-                style = MillenniumButtonStyle.Quiet) {
-                Text(stringResource(Res.string.common_cancel))
-            }
-            MillenniumButton(
-                onClick = onPlayLocally,
-                style = MillenniumButtonStyle.Quiet) {
-                Text(stringResource(Res.string.jam_destination_play_here))
-            }
-            MillenniumButton(onClick = onSuggestToJam) {
-                Text(stringResource(Res.string.jam_destination_suggest))
-            }
+        title = { Text(stringResource(Res.string.jam_destination_title)) },
+        description = { Text(stringResource(Res.string.jam_destination_message)) }) {
+        MillenniumButton(
+            onClick = onDismiss,
+            style = MillenniumButtonStyle.Quiet) {
+            Text(stringResource(Res.string.common_cancel))
+        }
+        MillenniumButton(
+            onClick = onPlayLocally,
+            style = MillenniumButtonStyle.Secondary) {
+            Text(stringResource(Res.string.jam_destination_play_here))
+        }
+        MillenniumButton(onClick = onSuggestToJam) {
+            Text(stringResource(Res.string.jam_destination_suggest))
         }
     }
 }

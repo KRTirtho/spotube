@@ -21,6 +21,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -166,7 +167,11 @@ fun AppSidebar(
                 }
             }
         }
-        MillenniumSidebarFooter {
+        // Compact the footer chrome only (padding + gap between items); items keep their size.
+        MillenniumSidebarFooter(
+            contentPadding = PaddingValues(horizontal = 6.dp, vertical = 4.dp),
+            contentSpacing = 2.dp
+        ) {
             val supportLabel = stringResource(Res.string.support_button_label)
             MillenniumSidebarItem(
                 label = supportLabel,

@@ -18,6 +18,7 @@
 package dev.krtirtho.spotube.modules.shell.player_queue
 
 
+import org.spotube.millennium.composables.MillenniumDropdownMenuItem
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -419,11 +420,6 @@ private fun QueueItemRow(
                 MillenniumDropdownMenu(
                     expanded = showMenu,
                     onExpandedChange = { showMenu = it },
-                    items = listOf(stringResource(Res.string.queue_remove_from_queue)),
-                    onItemClick = {
-                        onRemoveClick()
-                        showMenu = false
-                    },
                     anchor = {
                         MillenniumIconButton(
                             onClick = { showMenu = true },
@@ -434,7 +430,16 @@ private fun QueueItemRow(
                                 contentDescription = stringResource(Res.string.player_more_options_content_description)
                             )
                         }
-                    })
+                    }) {
+                    MillenniumDropdownMenuItem(
+                        label = stringResource(Res.string.queue_remove_from_queue),
+                        icon = Iconsax.IconsaxMusicSquareRemove,
+                        destructive = true,
+                        onClick = {
+                            onRemoveClick()
+                            showMenu = false
+                        })
+                }
             }
         }
     )
