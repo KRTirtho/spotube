@@ -56,11 +56,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import compose.icons.FeatherIcons
-import compose.icons.feathericons.X
 import dev.krtirtho.plugin_interfaces.plugin_apis.lyrics.LyricsLine
 import dev.krtirtho.spotube.core.ui.component.ApplicationBackButton
-import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
 import kotlinx.coroutines.launch
@@ -129,7 +126,6 @@ fun LyricsScreen(
                 .weight(1f)
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-                .padding(bottom = LocalAppShellBottomInset.current + 24.dp)
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             when {

@@ -131,8 +131,11 @@ internal class StreamProxy(
                         }
                         return
                     }
+                    // The caching request ended without committing (player disconnected or the
+                    // source was switched); nothing left to wait for.
+                    if (streamingMutex.withLock { trackId !in streamingInProgress }) break
                 }
-                logger.w { "Timeout waiting for cache of track $trackId, falling through to upstream" }
+                logger.d { "No cache for track $trackId after waiting, falling through to upstream" }
             }
 
             try {
