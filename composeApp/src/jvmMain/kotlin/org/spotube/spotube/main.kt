@@ -32,6 +32,9 @@ import androidx.compose.ui.unit.isSpecified
 import androidx.compose.ui.window.WindowPlacement
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.rememberWindowState
+import org.jetbrains.compose.resources.painterResource
+import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.spotube_logo
 import dev.nucleusframework.application.DecoratedWindow
 import dev.nucleusframework.application.NucleusBackend
 import dev.nucleusframework.application.nucleusApplication
@@ -200,6 +203,7 @@ fun main() {
                 }
             },
             title = "Spotube",
+            icon = painterResource(Res.drawable.spotube_logo),
             visible = isWindowVisible
         ) {
             CompositionLocalProvider(

@@ -907,6 +907,7 @@
     <string name="plugin_discover_badge_verified">Verified</string>
     <string name="plugin_discover_stars_content_description">GitHub stars</string>
     <string name="plugin_discover_repository_content_description">GitHub repository URL</string>
+    <string name="plugin_discover_repository_host">github.com</string>
 
     <!-- Plugin release install dialog -->
     <string name="plugin_install_no_releases">No releases found</string>

@@ -12,7 +12,7 @@
 ## High-value commands
 - Use Gradle wrapper (`./gradlew` or `./gradlew.bat`) only.
 - Run desktop: `:composeApp:run`
-- Build Android debug: `:composeApp:assembleDebug`
+- Build Android debug: `:composeApp:assembleStableDebug` (or `assembleNightlyDebug`). Android has `stable`/`nightly` product flavors (nightly = beta channel: `.nightly` applicationId suffix, own icons/name in `composeApp/src/nightly/res`). Desktop icons come from `composeApp/icons/{stable,nightly}`, chosen with `-Pnightly=true`.
 - Module checks: `:composeApp:check`, `:plugin_interfaces:check`, `:js_plugin_example:check`
 - Focused tests: `:composeApp:jvmTest`, `:composeApp:iosSimulatorArm64Test`, `:plugin_interfaces:jvmTest`, `:plugin_interfaces:jsTest`, `:js_plugin_example:jsTest`
 - No lint/typecheck/formatter tasks are configured; `:composeApp:check` is the only aggregated check.
@@ -70,6 +70,6 @@
 - **Adaptive Components:** Use `AdaptiveDropdownBottomSheet` or `AdaptiveDialogBottomSheet` inside `commonMain` for adaptive layouts[cite: 2]. Do NOT create platform-specific `expect/actual` variants unless platform-native APIs (like windowing or native scrollbars) are explicitly required[cite: 2].
 
 ### 3. Verification & Diagnostic Loops
-- **Post-Edit Verification:** After editing Kotlin code, validate compilation by running `./gradlew :composeApp:check` or `./gradlew :composeApp:assembleDebug` via MCP[cite: 2].
+- **Post-Edit Verification:** After editing Kotlin code, validate compilation by running `./gradlew :composeApp:check` or `./gradlew :composeApp:assembleStableDebug` via MCP[cite: 2].
 - **Dispatcher Integrity:** Never remove or bypass `SwingMainDispatcherFactory` in `composeApp/src/jvmMain/.../core/coroutines/`[cite: 2]. It is required to prevent `compose-webview` from hijacking `Dispatchers.Main` away from the Swing EDT[cite: 2].
 - **Live Preview Iteration:** Use `compose-hot-reload` to evaluate UI layout changes headlessly without forcing full Gradle rebuilds.

@@ -43,12 +43,24 @@ plugins {
 val bundleId = "org.spotube.spotube"
 val version = "6.0.0"
 val buildNumber = 46
+// Desktop icon channel; Android picks its icons via the stable/nightly product flavor. Use -Pnightly=true.
+val isNightly = providers.gradleProperty("nightly").map { it.toBoolean() }.getOrElse(false)
+val desktopIconDir = if (isNightly) "icons/nightly" else "icons/stable"
+// Nightlies are numbered by the CI run (-PbuildNumber=<run>, or GITHUB_RUN_NUMBER) so every build is traceable to its run.
+val nightlyBuildNumber = providers.gradleProperty("buildNumber").orNull?.toIntOrNull()
+    ?: System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
+    ?: buildNumber
 val targetName = "Spotube"
 val homePageUrl = "https://spotube.org"
 val repositoryUrl = "https://github.com/team-spotube/spotube"
 val appVersionName = version
-val appBuildNumber = buildNumber
+val appBuildNumber = if (isNightly) nightlyBuildNumber else buildNumber
 val appRepositoryUrl = repositoryUrl
+// CI reads the release version from here instead of scraping this file.
+tasks.register("printVersion") {
+    val appVersion = appVersionName
+    doLast { println(appVersion) }
+}
 val githubRepositoryPath = repositoryUrl.removePrefix("https://github.com/")
 val latestReleaseApiUrl = "https://api.github.com/repos/$githubRepositoryPath/releases/latest"
 val generatedAppInfoDir = layout.buildDirectory.dir("generated/appBuildInfo/commonMain/kotlin")
@@ -297,6 +309,19 @@ android {
         versionCode = buildNumber
         versionName = version
     }
+    // stable = production channel, nightly = beta channel (own icon, name and installable side by side)
+    flavorDimensions += "channel"
+    productFlavors {
+        create("stable") {
+            dimension = "channel"
+        }
+        create("nightly") {
+            dimension = "channel"
+            applicationIdSuffix = ".nightly"
+            versionCode = nightlyBuildNumber
+            versionNameSuffix = "-nightly.$nightlyBuildNumber"
+        }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -382,11 +407,13 @@ nucleus.application {
         homepage = homePageUrl
 
         linux {
+            iconFile.set(project.file("$desktopIconDir/icon.png"))
             modules("jdk.security.auth")
             debMaintainer = "Team Spotube <team.spotube@proton.me>"
             rpmLicenseType = "AGPL-3.0-or-later"
         }
         windows {
+            iconFile.set(project.file("$desktopIconDir/icon.ico"))
             shortcut = true
             menu = true
             dirChooser = true
@@ -394,6 +421,7 @@ nucleus.application {
         }
 
         macOS {
+            iconFile.set(project.file("$desktopIconDir/icon.icns"))
             notarization {
 
             }

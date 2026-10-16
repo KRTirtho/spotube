@@ -40,6 +40,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -134,6 +136,7 @@ import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.plugin_discover_badge_official
 import spotube.composeapp.generated.resources.plugin_discover_badge_verified
 import spotube.composeapp.generated.resources.plugin_discover_repository_content_description
+import spotube.composeapp.generated.resources.plugin_discover_repository_host
 import spotube.composeapp.generated.resources.plugin_discover_stars_content_description
 import spotube.composeapp.generated.resources.plugin_info_abilities
 import spotube.composeapp.generated.resources.plugin_info_api_version
@@ -848,6 +851,7 @@ private fun SupportDialog(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun DiscoverRepoCard(
     repo: GitHubRepo,
@@ -952,9 +956,10 @@ private fun DiscoverRepoCard(
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                FlowRow(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                    itemVerticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         repo.owner.login,
@@ -997,9 +1002,10 @@ private fun DiscoverRepoCard(
                                 tint = AppTheme.colors.onSurfaceVariant
                             )
                             Text(
-                                "github.com",
+                                stringResource(Res.string.plugin_discover_repository_host),
                                 style = AppTheme.typography.labelSmall,
-                                color = AppTheme.colors.onSurfaceVariant
+                                color = AppTheme.colors.onSurfaceVariant,
+                                singleLine = true
                             )
                         }
                     }

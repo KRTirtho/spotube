@@ -29,6 +29,7 @@ import androidx.core.app.NotificationCompat
 import androidx.media3.common.MediaItem as Media3MediaItem
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
+import androidx.media3.session.DefaultMediaNotificationProvider
 import androidx.media3.session.LibraryResult
 import androidx.media3.session.MediaLibraryService
 import androidx.media3.session.MediaLibraryService.LibraryParams
@@ -41,6 +42,7 @@ import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.SettableFuture
 import org.spotube.spotube.MainActivity
+import org.spotube.spotube.R
 import org.spotube.spotube.core.audioplayer.AudioPlayer
 import org.spotube.spotube.core.audioplayer.AudioPlayerInterface
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
@@ -75,6 +77,16 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
 
         createNotificationChannel()
 
+        // Media3 posts the real playback notification; point it at our channel,
+        // ID and monochrome icon so it replaces the placeholder below in place.
+        setMediaNotificationProvider(
+            DefaultMediaNotificationProvider.Builder(this)
+                .setChannelId(CHANNEL_ID)
+                .setNotificationId(NOTIFICATION_ID)
+                .build()
+                .apply { setSmallIcon(R.drawable.ic_stat_spotube) }
+        )
+
         val sessionActivity = PendingIntent.getActivity(
             this,
             0,
@@ -87,7 +99,7 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Spotube")
             .setContentText(runBlocking { getString(Res.string.notification_playback_service_text) })
-            .setSmallIcon(android.R.drawable.ic_media_play)
+            .setSmallIcon(R.drawable.ic_stat_spotube)
             .setContentIntent(sessionActivity)
             .setOngoing(true)
             .build()
