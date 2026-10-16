@@ -26,12 +26,19 @@ import org.schabi.newpipe.extractor.ServiceList.YouTube
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
 
+/** NewPipe reports durations in seconds (-1 when unknown). */
+private fun secondsToMs(seconds: Long): Long = if (seconds > 0) seconds * 1000 else 0
+
 actual class NewPipeService {
-    actual suspend fun searchVideos(query: String): List<VideoSearchResult> {
+    actual suspend fun searchVideos(query: String, kind: SearchKind): List<VideoSearchResult> {
         return withContext(Dispatchers.IO) {
             val extractor = YouTube.getSearchExtractor(
                 query,
-                mutableListOf(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS),
+                mutableListOf(
+                    when (kind) {
+                        SearchKind.Songs -> YoutubeSearchQueryHandlerFactory.MUSIC_SONGS
+                        SearchKind.Videos -> YoutubeSearchQueryHandlerFactory.VIDEOS
+                    }),
                 ""
             )
             extractor.fetchPage()
@@ -45,7 +52,7 @@ actual class NewPipeService {
                         title = item.name,
                         url = item.url,
                         uploader = item.uploaderName,
-                        durationMs = item.duration,
+                        durationMs = secondsToMs(item.duration),
                         thumbnailUrl = item.thumbnails.first().url)
                 } else {
                     null
@@ -101,7 +108,7 @@ actual class NewPipeService {
                 title = extractor.name,
                 url = extractor.url,
                 uploader = extractor.uploaderName,
-                durationMs = extractor.length,
+                durationMs = secondsToMs(extractor.length),
                 thumbnailUrl = extractor.thumbnails.first().url,
                 // fallback to video streams if no audio streams are available
                 audioStreams = audioStreams.ifEmpty {

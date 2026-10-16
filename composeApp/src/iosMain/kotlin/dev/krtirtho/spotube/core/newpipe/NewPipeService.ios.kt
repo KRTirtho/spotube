@@ -26,12 +26,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
+/** NewPipe reports durations in seconds (-1 when unknown). */
+private fun secondsToMs(seconds: Long): Long = if (seconds > 0) seconds * 1000 else 0
+
 actual class NewPipeService {
-    actual suspend fun searchVideos(query: String): List<VideoSearchResult> {
+    actual suspend fun searchVideos(query: String, kind: SearchKind): List<VideoSearchResult> {
         return withContext(Dispatchers.IO) {
             val extractor = YouTube.getSearchExtractor(
                 query,
-                mutableListOf(YoutubeSearchQueryHandlerFactory.MUSIC_SONGS),
+                mutableListOf(
+                    when (kind) {
+                        SearchKind.Songs -> YoutubeSearchQueryHandlerFactory.MUSIC_SONGS
+                        SearchKind.Videos -> YoutubeSearchQueryHandlerFactory.VIDEOS
+                    }),
                 ""
             )
             extractor.fetchPage()
@@ -43,7 +50,7 @@ actual class NewPipeService {
                         title = item.name,
                         url = item.url,
                         uploader = item.uploaderName ?: "Unknown",
-                        durationMs = item.duration,
+                        durationMs = secondsToMs(item.duration),
                         thumbnailUrl = item.thumbnails.first().url,
                         id = Url(item.url).parameters["v"]
                             ?: throw IllegalArgumentException("Invalid YouTube URL: ${item.url}")
@@ -63,7 +70,7 @@ actual class NewPipeService {
                 title = extractor.name ?: "Unknown",
                 url = extractor.url ?: "https://www.youtube.com/watch?v=$id",
                 uploader = extractor.uploaderName,
-                durationMs = extractor.length,
+                durationMs = secondsToMs(extractor.length),
                 thumbnailUrl = extractor.thumbnails.first().url,
                 audioStreams = extractor.audioStreams()
                     .filter { stream -> stream.isUrl() && stream.format != null }
