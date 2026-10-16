@@ -154,17 +154,26 @@ class LocalServer(
             logger.d { "Restarting playback proxy server on $host:$port (remoteControl=$allowRemoteControl)" }
             stopServerLocked()
 
-            serverState.value = embeddedServer(
-                factory = CIO,
-                host = host,
-                port = port,
-                module = { configureRoutes() }
-            ).also { engine ->
-                engine.start(wait = false)
+            val bound = runCatching {
+                startServerWithPortFallback(
+                    host = host,
+                    preferredPort = port,
+                    onBindFailure = { failedPort, cause ->
+                        logger.w(cause) { "Playback proxy could not bind to $host:$failedPort" }
+                    }
+                ) { configureRoutes() }
+            }.getOrElse { throwable ->
+                logger.e(throwable) { "Playback proxy failed to start on $host (requested port $port)" }
+                return
             }
-            activePort.value = port
+
+            if (bound.usedFallback) {
+                logger.w { "Port $port is unavailable; playback proxy is using $host:${bound.port} instead" }
+            }
+            serverState.value = bound.engine
+            activePort.value = bound.port
             activeHost.value = host
-            logger.i { "Playback proxy server started at ${baseUrl.value ?: "http://$host:$port"}" }
+            logger.i { "Playback proxy server started at ${baseUrl.value ?: "http://$host:${bound.port}"}" }
         }
     }
 

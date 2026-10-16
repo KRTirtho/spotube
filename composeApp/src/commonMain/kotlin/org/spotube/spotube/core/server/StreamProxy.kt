@@ -58,6 +58,7 @@ import okio.buffer
 import okio.use
 import org.koin.core.component.KoinComponent
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.TimeSource
 
 internal class StreamProxy(
     private val httpClient: HttpClient,
@@ -90,6 +91,13 @@ internal class StreamProxy(
             logger.w { "Rejecting /stream request with missing track id" }
             call.respond(HttpStatusCode.BadRequest, "Missing track id")
             return
+        }
+
+        logger.i {
+            "[Req] $requestMethod /stream/$trackId from=${call.request.local.remoteHost} " +
+                "version=${call.request.local.version} range=${call.request.headers[HttpHeaders.Range]} " +
+                "ua=${call.request.headers[HttpHeaders.UserAgent]} " +
+                "connection=${call.request.headers[HttpHeaders.Connection]} caching=${isCachingEnabled()}"
         }
 
         if (isCachingEnabled()) {
@@ -152,7 +160,13 @@ internal class StreamProxy(
     }
 
     private suspend fun doStreamFromUpstream(call: ApplicationCall, trackId: String, requestMethod: HttpMethod) {
+        val resolveStart = TimeSource.Monotonic.markNow()
         val streamInfo = streamingUrlRepository.resolveStreamInfo(trackId)
+        logger.i {
+            "[Req] resolved stream for $trackId in ${resolveStart.elapsedNow()}: " +
+                "protocol=${streamInfo?.protocol} codec=${streamInfo?.codec} container=${streamInfo?.container} " +
+                "url=${streamInfo?.url?.take(120)}"
+        }
         if (streamInfo == null) {
             logger.w { "Unable to resolve stream for track $trackId" }
             call.respond(HttpStatusCode.NotFound, "Unable to resolve stream for track $trackId")
@@ -319,6 +333,7 @@ internal class StreamProxy(
 
         var currentUrl = streamUrl
         var attemptedRefresh = false
+        val upstreamStart = TimeSource.Monotonic.markNow()
 
         // `request()` buffers the whole body before returning, which stalls the player until
         // the full track is downloaded. `execute {}` hands over the response as soon as headers
@@ -333,6 +348,11 @@ internal class StreamProxy(
                     call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Accept)
                     call.forwardRequestHeaderIfPresent(headers, HttpHeaders.UserAgent)
                 }.execute { response ->
+                    logger.i {
+                        "[Req] upstream headers for $trackId after ${upstreamStart.elapsedNow()}: " +
+                            "status=${response.status} version=${response.version} " +
+                            "headers=${response.headers.entries().joinToString { "${it.key}=${it.value}" }}"
+                    }
                     if (response.status.value < 400) {
                         respondWithUpstream(call, response, trackId, requestMethod)
                         return@execute
@@ -356,7 +376,7 @@ internal class StreamProxy(
             if (failure != null) {
                 if (failure is CancellationException) throw failure
                 if (failure.isClientDisconnect()) {
-                    logger.d { "Player closed the connection while streaming track $trackId" }
+                    logger.i(failure) { "[Req] player closed the connection while streaming track $trackId" }
                     return
                 }
                 logger.w(failure) { "Failed to fetch upstream stream for track $trackId" }
@@ -432,6 +452,18 @@ internal class StreamProxy(
                 downstreamHeaders[HttpHeaders.ContentType]?.let(ContentType.Companion::parse)
 
             override suspend fun writeTo(channel: io.ktor.utils.io.ByteWriteChannel) {
+                val writeStart = TimeSource.Monotonic.markNow()
+                logger.i { "[Req] start writing body for $trackId status=${upstream.status} cache=${cacheFilename != null} expected=$expectedLength" }
+                try {
+                    writeBody(channel)
+                    logger.i { "[Req] finished writing body for $trackId in ${writeStart.elapsedNow()}" }
+                } catch (e: Throwable) {
+                    logger.i(e) { "[Req] body write for $trackId aborted after ${writeStart.elapsedNow()}: ${e::class.simpleName}: ${e.message}" }
+                    throw e
+                }
+            }
+
+            private suspend fun writeBody(channel: io.ktor.utils.io.ByteWriteChannel) {
                 if (cacheFilename != null) {
                     val cacheDir = cacheManager.resolveCacheDir()
                     val cacheFile = cacheDir / cacheFilename.toPath()

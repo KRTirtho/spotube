@@ -55,7 +55,6 @@ vlcjNative = "4.12.0"
 ziplineVersion = "1.27.0"
 ktor = "3.5.1"
 dnssdkt = "1.1.0"
-kotlinStdlib = "2.4.10"
 runner = "1.7.0"
 core = "1.7.0"
 filekit = "0.14.2"
@@ -148,7 +147,7 @@ ktor-client-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
+kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
 androidx-core = { group = "androidx.test", name = "core", version.ref = "core" }
 filekit-core = { group = "io.github.vinceglb", name = "filekit-core", version.ref = "filekit" }
@@ -186,8 +185,8 @@ jetbrainsKotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 zipline-gradle-plugin = { id = "app.cash.zipline", version.ref = "ziplineVersion" }
 mavenPublish = { id = "maven-publish" }
-spotubeGradle = { id = "dev.krtirtho.spotube.gradle-plugin", version.ref = "spotube-gradle" }
-vlcjBundler = { id = "dev.krtirtho.vlcj-bundler.gradle-plugin", version.ref = "vlcjBundler" }
+spotubeGradle = { id = "org.spotube.gradle-plugin", version.ref = "spotube-gradle" }
+vlcjBundler = { id = "org.spotube.vlcj-bundler", version.ref = "vlcjBundler" }
 kotlinxAtomicFu = { id = "org.jetbrains.kotlinx.atomicfu", version.ref = "kotlinx-atomicfu" }
 uniffi = { id = "dev.gobley.uniffi", version.ref = "uniffi" }
 cargo = { id = "dev.gobley.cargo", version.ref = "uniffi" }
