@@ -43,6 +43,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.composeunstyled.Text
 import dev.krtirtho.spotube.core.ui.component.ApplicationMainBar
+import dev.krtirtho.spotube.core.ui.component.LoginRequiredDisplay
+import dev.krtirtho.spotube.modules.plugin.MetadataAuthViewModel
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import dev.krtirtho.spotube.modules.shell.LocalAppShellBottomInset
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
@@ -76,19 +78,42 @@ import spotube.composeapp.generated.resources.no_metadata_plugin_title
  * the screen sit on an endless loading skeleton.
  *
  * @param backButton whether the placeholder's top bar shows a back button (for pushed screens).
+ * @param requireLogin also swap [content] for a friendly sign-in prompt while the plugin needs an
+ * account and the user isn't signed in (for screens that only make sense when logged in).
  * @param showTopBar false when the host screen already draws its own app bar (e.g. Library tabs).
  */
 @Composable
 fun MetadataPluginGuard(
     backButton: Boolean = false,
     showTopBar: Boolean = true,
+    requireLogin: Boolean = false,
     viewModel: MetadataPluginGuardViewModel = koinViewModel(),
+    authViewModel: MetadataAuthViewModel = koinViewModel(),
     content: @Composable () -> Unit
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val authState by authViewModel.uiState.collectAsStateWithLifecycle()
 
     when (val s = state) {
-        is MetadataPluginGuardState.Available -> content()
+        is MetadataPluginGuardState.Available ->
+            if (requireLogin && authState.loginRequired) {
+                Column(Modifier.fillMaxSize().background(MillenniumTheme.colors.background)) {
+                    if (showTopBar) ApplicationMainBar(backButton = backButton)
+                    Box(
+                        Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(bottom = LocalAppShellBottomInset.current),
+                        contentAlignment = Alignment.Center) {
+                        LoginRequiredDisplay(
+                            pluginName = authState.pluginName,
+                            onLogin = authViewModel::login,
+                            modifier = Modifier.widthIn(max = 420.dp))
+                    }
+                }
+            } else {
+                content()
+            }
         is MetadataPluginGuardState.Loading -> Box(
             Modifier.fillMaxSize().background(MillenniumTheme.colors.background))
         is MetadataPluginGuardState.Missing -> NoMetadataPluginScreen(

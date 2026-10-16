@@ -630,6 +630,12 @@
     <string name="media_user">User</string>
     <string name="media_playlist">Playlist</string>
 
+    <!-- Login required -->
+    <string name="login_required_title">Sign in to continue</string>
+    <string name="login_required_description">This part of Spotube needs you to be signed in with your music provider. Sign in once and everything will show up here.</string>
+    <string name="login_required_description_plugin">%1$s needs you to sign in before it can show this. Sign in once and everything will show up here.</string>
+    <string name="login_required_action">Sign in</string>
+
     <!-- Error display -->
     <string name="error_title">We\'re Truly Sorry</string>
     <string name="error_description">Something isn\'t working right now. Your experience matters to us, and we\'re doing our best to fix this. Please try again or check the error details below.</string>

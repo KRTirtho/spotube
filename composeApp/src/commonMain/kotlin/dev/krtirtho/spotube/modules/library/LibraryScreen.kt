@@ -117,7 +117,7 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
         }
         Column(Modifier.weight(1f).padding(horizontal = 12.dp)) {
             when (state.currentTab) {
-                LibraryTab.Playlists -> MetadataPluginGuard(showTopBar = false) {
+                LibraryTab.Playlists -> MetadataPluginGuard(showTopBar = false, requireLogin = true) {
                     LibraryPlaylistsScreen(
                         showCreatePlaylist = state.showCreatePlaylist,
                         onDismissCreatePlaylist = libraryState::dismissCreatePlaylist,
@@ -125,10 +125,10 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
                     )
                 }
 
-                LibraryTab.Albums -> MetadataPluginGuard(showTopBar = false) {
+                LibraryTab.Albums -> MetadataPluginGuard(showTopBar = false, requireLogin = true) {
                     LibraryAlbumsScreen(viewMode = viewMode)
                 }
-                LibraryTab.Artists -> MetadataPluginGuard(showTopBar = false) {
+                LibraryTab.Artists -> MetadataPluginGuard(showTopBar = false, requireLogin = true) {
                     LibraryArtistsScreen(viewMode = viewMode)
                 }
                 LibraryTab.LocalTracks -> LibraryLocalTracksScreen()

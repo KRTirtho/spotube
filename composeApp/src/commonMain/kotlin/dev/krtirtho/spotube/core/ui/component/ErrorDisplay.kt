@@ -50,6 +50,9 @@ import dev.krtirtho.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.Text
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.krtirtho.spotube.modules.plugin.MetadataAuthViewModel
+import org.koin.compose.viewmodel.koinViewModel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -77,7 +80,16 @@ import spotube.composeapp.generated.resources.*
 fun ErrorDisplay(
     errorMessage: String,
     onRetry: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    authViewModel: MetadataAuthViewModel = koinViewModel()) {
+    val authState by authViewModel.uiState.collectAsStateWithLifecycle()
+    if (authState.loginRequired) {
+        LoginRequiredDisplay(
+            pluginName = authState.pluginName,
+            onLogin = authViewModel::login,
+            modifier = modifier)
+        return
+    }
     var showFullLog by remember { mutableStateOf(false) }
     val clipboardManager = LocalClipboardManager.current
 
@@ -239,16 +251,6 @@ private fun ErrorLogDialog(
                 Text(stringResource(Res.string.common_close))
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun ErrorDisplayPreview() {
-    Box(modifier = Modifier.fillMaxSize().background(AppTheme.colors.background)) {
-        ErrorDisplay(
-            errorMessage = "This is an error message",
-            onRetry = {})
     }
 }
 

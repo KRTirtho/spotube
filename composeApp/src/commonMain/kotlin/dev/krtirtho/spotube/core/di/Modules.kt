@@ -54,6 +54,7 @@ import dev.krtirtho.spotube.modules.downloads.DownloadManager
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.home.HomeScreenRepository
 import dev.krtirtho.spotube.modules.home.HomeScreenViewModel
+import dev.krtirtho.spotube.modules.plugin.MetadataAuthViewModel
 import dev.krtirtho.spotube.modules.library.LibraryRepository
 import dev.krtirtho.spotube.modules.library.LibraryState
 import dev.krtirtho.spotube.modules.library.album.LibraryAlbumsViewModel
@@ -116,6 +117,7 @@ val sharedModules = module {
     // Home
     singleOf(::HomeScreenRepository)
     viewModelOf(::HomeScreenViewModel)
+    viewModelOf(::MetadataAuthViewModel)
 
     // Search
     singleOf(::SearchRepository)
