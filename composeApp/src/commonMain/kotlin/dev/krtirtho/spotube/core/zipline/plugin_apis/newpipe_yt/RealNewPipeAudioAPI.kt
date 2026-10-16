@@ -193,6 +193,8 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
 
         val sources = linkedMapOf<String, AudioSource.Basic>()
         val searched = mutableSetOf<Pair<String, SearchKind>>()
+        // Results of the text searches in YouTube's relevance order, used if nothing scores well
+        val textSearchResults = linkedMapOf<String, AudioSource.Basic>()
         for ((stage, request) in plan) {
             if (sources.values.any { it.confidence >= confidentMatch }) break
             if (!searched.add(request)) continue
@@ -208,6 +210,7 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
                 "[Search] stage '$stage' best confidence=${scored.maxOfOrNull { it.confidence }} " +
                     "(need >= $confidentMatch to stop)"
             }
+            if (stage != "isrc") scored.forEach { if (it.id !in textSearchResults) textSearchResults[it.id] = it }
             scored.forEach { s ->
                 val existing = sources[s.id]
                 if (existing == null || existing.confidence < s.confidence) sources[s.id] = s
@@ -223,8 +226,19 @@ class RealNewPipeAudioAPI : AudioAPI, KoinComponent {
             }.joinToString("\n")
         }
 
-        // Never play a result that does not match the track at all
-        return matched.take(5)
+        if (matched.isNotEmpty()) return matched.take(5)
+
+        // Nothing scored well. Playing YouTube's best text-search guess beats failing playback,
+        // and ISRC results are skipped because an ISRC text search tends to return unrelated songs.
+        val fallback = textSearchResults.values.toList()
+            .sortedByDescending { it.confidence } // stable: ties keep YouTube's relevance order
+            .take(5)
+            .ifEmpty { ranked.take(5) }
+        logger.w {
+            "[Search] no confident match for '${track.title}'; falling back to best guesses: " +
+                fallback.joinToString { "${it.id} conf=${it.confidence} '${it.title}'" }
+        }
+        return fallback
     }
 
     override suspend fun getStreamsOfAudioSource(source: AudioSource.Basic): List<AudioSource.Streamed> {
