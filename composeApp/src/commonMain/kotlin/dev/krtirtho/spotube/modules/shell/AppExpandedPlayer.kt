@@ -39,11 +39,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,14 +59,12 @@ import org.spotube.millennium.theme.millenniumPanelBrush
 import org.spotube.millennium.theme.millenniumSurface
 import com.composeunstyled.SheetDetent
 import com.composeunstyled.rememberModalBottomSheetState
-import androidx.compose.ui.graphics.SolidColor
 
 import com.composeunstyled.Text
 import com.composeunstyled.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -99,6 +94,7 @@ import dev.krtirtho.spotube.modules.downloads.DownloadProgressIcon
 import dev.krtirtho.spotube.modules.downloads.DownloadStatus
 import dev.krtirtho.spotube.modules.downloads.DownloadsViewModel
 import dev.krtirtho.spotube.modules.lyrics.LyricsViewModel
+import dev.krtirtho.spotube.modules.lyrics.SyncedLyricsList
 import dev.krtirtho.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import dev.krtirtho.spotube.modules.saved_tracks.SavedTracksViewModel
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
@@ -659,7 +655,6 @@ fun AppExpandedPlayer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                audioPlayer = audioPlayer,
                 onExpand = onExpandLyrics
             )
         }
@@ -690,105 +685,50 @@ private fun rememberSharedAlbumArtModifier(
 @Composable
 private fun LyricsPreviewCard(
     modifier: Modifier = Modifier,
-    audioPlayer: AudioPlayerInterface,
     onExpand: () -> Unit,
     viewModel: LyricsViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     val syncedLyrics = uiState.syncedLyrics ?: emptyList()
     val isLoading = uiState.isLoading
-
-    val listState = rememberLazyListState()
-    val positionMillis by audioPlayer.positionFlow.collectAsState(initial = 0.milliseconds)
-
-    val currentIndex by remember {
-        derivedStateOf {
-            if (syncedLyrics.isEmpty()) return@derivedStateOf -1
-            var idx = 0
-            for (i in syncedLyrics.indices) {
-                if (syncedLyrics[i].time <= positionMillis.inWholeMilliseconds) {
-                    idx = i
-                } else {
-                    break
-                }
-            }
-            idx
-        }
-    }
-
-    LaunchedEffect(currentIndex) {
-        if (currentIndex >= 0 && syncedLyrics.isNotEmpty()) {
-            val centerIndex = currentIndex.coerceIn(0, syncedLyrics.lastIndex)
-            listState.animateScrollToItem(centerIndex, scrollOffset = -50)
-        }
-    }
-
     if (syncedLyrics.isEmpty() || isLoading) return
 
-    Box(
-        modifier = modifier
-            .millenniumSurface(
-                background = SolidColor(AppTheme.colors.surfaceContainerHighest),
-                shape = RoundedCornerShape(16.dp),
-                shadowElevation = 2.dp
-            )
-            .clickable(onClick = onExpand)
+    MillenniumCard(
+        modifier = modifier.clickable(onClick = onExpand),
+        contentPadding = PaddingValues(12.dp),
+        contentSpacing = 8.dp,
+        shadowElevation = 2.dp
     ) {
-        Column(modifier = Modifier.padding(12.dp)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(Res.string.player_lyrics),
+                style = AppTheme.typography.labelMedium,
+                color = MillenniumTheme.colors.muted
+            )
+            MillenniumIconButton(
+                onClick = onExpand,
+                style = MillenniumIconButtonStyle.Quiet
             ) {
-                Text(
-                    text = stringResource(Res.string.player_lyrics),
-                    style = AppTheme.typography.labelMedium,
-                    color = AppTheme.colors.onSurfaceVariant
+                MillenniumIcon(
+                    Iconsax.IconsaxArrowSquareUp,
+                    contentDescription = stringResource(Res.string.player_expand_lyrics_content_description),
+                    tint = MillenniumTheme.colors.muted
                 )
-                MillenniumIconButton(
-                    onClick = onExpand,
-                    style = MillenniumIconButtonStyle.Quiet
-                ) {
-                    MillenniumIcon(
-                        Iconsax.IconsaxArrowSquareUp,
-                        contentDescription = stringResource(Res.string.player_expand_lyrics_content_description),
-                        tint = AppTheme.colors.onSurfaceVariant
-                    )
-                }
-            }
-
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp),
-                contentPadding = PaddingValues(vertical = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                val displayLines = syncedLyrics.take(6)
-                itemsIndexed(displayLines) { index, line ->
-                    val isCurrent =
-                        index == currentIndex.coerceIn(0, displayLines.lastIndex.coerceAtLeast(0))
-                    Text(
-                        text = line.text.ifBlank { "..." },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 8.dp, vertical = 2.dp),
-                        style = AppTheme.typography.bodySmall.copy(
-                            fontWeight = if (isCurrent) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isCurrent) {
-                                AppTheme.colors.primary
-                            } else {
-                                AppTheme.colors.onSurfaceVariant.copy(alpha = 0.7f)
-                            }
-                        ),
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Center
-                    )
-                }
             }
         }
+
+        // Passive preview: no onLineClick, so lines never seek playback.
+        SyncedLyricsList(
+            lines = syncedLyrics,
+            currentIndex = uiState.currentIndex,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(120.dp)
+        )
     }
 }
 

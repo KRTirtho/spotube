@@ -22,37 +22,45 @@ import org.spotube.millennium.composables.MillenniumBarsLoader
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumSegmentedButton
+import org.spotube.millennium.composables.MillenniumSegmentedButtonDefaults
+import org.spotube.millennium.composables.MillenniumSegmentedButtonRow
+import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
+import coil3.compose.AsyncImage
+import org.spotube.millennium.theme.millenniumPanelBrush
+import org.spotube.millennium.theme.millenniumSurface
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.RoundedCornerShape
 
 import dev.krtirtho.spotube.core.ui.theming.AppTheme
 
 import com.composeunstyled.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,7 +68,6 @@ import dev.krtirtho.plugin_interfaces.plugin_apis.lyrics.LyricsLine
 import dev.krtirtho.spotube.core.ui.component.ApplicationBackButton
 import dev.krtirtho.spotube.resources.iconsax.Iconsax
 import dev.krtirtho.spotube.resources.iconsax.IconsaxArrowDown4
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import spotube.composeapp.generated.resources.Res
@@ -77,95 +84,87 @@ fun LyricsScreen(
     modifier: Modifier = Modifier,
     onClose: (() -> Unit)? = null) {
     val uiState by viewModel.uiState.collectAsState()
-    val positionMillis by viewModel.positionMillisFlow.collectAsState()
-    val scope = rememberCoroutineScope()
+    val colors = MillenniumTheme.colors
 
-    Column(modifier = modifier.fillMaxSize().background(AppTheme.colors.background)) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically) {
-            if (onClose != null) {
-                MillenniumIconButton(
-                    onClick = onClose,
-                    style = MillenniumIconButtonStyle.Quiet
-                ) {
-                    MillenniumIcon(
-                        imageVector = Iconsax.IconsaxArrowDown4,
-                        contentDescription = stringResource(Res.string.common_close)
-                    )
-                }
-            } else {
-                ApplicationBackButton()
-            }
-            Spacer(Modifier.weight(1f))
+    BoxWithConstraints(
+        modifier = modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    0f to colors.accent.copy(alpha = 0.14f),
+                    0.55f to colors.background,
+                    1f to colors.background
+                )
+            )
+    ) {
+        val isWide = maxWidth >= 840.dp
+
+        Column(Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(AppTheme.colors.surfaceVariant)
-                    .padding(3.dp),
-                horizontalArrangement = Arrangement.spacedBy(3.dp)
-            ) {
-                LyricsModeTab(
-                    label = stringResource(Res.string.lyrics_mode_synced),
-                    isSelected = uiState.mode == LyricType.SYNCED,
-                    onClick = { viewModel.setMode(LyricType.SYNCED) }
-                )
-                LyricsModeTab(
-                    label = stringResource(Res.string.lyrics_mode_plain),
-                    isSelected = uiState.mode == LyricType.STATIC,
-                    onClick = { viewModel.setMode(LyricType.STATIC) }
-                )
-            }
-            Spacer(Modifier.weight(1f))
-            Spacer(Modifier.width(44.dp))
-        }
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-        ) {
-            Spacer(modifier = Modifier.height(16.dp))
-            when {
-                uiState.isLoading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        MillenniumBarsLoader(size = 48.dp)
-                    }
-                }
-
-                uiState.error != null -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = uiState.error ?: stringResource(Res.string.common_unknown_error),
-                            style = AppTheme.typography.bodyLarge,
-                            color = AppTheme.colors.error,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
-
-                uiState.mode == LyricType.SYNCED -> {
-                    SyncedLyricsContent(
-                        syncedLyrics = uiState.syncedLyrics ?: emptyList(),
-                        currentIndex = viewModel.currentLyricIndex(positionMillis),
-                        onScrollToIndex = { index ->
-                            scope.launch {
-                                // scroll will be handled by LazyColumn
-                            }
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.width(48.dp), contentAlignment = Alignment.CenterStart) {
+                    if (onClose != null) {
+                        MillenniumIconButton(
+                            onClick = onClose,
+                            style = MillenniumIconButtonStyle.Quiet
+                        ) {
+                            MillenniumIcon(
+                                imageVector = Iconsax.IconsaxArrowDown4,
+                                contentDescription = stringResource(Res.string.common_close)
+                            )
                         }
-                    )
+                    } else {
+                        ApplicationBackButton()
+                    }
                 }
+                Box(Modifier.weight(1f), contentAlignment = Alignment.Center) {
+                    MillenniumSegmentedButtonRow(Modifier.widthIn(max = 280.dp)) {
+                        MillenniumSegmentedButton(
+                            selected = uiState.mode == LyricType.SYNCED,
+                            onClick = { viewModel.setMode(LyricType.SYNCED) },
+                            shape = MillenniumSegmentedButtonDefaults.itemShape(0, 2),
+                            modifier = Modifier.weight(1f)
+                        ) { Text(stringResource(Res.string.lyrics_mode_synced)) }
+                        MillenniumSegmentedButton(
+                            selected = uiState.mode == LyricType.STATIC,
+                            onClick = { viewModel.setMode(LyricType.STATIC) },
+                            shape = MillenniumSegmentedButtonDefaults.itemShape(1, 2),
+                            modifier = Modifier.weight(1f)
+                        ) { Text(stringResource(Res.string.lyrics_mode_plain)) }
+                    }
+                }
+                Spacer(Modifier.width(48.dp))
+            }
 
-                uiState.mode == LyricType.STATIC -> {
-                    PlainLyricsContent(plainLyrics = uiState.plainLyrics ?: "")
+            if (isWide) {
+                Row(
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 40.dp),
+                    horizontalArrangement = Arrangement.spacedBy(40.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TrackPane(uiState, Modifier.weight(0.38f))
+                    Column(Modifier.weight(0.62f).fillMaxHeight()) {
+                        LyricsBody(uiState, viewModel)
+                    }
+                }
+            } else {
+                CompactTrackHeader(
+                    uiState,
+                    Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 4.dp)
+                )
+                Column(
+                    Modifier
+                        .weight(1f)
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp)
+                ) {
+                    LyricsBody(uiState, viewModel)
                 }
             }
         }
@@ -173,151 +172,175 @@ fun LyricsScreen(
 }
 
 @Composable
-private fun LyricsModeTab(
-    label: String,
-    isSelected: Boolean,
-    onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(50.dp))
-            .background(
-                if (isSelected) {
-                    AppTheme.colors.primary
-                } else {
-                    Color.Transparent
-                }
+private fun ColumnScope.LyricsBody(uiState: LyricsUiState, viewModel: LyricsViewModel) {
+    when {
+        uiState.isLoading -> CenteredMessage {
+            MillenniumBarsLoader(size = 48.dp)
+        }
+
+        uiState.error != null -> CenteredMessage {
+            Text(
+                text = uiState.error ?: stringResource(Res.string.common_unknown_error),
+                style = AppTheme.typography.bodyLarge,
+                color = MillenniumTheme.colors.danger,
+                textAlign = TextAlign.Center
             )
-            .clickable(onClick = onClick)
-            .padding(horizontal = 18.dp, vertical = 7.dp)
-    ) {
-        Text(
-            text = label,
-            style = AppTheme.typography.labelLarge,
-            fontWeight = FontWeight.SemiBold,
-            color = if (isSelected) {
-                AppTheme.colors.onPrimary
-            } else {
-                AppTheme.colors.onSurfaceVariant
-            }
+        }
+
+        uiState.mode == LyricType.SYNCED -> SyncedLyricsContent(
+            syncedLyrics = uiState.syncedLyrics ?: emptyList(),
+            currentIndex = uiState.currentIndex,
+            onLineClick = viewModel::seekToLine
+        )
+
+        uiState.mode == LyricType.STATIC -> PlainLyricsContent(
+            plainLyrics = uiState.plainLyrics ?: ""
         )
     }
 }
 
 @Composable
-private fun SyncedLyricsContent(
-    syncedLyrics: List<LyricsLine>,
-    currentIndex: Int,
-    onScrollToIndex: (Int) -> Unit) {
-    if (syncedLyrics.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(Res.string.lyrics_no_synced),
-                style = AppTheme.typography.bodyLarge,
-                color = AppTheme.colors.onSurfaceVariant,
-                textAlign = TextAlign.Center
+private fun CoverArt(url: String, size: Dp, radius: Dp, elevation: Dp, modifier: Modifier = Modifier) {
+    val colors = MillenniumTheme.colors
+    Box(
+        modifier = modifier
+            .size(size)
+            .millenniumSurface(
+                background = millenniumPanelBrush(colors),
+                shape = RoundedCornerShape(radius),
+                borderColor = colors.border,
+                borderWidth = 1.dp,
+                shadowElevation = elevation
             )
-        }
-        return
-    }
-
-    val listState = rememberLazyListState()
-
-    LaunchedEffect(currentIndex) {
-        if (currentIndex >= 0) {
-            listState.animateScrollToItem(
-                index = currentIndex.coerceIn(0, syncedLyrics.lastIndex),
-                scrollOffset = -100
-            )
-        }
-    }
-
-    LazyColumn(
-        state = listState,
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        itemsIndexed(syncedLyrics) { index, line ->
-            val isCurrentLine = index == currentIndex
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(10.dp))
-                    .then(
-                        if (isCurrentLine) {
-                            Modifier.background(AppTheme.colors.primaryContainer)
-                        } else {
-                            Modifier
-                        }
-                    )
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.Top,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                Text(
-                    text = formatLyricTime(line.time),
-                    style = AppTheme.typography.labelSmall,
-                    color = if (isCurrentLine) {
-                        AppTheme.colors.primary
-                    } else {
-                        AppTheme.colors.onSurfaceVariant
-                    },
-                    modifier = Modifier.width(44.dp)
-                )
-                Text(
-                    text = line.text.ifBlank { "..." },
-                    modifier = Modifier.weight(1f),
-                    style = AppTheme.typography.bodyLarge.copy(
-                        fontWeight = if (isCurrentLine) FontWeight.Bold else FontWeight.Normal,
-                        color = if (isCurrentLine) {
-                            AppTheme.colors.primary
-                        } else {
-                            AppTheme.colors.onSurface
-                        }
-                    )
-                )
-            }
-        }
+        AsyncImage(
+            model = url.takeIf { it.isNotBlank() },
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
     }
-}
-
-private fun formatLyricTime(millis: Long): String {
-    val totalSeconds = (millis / 1000).coerceAtLeast(0)
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return "$minutes:${seconds.toString().padStart(2, '0')}"
 }
 
 @Composable
-private fun PlainLyricsContent(
-    plainLyrics: String) {
-    if (plainLyrics.isBlank()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
+private fun TrackPane(uiState: LyricsUiState, modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier.fillMaxHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        CoverArt(
+            url = uiState.coverUrl,
+            size = 280.dp,
+            radius = 24.dp,
+            elevation = 14.dp
+        )
+        Spacer(Modifier.height(24.dp))
+        Text(
+            text = uiState.trackTitle,
+            style = AppTheme.typography.headlineSmall,
+            color = MillenniumTheme.colors.text,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = uiState.trackArtists,
+            style = AppTheme.typography.bodyLarge,
+            color = MillenniumTheme.colors.muted,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+    }
+}
+
+@Composable
+private fun CompactTrackHeader(uiState: LyricsUiState, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        CoverArt(url = uiState.coverUrl, size = 48.dp, radius = 12.dp, elevation = 4.dp)
+        Column(Modifier.weight(1f)) {
             Text(
-                text = stringResource(Res.string.lyrics_no_plain),
+                text = uiState.trackTitle,
+                style = AppTheme.typography.titleSmall,
+                color = MillenniumTheme.colors.text,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Text(
+                text = uiState.trackArtists,
+                style = AppTheme.typography.bodySmall,
+                color = MillenniumTheme.colors.muted,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+private fun ColumnScope.CenteredMessage(content: @Composable () -> Unit) {
+    Box(
+        modifier = Modifier.weight(1f).fillMaxWidth(),
+        contentAlignment = Alignment.Center
+    ) { content() }
+}
+
+@Composable
+private fun ColumnScope.SyncedLyricsContent(
+    syncedLyrics: List<LyricsLine>,
+    currentIndex: Int,
+    onLineClick: (LyricsLine) -> Unit) {
+    if (syncedLyrics.isEmpty()) {
+        CenteredMessage {
+            Text(
+                text = stringResource(Res.string.lyrics_no_synced),
                 style = AppTheme.typography.bodyLarge,
-                color = AppTheme.colors.onSurfaceVariant,
+                color = MillenniumTheme.colors.muted,
                 textAlign = TextAlign.Center
             )
         }
         return
     }
 
-    LazyColumn {
+    SyncedLyricsList(
+        lines = syncedLyrics,
+        currentIndex = currentIndex,
+        onLineClick = onLineClick,
+        modifier = Modifier.weight(1f).fillMaxWidth()
+    )
+}
+
+@Composable
+private fun ColumnScope.PlainLyricsContent(
+    plainLyrics: String) {
+    if (plainLyrics.isBlank()) {
+        CenteredMessage {
+            Text(
+                text = stringResource(Res.string.lyrics_no_plain),
+                style = AppTheme.typography.bodyLarge,
+                color = MillenniumTheme.colors.muted,
+                textAlign = TextAlign.Center
+            )
+        }
+        return
+    }
+
+    LazyColumn(
+        modifier = Modifier.weight(1f).fillMaxWidth(),
+        contentPadding = PaddingValues(horizontal = 12.dp, vertical = 20.dp)
+    ) {
         item {
             Text(
                 text = plainLyrics,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp),
-                style = AppTheme.typography.bodyLarge.copy(lineHeight = 30.sp),
-                color = AppTheme.colors.onSurface,
+                modifier = Modifier.fillMaxWidth(),
+                style = AppTheme.typography.titleMedium.copy(lineHeight = 34.sp),
+                color = MillenniumTheme.colors.text,
                 textAlign = TextAlign.Center
             )
         }

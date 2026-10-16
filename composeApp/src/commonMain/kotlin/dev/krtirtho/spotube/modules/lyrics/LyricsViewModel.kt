@@ -25,13 +25,16 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.modules.plugin.PluginManager
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import kotlin.time.Duration.Companion.milliseconds
 
 @Serializable
 enum class LyricType {
@@ -44,21 +47,31 @@ data class LyricsUiState(
     val syncedLyrics: List<LyricsLine>? = null,
     val plainLyrics: String? = null,
     val isLoading: Boolean = false,
-    val error: String? = null)
+    val error: String? = null,
+    val currentIndex: Int = -1,
+    val trackTitle: String = "",
+    val trackArtists: String = "",
+    val coverUrl: String = "")
 
 class LyricsViewModel(
     private val pluginManager: PluginManager,
-    audioPlayer: AudioPlayerInterface,
+    private val audioPlayer: AudioPlayerInterface,
     private val audioPlayerQueue: AudioPlayerQueue) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LyricsUiState())
-    val uiState: StateFlow<LyricsUiState> = _uiState.asStateFlow()
+
+    // Only re-emits when the active line changes, not on every position tick.
+    private val currentIndexFlow = combine(
+        _uiState.map { it.syncedLyrics }.distinctUntilChanged(),
+        audioPlayer.positionFlow
+    ) { lyrics, position -> activeLineIndex(lyrics, position.inWholeMilliseconds) }
+        .distinctUntilChanged()
+
+    val uiState: StateFlow<LyricsUiState> = combine(_uiState, currentIndexFlow) { state, index ->
+        state.copy(currentIndex = index)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), LyricsUiState())
 
     private var currentTrackId: String? = null
-
-    val positionMillisFlow: StateFlow<Long> = audioPlayer.positionFlow
-        .map { it.inWholeMilliseconds }
-        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0L)
 
     fun setMode(mode: LyricType) {
         _uiState.update { it.copy(mode = mode) }
@@ -106,6 +119,17 @@ class LyricsViewModel(
                     is QueueEntry.StreamingTrack -> entry.track.id
                     else -> null
                 }
+                if (entry is QueueEntry.StreamingTrack) {
+                    val track = entry.track
+                    _uiState.update {
+                        it.copy(
+                            trackTitle = track.title,
+                            trackArtists = track.artists.joinToString(", ") { artist -> artist.name },
+                            coverUrl = (track.album?.thumbnails ?: track.thumbnails)
+                                ?.firstOrNull()?.url.orEmpty()
+                        )
+                    }
+                }
                 if (trackId != null && trackId != currentTrackId) {
                     loadLyrics()
                 }
@@ -113,17 +137,15 @@ class LyricsViewModel(
         }
     }
 
-    fun currentLyricIndex(positionMillis: Long): Int {
-        val lyrics = _uiState.value.syncedLyrics ?: emptyList()
-        if (lyrics.isEmpty()) return -1
-        var lastIndex = 0
-        for (i in lyrics.indices) {
-            if (lyrics[i].time <= positionMillis) {
-                lastIndex = i
-            } else {
-                break
-            }
+    fun seekToLine(line: LyricsLine) {
+        viewModelScope.launch {
+            audioPlayer.seekTo(line.time.milliseconds)
         }
-        return lastIndex
+    }
+
+    private fun activeLineIndex(lyrics: List<LyricsLine>?, positionMillis: Long): Int {
+        if (lyrics.isNullOrEmpty()) return -1
+        val index = lyrics.indexOfLast { it.time <= positionMillis }
+        return index.coerceAtLeast(0)
     }
 }
