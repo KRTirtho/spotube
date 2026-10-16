@@ -157,12 +157,12 @@ class CacheManager(
     suspend fun commitCacheEntry(
         trackId: String,
         filename: String,
-        allBytes: ByteArray,
+        sizeBytes: Long,
         contentType: String) {
         val entry = CacheEntry(
             trackId = trackId,
             filename = filename,
-            sizeBytes = allBytes.size.toLong(),
+            sizeBytes = sizeBytes,
             createdAtMs = kotlin.time.Clock.System.now().toEpochMilliseconds(),
             contentType = contentType)
         cacheMutex.withLock {

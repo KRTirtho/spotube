@@ -23,6 +23,7 @@ import dev.krtirtho.spotube.core.audioplayer.AudioPlayerQueue
 import dev.krtirtho.spotube.core.audioplayer.QueueEntry
 import dev.krtirtho.spotube.core.di.injectLogger
 import io.ktor.client.HttpClient
+import io.ktor.client.request.prepareRequest
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsChannel
@@ -38,16 +39,19 @@ import io.ktor.http.decodeURLQueryComponent
 import io.ktor.http.encodeURLParameter
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.response.respond
+import io.ktor.util.cio.ChannelWriteException
+import io.ktor.utils.io.ClosedWriteChannelException
 import io.ktor.utils.io.copyTo
-import io.ktor.utils.io.readRemaining
+import io.ktor.utils.io.readAvailable
 import io.ktor.utils.io.writeFully
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.io.readByteArray
 import okio.FileSystem
+import okio.IOException
 import okio.Path.Companion.toPath
 import okio.SYSTEM
 import okio.buffer
@@ -260,18 +264,25 @@ internal class StreamProxy(
     ) {
         logger.d { "Proxying segment for track $trackId" }
 
-        val response = runCatching {
-            httpClient.request(segmentUrl) {
+        runCatching {
+            httpClient.prepareRequest(segmentUrl) {
                 method = HttpMethod.Get
                 call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Range)
                 call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Accept)
                 call.forwardRequestHeaderIfPresent(headers, HttpHeaders.UserAgent)
+            }.execute { response -> respondWithSegment(call, response, trackId) }
+        }.onFailure { throwable ->
+            if (throwable is CancellationException) throw throwable
+            if (throwable.isClientDisconnect()) {
+                logger.d { "Player closed the connection while streaming segment of track $trackId" }
+                return
             }
-        }.getOrElse { throwable ->
             logger.w(throwable) { "Failed to fetch segment for track $trackId" }
-            call.respond(HttpStatusCode.BadGateway, "Failed to fetch segment")
-            return
+            runCatching { call.respond(HttpStatusCode.BadGateway, "Failed to fetch segment") }
         }
+    }
+
+    private suspend fun respondWithSegment(call: ApplicationCall, response: HttpResponse, trackId: String) {
 
         if (response.status.value >= 400) {
             logger.w { "Segment request failed for track $trackId with status ${response.status.value}" }
@@ -305,48 +316,65 @@ internal class StreamProxy(
 
         var currentUrl = streamUrl
         var attemptedRefresh = false
-        var upstream: HttpResponse?
 
+        // `request()` buffers the whole body before returning, which stalls the player until
+        // the full track is downloaded. `execute {}` hands over the response as soon as headers
+        // arrive so the body can be streamed.
         while (true) {
-            val response = runCatching {
-                httpClient.request(currentUrl) {
+            var retryUrl: String? = null
+            val failure = runCatching {
+                httpClient.prepareRequest(currentUrl) {
                     method = requestMethod
                     call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Range)
                     call.forwardRequestHeaderIfPresent(headers, HttpHeaders.IfRange)
                     call.forwardRequestHeaderIfPresent(headers, HttpHeaders.Accept)
                     call.forwardRequestHeaderIfPresent(headers, HttpHeaders.UserAgent)
+                }.execute { response ->
+                    if (response.status.value < 400) {
+                        respondWithUpstream(call, response, trackId, requestMethod)
+                        return@execute
+                    }
+
+                    logger.w { "Upstream stream request failed for track $trackId with status ${response.status.value}" }
+                    streamingUrlRepository.invalidateCachedStreamUrl(trackId, currentUrl)
+
+                    if (!attemptedRefresh) {
+                        val refreshedUrl =
+                            streamingUrlRepository.resolveStreamInfo(trackId, forceRefresh = true)?.url
+                        if (!refreshedUrl.isNullOrBlank() && refreshedUrl != currentUrl) {
+                            retryUrl = refreshedUrl
+                            return@execute
+                        }
+                    }
+                    respondWithUpstream(call, response, trackId, requestMethod)
                 }
-            }.getOrElse { throwable ->
-                logger.w(throwable) { "Failed to fetch upstream stream for track $trackId" }
-                call.respond(HttpStatusCode.BadGateway, "Failed to fetch upstream stream")
+            }.exceptionOrNull()
+
+            if (failure != null) {
+                if (failure is CancellationException) throw failure
+                if (failure.isClientDisconnect()) {
+                    logger.d { "Player closed the connection while streaming track $trackId" }
+                    return
+                }
+                logger.w(failure) { "Failed to fetch upstream stream for track $trackId" }
+                // Throws if the response already started streaming; nothing more to send then
+                runCatching { call.respond(HttpStatusCode.BadGateway, "Failed to fetch upstream stream") }
                 return
             }
 
-            if (response.status.value < 400) {
-                upstream = response
-                break
-            }
-
-            logger.w { "Upstream stream request failed for track $trackId with status ${response.status.value}" }
-            streamingUrlRepository.invalidateCachedStreamUrl(trackId, currentUrl)
-
-            if (attemptedRefresh) {
-                upstream = response
-                break
-            }
-
-            val refreshedUrl =
-                streamingUrlRepository.resolveStreamInfo(trackId, forceRefresh = true)?.url
-            if (refreshedUrl.isNullOrBlank() || refreshedUrl == currentUrl) {
-                upstream = response
-                break
-            }
-
+            val next = retryUrl ?: return
             logger.d { "Retrying stream for track $trackId using refreshed URL" }
-            currentUrl = refreshedUrl
+            currentUrl = next
             attemptedRefresh = true
         }
+    }
 
+    private suspend fun respondWithUpstream(
+        call: ApplicationCall,
+        upstream: HttpResponse,
+        trackId: String,
+        requestMethod: HttpMethod
+    ) {
         if (upstream.status.value >= 400 && isCachingEnabled()) {
             val cachedEntry = cacheManager.findCachedEntry(trackId)
             if (cachedEntry != null) {
@@ -380,7 +408,9 @@ internal class StreamProxy(
             return
         }
 
-        val doCache = requestMethod == HttpMethod.Get && isCachingEnabled()
+        // Only a full 200 response can be cached; 206 partial responses must not be stored as the whole track
+        val doCache = requestMethod == HttpMethod.Get && isCachingEnabled() &&
+                upstream.status == HttpStatusCode.OK
         val cacheTrack = if (doCache) getTrackMetadata(trackId) else null
         val cacheFilename = if (cacheTrack != null) {
             cacheManager.resolveCacheFilename(cacheTrack, downstreamHeaders[HttpHeaders.ContentType])
@@ -388,6 +418,7 @@ internal class StreamProxy(
             null
         }
         val trackIdForCache = trackId
+        val expectedLength = downstreamContentLength
         val cacheContentType = downstreamHeaders[HttpHeaders.ContentType] ?: "application/octet-stream"
 
         call.respond(object : OutgoingContent.WriteChannelContent() {
@@ -402,26 +433,38 @@ internal class StreamProxy(
                     val cacheDir = cacheManager.resolveCacheDir()
                     val cacheFile = cacheDir / cacheFilename.toPath()
                     fileSystem.createDirectories(cacheDir)
+                    var completed = false
+                    var totalBytes = 0L
                     try {
-                        val packet = upstream.bodyAsChannel().readRemaining()
-                        val allBytes = packet.readByteArray()
-                        channel.writeFully(allBytes)
+                        val source = upstream.bodyAsChannel()
+                        val buffer = ByteArray(64 * 1024)
                         fileSystem.sink(cacheFile).buffer().use { sink ->
-                            sink.write(allBytes)
+                            while (true) {
+                                val read = source.readAvailable(buffer, 0, buffer.size)
+                                if (read < 0) break
+                                if (read == 0) continue
+                                channel.writeFully(buffer, 0, read)
+                                channel.flush()
+                                sink.write(buffer, 0, read)
+                                totalBytes += read
+                            }
                         }
-                        cacheManager.commitCacheEntry(
-                            trackId = trackIdForCache,
-                            filename = cacheFilename,
-                            allBytes = allBytes,
-                            contentType = cacheContentType)
-                        scope.launch {
-                            cacheManager.evictIfNeeded()
+                        completed = expectedLength == null || expectedLength == totalBytes
+                        if (completed) {
+                            cacheManager.commitCacheEntry(
+                                trackId = trackIdForCache,
+                                filename = cacheFilename,
+                                sizeBytes = totalBytes,
+                                contentType = cacheContentType)
+                            scope.launch {
+                                cacheManager.evictIfNeeded()
+                            }
                         }
-                    } catch (e: Exception) {
-                        if (fileSystem.exists(cacheFile)) {
+                    } finally {
+                        // Player disconnected or stream was incomplete: drop the partial file
+                        if (!completed && fileSystem.exists(cacheFile)) {
                             fileSystem.delete(cacheFile)
                         }
-                        throw e
                     }
                 } else {
                     upstream.bodyAsChannel().copyTo(channel)
@@ -486,6 +529,16 @@ internal class StreamProxy(
 
         return rewritten
     }
+
+    /**
+     * True when the failure came from writing to the player's socket (seek, skip or stop closes
+     * it mid-stream), as opposed to a failure fetching from upstream.
+     */
+    private fun Throwable.isClientDisconnect(): Boolean =
+        generateSequence(this) { it.cause }.take(10).any {
+            it is ChannelWriteException || it is ClosedWriteChannelException ||
+                (it is IOException && it.message?.contains("Broken pipe", ignoreCase = true) == true)
+        }
 
     private fun encodeUrl(url: String): String = url.encodeURLParameter()
     private fun decodeUrl(encoded: String): String = encoded.decodeURLQueryComponent()
