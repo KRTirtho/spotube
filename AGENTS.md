@@ -22,6 +22,15 @@
 - Kotlin: `2.3.0`, JVM target: `11` (compile/target compatibility in both `composeApp/build.gradle.kts` and `plugin_interfaces/build.gradle.kts`).
 - **compose-webview (desktop) dispatcher hijack:** `dev.nucleusframework:composewebview` transitively pulls `nucleus.decorated-window-tao`, which registers a `TaoMainDispatcherFactory` (`loadPriority = 100`) via `META-INF/services` that hijacks `Dispatchers.Main` away from the Swing EDT. This breaks lifecycle's `enforceMainThreadIfNeeded` (window fails with "Method addObserver must be called on the main thread"). The app overrides it with `SwingMainDispatcherFactory` (`composeApp/src/jvmMain/.../core/coroutines/`, `loadPriority = Int.MAX_VALUE`) which pins `Dispatchers.Main` back to the Swing EDT. Keep that factory + its `META-INF/services/kotlinx.coroutines.internal.MainDispatcherFactory` resource; the long-term fix is in the webview (make the Tao dispatcher opt-in or lower its priority).
 
+## GraalVM native image (desktop)
+- Enabled via `graalvm { }` inside `nucleus.application` in `composeApp/build.gradle.kts`. Nucleus downloads GraalVM CE itself (or uses `$GRAALVM_HOME`). Linux needs `gcc` + `patchelf`.
+- Build: `:composeApp:createGraalvmNativeDistributable` (output `composeApp/build/compose/binaries/main/graalvm-app/`), installers via `packageGraalvm{Deb,Rpm,AppImage,Dmg,Msi,Exe}`. A build takes ~10 min and uses all cores and ~15 GB RAM.
+- Hand-maintained + agent-recorded metadata lives in `composeApp/graalvm/reachability-metadata.json`. After adding features that use reflection/JNI/JNA (vlcj, Zipline, plugins), run `:composeApp:runWithNativeAgent`, exercise the feature, then close the window normally (the merge only happens on a clean exit).
+- `uk.co.caprica.vlcj.binding.lib.LibVlc` must stay registered (`allDeclaredMethods` + `jniAccessible`): JNA direct mapping finds its `native` methods by reflection.
+- The `*UberJarForCurrentOS` task excludes other OSes'/CPUs' native libs and stale CEF binaries, because native-image embeds every registered resource into the binary. On Linux, `copyGraalvmJvmSo` is disabled and `copyGraalvmAwtSoLibs` prefers native-image's own libs (10 KB `libjvm.so`/`libjava.so` shims instead of the JDK's 28 MB `libjvm.so`).
+- `isProductionBuild` (top of `composeApp/build.gradle.kts`) is true for `package*`/`create*`/`notarize*`/`nativeImageCompile` tasks, or with `-Pproduction=true|false`. It gates the Rust release profile (Gobley `jvmVariant`) so `:composeApp:run` keeps fast debug Rust builds. Put new slow, ship-only optimizations behind it.
+- Full user-facing build docs are in `README.md` ("Building from source").
+
 ## Codegen and plugin packaging
 - JS plugin bundles: `:js_plugin_example:packageDevelopmentPlugin` and `:js_plugin_example:packageProductionPlugin`. Output is `.smplug` files in `js_plugin_example/build/distributions/`.
 - Zipline plugin entrypoint: `mainFunction = "org.spotube.js_plugin_example.main"` in `js_plugin_example/build.gradle.kts`. Plugin metadata from `js_plugin_example/plugin.json`.
@@ -53,7 +62,7 @@
 - `prepare-deps` job checks out & publishes to `mavenLocal`:
   - `kdroidFilter/ComposeNativeWebview` (compose-webview)
   - `team-spotube/gradle-plugin` (spotubeGradle + vlcjBundler plugins)
-- Build jobs per platform (Android, Linux, Windows, macOS), all `needs: prepare-deps`.
+- Build jobs per platform (Android, Linux, Windows, macOS), all `needs: prepare-deps`. Desktop jobs ship GraalVM native installers (`packageGraalvm{Deb,Rpm,Exe,Dmg}`, output in `composeApp/build/compose/binaries/main/graalvm-<format>/`), not jpackage/JVM ones.
 - **Stable**: reads `versionName` from `composeApp/build.gradle.kts`, tag = `v{version}`, draft release.
 - **Nightly**: builds with `-PversionName=nightly`, tag = `nightly` (updates existing), prerelease.
 - **Android signing**: decodes `secrets.KEYSTORE` (base64) → `composeApp/upload-keystore.jks`, writes signing config into `local.properties` from secrets.

@@ -15,3 +15,8 @@ tokio = { version = "1", features = ["rt", "rt-multi-thread", "macros"] }
 [lib]
 crate-type = ["cdylib", "staticlib"]
 path = "src/commonMain/rust/lib.rs"
+
+[profile.release]
+strip = true
+lto = true
+codegen-units = 1

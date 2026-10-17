@@ -16,7 +16,9 @@
  */
 
 import gobley.gradle.GobleyHost
+import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
+import dev.nucleusframework.desktop.application.dsl.NativeImageOptimization
 import dev.nucleusframework.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -50,6 +52,17 @@ val desktopIconDir = if (isNightly) "icons/nightly" else "icons/stable"
 val nightlyBuildNumber = providers.gradleProperty("buildNumber").orNull?.toIntOrNull()
     ?: System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull()
     ?: buildNumber
+// Production = shipping artifacts (installers, distributables, native images). Size/speed
+// optimizations that slow builds down (Rust release + LTO) only apply then, never to `run`/dev.
+// Override with -Pproduction=true|false.
+val isProductionBuild = providers.gradleProperty("production").map { it.toBoolean() }.getOrElse(
+    gradle.startParameter.taskNames.any { task ->
+        task.substringAfterLast(':').let { name ->
+            name.startsWith("package") || name.startsWith("create") ||
+                name.startsWith("notarize") || name == "nativeImageCompile"
+        }
+    }
+)
 val targetName = "Spotube"
 val homePageUrl = "https://spotube.org"
 val repositoryUrl = "https://github.com/team-spotube/spotube"
@@ -431,6 +444,84 @@ nucleus.application {
     buildTypes.release.proguard {
         configurationFiles.from(project.file("proguard-rules.pro"))
     }
+
+    // AOT-compiled native binary (no bundled JVM). Build with `packageGraalvmNative`, try it with
+    // `runGraalvmNative`. Nucleus downloads GraalVM CE on first use (or uses $GRAALVM_HOME).
+    // Reflection/JNI metadata the automatic passes miss (vlcj, Zipline, NewPipe/Rhino, uniffi)
+    // lives in `graalvm/` and is (re)collected by exercising the app under `runWithNativeAgent`.
+    graalvm {
+        isEnabled = true
+        imageName = "spotube"
+        nativeImageConfigBaseDir.set(project.layout.projectDirectory.dir("graalvm"))
+        // ProGuard is not used for native images; -Os is the size equivalent
+        optimization = NativeImageOptimization.SIZE
+        // Same ceiling as the JVM distribution's -Xmx
+        maxHeapSize = "384m"
+        // Skiko is loaded from lib/ next to the binary (Nucleus copies it there); don't embed
+        // a second ~30 MB copy as a resource
+        buildArgs.add("-H:+UnlockExperimentalVMOptions")
+        buildArgs.add("-H:ExcludeResources=.*skiko-[^/]*\\.(so|dylib|dll)")
+    }
+}
+
+// The uber JAR is what the GraalVM build compiles from, and native-image embeds every registered
+// resource in the binary. Libraries ship natives for every OS/CPU, so keep only the host's
+// (the uber JAR is per-OS/arch already; it isn't used by `run`).
+tasks.withType<org.gradle.jvm.tasks.Jar>().matching { it.name.endsWith("UberJarForCurrentOS") }.configureEach {
+    // Everything the exclude closure uses is local: the configuration cache can't serialize
+    // references to the build script object.
+    val hostOs = System.getProperty("os.name").lowercase()
+    val foreignExtensions = when {
+        hostOs.contains("win") -> setOf("so", "dylib", "jnilib", "a")
+        hostOs.contains("mac") -> setOf("so", "dll", "a")
+        else -> setOf("dll", "dylib", "jnilib", "a")
+    }
+    val nativeExtensions = setOf("so", "dll", "dylib", "jnilib", "a")
+    // CPU names as libraries spell them in their native folders (linux-x86-64, jni/amd64, darwin-aarch64, …)
+    val cpuDirToken = Regex(
+        "(?:^|[-_])(x86[-_]64|amd64|x64|aarch64|arm64|armv6|armv7|armel|arm|x86|i[36]86|ppc64le|ppc64|ppc" +
+            "|s390x|riscv64|loongarch64|mips64el|sparcv9|sparc)(?=$|[-_])"
+    )
+    val hostCpuTokens = when (System.getProperty("os.arch").lowercase()) {
+        "aarch64", "arm64" -> setOf("aarch64", "arm64")
+        else -> setOf("x86-64", "x86_64", "amd64", "x64")
+    }
+    // OS flavours we never ship desktop builds for (sqlite-jdbc and JNA bundle these)
+    val foreignOsDirToken = Regex("android|musl|freebsd|openbsd|dragonflybsd|aix|sunos")
+    exclude { element ->
+        val segments = element.path.lowercase().split('/')
+        val extension = segments.last().substringAfterLast('.', "")
+        !element.isDirectory && extension in nativeExtensions && (
+            extension in foreignExtensions ||
+                segments.dropLast(1).any { dir ->
+                    foreignOsDirToken.containsMatchIn(dir) ||
+                        cpuDirToken.findAll(dir).any { it.groupValues[1] !in hostCpuTokens }
+                }
+            )
+    }
+    // The locally built compose-webview SNAPSHOT carries stale CEF binaries (~1.3 GB unstripped
+    // libcef.so) that no code loads (Linux uses WebKitGTK).
+    exclude(
+        "nucleus/native/*/libcef.*",
+        "nucleus/native/*/libcompose_cef_*",
+        "nucleus/native/*/cef_subprocess*",
+        "nucleus/native/*/*.pak",
+        "nucleus/native/*/icudtl.dat",
+        "nucleus/native/*/v8_context_snapshot.bin",
+    )
+}
+
+// Linux: native-image emits 13 KB libjvm.so/libjava.so shims (the image itself provides the JVM
+// symbols), but Nucleus copies the JDK's real ones next to the binary — libjvm.so alone is 28 MB.
+// Ship native-image's own outputs instead: skip the libjvm copy, and in the AWT copy prefer
+// nativeCompile's version of any library native-image produced over the JDK's.
+tasks.matching { it.name == "copyGraalvmJvmSo" }.configureEach { enabled = false }
+tasks.withType<Copy>().matching { it.name == "copyGraalvmAwtSoLibs" }.configureEach {
+    val nativeCompileDir = layout.buildDirectory.dir("compose/tmp/main/graalvm/nativeCompile").get().asFile
+    from(nativeCompileDir) { include("*.so") }
+    eachFile {
+        if (file.parentFile != nativeCompileDir && nativeCompileDir.resolve(name).exists()) exclude()
+    }
 }
 
 // Issue with compose plugin
@@ -446,6 +537,8 @@ tasks.withType<ComposeHotRun>().configureEach {
 }
 
 cargo {
+    // Gobley defaults desktop to the debug profile, which ships an unstripped ~31 MB library
+    if (isProductionBuild) jvmVariant = Variant.Release
     builds.jvm {
         embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
     }
