@@ -15,6 +15,7 @@ import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/metadata/errors/exceptions.dart';
 
 import 'package:spotube/services/sourced_track/exceptions.dart';
+import 'package:spotube/services/youtube_engine/visionos_client.dart';
 import 'package:spotube/utils/service_utils.dart';
 
 final officialMusicRegex = RegExp(
@@ -265,8 +266,12 @@ class SourcedTrack extends BasicSourcedTrack {
     for (final source in sources) {
       final res = await globalDio.head(
         source.url,
-        options:
-            Options(validateStatus: (status) => status != null && status < 500),
+        options: Options(
+          headers: {
+            "user-agent": YouTubeVisionOsClient.userAgentForUrl(source.url),
+          },
+          validateStatus: (status) => status != null && status < 500,
+        ),
       );
 
       stringBuffer.writeln(

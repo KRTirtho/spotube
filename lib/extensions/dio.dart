@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:spotube/services/youtube_engine/visionos_client.dart';
 
 extension ChunkDownloaderDioExtension on Dio {
   Future<Response> chunkDownload(
@@ -32,6 +33,7 @@ extension ChunkDownloaderDioExtension on Dio {
     try {
       int? totalLength;
       bool supportsRange = false;
+      final ua = YouTubeVisionOsClient.userAgentForUrl(urlPath);
 
       Response? headResp;
       try {
@@ -39,7 +41,10 @@ extension ChunkDownloaderDioExtension on Dio {
           urlPath,
           queryParameters: queryParameters,
           options: Options(
-            headers: {'Range': 'bytes=0-0'},
+            headers: {
+              'Range': 'bytes=0-0',
+              'User-Agent': ua,
+            },
             followRedirects: true,
           ),
         );
@@ -62,6 +67,7 @@ extension ChunkDownloaderDioExtension on Dio {
         final resp = await get<ResponseBody>(
           urlPath,
           options: Options(
+            headers: {'User-Agent': ua},
             responseType: ResponseType.stream,
           ),
           queryParameters: queryParameters,
@@ -78,7 +84,12 @@ extension ChunkDownloaderDioExtension on Dio {
             queryParameters: queryParameters,
             cancelToken: cancelToken,
             deleteOnError: deleteOnError,
-            options: options,
+            options: (options ?? Options()).copyWith(
+              headers: {
+                ...?options?.headers,
+                'User-Agent': ua,
+              },
+            ),
             data: data,
           );
         }
@@ -97,7 +108,12 @@ extension ChunkDownloaderDioExtension on Dio {
           queryParameters: queryParameters,
           cancelToken: cancelToken,
           deleteOnError: deleteOnError,
-          options: options,
+          options: (options ?? Options()).copyWith(
+            headers: {
+              ...?options?.headers,
+              'User-Agent': ua,
+            },
+          ),
           data: data,
         );
       }
@@ -119,7 +135,10 @@ extension ChunkDownloaderDioExtension on Dio {
           urlPath,
           options: Options(
             responseType: ResponseType.stream,
-            headers: {'Range': 'bytes=$start-$end'},
+            headers: {
+              'Range': 'bytes=$start-$end',
+              'User-Agent': ua,
+            },
           ),
           queryParameters: queryParameters,
           cancelToken: cancelToken,

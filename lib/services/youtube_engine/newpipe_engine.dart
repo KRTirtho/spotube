@@ -1,5 +1,6 @@
 import 'package:flutter_new_pipe_extractor/flutter_new_pipe_extractor.dart'
     hide Engagement;
+import 'package:spotube/services/youtube_engine/visionos_client.dart';
 import 'package:spotube/services/youtube_engine/youtube_engine.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -91,20 +92,24 @@ class NewPipeEngine implements YouTubeEngine {
 
   @override
   Future<StreamManifest> getStreamManifest(String videoId) async {
-    final video = await NewPipeExtractor.getVideoInfo(videoId);
+    try {
+      return await YouTubeVisionOsClient.getStreamManifest(videoId);
+    } catch (_) {
+      final video = await NewPipeExtractor.getVideoInfo(videoId);
 
-    final streams =
-        video.audioStreams.map((stream) => _parseAudioStream(stream, videoId));
+      final streams = video.audioStreams
+          .map((stream) => _parseAudioStream(stream, videoId));
 
-    if (streams.isEmpty) {
-      final videoStreams = video.videoStreams
-          .map((stream) => _parseVideoStream(stream, videoId));
-      if (videoStreams.isNotEmpty) {
-        return StreamManifest(videoStreams);
+      if (streams.isEmpty) {
+        final videoStreams = video.videoStreams
+            .map((stream) => _parseVideoStream(stream, videoId));
+        if (videoStreams.isNotEmpty) {
+          return StreamManifest(videoStreams);
+        }
       }
-    }
 
-    return StreamManifest(streams);
+      return StreamManifest(streams);
+    }
   }
 
   @override
@@ -117,19 +122,8 @@ class NewPipeEngine implements YouTubeEngine {
   @override
   Future<(Video, StreamManifest)> getVideoWithStreamInfo(String videoId) async {
     final video = await NewPipeExtractor.getVideoInfo(videoId);
-
-    final streams =
-        video.audioStreams.map((stream) => _parseAudioStream(stream, videoId));
-
-    if (streams.isEmpty) {
-      final videoStreams = video.videoStreams
-          .map((stream) => _parseVideoStream(stream, videoId));
-      if (videoStreams.isNotEmpty) {
-        return (_parseVideo(video), StreamManifest(videoStreams));
-      }
-    }
-
-    return (_parseVideo(video), StreamManifest(streams));
+    final manifest = await getStreamManifest(videoId);
+    return (_parseVideo(video), manifest);
   }
 
   @override
