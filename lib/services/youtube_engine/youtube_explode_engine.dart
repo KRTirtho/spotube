@@ -1,6 +1,7 @@
 import 'dart:isolate';
 
 import 'package:flutter/foundation.dart';
+import 'package:spotube/services/youtube_engine/visionos_client.dart';
 import 'package:spotube/services/youtube_engine/youtube_engine.dart';
 // import 'package:youtube_explode_dart/solvers.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -157,12 +158,23 @@ class YouTubeExplodeEngine implements YouTubeEngine {
 
   @override
   Future<StreamManifest> getStreamManifest(String videoId) async {
+    try {
+      final manifest = await YouTubeVisionOsClient.getStreamManifest(videoId);
+      final filtered = manifest.audioOnly.where(
+        (stream) => stream.bitrate.bitsPerSecond >= 40960,
+      );
+      if (filtered.isNotEmpty) {
+        return StreamManifest(filtered);
+      }
+    } catch (_) {}
+
     await IsolatedYoutubeExplode.initialize();
 
     final streamManifest = await _youtubeExplode.manifest(
       videoId,
       requireWatchPage: false,
       ytClients: [
+        YoutubeApiClient.androidSdkless,
         YoutubeApiClient.ios,
         YoutubeApiClient.androidVr,
         YoutubeApiClient.android,

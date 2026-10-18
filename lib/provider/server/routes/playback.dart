@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:dio/dio.dart' hide Response;
 import 'package:dio/dio.dart' as dio_lib;
@@ -20,21 +19,8 @@ import 'package:spotube/provider/user_preferences/user_preferences_provider.dart
 import 'package:spotube/services/audio_player/audio_player.dart';
 import 'package:spotube/services/logger/logger.dart';
 import 'package:spotube/services/sourced_track/sourced_track.dart';
+import 'package:spotube/services/youtube_engine/visionos_client.dart';
 import 'package:spotube/utils/service_utils.dart';
-import 'package:youtube_explode_dart/youtube_explode_dart.dart';
-
-final _deviceClients = Set.unmodifiable({
-  YoutubeApiClient.ios,
-  YoutubeApiClient.android,
-  YoutubeApiClient.mweb,
-  YoutubeApiClient.safari,
-});
-
-String? get _randomUserAgent => _deviceClients
-    .elementAt(
-      Random().nextInt(_deviceClients.length),
-    )
-    .payload["context"]["client"]["userAgent"];
 
 class ServerPlaybackRoutes {
   final Ref ref;
@@ -111,7 +97,7 @@ class ServerPlaybackRoutes {
 
     final options = Options(
       headers: {
-        "user-agent": _randomUserAgent,
+        "user-agent": YouTubeVisionOsClient.userAgentForUrl(url),
         "Cache-Control": "max-age=3600",
         "Connection": "keep-alive",
         "host": Uri.parse(url).host,
@@ -162,22 +148,35 @@ class ServerPlaybackRoutes {
             .swapWithNextSibling()
             .then((track) => track.url!);
 
-    final options = Options(
-      headers: {
-        ...headers,
-        "user-agent": _randomUserAgent,
-        "Cache-Control": "max-age=3600",
-        "Connection": "keep-alive",
-        "host": Uri.parse(url).host,
-      },
-      responseType: ResponseType.stream,
-      validateStatus: (status) => status! < 400,
-    );
+    final rangeHeader = headers["range"] ?? headers["Range"];
+
+    Options buildStreamOptions(String targetUrl) => Options(
+          headers: {
+            if (rangeHeader != null) "range": rangeHeader,
+            "user-agent": YouTubeVisionOsClient.userAgentForUrl(targetUrl),
+            "Cache-Control": "max-age=3600",
+            "Connection": "keep-alive",
+            "host": Uri.parse(targetUrl).host,
+          },
+          responseType: ResponseType.stream,
+          validateStatus: (status) => status! < 400,
+        );
+
+    Options buildHeadOptions(String targetUrl) => Options(
+          headers: {
+            "user-agent": YouTubeVisionOsClient.userAgentForUrl(targetUrl),
+            "Cache-Control": "max-age=3600",
+            "Connection": "keep-alive",
+            "host": Uri.parse(targetUrl).host,
+          },
+          responseType: ResponseType.bytes,
+          validateStatus: (status) => status! < 400,
+        );
 
     final contentLengthRes = await Future<dio_lib.Response?>.value(
       dio.head(
         url,
-        options: options.copyWith(responseType: ResponseType.bytes),
+        options: buildHeadOptions(url),
       ),
     ).catchError((e, stack) async {
       AppLogger.reportError(e, stack);
@@ -188,7 +187,7 @@ class ServerPlaybackRoutes {
 
       url = sourcedTrack.url!;
 
-      return dio.head(url, options: options);
+      return dio.head(url, options: buildHeadOptions(url));
     });
 
     // Redirect to m3u8 link directly as it handles range requests internally
@@ -206,7 +205,8 @@ class ServerPlaybackRoutes {
       );
     }
 
-    final res = await dio.get<ResponseBody>(url, options: options);
+    final res =
+        await dio.get<ResponseBody>(url, options: buildStreamOptions(url));
 
     AppLogger.log.i(
       "Response for track: ${track.query.name}\n"
