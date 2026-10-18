@@ -115,9 +115,10 @@ mavenPublishing {
         }
         developers {
             developer {
-                id = "KRTirtho"
-                name = "Kingkor Roy Tirtho"
+                id = "team-spotube"
+                name = "Team Spotube"
                 url = "https://github.com/team-spotube/"
+                email = "team.spotube@proton.me"
             }
         }
         scm {
