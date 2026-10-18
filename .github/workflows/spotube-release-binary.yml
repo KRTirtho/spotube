@@ -31,6 +31,8 @@ env:
   COMPOSE_WEBVIEW_COMMIT: cbd36f88927298a28a2d64c6acf7ec3b2def6f9d
   GRADLE_PLUGIN_REPO: team-spotube/gradle-plugin
   VLCJ_BUNDLER_REPO: team-spotube/vlcj-bundler-gradle-plugin
+  # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit on shared runners
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   prepare-deps:
@@ -238,6 +240,10 @@ jobs:
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v7
+
+      # The arm64 runner image ships without an Android SDK, but :composeApp configuration requires one
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v4
 
       - name: Download maven local
         uses: actions/download-artifact@v8
