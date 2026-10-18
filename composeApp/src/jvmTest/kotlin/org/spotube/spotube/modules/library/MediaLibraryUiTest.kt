@@ -158,7 +158,7 @@ class MediaLibraryUiTest {
     }
 
     @Test
-    fun breadcrumbIsThinAndItsParentLinkNavigatesUp() {
+    fun breadcrumbIsCompactAndItsParentLinkNavigatesUp() {
         var height = 0
         var navigatedUp = 0
         val state = localTracksUiState(
@@ -167,7 +167,7 @@ class MediaLibraryUiTest {
                 currentFolderPath = "/music"
             ), ""
         )
-        ImageComposeScene(360, 40) {
+        ImageComposeScene(360, 48) {
             SpotubeTheme(UserSettings(theme = Theme.DARK)) {
                 LocalTracksBreadcrumb(
                     state,
@@ -177,7 +177,7 @@ class MediaLibraryUiTest {
             }
         }.use { scene ->
             repeat(6) { scene.render().close() }
-            assertEquals(32, height)
+            assertEquals(40, height)
             val parent = allNodes(scene).first {
                 it.config.getOrNull(SemanticsActions.OnClick) != null &&
                         it.config.getOrNull(SemanticsProperties.ContentDescription)

@@ -350,9 +350,9 @@ private fun QueueItemRow(
                         .background(AppTheme.colors.surfaceVariant),
                     contentAlignment = Alignment.Center
                 ) {
-                    if (item.imageUrl != null) {
+                    if (item.artwork != null) {
                         AsyncImage(
-                            model = item.imageUrl,
+                            model = item.artwork,
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop

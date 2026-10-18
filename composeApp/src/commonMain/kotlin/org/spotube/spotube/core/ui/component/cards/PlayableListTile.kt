@@ -61,7 +61,8 @@ fun PlayableListTile(
     placeholderIcon: ImageVector = Iconsax.IconsaxMusic,
     artwork: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
-    isBlacklisted: Boolean = false
+    isBlacklisted: Boolean = false,
+    compact: Boolean = false
 ) {
     val colors = MillenniumTheme.colors
     MillenniumListTile(
@@ -73,12 +74,12 @@ fun PlayableListTile(
         borderColor = if (isBlacklisted) colors.danger.copy(alpha = 0.5f) else if (isPlaying) null else colors.border,
         titleForeground = if (isBlacklisted) colors.danger else null,
         borderWidth = 1.dp,
-        contentPadding = PaddingValues(12.dp),
-        minimumHeight = 76.dp,
+        contentPadding = PaddingValues(if (compact) 8.dp else 12.dp),
+        minimumHeight = if (compact) 52.dp else 76.dp,
         leading = {
             MediaArtwork(
                 imageModel, title,
-                Modifier.size(52.dp).sharedElementOrNone(
+                Modifier.size(if (compact) 36.dp else 52.dp).sharedElementOrNone(
                     sharedElementKey,
                     LocalSharedTransitionScope.current,
                     LocalAnimatedVisibilityScope.current
@@ -114,7 +115,7 @@ fun PlayableListTile(
                     if (onAddToQueue != null && !isPlaying) {
                         MillenniumIconButton(
                             onClick = onAddToQueue,
-                            modifier = Modifier.size(40.dp),
+                            modifier = Modifier.size(if (compact) 32.dp else 40.dp),
                             style = MillenniumIconButtonStyle.Secondary
                         ) {
                             MillenniumIcon(
@@ -126,7 +127,7 @@ fun PlayableListTile(
                     if (onPlay != null) {
                         MillenniumIconButton(
                             onClick = onPlay,
-                            modifier = Modifier.size(40.dp),
+                            modifier = Modifier.size(if (compact) 32.dp else 40.dp),
                             style = MillenniumIconButtonStyle.Primary
                         ) {
                             MillenniumIcon(

@@ -211,7 +211,7 @@ fun AppExpandedPlayer(
     val snackbarHostState = remember { MillenniumSnackbarHostState() }
     val albumArtModifier =
         rememberSharedAlbumArtModifier(sharedTransitionScope, animatedVisibilityScope)
-    val coverModel = playerUiState.coverUrl.takeIf { it.isNotBlank() }
+    val coverModel = playerUiState.coverModel
     var isSeeking by remember { mutableStateOf(false) }
     var seekProgress by remember { mutableFloatStateOf(playerUiState.progress) }
     val moreOptionsSheetState = rememberModalBottomSheetState(

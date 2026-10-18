@@ -202,7 +202,9 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
                     .setArtist(artist)
                     .setAlbumTitle(album)
                     .apply {
-                        if (coverURL.isNotBlank()) {
+                        if (coverBytes != null) {
+                            setArtworkData(coverBytes, MediaMetadata.PICTURE_TYPE_FRONT_COVER)
+                        } else if (coverURL.isNotBlank()) {
                             setArtworkUri(android.net.Uri.parse(coverURL))
                         }
                     }

@@ -30,7 +30,8 @@ data class MediaItem(
     val duration: Duration,
     val coverURL: String,
     val url: String,
-    val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE)
+    val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
+    val coverBytes: ByteArray? = null)
 
 enum class LoopState {
     NONE, ONE, ALL;
@@ -53,13 +54,28 @@ sealed interface QueueEntry {
     val url: String
     val addedBy: String
 
+    /** Remote artwork URL, for consumers that can only take a link (remote control, media session). */
+    val artworkUrl: String?
+
+    /**
+     * Single source of truth for a queue entry's artwork, in a form Coil can load directly:
+     * a URL `String` for streaming tracks, embedded cover `ByteArray` for local ones.
+     * Every UI surface (players, queue, lists) must use this instead of reading thumbnails itself.
+     */
+    val artworkModel: Any?
+        get() = (this as? LocalTrack)?.coverBytes?.takeIf { it.isNotEmpty() } ?: artworkUrl
+
     @Serializable
     @SerialName("streaming")
     data class StreamingTrack(
         val track: MetadataTrack,
         override val url: String,
         val protocol: StreamProtocol = StreamProtocol.PROGRESSIVE,
-        override val addedBy: String = "") : QueueEntry
+        override val addedBy: String = "") : QueueEntry {
+        override val artworkUrl: String?
+            get() = track.thumbnails?.maxByOrNull { it.width * it.height }?.url
+                ?: track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
+    }
 
     @Serializable
     @SerialName("local")
@@ -71,6 +87,8 @@ sealed interface QueueEntry {
         val coverBytes: ByteArray?,
         override val url: String,
         override val addedBy: String = "") : QueueEntry {
+        override val artworkUrl: String? get() = null
+
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false

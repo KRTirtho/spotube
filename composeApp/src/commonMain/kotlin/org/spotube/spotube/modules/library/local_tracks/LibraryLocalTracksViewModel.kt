@@ -19,8 +19,6 @@ package org.spotube.spotube.modules.library.local_tracks
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
-import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.modules.library.LibraryState
 import org.spotube.spotube.modules.library.LibraryTab
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaFolder
@@ -120,7 +118,6 @@ private fun localTrackMatches(track: LocalMediaTrack, query: String): Boolean = 
 
 class LibraryLocalTracksViewModel(
     private val coordinator: LocalMediaLibraryCoordinator,
-    private val audioPlayerQueue: AudioPlayerQueue,
     private val libraryState: LibraryState
 ) : ViewModel() {
     private val requiresPermission = getPlatform().type == PlatformType.Android
@@ -155,23 +152,11 @@ class LibraryLocalTracksViewModel(
         libraryState.setQuery(LibraryTab.LocalTracks, query)
     }
 
-    fun openFolder(folderPath: String) {
-        _state.update { it.copy(currentFolderPath = folderPath) }
-    }
-
-    fun navigateUp() {
-        _state.update { it.copy(currentFolderPath = null) }
-    }
-
     fun onPermissionChanged(granted: Boolean) {
         val accessible = !requiresPermission || granted
         val wasAccessible = _state.value.canAccessMedia
         _state.update { it.copy(canAccessMedia = accessible) }
         if (accessible && !wasAccessible) refresh()
-    }
-
-    fun playCurrentFolder() {
-        _state.value.currentFolderPath?.let(::playFolder)
     }
 
     fun refresh() {
@@ -191,41 +176,6 @@ class LibraryLocalTracksViewModel(
         }
     }
 
-    fun playFolder(folderPath: String) {
-        if (!_state.value.canAccessMedia) return
-        val folder = _state.value.folders.firstOrNull { it.path == folderPath } ?: return
-        val tracks = filterTracks(folder.tracks, state.value.query)
-        if (tracks.isEmpty()) return
-
-        viewModelScope.launch {
-            audioPlayerQueue.load(
-                entries = tracks.map { it.toQueueEntry() },
-                autoPlay = true,
-                startPosition = 0,
-                collectionEntry = null
-            )
-        }
-    }
-
-    fun playTrack(trackPath: String) {
-        if (!_state.value.canAccessMedia) return
-        val folder = currentFolder() ?: return
-        val tracks = filterTracks(folder.tracks, state.value.query)
-        val selectedIndex = tracks.indexOfFirst { it.path == trackPath }
-        if (selectedIndex < 0) return
-
-        viewModelScope.launch {
-            audioPlayerQueue.load(
-                entries = tracks.map { it.toQueueEntry() },
-                autoPlay = true,
-                startPosition = selectedIndex,
-                collectionEntry = null
-            )
-        }
-    }
-
-    private fun currentFolder(): LocalMediaFolder? = state.value.currentFolder
-
     private fun refreshIfEmpty() {
         if (_state.value.folders.isNotEmpty()) return
         refresh()
@@ -238,23 +188,5 @@ class LibraryLocalTracksViewModel(
                 coordinator.refreshIfStale()
             }
         }
-    }
-
-    private fun filterTracks(tracks: List<LocalMediaTrack>, query: String): List<LocalMediaTrack> {
-        val normalizedQuery = query.trim()
-        if (normalizedQuery.isBlank()) return tracks
-
-        return tracks.filter { localTrackMatches(it, normalizedQuery) }
-    }
-
-    private fun LocalMediaTrack.toQueueEntry(): QueueEntry.LocalTrack {
-        return QueueEntry.LocalTrack(
-            name = name,
-            artists = artists,
-            duration = durationMs,
-            album = album,
-            coverBytes = coverBytes,
-            url = path
-        )
     }
 }

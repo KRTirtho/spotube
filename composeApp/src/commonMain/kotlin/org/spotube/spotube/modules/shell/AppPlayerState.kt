@@ -45,7 +45,6 @@ internal data class PlayerUiState(
     val artists: String = "No-op artists",
     val artistList: List<PlayerArtist> = emptyList(),
     val album: String = "",
-    val coverUrl: String = "",
     val position: Duration = 0.milliseconds,
     val actualDuration: Duration = 0.milliseconds,
     val metadataDuration: Duration = 0.milliseconds,
@@ -55,6 +54,8 @@ internal data class PlayerUiState(
     val volume: Float = 0f
 ) {
     val isPlaying: Boolean get() = playerState == PlayerState.PLAYING
+
+    val coverModel: Any? get() = currentQueueEntry?.artworkModel
     val displayDuration: Duration
         get() = if (actualDuration.inWholeMilliseconds > 0L) actualDuration else metadataDuration
     val seekDuration: Duration
@@ -72,7 +73,7 @@ internal data class PlayerUiState(
             queue=${queue.map { it.displayTitle() }},
             currentQueueEntry=${currentQueueEntry?.displayTitle()},
             title='$title', artists='$artists',
-            album='$album', coverUrl='$coverUrl',
+            album='$album', coverModel=${coverModel?.let { it::class.simpleName }},
             position=$position, actualDuration=$actualDuration, metadataDuration=$metadataDuration,
             playerState=$playerState, loopState=$loopState, isShuffling=$isShuffling, volume=$volume
           )
@@ -105,7 +106,6 @@ internal fun rememberPlayerUiState(
         artists = currentQueueEntry?.displayArtists().orEmpty().ifBlank { fallbackArtists },
         artistList = currentQueueEntry?.displayArtistList().orEmpty(),
         album = currentQueueEntry?.displayAlbum(unknownAlbum).orEmpty(),
-        coverUrl = currentQueueEntry?.coverUrl().orEmpty(),
         position = position,
         actualDuration = duration,
         metadataDuration = metadataDuration,
@@ -146,15 +146,6 @@ private fun QueueEntry.displayAlbum(unknownAlbum: String): String {
     return when (this) {
         is QueueEntry.StreamingTrack -> track.album?.title ?: unknownAlbum
         is QueueEntry.LocalTrack -> album.orEmpty()
-    }
-}
-
-private fun QueueEntry.coverUrl(): String {
-    return when (this) {
-        is QueueEntry.StreamingTrack -> (track.album?.thumbnails
-            ?: track.thumbnails)?.firstOrNull()?.url.orEmpty()
-
-        is QueueEntry.LocalTrack -> ""
     }
 }
 

@@ -25,7 +25,18 @@ import android.os.Build
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
+import android.graphics.BitmapFactory
+import android.graphics.Bitmap
 import android.provider.MediaStore
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
+import java.io.ByteArrayOutputStream
+import java.util.concurrent.ConcurrentHashMap
 import org.spotube.spotube.core.di.injectLogger
 import org.koin.core.component.KoinComponent
 import java.io.File
@@ -35,14 +46,39 @@ class AndroidLocalMediaDiscoveryService(
     private val context: Context) : LocalMediaDiscoveryService, KoinComponent {
     val logger by injectLogger<AndroidLocalMediaDiscoveryService>()
 
-    override suspend fun discoverFolders(roots: List<String>): List<LocalMediaFolder> {
+    private class TagInfo(
+        val title: String?,
+        val artists: List<String>,
+        val album: String?,
+        val durationMs: Long,
+        val cover: ByteArray?)
+
+    private class PendingTrack(
+        val uri: String,
+        val filePath: String?,
+        val modifiedAt: Long,
+        val folderPath: String,
+        val fallbackName: String,
+        val mediaStoreArtists: List<String>,
+        val mediaStoreAlbum: String?,
+        val mediaStoreDurationMs: Long)
+
+    // Parsing tags + cover with lofty is the expensive part, so keep results across rescans.
+    private val tagCache = ConcurrentHashMap<String, TagInfo>()
+
+    override suspend fun discoverFolders(roots: List<String>): List<LocalMediaFolder> = withContext(Dispatchers.IO) {
+        discoverFoldersBlocking(roots)
+    }
+
+    private suspend fun discoverFoldersBlocking(roots: List<String>): List<LocalMediaFolder> {
         logger.i { "discoverFolders: start roots=${roots.size}" }
         if (!hasReadPermission()) {
             logger.w { "discoverFolders: missing media permission, returning empty result" }
             return emptyList()
         }
 
-        val tracksByFolder = linkedMapOf<String, MutableList<LocalMediaTrack>>()
+        val pending = mutableListOf<PendingTrack>()
+        val knownFilePaths = hashSetOf<String>()
         val resolver = context.contentResolver
         val collection = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         var totalRows = 0
@@ -58,7 +94,9 @@ class AndroidLocalMediaDiscoveryService(
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DURATION,
-            MediaStore.Audio.Media.MIME_TYPE) + if (Build.VERSION.SDK_INT >= 29) {
+            MediaStore.Audio.Media.MIME_TYPE,
+            MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.DATE_MODIFIED) + if (Build.VERSION.SDK_INT >= 29) {
             arrayOf(MediaStore.Audio.Media.RELATIVE_PATH)
         } else {
             emptyArray()
@@ -77,6 +115,8 @@ class AndroidLocalMediaDiscoveryService(
             val durationCol = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION)
             val mimeTypeCol = cursor.getColumnIndex(MediaStore.Audio.Media.MIME_TYPE)
             val relativePathCol = cursor.getColumnIndex(MediaStore.Audio.Media.RELATIVE_PATH)
+            val dataCol = cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
+            val modifiedCol = cursor.getColumnIndex(MediaStore.Audio.Media.DATE_MODIFIED)
 
             logger.d {
                 "discoverFolders: query ok columns(mimeType=$mimeTypeCol, relativePath=$relativePathCol)"
@@ -118,20 +158,23 @@ class AndroidLocalMediaDiscoveryService(
                     .takeUnless { it.equals("<unknown>", true) }
                 val album = cursor.getString(albumCol).orEmpty().takeUnless { it.isBlank() }
                 val durationMs = cursor.getLong(durationCol).coerceAtLeast(0L)
+                val filePath = if (dataCol >= 0) cursor.getString(dataCol)?.takeIf { it.isNotBlank() } else null
+                val modifiedAt = if (modifiedCol >= 0) cursor.getLong(modifiedCol) else 0L
+                filePath?.let(knownFilePaths::add)
 
                 val name = rawTitle.ifBlank {
                     displayName.substringBeforeLast('.').takeIf { it.isNotBlank() } ?: displayName
                 }
 
-                val track = LocalMediaTrack(
-                    path = uri,
-                    name = name.ifBlank { "Unknown track" },
-                    artists = listOfNotNull(artist),
-                    durationMs = durationMs,
-                    album = album,
-                    coverBytes = null)
-
-                tracksByFolder.getOrPut(folderPath) { mutableListOf() }.add(track)
+                pending += PendingTrack(
+                    uri = uri,
+                    filePath = filePath,
+                    modifiedAt = modifiedAt,
+                    folderPath = folderPath,
+                    fallbackName = name.ifBlank { "Unknown track" },
+                    mediaStoreArtists = listOfNotNull(artist),
+                    mediaStoreAlbum = album,
+                    mediaStoreDurationMs = durationMs)
                 acceptedRows += 1
             }
         } ?: run {
@@ -142,20 +185,13 @@ class AndroidLocalMediaDiscoveryService(
             logger.w { "discoverFolders: MediaStore query returned null cursor" }
         }
 
-        val mediaStoreFolders = tracksByFolder.entries
-            .map { (folderPath, tracks) ->
-                LocalMediaFolder(
-                    path = folderPath,
-                    name = normalizeFolderName(folderPath),
-                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) })
-            }
-            .sortedBy { it.name.lowercase(Locale.getDefault()) }
+        // Files MediaStore already indexed must not be listed a second time by the filesystem scan.
+        discoverFileSystemFallback(roots, knownFilePaths, pending)
 
-        val fallbackFolders = discoverFileSystemFallback(roots)
-        val merged = mergeFolders(mediaStoreFolders, fallbackFolders)
+        val merged = buildFolders(pending)
 
         logger.i {
-            "discoverFolders: done folders=${merged.size} mediaStoreFolders=${mediaStoreFolders.size} fallbackFolders=${fallbackFolders.size} tracks=$acceptedRows totalRows=$totalRows skippedNonAudio=$skippedNonAudioRows unknownFolderRows=$unknownFolderRows"
+            "discoverFolders: done folders=${merged.size} mediaStoreTracks=$acceptedRows tracks=${pending.size} totalRows=$totalRows skippedNonAudio=$skippedNonAudioRows unknownFolderRows=$unknownFolderRows"
         }
 
         if (merged.isNotEmpty()) {
@@ -221,56 +257,109 @@ class AndroidLocalMediaDiscoveryService(
         return extension in SUPPORTED_EXTENSIONS
     }
 
-    private fun discoverFileSystemFallback(roots: List<String>): List<LocalMediaFolder> {
+    private fun discoverFileSystemFallback(
+        roots: List<String>,
+        knownFilePaths: Set<String>,
+        out: MutableList<PendingTrack>) {
         val candidateRoots = resolveCandidateRoots(roots)
         if (candidateRoots.isEmpty()) {
             logger.d { "discoverFileSystemFallback: no candidate roots" }
-            return emptyList()
+            return
         }
-
-        logger.d {
-            "discoverFileSystemFallback: scanning roots=${candidateRoots.joinToString()}"
-        }
-
-        val tracksByFolder = linkedMapOf<String, MutableList<LocalMediaTrack>>()
-        var scannedFiles = 0
-        var acceptedFiles = 0
+        val storageRoot = Environment.getExternalStorageDirectory().absolutePath.trimEnd('/') + "/"
+        val seen = hashSetOf<String>()
+        var added = 0
 
         candidateRoots.forEach { root ->
             scanDirectory(root) { file ->
-                scannedFiles += 1
-                val extension = file.extension.lowercase(Locale.getDefault())
-                if (extension !in SUPPORTED_EXTENSIONS) return@scanDirectory
-                acceptedFiles += 1
+                if (file.extension.lowercase(Locale.getDefault()) !in SUPPORTED_EXTENSIONS) return@scanDirectory
+                val absolute = file.absolutePath
+                if (absolute in knownFilePaths || !seen.add(absolute)) return@scanDirectory
 
-                val folderPath = file.parentFile?.absolutePath ?: "Unknown"
-                val name = file.nameWithoutExtension.ifBlank { file.name }
-                val track = LocalMediaTrack(
-                    path = file.absolutePath,
-                    name = name,
-                    artists = emptyList(),
-                    durationMs = 0L,
-                    album = null,
-                    coverBytes = null)
-
-                tracksByFolder.getOrPut(folderPath) { mutableListOf() }.add(track)
+                // Same key shape as MediaStore's RELATIVE_PATH ("Download/") so folders merge.
+                val parent = file.parentFile?.absolutePath.orEmpty().trimEnd('/') + "/"
+                val folderPath = if (parent.startsWith(storageRoot)) parent.removePrefix(storageRoot) else parent
+                out += PendingTrack(
+                    uri = absolute,
+                    filePath = absolute,
+                    modifiedAt = file.lastModified() / 1000,
+                    folderPath = folderPath,
+                    fallbackName = file.nameWithoutExtension.ifBlank { file.name },
+                    mediaStoreArtists = emptyList(),
+                    mediaStoreAlbum = null,
+                    mediaStoreDurationMs = 0L)
+                added += 1
             }
         }
+        logger.i { "discoverFileSystemFallback: extra files not in MediaStore=$added" }
+    }
 
-        val folders = tracksByFolder.entries
-            .map { (folderPath, tracks) ->
+    private suspend fun buildFolders(pending: List<PendingTrack>): List<LocalMediaFolder> {
+        val permits = Semaphore(4)
+        val tracks = coroutineScope {
+            pending.map { item ->
+                async(Dispatchers.IO) {
+                    val tag = permits.withPermit { readTags(item) }
+                    item.folderPath to LocalMediaTrack(
+                        path = item.uri,
+                        name = tag?.title?.takeIf { it.isNotBlank() } ?: item.fallbackName,
+                        artists = tag?.artists?.takeIf { it.isNotEmpty() } ?: item.mediaStoreArtists,
+                        durationMs = tag?.durationMs?.takeIf { it > 0 } ?: item.mediaStoreDurationMs,
+                        album = tag?.album?.takeIf { it.isNotBlank() } ?: item.mediaStoreAlbum,
+                        coverBytes = tag?.cover)
+                }
+            }.awaitAll()
+        }
+        return tracks.groupBy({ it.first }, { it.second })
+            .map { (path, list) ->
                 LocalMediaFolder(
-                    path = folderPath,
-                    name = normalizeFolderName(folderPath),
-                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) })
+                    path = path,
+                    name = normalizeFolderName(path),
+                    tracks = list.sortedBy { it.name.lowercase(Locale.getDefault()) })
             }
             .sortedBy { it.name.lowercase(Locale.getDefault()) }
+    }
 
-        logger.i {
-            "discoverFileSystemFallback: scannedFiles=$scannedFiles acceptedFiles=$acceptedFiles folders=${folders.size}"
+    private fun readTags(item: PendingTrack): TagInfo? {
+        val path = item.filePath ?: return null
+        val key = "$path:${item.modifiedAt}"
+        tagCache[key]?.let { return it }
+        val file = File(path)
+        if (!file.isFile || !file.canRead()) return null
+        val info = try {
+            val meta = uniffi.compose_app.readAudioMetadata(path)
+            TagInfo(
+                title = meta.title,
+                artists = meta.artists,
+                album = meta.album,
+                durationMs = meta.durationMs,
+                cover = meta.coverBytes?.let(::thumbnail))
+        } catch (t: Throwable) {
+            logger.d { "readTags: failed path=$path reason=${t.message}" }
+            null
         }
+        if (info != null) tagCache[key] = info
+        return info
+    }
 
-        return folders
+    // Embedded covers can be several MB; the cache is serialised as JSON, so keep a small JPEG.
+    private fun thumbnail(bytes: ByteArray): ByteArray? {
+        if (bytes.isEmpty()) return null
+        val bounds = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeByteArray(bytes, 0, bytes.size, bounds)
+        if (bounds.outWidth <= 0 || bounds.outHeight <= 0) return null
+        var sample = 1
+        while (bounds.outWidth / (sample * 2) >= THUMBNAIL_SIZE && bounds.outHeight / (sample * 2) >= THUMBNAIL_SIZE) sample *= 2
+        val decoded = BitmapFactory.decodeByteArray(
+            bytes, 0, bytes.size, BitmapFactory.Options().apply { inSampleSize = sample }) ?: return null
+        val scale = THUMBNAIL_SIZE.toFloat() / minOf(decoded.width, decoded.height)
+        val bitmap = if (scale < 1f) Bitmap.createScaledBitmap(
+            decoded, (decoded.width * scale).toInt().coerceAtLeast(1),
+            (decoded.height * scale).toInt().coerceAtLeast(1), true) else decoded
+        return ByteArrayOutputStream().use {
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, it)
+            it.toByteArray()
+        }
     }
 
     private fun resolveCandidateRoots(roots: List<String>): List<File> {
@@ -309,35 +398,8 @@ class AndroidLocalMediaDiscoveryService(
         }
     }
 
-    private fun mergeFolders(
-        mediaStoreFolders: List<LocalMediaFolder>,
-        fallbackFolders: List<LocalMediaFolder>): List<LocalMediaFolder> {
-        if (fallbackFolders.isEmpty()) return mediaStoreFolders
-        if (mediaStoreFolders.isEmpty()) return fallbackFolders
-
-        val merged = linkedMapOf<String, MutableList<LocalMediaTrack>>()
-        val seenTrackPaths = mutableSetOf<String>()
-
-        (mediaStoreFolders + fallbackFolders).forEach { folder ->
-            val bucket = merged.getOrPut(folder.path) { mutableListOf() }
-            folder.tracks.forEach { track ->
-                if (seenTrackPaths.add(track.path)) {
-                    bucket.add(track)
-                }
-            }
-        }
-
-        return merged.entries
-            .map { (path, tracks) ->
-                LocalMediaFolder(
-                    path = path,
-                    name = normalizeFolderName(path),
-                    tracks = tracks.sortedBy { it.name.lowercase(Locale.getDefault()) })
-            }
-            .sortedBy { it.name.lowercase(Locale.getDefault()) }
-    }
-
     companion object {
+        private const val THUMBNAIL_SIZE = 160
         private val SUPPORTED_EXTENSIONS = setOf(
             "mp3",
             "m4a",

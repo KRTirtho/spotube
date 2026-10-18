@@ -131,7 +131,7 @@ internal fun FloatingPlayerContent(
     onPlayPause: () -> Unit,
     heartButton: @Composable () -> Unit
 ) {
-    val coverModel = playerUiState.coverUrl.takeIf { it.isNotBlank() }
+    val coverModel = playerUiState.coverModel
 
     Box(
         modifier = modifier

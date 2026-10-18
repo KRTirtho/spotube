@@ -47,7 +47,10 @@ import org.spotube.spotube.resources.iconsax.IconsaxFolderOpen
 import org.spotube.spotube.resources.iconsax.IconsaxPlay
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.resources.pluralStringResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
+import org.spotube.spotube.core.navigation.NavigationCommands
+import org.spotube.spotube.core.navigation.Routes
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
 import org.spotube.millennium.composables.MillenniumIcon
@@ -63,15 +66,18 @@ import spotube.composeapp.generated.resources.*
 fun LibraryLocalTracksScreen(
     modifier: Modifier = Modifier,
     viewModel: LibraryLocalTracksViewModel = koinViewModel(),
-    foldersViewModel: LocalMediaFoldersViewModel = koinViewModel()
+    foldersViewModel: LocalMediaFoldersViewModel = koinViewModel(),
+    navigationCommands: NavigationCommands = koinInject()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val permission = rememberLocalMediaPermissionState()
     // Platform permission events only; the ViewModel decides whether/when to index media.
     LaunchedEffect(permission.isGranted) { viewModel.onPermissionChanged(permission.isGranted) }
     LocalTracksContent(
-        state, viewModel::openFolder, viewModel::playTrack, viewModel::navigateUp,
-        viewModel::playCurrentFolder, permission.requestPermission, modifier,
+        state,
+        onOpenFolder = { navigationCommands.navigateTo(Routes.LocalFolder(it)) },
+        onPlayTrack = {}, onNavigateUp = {}, onPlayFolder = {},
+        onRequestPermission = permission.requestPermission, modifier = modifier,
         onManageFolders = foldersViewModel::open
     )
     LocalMediaFoldersDialogHost(foldersViewModel)
@@ -120,7 +126,7 @@ internal fun LocalTracksContent(
                 state.currentFolderPath == null && state.visibleFolders.isNotEmpty() -> LazyColumn(
                     Modifier.weight(1f).fillMaxWidth(),
                     contentPadding = PaddingValues(bottom = inset + 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     items(state.visibleFolders, key = { it.path }) { folder ->
                         LocalFolderRow(folder) { onOpenFolder(folder.path) }
@@ -130,7 +136,7 @@ internal fun LocalTracksContent(
                 state.currentFolderPath != null && state.visibleTracks.isNotEmpty() -> LazyColumn(
                     Modifier.weight(1f).fillMaxWidth(),
                     contentPadding = PaddingValues(bottom = inset + 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     items(state.visibleTracks, key = { it.path }) { track ->
                         PlayableListTile(
@@ -139,6 +145,7 @@ internal fun LocalTracksContent(
                             imageModel = track.artwork,
                             onClick = { onPlayTrack(track.path) },
                             onPlay = { onPlayTrack(track.path) },
+                            compact = true,
                             trailingContent = {
                                 track.durationLabel?.let {
                                     Text(
@@ -195,7 +202,7 @@ internal fun LocalTracksBreadcrumb(
 ) {
     val backDescription = stringResource(Res.string.library_local_back)
     Row(
-        modifier.fillMaxWidth().height(32.dp),
+        modifier.fillMaxWidth().height(40.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -268,22 +275,22 @@ internal fun LocalTracksBreadcrumb(
         if (state.isRefreshing) MillenniumSpokeSpinner(size = 14.dp)
         if (state.currentFolderPath == null && onManageFolders != null) MillenniumIconButton(
             onClick = onManageFolders,
-            modifier = Modifier.size(28.dp), style = MillenniumIconButtonStyle.Quiet
+            modifier = Modifier.size(40.dp), style = MillenniumIconButtonStyle.Quiet
         ) {
             MillenniumIcon(
                 Iconsax.IconsaxFolderAdd,
                 stringResource(Res.string.library_local_add_folder),
-                modifier = Modifier.size(14.dp)
+                modifier = Modifier.size(22.dp)
             )
         }
         if (state.currentFolderPath != null) MillenniumIconButton(
             onClick = onPlayFolder, enabled = state.canPlayFolder,
-            modifier = Modifier.size(28.dp), style = MillenniumIconButtonStyle.Quiet
+            modifier = Modifier.size(40.dp), style = MillenniumIconButtonStyle.Quiet
         ) {
             MillenniumIcon(
                 Iconsax.IconsaxPlay,
                 stringResource(Res.string.library_local_play_folder),
-                modifier = Modifier.size(14.dp)
+                modifier = Modifier.size(22.dp)
             )
         }
     }
@@ -297,13 +304,13 @@ internal fun LocalFolderRow(folder: LocalFolderUi, onClick: () -> Unit) {
         shape = RoundedCornerShape(8.dp),
         borderColor = MillenniumTheme.colors.border,
         borderWidth = 1.dp,
-        contentPadding = PaddingValues(12.dp),
-        minimumHeight = 76.dp,
+        contentPadding = PaddingValues(8.dp),
+        minimumHeight = 52.dp,
         leading = {
             MediaArtwork(
                 folder.artwork,
                 folder.name,
-                Modifier.size(52.dp),
+                Modifier.size(36.dp),
                 placeholderIcon = Iconsax.IconsaxFolderOpen
             )
         },
@@ -328,7 +335,7 @@ internal fun LocalFolderRow(folder: LocalFolderUi, onClick: () -> Unit) {
             MillenniumIcon(
                 FeatherIcons.ChevronRight,
                 null,
-                modifier = Modifier.size(18.dp)
+                modifier = Modifier.size(16.dp)
             )
         }
     )

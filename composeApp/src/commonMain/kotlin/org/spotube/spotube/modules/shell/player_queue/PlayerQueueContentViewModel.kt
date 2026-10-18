@@ -39,7 +39,7 @@ data class QueueItemUi(
     val subtitle: String,
     val durationLabel: String,
     val isCurrent: Boolean,
-    val imageUrl: String?,
+    val artwork: Any?,
     val originalIndex: Int,
     /** Participant who added this item to the jam queue, if any. */
     val addedByParticipant: JamParticipant? = null)
@@ -77,22 +77,18 @@ class PlayerQueueContentViewModel(
             val title: String
             val subtitle: String
             val durationMs: Long
-            val imageUrl: String?
 
             when (entry) {
                 is QueueEntry.StreamingTrack -> {
                     title = entry.track.title
                     subtitle = entry.track.artists.joinToString(", ") { it.name }
                     durationMs = entry.track.durationMs
-                    imageUrl = entry.track.thumbnails?.maxByOrNull { it.width * it.height }?.url
-                        ?: entry.track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
                 }
 
                 is QueueEntry.LocalTrack -> {
                     title = entry.name
                     subtitle = entry.artists.joinToString(", ")
                     durationMs = entry.duration
-                    imageUrl = null
                 }
             }
 
@@ -104,7 +100,7 @@ class PlayerQueueContentViewModel(
                 subtitle = subtitle,
                 durationLabel = durationMs.toDurationLabel(),
                 isCurrent = index == currentIndex,
-                imageUrl = imageUrl,
+                artwork = entry.artworkModel,
                 originalIndex = index,
                 addedByParticipant = addedByParticipant)
         }

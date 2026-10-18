@@ -60,6 +60,7 @@ import org.spotube.spotube.modules.library.LibraryState
 import org.spotube.spotube.modules.library.album.LibraryAlbumsViewModel
 import org.spotube.spotube.modules.library.artist.LibraryArtistsViewModel
 import org.spotube.spotube.modules.library.local_tracks.LibraryLocalTracksViewModel
+import org.spotube.spotube.modules.library.local_tracks.LocalFolderViewModel
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaCacheRepository
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaFoldersConfig
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaLibraryCoordinator
@@ -133,6 +134,7 @@ val sharedModules = module {
     viewModelOf(::LibraryAlbumsViewModel)
     viewModelOf(::LibraryArtistsViewModel)
     viewModelOf(::LibraryLocalTracksViewModel)
+    viewModel { (folderPath: String) -> LocalFolderViewModel(folderPath, get(), get()) }
 
     // Plugin system
     singleOf(::PluginManager) {

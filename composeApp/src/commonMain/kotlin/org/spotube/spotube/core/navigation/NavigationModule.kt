@@ -26,6 +26,8 @@ import org.spotube.spotube.modules.devices.RemoteControlScreen
 import org.spotube.spotube.modules.jam.JamScreen
 import org.spotube.spotube.modules.home.HomeScreen
 import org.spotube.spotube.modules.library.LibraryScreen
+import org.spotube.spotube.modules.library.local_tracks.LocalFolderScreen
+import org.spotube.spotube.modules.library.local_tracks.LocalFolderViewModel
 import org.spotube.spotube.modules.lyrics.LyricsScreen
 import org.spotube.spotube.modules.playlist.PlaylistScreen
 import org.spotube.spotube.modules.plugin.PluginScreen
@@ -96,6 +98,9 @@ sealed interface Routes : NavKey {
 
     @Serializable
     data object Welcome : Routes
+
+    @Serializable
+    data class LocalFolder(val folderPath: String) : Routes
 }
 
 @OptIn(KoinExperimentalAPI::class)
@@ -114,6 +119,14 @@ val navigationModule = module {
     navigation<Routes.Library> {
         // Not guarded as a whole: Local tracks and Downloads work without a plugin.
         LibraryScreen()
+    }
+    navigation<Routes.LocalFolder> {
+        LocalFolderScreen(
+            viewModel = koinViewModel(
+                key = it.folderPath,
+                parameters = { parametersOf(it.folderPath) }
+            ),
+            onBack = { get<NavigationCommands>().pop() })
     }
     navigation<Routes.Settings> {
         SettingsScreen(settingsViewModel = koinViewModel())

@@ -164,7 +164,7 @@ fun AppLargePlayer(
     var isSeeking by remember { mutableStateOf(false) }
     var seekProgress by remember { mutableFloatStateOf(playerUiState.progress) }
     var lastNonZeroVolume by remember { mutableFloatStateOf(if (playerUiState.volume > 0f) playerUiState.volume else 0.6f) }
-    val coverModel = playerUiState.coverUrl.takeIf { it.isNotBlank() }
+    val coverModel = playerUiState.coverModel
 
     PlayerOptionDialogs(viewModel = playerOptionsViewModel)
 

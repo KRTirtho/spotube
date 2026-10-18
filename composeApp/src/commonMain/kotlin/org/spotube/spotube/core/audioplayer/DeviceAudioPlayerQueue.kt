@@ -463,7 +463,7 @@ class DeviceAudioPlayerQueue(
                     artist = track.artists.joinToString(", ") { artist -> artist.name },
                     album = track.album?.title.orEmpty(),
                     duration = track.durationMs.milliseconds,
-                    coverURL = (track.album?.thumbnails ?: track.thumbnails)?.firstOrNull()?.url.orEmpty(),
+                    coverURL = artworkUrl.orEmpty(),
                     url = resolvedUrl,
                     protocol = protocol)
             }
@@ -476,7 +476,8 @@ class DeviceAudioPlayerQueue(
                     album = album.orEmpty(),
                     duration = duration.milliseconds,
                     coverURL = "",
-                    url = url)
+                    url = url,
+                    coverBytes = coverBytes?.takeIf { it.isNotEmpty() })
             }
         }
     }

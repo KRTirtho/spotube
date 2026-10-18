@@ -354,7 +354,7 @@ class RemoteControlHandler(
             currentTrackTitle = current?.titleOrNull(),
             currentTrackArtists = current?.artistsOrNull(),
             currentTrackAlbum = current?.albumOrNull(),
-            currentTrackCoverUrl = current?.coverUrlOrNull())
+            currentTrackCoverUrl = current?.artworkUrl)
         val text = json.encodeToString(RemoteControlEvent.serializer(), state)
         session.send(Frame.Text(text))
     }
@@ -395,7 +395,7 @@ class RemoteControlHandler(
             title = track.title,
             artists = track.artists.joinToString(", ") { artist -> artist.name },
             album = track.album?.title,
-            coverUrl = coverUrlOrNull(),
+            coverUrl = artworkUrl,
             durationMs = track.durationMs)
 
         is QueueEntry.LocalTrack -> RemoteQueueEntry(
@@ -426,12 +426,6 @@ class RemoteControlHandler(
     private fun QueueEntry.albumOrNull(): String? = when (this) {
         is QueueEntry.StreamingTrack -> track.album?.title
         is QueueEntry.LocalTrack -> album
-    }
-
-    private fun QueueEntry.coverUrlOrNull(): String? = when (this) {
-        is QueueEntry.StreamingTrack -> track.thumbnails?.maxByOrNull { it.width * it.height }?.url
-            ?: track.album?.thumbnails?.maxByOrNull { it.width * it.height }?.url
-        is QueueEntry.LocalTrack -> null
     }
 }
 
