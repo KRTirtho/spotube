@@ -543,3 +543,14 @@ cargo {
         embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
     }
 }
+
+// Google only ships x86_64 Linux NDK toolchains, so on a Linux arm64 host the Android Rust targets can never
+// link (clang: "Exec format error"). Desktop packaging doesn't need them; Android is built on x86_64 runners.
+run {
+    val isLinuxArm64Host = System.getProperty("os.name").lowercase().contains("linux") &&
+        System.getProperty("os.arch").lowercase() in setOf("aarch64", "arm64")
+    if (isLinuxArm64Host) {
+        tasks.matching { it.name.startsWith("cargoBuildAndroid") || it.name.startsWith("rustUpTargetAddAndroid") }
+            .configureEach { enabled = false }
+    }
+}
