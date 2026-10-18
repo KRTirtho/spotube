@@ -241,9 +241,12 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      # The arm64 runner image ships without an Android SDK, but :composeApp configuration requires one
+      # The arm64 runner image ships without an Android SDK/NDK, but :composeApp configuration needs both
+      # (Gobley's cargo plugin resolves the NDK directory for the Android Rust targets)
       - name: Set up Android SDK
         uses: android-actions/setup-android@v4
+        with:
+          packages: tools platform-tools ndk;28.2.13676358
 
       - name: Download maven local
         uses: actions/download-artifact@v8
