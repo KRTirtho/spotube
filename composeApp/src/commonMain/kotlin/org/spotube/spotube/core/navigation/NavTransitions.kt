@@ -25,6 +25,7 @@ import androidx.compose.animation.core.CubicBezierEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -33,7 +34,10 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.scene.Scene
 
 private const val TRANSITION_DURATION_MILLIS = 300
-private const val SLIDE_FRACTION = 0.08f
+private const val FADE_THROUGH_OUT_MILLIS = 90
+private const val FADE_THROUGH_SCALE = 0.94f
+private const val SLIDE_FRACTION = 0.25f
+private const val BEHIND_SLIDE_FRACTION = 0.1f
 private val EmphasizedDecelerate = CubicBezierEasing(0.05f, 0.7f, 0.1f, 1f)
 
 // NavEntry.contentKey defaults to key.toString()
@@ -49,28 +53,49 @@ private fun Scene<NavKey>.tabRoot(): Any? =
 private fun AnimatedContentTransitionScope<Scene<NavKey>>.isTabSwitch(): Boolean =
     initialState.tabRoot() != targetState.tabRoot()
 
-/** Material shared-axis (X) style: a short horizontal slide combined with a cross-fade. */
-private fun AnimatedContentTransitionScope<Scene<NavKey>>.sharedAxisX(
+/** Material fade-through: the old tab fades out, the new one fades in while scaling up slightly. */
+private fun fadeThrough(): ContentTransform {
+    val enter = fadeIn(
+        tween(TRANSITION_DURATION_MILLIS - FADE_THROUGH_OUT_MILLIS, FADE_THROUGH_OUT_MILLIS, EmphasizedDecelerate)
+    ) + scaleIn(
+        tween(TRANSITION_DURATION_MILLIS - FADE_THROUGH_OUT_MILLIS, FADE_THROUGH_OUT_MILLIS, EmphasizedDecelerate),
+        initialScale = FADE_THROUGH_SCALE
+    )
+    return enter togetherWith fadeOut(tween(FADE_THROUGH_OUT_MILLIS))
+}
+
+/**
+ * Pushed/popped pages inside a tab: the page on top slides + fades while the page behind
+ * drifts slightly the other way. On pop the leaving page must stay on top (negative target
+ * z-index), otherwise the page being revealed is drawn over it and its exit is never seen.
+ */
+private fun AnimatedContentTransitionScope<Scene<NavKey>>.stackTransition(
     forward: Boolean
 ): ContentTransform {
-    if (isTabSwitch()) return ContentTransform(EnterTransition.None, ExitTransition.None)
+    if (isTabSwitch()) return fadeThrough()
 
-    val direction = if (forward) 1 else -1
-    val slideSpec = tween<IntOffset>(
-        TRANSITION_DURATION_MILLIS, easing = EmphasizedDecelerate
-    )
-    val enter = slideInHorizontally(slideSpec) { (it * SLIDE_FRACTION).toInt() * direction } +
-        fadeIn(tween(TRANSITION_DURATION_MILLIS / 2, delayMillis = TRANSITION_DURATION_MILLIS / 6))
-    val exit = slideOutHorizontally(slideSpec) { -(it * SLIDE_FRACTION).toInt() * direction } +
-        fadeOut(tween(TRANSITION_DURATION_MILLIS / 3))
-    return enter togetherWith exit
+    val slide = tween<IntOffset>(TRANSITION_DURATION_MILLIS, easing = EmphasizedDecelerate)
+    val enter: EnterTransition
+    val exit: ExitTransition
+    if (forward) {
+        enter = slideInHorizontally(slide) { (it * SLIDE_FRACTION).toInt() } +
+            fadeIn(tween(TRANSITION_DURATION_MILLIS * 2 / 3))
+        exit = slideOutHorizontally(slide) { -(it * BEHIND_SLIDE_FRACTION).toInt() } +
+            fadeOut(tween(TRANSITION_DURATION_MILLIS / 2))
+    } else {
+        enter = slideInHorizontally(slide) { -(it * BEHIND_SLIDE_FRACTION).toInt() } +
+            fadeIn(tween(TRANSITION_DURATION_MILLIS * 2 / 3))
+        exit = slideOutHorizontally(slide) { (it * SLIDE_FRACTION).toInt() } +
+            fadeOut(tween(TRANSITION_DURATION_MILLIS * 2 / 3))
+    }
+    return ContentTransform(enter, exit, targetContentZIndex = if (forward) 0f else -1f)
 }
 
 val navPushTransitionSpec: AnimatedContentTransitionScope<Scene<NavKey>>.() -> ContentTransform =
-    { sharedAxisX(forward = true) }
+    { stackTransition(forward = true) }
 
 val navPopTransitionSpec: AnimatedContentTransitionScope<Scene<NavKey>>.() -> ContentTransform =
-    { sharedAxisX(forward = false) }
+    { stackTransition(forward = false) }
 
 val navPredictivePopTransitionSpec: AnimatedContentTransitionScope<Scene<NavKey>>.(Int) -> ContentTransform =
-    { sharedAxisX(forward = false) }
+    { stackTransition(forward = false) }
