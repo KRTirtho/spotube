@@ -278,7 +278,7 @@ jobs:
           key: graalvm-${{ runner.os }}-${{ runner.arch }}
 
       - name: Package Linux
-        run: ./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+        run: ./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm --stacktrace -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
 
       - name: Rename Linux artifacts
         run: |
