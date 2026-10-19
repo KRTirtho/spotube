@@ -22,17 +22,20 @@ on:
         type: boolean
         default: false
 
+# Read-only by default; only create-release gets write access
+permissions:
+  contents: read
+
+# Never cancel a running release when another is dispatched, and let stable and nightly run side by side
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ inputs.release_type }}
+  cancel-in-progress: false
 
 env:
   COMPOSE_WEBVIEW_REPO: KRTirtho/ComposeNativeWebview
   COMPOSE_WEBVIEW_COMMIT: cbd36f88927298a28a2d64c6acf7ec3b2def6f9d
   GRADLE_PLUGIN_REPO: team-spotube/gradle-plugin
   VLCJ_BUNDLER_REPO: team-spotube/vlcj-bundler-gradle-plugin
-  # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit on shared runners
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   prepare-deps:
@@ -103,6 +106,7 @@ jobs:
   build-android:
     name: Android
     needs: prepare-deps
+    timeout-minutes: 120
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -129,17 +133,23 @@ jobs:
         run: chmod +x gradlew
 
       - name: Decode keystore
+        env:
+          KEYSTORE: ${{ secrets.KEYSTORE }}
         run: |
-          echo '${{ secrets.KEYSTORE }}' | base64 --decode > "${{ github.workspace }}/composeApp/upload-keystore.jks"
+          echo "$KEYSTORE" | base64 --decode > "${{ github.workspace }}/composeApp/upload-keystore.jks"
 
       - name: Configure Android signing
         working-directory: composeApp
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEYSTORE_KEY_ALIAS: ${{ secrets.KEYSTORE_KEY_ALIAS }}
+          KEYSTORE_KEY_PASSWORD: ${{ secrets.KEYSTORE_KEY_PASSWORD }}
         run: |
           cat >> local.properties <<EOF
           release.signing.storeFile=${{ github.workspace }}/composeApp/upload-keystore.jks
-          release.signing.storePassword=${{ secrets.KEYSTORE_PASSWORD }}
-          release.signing.keyAlias=${{ secrets.KEYSTORE_KEY_ALIAS }}
-          release.signing.keyPassword=${{ secrets.KEYSTORE_KEY_PASSWORD }}
+          release.signing.storePassword=${KEYSTORE_PASSWORD}
+          release.signing.keyAlias=${KEYSTORE_KEY_ALIAS}
+          release.signing.keyPassword=${KEYSTORE_KEY_PASSWORD}
           EOF
 
       - name: Assemble Release
@@ -170,6 +180,7 @@ jobs:
   build-linux:
     name: Linux Desktop
     needs: prepare-deps
+    timeout-minutes: 120
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
@@ -204,9 +215,13 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.gradle/nucleus/graalvm
-          key: graalvm-${{ runner.os }}-${{ runner.arch }}
+          key: graalvm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml', 'composeApp/build.gradle.kts') }}
+          restore-keys: graalvm-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Package Linux
+        env:
+          # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
 
       - name: Rename Linux artifacts
@@ -237,6 +252,7 @@ jobs:
   build-linux-arm64:
     name: Linux Desktop (aarch64)
     needs: prepare-deps
+    timeout-minutes: 120
     runs-on: ubuntu-24.04-arm
     steps:
       - uses: actions/checkout@v7
@@ -278,10 +294,14 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.gradle/nucleus/graalvm
-          key: graalvm-${{ runner.os }}-${{ runner.arch }}
+          key: graalvm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml', 'composeApp/build.gradle.kts') }}
+          restore-keys: graalvm-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Package Linux
-        run: ./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm --stacktrace -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+        env:
+          # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
 
       - name: Rename Linux artifacts
         run: |
@@ -311,6 +331,7 @@ jobs:
   build-windows:
     name: Windows Desktop
     needs: prepare-deps
+    timeout-minutes: 120
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v7
@@ -341,9 +362,13 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.gradle/nucleus/graalvm
-          key: graalvm-${{ runner.os }}-${{ runner.arch }}
+          key: graalvm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml', 'composeApp/build.gradle.kts') }}
+          restore-keys: graalvm-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Package EXE
+        env:
+          # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew :composeApp:packageGraalvmExe -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
 
       - name: Rename Windows artifacts
@@ -369,6 +394,7 @@ jobs:
   build-macos:
     name: macOS Desktop
     needs: prepare-deps
+    timeout-minutes: 120
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v7
@@ -398,9 +424,13 @@ jobs:
         uses: actions/cache@v6
         with:
           path: ~/.gradle/nucleus/graalvm
-          key: graalvm-${{ runner.os }}-${{ runner.arch }}
+          key: graalvm-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('gradle/libs.versions.toml', 'composeApp/build.gradle.kts') }}
+          restore-keys: graalvm-${{ runner.os }}-${{ runner.arch }}-
 
       - name: Package DMG
+        env:
+          # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew :composeApp:packageGraalvmDmg -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
 
       - name: Rename macOS artifact
@@ -430,6 +460,8 @@ jobs:
       - build-windows
       - build-macos
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
 
@@ -475,7 +507,7 @@ jobs:
         run: |
           echo "## Downloads" > release-notes.md
           echo "" >> release-notes.md
-          for dir in android-apk android-aab linux-deb linux-rpm linux-appimage linux-deb-arm64 linux-rpm-arm64 windows-msi windows-exe macos-dmg; do
+          for dir in android-apk linux-deb linux-rpm linux-deb-arm64 linux-rpm-arm64 windows-exe macos-dmg; do
             if [ -d "$dir" ]; then
               echo "### $dir" >> release-notes.md
               for f in "$dir"/*; do
@@ -485,22 +517,29 @@ jobs:
             fi
           done
 
+      # The rolling nightly tag already exists, and the release action never moves an existing tag
+      - name: Move nightly tag to this commit
+        if: ${{ inputs.release_type == 'nightly' }}
+        run: |
+          git tag -f nightly "$GITHUB_SHA"
+          git push -f origin refs/tags/nightly
+
       - name: Create Release
         uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ steps.vars.outputs.tag }}
+          # A new tag (stable) would otherwise point at the default branch instead of the built commit
+          target_commitish: ${{ github.sha }}
+          fail_on_unmatched_files: true
           name: ${{ steps.vars.outputs.release_name }}
           body_path: release-notes.md
           draft: ${{ steps.vars.outputs.is_draft }}
           prerelease: ${{ steps.vars.outputs.is_prerelease }}
           files: |
             android-apk/*.apk
-            android-aab/*.aab
             linux-deb/*.deb
             linux-rpm/*.rpm
-            linux-appimage/*.AppImage
             linux-deb-arm64/*.deb
             linux-rpm-arm64/*.rpm
-            windows-msi/*.msi
             windows-exe/*.exe
             macos-dmg/*.dmg
