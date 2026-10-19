@@ -59,9 +59,7 @@
 
 ## Release workflow (`.github/workflows/release.yml`)
 - Triggered by `workflow_dispatch` with a `release_type` choice input (`stable` | `nightly`).
-- `prepare-deps` job checks out & publishes to `mavenLocal`:
-  - `kdroidFilter/ComposeNativeWebview` (compose-webview)
-  - `team-spotube/gradle-plugin` (spotubeGradle + vlcjBundler plugins)
+- `prepare-deps` job checks out & publishes `kdroidFilter/ComposeNativeWebview` (compose-webview) to `mavenLocal`. The spotube gradle plugin and vlcj-bundler now come from Maven Central.
 - Build jobs per platform (Android, Linux, Windows, macOS), all `needs: prepare-deps`. Desktop jobs ship GraalVM native installers (`packageGraalvm{Deb,Rpm,Exe,Dmg}`, output in `composeApp/build/compose/binaries/main/graalvm-<format>/`), not jpackage/JVM ones.
 - **Stable**: reads `versionName` from `composeApp/build.gradle.kts`, tag = `v{version}`, draft release.
 - **Nightly**: builds with `-PversionName=nightly`, tag = `nightly` (updates existing), prerelease.

@@ -54,10 +54,8 @@ Spotube is a Kotlin Multiplatform + Compose Multiplatform app. The desktop app i
 - **JDK 21** to run Gradle. The Gradle daemon JDK and the GraalVM toolchain are provisioned automatically.
 - **Rust** (`rustup` + `cargo`). The `composeApp` Rust library is built through [Gobley](https://gobley.dev).
 - **Android SDK**, only for Android builds.
-- **Unpublished dependencies.** Three dependencies aren't on Maven Central yet. Clone each one and run `./gradlew publishToMavenLocal` in it:
+- **Unpublished dependency.** One dependency isn't on Maven Central yet. Clone it and run `./gradlew publishToMavenLocal` in it:
   - [kdroidFilter/ComposeNativeWebview](https://github.com/kdroidFilter/ComposeNativeWebview), at the commit pinned in [`spotube-release-binary.yml`](.github/workflows/spotube-release-binary.yml) (`COMPOSE_WEBVIEW_COMMIT`)
-  - [team-spotube/gradle-plugin](https://github.com/team-spotube/gradle-plugin)
-  - [team-spotube/vlcj-bundler-gradle-plugin](https://github.com/team-spotube/vlcj-bundler-gradle-plugin)
 - **Linux runtime:** `webkit2gtk-4.1` for the embedded webview.
 
 Always use the Gradle wrapper (`./gradlew`, or `gradlew.bat` on Windows).

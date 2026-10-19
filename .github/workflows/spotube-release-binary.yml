@@ -34,8 +34,6 @@ concurrency:
 env:
   COMPOSE_WEBVIEW_REPO: KRTirtho/ComposeNativeWebview
   COMPOSE_WEBVIEW_COMMIT: cbd36f88927298a28a2d64c6acf7ec3b2def6f9d
-  GRADLE_PLUGIN_REPO: team-spotube/gradle-plugin
-  VLCJ_BUNDLER_REPO: team-spotube/vlcj-bundler-gradle-plugin
 
 jobs:
   prepare-deps:
@@ -49,20 +47,6 @@ jobs:
           ref: ${{ env.COMPOSE_WEBVIEW_COMMIT }}
           token: ${{ secrets.GITHUB_TOKEN }}
           path: compose-webview
-
-      - name: Checkout gradle-plugin
-        uses: actions/checkout@v7
-        with:
-          repository: ${{ env.GRADLE_PLUGIN_REPO }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: gradle-plugin
-
-      - name: Checkout vlcj-bundler
-        uses: actions/checkout@v7
-        with:
-          repository: ${{ env.VLCJ_BUNDLER_REPO }}
-          token: ${{ secrets.GITHUB_TOKEN }}
-          path: vlcj-bundler
 
       - name: Set up JDK 21
         uses: actions/setup-java@v6
@@ -81,18 +65,6 @@ jobs:
 
       - name: Publish compose-webview to mavenLocal
         working-directory: compose-webview
-        run: |
-          chmod +x gradlew
-          ./gradlew publishToMavenLocal
-
-      - name: Publish gradle-plugin to mavenLocal
-        working-directory: gradle-plugin
-        run: |
-          chmod +x gradlew
-          ./gradlew publishToMavenLocal
-
-      - name: Publish vlcj-bundler to mavenLocal
-        working-directory: vlcj-bundler
         run: |
           chmod +x gradlew
           ./gradlew publishToMavenLocal
