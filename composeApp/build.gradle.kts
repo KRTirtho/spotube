@@ -424,6 +424,9 @@ nucleus.application {
 
     nativeDistributions {
         packageName = bundleId
+        // User-facing name (.app bundle, DMG productName, Launchpad/Dock); packageName above is the reverse-DNS id.
+        // The GraalVM DMG task reads only appName ?: packageName, not macOS.packageName
+        appName = if (isNightly) "Spotube Nightly" else "Spotube"
         packageVersion = version
         licenseFile = project.file("../LICENSE")
 
@@ -498,6 +501,8 @@ nucleus.application {
 
         macOS {
             iconFile.set(project.file("$desktopIconDir/icon.icns"))
+            bundleID = if (isNightly) "$bundleId.nightly" else bundleId
+            dockName = appName
             notarization {
 
             }
@@ -590,6 +595,8 @@ tasks.withType<Copy>().matching { it.name == "copyGraalvmAwtSoLibs" }.configureE
 // Issue with compose plugin
 // https://github.com/JetBrains/compose-hot-reload/blob/master/docs/Known_limitations.md#property-composeapplicationresourcesdir-is-null-when-running-hot-reload-tasks
 tasks.withType<ComposeHotRun>().configureEach {
+    // Populates the resources dir below with the VLC natives (appResourcesRootDir); hot run doesn't depend on it by default
+    dependsOn("prepareAppResources")
     jvmArgs(
         "--enable-native-access=ALL-UNNAMED"
     )
