@@ -56,7 +56,18 @@ Spotube is a Kotlin Multiplatform + Compose Multiplatform app. The desktop app i
 - **Android SDK**, only for Android builds.
 - **Unpublished dependency.** One dependency isn't on Maven Central yet. Clone it and run `./gradlew publishToMavenLocal` in it:
   - [kdroidFilter/ComposeNativeWebview](https://github.com/kdroidFilter/ComposeNativeWebview), at the commit pinned in [`spotube-release-binary.yml`](.github/workflows/spotube-release-binary.yml) (`COMPOSE_WEBVIEW_COMMIT`)
-- **Linux runtime:** `webkit2gtk-4.1` for the embedded webview.
+- **Linux runtime libraries** (needed to run the app, including `:composeApp:run`). The `.deb`/`.rpm` install these as dependencies from your distro. For a source build, install them yourself, **including VLC**. Only the `.AppImage` is self-contained (it bundles VLC, GTK 3 and WebKitGTK, and uses just the host's glibc, graphics, X11 and sound libraries):
+
+  | Distro | Command |
+  |---|---|
+  | Debian/Ubuntu | `sudo apt-get install libvlc5 vlc-plugin-base libwebkit2gtk-4.1-0 libgtk-3-0 libasound2 libgl1 libxtst6 libxi6 libxrender1` |
+  | Fedora | `sudo dnf install vlc-libs webkit2gtk4.1 gtk3 alsa-lib mesa-libGL libXtst libXi libXrender`. `vlc-libs` is only in [RPM Fusion](https://rpmfusion.org/Configuration), so enable it first. |
+  | Arch / CachyOS / Manjaro | `sudo pacman -S vlc webkit2gtk-4.1 gtk3 alsa-lib libglvnd libxtst libxi libxrender` |
+  | openSUSE | `sudo zypper install libvlc5 libwebkit2gtk-4_1-0 libgtk-3-0 libasound2 Mesa-libGL1 libXtst6 libXi6 libXrender1` (for wide codec support, switch to the [Packman](https://en.opensuse.org/Additional_package_repositories#Packman) repo's VLC) |
+
+  Arch-based distros and openSUSE have no native package here. Use the `.AppImage`. The `.rpm` is built with Fedora package names, so it won't resolve on openSUSE.
+
+  On Ubuntu 24.04+/Debian 13 `libgtk-3-0` and `libasound2` are named `libgtk-3-0t64` and `libasound2t64`; apt resolves this automatically.
 
 Always use the Gradle wrapper (`./gradlew`, or `gradlew.bat` on Windows).
 
@@ -77,7 +88,7 @@ Development builds stay fast. The release-only optimizations (the Rust release p
 
 | OS | Requirements |
 |---|---|
-| Linux | `gcc`, `zlib` headers, `patchelf`; plus `rpm` for `.rpm` packages. Debian/Ubuntu: `sudo apt-get install build-essential zlib1g-dev patchelf rpm`. Fedora: `sudo dnf install gcc zlib-devel patchelf rpm-build` |
+| Linux | `gcc`, `zlib` headers, `patchelf`; plus `rpm` for `.rpm` packages, `fuse` for `.AppImage`, and, for the AppImage's bundled libraries, `zstd` (plus `ar`/`tar` and `readelf`, from binutils). Debian/Ubuntu: `sudo apt-get install build-essential zlib1g-dev patchelf rpm fuse zstd`. Fedora: `sudo dnf install gcc zlib-devel patchelf rpm-build fuse zstd` (also install the [Linux runtime libraries](#prerequisites) to run what you build) |
 | macOS | Xcode Command Line Tools (`xcode-select --install`) |
 | Windows | Visual Studio Build Tools with the "Desktop development with C++" workload. Build from an "x64 Native Tools" prompt if `native-image` can't find MSVC. |
 
@@ -104,11 +115,24 @@ Each OS can only build its own installers:
 
 | OS | Command | Output |
 |---|---|---|
-| Linux | `./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm` (also `packageGraalvmAppImage`) | `composeApp/build/compose/binaries/main/graalvm-{deb,rpm}/` |
+| Linux | `./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm`, then `./gradlew :composeApp:packageGraalvmAppImage -PappImage=true` | `composeApp/build/compose/binaries/main/graalvm-{deb,rpm,appimage}/` |
 | Windows | `./gradlew :composeApp:packageGraalvmExe` (or `packageGraalvmMsi`) | `composeApp/build/compose/binaries/main/graalvm-exe/` |
 | macOS | `./gradlew :composeApp:packageGraalvmDmg` | `composeApp/build/compose/binaries/main/graalvm-dmg/` |
 
 Add `-Pnightly=true` for the nightly channel (separate icons and name).
+
+The `.deb` and `.rpm` use your distro's shared libraries and declare them as dependencies, so the package manager installs them (on Fedora, `vlc-libs` needs RPM Fusion enabled). The `.AppImage` is the self-contained one: it bundles VLC, GTK 3 and WebKitGTK (see [What the AppImage bundles](#what-the-appimage-bundles)).
+
+#### What the AppImage bundles
+
+Build it with `./gradlew :composeApp:packageGraalvmAppImage -PappImage=true`. Without `-PappImage=true` nothing is bundled and the app uses the system libraries, which is what the `.deb`/`.rpm` and `:composeApp:run` do.
+
+The bundle follows the [AppImage exclude list](https://github.com/AppImageCommunity/pkg2appimage/blob/master/excludelist) and what Tauri apps ship. It carries VLC (audio-only, from the [vlcj-bundler](https://github.com/team-spotube/vlcj-bundler-gradle-plugin) plugin's `bundleVlc` option), GTK 3, WebKitGTK 4.1, GLib/GIO, pango/cairo and their dependencies, plus glib-networking for HTTPS in the webview. It leaves the host's glibc, `libstdc++`, `libz`, GL/EGL/DRM, X11/xcb, ALSA, fontconfig/freetype/harfbuzz and the Wayland libraries alone, so the host's graphics, display and sound stack is used. Everything is taken from the Ubuntu 24.04 archive, so the AppImage needs glibc 2.38 or newer.
+
+How it works, in short:
+- [`DownloadLinuxGtkBundleTask`](buildSrc/src/main/kotlin/org/spotube/gradle/DownloadLinuxGtkBundleTask.kt) downloads the packages, keeps the libraries reachable from GTK/WebKit and relocates them with `patchelf`. Needs `ar`, `tar`, `zstd`, `readelf` and `patchelf`.
+- WebKitGTK has its helper-process path compiled in, so the library is patched to look relative to the working directory, and at startup the app moves there ([`AppImageEnvironment`](composeApp/src/jvmMain/kotlin/org/spotube/spotube/core/appimage/AppImageEnvironment.kt)). It also points `GIO_EXTRA_MODULES` at the bundled TLS module and sets `WEBKIT_DISABLE_DMABUF_RENDERER=1`, because the bundled WebKitGTK 2.44's dmabuf renderer never paints (or aborts) against a newer host Mesa/compositor. The display backend is left alone: forcing X11 doesn't help, since the webview doesn't paint on XWayland either.
+- Startup order matters: `main()` calls `GraalVmInitializer.initialize()` first, since the VLC loader and the environment setup read `compose.application.resources.dir`.
 
 #### Reflection metadata (when a feature breaks only in the native build)
 

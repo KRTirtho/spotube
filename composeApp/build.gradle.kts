@@ -23,6 +23,7 @@ import dev.nucleusframework.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.gradle.api.tasks.Copy
+import org.spotube.gradle.DownloadLinuxGtkBundleTask
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -106,9 +107,30 @@ tasks.configureEach {
     }
 }
 
+// Windows/macOS always bundle VLC. On Linux only the self-contained AppImage (-PappImage=true) bundles
+// VLC, GTK and WebKitGTK; deb/rpm use the distro's packages.
+val isLinuxHost = System.getProperty("os.name").lowercase().contains("linux")
+val bundleForAppImage = isLinuxHost && providers.gradleProperty("appImage").map { it.toBoolean() }.getOrElse(false)
+
 vlcjBundler {
     packageName = "$bundleId.core.generated"   // choose a different package
     objectName = "VLCBundleLoaderGenerated"               // or rename the object
+    bundleVlc = !isLinuxHost || bundleForAppImage
+}
+
+// GTK 3 + WebKitGTK for the AppImage (see DownloadLinuxGtkBundleTask in buildSrc)
+val downloadLinuxGtkBundle = tasks.register<DownloadLinuxGtkBundleTask>("downloadLinuxGtkBundle") {
+    outputDir.set(layout.buildDirectory.dir("linux-gtk-bundle"))
+    ubuntuRelease.set("noble")
+}
+val linuxGtkBundleDir: Provider<Directory> = downloadLinuxGtkBundle.flatMap { it.outputDir }
+
+// One resources root holding VLC and GTK/WebKit, laid out for the AppImage
+val assembleAppImageResources = tasks.register<Sync>("assembleAppImageResources") {
+    from(vlcjBundler.vlcNativesDirectory)
+    from(linuxGtkBundleDir)
+    exclude("**/.complete")
+    into(layout.buildDirectory.dir("appimage-resources"))
 }
 
 
@@ -408,7 +430,9 @@ nucleus.application {
         packageVersion = version
         licenseFile = project.file("../LICENSE")
 
-        appResourcesRootDir.set(vlcjBundler.vlcNativesDirectory)
+        appResourcesRootDir.set(
+            if (bundleForAppImage) assembleAppImageResources.map { layout.buildDirectory.dir("appimage-resources").get() } else vlcjBundler.vlcNativesDirectory
+        )
 
         targetFormats(
             TargetFormat.Dmg,
@@ -428,6 +452,44 @@ nucleus.application {
             modules("jdk.security.auth")
             debMaintainer = "Team Spotube <team.spotube@proton.me>"
             rpmLicenseType = "AGPL-3.0-or-later"
+            // deb/rpm use the distro's shared libraries (only the AppImage bundles VLC). VLC is not
+            // bundled on Linux otherwise, the webview needs WebKitGTK 4.1, and the window/tray/MPRIS
+            // natives link GTK 3, GLib/GIO and D-Bus. Setting these replaces electron-builder's
+            // Electron-specific defaults (libnss3, libnotify, ...).
+            debDepends = listOf(
+                "libvlc5",
+                "vlc-plugin-base",
+                "libwebkit2gtk-4.1-0",
+                "libgtk-3-0 | libgtk-3-0t64",
+                "libglib2.0-0 | libglib2.0-0t64",
+                "libdbus-1-3",
+                "libasound2 | libasound2t64",
+                "libgl1",
+                "libfontconfig1",
+                "libfreetype6",
+                "libx11-6",
+                "libxext6",
+                "libxi6",
+                "libxrender1",
+                "libxtst6",
+            )
+            // vlc-libs comes from RPM Fusion (Fedora ships no VLC); the README tells users to enable it
+            rpmRequires = listOf(
+                "vlc-libs",
+                "webkit2gtk4.1",
+                "gtk3",
+                "glib2",
+                "dbus-libs",
+                "alsa-lib",
+                "mesa-libGL",
+                "fontconfig",
+                "freetype",
+                "libX11",
+                "libXext",
+                "libXi",
+                "libXrender",
+                "libXtst",
+            )
         }
         windows {
             iconFile.set(project.file("$desktopIconDir/icon.ico"))
@@ -566,5 +628,14 @@ run {
         }
         tasks.matching { it.name.startsWith("cargoBuildAndroid") || it.name.startsWith("rustUpTargetAddAndroid") }
             .configureEach { enabled = false }
+    }
+}
+
+// Nucleus' resource copies (prepareAppResources, copyGraalvmAppResources) drop the execute bit, but WebKitGTK
+// spawns its helper processes from the AppImage bundle (DownloadLinuxGtkBundleTask in buildSrc) and fails with
+// "Permission denied" otherwise.
+tasks.matching { it.name == "prepareAppResources" || it.name == "copyGraalvmAppResources" }.configureEach {
+    (this as? org.gradle.api.tasks.AbstractCopyTask)?.filesMatching("**/webkit2gtk-4.1/WebKit*Process") {
+        permissions { unix("rwxr-xr-x") }
     }
 }

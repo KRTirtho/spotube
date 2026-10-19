@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.spotube.spotube.core.appimage.AppImageEnvironment
 import org.spotube.spotube.core.di.initKoin
 import org.spotube.spotube.core.i18n.AppLocaleProvider
 import org.spotube.spotube.core.newpipe.NewPipeDownloader
@@ -133,9 +134,11 @@ private fun restoreWindowState(saved: PersistedWindowState?): PersistedWindowSta
 
 @OptIn(ExperimentalComposeUiApi::class, FlowPreview::class)
 fun main() {
-    // Native image only (no-op on the JVM): sets java.home, java.library.path and compose.application.resources.dir
-    // to the executable's dir, which the VLC loader needs to find the bundled libvlc
+    // Sets compose.application.resources.dir in the native image. initKoin() creates the audio
+    // player, whose VLC loader reads it, so it can't wait for nucleusApplication() (which calls
+    // this again, harmlessly). Without it the bundled VLC is skipped for the system one.
     GraalVmInitializer.initialize()
+    AppImageEnvironment.apply()
     FileKit.init(appId = "org.spotube.spotube")
     initKoin()
     NewPipeDownloader.init(KoinPathsProvider.paths)
