@@ -38,6 +38,7 @@ import spotube.composeapp.generated.resources.spotube_logo
 import dev.nucleusframework.application.DecoratedWindow
 import dev.nucleusframework.application.NucleusBackend
 import dev.nucleusframework.application.nucleusApplication
+import dev.nucleusframework.graalvm.GraalVmInitializer
 import dev.nucleusframework.window.tao.TaoScreenGeometry
 import io.github.vinceglb.filekit.FileKit
 import kotlinx.coroutines.CoroutineScope
@@ -132,6 +133,9 @@ private fun restoreWindowState(saved: PersistedWindowState?): PersistedWindowSta
 
 @OptIn(ExperimentalComposeUiApi::class, FlowPreview::class)
 fun main() {
+    // Native image only (no-op on the JVM): sets java.home, java.library.path and compose.application.resources.dir
+    // to the executable's dir, which the VLC loader needs to find the bundled libvlc
+    GraalVmInitializer.initialize()
     FileKit.init(appId = "org.spotube.spotube")
     initKoin()
     NewPipeDownloader.init(KoinPathsProvider.paths)

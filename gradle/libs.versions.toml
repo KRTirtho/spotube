@@ -129,6 +129,7 @@ murmurhash = { module = "com.goncalossilva:murmurhash", version.ref = "murmurhas
 newpipe-extractor-kmp = { module = "io.github.yushosei:newpipe-extractor-kmp", version.ref = "newpipeExtractorKmp" }
 newpipeextractor = { module = "com.github.teamnewpipe:NewPipeExtractor", version.ref = "newpipeextractor" }
 nucleus-core-runtime = { module = "dev.nucleusframework:nucleus.core-runtime", version.ref = "nucleusNucleusApplication" }
+nucleus-graalvm-runtime = { module = "dev.nucleusframework:nucleus.graalvm-runtime", version.ref = "nucleusNucleusApplication" }
 nucleus-decorated-window-tao = { module = "dev.nucleusframework:nucleus.decorated-window-tao", version.ref = "nucleusNucleusApplication" }
 nucleus-media-control = { module = "dev.nucleusframework:nucleus.media-control", version.ref = "nucleusNucleusApplication" }
 nucleus-nucleus-application = { module = "dev.nucleusframework:nucleus.nucleus-application", version.ref = "nucleusNucleusApplication" }
