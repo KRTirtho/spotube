@@ -550,6 +550,12 @@ run {
     val isLinuxArm64Host = System.getProperty("os.name").lowercase().contains("linux") &&
         System.getProperty("os.arch").lowercase() in setOf("aarch64", "arm64")
     if (isLinuxArm64Host) {
+        // Gobley generates the UniFFI bindings from the first Android build's library by default; use the host's.
+        uniffi {
+            generateFromLibrary {
+                build = GobleyHost.current.rustTarget
+            }
+        }
         tasks.matching { it.name.startsWith("cargoBuildAndroid") || it.name.startsWith("rustUpTargetAddAndroid") }
             .configureEach { enabled = false }
     }
