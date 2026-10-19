@@ -38,6 +38,7 @@ import spotube.composeapp.generated.resources.spotube_logo
 import dev.nucleusframework.application.DecoratedWindow
 import dev.nucleusframework.application.NucleusBackend
 import dev.nucleusframework.application.nucleusApplication
+import dev.nucleusframework.graalvm.GraalVmInitializer
 import dev.nucleusframework.window.tao.TaoScreenGeometry
 import io.github.vinceglb.filekit.FileKit
 import kotlinx.coroutines.CoroutineScope
@@ -50,6 +51,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
+import org.spotube.spotube.core.appimage.AppImageEnvironment
 import org.spotube.spotube.core.di.initKoin
 import org.spotube.spotube.core.i18n.AppLocaleProvider
 import org.spotube.spotube.core.newpipe.NewPipeDownloader
@@ -132,6 +134,11 @@ private fun restoreWindowState(saved: PersistedWindowState?): PersistedWindowSta
 
 @OptIn(ExperimentalComposeUiApi::class, FlowPreview::class)
 fun main() {
+    // Sets compose.application.resources.dir in the native image. initKoin() creates the audio
+    // player, whose VLC loader reads it, so it can't wait for nucleusApplication() (which calls
+    // this again, harmlessly). Without it the bundled VLC is skipped for the system one.
+    GraalVmInitializer.initialize()
+    AppImageEnvironment.apply()
     FileKit.init(appId = "org.spotube.spotube")
     initKoin()
     NewPipeDownloader.init(KoinPathsProvider.paths)

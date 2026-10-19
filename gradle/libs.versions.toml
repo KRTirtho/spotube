@@ -72,7 +72,7 @@ ksp = "2.3.5"
 spotube-gradle = "0.1.2"
 cryptography = "0.6.0"
 reorderable = "3.1.0"
-vlcjBundler = "0.1.0"
+vlcjBundler = "0.2.0"
 vanniktechMavenPublish = "0.37.0"
 uniffi = "0.3.7"
 kotlinx-atomicfu = "0.33.0"
@@ -131,6 +131,7 @@ newpipeextractor = { module = "com.github.teamnewpipe:NewPipeExtractor", version
 nucleus-core-runtime = { module = "dev.nucleusframework:nucleus.core-runtime", version.ref = "nucleusNucleusApplication" }
 nucleus-decorated-window-tao = { module = "dev.nucleusframework:nucleus.decorated-window-tao", version.ref = "nucleusNucleusApplication" }
 nucleus-media-control = { module = "dev.nucleusframework:nucleus.media-control", version.ref = "nucleusNucleusApplication" }
+nucleus-graalvm-runtime = { module = "dev.nucleusframework:nucleus.graalvm-runtime", version.ref = "nucleusNucleusApplication" }
 nucleus-nucleus-application = { module = "dev.nucleusframework:nucleus.nucleus-application", version.ref = "nucleusNucleusApplication" }
 semver = { module = "net.swiftzer.semver:semver", version.ref = "semver" }
 vlcj = { module = "uk.co.caprica:vlcj", version.ref = "vlcj" }
