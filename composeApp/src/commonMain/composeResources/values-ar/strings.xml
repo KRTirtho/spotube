@@ -938,7 +938,6 @@
     <string name="app_window_close">إغلاق</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">خدمة التشغيل</string>
     <string name="notification_playback_channel_name">التشغيل</string>
     <string name="notification_playback_channel_description">عناصر التحكم في تشغيل الوسائط</string>
 

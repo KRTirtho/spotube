@@ -908,7 +908,6 @@
     <string name="app_window_close">ปิด</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">บริการเล่นเพลง</string>
     <string name="notification_playback_channel_name">การเล่น</string>
     <string name="notification_playback_channel_description">ตัวควบคุมการเล่นสื่อ</string>
 

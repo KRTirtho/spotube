@@ -926,7 +926,6 @@
     <string name="app_window_close">Закрыть</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">Служба воспроизведения</string>
     <string name="notification_playback_channel_name">Воспроизведение</string>
     <string name="notification_playback_channel_description">Управление воспроизведением</string>
 

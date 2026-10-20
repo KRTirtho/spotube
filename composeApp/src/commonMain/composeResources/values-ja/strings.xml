@@ -908,7 +908,6 @@
     <string name="app_window_close">閉じる</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">再生サービス</string>
     <string name="notification_playback_channel_name">再生</string>
     <string name="notification_playback_channel_description">メディア再生コントロール</string>
 

@@ -914,7 +914,6 @@
     <string name="app_window_close">বন্ধ করুন</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">প্লেব্যাক সার্ভিস</string>
     <string name="notification_playback_channel_name">প্লেব্যাক</string>
     <string name="notification_playback_channel_description">মিডিয়া প্লেব্যাক কন্ট্রোল</string>
 

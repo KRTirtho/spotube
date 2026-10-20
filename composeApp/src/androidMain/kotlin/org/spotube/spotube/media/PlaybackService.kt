@@ -51,7 +51,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -59,7 +58,6 @@ import org.jetbrains.compose.resources.getString
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.notification_playback_channel_description
 import spotube.composeapp.generated.resources.notification_playback_channel_name
-import spotube.composeapp.generated.resources.notification_playback_service_text
 
 @OptIn(UnstableApi::class)
 class PlaybackService : MediaLibraryService(), KoinComponent {
@@ -96,9 +94,10 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
+        // Short-lived placeholder until Media3 posts the playback notification. No localized text:
+        // loading it here would block the main thread (see createNotificationChannel).
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Spotube")
-            .setContentText(runBlocking { getString(Res.string.notification_playback_service_text) })
             .setSmallIcon(R.drawable.ic_stat_spotube)
             .setContentIntent(sessionActivity)
             .setOngoing(true)
@@ -125,21 +124,32 @@ class PlaybackService : MediaLibraryService(), KoinComponent {
         Log.i(TAG, "Library session created")
     }
 
+    /**
+     * The channel must exist before startForeground, so it's created right away under the app name
+     * and renamed once the localized strings load.
+     *
+     * Never `runBlocking { getString(...) }` here: onCreate runs on the main thread, and Compose
+     * resources share one in-flight load per strings file. If App()'s stringResource started that
+     * load on the main dispatcher first, blocking main to await it deadlocks the app on its
+     * splash screen.
+     */
     @SuppressLint("ObsoleteSdkInt")
     private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                runBlocking { getString(Res.string.notification_playback_channel_name) },
-                NotificationManager.IMPORTANCE_LOW
-            ).apply {
-                description = runBlocking {
-                    getString(Res.string.notification_playback_channel_description)
-                }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
+        val manager = getSystemService(NotificationManager::class.java)
+        fun channel(name: String, description: String? = null) =
+            NotificationChannel(CHANNEL_ID, name, NotificationManager.IMPORTANCE_LOW).apply {
+                this.description = description
                 setShowBadge(false)
             }
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
+
+        manager.createNotificationChannel(channel("Spotube"))
+        serviceScope.launch {
+            // Re-creating a channel with the same ID updates its name and description.
+            manager.createNotificationChannel(
+                channel(
+                    name = getString(Res.string.notification_playback_channel_name),
+                    description = getString(Res.string.notification_playback_channel_description)))
         }
     }
 

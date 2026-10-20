@@ -920,7 +920,6 @@
     <string name="app_window_close">Fechar</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">Serviço de reprodução</string>
     <string name="notification_playback_channel_name">Reprodução</string>
     <string name="notification_playback_channel_description">Controles de reprodução de mídia</string>
 

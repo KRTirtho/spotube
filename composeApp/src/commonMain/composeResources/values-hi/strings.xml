@@ -913,7 +913,6 @@
     <string name="app_window_close">बंद करें</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">प्लेबैक सेवा</string>
     <string name="notification_playback_channel_name">प्लेबैक</string>
     <string name="notification_playback_channel_description">मीडिया प्लेबैक कंट्रोल</string>
 

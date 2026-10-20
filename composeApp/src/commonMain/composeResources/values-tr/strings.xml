@@ -914,7 +914,6 @@
     <string name="app_window_close">Kapat</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">Çalma hizmeti</string>
     <string name="notification_playback_channel_name">Çalma</string>
     <string name="notification_playback_channel_description">Medya çalma kontrolleri</string>
 

@@ -908,7 +908,6 @@
     <string name="app_window_close">Đóng</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">Dịch vụ phát nhạc</string>
     <string name="notification_playback_channel_name">Phát nhạc</string>
     <string name="notification_playback_channel_description">Điều khiển phát nội dung</string>
 

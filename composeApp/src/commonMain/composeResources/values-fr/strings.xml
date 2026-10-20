@@ -920,7 +920,6 @@
     <string name="app_window_close">Fermer</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">Service de lecture</string>
     <string name="notification_playback_channel_name">Lecture</string>
     <string name="notification_playback_channel_description">Commandes de lecture multimédia</string>
 
