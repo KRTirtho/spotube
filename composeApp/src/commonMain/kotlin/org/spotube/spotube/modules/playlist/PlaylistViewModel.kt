@@ -26,6 +26,7 @@ import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.di.injectLogger
 import org.spotube.spotube.core.playback.CollectionPlaybackHelper
+import org.spotube.spotube.core.remote.CollectionPlaybackUiState
 import org.spotube.spotube.core.remote.RemoteCollectionType
 import org.spotube.spotube.core.remote.RemotePlaybackController
 import org.spotube.spotube.core.share.ShareService
@@ -48,6 +49,11 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import io.github.vinceglb.filekit.PlatformFile
+import org.spotube.spotube.modules.library.playlist.PlaylistFormController
+import org.spotube.spotube.modules.library.playlist.PlaylistFormData
+import org.spotube.spotube.modules.library.playlist.PlaylistFormUiState
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.jetbrains.compose.resources.getString
@@ -105,6 +111,11 @@ class PlaylistViewModel(
 
     private val _state = MutableStateFlow<PlaylistScreenState>(PlaylistScreenState.Loading)
     val uiState: StateFlow<PlaylistScreenState> = _state.asStateFlow()
+
+    /** Loading flags for this screen's play / shuffle / add-to-queue buttons. */
+    val playbackUiState: StateFlow<CollectionPlaybackUiState> = remotePlaybackController
+        .collectionPlaybackUiState(RemoteCollectionType.Playlist, playlistId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CollectionPlaybackUiState())
     val savedPlaylistIds
         get() = libraryRepository.savedPlaylistIdsFlow
 
@@ -206,6 +217,8 @@ class PlaylistViewModel(
     }
 
     fun toggleSavedPlaylist() {
+        if ((_state.value as? PlaylistScreenState.Data)?.isSaving == true) return
+        setSaving(true)
         viewModelScope.launch {
             runCatching {
                 val isLiked = libraryRepository.isSavedPlaylists(listOf(playlistId)).firstOrNull() ?: false
@@ -216,6 +229,17 @@ class PlaylistViewModel(
                 }
             }.onFailure { e ->
                 logger.e(e) { "Failed to toggle saved playlist" }
+            }
+            setSaving(false)
+        }
+    }
+
+    private fun setSaving(isSaving: Boolean) {
+        _state.update { state ->
+            when (state) {
+                is PlaylistScreenState.Data.Loaded -> state.copy(isSaving = isSaving)
+                is PlaylistScreenState.Data.LoadingMore -> state.copy(isSaving = isSaving)
+                else -> state
             }
         }
     }
@@ -256,28 +280,27 @@ class PlaylistViewModel(
         }
     }
 
-    fun updatePlaylist(
-        name: String?,
-        description: String?,
-        isPublic: Boolean?,
-        isCollaborating: Boolean?,
-        imageBase64: String?) {
-        viewModelScope.launch {
-            runCatching {
-                libraryRepository.updatePlaylist(
-                    id = playlistId,
-                    name = name,
-                    description = description,
-                    isPublic = isPublic,
-                    isCollaborating = isCollaborating,
-                    imageBase64 = imageBase64,
-                    trackIds = null)
-            }.onFailure { e ->
-                logger.e(e) { "Failed to update playlist" }
-            }.onSuccess {
-                repository.invalidateCaches()
-                loadInitialData()
-            }
+    private val editPlaylistForm = PlaylistFormController(viewModelScope, logger)
+    val editPlaylistFormState: StateFlow<PlaylistFormUiState> = editPlaylistForm.uiState
+
+    fun showEditPlaylist() = editPlaylistForm.show()
+
+    fun dismissEditPlaylist() = editPlaylistForm.dismiss()
+
+    fun onEditPlaylistImagePicked(file: PlatformFile) = editPlaylistForm.onImagePicked(file)
+
+    fun updatePlaylist(data: PlaylistFormData) {
+        editPlaylistForm.submit {
+            libraryRepository.updatePlaylist(
+                id = playlistId,
+                name = data.name,
+                description = data.description.ifBlank { null },
+                isPublic = data.isPublic,
+                isCollaborating = data.isCollaborating,
+                imageBase64 = data.imageBase64.ifBlank { null },
+                trackIds = null)
+            repository.invalidateCaches()
+            loadInitialData()
         }
     }
 

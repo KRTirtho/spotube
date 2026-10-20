@@ -103,7 +103,7 @@ class LocalMediaFoldersViewModel(
                     path.substringAfterLast('/').substringAfterLast('\\').ifBlank { path })
             },
             isSaving = draft.isSaving,
-            canSave = draft.isOpen && !draft.isSaving && draft.paths != draft.original,
+            canSave = draft.isOpen && draft.paths != draft.original,
             saveFailed = draft.saveFailed,
             automaticNote = when {
                 hasDownloadFolder && settings.enableMusicCaching -> Res.string.settings_local_media_folders_automatic_both

@@ -56,6 +56,8 @@ fun PlayableListTile(
     onAddToQueue: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     sharedElementKey: String? = null,
+    playLoading: Boolean = false,
+    addToQueueLoading: Boolean = false,
     imageModel: Any? = imageURL,
     imageShape: Shape = RoundedCornerShape(6.dp),
     placeholderIcon: ImageVector = Iconsax.IconsaxMusic,
@@ -115,6 +117,7 @@ fun PlayableListTile(
                     if (onAddToQueue != null && !isPlaying) {
                         MillenniumIconButton(
                             onClick = onAddToQueue,
+                            loading = addToQueueLoading,
                             modifier = Modifier.size(if (compact) 32.dp else 40.dp),
                             style = MillenniumIconButtonStyle.Secondary
                         ) {
@@ -127,6 +130,7 @@ fun PlayableListTile(
                     if (onPlay != null) {
                         MillenniumIconButton(
                             onClick = onPlay,
+                            loading = playLoading,
                             modifier = Modifier.size(if (compact) 32.dp else 40.dp),
                             style = MillenniumIconButtonStyle.Primary
                         ) {

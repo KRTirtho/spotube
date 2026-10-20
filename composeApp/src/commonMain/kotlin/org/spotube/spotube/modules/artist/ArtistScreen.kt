@@ -104,6 +104,7 @@ fun ArtistScreen(
     navigationCommands: NavigationCommands
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val playbackUiState by viewModel.playbackUiState.collectAsStateWithLifecycle()
     val jamRoomService: JamRoomService = koinInject()
     val jamActive by jamRoomService.role.map { it != null }
         .collectAsStateWithLifecycle(initialValue = false)
@@ -149,6 +150,7 @@ fun ArtistScreen(
                             ArtistHeaderCard(
                                 artist = currentState.artist,
                                 isSaved = savedArtistIds.contains(currentState.artist.id),
+                                isSaving = currentState.isSaving,
                                 onFollowClick = viewModel::toggleSavedArtist,
                                 isBlacklisted = currentState.artist.id in blacklistedArtistIds,
                                 onBlacklistClick = { viewModel.toggleArtistBlacklist(currentState.artist) })
@@ -157,7 +159,9 @@ fun ArtistScreen(
                         item {
                             TopTracksHeader(
                                 onPlay = viewModel::playTopTracks,
-                                onAddToQueue = viewModel::addTopTracksToQueue
+                                onAddToQueue = viewModel::addTopTracksToQueue,
+                                isPlayLoading = playbackUiState.isPlayLoading,
+                                isAddToQueueLoading = playbackUiState.isAddToQueueLoading
                             )
                         }
 
@@ -345,6 +349,7 @@ private fun ArtistErrorContent(
 private fun ArtistHeaderCard(
     artist: MetadataArtist.Detailed,
     isSaved: Boolean,
+    isSaving: Boolean,
     onFollowClick: () -> Unit,
     isBlacklisted: Boolean,
     onBlacklistClick: () -> Unit
@@ -377,6 +382,7 @@ private fun ArtistHeaderCard(
 
                     ArtistHeaderActions(
                         isSaved = isSaved,
+                        isSaving = isSaving,
                         onFollowClick = onFollowClick,
                         isBlacklisted = isBlacklisted,
                         onBlacklistClick = onBlacklistClick
@@ -406,6 +412,7 @@ private fun ArtistHeaderCard(
 
                         ArtistHeaderActions(
                             isSaved = isSaved,
+                            isSaving = isSaving,
                             onFollowClick = onFollowClick,
                             isBlacklisted = isBlacklisted,
                             onBlacklistClick = onBlacklistClick
@@ -496,6 +503,7 @@ private fun ArtistMeta(
 @Composable
 private fun ArtistHeaderActions(
     isSaved: Boolean,
+    isSaving: Boolean,
     onFollowClick: () -> Unit,
     isBlacklisted: Boolean,
     onBlacklistClick: () -> Unit
@@ -507,6 +515,7 @@ private fun ArtistHeaderActions(
         if (isSaved) {
             MillenniumButton(
                 onClick = onFollowClick,
+                loading = isSaving,
                 style = MillenniumButtonStyle.Secondary
             ) {
                 Text(
@@ -517,7 +526,7 @@ private fun ArtistHeaderActions(
                 )
             }
         } else {
-            MillenniumButton(onClick = onFollowClick) {
+            MillenniumButton(onClick = onFollowClick, loading = isSaving) {
                 Text(stringResource(Res.string.collection_details_follow), modifier = Modifier.width(65.dp), textAlign = TextAlign.Center)
             }
         }
@@ -554,7 +563,9 @@ private fun ArtistHeaderActions(
 @Composable
 private fun TopTracksHeader(
     onPlay: () -> Unit,
-    onAddToQueue: () -> Unit
+    onAddToQueue: () -> Unit,
+    isPlayLoading: Boolean = false,
+    isAddToQueueLoading: Boolean = false
 ) {
     Row(
         modifier = Modifier
@@ -572,6 +583,7 @@ private fun TopTracksHeader(
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             MillenniumIconButton(
                 onClick = onPlay,
+                loading = isPlayLoading,
                 style = MillenniumIconButtonStyle.Primary
             ) {
                 MillenniumIcon(
@@ -582,6 +594,7 @@ private fun TopTracksHeader(
             }
             MillenniumIconButton(
                 onClick = onAddToQueue,
+                loading = isAddToQueueLoading,
                 style = MillenniumIconButtonStyle.Secondary
             ) {
                 MillenniumIcon(

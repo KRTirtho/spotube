@@ -108,6 +108,7 @@ fun MetadataPluginGuard(
                         LoginRequiredDisplay(
                             pluginName = authState.pluginName,
                             onLogin = authViewModel::login,
+                            isLoggingIn = authState.isLoggingIn,
                             modifier = Modifier.widthIn(max = 420.dp))
                     }
                 }

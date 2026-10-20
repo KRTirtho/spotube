@@ -87,6 +87,7 @@ fun ErrorDisplay(
         LoginRequiredDisplay(
             pluginName = authState.pluginName,
             onLogin = authViewModel::login,
+            isLoggingIn = authState.isLoggingIn,
             modifier = modifier)
         return
     }

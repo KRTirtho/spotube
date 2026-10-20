@@ -35,6 +35,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import io.github.vinceglb.filekit.PlatformFile
 import org.koin.core.component.KoinComponent
 import org.jetbrains.compose.resources.getString
 import spotube.composeapp.generated.resources.Res
@@ -159,42 +160,36 @@ class LibraryPlaylistsViewModel(
         }
     }
 
-    fun createPlaylist(data: PlaylistFormData) = createPlaylist(
-        data.name, data.description.ifBlank { null }, data.isPublic,
-        data.isCollaborating, data.imageBase64, emptyList()
-    )
+    private val playlistForm = PlaylistFormController(viewModelScope, logger)
+    val playlistFormState: StateFlow<PlaylistFormUiState> = playlistForm.uiState
 
-    fun refresh() {
-        viewModelScope.launch {
+    fun onPlaylistFormImagePicked(file: PlatformFile) = playlistForm.onImagePicked(file)
+
+    fun dismissCreatePlaylist() {
+        if (playlistFormState.value.isSubmitting) return
+        playlistForm.dismiss()
+        libraryState.dismissCreatePlaylist()
+    }
+
+    fun createPlaylist(data: PlaylistFormData) {
+        playlistForm.submit(onSuccess = libraryState::dismissCreatePlaylist) {
+            repository.createPlaylist(
+                name = data.name,
+                description = data.description.ifBlank { null },
+                isPublic = data.isPublic,
+                isCollaborating = data.isCollaborating,
+                imageBase64 = data.imageBase64,
+                trackIds = emptyList()
+            )
             repository.invalidateCaches()
             loadInitialData()
         }
     }
 
-    fun createPlaylist(
-        name: String,
-        description: String?,
-        isPublic: Boolean,
-        isCollaborating: Boolean,
-        imageBase64: String,
-        trackIds: List<String>
-    ) {
+    fun refresh() {
         viewModelScope.launch {
-            runCatching {
-                repository.createPlaylist(
-                    name = name,
-                    description = description,
-                    isPublic = isPublic,
-                    isCollaborating = isCollaborating,
-                    imageBase64 = imageBase64,
-                    trackIds = trackIds
-                )
-            }.onFailure { e ->
-                logger.e(e) { "Failed to create playlist" }
-            }.onSuccess {
-                repository.invalidateCaches()
-                loadInitialData()
-            }
+            repository.invalidateCaches()
+            loadInitialData()
         }
     }
 }

@@ -122,22 +122,16 @@ fun DevicesScreen(
             backButton = true,
             title = { Text(stringResource(Res.string.devices_title)) },
             actions = {
-                if (state.isDiscovering) {
-                    MillenniumSpokeSpinner(
-                        size = 20.dp,
-                        modifier = Modifier.padding(horizontal = 10.dp)
+                MillenniumIconButton(
+                    onClick = viewModel::startDiscovery,
+                    enabled = !state.isConnecting,
+                    loading = state.isDiscovering,
+                    style = MillenniumIconButtonStyle.Quiet
+                ) {
+                    MillenniumIcon(
+                        imageVector = Iconsax.IconsaxRefreshRight,
+                        contentDescription = stringResource(Res.string.devices_refresh)
                     )
-                } else {
-                    MillenniumIconButton(
-                        onClick = viewModel::startDiscovery,
-                        enabled = !state.isConnecting,
-                        style = MillenniumIconButtonStyle.Quiet
-                    ) {
-                        MillenniumIcon(
-                            imageVector = Iconsax.IconsaxRefreshRight,
-                            contentDescription = stringResource(Res.string.devices_refresh)
-                        )
-                    }
                 }
             }
         )
@@ -302,6 +296,7 @@ private fun LazyItemScope.ConnectedDeviceCard(
         ) {
             MillenniumButton(
                 onClick = onDisconnect,
+                loading = device.isDisconnecting,
                 style = MillenniumButtonStyle.Secondary
             ) {
                 Text(stringResource(Res.string.devices_disconnect))

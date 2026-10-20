@@ -49,7 +49,8 @@ import spotube.composeapp.generated.resources.*
 fun LoginRequiredDisplay(
     pluginName: String?,
     onLogin: () -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier,
+    isLoggingIn: Boolean = false) {
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -88,6 +89,7 @@ fun LoginRequiredDisplay(
 
         MillenniumButton(
             onClick = onLogin,
+            loading = isLoggingIn,
             modifier = Modifier.height(44.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MillenniumIcon(

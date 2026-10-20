@@ -88,6 +88,10 @@ fun CollectionDetails(
     isJamGuest: Boolean = false,
     onAddToJam: (() -> Unit)? = null,
     isFollowing: Boolean = false,
+    isFollowLoading: Boolean = false,
+    isPlayLoading: Boolean = false,
+    isShuffleLoading: Boolean = false,
+    isAddToQueueLoading: Boolean = false,
     onFollowClick: () -> Unit = { },
     showFollowButton: Boolean = true,
     onEdit: (() -> Unit)? = null,
@@ -126,7 +130,8 @@ fun CollectionDetails(
 
                     MillenniumButton(
                         modifier = modifier,
-                        onClick = onPlay) {
+                        onClick = onPlay,
+                        loading = isPlayLoading) {
                         MillenniumIcon(
                             imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
                             contentDescription = if (isPlaying) stringResource(Res.string.player_pause_content_description) else stringResource(Res.string.player_play_content_description))
@@ -135,6 +140,7 @@ fun CollectionDetails(
                     MillenniumButton(
                         modifier = modifier,
                         onClick = onShufflePlay,
+                        loading = isShuffleLoading,
                         style = MillenniumButtonStyle.Secondary
                     ) {
                         MillenniumIcon(imageVector = Iconsax.IconsaxShuffle, contentDescription = stringResource(Res.string.collection_details_shuffle_play))
@@ -148,6 +154,7 @@ fun CollectionDetails(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 MillenniumIconButton(
                     onClick = onAddToQueue,
+                    loading = isAddToQueueLoading,
                     style = MillenniumIconButtonStyle.Quiet) {
                     MillenniumIcon(
                         imageVector = Iconsax.IconsaxAddSquare,
@@ -159,6 +166,7 @@ fun CollectionDetails(
                     if (isFollowing) {
                         MillenniumIconButton(
                             onClick = onFollowClick,
+                            loading = isFollowLoading,
                             style = MillenniumIconButtonStyle.Quiet) {
                             MillenniumIcon(
                                 imageVector = Iconsax.IconsaxHeart2,
@@ -167,6 +175,7 @@ fun CollectionDetails(
                     } else {
                         MillenniumIconButton(
                             onClick = onFollowClick,
+                            loading = isFollowLoading,
                             style = MillenniumIconButtonStyle.Quiet) {
                             MillenniumIcon(
                                 imageVector = Iconsax.IconsaxHeart,

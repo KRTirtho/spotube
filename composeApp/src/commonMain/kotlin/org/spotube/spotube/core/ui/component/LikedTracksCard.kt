@@ -38,7 +38,6 @@ import com.composeunstyled.Text
 import com.composeunstyled.LocalTextStyle
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,14 +49,17 @@ import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.QueueCollectionEntry
 import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
-import org.spotube.spotube.core.playback.CollectionPlaybackHelper
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxAddSquare
 import org.spotube.spotube.resources.iconsax.IconsaxPauseCircle
 import org.spotube.spotube.resources.iconsax.Play
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import org.spotube.spotube.core.remote.CollectionPlaybackKey
+import org.spotube.spotube.core.remote.PlaybackDestinationAction
+import org.spotube.spotube.core.remote.RemoteCollectionType
+import org.spotube.spotube.core.remote.RemotePlaybackController
+import org.spotube.spotube.modules.saved_tracks.SAVED_TRACKS_COLLECTION_ID
 import spotube.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
 import org.spotube.spotube.core.ui.component.cards.PlayableListTile
@@ -72,14 +74,26 @@ import androidx.compose.ui.platform.LocalInputModeManager
 fun LikedTracksCard(
     modifier: Modifier = Modifier,
     audioPlayerQueue: AudioPlayerQueue = koinInject(),
-    playbackHelper: CollectionPlaybackHelper = koinInject(),
+    remotePlaybackController: RemotePlaybackController = koinInject(),
     navigationCommands: NavigationCommands = koinInject(),
     listMode: Boolean = false
 ) {
-    val scope = rememberCoroutineScope()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
+    val busyCollections by remotePlaybackController.busyCollections.collectAsStateWithLifecycle()
     val isPlaying = currentCollectionEntry is QueueCollectionEntry.SavedTracks
     val title = stringResource(Res.string.media_liked_tracks)
+    val playLoading = CollectionPlaybackKey(
+        RemoteCollectionType.SavedTracks, SAVED_TRACKS_COLLECTION_ID, PlaybackDestinationAction.Play
+    ) in busyCollections
+    val addToQueueLoading = CollectionPlaybackKey(
+        RemoteCollectionType.SavedTracks, SAVED_TRACKS_COLLECTION_ID, PlaybackDestinationAction.AddToQueue
+    ) in busyCollections
+    val onPlay = {
+        remotePlaybackController.requestCollectionPlay(RemoteCollectionType.SavedTracks, SAVED_TRACKS_COLLECTION_ID, title)
+    }
+    val onAddToQueue = {
+        remotePlaybackController.requestCollectionAddToQueue(RemoteCollectionType.SavedTracks, SAVED_TRACKS_COLLECTION_ID, title)
+    }
     val subtitle = stringResource(Res.string.media_saved_songs)
     if (listMode) {
         PlayableListTile(
@@ -87,10 +101,12 @@ fun LikedTracksCard(
             subtitle = subtitle,
             isPlaying = isPlaying,
             onClick = { navigationCommands.navigateTo(Routes.SavedTracks) },
-            onPlay = { scope.launch { playbackHelper.playSavedTracks() } },
-            onAddToQueue = { scope.launch { playbackHelper.addSavedTracksToQueue() } },
+            onPlay = onPlay,
+            onAddToQueue = onAddToQueue,
             modifier = modifier,
             sharedElementKey = "saved_tracks_art",
+            playLoading = playLoading,
+            addToQueueLoading = addToQueueLoading,
             artwork = {
                 Image(
                     painterResource(Res.drawable.liked_tracks),
@@ -132,13 +148,14 @@ fun LikedTracksCard(
                     modifier = Modifier.fillMaxWidth().aspectRatio(1f).padding(8.dp),
                     contentAlignment = Alignment.BottomEnd
                 ) {
-                    if (isHovered || touchInput || isPlaying) {
+                    if (isHovered || touchInput || isPlaying || playLoading || addToQueueLoading) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             modifier = Modifier.padding(4.dp)
                         ) {
                             MillenniumIconButton(
-                                onClick = { scope.launch { playbackHelper.addSavedTracksToQueue() } },
+                                onClick = onAddToQueue,
+                                loading = addToQueueLoading,
                                 modifier = Modifier.size(30.dp),
                                 style = MillenniumIconButtonStyle.Secondary
                             ) {
@@ -150,7 +167,8 @@ fun LikedTracksCard(
                             }
                             Spacer(modifier = Modifier.height(8.dp))
                             MillenniumIconButton(
-                                onClick = { scope.launch { playbackHelper.playSavedTracks() } },
+                                onClick = onPlay,
+                                loading = playLoading,
                                 modifier = Modifier.size(30.dp),
                                 style = MillenniumIconButtonStyle.Primary
                             ) {

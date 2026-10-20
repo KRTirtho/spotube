@@ -72,6 +72,7 @@ fun PluginPermissionDialog(
     existingPlugin: PluginEntry? = null,
     logoPath: Path? = null,
     onConfirm: (() -> Unit)? = null,
+    isConfirming: Boolean = false,
     onDismiss: () -> Unit) {
     AdaptiveDialogBottomSheet(
         onDismiss = onDismiss,
@@ -83,7 +84,8 @@ fun PluginPermissionDialog(
                     if (confirmLabel == null) Res.string.common_close else Res.string.common_cancel),
                 onSecondary = onDismiss,
                 primaryLabel = confirmLabel,
-                onPrimary = onConfirm)
+                onPrimary = onConfirm,
+                primaryLoading = isConfirming)
         }) {
         PluginDialogBody {
             PluginPanel {

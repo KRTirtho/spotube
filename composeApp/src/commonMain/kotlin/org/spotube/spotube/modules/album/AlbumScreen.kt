@@ -45,6 +45,7 @@ fun AlbumScreen(
     navigationCommands: NavigationCommands
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val playbackUiState by viewModel.playbackUiState.collectAsStateWithLifecycle()
     val jamRoomService: JamRoomService = koinInject()
     val jamActive by jamRoomService.role.map { it != null }
         .collectAsStateWithLifecycle(initialValue = false)
@@ -71,6 +72,9 @@ fun AlbumScreen(
     val isLoading = state is AlbumScreenState.Loading && (dataState == null || dataState.tracks.isEmpty())
 
     CollectionView(
+        isPlayLoading = playbackUiState.isPlayLoading,
+        isShuffleLoading = playbackUiState.isShuffleLoading,
+        isAddToQueueLoading = playbackUiState.isAddToQueueLoading,
         title = album?.title ?: stringResource(Res.string.album_loading_title),
         description = album?.description ?: "${album?.albumType?.name.orEmpty()} • ${album?.releaseDate.orEmpty()}",
         imageURL = artworkUrl,
@@ -86,6 +90,7 @@ fun AlbumScreen(
         onAddToQueue = viewModel::addAlbumToQueue,
         isPlaying = isAlbumPlaying,
         isFollowing = savedAlbumIds.contains(albumId),
+        isFollowLoading = dataState?.isSaving == true,
         onFollowClick = viewModel::toggleSavedAlbum,
         isLoading = isLoading,
         error = errorMessage,

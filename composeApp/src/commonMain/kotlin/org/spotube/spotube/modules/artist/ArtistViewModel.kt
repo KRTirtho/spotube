@@ -27,6 +27,7 @@ import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.di.injectLogger
+import org.spotube.spotube.core.remote.CollectionPlaybackUiState
 import org.spotube.spotube.core.remote.RemoteCollectionType
 import org.spotube.spotube.core.remote.RemotePlaybackController
 import org.spotube.spotube.core.share.ShareService
@@ -44,6 +45,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.jetbrains.compose.resources.getString
@@ -61,7 +63,8 @@ sealed interface ArtistScreenState {
         val relatedArtists: List<MetadataArtist.Basic>,
         val relatedArtistsNextPagination: PaginationStrategy?,
         val featuredPlaylists: List<MetadataPlaylist>,
-        val featuredPlaylistsNextPagination: PaginationStrategy?) : ArtistScreenState
+        val featuredPlaylistsNextPagination: PaginationStrategy?,
+        val isSaving: Boolean = false) : ArtistScreenState
 
     data class Error(val message: String) : ArtistScreenState
 }
@@ -81,6 +84,11 @@ class ArtistViewModel(
 
     private val _state = MutableStateFlow<ArtistScreenState>(ArtistScreenState.Loading)
     val state: StateFlow<ArtistScreenState> = _state.asStateFlow()
+
+    /** Loading flags for the top-tracks play / add-to-queue buttons. */
+    val playbackUiState: StateFlow<CollectionPlaybackUiState> = remotePlaybackController
+        .collectionPlaybackUiState(RemoteCollectionType.ArtistTopTracks, artistId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CollectionPlaybackUiState())
 
     val savedArtistIds
         get() = libraryRepository.savedArtistIdsFlow
@@ -152,13 +160,26 @@ class ArtistViewModel(
     }
 
     fun toggleSavedArtist() {
+        if ((_state.value as? ArtistScreenState.Loaded)?.isSaving == true) return
+        setSaving(true)
         viewModelScope.launch {
-            val isLiked = libraryRepository.isSavedArtists(listOf(artistId)).firstOrNull() ?: false
-            if (isLiked) {
-                libraryRepository.removeSavedArtists(listOf(artistId))
-            } else {
-                libraryRepository.saveArtists(listOf(artistId))
+            runCatching {
+                val isLiked = libraryRepository.isSavedArtists(listOf(artistId)).firstOrNull() ?: false
+                if (isLiked) {
+                    libraryRepository.removeSavedArtists(listOf(artistId))
+                } else {
+                    libraryRepository.saveArtists(listOf(artistId))
+                }
+            }.onFailure { e ->
+                logger.e(e) { "Failed to toggle saved artist" }
             }
+            setSaving(false)
+        }
+    }
+
+    private fun setSaving(isSaving: Boolean) {
+        _state.update { state ->
+            if (state is ArtistScreenState.Loaded) state.copy(isSaving = isSaving) else state
         }
     }
 

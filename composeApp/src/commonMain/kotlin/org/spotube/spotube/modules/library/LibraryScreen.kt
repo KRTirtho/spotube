@@ -120,7 +120,6 @@ fun LibraryScreen(libraryState: LibraryState = koinInject()) {
                 LibraryTab.Playlists -> MetadataPluginGuard(showTopBar = false, requireLogin = true) {
                     LibraryPlaylistsScreen(
                         showCreatePlaylist = state.showCreatePlaylist,
-                        onDismissCreatePlaylist = libraryState::dismissCreatePlaylist,
                         viewMode = viewMode
                     )
                 }
@@ -228,6 +227,7 @@ internal fun RowScope.LibraryToolbarActions(
                 icon = Iconsax.IconsaxRefreshRight,
                 contentDescription = stringResource(Res.string.library_action_refresh_local_tracks),
                 onClick = onRefresh,
+                loading = state.isRefreshing,
                 modifier = actionModifier,
                 style = MillenniumIconButtonStyle.Quiet
             )

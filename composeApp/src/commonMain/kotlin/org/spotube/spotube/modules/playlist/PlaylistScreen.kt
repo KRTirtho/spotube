@@ -66,6 +66,7 @@ fun PlaylistScreen(
     navigationCommands: NavigationCommands
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val playbackUiState by viewModel.playbackUiState.collectAsStateWithLifecycle()
     val jamRoomService: JamRoomService = koinInject()
     val jamActive by jamRoomService.role.map { it != null }
         .collectAsStateWithLifecycle(initialValue = false)
@@ -77,7 +78,7 @@ fun PlaylistScreen(
     val currentUserId by viewModel.currentUserId.collectAsStateWithLifecycle()
     val trackOptionsContext by viewModel.trackOptionsContext.collectAsStateWithLifecycle()
     val showAddToPlaylistPicker by viewModel.showAddToPlaylistPicker.collectAsStateWithLifecycle()
-    var showEditPlaylist by remember { mutableStateOf(false) }
+    val editPlaylistFormState by viewModel.editPlaylistFormState.collectAsStateWithLifecycle()
     var showAddTracksDialog by remember { mutableStateOf(false) }
 
     val dataState = state as? PlaylistScreenState.Data
@@ -117,6 +118,9 @@ fun PlaylistScreen(
     } else null
 
     CollectionView(
+        isPlayLoading = playbackUiState.isPlayLoading,
+        isShuffleLoading = playbackUiState.isShuffleLoading,
+        isAddToQueueLoading = playbackUiState.isAddToQueueLoading,
         title = playlist?.title ?: stringResource(Res.string.playlist_loading_title),
         description = playlist?.description.orEmpty(),
         imageURL = artworkUrl,
@@ -128,9 +132,10 @@ fun PlaylistScreen(
         onAddToQueue = viewModel::addPlaylistToQueue,
         isPlaying = isPlaying,
         isFollowing = savedPlaylistIds.contains(playlistId),
+        isFollowLoading = dataState?.isSaving == true,
         onFollowClick = viewModel::toggleSavedPlaylist,
         showFollowButton = playlistId != "saved_tracks",
-        onEdit = if (isOwner) { { showEditPlaylist = true } } else null,
+        onEdit = if (isOwner) viewModel::showEditPlaylist else null,
         isLoading = isLoading,
         error = errorMessage,
         onRetry = { viewModel.refresh() },
@@ -157,8 +162,10 @@ fun PlaylistScreen(
         trailingContent = {
             val loadedPlaylist = (dataState as? PlaylistScreenState.Data.Loaded)?.playlist
             PlaylistFormSheet(
-                visible = showEditPlaylist,
-                onDismiss = { showEditPlaylist = false },
+                visible = editPlaylistFormState.isVisible,
+                formState = editPlaylistFormState,
+                onDismiss = viewModel::dismissEditPlaylist,
+                onImagePicked = viewModel::onEditPlaylistImagePicked,
                 isEditing = true,
                 initialData = loadedPlaylist?.let {
                     PlaylistFormData(
@@ -168,14 +175,7 @@ fun PlaylistScreen(
                         isCollaborating = false,
                         imagePreviewUrl = it.thumbnails.firstOrNull()?.url)
                 },
-                onSubmit = { data ->
-                    viewModel.updatePlaylist(
-                        name = data.name,
-                        description = data.description.ifBlank { null },
-                        isPublic = data.isPublic,
-                        isCollaborating = data.isCollaborating,
-                        imageBase64 = data.imageBase64.ifBlank { null })
-                })
+                onSubmit = viewModel::updatePlaylist)
 
             AddToPlaylistPicker(
                 visible = showAddToPlaylistPicker,

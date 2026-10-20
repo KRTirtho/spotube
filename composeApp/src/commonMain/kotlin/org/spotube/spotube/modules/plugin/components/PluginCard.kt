@@ -77,7 +77,9 @@ internal fun PluginCard(
     onLogout: (() -> Unit)? = null,
     onInfo: (() -> Unit)? = null,
     onSupport: (() -> Unit)? = null,
-    logoPath: Path? = null) {
+    logoPath: Path? = null,
+    isAuthInProgress: Boolean = false,
+    isRemoving: Boolean = false) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -272,6 +274,7 @@ internal fun PluginCard(
                     } else {
                         MillenniumIconButton(
                             onClick = onRemove,
+                            loading = isRemoving,
                             style = MillenniumIconButtonStyle.Quiet) {
                             MillenniumIcon(
                                 Iconsax.IconsaxTrash,
@@ -289,6 +292,7 @@ internal fun PluginCard(
                 authAction?.let { (action, label) ->
                     MillenniumButton(
                         onClick = action,
+                        loading = isAuthInProgress,
                         style = MillenniumButtonStyle.Secondary) {
                         Text(
                             text = stringResource(label),

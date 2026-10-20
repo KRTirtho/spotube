@@ -26,6 +26,7 @@ import io.github.vinceglb.filekit.PlatformFile
 import io.github.vinceglb.filekit.readBytes
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -55,7 +56,9 @@ data class PluginListItem(
     val plugin: PluginEntry,
     val isSelected: Boolean,
     val authState: PluginAuthState,
-    val logoPath: Path?)
+    val logoPath: Path?,
+    val isAuthInProgress: Boolean = false,
+    val isRemoving: Boolean = false)
 
 data class AbilitySelection(
     val ability: PluginAbility,
@@ -92,6 +95,8 @@ sealed interface PluginUiState {
         val urlInput: String = "",
         val urlError: UrlError? = null,
         val isLoadingUrl: Boolean = false,
+        val isPreparingFile: Boolean = false,
+        val isConfirmingInstall: Boolean = false,
         val showInstallSheet: Boolean = false,
         val showPluginInfo: PluginEntry? = null,
         val pluginInfoLogoPath: Path? = null,
@@ -118,6 +123,10 @@ private data class PluginScreenState(
     val urlInput: String = "",
     val urlError: UrlError? = null,
     val isLoadingUrl: Boolean = false,
+    val isPreparingFile: Boolean = false,
+    val isConfirmingInstall: Boolean = false,
+    val authInProgressIds: Set<String> = emptySet(),
+    val removingIds: Set<String> = emptySet(),
     val showInstallSheet: Boolean = false,
     val showPluginInfo: PluginEntry? = null,
     val pluginInfoLogoPath: Path? = null,
@@ -235,7 +244,9 @@ class PluginViewModel(
                         plugin = plugin,
                         isSelected = state.selectedPlugins.containsValue(plugin),
                         authState = authStates[plugin.id] ?: PluginAuthState(),
-                        logoPath = logoPaths[plugin.id])
+                        logoPath = logoPaths[plugin.id],
+                        isAuthInProgress = plugin.id in screen.authInProgressIds,
+                        isRemoving = plugin.id in screen.removingIds)
                 },
                 abilitySelections = listOf(
                     AbilitySelection(
@@ -263,6 +274,8 @@ class PluginViewModel(
                 urlInput = screen.urlInput,
                 urlError = screen.urlError,
                 isLoadingUrl = screen.isLoadingUrl,
+                isPreparingFile = screen.isPreparingFile,
+                isConfirmingInstall = screen.isConfirmingInstall,
                 showInstallSheet = screen.showInstallSheet,
                 showPluginInfo = screen.showPluginInfo,
                 pluginInfoLogoPath = screen.pluginInfoLogoPath,
@@ -360,12 +373,18 @@ class PluginViewModel(
     }
 
     fun onFileSelected(file: PlatformFile?) {
-        if (file == null) return
+        if (file == null || _screenState.value.isPreparingFile) return
+        _screenState.update { it.copy(isPreparingFile = true) }
         viewModelScope.launch {
-            runCatching {
-                pluginManager.preparePlugin(file.readBytes())
-            }.onFailure { e ->
-                logger.e(e) { "Failed to prepare plugin from file" }
+            try {
+                runCatching {
+                    pluginManager.preparePlugin(file.readBytes())
+                }.onFailure { e ->
+                    if (e is CancellationException) throw e
+                    logger.e(e) { "Failed to prepare plugin from file" }
+                }
+            } finally {
+                _screenState.update { it.copy(isPreparingFile = false) }
             }
         }
     }
@@ -456,34 +475,68 @@ class PluginViewModel(
     }
 
     fun removePlugin(plugin: PluginEntry) {
+        if (plugin.id in _screenState.value.removingIds) return
+        _screenState.update { it.copy(removingIds = it.removingIds + plugin.id) }
         viewModelScope.launch {
-            runCatching {
-                pluginManager.removePlugin(plugin)
-            }.onFailure { e ->
-                logger.e(e) { "Failed to remove plugin" }
+            try {
+                runCatching {
+                    pluginManager.removePlugin(plugin)
+                }.onFailure { e ->
+                    if (e is CancellationException) throw e
+                    logger.e(e) { "Failed to remove plugin" }
+                }
+            } finally {
+                _screenState.update { it.copy(removingIds = it.removingIds - plugin.id) }
             }
         }
     }
 
     fun login(plugin: PluginEntry) {
+        if (plugin.id in _screenState.value.authInProgressIds) return
         val service = findServiceForPlugin(plugin.id) ?: return
-        pluginManager.launchTask {
+        trackAuthTask(plugin.id, pluginManager.launchTask {
             service.use { coreAPI.login() }
-        }
+        })
     }
 
     fun logout(plugin: PluginEntry) {
+        if (plugin.id in _screenState.value.authInProgressIds) return
         val service = findServiceForPlugin(plugin.id) ?: return
-        pluginManager.launchTask {
+        val task = pluginManager.launchTask {
             service.use { coreAPI.logout() }
         }
-        viewModelScope.launch {
+        trackAuthTask(plugin.id, task) {
             webViewController.clearData(plugin.id)
         }
     }
 
+    /**
+     * Marks [pluginId] busy until [task] (running in the plugin manager's scope, so it outlives this
+     * screen) and the optional [alongside] work finish, whatever their outcome.
+     */
+    private fun trackAuthTask(pluginId: String, task: Job, alongside: suspend () -> Unit = {}) {
+        _screenState.update { it.copy(authInProgressIds = it.authInProgressIds + pluginId) }
+        viewModelScope.launch {
+            try {
+                alongside()
+                task.join()
+            } finally {
+                _screenState.update { it.copy(authInProgressIds = it.authInProgressIds - pluginId) }
+            }
+        }
+    }
+
     fun confirmInstall() {
-        pluginManager.confirmInstall()
+        if (_screenState.value.isConfirmingInstall) return
+        val task = pluginManager.confirmInstall() ?: return
+        _screenState.update { it.copy(isConfirmingInstall = true) }
+        viewModelScope.launch {
+            try {
+                task.join()
+            } finally {
+                _screenState.update { it.copy(isConfirmingInstall = false) }
+            }
+        }
     }
 
     fun dismissInstall() {

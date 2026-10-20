@@ -244,13 +244,9 @@ internal fun JamSettingsContent(
                             trailingContent = {
                                 MillenniumButton(
                                     onClick = viewModel::testConnection,
-                                    enabled = canTest) {
-                                    Text(
-                                        if (uiState.isTesting) {
-                                            stringResource(Res.string.settings_jam_broker_testing)
-                                        } else {
-                                            stringResource(Res.string.settings_jam_broker_test)
-                                        })
+                                    enabled = broker.host.isNotBlank(),
+                                    loading = uiState.isTesting) {
+                                    Text(stringResource(Res.string.settings_jam_broker_test))
                                 }
                             },
                             onClick = viewModel::testConnection)

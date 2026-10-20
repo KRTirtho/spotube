@@ -28,11 +28,11 @@ import spotube.composeapp.generated.resources.*
 fun LibraryPlaylistsScreen(
     modifier: Modifier = Modifier,
     showCreatePlaylist: Boolean = false,
-    onDismissCreatePlaylist: () -> Unit = {},
     viewMode: LibraryViewMode = LibraryViewMode.Grid,
     viewModel: LibraryPlaylistsViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val playlistFormState by viewModel.playlistFormState.collectAsStateWithLifecycle()
     Column(modifier) {
         when (val current = state) {
             is LibraryPlaylistsState.Error -> Box(
@@ -87,8 +87,10 @@ fun LibraryPlaylistsScreen(
         }
         PlaylistFormSheet(
             visible = showCreatePlaylist,
-            onDismiss = onDismissCreatePlaylist,
-            onSubmit = viewModel::createPlaylist
+            formState = playlistFormState,
+            onDismiss = viewModel::dismissCreatePlaylist,
+            onSubmit = viewModel::createPlaylist,
+            onImagePicked = viewModel::onPlaylistFormImagePicked
         )
     }
 }

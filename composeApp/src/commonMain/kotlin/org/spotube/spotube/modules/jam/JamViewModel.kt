@@ -65,6 +65,7 @@ data class JamUiState(
     val canCreate: Boolean = false,
     val canJoin: Boolean = false,
     val isBusy: Boolean = false,
+    val isLeaving: Boolean = false,
     val isHost: Boolean = false,
     val supportsNativeShare: Boolean = false,
     val codeCopied: Boolean = false
@@ -79,6 +80,7 @@ class JamViewModel(
     private val _localError = MutableStateFlow<String?>(null)
     private val setupMode = MutableStateFlow(JamSetupMode.Create)
     private val isBusy = MutableStateFlow(false)
+    private val isLeaving = MutableStateFlow(false)
     private val codeCopied = MutableStateFlow(false)
     private val codeInput = TextFieldState()
     private var copyFeedbackJob: Job? = null
@@ -99,7 +101,8 @@ class JamViewModel(
         isBusy,
         codeCopied,
         snapshotFlow { codeInput.text.toString() },
-        participantMenu
+        participantMenu,
+        isLeaving
     ) { values ->
         @Suppress("UNCHECKED_CAST")
         val role = values[0] as JamRole?
@@ -134,10 +137,11 @@ class JamViewModel(
             error = localError ?: connectionError,
             setupMode = values[7] as JamSetupMode,
             isBusy = busy,
+            isLeaving = values[12] as Boolean,
             codeCopied = values[9] as Boolean,
             codeInput = codeInput,
-            canCreate = brokerConfigured && !busy,
-            canJoin = brokerConfigured && !busy &&
+            canCreate = brokerConfigured,
+            canJoin = brokerConfigured &&
                     JamRoomCode.isValid(JamRoomCode.normalize(values[10] as String)),
             isHost = role == JamRole.Host,
             supportsNativeShare = supportsNativeShare
@@ -216,9 +220,15 @@ class JamViewModel(
     }
 
     fun leave() {
+        if (isLeaving.value) return
+        isLeaving.value = true
         viewModelScope.launch {
-            jamRoomService.leaveRoom()
-            _localError.value = null
+            try {
+                jamRoomService.leaveRoom()
+                _localError.value = null
+            } finally {
+                isLeaving.value = false
+            }
         }
     }
 

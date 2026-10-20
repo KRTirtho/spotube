@@ -390,22 +390,30 @@ class PluginManager(
         }
     }
 
-    /** Called when the user confirms installation/update/replacement in the dialog. */
-    fun confirmInstall() {
-        val pending = pendingPlugin.value ?: return
-        val bytes = pending.bytes ?: return dismissInstall()
+    /**
+     * Called when the user confirms installation/update/replacement in the dialog. The prompt stays
+     * up until the install finishes, so the dialog can show progress.
+     *
+     * @return The install job, or `null` when there was nothing to install.
+     */
+    fun confirmInstall(): Job? {
+        val pending = pendingPlugin.value ?: return null
+        val bytes = pending.bytes ?: run { dismissInstall(); return null }
         val allowReplacingInstalled = when (pending.kind) {
             InstallPromptKind.INSTALL -> false
             InstallPromptKind.UPDATE, InstallPromptKind.REPLACE -> true
-            InstallPromptKind.INFO -> return dismissInstall()
-            InstallPromptKind.REPLACE -> true
+            InstallPromptKind.INFO -> run { dismissInstall(); return null }
         }
-        pendingPlugin.value = null
-        scope.launch {
-            addPluginFromByteArray(
-                bytes = bytes,
-                allowReplacingInstalled = allowReplacingInstalled
-            )
+        return scope.launch {
+            try {
+                addPluginFromByteArray(
+                    bytes = bytes,
+                    allowReplacingInstalled = allowReplacingInstalled
+                )
+            } finally {
+                // Only close our own prompt; another plugin may have been queued meanwhile.
+                pendingPlugin.compareAndSet(pending, null)
+            }
         }
     }
 

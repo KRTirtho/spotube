@@ -34,6 +34,7 @@ import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.di.injectLogger
 import org.spotube.spotube.core.playback.CollectionPlaybackHelper
+import org.spotube.spotube.core.remote.CollectionPlaybackUiState
 import org.spotube.spotube.core.remote.RemoteCollectionType
 import org.spotube.spotube.core.remote.RemotePlaybackController
 import org.spotube.spotube.core.share.ShareService
@@ -54,6 +55,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 import org.koin.core.component.KoinComponent
@@ -103,8 +105,17 @@ class SavedTracksViewModel(
 
     private val _state = MutableStateFlow<SavedTracksScreenState>(SavedTracksScreenState.Loading)
     val uiState: StateFlow<SavedTracksScreenState> = _state.asStateFlow()
+
+    /** Loading flags for this screen's play / shuffle / add-to-queue buttons. */
+    val playbackUiState: StateFlow<CollectionPlaybackUiState> = remotePlaybackController
+        .collectionPlaybackUiState(RemoteCollectionType.SavedTracks, SAVED_TRACKS_COLLECTION_ID)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CollectionPlaybackUiState())
     val savedTrackIdsFlow: StateFlow<Set<String>>
         get() = repository.savedTracksIdsFlow
+
+    // Tracks whose save/remove request is still in flight.
+    private val _pendingSavedTrackIds = MutableStateFlow<Set<String>>(emptySet())
+    val pendingSavedTrackIds: StateFlow<Set<String>> = _pendingSavedTrackIds.asStateFlow()
 
     private val _currentUserId = MutableStateFlow<String?>(null)
     val currentUserId: StateFlow<String?> = _currentUserId.asStateFlow()
@@ -338,6 +349,23 @@ class SavedTracksViewModel(
 
     suspend fun removeSavedTracks(trackIds: List<String>) {
         repository.removeSavedTracks(trackIds)
+    }
+
+    fun toggleSavedTrack(trackId: String, isSaved: Boolean) {
+        if (trackId in _pendingSavedTrackIds.value) return
+        _pendingSavedTrackIds.update { it + trackId }
+        viewModelScope.launch {
+            runCatching {
+                if (isSaved) {
+                    repository.removeSavedTracks(listOf(trackId))
+                } else {
+                    repository.saveTracks(listOf(trackId))
+                }
+            }.onFailure { e ->
+                logger.e(e) { "Failed to toggle saved track" }
+            }
+            _pendingSavedTrackIds.update { it - trackId }
+        }
     }
 
     private fun MetadataTrack.matchesTrack(other: MetadataTrack): Boolean {

@@ -46,6 +46,7 @@ fun SavedTracksScreen(
     navigationCommands: NavigationCommands
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val playbackUiState by viewModel.playbackUiState.collectAsStateWithLifecycle()
     val jamRoomService: JamRoomService = koinInject()
     val jamActive by jamRoomService.role.map { it != null }
         .collectAsStateWithLifecycle(initialValue = false)
@@ -65,6 +66,9 @@ fun SavedTracksScreen(
     val isLoading = state is SavedTracksScreenState.Loading && (dataState == null || dataState.tracks.isEmpty())
 
     CollectionView(
+        isPlayLoading = playbackUiState.isPlayLoading,
+        isShuffleLoading = playbackUiState.isShuffleLoading,
+        isAddToQueueLoading = playbackUiState.isAddToQueueLoading,
         title = stringResource(Res.string.saved_tracks_title),
         description = dataState?.let { pluralStringResource(Res.plurals.library_local_tracks_count, it.totalCount, it.totalCount) } ?: "",
         imageURL = "",

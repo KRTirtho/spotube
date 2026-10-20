@@ -28,6 +28,8 @@ import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
 import org.spotube.spotube.core.playback.CollectionPlaybackHelper
+import org.spotube.spotube.core.remote.CollectionPlaybackKey
+import org.spotube.spotube.core.remote.PlaybackDestinationAction
 import org.spotube.spotube.core.remote.RemoteCollectionType
 import org.spotube.spotube.core.remote.RemotePlaybackController
 import org.spotube.spotube.core.ui.component.cards.PlayableCard
@@ -44,6 +46,7 @@ fun AlbumCard(
     listMode: Boolean = false
 ) {
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
+    val busyCollections by remotePlaybackController.busyCollections.collectAsStateWithLifecycle()
 
     PlayableCard(
         title = album.title,
@@ -71,6 +74,8 @@ fun AlbumCard(
         },
         modifier = if (listMode) modifier else modifier.width(160.dp),
         sharedElementKey = "album_art_${album.id}",
-        listMode = listMode
+        listMode = listMode,
+        playLoading = CollectionPlaybackKey(RemoteCollectionType.Album, album.id, PlaybackDestinationAction.Play) in busyCollections,
+        addToQueueLoading = CollectionPlaybackKey(RemoteCollectionType.Album, album.id, PlaybackDestinationAction.AddToQueue) in busyCollections
     )
 }

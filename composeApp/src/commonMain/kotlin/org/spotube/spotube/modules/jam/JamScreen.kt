@@ -203,12 +203,12 @@ internal fun SetupPanel(
         MillenniumButton(
             onClick = if (state.setupMode == JamSetupMode.Create) onCreate else onJoin,
             enabled = if (state.setupMode == JamSetupMode.Create) state.canCreate else state.canJoin,
+            loading = state.isBusy,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(
                 stringResource(
                     when {
-                        state.isBusy -> Res.string.jam_setup_working
                         state.setupMode == JamSetupMode.Create -> Res.string.jam_setup_create_button
                         else -> Res.string.jam_setup_join_button
                     }
@@ -451,6 +451,7 @@ internal fun SessionPanel(
         }
         MillenniumButton(
             onClick = onLeave,
+            loading = state.isLeaving,
             style = MillenniumButtonStyle.Secondary,
             modifier = Modifier.align(Alignment.End)
         ) {

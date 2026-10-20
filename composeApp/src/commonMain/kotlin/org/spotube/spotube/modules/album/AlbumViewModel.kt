@@ -26,6 +26,7 @@ import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.di.injectLogger
 import org.spotube.spotube.core.playback.CollectionPlaybackHelper
+import org.spotube.spotube.core.remote.CollectionPlaybackUiState
 import org.spotube.spotube.core.remote.RemoteCollectionType
 import org.spotube.spotube.core.remote.RemotePlaybackController
 import org.spotube.spotube.core.share.ShareService
@@ -47,6 +48,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.jetbrains.compose.resources.getString
@@ -104,6 +106,11 @@ class AlbumViewModel(
 
     private val _state = MutableStateFlow<AlbumScreenState>(AlbumScreenState.Loading)
     val uiState: StateFlow<AlbumScreenState> = _state.asStateFlow()
+
+    /** Loading flags for this screen's play / shuffle / add-to-queue buttons. */
+    val playbackUiState: StateFlow<CollectionPlaybackUiState> = remotePlaybackController
+        .collectionPlaybackUiState(RemoteCollectionType.Album, albumId)
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), CollectionPlaybackUiState())
     val savedAlbumIds
         get() = libraryRepository.savedAlbumIdsFlow
 
@@ -203,13 +210,30 @@ class AlbumViewModel(
     }
 
     fun toggleSavedAlbum() {
+        if ((_state.value as? AlbumScreenState.Data)?.isSaving == true) return
+        setSaving(true)
         viewModelScope.launch {
-            val isLiked =
-                libraryRepository.isSavedAlbums(listOf(albumId)).firstOrNull() ?: false
-            if (isLiked) {
-                libraryRepository.removeSavedAlbums(listOf(albumId))
-            } else {
-                libraryRepository.saveAlbums(listOf(albumId))
+            runCatching {
+                val isLiked =
+                    libraryRepository.isSavedAlbums(listOf(albumId)).firstOrNull() ?: false
+                if (isLiked) {
+                    libraryRepository.removeSavedAlbums(listOf(albumId))
+                } else {
+                    libraryRepository.saveAlbums(listOf(albumId))
+                }
+            }.onFailure { e ->
+                logger.e(e) { "Failed to toggle saved album" }
+            }
+            setSaving(false)
+        }
+    }
+
+    private fun setSaving(isSaving: Boolean) {
+        _state.update { state ->
+            when (state) {
+                is AlbumScreenState.Data.Loaded -> state.copy(isSaving = isSaving)
+                is AlbumScreenState.Data.LoadingMore -> state.copy(isSaving = isSaving)
+                else -> state
             }
         }
     }

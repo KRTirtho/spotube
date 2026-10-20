@@ -26,7 +26,6 @@ import androidx.compose.foundation.shape.CircleShape
 import org.spotube.spotube.core.ui.theming.AppTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.QueueEntry
@@ -36,7 +35,6 @@ import org.spotube.spotube.modules.saved_tracks.rememberIsSavedTracks
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxHeart
 import org.spotube.spotube.resources.iconsax.IconsaxHeart2
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.player_like_content_description
@@ -46,12 +44,12 @@ import spotube.composeapp.generated.resources.player_unlike_content_description
 fun PlayerHeartButton(
     audioPlayerQueue: AudioPlayerQueue,
     savedTracksViewModel: SavedTracksViewModel) {
-    val scope = rememberCoroutineScope()
     val currentQueueEntry by audioPlayerQueue.currentQueueEntryFlow.collectAsStateWithLifecycle()
     val currentTrackId = (currentQueueEntry as? QueueEntry.StreamingTrack)?.track?.id
     val isSavedTrackState =
         rememberIsSavedTracks(trackIds = currentTrackId?.let { listOf(it) } ?: emptyList())
     val savedTrackIds by savedTracksViewModel.savedTrackIdsFlow.collectAsStateWithLifecycle()
+    val pendingSavedTrackIds by savedTracksViewModel.pendingSavedTrackIds.collectAsStateWithLifecycle()
 
     val isInSavedIds = if (currentTrackId != null) currentTrackId in savedTrackIds else false
     val isLiked = if (isSavedTrackState is SavedState.Success) {
@@ -60,21 +58,10 @@ fun PlayerHeartButton(
         isInSavedIds
     }
 
-    fun onLike() {
-        val entry = currentQueueEntry as? QueueEntry.StreamingTrack ?: return
-        if (isLiked) {
-            scope.launch {
-                savedTracksViewModel.removeSavedTracks(listOf(entry.track.id))
-            }
-        } else {
-            scope.launch {
-                savedTracksViewModel.saveTracks(listOf(entry.track.id))
-            }
-        }
-    }
     MillenniumIconButton(
-        onClick = ::onLike,
+        onClick = { currentTrackId?.let { savedTracksViewModel.toggleSavedTrack(it, isLiked) } },
         enabled = isSavedTrackState is SavedState.Success,
+        loading = currentTrackId != null && currentTrackId in pendingSavedTrackIds,
         style = MillenniumIconButtonStyle.Secondary) {
         MillenniumIcon(
             imageVector = if (isLiked) Iconsax.IconsaxHeart2 else Iconsax.IconsaxHeart,

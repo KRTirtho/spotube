@@ -69,6 +69,10 @@ fun CollectionView(
     onAddToQueue: () -> Unit,
     isPlaying: Boolean = false,
     isFollowing: Boolean = false,
+    isFollowLoading: Boolean = false,
+    isPlayLoading: Boolean = false,
+    isShuffleLoading: Boolean = false,
+    isAddToQueueLoading: Boolean = false,
     onFollowClick: () -> Unit = {},
     showFollowButton: Boolean = true,
     onEdit: (() -> Unit)? = null,
@@ -123,6 +127,7 @@ fun CollectionView(
                 {
                     MillenniumIconButton(
                         onClick = onPlay,
+                        loading = isPlayLoading,
                         style = MillenniumIconButtonStyle.Quiet) {
                         MillenniumIcon(
                             imageVector = if (isPlaying) Iconsax.IconsaxPauseCircle else Iconsax.IconsaxPlayCircle2,
@@ -159,6 +164,10 @@ fun CollectionView(
                                 onAddToQueue = onAddToQueue,
                                 isPlaying = isPlaying,
                                 isFollowing = isFollowing,
+                                isFollowLoading = isFollowLoading,
+                                isPlayLoading = isPlayLoading,
+                                isShuffleLoading = isShuffleLoading,
+                                isAddToQueueLoading = isAddToQueueLoading,
                                 onFollowClick = onFollowClick,
                                 showFollowButton = showFollowButton,
                                 onEdit = onEdit,
@@ -180,6 +189,10 @@ fun CollectionView(
                             onAddToQueue = onAddToQueue,
                             isPlaying = isPlaying,
                             isFollowing = isFollowing,
+                            isFollowLoading = isFollowLoading,
+                            isPlayLoading = isPlayLoading,
+                            isShuffleLoading = isShuffleLoading,
+                            isAddToQueueLoading = isAddToQueueLoading,
                             onFollowClick = onFollowClick,
                             showFollowButton = showFollowButton,
                             onEdit = onEdit,

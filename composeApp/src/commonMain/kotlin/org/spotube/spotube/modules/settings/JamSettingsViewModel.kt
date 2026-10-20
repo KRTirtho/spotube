@@ -38,8 +38,12 @@ class JamSettingsViewModel(
         if (_uiState.value.isTesting) return
         _uiState.update { it.copy(isTesting = true, testResult = null) }
         viewModelScope.launch {
-            val result = jamRoomClient.testConnection(uiState.value.settings.jamBroker)
-            _uiState.update { it.copy(isTesting = false, testResult = result) }
+            try {
+                val result = jamRoomClient.testConnection(uiState.value.settings.jamBroker)
+                _uiState.update { it.copy(testResult = result) }
+            } finally {
+                _uiState.update { it.copy(isTesting = false) }
+            }
         }
     }
 

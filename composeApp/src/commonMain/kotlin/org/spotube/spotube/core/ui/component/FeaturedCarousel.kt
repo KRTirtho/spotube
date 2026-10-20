@@ -72,7 +72,10 @@ import org.spotube.spotube.core.audioplayer.QueueCollectionEntry
 import org.spotube.spotube.core.audioplayer.QueueEntry
 import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
-import org.spotube.spotube.core.playback.CollectionPlaybackHelper
+import org.spotube.spotube.core.remote.CollectionPlaybackKey
+import org.spotube.spotube.core.remote.PlaybackDestinationAction
+import org.spotube.spotube.core.remote.RemoteCollectionType
+import org.spotube.spotube.core.remote.RemotePlaybackController
 import org.spotube.spotube.core.ui.coverflow.Coverflow
 import org.spotube.spotube.core.ui.coverflow.CoverflowParams
 import org.spotube.spotube.core.ui.coverflow.rememberCoverflowState
@@ -288,11 +291,12 @@ private fun FeaturedPlayButton(
     item: MetadataBrowseItem,
     audioPlayerQueue: AudioPlayerQueue,
     navigationCommands: NavigationCommands,
-    playbackHelper: CollectionPlaybackHelper = koinInject(),
+    remotePlaybackController: RemotePlaybackController = koinInject(),
     enabled: Boolean,
     modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val currentCollectionEntry by audioPlayerQueue.currentCollectionEntryFlow.collectAsStateWithLifecycle()
+    val busyCollections by remotePlaybackController.busyCollections.collectAsStateWithLifecycle()
 
     when (item) {
         is MetadataBrowseItem.Album -> {
@@ -309,10 +313,18 @@ private fun FeaturedPlayButton(
                         if (isPlaying) {
                             navigationCommands.navigateTo(Routes.Album(item.data.id))
                         } else {
-                            scope.launch { playbackHelper.playAlbum(item.data.id) }
+                            remotePlaybackController.requestCollectionPlay(
+                                RemoteCollectionType.Album,
+                                item.data.id,
+                                item.data.title
+                            )
                         }
                     },
-                    enabled = enabled
+                    enabled = enabled,
+                    loading = CollectionPlaybackKey(
+                        RemoteCollectionType.Album, item.data.id, PlaybackDestinationAction.Play
+                    ) in busyCollections,
+                    foreground = Color.White
                 ) {
                     MillenniumIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
@@ -337,10 +349,18 @@ private fun FeaturedPlayButton(
                         if (isPlaying) {
                             navigationCommands.navigateTo(Routes.Playlist(item.data.id))
                         } else {
-                            scope.launch { playbackHelper.playPlaylist(item.data.id) }
+                            remotePlaybackController.requestCollectionPlay(
+                                RemoteCollectionType.Playlist,
+                                item.data.id,
+                                item.data.title
+                            )
                         }
                     },
-                    enabled = enabled
+                    enabled = enabled,
+                    loading = CollectionPlaybackKey(
+                        RemoteCollectionType.Playlist, item.data.id, PlaybackDestinationAction.Play
+                    ) in busyCollections,
+                    foreground = Color.White
                 ) {
                     MillenniumIcon(
                         imageVector = if (isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,

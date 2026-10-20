@@ -235,6 +235,7 @@ internal fun PluginScreenContent(
                 } else {
                     null
                 },
+                isConfirming = state.isConfirmingInstall,
                 onDismiss = { viewModel.dismissInstall() }
             )
         }
@@ -274,6 +275,7 @@ internal fun PluginScreenContent(
                 urlInput = state.urlInput,
                 urlError = state.urlError,
                 isLoadingUrl = state.isLoadingUrl,
+                isPreparingFile = state.isPreparingFile,
                 onUrlChange = { viewModel.onUrlInputChange(it) },
                 onSubmitUrl = { viewModel.submitUrl() },
                 onPickFile = { launcher.launch() },
@@ -459,6 +461,8 @@ internal fun PluginScreenContent(
                                                     onRemove = { viewModel.removePlugin(item.plugin) },
                                                     isLoggedIn = item.authState.isLoggedIn,
                                                     logoPath = item.logoPath,
+                                                    isAuthInProgress = item.isAuthInProgress,
+                                                    isRemoving = item.isRemoving,
                                                     onInfo = { viewModel.showPluginInfo(item.plugin) },
                                                     onSupport = if (item.isSelected) {
                                                         { viewModel.loadSupport(item.plugin) }
@@ -620,6 +624,7 @@ private fun InstallSheet(
     urlInput: String,
     urlError: UrlError?,
     isLoadingUrl: Boolean,
+    isPreparingFile: Boolean,
     onUrlChange: (String) -> Unit,
     onSubmitUrl: () -> Unit,
     onPickFile: () -> Unit,
@@ -671,20 +676,16 @@ private fun InstallSheet(
                         error = urlError?.text())
                     MillenniumButton(
                         onClick = onSubmitUrl,
-                        enabled = !isLoadingUrl,
+                        loading = isLoadingUrl,
                         modifier = Modifier.fillMaxWidth(),
                         style = MillenniumButtonStyle.Primary) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            if (isLoadingUrl) {
-                                MillenniumSpokeSpinner(size = 16.dp, color = MillenniumTheme.colors.onAccent)
-                            } else {
-                                MillenniumIcon(
-                                    Iconsax.IconsaxImportArrow2Bulk,
-                                    contentDescription = null,
-                                    modifier = Modifier.size(18.dp))
-                            }
+                            MillenniumIcon(
+                                Iconsax.IconsaxImportArrow2Bulk,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp))
                             Text(stringResource(Res.string.plugin_action_download))
                         }
                     }
@@ -703,7 +704,7 @@ private fun InstallSheet(
                 MillenniumSeparator(modifier = Modifier.weight(1f))
             }
 
-            PluginPanel(modifier = Modifier.clickable(onClick = onPickFile)) {
+            PluginPanel(modifier = Modifier.clickable(enabled = !isPreparingFile, onClick = onPickFile)) {
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(14.dp),
                     verticalAlignment = Alignment.CenterVertically,
@@ -721,11 +722,15 @@ private fun InstallSheet(
                             style = AppTheme.typography.labelSmall,
                             color = AppTheme.colors.onSurfaceVariant)
                     }
-                    MillenniumIcon(
-                        FeatherIcons.ChevronRight,
-                        contentDescription = null,
-                        modifier = Modifier.size(18.dp),
-                        tint = AppTheme.colors.onSurfaceVariant)
+                    if (isPreparingFile) {
+                        MillenniumSpokeSpinner(size = 18.dp)
+                    } else {
+                        MillenniumIcon(
+                            FeatherIcons.ChevronRight,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                            tint = AppTheme.colors.onSurfaceVariant)
+                    }
                 }
             }
         }
@@ -1013,20 +1018,16 @@ private fun DiscoverRepoCard(
             }
             MillenniumButton(
                 onClick = onInstall,
-                enabled = !isInstalling,
+                loading = isInstalling,
                 style = MillenniumButtonStyle.Secondary
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    if (isInstalling) {
-                        MillenniumSpokeSpinner(size = 16.dp)
-                    } else {
-                        MillenniumIcon(
-                            Iconsax.IconsaxAdd,
-                            contentDescription = null)
-                    }
+                    MillenniumIcon(
+                        Iconsax.IconsaxAdd,
+                        contentDescription = null)
                     Text(stringResource(Res.string.plugin_section_install))
                 }
             }

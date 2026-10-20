@@ -20,7 +20,6 @@ package org.spotube.spotube.modules.playlist
 
 import org.spotube.spotube.core.ui.component.AdaptiveDialogBottomSheet
 import org.spotube.millennium.composables.MillenniumCircularProgress
-import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
@@ -48,15 +47,8 @@ import com.composeunstyled.Text
 import com.composeunstyled.rememberModalBottomSheetState
 import com.composeunstyled.currentWindowWidthBreakpoint
 import org.spotube.millennium.adaptive.WindowBreakpoints
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -65,16 +57,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import org.spotube.spotube.modules.library.LibraryRepository
-import org.spotube.spotube.modules.search.SearchRepository
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxCheckCircle
 import org.spotube.spotube.resources.iconsax.IconsaxFilterSearch
 import org.spotube.spotube.resources.iconsax.IconsaxSearch
-import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
 import org.jetbrains.compose.resources.stringResource
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.playlist_add_tracks_add
 import spotube.composeapp.generated.resources.playlist_add_tracks_added_content_description
@@ -90,59 +80,17 @@ fun AddTracksToPlaylistDialog(
     visible: Boolean,
     playlistId: String,
     onDismiss: () -> Unit,
-    modifier: Modifier = Modifier,
-    searchRepository: SearchRepository = koinInject(),
-    libraryRepository: LibraryRepository = koinInject()) {
+    modifier: Modifier = Modifier) {
     if (!visible) return
 
-    val isLargeScreen = currentWindowWidthBreakpoint() isAtLeast WindowBreakpoints.Medium
-
-    var query by remember { mutableStateOf("") }
-    var searchResults by remember { mutableStateOf<List<MetadataTrack>>(emptyList()) }
-    var isSearching by remember { mutableStateOf(false) }
-    var hasSearched by remember { mutableStateOf(false) }
-    var addingTrackIds by remember { mutableStateOf<Set<String>>(emptySet()) }
-    var addedTrackIds by remember { mutableStateOf<Set<String>>(emptySet()) }
-    val scope = rememberCoroutineScope()
-    val queryState = rememberTextFieldState(query)
-
-    LaunchedEffect(queryState) {
-        snapshotFlow { queryState.text.toString() }
-            .drop(1)
-            .collect { query = it }
-    }
-
-    LaunchedEffect(visible) {
-        if (!visible) {
-            query = ""
-            searchResults = emptyList()
-            hasSearched = false
-            addingTrackIds = emptySet()
-            addedTrackIds = emptySet()
-        }
-    }
-
-    val handleSearch = {
-        if (query.isNotBlank() && !isSearching) {
-            isSearching = true
-            hasSearched = true
-            scope.launch {
-                val result = searchRepository.searchTracks(query)
-                searchResults = result.items.map { it.data }
-                isSearching = false
-            }
-        }
-    }
-
-    val handleAddTrack = { track: MetadataTrack ->
-        if (!addingTrackIds.contains(track.id) && !addedTrackIds.contains(track.id)) {
-            addingTrackIds = addingTrackIds + track.id
-            scope.launch {
-                libraryRepository.addTracksToPlaylist(playlistId, listOf(track.id))
-                addingTrackIds = addingTrackIds - track.id
-                addedTrackIds = addedTrackIds + track.id
-            }
-        }
+    val viewModel: AddTracksToPlaylistViewModel = koinViewModel(
+        key = "add-tracks-$playlistId",
+        parameters = { parametersOf(playlistId) }
+    )
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val dismiss = {
+        viewModel.reset()
+        onDismiss()
     }
 
     val content: @Composable () -> Unit = {
@@ -154,18 +102,19 @@ fun AddTracksToPlaylistDialog(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically) {
                 MillenniumTextField(
-                    state = queryState,
+                    state = state.queryState,
                     modifier = Modifier.weight(1f),
                     placeholder = stringResource(Res.string.playlist_add_tracks_search_placeholder))
                 MillenniumIconButton(
                     icon = Iconsax.IconsaxSearch,
                     contentDescription = stringResource(Res.string.playlist_add_tracks_search_content_description),
-                    onClick = handleSearch,
+                    onClick = viewModel::search,
+                    loading = state.isSearching,
                     style = MillenniumIconButtonStyle.Secondary)
             }
 
             when {
-                isSearching -> {
+                state.isSearching -> {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -174,7 +123,7 @@ fun AddTracksToPlaylistDialog(
                         MillenniumCircularProgress(size = 40.dp)
                     }
                 }
-                hasSearched && searchResults.isEmpty() -> {
+                state.hasSearched && state.results.isEmpty() -> {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -183,18 +132,18 @@ fun AddTracksToPlaylistDialog(
                         Text(stringResource(Res.string.playlist_add_tracks_no_results))
                     }
                 }
-                searchResults.isNotEmpty() -> {
+                state.results.isNotEmpty() -> {
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
                         verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        items(searchResults, key = { it.id }) { track ->
+                        items(state.results, key = { it.track.id }) { result ->
                             TrackSearchResultRow(
-                                track = track,
-                                isAdding = addingTrackIds.contains(track.id),
-                                isAdded = addedTrackIds.contains(track.id),
-                                onAdd = { handleAddTrack(track) })
+                                track = result.track,
+                                isAdding = result.isAdding,
+                                isAdded = result.isAdded,
+                                onAdd = { viewModel.addTrack(result.track.id) })
                         }
                     }
                 }
@@ -213,7 +162,7 @@ fun AddTracksToPlaylistDialog(
 
     val dialogTitle = stringResource(Res.string.playlist_add_tracks_title)
     AdaptiveDialogBottomSheet(
-        onDismiss = onDismiss,
+        onDismiss = dismiss,
         modifier = modifier,
         dialogTitle = dialogTitle,
         title = { Text(dialogTitle, style = AppTheme.typography.headlineSmall) },
@@ -221,7 +170,7 @@ fun AddTracksToPlaylistDialog(
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End) {
-                MillenniumButton(onClick = onDismiss) {
+                MillenniumButton(onClick = dismiss) {
                     Text(stringResource(Res.string.playlist_add_tracks_done))
                 }
             }
@@ -288,12 +237,10 @@ private fun TrackSearchResultRow(
                     tint = AppTheme.colors.primary,
                     modifier = Modifier.size(24.dp))
             }
-            isAdding -> {
-                MillenniumSpokeSpinner(size = 24.dp)
-            }
             else -> {
                 MillenniumButton(
                     onClick = onAdd,
+                    loading = isAdding,
                     style = MillenniumButtonStyle.Secondary) {
                     Text(stringResource(Res.string.playlist_add_tracks_add))
                 }

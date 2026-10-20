@@ -76,7 +76,9 @@ fun PlayableCard(
     onAddToQueue: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
     sharedElementKey: String? = null,
-    listMode: Boolean = false
+    listMode: Boolean = false,
+    playLoading: Boolean = false,
+    addToQueueLoading: Boolean = false
 ) {
     if (listMode) {
         PlayableListTile(
@@ -88,7 +90,9 @@ fun PlayableCard(
             onPlay,
             onAddToQueue,
             modifier,
-            sharedElementKey
+            sharedElementKey,
+            playLoading = playLoading,
+            addToQueueLoading = addToQueueLoading
         )
         return
     }
@@ -124,7 +128,8 @@ fun PlayableCard(
                         contentAlignment = Alignment.BottomEnd
                     ) {
                         this@Column.AnimatedVisibility(
-                            visible = highlighted || touchInput || (isPlaying && onPlay != null),
+                            visible = highlighted || touchInput || (isPlaying && onPlay != null) ||
+                                playLoading || addToQueueLoading,
                             enter = fadeIn(),
                             exit = fadeOut()
                         ) {
@@ -137,6 +142,7 @@ fun PlayableCard(
                                 onAddToQueue?.takeIf { !isPlaying }?.let {
                                     MillenniumIconButton(
                                         onClick = onAddToQueue,
+                                        loading = addToQueueLoading,
                                         modifier = Modifier.size(34.dp),
                                         style = MillenniumIconButtonStyle.Secondary
                                     ) {
@@ -152,6 +158,7 @@ fun PlayableCard(
                                 onPlay?.let {
                                     MillenniumIconButton(
                                         onClick = onPlay,
+                                        loading = playLoading,
                                         modifier = Modifier.size(34.dp),
                                         style = MillenniumIconButtonStyle.Primary
 

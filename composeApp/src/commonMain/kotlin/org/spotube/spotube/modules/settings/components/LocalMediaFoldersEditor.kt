@@ -188,8 +188,8 @@ internal fun LocalMediaFoldersEditorContent(
             ) {
                 Text(stringResource(Res.string.common_cancel))
             }
-            MillenniumButton(onClick = onSave, enabled = state.canSave) {
-                Text(stringResource(if (state.isSaving) Res.string.settings_local_media_folders_saving else Res.string.common_save))
+            MillenniumButton(onClick = onSave, enabled = state.canSave, loading = state.isSaving) {
+                Text(stringResource(Res.string.common_save))
             }
         }
     }

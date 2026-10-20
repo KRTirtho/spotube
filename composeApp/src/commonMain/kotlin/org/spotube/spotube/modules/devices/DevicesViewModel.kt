@@ -66,7 +66,8 @@ data class DeviceItemUi(
 
 data class ConnectedDeviceUi(
     val name: String?,
-    val address: String)
+    val address: String,
+    val isDisconnecting: Boolean = false)
 
 data class DevicesUiState(
     val devices: List<DeviceItemUi> = emptyList(),
@@ -89,14 +90,15 @@ class DevicesViewModel(
     private val _isDiscovering = MutableStateFlow(false)
     private val _connectingToDevice = MutableStateFlow<DiscoveredDevice?>(null)
     private val _error = MutableStateFlow<DevicesError?>(null)
+    private val _isDisconnecting = MutableStateFlow(false)
 
     val uiState: StateFlow<DevicesUiState> = combine(
         _devices,
         _isDiscovering,
         _connectingToDevice,
         remoteControlClient.connectionState,
-        _error
-    ) { devices, isDiscovering, connectingTo, connection, error ->
+        combine(_error, _isDisconnecting, ::Pair)
+    ) { devices, isDiscovering, connectingTo, connection, (error, isDisconnecting) ->
         val connected = connection as? ConnectionState.Connected
         DevicesUiState(
             devices = devices.values.map { device ->
@@ -112,7 +114,8 @@ class DevicesViewModel(
             connectedDevice = connected?.let {
                 ConnectedDeviceUi(
                     name = it.deviceName.ifBlank { null },
-                    address = "${it.host}:${it.port}")
+                    address = "${it.host}:${it.port}",
+                    isDisconnecting = isDisconnecting)
             },
             error = error)
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DevicesUiState())
@@ -288,8 +291,14 @@ class DevicesViewModel(
     }
 
     fun disconnect() {
+        if (_isDisconnecting.value) return
+        _isDisconnecting.value = true
         viewModelScope.launch {
-            remoteControlClient.disconnect()
+            try {
+                remoteControlClient.disconnect()
+            } finally {
+                _isDisconnecting.value = false
+            }
         }
     }
 

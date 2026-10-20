@@ -67,6 +67,7 @@ import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaFoldersC
 import org.spotube.spotube.modules.library.local_tracks.media.LocalMediaLibraryCoordinator
 import org.spotube.spotube.modules.library.playlist.LibraryPlaylistsViewModel
 import org.spotube.spotube.modules.lyrics.LyricsViewModel
+import org.spotube.spotube.modules.playlist.AddTracksToPlaylistViewModel
 import org.spotube.spotube.modules.playlist.PlaylistRepository
 import org.spotube.spotube.modules.playlist.PlaylistViewModel
 import org.spotube.spotube.modules.plugin.AudioPluginSource
@@ -185,6 +186,7 @@ val sharedModules = module {
             downloadManager = get(),
             remotePlaybackController = get())
     }
+    viewModel { (playlistId: String) -> AddTracksToPlaylistViewModel(playlistId, get(), get()) }
 
     // Saved Tracks
     singleOf(::SavedTracksRepository)

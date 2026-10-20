@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 import org.spotube.spotube.PlatformType
 import org.spotube.spotube.getPlatform
 import org.jetbrains.compose.resources.getString
@@ -160,19 +161,25 @@ class LibraryLocalTracksViewModel(
     }
 
     fun refresh() {
-        if (!_state.value.canAccessMedia) return
+        if (!_state.value.canAccessMedia || _state.value.isRefreshing) return
+        _state.update { it.copy(isRefreshing = true, error = null) }
+        libraryState.setLocalRefreshing(true)
         viewModelScope.launch {
-            _state.update { it.copy(isRefreshing = true, error = null) }
-            runCatching {
-                coordinator.refreshNow("manual")
-            }.onFailure { throwable ->
-                val message =
-                    throwable.message ?: getString(Res.string.library_local_refresh_failed)
-                _state.update {
-                    it.copy(error = message)
+            try {
+                runCatching {
+                    coordinator.refreshNow("manual")
+                }.onFailure { throwable ->
+                    if (throwable is CancellationException) throw throwable
+                    val message =
+                        throwable.message ?: getString(Res.string.library_local_refresh_failed)
+                    _state.update {
+                        it.copy(error = message)
+                    }
                 }
+            } finally {
+                _state.update { it.copy(isRefreshing = false) }
+                libraryState.setLocalRefreshing(false)
             }
-            _state.update { it.copy(isRefreshing = false) }
         }
     }
 

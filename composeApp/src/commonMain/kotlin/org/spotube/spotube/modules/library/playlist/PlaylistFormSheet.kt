@@ -34,9 +34,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 
 import org.spotube.spotube.core.ui.theming.AppTheme
 import com.composeunstyled.SheetDetent
@@ -51,7 +49,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -62,12 +59,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import io.github.vinceglb.filekit.dialogs.FileKitType
 import io.github.vinceglb.filekit.dialogs.compose.rememberFilePickerLauncher
-import io.github.vinceglb.filekit.readBytes
-import kotlinx.coroutines.Dispatchers
+import io.github.vinceglb.filekit.PlatformFile
 import kotlinx.coroutines.flow.drop
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import okio.ByteString.Companion.toByteString
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.library_playlist_form_change_image
@@ -101,8 +94,10 @@ data class PlaylistFormData(
 @Composable
 fun PlaylistFormSheet(
     visible: Boolean,
+    formState: PlaylistFormUiState,
     onDismiss: () -> Unit,
     onSubmit: (PlaylistFormData) -> Unit,
+    onImagePicked: (PlatformFile) -> Unit,
     modifier: Modifier = Modifier,
     initialData: PlaylistFormData? = null,
     isEditing: Boolean = false
@@ -119,8 +114,8 @@ fun PlaylistFormSheet(
             initialData?.isCollaborating ?: false
         )
     }
-    var imageBase64 by remember(initialData) { mutableStateOf(initialData?.imageBase64 ?: "") }
-    var imagePreviewUrl by remember(initialData) { mutableStateOf(initialData?.imagePreviewUrl) }
+    val imageBase64 = formState.pickedImageBase64 ?: initialData?.imageBase64.orEmpty()
+    val imagePreviewUrl = if (formState.pickedImageBase64 != null) null else initialData?.imagePreviewUrl
 
     val nameState = rememberTextFieldState(initialData?.name ?: "")
     val descriptionState = rememberTextFieldState(initialData?.description ?: "")
@@ -136,20 +131,10 @@ fun PlaylistFormSheet(
             .collect { description = it }
     }
 
-    val scope = rememberCoroutineScope()
     val imagePicker = rememberFilePickerLauncher(
         type = FileKitType.Image
     ) { file ->
-        if (file != null) {
-            scope.launch {
-                val bytes = file.readBytes()
-                val base64 = withContext(Dispatchers.Default) {
-                    bytes.toByteString().base64()
-                }
-                imageBase64 = base64
-                imagePreviewUrl = null
-            }
-        }
+        if (file != null) onImagePicked(file)
     }
 
     val currentData = PlaylistFormData(
@@ -176,15 +161,14 @@ fun PlaylistFormSheet(
                 horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)) {
                 MillenniumButton(
                     onClick = onDismiss,
+                    enabled = !formState.isSubmitting,
                     style = MillenniumButtonStyle.Secondary) {
                     Text(stringResource(Res.string.common_cancel))
                 }
                 MillenniumButton(
-                    onClick = {
-                        onSubmit(currentData)
-                        onDismiss()
-                    },
-                    enabled = name.isNotBlank()) {
+                    onClick = { onSubmit(currentData) },
+                    enabled = name.isNotBlank() && !formState.isProcessingImage,
+                    loading = formState.isSubmitting) {
                     Text(stringResource(if (isEditing) Res.string.common_save else Res.string.library_playlist_form_create))
                 }
             }
@@ -198,6 +182,8 @@ fun PlaylistFormSheet(
             onIsCollaboratingChange = { isCollaborating = it },
             imageBase64 = imageBase64,
             imagePreviewUrl = imagePreviewUrl,
+            isProcessingImage = formState.isProcessingImage,
+            isImagePickEnabled = !formState.isSubmitting,
             onPickImage = handleImagePick)
     }
 }
@@ -212,12 +198,14 @@ private fun PlaylistFormFields(
     onIsCollaboratingChange: (Boolean) -> Unit,
     imageBase64: String,
     imagePreviewUrl: String?,
+    isProcessingImage: Boolean,
+    isImagePickEnabled: Boolean,
     onPickImage: () -> Unit
 ) {
+    // AdaptiveDialogBottomSheet already scrolls its content; a second scroll here nests
+    // scrollables and crashes with infinite height constraints.
     Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState()),
+        modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         MillenniumTextField(
@@ -312,7 +300,10 @@ private fun PlaylistFormFields(
                         }
                     }
                 }
-                MillenniumButton(onClick = onPickImage) {
+                MillenniumButton(
+                    onClick = onPickImage,
+                    enabled = isImagePickEnabled,
+                    loading = isProcessingImage) {
                     Text(stringResource(if (imageBase64.isNotBlank() || imagePreviewUrl != null) Res.string.library_playlist_form_change_image else Res.string.library_playlist_form_pick_image))
                 }
             }

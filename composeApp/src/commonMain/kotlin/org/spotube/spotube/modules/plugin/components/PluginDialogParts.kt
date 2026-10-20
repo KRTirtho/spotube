@@ -226,7 +226,8 @@ internal fun PluginDialogActions(
     onSecondary: () -> Unit,
     primaryLabel: String? = null,
     onPrimary: (() -> Unit)? = null,
-    primaryEnabled: Boolean = true) {
+    primaryEnabled: Boolean = true,
+    primaryLoading: Boolean = false) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -240,6 +241,7 @@ internal fun PluginDialogActions(
             MillenniumButton(
                 onClick = onPrimary,
                 enabled = primaryEnabled,
+                loading = primaryLoading,
                 modifier = Modifier.weight(1f),
                 style = MillenniumButtonStyle.Primary) {
                 Text(primaryLabel)
