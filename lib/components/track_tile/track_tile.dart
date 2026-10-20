@@ -2,25 +2,24 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:spotube/collections/routes.gr.dart';
-import 'package:spotube/collections/spotube_icons.dart';
-import 'package:spotube/components/hover_builder.dart';
 import 'package:spotube/components/image/universal_image.dart';
-import 'package:spotube/components/links/artist_link.dart';
-import 'package:spotube/components/links/link_text.dart';
-import 'package:spotube/components/track_tile/track_options_button.dart';
-import 'package:spotube/components/ui/button_tile.dart';
 import 'package:spotube/extensions/constrains.dart';
+import 'package:spotube/extensions/context.dart';
 import 'package:spotube/extensions/duration.dart';
 import 'package:spotube/models/metadata/metadata.dart';
+import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/audio_player/querying_track_info.dart';
-import 'package:spotube/provider/audio_player/state.dart';
 import 'package:spotube/provider/blacklist_provider.dart';
+import 'package:spotube/theme/spotify_colors.dart';
+import 'package:spotube/theme/spotify_components.dart';
+import 'package:spotube/theme/spotify_typography.dart';
 import 'package:spotube/utils/platform.dart';
 
 final isBlacklistedProvider =
@@ -31,8 +30,6 @@ final isBlacklistedProvider =
     return blacklist.contains(track);
   },
 );
-
-final _overlay = ValueNotifier<OverlayCompleter<dynamic>?>(null);
 
 class TrackTile extends HookConsumerWidget {
   /// [index] will not be shown if null
@@ -67,14 +64,13 @@ class TrackTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final theme = Theme.of(context);
+    final textTheme = SpotifyTypography.buildTextTheme(context);
 
     final isBlackListed = ref.watch(isBlacklistedProvider(track));
 
     final isLoading = useState(false);
 
     final isPlaying = playlist.activeTrack?.id == track.id;
-
-    final isSelected = isPlaying || isLoading.value;
 
     final imageProvider = useMemoized(
       () => UniversalImage.imageProvider(
@@ -93,11 +89,7 @@ class TrackTile extends HookConsumerWidget {
       return Listener(
         onPointerDown: (event) {
           if (event.buttons != kSecondaryMouseButton) return;
-          if (_overlay.value != null) {
-            _overlay.value?.remove();
-            _overlay.value = null;
-          }
-          _overlay.value = TrackOptionsButton.showOptions(
+          TrackOptionsButton.showOptions(
             context,
             Offset.zero,
             track,
@@ -105,243 +97,42 @@ class TrackTile extends HookConsumerWidget {
             playlistId: playlistId,
           );
         },
-        child: HoverBuilder(
-          permanentState: isSelected || constrains.smAndDown ? true : null,
-          builder: (context, isHovering) => ButtonTile(
-            selected: isSelected,
-            onPressed: () async {
-              if (isBlackListed) return;
-              try {
-                isLoading.value = true;
-                await onTap?.call();
-              } finally {
-                if (context.mounted) {
-                  isLoading.value = false;
-                }
+        child: SpotifyTrackRow(
+          index: index,
+          track: track,
+          isPlaying: isPlaying || isLoading.value,
+          selected: selected,
+          onTap: () async {
+            if (isBlackListed) return;
+            try {
+              isLoading.value = true;
+              await onTap?.call();
+            } finally {
+              if (context.mounted) {
+                isLoading.value = false;
               }
-            },
-            onLongPress: onLongPress,
-            style: (isBlackListed
-                    ? ButtonVariance.destructive
-                    : ButtonVariance.ghost)
-                .copyWith(
-              padding: (context, states, value) =>
-                  const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
-            ),
-            leading: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...?leadingActions,
-                AnimatedCrossFade(
-                  duration: const Duration(milliseconds: 300),
-                  crossFadeState: index != null && onChanged == null
-                      ? CrossFadeState.showSecond
-                      : CrossFadeState.showFirst,
-                  firstChild: Checkbox(
-                    state: selected
-                        ? CheckboxState.checked
-                        : CheckboxState.unchecked,
-                    onChanged: (state) =>
-                        onChanged?.call(state == CheckboxState.checked),
-                  ),
-                  secondChild: constrains.smAndDown
-                      ? const SizedBox(width: 16)
-                      : SizedBox(
-                          width: 50,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 6),
-                            child: Text(
-                              '${(index ?? 0) + 1}',
-                              maxLines: 1,
-                              style: theme.typography.small,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                ),
-                Stack(
-                  children: [
-                    Container(
-                      height: 40,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        borderRadius: theme.borderRadiusMd,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: imageProvider,
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 300),
-                        decoration: BoxDecoration(
-                          borderRadius: theme.borderRadiusMd,
-                          color: isHovering
-                              ? Colors.black.withAlpha(102)
-                              : Colors.transparent,
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: Center(
-                        child: Skeleton.ignore(
-                          child: Consumer(
-                            builder: (context, ref, _) {
-                              final isFetchingActiveTrack =
-                                  ref.watch(queryingTrackInfoProvider);
-                              return AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 300),
-                                child: switch ((
-                                  isPlaying,
-                                  isFetchingActiveTrack,
-                                  isPlaying,
-                                  isHovering,
-                                  isLoading.value
-                                )) {
-                                  (true, true, _, _, _) ||
-                                  (_, _, _, _, true) =>
-                                    const SizedBox(
-                                      width: 26,
-                                      height: 26,
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  (_, _, true, _, _) => Icon(
-                                      SpotubeIcons.pause,
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                  (_, _, _, true, _) => const Icon(
-                                      SpotubeIcons.play,
-                                      color: Colors.white,
-                                    ),
-                                  _ => const SizedBox.shrink(),
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            title: Row(
-              children: [
-                Expanded(
-                  flex: 6,
-                  child: AbsorbPointer(
-                    absorbing: selectionMode,
-                    child: switch (track) {
-                    SpotubeLocalTrackObject() => Text(
-                        track.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    _ => Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Flexible(
-                child: Button(
-                style: ButtonVariance.link.copyWith(
-                padding: (context, states, value) =>
-                  EdgeInsets.zero,
-                ),
-                onPressed: effectiveSelection
-                  ? null
-                  : () {
-                    context
-                      .navigateTo(TrackRoute(trackId: track.id));
-                  },
-                              child: Text(
-                                track.name,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                  },
-                  ),
-                ),
-                if (constrains.mdAndUp) ...[
-                  const SizedBox(width: 8),
-                  Expanded(
-                    flex: 4,
-                    child: switch (track) {
-                      SpotubeLocalTrackObject() => Text(
-                          track.album.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      _ => Align(
-                          alignment: Alignment.centerLeft,
-                          child: LinkText(
-                            track.album.name,
-                            AlbumRoute(
-                              album: track.album,
-                              id: track.album.id,
-                            ),
-                            push: true,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )
-                    },
-                  ),
-                ],
-              ],
-            ),
-            subtitle: Align(
-              alignment: Alignment.centerLeft,
-                    child: track is SpotubeLocalTrackObject
-                  ? Text(
-                      track.artists.asString(),
-                    )
-                  : ClipRect(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxHeight: 40),
-                          child: AbsorbPointer(
-                          absorbing: effectiveSelection,
-                          child: ArtistLink(
-                            artists: track.artists,
-                            onOverflowArtistClick: effectiveSelection
-                                ? () {}
-                                : () {
-                                    context.navigateTo(
-                                      TrackRoute(trackId: track.id),
-                                    );
-                                  },
-                          ),
-                        ),
-                      ),
-                    ),
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(width: 8),
-                Text(
-                  Duration(milliseconds: track.durationMs)
-                      .toHumanReadableString(padZero: false),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Builder(
-                  builder: (context) {
-                    return TrackOptionsButton(
-                      track: track,
-                      userPlaylist: userPlaylist,
-                      playlistId: playlistId,
-                    );
-                  },
-                ),
-                if (kIsDesktop) const Gap(10),
-              ],
-            ),
-          ),
+            }
+          },
+          onMorePressed: () {
+            TrackOptionsButton.showOptions(
+              context,
+              Offset.zero,
+              track,
+              userPlaylist: userPlaylist,
+              playlistId: playlistId,
+            );
+          },
         ),
       );
     });
+  }
+}
+
+class SpotifyTrackTileSkeleton extends StatelessWidget {
+  const SpotifyTrackTileSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SpotifyShimmerTrack();
   }
 }

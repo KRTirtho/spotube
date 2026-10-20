@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
-import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
 import 'package:spotube/collections/spotube_icons.dart';
 import 'package:spotube/components/heart_button/heart_button.dart';
+import 'package:spotube/components/hover_builder.dart';
 import 'package:spotube/components/image/universal_image.dart';
 import 'package:spotube/components/track_presentation/presentation_props.dart';
 import 'package:spotube/components/track_presentation/use_action_callbacks.dart';
@@ -12,6 +12,8 @@ import 'package:spotube/components/track_presentation/use_is_user_playlist.dart'
 import 'package:spotube/extensions/constrains.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/modules/playlist/playlist_create_dialog.dart';
+import 'package:spotube/theme/spotify_colors.dart';
+import 'package:spotube/theme/spotify_typography.dart';
 
 class TrackPresentationTopSection extends HookConsumerWidget {
   const TrackPresentationTopSection({super.key});
@@ -28,124 +30,12 @@ class TrackPresentationTopSection extends HookConsumerWidget {
       fit: BoxFit.cover,
     );
 
-    final imageDimension = mediaQuery.mdAndUp ? 200 : 120;
+    final imageDimension = mediaQuery.mdAndUp ? 300.0 : 200.0;
 
     final (:isLoading, :isActive, :onPlay, :onShuffle, :onAddToQueue) =
         useActionCallbacks(ref);
 
-    final playbackActions = Row(
-      spacing: 8 * scale,
-      children: [
-        Tooltip(
-          tooltip: TooltipContainer(
-            child: Text(context.l10n.shuffle_playlist),
-          ).call,
-          child: IconButton.secondary(
-            icon: isLoading
-                ? const Center(
-                    child:
-                        CircularProgressIndicator(onSurface: false, size: 20),
-                  )
-                : const Icon(SpotubeIcons.shuffle),
-            enabled: !isLoading && !isActive,
-            onPressed: onShuffle,
-          ),
-        ),
-        if (mediaQuery.width <= 320)
-          Tooltip(
-            tooltip: TooltipContainer(
-              child: Text(context.l10n.add_to_queue),
-            ).call,
-            child: IconButton.secondary(
-              icon: const Icon(SpotubeIcons.queueAdd),
-              enabled: !isLoading && !isActive,
-              onPressed: onAddToQueue,
-            ),
-          )
-        else
-          Button.secondary(
-            leading: const Icon(SpotubeIcons.add),
-            enabled: !isLoading && !isActive,
-            onPressed: onAddToQueue,
-            child: Text(context.l10n.queue),
-          ),
-        Button.primary(
-          alignment: Alignment.center,
-          leading: switch ((isActive, isLoading)) {
-            (true, false) => const Icon(SpotubeIcons.pause),
-            (false, true) => const Center(
-                child: CircularProgressIndicator(onSurface: true, size: 18),
-              ),
-            _ => const Icon(SpotubeIcons.play),
-          },
-          onPressed: onPlay,
-          enabled: !isLoading && !isActive,
-          child: isActive ? Text(context.l10n.pause) : Text(context.l10n.play),
-        ),
-      ],
-    );
-
-    final additionalActions = Row(
-      spacing: 8 * scale,
-      children: [
-        if (isUserPlaylist)
-          IconButton.outline(
-            size: ButtonSize.small,
-            icon: const Icon(SpotubeIcons.edit),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return PlaylistCreateDialog(
-                    playlistId: options.collectionId,
-                    trackIds: options.tracks.map((e) => e.id).toList(),
-                  );
-                },
-              );
-            },
-          ),
-        if (options.shareUrl != null)
-          Tooltip(
-            tooltip: TooltipContainer(
-              child: Text(context.l10n.share),
-            ).call,
-            child: IconButton.outline(
-              icon: const Icon(SpotubeIcons.share),
-              size: ButtonSize.small,
-              onPressed: () async {
-                await Clipboard.setData(
-                  ClipboardData(text: options.shareUrl!),
-                );
-
-                if (!context.mounted) return;
-
-                showToast(
-                  context: context,
-                  location: ToastLocation.topRight,
-                  builder: (context, overlay) {
-                    return SurfaceCard(
-                      child: Text(
-                        context.l10n
-                            .copied_shareurl_to_clipboard(options.shareUrl!),
-                      ).small(),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-        if (options.onHeart != null)
-          HeartButton(
-            isLiked: options.isLiked,
-            tooltip: options.isLiked
-                ? context.l10n.remove_from_favorites
-                : context.l10n.save_as_favorite,
-            variance: ButtonVariance.outline,
-            size: ButtonSize.small,
-            onPressed: options.onHeart,
-          ),
-      ],
-    );
+    final textTheme = SpotifyTypography.buildTextTheme(context);
 
     return SliverMainAxisGroup(
       slivers: [
@@ -159,32 +49,32 @@ class TrackPresentationTopSection extends HookConsumerWidget {
               DecoratedBox(
                 decoration: BoxDecoration(
                   image: decorationImage,
-                  borderRadius: BorderRadius.circular(45),
+                  borderRadius: BorderRadius.circular(0),
                 ),
-                child: OutlinedContainer(
-                  surfaceOpacity: context.theme.surfaceOpacity,
-                  surfaceBlur: context.theme.surfaceBlur,
-                  padding: EdgeInsets.all(24 * scale),
-                  borderRadius: BorderRadius.circular(22 * scale),
-                  borderWidth: 2,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 16 * scale,
-                    children: [
-                      Row(
-                        spacing: 16 * scale,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            height: imageDimension * scale,
-                            width: imageDimension * scale,
-                            decoration: BoxDecoration(
-                              borderRadius: context.theme.borderRadiusXl,
-                              image: decorationImage,
-                            ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      height: imageDimension * scale,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        image: decorationImage,
+                      ),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.transparent,
+                              SpotifyColors.background.withValues(alpha: 0.85),
+                            ],
                           ),
-                          Flexible(
+                        ),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Padding(
+                            padding: EdgeInsets.all(24 * scale),
                             child: Column(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,8 +82,11 @@ class TrackPresentationTopSection extends HookConsumerWidget {
                                 AutoSizeText(
                                   options.title,
                                   maxLines: 2,
-                                  minFontSize: 16,
-                                  style: context.theme.typography.h3,
+                                  minFontSize: 20,
+                                  style: textTheme.headlineMedium?.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                    color: SpotifyColors.primaryText,
+                                  ),
                                 ),
                                 if (options.description != null)
                                   AutoSizeText(
@@ -203,59 +96,237 @@ class TrackPresentationTopSection extends HookConsumerWidget {
                                     maxFontSize: 18,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
-                                      color: context
-                                          .theme.colorScheme.mutedForeground,
-                                      fontSize: 18,
+                                      color: SpotifyColors.secondaryText,
+                                      fontSize: 16,
                                     ),
                                   ),
-                                const Gap(16),
-                                Flex(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  direction: mediaQuery.smAndUp
-                                      ? Axis.horizontal
-                                      : Axis.vertical,
-                                  spacing: 8 * scale,
-                                  children: [
-                                    if (options.owner != null)
-                                      OutlineBadge(
-                                        leading: options.ownerImage != null
-                                            ? Avatar(
-                                                initials:
-                                                    options.owner?[0] ?? "U",
-                                                provider: UniversalImage
-                                                    .imageProvider(
-                                                  options.ownerImage!,
-                                                ),
-                                                size: 20 * scale,
-                                              )
-                                            : null,
-                                        child: Text(
-                                          options.owner!,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                        ).small(),
+                                const SizedBox(height: 24),
+                                if (options.owner != null)
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      if (options.ownerImage != null)
+                                        CircleAvatar(
+                                          radius: 16 * scale,
+                                          backgroundImage: UniversalImage
+                                              .imageProvider(
+                                            options.ownerImage!,
+                                          ),
+                                        )
+                                      else
+                                        const CircleAvatar(
+                                          radius: 16,
+                                          child: Icon(Icons.person_rounded,
+                                              size: 16),
+                                        ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        options.owner!,
+                                        style: textTheme.bodyMedium?.copyWith(
+                                          color: SpotifyColors.primaryText,
+                                          fontSize: 14,
+                                        ),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                    additionalActions,
+                                      const SizedBox(width: 16),
+                                      _SpotifyActionButton(
+                                        icon: SpotubeIcons.moreHorizontal,
+                                        label: "",
+                                        onPressed: () {},
+                                      ),
+                                    ],
+                                  ),
+                                const SizedBox(height: 24),
+                                Row(
+                                  children: [
+                                    _SpotifyActionButton(
+                                      icon: SpotubeIcons.shuffle,
+                                      label: context.l10n.shuffle_playlist,
+                                      onPressed: onShuffle,
+                                      enabled: !isLoading && !isActive,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    _SpotifyActionButton(
+                                      icon: SpotubeIcons.add,
+                                      label: context.l10n.queue,
+                                      onPressed: onAddToQueue,
+                                      enabled: !isLoading && !isActive,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    _SpotifyPlayButton(
+                                      isActive: isActive,
+                                      isLoading: isLoading,
+                                      onPressed: onPlay,
+                                      enabled: !isLoading && !isActive,
+                                      label: isActive
+                                          ? context.l10n.pause
+                                          : context.l10n.play,
+                                    ),
                                   ],
                                 ),
-                                if (mediaQuery.mdAndUp) ...[
-                                  const Gap(16),
-                                  playbackActions
+                                if (options.onHeart != null) ...[
+                                  const SizedBox(height: 16),
+                                  HeartButton(
+                                    isLiked: options.isLiked,
+                                    tooltip: options.isLiked
+                                        ? context.l10n.remove_from_favorites
+                                        : context.l10n.save_as_favorite,
+                                    onPressed: options.onHeart,
+                                  ),
                                 ],
                               ],
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                      if (mediaQuery.smAndDown) playbackActions,
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
         )
       ],
+    );
+  }
+}
+
+class _SpotifyActionButton extends HookConsumerWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+  final bool enabled;
+
+  const _SpotifyActionButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+    this.enabled = true,
+  });
+
+  @override
+  Widget build(BuildContext context, ref) {
+    final textTheme = SpotifyTypography.buildTextTheme(context);
+    return HoverBuilder(
+      builder: (context, hovering) {
+        return InkWell(
+          onTap: enabled ? onPressed : null,
+          borderRadius: BorderRadius.circular(500),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+            decoration: BoxDecoration(
+              color: (hovering || !enabled)
+                  ? SpotifyColors.hover
+                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(500),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  icon,
+                  color: enabled
+                      ? (hovering
+                          ? SpotifyColors.primaryText
+                          : SpotifyColors.secondaryText)
+                      : SpotifyColors.disabledText,
+                  size: 16,
+                ),
+                if (label.isNotEmpty) ...[
+                  const SizedBox(width: 6),
+                  Text(
+                    label,
+                    style: textTheme.labelMedium?.copyWith(
+                      color: enabled
+                          ? SpotifyColors.primaryText
+                          : SpotifyColors.disabledText,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _SpotifyPlayButton extends HookConsumerWidget {
+  final bool isActive;
+  final bool isLoading;
+  final VoidCallback onPressed;
+  final bool enabled;
+  final String label;
+
+  const _SpotifyPlayButton({
+    required this.isActive,
+    required this.isLoading,
+    required this.onPressed,
+    this.enabled = true,
+    required this.label,
+  });
+
+  @override
+  Widget build(BuildContext context, ref) {
+    return HoverBuilder(
+      builder: (context, hovering) {
+        final scale = hovering && enabled ? 1.05 : 1.0;
+        return AnimatedScale(
+          scale: scale,
+          duration: const Duration(milliseconds: 150),
+          child: InkWell(
+            onTap: enabled ? onPressed : null,
+            borderRadius: BorderRadius.circular(500),
+            child: Container(
+              width: 80,
+              height: 36,
+              decoration: BoxDecoration(
+                color: enabled
+                    ? SpotifyColors.spotifyGreen
+                    : SpotifyColors.disabledText.withValues(alpha: 0.3),
+                borderRadius: BorderRadius.circular(500),
+              ),
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (isLoading)
+                    const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation(Colors.black),
+                      ),
+                    )
+                  else
+                    Icon(
+                      isActive
+                          ? SpotubeIcons.pause
+                          : SpotubeIcons.play,
+                      color: Colors.black,
+                      size: 18,
+                    ),
+                  const SizedBox(width: 8),
+                  Text(
+                    label,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

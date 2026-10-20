@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
@@ -8,6 +9,7 @@ import 'package:spotube/modules/album/album_card.dart';
 import 'package:spotube/modules/search/loading.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/provider/metadata_plugin/search/albums.dart';
+import 'package:spotube/theme/spotify_colors.dart';
 
 class SearchPageAlbumsTab extends HookConsumerWidget {
   const SearchPageAlbumsTab({super.key});
@@ -38,6 +40,7 @@ class SearchPageAlbumsTab extends HookConsumerWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: CustomScrollView(
+          controller: controller,
           slivers: [
             PlaybuttonView(
               controller: controller,

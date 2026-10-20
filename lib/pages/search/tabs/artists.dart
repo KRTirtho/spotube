@@ -1,5 +1,5 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_undraw/flutter_undraw.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:shadcn_flutter/shadcn_flutter_extension.dart';
@@ -13,6 +13,7 @@ import 'package:spotube/modules/artist/artist_card.dart';
 import 'package:spotube/modules/search/loading.dart';
 import 'package:spotube/pages/search/search.dart';
 import 'package:spotube/provider/metadata_plugin/search/artists.dart';
+import 'package:spotube/theme/spotify_colors.dart';
 
 class SearchPageArtistsTab extends HookConsumerWidget {
   const SearchPageArtistsTab({super.key});
@@ -49,15 +50,15 @@ class SearchPageArtistsTab extends HookConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 spacing: 10,
                 children: [
-                  Undraw(
-                    height: 200 * context.theme.scaling,
-                    illustration: UndrawIllustration.taken,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
+                  const SizedBox(height: 40),
                   Text(
                     context.l10n.nothing_found,
                     textAlign: TextAlign.center,
-                  ).muted().small()
+                    style: TextStyle(
+                      color: SpotifyColors.secondaryText,
+                      fontSize: 16,
+                    ),
+                  ),
                 ],
               ),
             );
@@ -67,10 +68,10 @@ class SearchPageArtistsTab extends HookConsumerWidget {
             padding: const EdgeInsets.all(16),
             itemCount: searchArtists.length + 1,
             gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 200,
-              mainAxisExtent: constrains.smAndDown ? 225 : 250,
-              crossAxisSpacing: 8,
-              mainAxisSpacing: 8,
+              maxCrossAxisExtent: 160,
+              mainAxisExtent: constrains.smAndDown ? 200 : 220,
+              crossAxisSpacing: 12,
+              mainAxisSpacing: 12,
             ),
             itemBuilder: (context, index) {
               if (searchArtists.isNotEmpty && index == searchArtists.length) {
@@ -82,10 +83,7 @@ class SearchPageArtistsTab extends HookConsumerWidget {
                   controller: controller,
                   isGrid: true,
                   onTouchEdge: searchArtistsNotifier.fetchMore,
-                  child: Skeletonizer(
-                    enabled: true,
-                    child: ArtistCard(FakeData.artist),
-                  ),
+                  child: const SpotifyShimmerTrack(),
                 );
               }
 

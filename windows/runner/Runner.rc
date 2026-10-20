@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "oss.krtirtho" "\0"
-            VALUE "FileDescription", "Spotube" "\0"
+            VALUE "FileDescription", "Spotify" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
             VALUE "InternalName", "spotube" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 oss.krtirtho. All rights reserved." "\0"
             VALUE "OriginalFilename", "spotube.exe" "\0"
-            VALUE "ProductName", "spotube" "\0"
+            VALUE "ProductName", "Spotify" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

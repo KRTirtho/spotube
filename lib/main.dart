@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:desktop_webview_window/desktop_webview_window.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' as material;
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_discord_rpc/flutter_discord_rpc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -28,6 +28,7 @@ import 'package:spotube/hooks/configurators/use_get_storage_perms.dart';
 import 'package:spotube/hooks/configurators/use_has_touch.dart';
 import 'package:spotube/models/database/database.dart';
 import 'package:spotube/modules/settings/color_scheme_picker_dialog.dart';
+import 'package:spotube/theme/spotify_theme.dart';
 import 'package:spotube/provider/audio_player/audio_player_streams.dart';
 import 'package:spotube/provider/database/database.dart';
 import 'package:spotube/provider/glance/glance.dart';
@@ -114,7 +115,7 @@ Future<void> main(List<String> rawArgs) async {
     final database = AppDatabase();
 
     if (kIsDesktop) {
-      await localNotifier.setup(appName: "Spotube");
+      await localNotifier.setup(appName: "Spotify");
       await WindowManagerTools.initialize();
     }
 
@@ -144,8 +145,6 @@ class Spotube extends HookConsumerWidget {
     final themeMode =
         ref.watch(userPreferencesProvider.select((s) => s.themeMode));
     final locale = ref.watch(userPreferencesProvider.select((s) => s.locale));
-    final accentMaterialColor =
-        ref.watch(userPreferencesProvider.select((s) => s.accentColorScheme));
     final router = useMemoized(() => AppRouter(ref), []);
     final hasTouchSupport = useHasTouch();
 
@@ -191,7 +190,7 @@ class Spotube extends HookConsumerWidget {
       ],
       routerConfig: router.config(),
       debugShowCheckedModeBanner: false,
-      title: 'Spotube',
+      title: 'Spotify',
       builder: (context, child) {
         child = ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
@@ -216,38 +215,9 @@ class Spotube extends HookConsumerWidget {
         return child;
       },
       scaling: const AdaptiveScaling(1),
-      theme: ThemeData(
-        radius: .5,
-        iconTheme: const IconThemeProperties(),
-        colorScheme:
-            colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.light) ??
-                LegacyColorSchemes.lightSlate(),
-        surfaceOpacity: .8,
-        surfaceBlur: 10,
-      ),
-      darkTheme: ThemeData(
-        radius: .5,
-        iconTheme: const IconThemeProperties(),
-        colorScheme:
-            colorSchemeMap[accentMaterialColor.name]?.call(ThemeMode.dark) ??
-                LegacyColorSchemes.darkSlate(),
-        surfaceOpacity: .8,
-        surfaceBlur: 10,
-      ),
-      materialTheme: material.ThemeData(
-        brightness: switch (themeMode) {
-          ThemeMode.system => MediaQuery.platformBrightnessOf(context),
-          ThemeMode.light => Brightness.light,
-          ThemeMode.dark => Brightness.dark,
-        },
-        splashFactory: material.NoSplash.splashFactory,
-        appBarTheme: const material.AppBarTheme(
-          surfaceTintColor: Colors.transparent,
-          scrolledUnderElevation: 0,
-          shadowColor: Colors.transparent,
-          elevation: 0,
-        ),
-      ),
+      theme: SpotifyTheme.shadcnTheme(),
+      darkTheme: SpotifyTheme.shadcnTheme(),
+      materialTheme: SpotifyTheme.materialTheme(context),
       themeMode: themeMode,
       shortcuts: {
         ...WidgetsApp.defaultShortcuts.map((key, value) {

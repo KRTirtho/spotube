@@ -139,6 +139,7 @@ dependencies:
       url: https://github.com/KRTirtho/hetu_spotube_plugin.git
       ref: main
   get_it: ^8.0.3
+  google_fonts: ^6.2.1
   flutter_markdown_plus: ^1.0.3
   pub_semver: ^2.2.0
   change_case: ^1.1.0
@@ -217,6 +218,7 @@ flutter:
   assets:
     - assets/images/
     - assets/images/logos/
+    - assets/images/spotify_logo.png
     - assets/branding/spotube-logo.png
     - assets/branding/spotube-logo-light.png
     - assets/branding/spotube-logo.ico
@@ -273,10 +275,10 @@ flutter_gen:
 
 flutter_native_splash:
   background_image: assets/bengali-patterns-bg.jpg
-  image: assets/spotube-logo.png
-  branding: assets/branding.png
+  image: assets/images/spotify_logo.png
+  branding: assets/branding/branding.png
   android_12:
-    image: assets/spotube-logo_android12.png
-    branding: assets/branding.png
-    color: "#000000"
-    icon_background_color: "#000000"
+    image: assets/images/spotify_logo.png
+    branding: assets/branding/branding.png
+    color: "#121212"
+    icon_background_color: "#121212"

@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shadcn_flutter/shadcn_flutter.dart';
 import 'package:spotube/collections/routes.gr.dart';
 import 'package:spotube/components/dialogs/select_device_dialog.dart';
-import 'package:spotube/components/playbutton_view/playbutton_card.dart';
-import 'package:spotube/components/playbutton_view/playbutton_tile.dart';
+import 'package:spotube/components/image/universal_image.dart';
+import 'package:spotube/components/track_tile/track_options_button.dart';
 import 'package:spotube/extensions/context.dart';
 import 'package:spotube/models/connect/connect.dart';
 import 'package:spotube/models/metadata/metadata.dart';
@@ -15,6 +15,9 @@ import 'package:spotube/provider/history/history.dart';
 import 'package:spotube/provider/audio_player/audio_player.dart';
 import 'package:spotube/provider/metadata_plugin/tracks/album.dart';
 import 'package:spotube/services/audio_player/audio_player.dart';
+import 'package:spotube/theme/spotify_colors.dart';
+import 'package:spotube/theme/spotify_components.dart';
+import 'package:spotube/theme/spotify_typography.dart';
 
 extension FormattedAlbumType on SpotubeAlbumType {
   String get formatted => name.replaceFirst(name[0], name[0].toUpperCase());
@@ -161,28 +164,31 @@ class AlbumCard extends HookConsumerWidget {
       context
     ]);
 
-    if (_isTile) {
-      return PlaybuttonTile(
-        imageUrl: imageUrl,
-        isPlaying: isPlaylistPlaying,
-        isLoading: isLoading,
-        title: album.name,
-        description: description,
-        onTap: onTap,
-        onPlaybuttonPressed: onPlaybuttonPressed,
-        onAddToQueuePressed: onAddToQueuePressed,
-      );
-    }
-
-    return PlaybuttonCard(
-      imageUrl: imageUrl,
+    return SpotifyCard(
+      image: Image.network(
+        imageUrl,
+        width: 150,
+        height: 150,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Container(
+          width: 150,
+          height: 150,
+          color: SpotifyColors.surface,
+          child: const Icon(SpotubeIcons.album,
+              color: SpotifyColors.secondaryText, size: 40),
+        ),
+        loadingBuilder: (context, chunk, total) => Container(
+          width: 150,
+          height: 150,
+          color: SpotifyColors.surface,
+        ),
+      ),
+      title: album.name,
+      subtitle: description,
+      onTap: onTap,
+      onPlayPressed: onPlaybuttonPressed,
       isPlaying: isPlaylistPlaying,
       isLoading: isLoading,
-      title: album.name,
-      description: description,
-      onTap: onTap,
-      onPlaybuttonPressed: onPlaybuttonPressed,
-      onAddToQueuePressed: onAddToQueuePressed,
     );
   }
 }
