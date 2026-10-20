@@ -22,6 +22,8 @@ import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.paths.Paths
 import org.spotube.spotube.core.server.StreamInfo
 import org.spotube.spotube.core.server.StreamingUrlRepository
+import org.spotube.spotube.core.server.urlSummary
+import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import org.spotube.spotube.modules.settings.SettingsRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
@@ -31,6 +33,7 @@ import io.ktor.client.request.headers
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentLength
+import io.ktor.http.isSuccess
 import io.ktor.utils.io.readRemaining
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -112,6 +115,11 @@ class DownloadManager(
 
     private val cachedDownloadFolder = MutableStateFlow<String?>(null)
 
+    /** Where downloads are saved right now: the user's override, else the platform default. */
+    val downloadFolder: StateFlow<String> = cachedDownloadFolder
+        .map { it?.takeIf(String::isNotBlank) ?: paths.getUserDownloadsDirPath() }
+        .stateIn(scope, SharingStarted.Eagerly, paths.getUserDownloadsDirPath())
+
     private val activeJobs = mutableMapOf<String, Job>()
 
     init {
@@ -135,6 +143,13 @@ class DownloadManager(
             track = track)
 
         downloadsMap.update { it + (id to item) }
+        val settings = settingsRepository.userSettings.value
+        logger.i {
+            "[Download $id] enqueued '${track.title}' by $artistNames (track=${track.id}) " +
+                "downloadPrefs=${settings.downloadMusicFormat.codec}/${settings.downloadMusicFormat.container} " +
+                "${settings.downloadMusicQuality} streamingPrefs=${settings.streamingMusicFormat.codec}/" +
+                "${settings.streamingMusicFormat.container} ${settings.streamingMusicQuality} folder=${downloadFolder.value}"
+        }
         scope.launch { processQueue() }
     }
 
@@ -210,6 +225,7 @@ class DownloadManager(
         }
 
         try {
+            logger.i { "[Download ${item.id}] resolving stream for '${track.title}'" }
             val streamInfo = streamingUrlRepository.resolveStreamInfo(track)
             if (streamInfo == null) {
                 logger.w { "Could not resolve stream URL for ${track.title}" }
@@ -226,6 +242,7 @@ class DownloadManager(
             }
 
             val url = streamInfo.url
+            logResolvedStream(item, streamInfo)
 
             val filename = buildFilename(item, streamInfo)
 
@@ -235,15 +252,28 @@ class DownloadManager(
             val tempDir = FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "spotube_downloads".toPath()
             fileSystem.createDirectories(tempDir)
 
-            val (totalSize, supportsRanges) = probeUrl(url)
+            val (totalSize, supportsRanges) = probeUrl(item.id, url)
 
             if (totalSize > 0 && supportsRanges) {
+                logger.i { "[Download ${item.id}] multi-segment download ($SEGMENT_COUNT segments, $totalSize bytes) -> ${downloadDir / filename}" }
                 executeMultiSegmentDownload(url, filename, item, tempDir, downloadDir, totalSize)
             } else {
+                logger.i { "[Download ${item.id}] single-connection download (size=$totalSize ranges=$supportsRanges) -> ${downloadDir / filename}" }
                 executeSingleConnectionDownload(url, filename, item, tempDir, downloadDir)
             }
 
+            val finalPath = downloadDir / filename.toPath()
+            val writtenBytes = fileSystem.metadataOrNull(finalPath)?.size
+            logger.i { "[Download ${item.id}] wrote $finalPath ($writtenBytes bytes, expected $totalSize)" }
+            if (totalSize > 0 && writtenBytes != null && writtenBytes != totalSize) {
+                logger.w { "[Download ${item.id}] SIZE MISMATCH: wrote $writtenBytes bytes, server reported $totalSize" }
+            }
+
             applyMetadata(item, filename, downloadDir)
+            // Without this Android music players and the Files app's Audio view don't see the
+            // file until the next full media scan.
+            addToMediaLibrary((downloadDir / filename.toPath()).toString())
+            logger.i { "[Download ${item.id}] completed '${item.title}'" }
 
             downloadsMap.update { map ->
                 map[item.id]?.let {
@@ -251,6 +281,7 @@ class DownloadManager(
                 } ?: map
             }
         } catch (e: CancellationException) {
+            logger.i { "[Download ${item.id}] cancelled" }
             downloadsMap.update { map ->
                 map[item.id]?.let {
                     map + (item.id to it.copy(status = DownloadStatus.Cancelled))
@@ -258,7 +289,7 @@ class DownloadManager(
             }
             throw e
         } catch (e: Exception) {
-            logger.e(e) { "Download failed: ${item.title}" }
+            logger.e(e) { "[Download ${item.id}] FAILED '${item.title}': ${e.message}" }
             val failureMessage = e.message ?: getString(Res.string.common_unknown_error)
             downloadsMap.update { map ->
                 map[item.id]?.let {
@@ -322,6 +353,15 @@ class DownloadManager(
                 append(HttpHeaders.Range, "bytes=${segment.start}-${segment.end}")
             }
         }
+        logger.d {
+            "[Download ${item.id}] segment ${segment.index} bytes=${segment.start}-${segment.end} -> " +
+                "HTTP ${response.status.value} type=${response.headers[HttpHeaders.ContentType]} " +
+                "range=${response.headers[HttpHeaders.ContentRange]}"
+        }
+        // expectSuccess = false, so an error page would otherwise be saved as audio.
+        if (!response.status.isSuccess()) {
+            logger.w { "[Download ${item.id}] segment ${segment.index} got HTTP ${response.status}; its body will be written as audio" }
+        }
         val channel = response.bodyAsChannel()
 
         fileSystem.sink(outputPath).buffer().use { sink ->
@@ -344,6 +384,13 @@ class DownloadManager(
 
         val response = httpClient.get(url)
         val totalSize = response.contentLength() ?: 0L
+        logger.i {
+            "[Download ${item.id}] GET -> HTTP ${response.status.value} " +
+                "type=${response.headers[HttpHeaders.ContentType]} length=$totalSize"
+        }
+        if (!response.status.isSuccess()) {
+            logger.w { "[Download ${item.id}] GET got HTTP ${response.status}; its body will be written as audio" }
+        }
         val channel = response.bodyAsChannel()
 
         fileSystem.sink(tempFile).buffer().use { sink ->
@@ -375,22 +422,55 @@ class DownloadManager(
         }
     }
 
-    private suspend fun probeUrl(url: String): Pair<Long, Boolean> {
+    private suspend fun probeUrl(id: String, url: String): Pair<Long, Boolean> {
         return try {
             val response = httpClient.head(url)
             val contentLength = response.contentLength() ?: 0L
             val acceptRanges = response.headers[HttpHeaders.AcceptRanges]
             val supportsRanges = acceptRanges?.equals("bytes", ignoreCase = true) == true
+            val contentType = response.headers[HttpHeaders.ContentType]
+            logger.i {
+                "[Download $id] HEAD -> HTTP ${response.status.value} type=$contentType " +
+                    "length=$contentLength acceptRanges=$acceptRanges"
+            }
+            if (contentType?.startsWith("video/") == true) {
+                logger.w { "[Download $id] server says this is VIDEO ($contentType), not audio" }
+            }
             Pair(contentLength, supportsRanges)
         } catch (e: Exception) {
-            logger.w(e) { "HEAD request failed, falling back to single connection" }
+            logger.w(e) { "[Download $id] HEAD request failed, falling back to single connection" }
             Pair(0L, false)
+        }
+    }
+
+    private fun logResolvedStream(item: DownloadItem, info: StreamInfo) {
+        val settings = settingsRepository.userSettings.value
+        val wanted = settings.downloadMusicFormat
+        logger.i {
+            "[Download ${item.id}] resolved stream codec=${info.codec} container=${info.container} " +
+                "protocol=${info.protocol} ${urlSummary(info.url)}"
+        }
+        if (info.protocol != StreamProtocol.PROGRESSIVE) {
+            logger.w {
+                "[Download ${item.id}] stream is a ${info.protocol} MANIFEST; a plain GET saves the manifest, not audio"
+            }
+        }
+        if (!info.codec.equals(wanted.codec, ignoreCase = true) || !info.container.equals(wanted.container, ignoreCase = true)) {
+            logger.w {
+                "[Download ${item.id}] DOWNLOAD FORMAT NOT RESPECTED: download setting is ${wanted.codec}/${wanted.container} " +
+                    "${settings.downloadMusicQuality}, got ${info.codec}/${info.container} " +
+                    "(resolver used streaming prefs ${settings.streamingMusicFormat.codec}/${settings.streamingMusicFormat.container})"
+            }
         }
     }
 
     private suspend fun applyMetadata(item: DownloadItem, filename: String, downloadDir: Path) {
         val filePath = downloadDir / filename.toPath()
-        if (!fileSystem.exists(filePath)) return
+        if (!fileSystem.exists(filePath)) {
+            logger.w { "[Download ${item.id}] skipping metadata: $filePath does not exist" }
+            return
+        }
+        logger.d { "[Download ${item.id}] writing metadata to $filePath" }
 
         val track = item.track ?: return
 
@@ -421,18 +501,11 @@ class DownloadManager(
                 discNumber = track.discNumber,
                 coverBytes = coverBytes)
         } catch (e: Exception) {
-            logger.w(e) { "Failed to write audio metadata for ${item.title}" }
+            logger.w(e) { "[Download ${item.id}] failed to write audio metadata for ${item.title}" }
         }
     }
 
-    private fun resolveDownloadDir(): Path {
-        val folder = cachedDownloadFolder.value
-        return if (!folder.isNullOrBlank()) {
-            folder.toPath()
-        } else {
-            paths.getUserDownloadsDirPath().toPath()
-        }
-    }
+    private fun resolveDownloadDir(): Path = downloadFolder.value.toPath()
 
     private fun cleanupTempFiles(id: String) {
         try {

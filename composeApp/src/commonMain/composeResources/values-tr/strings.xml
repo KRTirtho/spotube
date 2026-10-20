@@ -171,7 +171,6 @@
 
     <string name="settings_download_folder_title">Özel indirme klasörü</string>
     <string name="settings_download_folder_current">Geçerli klasör: %1$s</string>
-    <string name="settings_download_folder_default">Geçerli klasör: varsayılan müzik klasörü</string>
     <string name="settings_download_folder_description">Varsayılan müzik klasörünü kullanmak için boş bırak.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Yerel medya klasörleri</string>

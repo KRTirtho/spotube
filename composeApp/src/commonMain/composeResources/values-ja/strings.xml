@@ -169,7 +169,6 @@
 
     <string name="settings_download_folder_title">ダウンロードフォルダの変更</string>
     <string name="settings_download_folder_current">現在のフォルダ: %1$s</string>
-    <string name="settings_download_folder_default">現在のフォルダ: デフォルトの音楽フォルダ</string>
     <string name="settings_download_folder_description">空欄にするとデフォルトの音楽フォルダを使用します。</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">ローカルメディアフォルダ</string>

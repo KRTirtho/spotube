@@ -171,7 +171,6 @@
 
     <string name="settings_download_folder_title">ডাউনলোড ফোল্ডার পরিবর্তন</string>
     <string name="settings_download_folder_current">বর্তমান ফোল্ডার: %1$s</string>
-    <string name="settings_download_folder_default">বর্তমান ফোল্ডার: ডিফল্ট মিউজিক ফোল্ডার</string>
     <string name="settings_download_folder_description">ডিফল্ট মিউজিক ফোল্ডার ব্যবহার করতে এটি ফাঁকা রাখুন।</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">লোকাল মিডিয়া ফোল্ডার</string>

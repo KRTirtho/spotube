@@ -75,13 +75,14 @@ import org.spotube.spotube.core.ui.component.dragScrollable
 import org.spotube.spotube.core.ui.misc.SkeletonTree
 import org.spotube.spotube.core.navigation.NavigationCommands
 import org.spotube.spotube.core.navigation.Routes
+import org.spotube.spotube.modules.shell.ConnectStatusBanner
+import org.spotube.spotube.resources.iconsax.IconsaxSoundTwotone
 import org.spotube.spotube.getPlatform
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
 import org.spotube.spotube.modules.support.LocalSupportPrompt
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.IconsaxHeart2
 import org.spotube.spotube.resources.iconsax.IconsaxMirroringScreen
-import org.spotube.spotube.resources.iconsax.User
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import spotube.composeapp.generated.resources.Res
@@ -93,6 +94,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import org.jetbrains.compose.resources.Font
 import org.spotube.millennium.adaptive.WindowBreakpoints
+import org.spotube.spotube.resources.iconsax.IconsaxMirrorScreenRegular
 import spotube.composeapp.generated.resources.cookie_regular
 
 @Composable
@@ -161,7 +163,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
                         MillenniumIcon(
-                            imageVector = Iconsax.IconsaxMirroringScreen,
+                            imageVector = Iconsax.IconsaxMirrorScreenRegular,
                             contentDescription = stringResource(Res.string.devices_title)
                         )
                     }
@@ -170,7 +172,7 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                         style = MillenniumIconButtonStyle.Quiet
                     ) {
                         MillenniumIcon(
-                            imageVector = Iconsax.User,
+                            imageVector = Iconsax.IconsaxSoundTwotone,
                             contentDescription = stringResource(Res.string.jam_screen_title)
                         )
                     }
@@ -186,6 +188,12 @@ fun HomeScreen(viewModel: HomeScreenViewModel) {
                     }
                 }
             })
+        if (isSmallScreen) {
+            ConnectStatusBanner(
+                onOpenRemote = { navigationCommands.navigateTo(Routes.RemoteControl) },
+                onOpenJam = { navigationCommands.navigateTo(Routes.Jam) }
+            )
+        }
         Box(
             modifier = Modifier
                 .fillMaxSize()

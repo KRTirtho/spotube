@@ -169,7 +169,6 @@
 
     <string name="settings_download_folder_title">Thư mục tải xuống tùy chỉnh</string>
     <string name="settings_download_folder_current">Thư mục hiện tại: %1$s</string>
-    <string name="settings_download_folder_default">Thư mục hiện tại: thư mục nhạc mặc định</string>
     <string name="settings_download_folder_description">Để trống để dùng thư mục nhạc mặc định.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Thư mục nhạc trên máy</string>

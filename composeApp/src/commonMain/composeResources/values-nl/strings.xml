@@ -171,7 +171,6 @@
 
     <string name="settings_download_folder_title">Andere downloadmap</string>
     <string name="settings_download_folder_current">Huidige map: %1$s</string>
-    <string name="settings_download_folder_default">Huidige map: standaard muziekmap</string>
     <string name="settings_download_folder_description">Laat dit leeg om de standaard muziekmap te gebruiken.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Lokale mediamappen</string>

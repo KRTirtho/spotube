@@ -46,7 +46,7 @@ import io.github.vinceglb.filekit.path
 import org.jetbrains.compose.resources.stringResource
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.settings_download_folder_current
-import spotube.composeapp.generated.resources.settings_download_folder_default
+import spotube.composeapp.generated.resources.settings_download_folder_default_path
 import spotube.composeapp.generated.resources.settings_download_folder_title
 import spotube.composeapp.generated.resources.settings_download_format_subtitle_current
 import spotube.composeapp.generated.resources.settings_download_format_title
@@ -77,6 +77,7 @@ internal fun LazyListScope.downloadsSection(
             {
                 DownloadFolderSettingCard(
                     folder = settings.overloadedDownloadFolder,
+                    defaultFolder = settingsViewModel.defaultDownloadFolder,
                     onFolderSelected = { folder ->
                         settingsViewModel.updateSettings {
                             copy(overloadedDownloadFolder = folder)
@@ -142,6 +143,7 @@ internal fun LazyListScope.downloadsSection(
 @Composable
 private fun DownloadFolderSettingCard(
     folder: String?,
+    defaultFolder: String,
     onFolderSelected: (String?) -> Unit
 ) {
     val pickerLauncher = rememberDirectoryPickerLauncher { directory ->
@@ -157,7 +159,7 @@ private fun DownloadFolderSettingCard(
         title = stringResource(Res.string.settings_download_folder_title),
         subtitle = folder?.let {
             stringResource(Res.string.settings_download_folder_current, it)
-        } ?: stringResource(Res.string.settings_download_folder_default),
+        } ?: stringResource(Res.string.settings_download_folder_default_path, defaultFolder),
         icon = {
             SettingsItemIcon(
                 Iconsax.IconsaxDirectboxReceive,

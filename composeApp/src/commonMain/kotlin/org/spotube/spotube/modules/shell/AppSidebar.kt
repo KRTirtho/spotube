@@ -20,6 +20,20 @@ package org.spotube.spotube.modules.shell
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.composeunstyled.LocalTextStyle
+import org.koin.compose.viewmodel.koinViewModel
+import org.spotube.millennium.composables.LocalMillenniumSidebar
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.theme.MillenniumControlState
+import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -80,8 +94,12 @@ fun AppSidebar(
     navigator: Navigator,
     navigationState: NavigationState,
     modifier: Modifier = Modifier,
-    libraryState: LibraryState = koinInject()
+    libraryState: LibraryState = koinInject(),
+    connectStatusViewModel: ConnectStatusViewModel = koinViewModel()
 ) {
+    val connectStatus by connectStatusViewModel.uiState.collectAsStateWithLifecycle()
+    val remoteStatus = connectStatus.remote?.let { remoteStatusLabel(it) }
+    val jamStatus = connectStatus.jam?.let { jamStatusLabel(it) }
     var expanded by rememberSaveable { mutableStateOf(true) }
     val groupExpansion = remember { mutableStateMapOf<String, Boolean>() }
     val currentLibraryTab by libraryState.currentTab.collectAsState()
@@ -144,6 +162,11 @@ fun AppSidebar(
                                         SidebarNavItem(
                                             item = item,
                                             selected = selected,
+                                            status = when (item.route) {
+                                                Routes.Devices -> remoteStatus
+                                                Routes.Jam -> jamStatus
+                                                else -> null
+                                            },
                                             onClick = {
                                                 if (item.route == Routes.Library) {
                                                     (item.data as? LibraryTab)?.let {
@@ -194,9 +217,15 @@ fun AppSidebar(
 private fun SidebarNavItem(
     item: NavigationItem.Tab<*>,
     selected: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    /** Live status (e.g. "Playing on Krtx"); when set the row gets a dot and a second line. */
+    status: String? = null
 ) {
     val title = stringResource(item.title)
+    if (status != null) {
+        LiveSidebarNavItem(item, title, status, selected, onClick)
+        return
+    }
     MillenniumSidebarItem(
         label = title,
         onClick = onClick,
@@ -204,4 +233,45 @@ private fun SidebarNavItem(
         contentDescription = title,
         icon = item.icon
     )
+}
+
+@Composable
+private fun LiveSidebarNavItem(
+    item: NavigationItem.Tab<*>,
+    title: String,
+    status: String,
+    selected: Boolean,
+    onClick: () -> Unit
+) {
+    MillenniumSidebarItem(
+        onClick = onClick,
+        selected = selected,
+        contentDescription = "$title, $status"
+    ) {
+        // Match the text overload's icon metrics so live rows line up with their siblings.
+        val metrics = MillenniumTheme.sidebarTheme.item.resolve(MillenniumControlState.Default)
+        val contentColor = LocalTextStyle.current.color
+        Box {
+            MillenniumIcon(
+                imageVector = item.icon,
+                contentDescription = null,
+                tint = contentColor,
+                modifier = Modifier.size(metrics.iconSize)
+            )
+            LiveDot(Modifier.align(Alignment.TopEnd).offset(x = 3.dp, y = (-3).dp))
+        }
+        if (LocalMillenniumSidebar.current?.collapsed != true) {
+            Spacer(Modifier.width(metrics.iconLabelSpacing))
+            Column(Modifier.weight(1f)) {
+                Text(title, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(
+                    text = status,
+                    style = AppTheme.typography.labelSmall,
+                    color = contentColor.copy(alpha = 0.7f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
 }

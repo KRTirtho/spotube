@@ -58,8 +58,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.spotube.spotube.core.discovery.rememberLocalNetworkPermissionRequester
 import org.spotube.spotube.core.ui.component.ApplicationMainBar
+import org.spotube.spotube.modules.settings.SettingsViewModel
 import org.spotube.spotube.modules.settings.components.SettingCardItem
 import org.spotube.spotube.modules.settings.sections.SettingsItemIcon
+import org.spotube.spotube.modules.settings.sections.remoteControlSettingCards
 import org.spotube.spotube.modules.settings.sections.settingsSectionCard
 import org.spotube.spotube.modules.settings.sections.settingsSectionHeader
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
@@ -83,6 +85,7 @@ import spotube.composeapp.generated.resources.devices_searching
 import spotube.composeapp.generated.resources.devices_searching_more
 import spotube.composeapp.generated.resources.devices_section_available
 import spotube.composeapp.generated.resources.devices_section_connected
+import spotube.composeapp.generated.resources.devices_section_this_device
 import spotube.composeapp.generated.resources.devices_status_connected
 import spotube.composeapp.generated.resources.devices_title
 import spotube.composeapp.generated.resources.devices_unknown_device
@@ -92,9 +95,11 @@ private val ContentMaxWidth = 720.dp
 
 @Composable
 fun DevicesScreen(
-    viewModel: DevicesViewModel = koinViewModel()
+    viewModel: DevicesViewModel = koinViewModel(),
+    settingsViewModel: SettingsViewModel = koinViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val settings by settingsViewModel.settingsState.collectAsStateWithLifecycle()
     val requestLocalNetworkPermission = rememberLocalNetworkPermissionRequester()
     val shellBottomInset = LocalAppShellBottomInset.current
 
@@ -208,6 +213,15 @@ fun DevicesScreen(
                             onSearchAgain = viewModel::startDiscovery
                         )
                     }
+                }
+
+                // Same cards as Settings > Playback, so making this device controllable (or renaming
+                // it) doesn't require a detour through Settings.
+                settings?.let { current ->
+                    settingsSectionHeader(Res.string.devices_section_this_device)
+                    settingsSectionCard(
+                        items = remoteControlSettingCards(current, settingsViewModel, requestLocalNetworkPermission)
+                    )
                 }
             }
         }
@@ -347,11 +361,11 @@ private fun LazyItemScope.EmptyState(
     isDiscovering: Boolean,
     onSearchAgain: () -> Unit
 ) {
+    // Fixed padding rather than filling the viewport, so the "This device" section below stays visible.
     Box(
         modifier = Modifier
-            .fillParentMaxHeight(0.8f)
             .fillParentMaxWidth()
-            .padding(24.dp),
+            .padding(horizontal = 24.dp, vertical = 48.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(

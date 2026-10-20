@@ -41,9 +41,7 @@ import org.spotube.spotube.modules.settings.components.SwitchSettingCard
 import org.spotube.spotube.modules.settings.components.TextInputSettingCard
 import org.spotube.spotube.resources.iconsax.CustomServer
 import org.spotube.spotube.resources.iconsax.Iconsax
-import org.spotube.spotube.resources.iconsax.IconsaxEdit
 import org.spotube.spotube.resources.iconsax.IconsaxForbidden
-import org.spotube.spotube.resources.iconsax.IconsaxMirroringScreen
 import org.spotube.spotube.resources.iconsax.IconsaxMusicPlay
 import org.spotube.spotube.resources.iconsax.IconsaxRepeatArrow
 import org.spotube.spotube.resources.iconsax.IconsaxVerticalSetting
@@ -122,51 +120,7 @@ internal fun LazyListScope.playbackSection(
                 }
             )
         }
-        add {
-            SwitchSettingCard(
-                title = stringResource(Res.string.settings_allow_remote_control_title),
-                subtitle = stringResource(Res.string.settings_allow_remote_control_subtitle),
-                icon = {
-                    SettingsItemIcon(
-                        Iconsax.IconsaxMirroringScreen,
-                        stringResource(Res.string.settings_allow_remote_control_title)
-                    )
-                },
-                checked = settings.allowRemoteControl,
-                onCheckedChange = { enabled ->
-                    settingsViewModel.updateSettings {
-                        copy(allowRemoteControl = enabled)
-                    }
-                    // Request the local network permission when enabling remote control
-                    // so that DNS-SD registration can succeed on Android 16+
-                    if (enabled) {
-                        requestLocalNetworkPermission()
-                    }
-                }
-            )
-        }
-        add {
-            TextInputSettingCard(
-                title = stringResource(Res.string.settings_remote_device_name_title),
-                subtitle = stringResource(
-                    Res.string.settings_remote_device_name_subtitle,
-                    settings.remoteControlDeviceName.ifBlank { stringResource(Res.string.settings_remote_device_name_default) }
-                ),
-                icon = {
-                    SettingsItemIcon(Iconsax.IconsaxEdit, stringResource(Res.string.settings_remote_device_name_title))
-                },
-                value = settings.remoteControlDeviceName,
-                dialogDescription = stringResource(Res.string.settings_remote_device_name_description),
-                placeholder = stringResource(Res.string.settings_remote_device_name_placeholder),
-                normalize = { it.trim() },
-                validate = { _ -> null },
-                onValueSaved = { value ->
-                    settingsViewModel.updateSettings {
-                        copy(remoteControlDeviceName = value)
-                    }
-                }
-            )
-        }
+        addAll(remoteControlSettingCards(settings, settingsViewModel, requestLocalNetworkPermission))
         add {
             val error_whole_number = stringResource(Res.string.settings_error_whole_number)
             val error_port_range = stringResource(Res.string.settings_error_port_range)

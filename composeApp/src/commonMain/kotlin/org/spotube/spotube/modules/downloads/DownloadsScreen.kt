@@ -100,11 +100,18 @@ internal fun DownloadsToolbarTitle() {
 
 @Composable
 internal fun DownloadsToolbarSummary(state: DownloadsUiState) {
-    if (state.items.isNotEmpty()) Text(
-        stringResource(Res.string.downloads_summary, state.activeCount, state.completedCount),
-        modifier = Modifier.padding(start = 28.dp),
-        style = AppTheme.typography.bodySmall, color = AppTheme.colors.onSurfaceVariant
-    )
+    Column(Modifier.padding(start = 28.dp)) {
+        if (state.items.isNotEmpty()) Text(
+            stringResource(Res.string.downloads_summary, state.activeCount, state.completedCount),
+            style = AppTheme.typography.bodySmall, color = AppTheme.colors.onSurfaceVariant
+        )
+        // Always visible (empty list included), so users know where their files end up.
+        if (state.folder.isNotBlank()) Text(
+            stringResource(Res.string.downloads_saved_to, state.folder),
+            style = AppTheme.typography.bodySmall, color = MillenniumTheme.colors.muted,
+            maxLines = 2, overflow = TextOverflow.Ellipsis
+        )
+    }
 }
 
 @Composable

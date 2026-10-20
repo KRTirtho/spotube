@@ -173,7 +173,6 @@
 
     <string name="settings_download_folder_title">Pasta de download personalizada</string>
     <string name="settings_download_folder_current">Pasta atual: %1$s</string>
-    <string name="settings_download_folder_default">Pasta atual: pasta de músicas padrão</string>
     <string name="settings_download_folder_description">Deixe em branco para usar a pasta de músicas padrão.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Pastas de mídia local</string>

@@ -169,7 +169,6 @@
 
     <string name="settings_download_folder_title">Ganti folder unduhan</string>
     <string name="settings_download_folder_current">Folder saat ini: %1$s</string>
-    <string name="settings_download_folder_default">Folder saat ini: folder musik bawaan</string>
     <string name="settings_download_folder_description">Biarkan kosong untuk memakai folder musik bawaan.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Folder media lokal</string>

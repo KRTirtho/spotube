@@ -171,7 +171,6 @@
 
     <string name="settings_download_folder_title">پوشهٔ دانلود سفارشی</string>
     <string name="settings_download_folder_current">پوشهٔ فعلی: %1$s</string>
-    <string name="settings_download_folder_default">پوشهٔ فعلی: پوشهٔ پیش‌فرض موسیقی</string>
     <string name="settings_download_folder_description">برای استفاده از پوشهٔ پیش‌فرض موسیقی، این قسمت را خالی بگذارید.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">پوشه‌های رسانهٔ محلی</string>

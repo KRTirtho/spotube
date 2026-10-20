@@ -179,7 +179,6 @@
 
     <string name="settings_download_folder_title">تخصيص مجلد التنزيل</string>
     <string name="settings_download_folder_current">المجلد الحالي: %1$s</string>
-    <string name="settings_download_folder_default">المجلد الحالي: مجلد الموسيقى الافتراضي</string>
     <string name="settings_download_folder_description">اتركه فارغًا لاستخدام مجلد الموسيقى الافتراضي.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">مجلدات الوسائط المحلية</string>

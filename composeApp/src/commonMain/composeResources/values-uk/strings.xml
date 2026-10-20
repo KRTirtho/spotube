@@ -175,7 +175,6 @@
 
     <string name="settings_download_folder_title">Власна папка для завантажень</string>
     <string name="settings_download_folder_current">Поточна папка: %1$s</string>
-    <string name="settings_download_folder_default">Поточна папка: стандартна папка «Музика»</string>
     <string name="settings_download_folder_description">Залиште порожнім, щоб використовувати стандартну папку «Музика».</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Папки з локальною музикою</string>

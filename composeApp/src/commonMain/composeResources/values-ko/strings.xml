@@ -169,7 +169,6 @@
 
     <string name="settings_download_folder_title">다운로드 폴더 지정</string>
     <string name="settings_download_folder_current">현재 폴더: %1$s</string>
-    <string name="settings_download_folder_default">현재 폴더: 기본 음악 폴더</string>
     <string name="settings_download_folder_description">기본 음악 폴더를 사용하려면 비워 두세요.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">로컬 미디어 폴더</string>

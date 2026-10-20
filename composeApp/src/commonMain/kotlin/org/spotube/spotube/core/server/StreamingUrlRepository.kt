@@ -102,10 +102,19 @@ class StreamingUrlRepository(
             logger.w { "No audio plugin selected while resolving stream for track $trackId" }
             return null
         }
+        // NOTE: always the *streaming* preferences, also when called by the downloader.
+        logger.i {
+            "[Resolve $trackId] '${track.title}' plugin=${audioPlugin.pluginId} forceRefresh=$forceRefresh " +
+                "prefs: format=${preferredFormat.codec}/${preferredFormat.container} quality=$preferredQuality " +
+                "(streamingMusicFormat/streamingMusicQuality)"
+        }
 
         if (!forceRefresh) {
             getCachedStreamUrl(trackId, preferredFormat, preferredQuality, audioPlugin.pluginId)?.let { cached ->
-                logger.v { "Using cached stream URL for track $trackId" }
+                logger.i {
+                    "[Resolve $trackId] cache hit: codec=${cached.codec} container=${cached.container} " +
+                        "protocol=${cached.protocol} ${urlSummary(cached.url)}"
+                }
                 return cached
             }
         }
@@ -130,6 +139,7 @@ class StreamingUrlRepository(
                     stream.streams,
                     preferredFormat,
                     preferredQuality)
+                logSelection(trackId, "matched source ${source.id}", stream.streams, preferredFormat, preferredQuality, resolvedStream)
                 if (resolvedStream != null) {
                     val info = resolvedStream.toStreamInfo()
                     cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
@@ -189,12 +199,45 @@ class StreamingUrlRepository(
             stream.streams,
             preferredFormat,
             preferredQuality)
+        logSelection(trackId, "track lookup -> ${stream.id}", stream.streams, preferredFormat, preferredQuality, resolvedStream)
         if (resolvedStream != null) {
             val info = resolvedStream.toStreamInfo()
             cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
             return info
         }
         return null
+    }
+
+    /** Logs every candidate with its ranking key so it's obvious *why* a stream won. */
+    private fun logSelection(
+        trackId: String,
+        origin: String,
+        streams: List<AudioStream>,
+        preferredFormat: AudioFormat,
+        preferredQuality: AudioQuality,
+        selected: AudioStream?) {
+        logger.i {
+            "[Resolve $trackId] selecting from ${streams.size} candidates ($origin), " +
+                "want ${preferredFormat.codec}/${preferredFormat.container} $preferredQuality " +
+                "(rank key = formatMismatch, qualityTypeMismatch, qualityDistance, channelDistance; lowest wins):\n" +
+                streams.joinToString("\n") { stream ->
+                    val marker = if (stream === selected) "  -> " else "     "
+                    "$marker${stream.describeForLog()} key=(${formatMismatchCount(stream, preferredFormat)}, " +
+                        "${if (stream.matchesQualityType(preferredQuality)) 0 else 1}, " +
+                        "${stream.qualityDistance(preferredQuality).let { if (it == Long.MAX_VALUE) "inf" else "$it" }}, " +
+                        "${stream.channelDistance(preferredQuality)}) ${urlSummary(stream.url)}"
+                }
+        }
+        when {
+            selected == null -> logger.w { "[Resolve $trackId] no stream selected" }
+            formatMismatchCount(selected, preferredFormat) > 0 -> logger.w {
+                "[Resolve $trackId] FORMAT FALLBACK: wanted ${preferredFormat.codec}/${preferredFormat.container}, " +
+                    "got ${selected.codec}/${selected.container} (${selected.protocol})"
+            }
+            selected.qualityDistance(preferredQuality) != 0L -> logger.w {
+                "[Resolve $trackId] QUALITY FALLBACK: wanted $preferredQuality, got ${selected.describeForLog()}"
+            }
+        }
     }
 
     private fun AudioStream.toStreamInfo() = StreamInfo(
@@ -353,3 +396,20 @@ private fun AudioStream.channelDistance(preferredQuality: AudioQuality): Int = w
 
     else -> 0
 }
+
+internal fun AudioStream.describeForLog(): String = when (this) {
+    is AudioStream.Lossy -> "lossy codec=$codec container=$container bitrate=$bitrate protocol=$protocol"
+    is AudioStream.Lossless ->
+        "lossless codec=$codec container=$container sampleRate=$sampleRate channels=$channels protocol=$protocol"
+}
+
+/**
+ * Host plus the query params that identify a YouTube stream (itag, mime, clen = byte size, dur),
+ * instead of the full signed URL.
+ */
+internal fun urlSummary(url: String): String = runCatching {
+    val parsed = io.ktor.http.Url(url)
+    val keys = listOf("itag", "mime", "clen", "dur")
+    val params = keys.mapNotNull { key -> parsed.parameters[key]?.let { "$key=$it" } }
+    "url=${parsed.host}${parsed.encodedPath.take(40)}" + if (params.isEmpty()) "" else " ${params.joinToString(" ")}"
+}.getOrDefault("url=<unparseable ${url.take(60)}>")

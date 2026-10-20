@@ -173,7 +173,6 @@
 
     <string name="settings_download_folder_title">Dossier de téléchargement personnalisé</string>
     <string name="settings_download_folder_current">Dossier actuel : %1$s</string>
-    <string name="settings_download_folder_default">Dossier actuel : dossier Musique par défaut</string>
     <string name="settings_download_folder_description">Laissez vide pour utiliser le dossier Musique par défaut.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Dossiers de médias locaux</string>

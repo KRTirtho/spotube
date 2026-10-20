@@ -171,7 +171,6 @@
 
     <string name="settings_download_folder_title">Eigener Download-Ordner</string>
     <string name="settings_download_folder_current">Aktueller Ordner: %1$s</string>
-    <string name="settings_download_folder_default">Aktueller Ordner: Standard-Musikordner</string>
     <string name="settings_download_folder_description">Leer lassen, um den Standard-Musikordner zu verwenden.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Lokale Medienordner</string>

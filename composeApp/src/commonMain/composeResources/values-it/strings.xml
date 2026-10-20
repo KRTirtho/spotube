@@ -173,7 +173,6 @@
 
     <string name="settings_download_folder_title">Cartella di download personalizzata</string>
     <string name="settings_download_folder_current">Cartella attuale: %1$s</string>
-    <string name="settings_download_folder_default">Cartella attuale: cartella Musica predefinita</string>
     <string name="settings_download_folder_description">Lascia vuoto per usare la cartella Musica predefinita.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Cartelle multimediali locali</string>

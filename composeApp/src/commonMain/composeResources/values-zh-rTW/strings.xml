@@ -169,7 +169,6 @@
 
     <string name="settings_download_folder_title">自訂下載資料夾</string>
     <string name="settings_download_folder_current">目前資料夾：%1$s</string>
-    <string name="settings_download_folder_default">目前資料夾：預設音樂資料夾</string>
     <string name="settings_download_folder_description">留空即使用預設音樂資料夾。</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">本機媒體資料夾</string>

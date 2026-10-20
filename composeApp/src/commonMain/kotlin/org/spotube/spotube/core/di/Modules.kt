@@ -49,6 +49,7 @@ import org.spotube.spotube.modules.blacklist.BlacklistRepository
 import org.spotube.spotube.modules.blacklist.BlacklistViewModel
 import org.spotube.spotube.modules.devices.DevicesViewModel
 import org.spotube.spotube.modules.devices.RemoteControlViewModel
+import org.spotube.spotube.modules.shell.ConnectStatusViewModel
 import org.spotube.spotube.modules.jam.JamViewModel
 import org.spotube.spotube.modules.downloads.DownloadManager
 import org.spotube.spotube.modules.downloads.DownloadsViewModel
@@ -219,6 +220,7 @@ val sharedModules = module {
     viewModelOf(::BlacklistViewModel)
     viewModel { DevicesViewModel(get()) }
     viewModelOf(::RemoteControlViewModel)
+    viewModelOf(::ConnectStatusViewModel)
     viewModel {
         JamViewModel(
             jamRoomService = get(),

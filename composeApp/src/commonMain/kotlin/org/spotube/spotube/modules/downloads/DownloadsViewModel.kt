@@ -23,7 +23,7 @@ import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 
 enum class DownloadRowAction { Cancel, Retry, Remove }
 
@@ -43,10 +43,12 @@ data class DownloadsUiState(
     val items: List<DownloadRowUiState> = emptyList(),
     val activeCount: Int = 0,
     val completedCount: Int = 0,
-    val canClearCompleted: Boolean = false
+    val canClearCompleted: Boolean = false,
+    /** Folder new downloads are saved to, shown so users can find their files. */
+    val folder: String = ""
 )
 
-internal fun downloadsUiState(items: List<DownloadItem>): DownloadsUiState {
+internal fun downloadsUiState(items: List<DownloadItem>, folder: String = ""): DownloadsUiState {
     val completedCount = items.count { it.status == DownloadStatus.Completed }
     return DownloadsUiState(
         items = items.map { item ->
@@ -66,7 +68,8 @@ internal fun downloadsUiState(items: List<DownloadItem>): DownloadsUiState {
         },
         activeCount = items.count { it.status == DownloadStatus.Downloading || it.status == DownloadStatus.Queued },
         completedCount = completedCount,
-        canClearCompleted = completedCount > 0
+        canClearCompleted = completedCount > 0,
+        folder = folder
     )
 }
 
@@ -79,7 +82,7 @@ class DownloadsViewModel(
         emptyList()
     )
 
-    val uiState = downloadManager.downloadsFlow.map(::downloadsUiState)
+    val uiState = combine(downloadManager.downloadsFlow, downloadManager.downloadFolder, ::downloadsUiState)
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DownloadsUiState())
 
     fun downloadTrack(track: MetadataTrack) {

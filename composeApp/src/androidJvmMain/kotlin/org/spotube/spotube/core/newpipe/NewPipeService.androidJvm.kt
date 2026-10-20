@@ -19,6 +19,8 @@ package org.spotube.spotube.core.newpipe
 
 import org.spotube.plugin_interfaces.plugin_apis.audio.AudioStream
 import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
+import co.touchlab.kermit.Logger
+import org.spotube.spotube.core.server.describeForLog
 import io.ktor.http.Url
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,6 +32,8 @@ import org.schabi.newpipe.extractor.stream.StreamInfoItem
 private fun secondsToMs(seconds: Long): Long = if (seconds > 0) seconds * 1000 else 0
 
 actual class NewPipeService {
+    private val logger = Logger.withTag("NewPipeService")
+
     actual suspend fun searchVideos(query: String, kind: SearchKind): List<VideoSearchResult> {
         return withContext(Dispatchers.IO) {
             val extractor = YouTube.getSearchExtractor(
@@ -65,6 +69,22 @@ actual class NewPipeService {
         return withContext(Dispatchers.IO) {
             val extractor = YouTube.getStreamExtractor("https://www.youtube.com/watch?v=$id")
             extractor.fetchPage()
+
+            // Raw extractor output, before any mapping/filtering, so stream-selection issues can be
+            // traced back to what YouTube actually offered for this video.
+            logger.i {
+                "[Streams $id] '${extractor.name}' raw audioStreams=${extractor.audioStreams.size}:\n" +
+                    extractor.audioStreams.joinToString("\n") { stream ->
+                        "        itag=${stream.itag} format=${stream.format?.name} mime=${stream.format?.mimeType} " +
+                            "suffix=${stream.format?.suffix} codec=${stream.codec} bitrate=${stream.bitrate} " +
+                            "avgBitrate=${stream.averageBitrate} delivery=${stream.deliveryMethod} isUrl=${stream.isUrl} " +
+                            "trackType=${stream.audioTrackType}"
+                    }
+            }
+            logger.i {
+                "[Streams $id] dashMpdUrl=${extractor.dashMpdUrl.isNotBlank()} hlsUrl=${extractor.hlsUrl.isNotBlank()} " +
+                    "raw videoStreams=${extractor.videoStreams.size} videoOnlyStreams=${extractor.videoOnlyStreams.size}"
+            }
 
             val audioStreams = extractor.audioStreams
                 .mapNotNull { stream ->
@@ -103,6 +123,10 @@ actual class NewPipeService {
                         bitrate = stream.bitrate,
                         container = stream.format!!.suffix)
                 }
+            logger.i {
+                "[Streams $id] mapped audio candidates (${audioStreams.size}):\n" +
+                    audioStreams.joinToString("\n") { "        ${it.describeForLog()}" }
+            }
             VideoInfo(
                 id = id,
                 title = extractor.name,
@@ -112,6 +136,14 @@ actual class NewPipeService {
                 thumbnailUrl = extractor.thumbnails.first().url,
                 // fallback to video streams if no audio streams are available
                 audioStreams = audioStreams.ifEmpty {
+                    logger.w {
+                        "[Streams $id] no audio streams; FALLING BACK TO ${videoStreams.size} VIDEO streams " +
+                            "(muxed video+audio, downloads will be video files):\n" +
+                            extractor.videoStreams.joinToString("\n") {
+                                "        itag=${it.itag} format=${it.format?.name} res=${it.resolution} " +
+                                    "codec=${it.codec} videoOnly=${it.isVideoOnly} isUrl=${it.isUrl}"
+                            }
+                    }
                     videoStreams
                 },
                 videoStreams = videoStreams

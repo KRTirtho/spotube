@@ -76,6 +76,7 @@
 
     <!-- Downloads -->
     <string name="downloads_summary">%1$d active • %2$d completed</string>
+    <string name="downloads_saved_to">Saved to %1$s</string>
     <string name="downloads_clear_completed">Clear completed</string>
     <string name="downloads_empty">No downloads yet</string>
     <string name="downloads_status_downloading">Downloading %1$d%</string>
@@ -173,7 +174,7 @@
 
     <string name="settings_download_folder_title">Download folder override</string>
     <string name="settings_download_folder_current">Current folder: %1$s</string>
-    <string name="settings_download_folder_default">Current folder: default music folder</string>
+    <string name="settings_download_folder_default_path">Current folder: %1$s (default)</string>
     <string name="settings_download_folder_description">Leave this empty to use the default music folder.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Local media folders</string>
@@ -519,6 +520,7 @@
     <string name="devices_resolving">Resolving...</string>
     <string name="devices_section_connected">Connected</string>
     <string name="devices_section_available">Available devices</string>
+    <string name="devices_section_this_device">This device</string>
     <string name="devices_status_connected">Connected</string>
     <string name="devices_open_remote">Open remote</string>
     <string name="devices_search_again">Search again</string>
@@ -925,6 +927,14 @@
     <string name="nav_group_on_device">On Device</string>
     <string name="nav_group_connect">Connect</string>
     <string name="nav_devices">Devices</string>
+    <plurals name="connect_jam_hosting">
+        <item quantity="one">Hosting · %1$d listener</item>
+        <item quantity="other">Hosting · %1$d listeners</item>
+    </plurals>
+    <plurals name="connect_jam_joined">
+        <item quantity="one">In a Jam · %1$d listener</item>
+        <item quantity="other">In a Jam · %1$d listeners</item>
+    </plurals>
 
     <!-- System tray (desktop) -->
     <string name="tray_hide_window">Hide Window</string>

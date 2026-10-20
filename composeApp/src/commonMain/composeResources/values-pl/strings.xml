@@ -175,7 +175,6 @@
 
     <string name="settings_download_folder_title">Własny folder pobierania</string>
     <string name="settings_download_folder_current">Obecny folder: %1$s</string>
-    <string name="settings_download_folder_default">Obecny folder: domyślny folder muzyki</string>
     <string name="settings_download_folder_description">Pozostaw puste, aby używać domyślnego folderu muzyki.</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">Foldery lokalnych multimediów</string>

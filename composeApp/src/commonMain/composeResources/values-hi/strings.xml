@@ -170,7 +170,6 @@
 
     <string name="settings_download_folder_title">डाउनलोड फ़ोल्डर बदलें</string>
     <string name="settings_download_folder_current">मौजूदा फ़ोल्डर: %1$s</string>
-    <string name="settings_download_folder_default">मौजूदा फ़ोल्डर: डिफ़ॉल्ट म्यूज़िक फ़ोल्डर</string>
     <string name="settings_download_folder_description">डिफ़ॉल्ट म्यूज़िक फ़ोल्डर इस्तेमाल करने के लिए इसे खाली छोड़ें।</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">लोकल मीडिया फ़ोल्डर</string>

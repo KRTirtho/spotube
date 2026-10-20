@@ -169,7 +169,6 @@
 
     <string name="settings_download_folder_title">กำหนดโฟลเดอร์ดาวน์โหลดเอง</string>
     <string name="settings_download_folder_current">โฟลเดอร์ปัจจุบัน: %1$s</string>
-    <string name="settings_download_folder_default">โฟลเดอร์ปัจจุบัน: โฟลเดอร์เพลงเริ่มต้น</string>
     <string name="settings_download_folder_description">เว้นว่างไว้เพื่อใช้โฟลเดอร์เพลงเริ่มต้น</string>
     <string name="settings_download_folder_placeholder">C:\Music\Spotube</string>
     <string name="settings_local_media_folders_title">โฟลเดอร์สื่อในเครื่อง</string>
