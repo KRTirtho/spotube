@@ -21,6 +21,7 @@ import co.touchlab.kermit.Logger
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.paths.Paths
 import org.spotube.spotube.core.server.StreamInfo
+import org.spotube.spotube.core.server.StreamRequest
 import org.spotube.spotube.core.server.StreamingUrlRepository
 import org.spotube.spotube.core.server.urlSummary
 import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
@@ -32,6 +33,7 @@ import io.ktor.client.request.head
 import io.ktor.client.request.headers
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentLength
 import io.ktor.http.isSuccess
 import io.ktor.utils.io.readRemaining
@@ -226,7 +228,14 @@ class DownloadManager(
 
         try {
             logger.i { "[Download ${item.id}] resolving stream for '${track.title}'" }
-            val streamInfo = streamingUrlRepository.resolveStreamInfo(track)
+            val settings = settingsRepository.userSettings.value
+            val streamInfo = streamingUrlRepository.resolveStreamInfo(
+                track,
+                request = StreamRequest(
+                    format = settings.downloadMusicFormat,
+                    quality = settings.downloadMusicQuality,
+                    // A manifest URL would be saved as-is instead of the audio it points to.
+                    progressiveOnly = true))
             if (streamInfo == null) {
                 logger.w { "Could not resolve stream URL for ${track.title}" }
                 val unresolvedStatus = getString(Res.string.downloads_error_stream_unresolved_short)
@@ -358,9 +367,15 @@ class DownloadManager(
                 "HTTP ${response.status.value} type=${response.headers[HttpHeaders.ContentType]} " +
                 "range=${response.headers[HttpHeaders.ContentRange]}"
         }
-        // expectSuccess = false, so an error page would otherwise be saved as audio.
+        // expectSuccess = false, so without these checks an error page, or the whole file once per
+        // segment (a 200 to a range request), would be written into the "audio" file.
         if (!response.status.isSuccess()) {
-            logger.w { "[Download ${item.id}] segment ${segment.index} got HTTP ${response.status}; its body will be written as audio" }
+            logger.w { "[Download ${item.id}] segment ${segment.index} got HTTP ${response.status}; failing download" }
+            throw DownloadException(getString(Res.string.downloads_error_http, response.status.value))
+        }
+        if (response.status != HttpStatusCode.PartialContent) {
+            logger.w { "[Download ${item.id}] segment ${segment.index} got ${response.status} instead of 206; range ignored" }
+            throw DownloadException(getString(Res.string.downloads_error_range_ignored))
         }
         val channel = response.bodyAsChannel()
 
@@ -389,8 +404,10 @@ class DownloadManager(
                 "type=${response.headers[HttpHeaders.ContentType]} length=$totalSize"
         }
         if (!response.status.isSuccess()) {
-            logger.w { "[Download ${item.id}] GET got HTTP ${response.status}; its body will be written as audio" }
+            logger.w { "[Download ${item.id}] GET got HTTP ${response.status}; failing download" }
+            throw DownloadException(getString(Res.string.downloads_error_http, response.status.value))
         }
+        rejectVideo(item.id, response.headers[HttpHeaders.ContentType])
         val channel = response.bodyAsChannel()
 
         fileSystem.sink(tempFile).buffer().use { sink ->
@@ -433,13 +450,24 @@ class DownloadManager(
                 "[Download $id] HEAD -> HTTP ${response.status.value} type=$contentType " +
                     "length=$contentLength acceptRanges=$acceptRanges"
             }
-            if (contentType?.startsWith("video/") == true) {
-                logger.w { "[Download $id] server says this is VIDEO ($contentType), not audio" }
-            }
+            rejectVideo(id, contentType)
             Pair(contentLength, supportsRanges)
+        } catch (e: DownloadException) {
+            throw e
         } catch (e: Exception) {
             logger.w(e) { "[Download $id] HEAD request failed, falling back to single connection" }
             Pair(0L, false)
+        }
+    }
+
+    /**
+     * Some sources only offer muxed video (e.g. NewPipe falls back to video streams when a video
+     * has no audio-only ones). Saving that as a "song" is worse than failing with a clear reason.
+     */
+    private suspend fun rejectVideo(id: String, contentType: String?) {
+        if (contentType?.startsWith("video/", ignoreCase = true) == true) {
+            logger.w { "[Download $id] server says this is VIDEO ($contentType), not audio; failing download" }
+            throw DownloadException(getString(Res.string.downloads_error_video_only))
         }
     }
 
@@ -457,9 +485,8 @@ class DownloadManager(
         }
         if (!info.codec.equals(wanted.codec, ignoreCase = true) || !info.container.equals(wanted.container, ignoreCase = true)) {
             logger.w {
-                "[Download ${item.id}] DOWNLOAD FORMAT NOT RESPECTED: download setting is ${wanted.codec}/${wanted.container} " +
-                    "${settings.downloadMusicQuality}, got ${info.codec}/${info.container} " +
-                    "(resolver used streaming prefs ${settings.streamingMusicFormat.codec}/${settings.streamingMusicFormat.container})"
+                "[Download ${item.id}] FORMAT FALLBACK: download setting is ${wanted.codec}/${wanted.container} " +
+                    "${settings.downloadMusicQuality}, but the closest downloadable stream offered is ${info.codec}/${info.container}"
             }
         }
     }
@@ -525,9 +552,14 @@ class DownloadManager(
     private fun buildFilename(downloadItem: DownloadItem, streamInfo: StreamInfo): String {
         val safeTitle = downloadItem.title.sanitizeFilename()
         val safeArtist = downloadItem.artists.sanitizeFilename()
-        val extension = streamInfo.container
+        val extension = fileExtension(streamInfo)
         return "$safeArtist - $safeTitle.$extension"
     }
+
+    /** AAC in an MP4 container is audio-only, so give it the audio extension players expect. */
+    private fun fileExtension(info: StreamInfo): String =
+        if (info.codec.equals("aac", ignoreCase = true) && info.container.equals("mp4", ignoreCase = true)) "m4a"
+        else info.container
 
     private fun String.sanitizeFilename(): String {
         return this.replace(Regex("[^a-zA-Z0-9.\\-_' ]"), "_").take(200)
@@ -535,3 +567,6 @@ class DownloadManager(
 
     private data class Segment(val index: Int, val start: Long, val end: Long)
 }
+
+/** A download failure whose [message] is already localized and safe to show the user. */
+private class DownloadException(message: String) : Exception(message)

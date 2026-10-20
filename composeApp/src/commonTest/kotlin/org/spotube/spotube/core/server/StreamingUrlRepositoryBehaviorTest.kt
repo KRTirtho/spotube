@@ -545,4 +545,68 @@ class StreamingUrlRepositoryBehaviorTest {
         // Fetching the entry doesn't call the plugin again.
         assertEquals(1, plugin.audioAPI.getStreamsByTrackCallCount)
     }
+
+    // ---------- caller requests (downloads) ----------
+
+    private val aacRequest = StreamRequest(
+        format = org.spotube.plugin_interfaces.plugin_apis.audio.AudioFormat(
+            codec = "aac", container = "mp4", qualities = listOf(AudioQuality.Lossy(128_000))),
+        quality = AudioQuality.Lossy(128_000),
+        progressiveOnly = true)
+
+    private fun aacStream(url: String, protocol: StreamProtocol = StreamProtocol.PROGRESSIVE) = AudioStream.Lossy(
+        url = url, codec = "aac", container = "mp4", protocol = protocol, bitrate = 128_000)
+
+    @Test
+    fun `a request's format overrides the streaming settings`() = runTest {
+        val h = Harness()
+        val plugin = h.selectPlugin("pluginA")
+        plugin.audioAPI.onGetStreamsByTrack = {
+            listOf(streamedSource("src1", listOf(stream("https://example.com/a.opus"), aacStream("https://example.com/a.m4a"))))
+        }
+
+        val info = h.repository.resolveStreamInfo(track("t1"), request = aacRequest)
+
+        assertEquals("https://example.com/a.m4a", info?.url)
+    }
+
+    @Test
+    fun `progressiveOnly never picks a manifest even when it matches best`() = runTest {
+        val h = Harness()
+        val plugin = h.selectPlugin("pluginA")
+        plugin.audioAPI.onGetStreamsByTrack = {
+            listOf(streamedSource("src1", listOf(
+                aacStream("https://example.com/manifest.mpd", StreamProtocol.DASH),
+                stream("https://example.com/a.opus"))))
+        }
+
+        val info = h.repository.resolveStreamInfo(track("t1"), request = aacRequest)
+
+        assertEquals("https://example.com/a.opus", info?.url)
+        assertEquals(StreamProtocol.PROGRESSIVE, info?.protocol)
+    }
+
+    @Test
+    fun `progressiveOnly returns null when only manifests exist`() = runTest {
+        val h = Harness()
+        val plugin = h.selectPlugin("pluginA")
+        plugin.audioAPI.onGetStreamsByTrack = {
+            listOf(streamedSource("src1", listOf(aacStream("https://example.com/manifest.m3u8", StreamProtocol.HLS))))
+        }
+
+        assertNull(h.repository.resolveStreamInfo(track("t1"), request = aacRequest))
+    }
+
+    @Test
+    fun `a request does not write the playback url cache`() = runTest {
+        val h = Harness()
+        val plugin = h.selectPlugin("pluginA")
+        plugin.audioAPI.onGetStreamsByTrack = {
+            listOf(streamedSource("src1", listOf(aacStream("https://example.com/a.m4a"))))
+        }
+
+        h.repository.resolveStreamInfo(track("t1"), request = aacRequest)
+
+        assertNull(h.repository.getCachedStreamUrlEntry("t1"))
+    }
 }

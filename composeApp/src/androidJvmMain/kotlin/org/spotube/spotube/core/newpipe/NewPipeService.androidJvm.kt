@@ -26,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.schabi.newpipe.extractor.ServiceList.YouTube
 import org.schabi.newpipe.extractor.services.youtube.linkHandler.YoutubeSearchQueryHandlerFactory
+import org.schabi.newpipe.extractor.stream.DeliveryMethod
 import org.schabi.newpipe.extractor.stream.StreamInfoItem
 
 /** NewPipe reports durations in seconds (-1 when unknown). */
@@ -88,11 +89,15 @@ actual class NewPipeService {
 
             val audioStreams = extractor.audioStreams
                 .mapNotNull { stream ->
+                    val format = stream.format ?: return@mapNotNull null
+                    // Non-URL content is an inline manifest, not something a player or downloader can fetch.
+                    if (!stream.isUrl) return@mapNotNull null
                     AudioStream.Lossy(
                         url = stream.content,
-                        codec = stream.codec,
-                        container = stream.format!!.suffix,
-                        bitrate = stream.bitrate)
+                        codec = normalizeCodec(stream.codec),
+                        container = normalizeContainer(format.suffix),
+                        bitrate = stream.bitrate,
+                        protocol = stream.deliveryMethod.toProtocol())
                 } + buildList {
                 if (extractor.dashMpdUrl.isNotBlank()) add(
                     AudioStream.Lossy(
@@ -150,4 +155,23 @@ actual class NewPipeService {
             )
         }
     }
+}
+
+/**
+ * NewPipe names AAC "mp4a.40.x" in an "m4a" container, but the plugin advertises (and users pick)
+ * "aac"/"mp4". Without this a real AAC stream never matched the preference, and the hard-coded
+ * aac/mp4 DASH/HLS manifests always won instead.
+ */
+private fun normalizeCodec(codec: String?): String {
+    val value = codec.orEmpty()
+    return if (value.startsWith("mp4a", ignoreCase = true)) "aac" else value
+}
+
+private fun normalizeContainer(suffix: String): String =
+    if (suffix.equals("m4a", ignoreCase = true)) "mp4" else suffix
+
+private fun DeliveryMethod.toProtocol(): StreamProtocol = when (this) {
+    DeliveryMethod.DASH -> StreamProtocol.DASH
+    DeliveryMethod.HLS -> StreamProtocol.HLS
+    else -> StreamProtocol.PROGRESSIVE
 }

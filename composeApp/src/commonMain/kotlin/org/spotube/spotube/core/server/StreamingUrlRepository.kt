@@ -54,6 +54,16 @@ private data class CachedAlternatives(
     val pluginId: String,
     val sources: List<AudioSource>)
 
+/**
+ * Stream preferences for callers other than playback. The downloader passes the user's *download*
+ * format/quality and needs a file it can fetch with plain HTTP, so DASH/HLS manifests are excluded.
+ * Such requests bypass the playback stream-URL cache in both directions.
+ */
+data class StreamRequest(
+    val format: AudioFormat,
+    val quality: AudioQuality,
+    val progressiveOnly: Boolean)
+
 data class StreamInfo(
     val url: String,
     val protocol: StreamProtocol,
@@ -90,26 +100,44 @@ class StreamingUrlRepository(
 
     suspend fun resolveStreamInfo(
         track: MetadataTrack,
-        forceRefresh: Boolean = false
+        forceRefresh: Boolean = false,
+        request: StreamRequest? = null
     ): StreamInfo? {
         val trackId = track.id
         val settings = settingsRepository.userSettings.value
-        val preferredFormat = settings.streamingMusicFormat
-        val preferredQuality = settings.streamingMusicQuality
+        val preferredFormat = request?.format ?: settings.streamingMusicFormat
+        val preferredQuality = request?.quality ?: settings.streamingMusicQuality
+        // The URL cache holds what *playback* resolved; a download with other prefs must not
+        // read it, nor replace it with a stream playback didn't ask for.
+        val useUrlCache = request == null
 
         val audioPlugin = pluginManager.selectedAudioPlugin.value
         if (audioPlugin == null) {
             logger.w { "No audio plugin selected while resolving stream for track $trackId" }
             return null
         }
-        // NOTE: always the *streaming* preferences, also when called by the downloader.
         logger.i {
             "[Resolve $trackId] '${track.title}' plugin=${audioPlugin.pluginId} forceRefresh=$forceRefresh " +
                 "prefs: format=${preferredFormat.codec}/${preferredFormat.container} quality=$preferredQuality " +
-                "(streamingMusicFormat/streamingMusicQuality)"
+                if (request == null) "(streaming settings)" else "(caller request, progressiveOnly=${request.progressiveOnly})"
         }
 
-        if (!forceRefresh) {
+        fun select(stream: AudioSource.Streamed, origin: String): AudioStream? {
+            val candidates = if (request?.progressiveOnly == true) {
+                stream.streams.filter { it.protocol == StreamProtocol.PROGRESSIVE }.also { kept ->
+                    if (kept.size != stream.streams.size) logger.i {
+                        "[Resolve $trackId] dropped ${stream.streams.size - kept.size} manifest (DASH/HLS) candidates; " +
+                            "caller needs a directly downloadable file"
+                    }
+                }
+            } else {
+                stream.streams
+            }
+            return selectPreferredAudioStream(candidates, preferredFormat, preferredQuality)
+                .also { logSelection(trackId, origin, candidates, preferredFormat, preferredQuality, it) }
+        }
+
+        if (useUrlCache && !forceRefresh) {
             getCachedStreamUrl(trackId, preferredFormat, preferredQuality, audioPlugin.pluginId)?.let { cached ->
                 logger.i {
                     "[Resolve $trackId] cache hit: codec=${cached.codec} container=${cached.container} " +
@@ -135,14 +163,12 @@ class StreamingUrlRepository(
 
             if (stream != null) {
                 logger.d { "Resolved stream for track $trackId using cached source" }
-                val resolvedStream = selectPreferredAudioStream(
-                    stream.streams,
-                    preferredFormat,
-                    preferredQuality)
-                logSelection(trackId, "matched source ${source.id}", stream.streams, preferredFormat, preferredQuality, resolvedStream)
+                val resolvedStream = select(stream, "matched source ${source.id}")
                 if (resolvedStream != null) {
                     val info = resolvedStream.toStreamInfo()
-                    cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
+                    if (useUrlCache) {
+                        cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
+                    }
                     return info
                 }
             }
@@ -195,14 +221,12 @@ class StreamingUrlRepository(
         }
 
         logger.d { "Resolved stream for track $trackId via track lookup" }
-        val resolvedStream = selectPreferredAudioStream(
-            stream.streams,
-            preferredFormat,
-            preferredQuality)
-        logSelection(trackId, "track lookup -> ${stream.id}", stream.streams, preferredFormat, preferredQuality, resolvedStream)
+        val resolvedStream = select(stream, "track lookup -> ${stream.id}")
         if (resolvedStream != null) {
             val info = resolvedStream.toStreamInfo()
-            cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
+            if (useUrlCache) {
+                cacheStreamInfo(trackId, info, preferredFormat, preferredQuality, stream, resolvedStream, audioPlugin.pluginId)
+            }
             return info
         }
         return null

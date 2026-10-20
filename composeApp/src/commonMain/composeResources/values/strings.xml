@@ -710,6 +710,9 @@
     <string name="downloads_error_no_metadata">No track metadata</string>
     <string name="downloads_error_stream_unresolved_short">Could not resolve stream URL</string>
     <string name="downloads_error_stream_unresolved">Could not resolve stream URL. Try playing the track first.</string>
+    <string name="downloads_error_http">The server refused the download (HTTP %1$d)</string>
+    <string name="downloads_error_range_ignored">The server sent an incomplete download. Try again.</string>
+    <string name="downloads_error_video_only">Only a video is available for this track, so it wasn\'t downloaded</string>
 
     <!-- Saved tracks -->
     <string name="saved_tracks_title">Saved Tracks</string>
@@ -962,7 +965,6 @@
     <string name="app_window_close">Close</string>
 
     <!-- Android playback notification -->
-    <string name="notification_playback_service_text">Playback service</string>
     <string name="notification_playback_channel_name">Playback</string>
     <string name="notification_playback_channel_description">Media playback controls</string>
 
