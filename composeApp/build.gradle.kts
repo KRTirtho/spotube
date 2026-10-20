@@ -18,6 +18,7 @@
 import gobley.gradle.GobleyHost
 import gobley.gradle.Variant
 import gobley.gradle.cargo.dsl.jvm
+import gobley.gradle.rust.targets.RustAndroidTarget
 import dev.nucleusframework.desktop.application.dsl.NativeImageOptimization
 import dev.nucleusframework.desktop.application.dsl.TargetFormat
 import org.jetbrains.compose.reload.gradle.ComposeHotRun
@@ -611,6 +612,15 @@ cargo {
     if (isProductionBuild) jvmVariant = Variant.Release
     builds.jvm {
         embedRustLibrary = (rustTarget == GobleyHost.current.rustTarget)
+    }
+}
+
+// Gobley adds build/intermediates/rust/<triple>/<variant> as a jniLibs source dir, but AGP leaves source dirs
+// that don't exist at configuration time out of the merge inputs. On a clean build (CI) libcompose_app.so would
+// then silently miss the APK and crash at runtime with UnsatisfiedLinkError, so create the dirs up front.
+RustAndroidTarget.entries.forEach { target ->
+    Variant.entries.forEach { variant ->
+        layout.buildDirectory.dir("intermediates/rust/${target.rustTriple}/$variant").get().asFile.mkdirs()
     }
 }
 
