@@ -18,7 +18,6 @@
 package org.spotube.spotube
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -37,13 +36,8 @@ class MainActivity : ComponentActivity() {
         FileKit.init(this)
         NewPipeDownloader.init(Paths())
         
-        // Start PlaybackService from Activity context (allowed on Android 12+)
-        val serviceIntent = Intent(this, PlaybackService::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent)
-        } else {
-            startService(serviceIntent)
-        }
+        // Plain start from the foreground; Media3 promotes PlaybackService itself once playback starts
+        startService(Intent(this, PlaybackService::class.java))
         
         intent?.dataString?.let(ExternalUriHandler::onNewUri)
         setContent {

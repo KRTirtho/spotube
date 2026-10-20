@@ -19,7 +19,6 @@ package org.spotube.spotube.core.audioplayer
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.util.Log
 import androidx.media3.common.AudioAttributes
 import androidx.media3.common.C
@@ -52,17 +51,14 @@ actual class AudioPlayer actual constructor(context: Any) : AudioPlayerInterface
     private val appContext: Context = (context as Context).applicationContext
 
     private fun ensureServiceStarted() {
-        // On Android 12+ starting a foreground service from the background throws
-        // (ForegroundServiceStartNotAllowedException) — e.g. when a jam session or
-        // remote control applies playback while the app is backgrounded. Never let
-        // that crash the app; playback itself runs in-process without the service.
+        // A plain start, never startForegroundService: that obliges the service to call
+        // startForeground() within seconds of *every* call, and once Media3 has demoted it
+        // on pause nothing does, so the app is killed (ForegroundServiceDidNotStartInTime).
+        // Media3's MediaSessionService promotes itself to the foreground when playback starts.
+        // Starting from the background (jam sync, remote control) throws; playback still runs
+        // in-process without the service, so never let that crash the app.
         try {
-            val intent = Intent(appContext, PlaybackService::class.java)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                appContext.startForegroundService(intent)
-            } else {
-                appContext.startService(intent)
-            }
+            appContext.startService(Intent(appContext, PlaybackService::class.java))
         } catch (e: Exception) {
             Log.w("AudioPlayer", "Failed to start playback service", e)
         }
