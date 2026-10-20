@@ -431,6 +431,7 @@ fun AppExpandedPlayer(
                                 val albumId = currentTrack?.album?.id
                                 if (albumId != null) {
                                     navigationCommands.navigateTo(Routes.Album(albumId))
+                                    onCollapse()
                                 }
                                 onGoToAlbum()
                             })
@@ -535,6 +536,8 @@ fun AppExpandedPlayer(
                         artists = playerUiState.artistList,
                         onArtistClick = { artistId ->
                             navigationCommands.navigateTo(Routes.Artist(artistId))
+                            // The page opens beneath the player, so get out of the way
+                            onCollapse()
                         },
                         style = AppTheme.typography.bodyLarge,
                         color = AppTheme.colors.onSurfaceVariant,

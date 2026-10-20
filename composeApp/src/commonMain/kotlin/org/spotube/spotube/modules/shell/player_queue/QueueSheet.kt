@@ -17,7 +17,10 @@
 
 package org.spotube.spotube.modules.shell.player_queue
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
@@ -34,9 +37,6 @@ import org.spotube.millennium.composables.MillenniumModalBottomSheet
 import org.spotube.millennium.composables.rememberMillenniumDrawerState
 
 private val SlidingSheetBreakpoint = 840.dp
-private val MaxHeightSheetDetent = SheetDetent("max-height-85-percent") { containerHeight, sheetHeight ->
-    minOf(sheetHeight, containerHeight * 0.85f)
-}
 
 @Composable
 fun QueueSheet(
@@ -88,9 +88,11 @@ internal fun BottomSheetContent(
     content: @Composable () -> Unit
 ) {
     if (!isVisible) return
+    // Show the whole sheet and cap the content instead: a detent that reveals only part of a
+    // full-height sheet leaves the bottom of the queue list off-screen and unreachable.
     val sheetState = rememberModalBottomSheetState(
-        initialDetent = MaxHeightSheetDetent,
-        detents = listOf(SheetDetent.Hidden, MaxHeightSheetDetent)
+        initialDetent = SheetDetent.FullyExpanded,
+        detents = listOf(SheetDetent.Hidden, SheetDetent.FullyExpanded)
     )
     LaunchedEffect(sheetState.bottomSheetState.currentDetent) {
         if (sheetState.bottomSheetState.currentDetent == SheetDetent.Hidden) {
@@ -102,6 +104,8 @@ internal fun BottomSheetContent(
         contentPadding = PaddingValues(horizontal = 12.dp, vertical = 8.dp),
         contentSpacing = 8.dp
     ) {
-        content()
+        Box(Modifier.fillMaxWidth().fillMaxHeight(0.85f)) {
+            content()
+        }
     }
 }

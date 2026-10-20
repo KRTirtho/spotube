@@ -45,7 +45,7 @@ sealed class JamMessage {
          * merely auto-advanced because its song ended (guests stay put).
          */
         val follow: Boolean = false,
-        /** Host's live play state — late-joining guests start with it. */
+        /** Room-wide play/pause; guests follow every change of it. */
         val isPlaying: Boolean = false) : JamMessage()
 
     @Serializable
@@ -76,11 +76,15 @@ sealed class JamMessage {
 }
 
 /**
- * Playback commands. Only queue navigation is global — play/pause, seek,
+ * Playback commands. Queue navigation and play/pause are global — seek,
  * volume, shuffle and loop are local to each participant.
  */
 @Serializable
 sealed class PlaybackCmd {
+    @Serializable
+    @SerialName("setPlaying")
+    data class SetPlaying(val playing: Boolean) : PlaybackCmd()
+
     @Serializable
     @SerialName("skipNext")
     data object SkipNext : PlaybackCmd()

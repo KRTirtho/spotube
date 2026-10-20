@@ -33,11 +33,14 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.random.Random
 import org.jetbrains.compose.resources.getString
@@ -52,9 +55,9 @@ import kotlin.time.Clock
  * Sync rules:
  * - The queue list and current index are global. [skipNext]/[skipPrevious]/[jumpTo]
  *   from anyone are applied by the host, then broadcast via the retained state topic.
- * - Play/pause, seek, volume and loop are local to each device — never broadcast.
- *   When the queue moves on, a paused participant stays paused; a playing one
- *   keeps playing the new current item.
+ * - Play/pause is global: anyone's play/pause is sent to the host, which applies it
+ *   and broadcasts it; guests follow every change of the host's play state.
+ * - Seek, volume and loop are local to each device — never broadcast.
  * - Shuffle is host-only; guests mirror the host's shuffle setting.
  * - Guests can only add to the queue (suggest); the host applies suggestions.
  * - If the host leaves, the participant with the lowest client id takes over.
@@ -63,7 +66,7 @@ private data class PlaybackBroadcast(
     val queue: List<QueueEntry>,
     val current: QueueEntry?,
     val shuffle: Boolean,
-    val playerState: PlayerState)
+    val isPlaying: Boolean)
 
 class JamRoomService(
     private val jamClient: JamRoomClient,
@@ -72,6 +75,20 @@ class JamRoomService(
     private val settingsRepository: SettingsRepository) {
     private val log = Logger.withTag("JamRoomService")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
+
+    /**
+     * Play/pause intent. Transient states (buffering between tracks, loading, completion)
+     * keep the last value, so they never pause or resume the room.
+     */
+    private val playIntent: StateFlow<Boolean> = audioPlayer.playerStateFlow
+        .mapNotNull { state ->
+            when (state) {
+                PlayerState.PLAYING -> true
+                PlayerState.PAUSED -> false
+                else -> null
+            }
+        }
+        .stateIn(scope, SharingStarted.Eagerly, audioPlayer.playerStateFlow.value == PlayerState.PLAYING)
 
     private val _role = MutableStateFlow<JamRole?>(null)
     val role: StateFlow<JamRole?> = _role.asStateFlow()
@@ -116,8 +133,8 @@ class JamRoomService(
      */
     private var autoAdvanceDeadlineMs = 0L
 
-    /** Guest side: playback has started at least once (local control is the guest's own). */
-    private var hasStartedPlayback = false
+    /** Guest side: the room's play state from the last host broadcast (null until the first one). */
+    private var lastHostIsPlaying: Boolean? = null
 
     /** Host side: client ids banned for this session. */
     private val bannedClientIds = mutableSetOf<String>()
@@ -145,12 +162,14 @@ class JamRoomService(
         audioPlayer.completionFlow
             .onEach { autoAdvanceDeadlineMs = now() + AUTO_ADVANCE_WINDOW_MS }
             .launchIn(scope)
-        // Once a guest has played on its own (or was started by the host), its
-        // play/pause is its own — the host's play state only starts fresh joiners.
-        audioPlayer.playerStateFlow
-            .onEach { state ->
-                if (_role.value == JamRole.Guest && state == PlayerState.PLAYING) {
-                    hasStartedPlayback = true
+        // A guest's own play/pause (UI, notification, headset) goes to the host, which
+        // applies it for the whole room. Intent that matches the room's state came from
+        // following the host, so it isn't echoed back.
+        playIntent
+            .onEach { playing ->
+                val roomPlaying = lastHostIsPlaying
+                if (_role.value == JamRole.Guest && !leaving && roomPlaying != null && playing != roomPlaying) {
+                    publishCommand(PlaybackCmd.SetPlaying(playing))
                 }
             }
             .launchIn(scope)
@@ -182,7 +201,7 @@ class JamRoomService(
             bannedClientIds.clear()
             leaving = false
             autoAdvanceDeadlineMs = 0L
-            hasStartedPlayback = false
+            lastHostIsPlaying = null
             startHostBroadcast()
             persistLastCode(code)
             code
@@ -214,7 +233,7 @@ class JamRoomService(
             lastAppliedItems = emptyList()
             lastAppliedIndex = -1
             leaving = false
-            hasStartedPlayback = false
+            lastHostIsPlaying = null
             persistLastCode(normalized)
         }
     }
@@ -232,7 +251,7 @@ class JamRoomService(
         lastAppliedItems = emptyList()
         lastAppliedIndex = -1
         bannedClientIds.clear()
-        hasStartedPlayback = false
+        lastHostIsPlaying = null
     }
 
     // ---------- Controls (called from the UI) ----------
@@ -294,8 +313,8 @@ class JamRoomService(
                 audioPlayerQueue.queueFlow,
                 audioPlayerQueue.currentQueueEntryFlow,
                 audioPlayer.shuffleModeFlow,
-                audioPlayer.playerStateFlow) { queue, current, shuffle, playerState ->
-                PlaybackBroadcast(queue, current, shuffle, playerState)
+                playIntent) { queue, current, shuffle, isPlaying ->
+                PlaybackBroadcast(queue, current, shuffle, isPlaying)
             }
                 .onEach { broadcast ->
                     if (_role.value != JamRole.Host) return@onEach
@@ -311,7 +330,7 @@ class JamRoomService(
                             currentIndex = index.coerceAtLeast(0),
                             shuffleEnabled = broadcast.shuffle,
                             follow = now() > autoAdvanceDeadlineMs,
-                            isPlaying = broadcast.playerState == PlayerState.PLAYING)
+                            isPlaying = broadcast.isPlaying)
                     )
                 }
                 .launchIn(this)
@@ -332,15 +351,17 @@ class JamRoomService(
         _shuffleEnabled.value = state.shuffleEnabled
         runCatching { audioPlayer.shuffle(state.shuffleEnabled) }
 
-        // Late joiner: the host is already playing, so start immediately. Once
-        // this guest has played on its own, the host's play state is ignored.
-        if (state.isPlaying && !hasStartedPlayback) {
-            runCatching { audioPlayer.play() }
-                .onFailure { log.w(it) { "Failed to start playback on host play state" } }
+        // Play/pause is room-wide: follow every change of the host's play state. The room
+        // state is recorded first, so the resulting local intent isn't sent back as a command.
+        if (state.isPlaying != lastHostIsPlaying) {
+            lastHostIsPlaying = state.isPlaying
+            if (state.isPlaying != playIntent.value) {
+                runCatching { if (state.isPlaying) audioPlayer.play() else audioPlayer.pause() }
+                    .onFailure { log.w(it) { "Failed to follow the host's play state" } }
+            }
         }
 
         val items = state.items.filter { it.trackId.isNotBlank() || it.url.isNotBlank() }
-        val wasPlaying = audioPlayer.playerStateFlow.value == PlayerState.PLAYING
 
         if (items != lastAppliedItems) {
             val previous = lastAppliedItems
@@ -369,7 +390,7 @@ class JamRoomService(
             runCatching {
                 audioPlayerQueue.load(
                     entries = items.map { it.toQueueEntry() },
-                    autoPlay = wasPlaying,
+                    autoPlay = state.isPlaying,
                     startPosition = startIndex)
             }.onFailure { log.w(it) { "Failed to apply jam queue" } }
             return
@@ -419,6 +440,10 @@ class JamRoomService(
 
     private suspend fun applyCommand(command: PlaybackCmd) {
         when (command) {
+            // Applied locally; the host broadcast carries the new play state to every guest
+            is PlaybackCmd.SetPlaying -> runCatching {
+                if (command.playing) audioPlayer.play() else audioPlayer.pause()
+            }
             PlaybackCmd.SkipNext -> runCatching { audioPlayer.skipToNext() }
             PlaybackCmd.SkipPrevious -> runCatching { audioPlayer.skipToPrevious() }
             is PlaybackCmd.JumpTo -> runCatching { audioPlayer.jumpTo(command.index) }

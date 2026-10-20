@@ -389,6 +389,14 @@ android {
             isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("release")
         }
+        getByName("debug") {
+            // Debug and release share the application id, so sign both with the release key
+            // when it's configured; otherwise one can't be installed over the other.
+            // Without local.properties signing (contributors) keep the default debug keystore.
+            if (signingConfigs.getByName("release").storeFile != null) {
+                signingConfig = signingConfigs.getByName("release")
+            }
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
