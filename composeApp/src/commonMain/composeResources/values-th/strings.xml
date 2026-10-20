@@ -210,8 +210,6 @@
     <string name="settings_error_cache_size_range">ขนาดต้องเป็น 0 หรือจำนวนบวก</string>
     <string name="settings_enable_endless_playback_title">เปิดใช้การเล่นต่อเนื่องไม่สิ้นสุด</string>
     <string name="settings_enable_endless_playback_subtitle">เล่นต่อด้วยเพลงแนะนำเมื่อคิวของคุณหมด</string>
-    <string name="settings_enable_connect_title">เปิดใช้ Connect</string>
-    <string name="settings_enable_connect_subtitle">เปิดให้ควบคุมการเล่นจากระยะไกลผ่านฟีเจอร์ Spotube Connect</string>
     <string name="settings_playback_port_title">พอร์ตเซิร์ฟเวอร์พร็อกซีการเล่น</string>
     <string name="settings_allow_remote_control_title">อนุญาตการควบคุมระยะไกล</string>
     <string name="settings_allow_remote_control_subtitle">ให้อุปกรณ์อื่นในเครือข่ายเดียวกันควบคุมการเล่นได้เมื่อเชื่อมต่อ</string>
@@ -491,7 +489,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">อุปกรณ์</string>
     <string name="devices_refresh">รีเฟรช</string>
-    <string name="devices_connected_to">เชื่อมต่อกับ %1$s:%2$d แล้ว</string>
     <string name="devices_disconnect">ยกเลิกการเชื่อมต่อ</string>
     <string name="devices_connecting">กำลังเชื่อมต่อ...</string>
     <string name="devices_searching">กำลังค้นหาอุปกรณ์ในเครือข่าย...</string>
@@ -499,20 +496,13 @@
     <string name="devices_empty_hint">ตรวจสอบว่าอุปกรณ์อีกเครื่องเปิด “อนุญาตการควบคุมระยะไกล” ไว้ในการตั้งค่า</string>
     <string name="devices_unknown_device">อุปกรณ์ที่ไม่รู้จัก</string>
     <string name="devices_resolving">กำลังระบุ...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">รีโมตคอนโทรล</string>
     <string name="devices_remote_disconnected">ยกเลิกการเชื่อมต่อแล้ว</string>
     <string name="devices_remote_connection_error">ข้อผิดพลาดในการเชื่อมต่อ: %1$s</string>
-    <string name="devices_remote_album_cover">ปกอัลบั้ม</string>
     <string name="devices_remote_unknown_track">ไม่ทราบชื่อเพลง</string>
     <string name="devices_remote_unknown_artist">ไม่ทราบศิลปิน</string>
-    <string name="devices_remote_seek">เลื่อนตำแหน่ง</string>
-    <string name="devices_remote_shuffle">สุ่มเพลง</string>
-    <string name="devices_remote_previous">ก่อนหน้า</string>
-    <string name="devices_remote_next">ถัดไป</string>
-    <string name="devices_remote_loop_mode">โหมดเล่นซ้ำ</string>
     <string name="devices_remote_volume">ระดับเสียง</string>
     <string name="devices_remote_remove_from_queue">นำออกจากคิว</string>
     <string name="devices_remote_more_options">ตัวเลือกเพิ่มเติม</string>

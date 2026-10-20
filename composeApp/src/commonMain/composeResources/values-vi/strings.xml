@@ -210,8 +210,6 @@
     <string name="settings_error_cache_size_range">Dung lượng phải là 0 hoặc một số dương.</string>
     <string name="settings_enable_endless_playback_title">Bật phát liên tục</string>
     <string name="settings_enable_endless_playback_subtitle">Tiếp tục phát với các bài hát được đề xuất khi danh sách chờ kết thúc.</string>
-    <string name="settings_enable_connect_title">Bật Connect</string>
-    <string name="settings_enable_connect_subtitle">Cung cấp điều khiển phát từ xa qua tính năng Spotube Connect.</string>
     <string name="settings_playback_port_title">Cổng máy chủ proxy phát lại</string>
     <string name="settings_allow_remote_control_title">Cho phép điều khiển từ xa</string>
     <string name="settings_allow_remote_control_subtitle">Cho phép các thiết bị khác trong cùng mạng điều khiển phát lại khi kết nối.</string>
@@ -491,7 +489,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Thiết bị</string>
     <string name="devices_refresh">Làm mới</string>
-    <string name="devices_connected_to">Đã kết nối với %1$s:%2$d</string>
     <string name="devices_disconnect">Ngắt kết nối</string>
     <string name="devices_connecting">Đang kết nối...</string>
     <string name="devices_searching">Đang tìm thiết bị trong mạng...</string>
@@ -499,20 +496,13 @@
     <string name="devices_empty_hint">Hãy đảm bảo thiết bị kia đã bật \"Cho phép điều khiển từ xa\" trong cài đặt.</string>
     <string name="devices_unknown_device">Thiết bị không xác định</string>
     <string name="devices_resolving">Đang phân giải...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Điều khiển từ xa</string>
     <string name="devices_remote_disconnected">Đã ngắt kết nối</string>
     <string name="devices_remote_connection_error">Lỗi kết nối: %1$s</string>
-    <string name="devices_remote_album_cover">Ảnh bìa album</string>
     <string name="devices_remote_unknown_track">Bài hát không xác định</string>
     <string name="devices_remote_unknown_artist">Nghệ sĩ không xác định</string>
-    <string name="devices_remote_seek">Tua</string>
-    <string name="devices_remote_shuffle">Phát ngẫu nhiên</string>
-    <string name="devices_remote_previous">Trước</string>
-    <string name="devices_remote_next">Tiếp</string>
-    <string name="devices_remote_loop_mode">Chế độ lặp</string>
     <string name="devices_remote_volume">Âm lượng</string>
     <string name="devices_remote_remove_from_queue">Xóa khỏi danh sách chờ</string>
     <string name="devices_remote_more_options">Tùy chọn khác</string>

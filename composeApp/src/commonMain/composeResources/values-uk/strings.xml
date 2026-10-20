@@ -219,8 +219,6 @@
     <string name="settings_error_cache_size_range">Розмір має бути 0 або додатним числом.</string>
     <string name="settings_enable_endless_playback_title">Безкінечне відтворення</string>
     <string name="settings_enable_endless_playback_subtitle">Продовжувати відтворення рекомендованими треками, коли черга закінчиться.</string>
-    <string name="settings_enable_connect_title">Увімкнути Connect</string>
-    <string name="settings_enable_connect_subtitle">Надавати віддалене керування відтворенням через Spotube Connect.</string>
     <string name="settings_playback_port_title">Порт проксі-сервера відтворення</string>
     <string name="settings_allow_remote_control_title">Дозволити віддалене керування</string>
     <string name="settings_allow_remote_control_subtitle">Дозволити іншим пристроям у тій самій мережі керувати відтворенням після підключення.</string>
@@ -503,7 +501,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Пристрої</string>
     <string name="devices_refresh">Оновити</string>
-    <string name="devices_connected_to">Підключено до %1$s:%2$d</string>
     <string name="devices_disconnect">Від’єднатися</string>
     <string name="devices_connecting">Підключення...</string>
     <string name="devices_searching">Пошук пристроїв у мережі...</string>
@@ -511,20 +508,13 @@
     <string name="devices_empty_hint">Переконайтеся, що на іншому пристрої в налаштуваннях увімкнено «Дозволити віддалене керування».</string>
     <string name="devices_unknown_device">Невідомий пристрій</string>
     <string name="devices_resolving">Визначення адреси...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Віддалене керування</string>
     <string name="devices_remote_disconnected">Від’єднано</string>
     <string name="devices_remote_connection_error">Помилка підключення: %1$s</string>
-    <string name="devices_remote_album_cover">Обкладинка альбому</string>
     <string name="devices_remote_unknown_track">Невідомий трек</string>
     <string name="devices_remote_unknown_artist">Невідомий виконавець</string>
-    <string name="devices_remote_seek">Перемотування</string>
-    <string name="devices_remote_shuffle">Перемішати</string>
-    <string name="devices_remote_previous">Попередній</string>
-    <string name="devices_remote_next">Наступний</string>
-    <string name="devices_remote_loop_mode">Режим повтору</string>
     <string name="devices_remote_volume">Гучність</string>
     <string name="devices_remote_remove_from_queue">Видалити з черги</string>
     <string name="devices_remote_more_options">Інші дії</string>

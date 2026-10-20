@@ -216,8 +216,6 @@
     <string name="settings_error_cache_size_range">El tamaño debe ser 0 o un número positivo.</string>
     <string name="settings_enable_endless_playback_title">Activar reproducción infinita</string>
     <string name="settings_enable_endless_playback_subtitle">Sigue reproduciendo canciones recomendadas cuando termine la cola.</string>
-    <string name="settings_enable_connect_title">Activar Connect</string>
-    <string name="settings_enable_connect_subtitle">Ofrece controles de reproducción remota mediante la función Spotube Connect.</string>
     <string name="settings_playback_port_title">Puerto del servidor proxy de reproducción</string>
     <string name="settings_allow_remote_control_title">Permitir control remoto</string>
     <string name="settings_allow_remote_control_subtitle">Permite que otros dispositivos de la misma red controlen la reproducción al conectarse.</string>
@@ -499,7 +497,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Dispositivos</string>
     <string name="devices_refresh">Actualizar</string>
-    <string name="devices_connected_to">Conectado a %1$s:%2$d</string>
     <string name="devices_disconnect">Desconectar</string>
     <string name="devices_connecting">Conectando...</string>
     <string name="devices_searching">Buscando dispositivos en la red...</string>
@@ -507,20 +504,13 @@
     <string name="devices_empty_hint">Asegúrate de que el otro dispositivo tenga activado \"Permitir control remoto\" en los ajustes.</string>
     <string name="devices_unknown_device">Dispositivo desconocido</string>
     <string name="devices_resolving">Resolviendo...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Control remoto</string>
     <string name="devices_remote_disconnected">Desconectado</string>
     <string name="devices_remote_connection_error">Error de conexión: %1$s</string>
-    <string name="devices_remote_album_cover">Portada del álbum</string>
     <string name="devices_remote_unknown_track">Canción desconocida</string>
     <string name="devices_remote_unknown_artist">Artista desconocido</string>
-    <string name="devices_remote_seek">Avanzar</string>
-    <string name="devices_remote_shuffle">Aleatorio</string>
-    <string name="devices_remote_previous">Anterior</string>
-    <string name="devices_remote_next">Siguiente</string>
-    <string name="devices_remote_loop_mode">Modo de repetición</string>
     <string name="devices_remote_volume">Volumen</string>
     <string name="devices_remote_remove_from_queue">Quitar de la cola</string>
     <string name="devices_remote_more_options">Más opciones</string>

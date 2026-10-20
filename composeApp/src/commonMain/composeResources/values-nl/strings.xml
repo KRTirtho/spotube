@@ -213,8 +213,6 @@
     <string name="settings_error_cache_size_range">Grootte moet 0 of een positief getal zijn.</string>
     <string name="settings_enable_endless_playback_title">Eindeloos afspelen inschakelen</string>
     <string name="settings_enable_endless_playback_subtitle">Blijf afspelen met aanbevolen nummers als je wachtrij leeg is.</string>
-    <string name="settings_enable_connect_title">Connect inschakelen</string>
-    <string name="settings_enable_connect_subtitle">Maak bediening op afstand beschikbaar via Spotube Connect.</string>
     <string name="settings_playback_port_title">Poort van afspeelproxyserver</string>
     <string name="settings_allow_remote_control_title">Bediening op afstand toestaan</string>
     <string name="settings_allow_remote_control_subtitle">Laat andere apparaten op hetzelfde netwerk het afspelen bedienen als ze verbinding maken.</string>
@@ -495,7 +493,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Apparaten</string>
     <string name="devices_refresh">Vernieuwen</string>
-    <string name="devices_connected_to">Verbonden met %1$s:%2$d</string>
     <string name="devices_disconnect">Verbinding verbreken</string>
     <string name="devices_connecting">Verbinden...</string>
     <string name="devices_searching">Zoeken naar apparaten op het netwerk...</string>
@@ -503,20 +500,13 @@
     <string name="devices_empty_hint">Zorg dat \"Bediening op afstand toestaan\" is ingeschakeld in de instellingen van het andere apparaat.</string>
     <string name="devices_unknown_device">Onbekend apparaat</string>
     <string name="devices_resolving">Bezig met ophalen...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Bediening op afstand</string>
     <string name="devices_remote_disconnected">Niet verbonden</string>
     <string name="devices_remote_connection_error">Verbindingsfout: %1$s</string>
-    <string name="devices_remote_album_cover">Albumhoes</string>
     <string name="devices_remote_unknown_track">Onbekend nummer</string>
     <string name="devices_remote_unknown_artist">Onbekende artiest</string>
-    <string name="devices_remote_seek">Zoeken in nummer</string>
-    <string name="devices_remote_shuffle">Shuffle</string>
-    <string name="devices_remote_previous">Vorige</string>
-    <string name="devices_remote_next">Volgende</string>
-    <string name="devices_remote_loop_mode">Herhaalmodus</string>
     <string name="devices_remote_volume">Volume</string>
     <string name="devices_remote_remove_from_queue">Verwijderen uit wachtrij</string>
     <string name="devices_remote_more_options">Meer opties</string>

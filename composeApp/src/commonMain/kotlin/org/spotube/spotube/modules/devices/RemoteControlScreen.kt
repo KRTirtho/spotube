@@ -18,35 +18,40 @@
 package org.spotube.spotube.modules.devices
 
 
+import org.spotube.millennium.composables.MillenniumButton
+import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumCard
+import org.spotube.millennium.composables.MillenniumDropdownMenu
 import org.spotube.millennium.composables.MillenniumDropdownMenuItem
-import org.spotube.spotube.resources.iconsax.IconsaxMusicSquareRemove
 import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumIconButton
 import org.spotube.millennium.composables.MillenniumIconButtonStyle
 import org.spotube.millennium.composables.MillenniumListTile
 import org.spotube.millennium.composables.MillenniumSlider
-import org.spotube.millennium.composables.MillenniumDropdownMenu
+import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 
@@ -61,475 +66,675 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import org.spotube.spotube.core.remote.ConnectionState
-import org.spotube.spotube.core.remote.RemoteQueueEntry
 import org.spotube.spotube.core.ui.component.ApplicationMainBar
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
 import org.spotube.spotube.modules.shell.player_queue.QueueSheet
 import org.spotube.spotube.resources.iconsax.Iconsax
 import org.spotube.spotube.resources.iconsax.Iconsax3DotsMore
 import org.spotube.spotube.resources.iconsax.IconsaxCloseSquare
+import org.spotube.spotube.resources.iconsax.IconsaxMirroringScreen
+import org.spotube.spotube.resources.iconsax.IconsaxMusic
 import org.spotube.spotube.resources.iconsax.IconsaxMusicFilter
+import org.spotube.spotube.resources.iconsax.IconsaxMusicSquareRemove
 import org.spotube.spotube.resources.iconsax.IconsaxNext
 import org.spotube.spotube.resources.iconsax.IconsaxPause
 import org.spotube.spotube.resources.iconsax.IconsaxPlay
 import org.spotube.spotube.resources.iconsax.IconsaxPrevious
+import org.spotube.spotube.resources.iconsax.IconsaxRepeatMusic
 import org.spotube.spotube.resources.iconsax.IconsaxRepeateMusic
+import org.spotube.spotube.resources.iconsax.IconsaxRepeateOne
 import org.spotube.spotube.resources.iconsax.IconsaxShuffle
+import org.spotube.spotube.resources.iconsax.IconsaxVolumeCross
 import org.spotube.spotube.resources.iconsax.IconsaxVolumeHigh
+import org.spotube.spotube.resources.iconsax.IconsaxVolumeLow
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import spotube.composeapp.generated.resources.Res
 import spotube.composeapp.generated.resources.devices_connecting
 import spotube.composeapp.generated.resources.devices_disconnect
-import spotube.composeapp.generated.resources.devices_remote_album_cover
+import spotube.composeapp.generated.resources.devices_remote_back_to_devices
+import spotube.composeapp.generated.resources.devices_remote_connecting_hint
 import spotube.composeapp.generated.resources.devices_remote_connection_error
 import spotube.composeapp.generated.resources.devices_remote_disconnected
-import spotube.composeapp.generated.resources.devices_remote_loop_mode
+import spotube.composeapp.generated.resources.devices_remote_disconnected_hint
 import spotube.composeapp.generated.resources.devices_remote_more_options
-import spotube.composeapp.generated.resources.devices_remote_next
-import spotube.composeapp.generated.resources.devices_remote_previous
+import spotube.composeapp.generated.resources.devices_remote_nothing_playing
+import spotube.composeapp.generated.resources.devices_remote_nothing_playing_hint
+import spotube.composeapp.generated.resources.devices_remote_playing_on
 import spotube.composeapp.generated.resources.devices_remote_remove_from_queue
-import spotube.composeapp.generated.resources.devices_remote_seek
-import spotube.composeapp.generated.resources.devices_remote_shuffle
 import spotube.composeapp.generated.resources.devices_remote_title
 import spotube.composeapp.generated.resources.devices_remote_unknown_artist
 import spotube.composeapp.generated.resources.devices_remote_unknown_track
 import spotube.composeapp.generated.resources.devices_remote_volume
+import spotube.composeapp.generated.resources.player_disable_shuffle_content_description
+import spotube.composeapp.generated.resources.player_enable_shuffle_content_description
+import spotube.composeapp.generated.resources.player_loop_mode_all
+import spotube.composeapp.generated.resources.player_loop_mode_none
+import spotube.composeapp.generated.resources.player_loop_mode_one
+import spotube.composeapp.generated.resources.player_next_content_description
 import spotube.composeapp.generated.resources.player_pause_content_description
 import spotube.composeapp.generated.resources.player_play_content_description
+import spotube.composeapp.generated.resources.player_previous_content_description
+import spotube.composeapp.generated.resources.player_seek_label
 import spotube.composeapp.generated.resources.queue_no_queue_entries
 import spotube.composeapp.generated.resources.queue_title
-import kotlin.time.Duration.Companion.milliseconds
+
+// Below this content width the queue moves into a sheet; above it, it sits beside the player.
+private val WideLayoutMinWidth = 760.dp
+private val QueuePanelWidth = 380.dp
+private val NowPlayingMaxWidth = 520.dp
+
+// Rough height of everything under the artwork (track info, seek bar, controls, volume).
+// The artwork gets what's left, so the whole player fits without scrolling.
+private val ControlsReservedHeight = 330.dp
+private val MinArtworkSize = 140.dp
+private val MaxArtworkSize = 460.dp
 
 @Composable
 fun RemoteControlScreen(
-    onDisconnect: () -> Unit
+    onDisconnect: () -> Unit,
+    viewModel: RemoteControlViewModel = koinViewModel()
 ) {
-    val viewModel = koinViewModel<RemoteControlViewModel>()
-    val playerState by viewModel.playerState.collectAsStateWithLifecycle()
-    val connectionState by viewModel.connectionState.collectAsStateWithLifecycle()
-    val queueState by viewModel.queueState.collectAsStateWithLifecycle()
-    val isQueueVisible by viewModel.isQueueVisible.collectAsStateWithLifecycle()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val shellBottomInset = LocalAppShellBottomInset.current
+    val isConnected = state.connection is ConnectionState.Connected
 
-    // Center the mobile-inspired layout and limit its width so it doesn't
-    // stretch awkwardly on large screens.
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+    BoxWithConstraints(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MillenniumTheme.colors.background)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .background(MillenniumTheme.colors.background)
-        ) {
+        val isWide = maxWidth >= WideLayoutMinWidth
+
+        Column(modifier = Modifier.fillMaxSize()) {
             ApplicationMainBar(
                 title = { Text(stringResource(Res.string.devices_remote_title)) },
+                subtitle = {
+                    if (isConnected && state.deviceName.isNotBlank()) {
+                        Text(stringResource(Res.string.devices_remote_playing_on, state.deviceName))
+                    }
+                },
                 backButton = true,
                 actions = {
-                    MillenniumIconButton(
-                        onClick = viewModel::toggleQueueVisibility,
-                        style = MillenniumIconButtonStyle.Quiet
-                    ) {
-                        MillenniumIcon(
-                            imageVector = Iconsax.IconsaxMusicFilter,
-                            contentDescription = stringResource(Res.string.queue_title),
-                            tint = if (isQueueVisible) {
-                                AppTheme.colors.primary
-                            } else {
-                                AppTheme.colors.onSurfaceVariant
-                            }
-                        )
+                    if (isConnected && !isWide) {
+                        MillenniumIconButton(
+                            onClick = viewModel::toggleQueueVisibility,
+                            style = MillenniumIconButtonStyle.Quiet
+                        ) {
+                            MillenniumIcon(
+                                imageVector = Iconsax.IconsaxMusicFilter,
+                                contentDescription = stringResource(Res.string.queue_title),
+                                tint = if (state.isQueueVisible) {
+                                    AppTheme.colors.primary
+                                } else {
+                                    AppTheme.colors.onSurfaceVariant
+                                }
+                            )
+                        }
                     }
-                    MillenniumIconButton(
-                        onClick = {
-                            viewModel.disconnect()
-                            onDisconnect()
-                        },
-                        style = MillenniumIconButtonStyle.Quiet
-                    ) {
-                        MillenniumIcon(
-                            imageVector = Iconsax.IconsaxCloseSquare,
-                            contentDescription = stringResource(Res.string.devices_disconnect)
-                        )
+                    if (isConnected) {
+                        MillenniumIconButton(
+                            onClick = {
+                                viewModel.disconnect()
+                                onDisconnect()
+                            },
+                            style = MillenniumIconButtonStyle.Quiet
+                        ) {
+                            MillenniumIcon(
+                                imageVector = Iconsax.IconsaxCloseSquare,
+                                contentDescription = stringResource(Res.string.devices_disconnect)
+                            )
+                        }
                     }
                 }
             )
-            Box(modifier = Modifier.weight(1f)) {
-                when (connectionState) {
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(bottom = shellBottomInset)
+            ) {
+                when (val connection = state.connection) {
                     is ConnectionState.Connected -> {
-                        RemoteControlContent(
-                            playerState = playerState,
-                            onTogglePlayPause = viewModel::togglePlayPause,
-                            onSkipNext = viewModel::skipNext,
-                            onSkipPrevious = viewModel::skipPrevious,
-                            onSeek = viewModel::seek,
-                            onSetVolume = viewModel::setVolume,
-                            onToggleShuffle = viewModel::toggleShuffle,
-                            onCycleLoopMode = viewModel::cycleLoopMode,
-                            modifier = Modifier.padding(bottom = shellBottomInset)
+                        if (isWide) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(24.dp)
+                            ) {
+                                NowPlayingPane(
+                                    state = state,
+                                    viewModel = viewModel,
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight()
+                                )
+                                MillenniumCard(
+                                    modifier = Modifier
+                                        .width(QueuePanelWidth)
+                                        .fillMaxHeight(),
+                                    maxWidth = QueuePanelWidth,
+                                    contentPadding = PaddingValues(12.dp),
+                                    shadowElevation = 2.dp
+                                ) {
+                                    RemoteQueueList(
+                                        state = state,
+                                        onPlayQueueItem = viewModel::playQueueItem,
+                                        onRemoveQueueItem = viewModel::removeQueueItem
+                                    )
+                                }
+                            }
+                        } else {
+                            NowPlayingPane(
+                                state = state,
+                                viewModel = viewModel,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
+                    }
+
+                    is ConnectionState.Connecting -> ConnectionStatus(
+                        title = stringResource(Res.string.devices_connecting),
+                        message = stringResource(Res.string.devices_remote_connecting_hint),
+                        leading = { MillenniumSpokeSpinner(size = 40.dp) }
+                    )
+
+                    is ConnectionState.Disconnected -> ConnectionStatus(
+                        title = stringResource(Res.string.devices_remote_disconnected),
+                        message = stringResource(Res.string.devices_remote_disconnected_hint),
+                        leading = { StatusIcon(Iconsax.IconsaxMirroringScreen, isError = false) },
+                        actionLabel = stringResource(Res.string.devices_remote_back_to_devices),
+                        onAction = onDisconnect
+                    )
+
+                    is ConnectionState.Error -> ConnectionStatus(
+                        title = stringResource(Res.string.devices_remote_disconnected),
+                        message = stringResource(
+                            Res.string.devices_remote_connection_error,
+                            connection.message ?: stringResource(connection.fallback)
+                        ),
+                        leading = { StatusIcon(Iconsax.IconsaxMirroringScreen, isError = true) },
+                        actionLabel = stringResource(Res.string.devices_remote_back_to_devices),
+                        onAction = onDisconnect
+                    )
+                }
+            }
+        }
+
+        if (isConnected && !isWide) {
+            // Click-outside scrim for the sliding drawer variant of the queue sheet.
+            // (The bottom sheet variant has its own built-in scrim.)
+            if (state.isQueueVisible) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null,
+                            onClick = viewModel::dismissQueue
                         )
-                    }
-
-                    is ConnectionState.Connecting -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = shellBottomInset),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(stringResource(Res.string.devices_connecting))
-                        }
-                    }
-
-                    is ConnectionState.Disconnected -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = shellBottomInset),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(stringResource(Res.string.devices_remote_disconnected))
-                        }
-                    }
-
-                    is ConnectionState.Error -> {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(bottom = shellBottomInset),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            val errorState = connectionState as ConnectionState.Error
-                            Text(
-                                stringResource(
-                                    Res.string.devices_remote_connection_error,
-                                    errorState.message ?: stringResource(errorState.fallback)))
-                        }
-                    }
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = shellBottomInset)
+            ) {
+                QueueSheet(
+                    isVisible = state.isQueueVisible,
+                    onDismiss = viewModel::dismissQueue,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    RemoteQueueList(
+                        state = state,
+                        onPlayQueueItem = viewModel::playQueueItem,
+                        onRemoveQueueItem = viewModel::removeQueueItem
+                    )
                 }
             }
         }
     }
+}
 
-    // Click-outside scrim for the sliding queue sheet on large screens.
-    // (The ModalBottomSheet variant has its own built-in scrim.)
-    if (isQueueVisible) {
-        Box(
+@Composable
+private fun NowPlayingPane(
+    state: RemoteControlUiState,
+    viewModel: RemoteControlViewModel,
+    modifier: Modifier = Modifier
+) {
+    BoxWithConstraints(modifier = modifier) {
+        val artworkSize = minOf(
+            maxWidth - 32.dp,
+            maxHeight - ControlsReservedHeight,
+            MaxArtworkSize
+        ).coerceAtLeast(MinArtworkSize)
+
+        // Centered when it fits; scrolls only on very short windows.
+        Column(
             modifier = Modifier
-                .fillMaxSize()
-                .clickable(
-                    interactionSource = remember { MutableInteractionSource() },
-                    indication = null,
-                    onClick = { viewModel.toggleQueueVisibility() })
-        )
+                .fillMaxWidth()
+                .verticalScroll(rememberScrollState())
+                .heightIn(min = maxHeight)
+                .padding(horizontal = 16.dp, vertical = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Column(
+                modifier = Modifier.widthIn(max = NowPlayingMaxWidth),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Artwork(
+                    coverUrl = state.coverUrl,
+                    contentDescription = state.title,
+                    size = artworkSize
+                )
+                TrackInfo(
+                    state = state,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp)
+                )
+                SeekBar(
+                    state = state,
+                    onSeekChange = viewModel::onSeekChange,
+                    onSeekFinished = viewModel::onSeekFinished,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp)
+                )
+                PlaybackControls(
+                    state = state,
+                    onToggleShuffle = viewModel::toggleShuffle,
+                    onSkipPrevious = viewModel::skipPrevious,
+                    onTogglePlayPause = viewModel::togglePlayPause,
+                    onSkipNext = viewModel::skipNext,
+                    onCycleLoopMode = viewModel::cycleLoopMode,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 12.dp)
+                )
+                VolumeControl(
+                    state = state,
+                    onVolumeChange = viewModel::onVolumeChange,
+                    onVolumeChangeFinished = viewModel::onVolumeChangeFinished,
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     }
+}
 
-    // Keep the sliding sheet above the AppLargePlayer on large screens.
+@Composable
+private fun Artwork(
+    coverUrl: String?,
+    contentDescription: String?,
+    size: Dp
+) {
     Box(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = shellBottomInset)
+            .size(size)
+            .clip(RoundedCornerShape(22.dp))
+            .background(AppTheme.colors.surfaceContainerHighest),
+        contentAlignment = Alignment.Center
     ) {
-        QueueSheet(
-            isVisible = isQueueVisible,
-            onDismiss = { viewModel.toggleQueueVisibility() },
-            modifier = Modifier.fillMaxSize()
-        ) {
-            RemoteQueueSection(
-                queueState = queueState,
-                onPlayQueueItem = viewModel::playQueueItem,
-                onRemoveQueueItem = viewModel::removeQueueItem
+        if (coverUrl != null) {
+            AsyncImage(
+                model = coverUrl,
+                contentDescription = contentDescription,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+        } else {
+            MillenniumIcon(
+                imageVector = Iconsax.IconsaxMusic,
+                contentDescription = null,
+                tint = AppTheme.colors.onSurfaceVariant,
+                modifier = Modifier.size(56.dp)
             )
         }
     }
 }
 
 @Composable
-private fun RemoteControlContent(
-    playerState: RemotePlayerState,
+private fun TrackInfo(
+    state: RemoteControlUiState,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        if (!state.hasTrack) {
+            Text(
+                text = stringResource(Res.string.devices_remote_nothing_playing),
+                style = AppTheme.typography.headlineSmall,
+                textAlign = TextAlign.Center,
+                maxLines = 1
+            )
+            Text(
+                text = stringResource(Res.string.devices_remote_nothing_playing_hint),
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.onSurfaceVariant,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 4.dp)
+            )
+            return@Column
+        }
+
+        Text(
+            text = state.title ?: stringResource(Res.string.devices_remote_unknown_track),
+            style = AppTheme.typography.headlineSmall,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        Text(
+            text = state.artists ?: stringResource(Res.string.devices_remote_unknown_artist),
+            style = AppTheme.typography.bodyLarge,
+            color = AppTheme.colors.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
+        )
+        state.album?.let { album ->
+            Text(
+                text = album,
+                style = AppTheme.typography.bodySmall,
+                color = MillenniumTheme.colors.muted,
+                textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.padding(top = 2.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SeekBar(
+    state: RemoteControlUiState,
+    onSeekChange: (Float) -> Unit,
+    onSeekFinished: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier) {
+        MillenniumSlider(
+            value = state.seekProgress,
+            onValueChange = onSeekChange,
+            onValueChangeFinished = onSeekFinished,
+            enabled = state.canSeek,
+            label = stringResource(Res.string.player_seek_label),
+            modifier = Modifier.fillMaxWidth()
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 2.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = state.positionLabel,
+                style = AppTheme.typography.labelSmall,
+                color = AppTheme.colors.onSurfaceVariant
+            )
+            Text(
+                text = state.durationLabel,
+                style = AppTheme.typography.labelSmall,
+                color = AppTheme.colors.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlaybackControls(
+    state: RemoteControlUiState,
+    onToggleShuffle: () -> Unit,
+    onSkipPrevious: () -> Unit,
     onTogglePlayPause: () -> Unit,
     onSkipNext: () -> Unit,
-    onSkipPrevious: () -> Unit,
-    onSeek: (Long) -> Unit,
-    onSetVolume: (Float) -> Unit,
-    onToggleShuffle: () -> Unit,
     onCycleLoopMode: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = modifier
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp)
-                .widthIn(max = 480.dp)
-                .align(Alignment.TopCenter),
-            horizontalAlignment = Alignment.CenterHorizontally
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        MillenniumIconButton(
+            onClick = onToggleShuffle,
+            style = MillenniumIconButtonStyle.Quiet
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Album art
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(16.dp))
-                    .background(AppTheme.colors.surfaceVariant)
-            ) {
-                if (playerState.currentTrackCoverUrl != null) {
-                    AsyncImage(
-                        model = playerState.currentTrackCoverUrl,
-                        contentDescription = stringResource(Res.string.devices_remote_album_cover),
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        MillenniumIcon(
-                            imageVector = Iconsax.IconsaxMusicFilter,
-                            contentDescription = null,
-                            tint = AppTheme.colors.onSurfaceVariant,
-                            modifier = Modifier.size(48.dp)
-                        )
+            MillenniumIcon(
+                imageVector = Iconsax.IconsaxShuffle,
+                contentDescription = stringResource(
+                    if (state.isShuffling) {
+                        Res.string.player_disable_shuffle_content_description
+                    } else {
+                        Res.string.player_enable_shuffle_content_description
                     }
+                ),
+                tint = if (state.isShuffling) AppTheme.colors.primary else AppTheme.colors.onSurfaceVariant
+            )
+        }
+        MillenniumIconButton(
+            onClick = onSkipPrevious,
+            style = MillenniumIconButtonStyle.Quiet
+        ) {
+            MillenniumIcon(
+                imageVector = Iconsax.IconsaxPrevious,
+                contentDescription = stringResource(Res.string.player_previous_content_description)
+            )
+        }
+        MillenniumIconButton(
+            onClick = onTogglePlayPause,
+            style = MillenniumIconButtonStyle.Primary
+        ) {
+            MillenniumIcon(
+                imageVector = if (state.isPlaying) Iconsax.IconsaxPause else Iconsax.IconsaxPlay,
+                contentDescription = stringResource(
+                    if (state.isPlaying) {
+                        Res.string.player_pause_content_description
+                    } else {
+                        Res.string.player_play_content_description
+                    }
+                ),
+                modifier = Modifier.size(30.dp),
+                tint = LocalTextStyle.current.color
+            )
+        }
+        MillenniumIconButton(
+            onClick = onSkipNext,
+            style = MillenniumIconButtonStyle.Quiet
+        ) {
+            MillenniumIcon(
+                imageVector = Iconsax.IconsaxNext,
+                contentDescription = stringResource(Res.string.player_next_content_description)
+            )
+        }
+        MillenniumIconButton(
+            onClick = onCycleLoopMode,
+            style = MillenniumIconButtonStyle.Quiet
+        ) {
+            MillenniumIcon(
+                imageVector = when (state.loopMode) {
+                    RemoteLoopMode.NONE -> Iconsax.IconsaxRepeateMusic
+                    RemoteLoopMode.ONE -> Iconsax.IconsaxRepeateOne
+                    RemoteLoopMode.ALL -> Iconsax.IconsaxRepeatMusic
+                },
+                contentDescription = stringResource(
+                    when (state.loopMode) {
+                        RemoteLoopMode.NONE -> Res.string.player_loop_mode_none
+                        RemoteLoopMode.ONE -> Res.string.player_loop_mode_one
+                        RemoteLoopMode.ALL -> Res.string.player_loop_mode_all
+                    }
+                ),
+                tint = if (state.loopMode == RemoteLoopMode.NONE) {
+                    AppTheme.colors.onSurfaceVariant
+                } else {
+                    AppTheme.colors.primary
                 }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Track info
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = playerState.currentTrackTitle ?: stringResource(Res.string.devices_remote_unknown_track),
-                    style = AppTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = playerState.currentTrackArtists ?: stringResource(Res.string.devices_remote_unknown_artist),
-                    style = AppTheme.typography.bodyLarge,
-                    color = AppTheme.colors.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                if (playerState.currentTrackAlbum != null) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = playerState.currentTrackAlbum!!,
-                        style = AppTheme.typography.bodyMedium,
-                        color = AppTheme.colors.onSurfaceVariant.copy(alpha = 0.7f),
-                        textAlign = TextAlign.Center,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Seek bar
-            Column(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                MillenniumSlider(
-                    value = playerState.positionMs.toFloat(),
-                    onValueChange = { onSeek(it.toLong()) },
-                    label = stringResource(Res.string.devices_remote_seek),
-                    valueRange = 0f..playerState.durationMs.toFloat().coerceAtLeast(1f),
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = formatDuration(playerState.positionMs),
-                        style = AppTheme.typography.bodySmall,
-                        color = AppTheme.colors.onSurfaceVariant
-                    )
-                    Text(
-                        text = formatDuration(playerState.durationMs),
-                        style = AppTheme.typography.bodySmall,
-                        color = AppTheme.colors.onSurfaceVariant
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Playback controls
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Shuffle
-                MillenniumIconButton(
-                    onClick = onToggleShuffle,
-                    style = MillenniumIconButtonStyle.Quiet
-                ) {
-                    MillenniumIcon(
-                        imageVector = Iconsax.IconsaxShuffle,
-                        contentDescription = stringResource(Res.string.devices_remote_shuffle),
-                        tint = if (playerState.shuffleEnabled) {
-                            AppTheme.colors.primary
-                        } else {
-                            AppTheme.colors.onSurfaceVariant
-                        }
-                    )
-                }
-
-                // Skip previous
-                MillenniumIconButton(
-                    onClick = onSkipPrevious,
-                    style = MillenniumIconButtonStyle.Quiet
-                ) {
-                    MillenniumIcon(
-                        imageVector = Iconsax.IconsaxPrevious,
-                        contentDescription = stringResource(Res.string.devices_remote_previous),
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-
-                // Play/Pause
-                MillenniumIconButton(
-                    onClick = onTogglePlayPause,
-                    style = MillenniumIconButtonStyle.Primary
-                ) {
-                    MillenniumIcon(
-                        imageVector = if (playerState.isPlaying) {
-                            Iconsax.IconsaxPause
-                        } else {
-                            Iconsax.IconsaxPlay
-                        },
-                        contentDescription = if (playerState.isPlaying) {
-                            stringResource(Res.string.player_pause_content_description)
-                        } else {
-                            stringResource(Res.string.player_play_content_description)
-                        },
-                        modifier = Modifier.size(40.dp),
-                        tint = LocalTextStyle.current.color
-                    )
-                }
-
-                // Skip next
-                MillenniumIconButton(
-                    onClick = onSkipNext,
-                    style = MillenniumIconButtonStyle.Quiet
-                ) {
-                    MillenniumIcon(
-                        imageVector = Iconsax.IconsaxNext,
-                        contentDescription = stringResource(Res.string.devices_remote_next),
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-
-                // Loop mode
-                MillenniumIconButton(
-                    onClick = onCycleLoopMode,
-                    style = MillenniumIconButtonStyle.Quiet
-                ) {
-                    MillenniumIcon(
-                        imageVector = Iconsax.IconsaxRepeateMusic,
-                        contentDescription = stringResource(Res.string.devices_remote_loop_mode),
-                        tint = if (playerState.loopMode != "none") {
-                            AppTheme.colors.primary
-                        } else {
-                            AppTheme.colors.onSurfaceVariant
-                        }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Volume control
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                MillenniumIcon(
-                    imageVector = Iconsax.IconsaxVolumeHigh,
-                    contentDescription = stringResource(Res.string.devices_remote_volume),
-                    tint = AppTheme.colors.onSurfaceVariant,
-                    modifier = Modifier.size(24.dp)
-                )
-
-                MillenniumSlider(
-                    value = playerState.volume,
-                    onValueChange = onSetVolume,
-                    label = stringResource(Res.string.devices_remote_volume),
-                    valueRange = 0f..1f,
-                    modifier = Modifier.weight(1f)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(32.dp))
+            )
         }
     }
 }
 
 @Composable
-private fun RemoteQueueSection(
-    queueState: RemoteQueueState,
+private fun VolumeControl(
+    state: RemoteControlUiState,
+    onVolumeChange: (Float) -> Unit,
+    onVolumeChangeFinished: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        MillenniumIcon(
+            imageVector = when (state.volumeLevel) {
+                RemoteVolumeLevel.MUTED -> Iconsax.IconsaxVolumeCross
+                RemoteVolumeLevel.LOW -> Iconsax.IconsaxVolumeLow
+                RemoteVolumeLevel.HIGH -> Iconsax.IconsaxVolumeHigh
+            },
+            contentDescription = null,
+            tint = AppTheme.colors.onSurfaceVariant,
+            modifier = Modifier.size(20.dp)
+        )
+        MillenniumSlider(
+            value = state.volume,
+            onValueChange = onVolumeChange,
+            onValueChangeFinished = onVolumeChangeFinished,
+            label = stringResource(Res.string.devices_remote_volume),
+            modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Composable
+private fun ConnectionStatus(
+    title: String,
+    message: String,
+    leading: @Composable () -> Unit,
+    actionLabel: String? = null,
+    onAction: () -> Unit = {}
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.widthIn(max = 360.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            leading()
+            Text(
+                text = title,
+                style = AppTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+            Text(
+                text = message,
+                style = AppTheme.typography.bodyMedium,
+                color = AppTheme.colors.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+            if (actionLabel != null) {
+                MillenniumButton(
+                    onClick = onAction,
+                    style = MillenniumButtonStyle.Secondary,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text(actionLabel)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun StatusIcon(icon: ImageVector, isError: Boolean) {
+    Box(
+        modifier = Modifier
+            .size(72.dp)
+            .clip(CircleShape)
+            .background(
+                if (isError) AppTheme.colors.errorContainer else AppTheme.colors.surfaceContainerHighest
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        MillenniumIcon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = if (isError) AppTheme.colors.onErrorContainer else AppTheme.colors.onSurfaceVariant,
+            modifier = Modifier.size(32.dp)
+        )
+    }
+}
+
+@Composable
+private fun RemoteQueueList(
+    state: RemoteControlUiState,
     onPlayQueueItem: (Int) -> Unit,
     onRemoveQueueItem: (String) -> Unit
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(
             text = stringResource(Res.string.queue_title),
-            style = AppTheme.typography.titleLarge
+            style = AppTheme.typography.titleLarge,
+            modifier = Modifier.padding(horizontal = 4.dp)
         )
 
-        if (queueState.entries.isEmpty()) {
-            Text(
-                text = stringResource(Res.string.queue_no_queue_entries),
-                style = AppTheme.typography.bodyMedium,
-                color = AppTheme.colors.onSurfaceVariant
-            )
+        if (state.queue.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(Res.string.queue_no_queue_entries),
+                    style = AppTheme.typography.bodyMedium,
+                    color = AppTheme.colors.onSurfaceVariant
+                )
+            }
         } else {
+            // Open with the current track in view; after that the user owns the scroll position.
+            val listState = rememberLazyListState(
+                initialFirstVisibleItemIndex = state.currentQueueIndex.coerceAtLeast(0)
+            )
             LazyColumn(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                state = listState,
                 contentPadding = PaddingValues(bottom = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                itemsIndexed(
-                    items = queueState.entries,
-                    key = { index, entry -> "${entry.mediaUrl}@$index" }) { index, entry ->
+                items(items = state.queue, key = { it.key }) { item ->
                     RemoteQueueItemRow(
-                        entry = entry,
-                        index = index,
-                        isCurrent = index == queueState.currentIndex,
-                        onPlayClick = { onPlayQueueItem(index) },
-                        onRemoveClick = { onRemoveQueueItem(entry.mediaUrl) })
+                        item = item,
+                        onPlayClick = { onPlayQueueItem(item.index) },
+                        onRemoveClick = { onRemoveQueueItem(item.mediaUrl) }
+                    )
                 }
             }
         }
@@ -538,9 +743,7 @@ private fun RemoteQueueSection(
 
 @Composable
 private fun RemoteQueueItemRow(
-    entry: RemoteQueueEntry,
-    index: Int,
-    isCurrent: Boolean,
+    item: RemoteQueueItemUi,
     onPlayClick: () -> Unit,
     onRemoveClick: () -> Unit
 ) {
@@ -548,26 +751,25 @@ private fun RemoteQueueItemRow(
 
     MillenniumListTile(
         onClick = onPlayClick,
-        selected = isCurrent,
-        modifier = Modifier,
+        selected = item.isCurrent,
         leading = {
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(40.dp)
                     .clip(AppTheme.shapes.small)
                     .background(AppTheme.colors.surfaceVariant),
                 contentAlignment = Alignment.Center
             ) {
-                if (entry.coverUrl != null) {
+                if (item.coverUrl != null) {
                     AsyncImage(
-                        model = entry.coverUrl,
+                        model = item.coverUrl,
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize(),
                         contentScale = ContentScale.Crop
                     )
                 } else {
                     Text(
-                        text = "${index + 1}",
+                        text = "${item.index + 1}",
                         style = AppTheme.typography.labelMedium,
                         color = AppTheme.colors.onSurfaceVariant
                     )
@@ -576,11 +778,11 @@ private fun RemoteQueueItemRow(
         },
         title = {
             Text(
-                text = entry.title,
+                text = item.title,
                 style = AppTheme.typography.bodyLarge,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                color = if (isCurrent) {
+                color = if (item.isCurrent) {
                     AppTheme.colors.onSecondaryContainer
                 } else {
                     AppTheme.colors.onSurface
@@ -589,7 +791,7 @@ private fun RemoteQueueItemRow(
         },
         subtitle = {
             Text(
-                text = entry.artists,
+                text = item.artists,
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.onSurfaceVariant,
                 maxLines = 1,
@@ -598,7 +800,7 @@ private fun RemoteQueueItemRow(
         },
         trailing = {
             Text(
-                text = formatDuration(entry.durationMs),
+                text = item.durationLabel,
                 style = AppTheme.typography.bodySmall,
                 color = AppTheme.colors.onSurfaceVariant
             )
@@ -613,8 +815,7 @@ private fun RemoteQueueItemRow(
                     ) {
                         MillenniumIcon(
                             Iconsax.Iconsax3DotsMore,
-                            contentDescription = stringResource(Res.string.devices_remote_more_options),
-                            modifier = Modifier.size(18.dp)
+                            contentDescription = stringResource(Res.string.devices_remote_more_options)
                         )
                     }
                 }) {
@@ -629,11 +830,4 @@ private fun RemoteQueueItemRow(
             }
         }
     )
-}
-
-private fun formatDuration(ms: Long): String {
-    val duration = ms.milliseconds
-    val minutes = duration.inWholeMinutes
-    val seconds = duration.inWholeSeconds % 60
-    return "$minutes:${seconds.toString().padStart(2, '0')}"
 }

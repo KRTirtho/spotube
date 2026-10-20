@@ -215,8 +215,6 @@
     <string name="settings_error_cache_size_range">Size must be 0 or a positive number.</string>
     <string name="settings_enable_endless_playback_title">Enable endless playback</string>
     <string name="settings_enable_endless_playback_subtitle">Keep playback going with recommended tracks when your queue ends.</string>
-    <string name="settings_enable_connect_title">Enable Connect</string>
-    <string name="settings_enable_connect_subtitle">Expose remote playback controls through the Spotube Connect feature.</string>
     <string name="settings_playback_port_title">Playback proxy server port</string>
     <string name="settings_allow_remote_control_title">Allow remote control</string>
     <string name="settings_allow_remote_control_subtitle">Let other devices on the same network control playback when they connect.</string>
@@ -504,6 +502,7 @@
     <!-- Devices: connection errors -->
     <string name="devices_error_connection_failed">Connection failed</string>
     <string name="devices_error_connection_lost">Connection lost</string>
+    <string name="devices_error_connection_denied">The other device declined the request, or has remote control turned off.</string>
     <string name="devices_error_send_failed">Send failed</string>
     <string name="devices_error_discovery_failed">Discovery failed: %1$s</string>
     <string name="devices_error_connect_failed">Failed to connect: %1$s</string>
@@ -511,7 +510,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Devices</string>
     <string name="devices_refresh">Refresh</string>
-    <string name="devices_connected_to">Connected to %1$s:%2$d</string>
     <string name="devices_disconnect">Disconnect</string>
     <string name="devices_connecting">Connecting...</string>
     <string name="devices_searching">Searching for devices on the network...</string>
@@ -519,23 +517,28 @@
     <string name="devices_empty_hint">Make sure the other device has \"Allow remote control\" enabled in settings.</string>
     <string name="devices_unknown_device">Unknown Device</string>
     <string name="devices_resolving">Resolving...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
+    <string name="devices_section_connected">Connected</string>
+    <string name="devices_section_available">Available devices</string>
+    <string name="devices_status_connected">Connected</string>
+    <string name="devices_open_remote">Open remote</string>
+    <string name="devices_search_again">Search again</string>
+    <string name="devices_searching_more">Still looking for more devices...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Remote Control</string>
     <string name="devices_remote_disconnected">Disconnected</string>
     <string name="devices_remote_connection_error">Connection error: %1$s</string>
-    <string name="devices_remote_album_cover">Album cover</string>
     <string name="devices_remote_unknown_track">Unknown Track</string>
     <string name="devices_remote_unknown_artist">Unknown Artist</string>
-    <string name="devices_remote_seek">Seek</string>
-    <string name="devices_remote_shuffle">Shuffle</string>
-    <string name="devices_remote_previous">Previous</string>
-    <string name="devices_remote_next">Next</string>
-    <string name="devices_remote_loop_mode">Loop mode</string>
     <string name="devices_remote_volume">Volume</string>
     <string name="devices_remote_remove_from_queue">Remove from queue</string>
     <string name="devices_remote_more_options">More options</string>
+    <string name="devices_remote_playing_on">Playing on %1$s</string>
+    <string name="devices_remote_connecting_hint">If asked, allow this device on the other Spotube first.</string>
+    <string name="devices_remote_disconnected_hint">You\'re no longer controlling the other device. Pick it again to reconnect.</string>
+    <string name="devices_remote_back_to_devices">Back to devices</string>
+    <string name="devices_remote_nothing_playing">Nothing playing</string>
+    <string name="devices_remote_nothing_playing_hint">Start something on the other device, or pick a track from its queue.</string>
 
     <!-- Group Jam: play destination picker -->
     <string name="jam_destination_title">Play Where?</string>

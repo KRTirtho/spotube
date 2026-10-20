@@ -216,8 +216,6 @@
     <string name="settings_error_cache_size_range">O tamanho deve ser 0 ou um número positivo.</string>
     <string name="settings_enable_endless_playback_title">Ativar reprodução contínua</string>
     <string name="settings_enable_endless_playback_subtitle">Continua tocando faixas recomendadas quando sua fila acabar.</string>
-    <string name="settings_enable_connect_title">Ativar Connect</string>
-    <string name="settings_enable_connect_subtitle">Disponibiliza controles de reprodução remota pelo recurso Spotube Connect.</string>
     <string name="settings_playback_port_title">Porta do servidor proxy de reprodução</string>
     <string name="settings_allow_remote_control_title">Permitir controle remoto</string>
     <string name="settings_allow_remote_control_subtitle">Permite que outros dispositivos na mesma rede controlem a reprodução quando se conectarem.</string>
@@ -499,7 +497,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Dispositivos</string>
     <string name="devices_refresh">Atualizar</string>
-    <string name="devices_connected_to">Conectado a %1$s:%2$d</string>
     <string name="devices_disconnect">Desconectar</string>
     <string name="devices_connecting">Conectando...</string>
     <string name="devices_searching">Procurando dispositivos na rede...</string>
@@ -507,20 +504,13 @@
     <string name="devices_empty_hint">Verifique se o outro dispositivo está com \"Permitir controle remoto\" ativado nas configurações.</string>
     <string name="devices_unknown_device">Dispositivo desconhecido</string>
     <string name="devices_resolving">Resolvendo...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Controle remoto</string>
     <string name="devices_remote_disconnected">Desconectado</string>
     <string name="devices_remote_connection_error">Erro de conexão: %1$s</string>
-    <string name="devices_remote_album_cover">Capa do álbum</string>
     <string name="devices_remote_unknown_track">Faixa desconhecida</string>
     <string name="devices_remote_unknown_artist">Artista desconhecido</string>
-    <string name="devices_remote_seek">Avançar/retroceder</string>
-    <string name="devices_remote_shuffle">Ordem aleatória</string>
-    <string name="devices_remote_previous">Anterior</string>
-    <string name="devices_remote_next">Próxima</string>
-    <string name="devices_remote_loop_mode">Modo de repetição</string>
     <string name="devices_remote_volume">Volume</string>
     <string name="devices_remote_remove_from_queue">Remover da fila</string>
     <string name="devices_remote_more_options">Mais opções</string>

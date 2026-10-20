@@ -210,8 +210,6 @@
     <string name="settings_error_cache_size_range">サイズは0または正の数で指定してください。</string>
     <string name="settings_enable_endless_playback_title">エンドレス再生を有効化</string>
     <string name="settings_enable_endless_playback_subtitle">キューが終わったら、おすすめの曲で再生を続けます。</string>
-    <string name="settings_enable_connect_title">Connectを有効化</string>
-    <string name="settings_enable_connect_subtitle">Spotube Connect機能でリモート再生コントロールを公開します。</string>
     <string name="settings_playback_port_title">再生プロキシサーバーのポート</string>
     <string name="settings_allow_remote_control_title">リモート操作を許可</string>
     <string name="settings_allow_remote_control_subtitle">同じネットワーク上の他のデバイスが接続したときに再生を操作できるようにします。</string>
@@ -491,7 +489,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">デバイス</string>
     <string name="devices_refresh">更新</string>
-    <string name="devices_connected_to">%1$s:%2$d に接続済み</string>
     <string name="devices_disconnect">切断</string>
     <string name="devices_connecting">接続中...</string>
     <string name="devices_searching">ネットワーク上のデバイスを検索中...</string>
@@ -499,20 +496,13 @@
     <string name="devices_empty_hint">相手のデバイスの設定で「リモート操作を許可」が有効になっていることを確認してください。</string>
     <string name="devices_unknown_device">不明なデバイス</string>
     <string name="devices_resolving">解決中...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">リモート操作</string>
     <string name="devices_remote_disconnected">切断されました</string>
     <string name="devices_remote_connection_error">接続エラー: %1$s</string>
-    <string name="devices_remote_album_cover">アルバムカバー</string>
     <string name="devices_remote_unknown_track">不明な曲</string>
     <string name="devices_remote_unknown_artist">不明なアーティスト</string>
-    <string name="devices_remote_seek">シーク</string>
-    <string name="devices_remote_shuffle">シャッフル</string>
-    <string name="devices_remote_previous">前へ</string>
-    <string name="devices_remote_next">次へ</string>
-    <string name="devices_remote_loop_mode">リピートモード</string>
     <string name="devices_remote_volume">音量</string>
     <string name="devices_remote_remove_from_queue">キューから削除</string>
     <string name="devices_remote_more_options">その他のオプション</string>

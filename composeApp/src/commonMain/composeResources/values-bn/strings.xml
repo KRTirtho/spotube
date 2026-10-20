@@ -213,8 +213,6 @@
     <string name="settings_error_cache_size_range">সাইজ 0 বা একটি ধনাত্মক সংখ্যা হতে হবে।</string>
     <string name="settings_enable_endless_playback_title">অবিরাম প্লেব্যাক চালু করুন</string>
     <string name="settings_enable_endless_playback_subtitle">কিউ শেষ হলে সাজেস্ট করা ট্র্যাক দিয়ে প্লেব্যাক চালু রাখুন।</string>
-    <string name="settings_enable_connect_title">Connect চালু করুন</string>
-    <string name="settings_enable_connect_subtitle">Spotube Connect ফিচারের মাধ্যমে রিমোট প্লেব্যাক কন্ট্রোল উপলব্ধ করুন।</string>
     <string name="settings_playback_port_title">প্লেব্যাক প্রক্সি সার্ভার পোর্ট</string>
     <string name="settings_allow_remote_control_title">রিমোট কন্ট্রোলের অনুমতি দিন</string>
     <string name="settings_allow_remote_control_subtitle">একই নেটওয়ার্কের অন্য ডিভাইস কানেক্ট হলে প্লেব্যাক নিয়ন্ত্রণ করতে দিন।</string>
@@ -495,7 +493,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">ডিভাইস</string>
     <string name="devices_refresh">রিফ্রেশ</string>
-    <string name="devices_connected_to">%1$s:%2$d-এ কানেক্টেড</string>
     <string name="devices_disconnect">ডিসকানেক্ট</string>
     <string name="devices_connecting">কানেক্ট হচ্ছে...</string>
     <string name="devices_searching">নেটওয়ার্কে ডিভাইস খোঁজা হচ্ছে...</string>
@@ -503,20 +500,13 @@
     <string name="devices_empty_hint">অন্য ডিভাইসের সেটিংসে \"রিমোট কন্ট্রোলের অনুমতি দিন\" চালু আছে কিনা নিশ্চিত করুন।</string>
     <string name="devices_unknown_device">অজানা ডিভাইস</string>
     <string name="devices_resolving">খোঁজা হচ্ছে...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">রিমোট কন্ট্রোল</string>
     <string name="devices_remote_disconnected">ডিসকানেক্টেড</string>
     <string name="devices_remote_connection_error">কানেকশন ত্রুটি: %1$s</string>
-    <string name="devices_remote_album_cover">অ্যালবাম কভার</string>
     <string name="devices_remote_unknown_track">অজানা ট্র্যাক</string>
     <string name="devices_remote_unknown_artist">অজানা শিল্পী</string>
-    <string name="devices_remote_seek">সিক</string>
-    <string name="devices_remote_shuffle">শাফল</string>
-    <string name="devices_remote_previous">আগের</string>
-    <string name="devices_remote_next">পরের</string>
-    <string name="devices_remote_loop_mode">লুপ মোড</string>
     <string name="devices_remote_volume">ভলিউম</string>
     <string name="devices_remote_remove_from_queue">কিউ থেকে সরান</string>
     <string name="devices_remote_more_options">আরও অপশন</string>

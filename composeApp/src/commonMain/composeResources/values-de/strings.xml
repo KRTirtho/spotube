@@ -213,8 +213,6 @@
     <string name="settings_error_cache_size_range">Die Größe muss 0 oder eine positive Zahl sein.</string>
     <string name="settings_enable_endless_playback_title">Endlose Wiedergabe aktivieren</string>
     <string name="settings_enable_endless_playback_subtitle">Wenn deine Warteschlange endet, geht es mit empfohlenen Titeln weiter.</string>
-    <string name="settings_enable_connect_title">Connect aktivieren</string>
-    <string name="settings_enable_connect_subtitle">Fernsteuerung der Wiedergabe über Spotube Connect bereitstellen.</string>
     <string name="settings_playback_port_title">Port des Wiedergabe-Proxyservers</string>
     <string name="settings_allow_remote_control_title">Fernsteuerung erlauben</string>
     <string name="settings_allow_remote_control_subtitle">Andere Geräte im selben Netzwerk dürfen die Wiedergabe steuern, wenn sie sich verbinden.</string>
@@ -495,7 +493,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Geräte</string>
     <string name="devices_refresh">Aktualisieren</string>
-    <string name="devices_connected_to">Verbunden mit %1$s:%2$d</string>
     <string name="devices_disconnect">Trennen</string>
     <string name="devices_connecting">Verbinden...</string>
     <string name="devices_searching">Suche nach Geräten im Netzwerk...</string>
@@ -503,20 +500,13 @@
     <string name="devices_empty_hint">Stelle sicher, dass auf dem anderen Gerät „Fernsteuerung erlauben“ in den Einstellungen aktiviert ist.</string>
     <string name="devices_unknown_device">Unbekanntes Gerät</string>
     <string name="devices_resolving">Wird aufgelöst...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Fernsteuerung</string>
     <string name="devices_remote_disconnected">Getrennt</string>
     <string name="devices_remote_connection_error">Verbindungsfehler: %1$s</string>
-    <string name="devices_remote_album_cover">Albumcover</string>
     <string name="devices_remote_unknown_track">Unbekannter Titel</string>
     <string name="devices_remote_unknown_artist">Unbekannter Künstler</string>
-    <string name="devices_remote_seek">Spulen</string>
-    <string name="devices_remote_shuffle">Zufallswiedergabe</string>
-    <string name="devices_remote_previous">Zurück</string>
-    <string name="devices_remote_next">Weiter</string>
-    <string name="devices_remote_loop_mode">Wiederholungsmodus</string>
     <string name="devices_remote_volume">Lautstärke</string>
     <string name="devices_remote_remove_from_queue">Aus Warteschlange entfernen</string>
     <string name="devices_remote_more_options">Weitere Optionen</string>

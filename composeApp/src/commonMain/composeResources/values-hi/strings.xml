@@ -212,8 +212,6 @@
     <string name="settings_error_cache_size_range">साइज़ 0 या कोई पॉज़िटिव संख्या होनी चाहिए।</string>
     <string name="settings_enable_endless_playback_title">लगातार प्लेबैक चालू करें</string>
     <string name="settings_enable_endless_playback_subtitle">कतार खत्म होने पर सुझाए गए ट्रैक के साथ प्लेबैक जारी रखें।</string>
-    <string name="settings_enable_connect_title">Connect चालू करें</string>
-    <string name="settings_enable_connect_subtitle">Spotube Connect फ़ीचर के ज़रिए रिमोट प्लेबैक कंट्रोल उपलब्ध कराएं।</string>
     <string name="settings_playback_port_title">प्लेबैक प्रॉक्सी सर्वर पोर्ट</string>
     <string name="settings_allow_remote_control_title">रिमोट कंट्रोल की अनुमति दें</string>
     <string name="settings_allow_remote_control_subtitle">एक ही नेटवर्क के दूसरे डिवाइस कनेक्ट होने पर प्लेबैक कंट्रोल कर सकें।</string>
@@ -494,7 +492,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">डिवाइस</string>
     <string name="devices_refresh">रीफ़्रेश करें</string>
-    <string name="devices_connected_to">%1$s:%2$d से कनेक्ट है</string>
     <string name="devices_disconnect">डिस्कनेक्ट करें</string>
     <string name="devices_connecting">कनेक्ट हो रहा है...</string>
     <string name="devices_searching">नेटवर्क पर डिवाइस खोजे जा रहे हैं...</string>
@@ -502,20 +499,13 @@
     <string name="devices_empty_hint">पक्का करें कि दूसरे डिवाइस की सेटिंग में \"रिमोट कंट्रोल की अनुमति दें\" चालू है।</string>
     <string name="devices_unknown_device">अज्ञात डिवाइस</string>
     <string name="devices_resolving">पता लगाया जा रहा है...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">रिमोट कंट्रोल</string>
     <string name="devices_remote_disconnected">डिस्कनेक्ट हो गया</string>
     <string name="devices_remote_connection_error">कनेक्शन में गड़बड़ी: %1$s</string>
-    <string name="devices_remote_album_cover">एल्बम कवर</string>
     <string name="devices_remote_unknown_track">अज्ञात ट्रैक</string>
     <string name="devices_remote_unknown_artist">अज्ञात कलाकार</string>
-    <string name="devices_remote_seek">आगे-पीछे करें</string>
-    <string name="devices_remote_shuffle">शफ़ल</string>
-    <string name="devices_remote_previous">पिछला</string>
-    <string name="devices_remote_next">अगला</string>
-    <string name="devices_remote_loop_mode">रिपीट मोड</string>
     <string name="devices_remote_volume">वॉल्यूम</string>
     <string name="devices_remote_remove_from_queue">कतार से हटाएं</string>
     <string name="devices_remote_more_options">और विकल्प</string>

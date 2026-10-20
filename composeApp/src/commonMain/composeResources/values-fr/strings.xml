@@ -216,8 +216,6 @@
     <string name="settings_error_cache_size_range">La taille doit être 0 ou un nombre positif.</string>
     <string name="settings_enable_endless_playback_title">Activer la lecture continue</string>
     <string name="settings_enable_endless_playback_subtitle">Poursuivre la lecture avec des titres recommandés à la fin de la file d\'attente.</string>
-    <string name="settings_enable_connect_title">Activer Connect</string>
-    <string name="settings_enable_connect_subtitle">Proposer des commandes de lecture à distance via la fonctionnalité Spotube Connect.</string>
     <string name="settings_playback_port_title">Port du serveur proxy de lecture</string>
     <string name="settings_allow_remote_control_title">Autoriser le contrôle à distance</string>
     <string name="settings_allow_remote_control_subtitle">Permettre aux autres appareils du même réseau de contrôler la lecture lorsqu\'ils se connectent.</string>
@@ -499,7 +497,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Appareils</string>
     <string name="devices_refresh">Actualiser</string>
-    <string name="devices_connected_to">Connecté à %1$s:%2$d</string>
     <string name="devices_disconnect">Se déconnecter</string>
     <string name="devices_connecting">Connexion...</string>
     <string name="devices_searching">Recherche d\'appareils sur le réseau...</string>
@@ -507,20 +504,13 @@
     <string name="devices_empty_hint">Assurez-vous que l\'option \"Autoriser le contrôle à distance\" est activée dans les paramètres de l\'autre appareil.</string>
     <string name="devices_unknown_device">Appareil inconnu</string>
     <string name="devices_resolving">Résolution...</string>
-    <string name="devices_device_id">ID : %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Contrôle à distance</string>
     <string name="devices_remote_disconnected">Déconnecté</string>
     <string name="devices_remote_connection_error">Erreur de connexion : %1$s</string>
-    <string name="devices_remote_album_cover">Pochette d\'album</string>
     <string name="devices_remote_unknown_track">Titre inconnu</string>
     <string name="devices_remote_unknown_artist">Artiste inconnu</string>
-    <string name="devices_remote_seek">Avancer/reculer</string>
-    <string name="devices_remote_shuffle">Lecture aléatoire</string>
-    <string name="devices_remote_previous">Précédent</string>
-    <string name="devices_remote_next">Suivant</string>
-    <string name="devices_remote_loop_mode">Mode de répétition</string>
     <string name="devices_remote_volume">Volume</string>
     <string name="devices_remote_remove_from_queue">Retirer de la file d\'attente</string>
     <string name="devices_remote_more_options">Plus d\'options</string>

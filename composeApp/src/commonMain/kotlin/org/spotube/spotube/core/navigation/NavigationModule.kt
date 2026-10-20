@@ -192,7 +192,7 @@ val navigationModule = module {
         BlacklistScreen()
     }
     navigation<Routes.Devices> {
-        DevicesScreen(navigationCommands = get())
+        DevicesScreen()
     }
     navigation<Routes.RemoteControl> {
         RemoteControlScreen(

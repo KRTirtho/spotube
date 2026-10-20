@@ -29,10 +29,13 @@ import org.spotube.spotube.core.remote.ConnectionState
 import org.spotube.spotube.core.remote.RemoteControlClient
 import org.spotube.spotube.core.remote.RemoteControlService
 import org.spotube.spotube.modules.settings.SettingsProvider
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
@@ -52,6 +55,28 @@ data class DevicesError(
     val args: List<String> = emptyList(),
     val rawMessage: String? = null)
 
+data class DeviceItemUi(
+    val key: String,
+    /** Null when the device advertised a blank name. */
+    val name: String?,
+    /** `host:port`, or null while the address is still being resolved. */
+    val address: String?,
+    val isConnecting: Boolean,
+    val isConnected: Boolean)
+
+data class ConnectedDeviceUi(
+    val name: String?,
+    val address: String)
+
+data class DevicesUiState(
+    val devices: List<DeviceItemUi> = emptyList(),
+    val isDiscovering: Boolean = false,
+    val isConnecting: Boolean = false,
+    val connectedDevice: ConnectedDeviceUi? = null,
+    val error: DevicesError? = null) {
+    val showEmptyState: Boolean get() = devices.isEmpty() && !isConnecting
+}
+
 class DevicesViewModel(
     private val navigationCommands: NavigationCommands) : ViewModel(), KoinComponent {
     private val logger = Logger.withTag("DevicesViewModel")
@@ -61,36 +86,63 @@ class DevicesViewModel(
     private val settingsProvider: SettingsProvider by inject()
 
     private val _devices = MutableStateFlow<Map<String, DiscoveredDevice>>(emptyMap())
-    val devices: StateFlow<Map<String, DiscoveredDevice>> = _devices.asStateFlow()
-
     private val _isDiscovering = MutableStateFlow(false)
-    val isDiscovering: StateFlow<Boolean> = _isDiscovering.asStateFlow()
-
     private val _connectingToDevice = MutableStateFlow<DiscoveredDevice?>(null)
-    val connectingToDevice: StateFlow<DiscoveredDevice?> = _connectingToDevice.asStateFlow()
-
-    private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
-    val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
-
     private val _error = MutableStateFlow<DevicesError?>(null)
-    val error: StateFlow<DevicesError?> = _error.asStateFlow()
+
+    val uiState: StateFlow<DevicesUiState> = combine(
+        _devices,
+        _isDiscovering,
+        _connectingToDevice,
+        remoteControlClient.connectionState,
+        _error
+    ) { devices, isDiscovering, connectingTo, connection, error ->
+        val connected = connection as? ConnectionState.Connected
+        DevicesUiState(
+            devices = devices.values.map { device ->
+                DeviceItemUi(
+                    key = device.key,
+                    name = device.name.ifBlank { null },
+                    address = device.address(),
+                    isConnecting = connectingTo?.key == device.key,
+                    isConnected = connected != null && device.matches(connected))
+            },
+            isDiscovering = isDiscovering,
+            isConnecting = connectingTo != null,
+            connectedDevice = connected?.let {
+                ConnectedDeviceUi(
+                    name = it.deviceName.ifBlank { null },
+                    address = "${it.host}:${it.port}")
+            },
+            error = error)
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), DevicesUiState())
 
     private var discoveryJob: Job? = null
 
     init {
-        // Observe connection state from the client
         viewModelScope.launch {
+            var previous: ConnectionState = remoteControlClient.connectionState.value
             remoteControlClient.connectionState.collect { state ->
-                _connectionState.value = state
-                if (state is ConnectionState.Error) {
-                    _error.value = DevicesError(message = state.fallback, rawMessage = state.message)
-                    _connectingToDevice.value = null
-                } else if (state is ConnectionState.Disconnected) {
-                    _connectingToDevice.value = null
-                } else if (state is ConnectionState.Connected) {
-                    // Navigate to remote control screen after successful connection
-                    _connectingToDevice.value = null
-                    navigationCommands.navigateTo(Routes.RemoteControl)
+                val wasConnecting = previous is ConnectionState.Connecting
+                previous = state
+                when (state) {
+                    is ConnectionState.Error -> {
+                        _error.value = DevicesError(message = state.fallback, rawMessage = state.message)
+                        _connectingToDevice.value = null
+                    }
+                    // Only a drop *during* an attempt means it failed. Switching devices
+                    // disconnects the old one first, and that must not cancel the new attempt.
+                    is ConnectionState.Disconnected -> if (wasConnecting) _connectingToDevice.value = null
+                    is ConnectionState.Connected -> {
+                        // Only navigate for a connection this screen started. A connection
+                        // that already existed when the screen opened must not bounce the
+                        // user straight to the remote screen.
+                        if (_connectingToDevice.value != null) {
+                            _connectingToDevice.value = null
+                            navigationCommands.navigateTo(Routes.RemoteControl)
+                        }
+                    }
+                    is ConnectionState.Connecting -> {}
                 }
             }
         }
@@ -119,7 +171,8 @@ class DevicesViewModel(
                     logger.d { "Discovery event: $event" }
                     when (event) {
                         is DiscoveryState.Discovered -> {
-                            event.resolve()
+                            // Don't hold up the rest of the events while this device resolves.
+                            launch { event.resolve() }
                             if (!isSelf(event.device)) {
                                 _devices.update { it + (event.device.key to event.device.copy()) }
                             }
@@ -137,6 +190,9 @@ class DevicesViewModel(
                         }
                     }
                 }
+            } catch (e: CancellationException) {
+                // stopDiscovery() (e.g. leaving the screen) is not a failure.
+                throw e
             } catch (e: Exception) {
                 logger.e(e) { "Discovery failed" }
                 _error.value = DevicesError(Res.string.devices_error_discovery_failed, listOf(e.message.toString()))
@@ -175,7 +231,25 @@ class DevicesViewModel(
         _isDiscovering.value = false
     }
 
-    fun connectToDevice(device: DiscoveredDevice) {
+    fun onDeviceClick(key: String) {
+        val device = _devices.value[key] ?: return
+        val connected = remoteControlClient.connectionState.value as? ConnectionState.Connected
+        when {
+            // Already controlling it (e.g. came back from the remote screen): just reopen it.
+            connected != null && device.matches(connected) -> openRemote()
+            connected != null -> viewModelScope.launch {
+                remoteControlClient.disconnect()
+                connectToDevice(device)
+            }
+            else -> connectToDevice(device)
+        }
+    }
+
+    fun openRemote() {
+        navigationCommands.navigateTo(Routes.RemoteControl)
+    }
+
+    private fun connectToDevice(device: DiscoveredDevice) {
         if (_connectingToDevice.value != null) {
             logger.w { "Already connecting to a device" }
             return
@@ -200,11 +274,11 @@ class DevicesViewModel(
                     host = device.host,
                     port = device.port,
                     deviceId = deviceId,
-                    deviceName = deviceName)
-                
-                // Clear connecting state after connection attempt
-                // The connectionState flow will show the actual connection status
-                _connectingToDevice.value = null
+                    deviceName = deviceName,
+                    remoteDeviceName = device.name)
+                // connect() returns once the socket is open, but the host may still be
+                // asking its user for permission. The connection-state collector clears
+                // the connecting flag once the outcome is known.
             } catch (e: Exception) {
                 logger.e(e) { "Failed to connect to device" }
                 _error.value = DevicesError(Res.string.devices_error_connect_failed, listOf(e.message.toString()))
@@ -223,3 +297,9 @@ class DevicesViewModel(
         _error.value = null
     }
 }
+
+private fun DiscoveredDevice.address(): String? =
+    if (host.isNotBlank() && port > 0) "$host:$port" else null
+
+private fun DiscoveredDevice.matches(connected: ConnectionState.Connected): Boolean =
+    host == connected.host && port == connected.port

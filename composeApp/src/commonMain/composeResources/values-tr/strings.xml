@@ -213,8 +213,6 @@
     <string name="settings_error_cache_size_range">Boyut 0 veya pozitif bir sayı olmalı.</string>
     <string name="settings_enable_endless_playback_title">Sonsuz çalmayı etkinleştir</string>
     <string name="settings_enable_endless_playback_subtitle">Sıran bittiğinde önerilen parçalarla çalmaya devam et.</string>
-    <string name="settings_enable_connect_title">Connect\'i etkinleştir</string>
-    <string name="settings_enable_connect_subtitle">Uzaktan çalma kontrollerini Spotube Connect özelliğiyle sun.</string>
     <string name="settings_playback_port_title">Çalma proxy sunucusu portu</string>
     <string name="settings_allow_remote_control_title">Uzaktan kontrole izin ver</string>
     <string name="settings_allow_remote_control_subtitle">Aynı ağdaki diğer cihazlar bağlandığında çalmayı kontrol edebilsin.</string>
@@ -495,7 +493,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Cihazlar</string>
     <string name="devices_refresh">Yenile</string>
-    <string name="devices_connected_to">%1$s:%2$d adresine bağlı</string>
     <string name="devices_disconnect">Bağlantıyı kes</string>
     <string name="devices_connecting">Bağlanıyor...</string>
     <string name="devices_searching">Ağda cihaz aranıyor...</string>
@@ -503,20 +500,13 @@
     <string name="devices_empty_hint">Diğer cihazın ayarlarında \"Uzaktan kontrole izin ver\" seçeneğinin açık olduğundan emin ol.</string>
     <string name="devices_unknown_device">Bilinmeyen Cihaz</string>
     <string name="devices_resolving">Çözümleniyor...</string>
-    <string name="devices_device_id">Kimlik: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Uzaktan Kontrol</string>
     <string name="devices_remote_disconnected">Bağlantı kesildi</string>
     <string name="devices_remote_connection_error">Bağlantı hatası: %1$s</string>
-    <string name="devices_remote_album_cover">Albüm kapağı</string>
     <string name="devices_remote_unknown_track">Bilinmeyen Parça</string>
     <string name="devices_remote_unknown_artist">Bilinmeyen Sanatçı</string>
-    <string name="devices_remote_seek">Konum</string>
-    <string name="devices_remote_shuffle">Karıştır</string>
-    <string name="devices_remote_previous">Önceki</string>
-    <string name="devices_remote_next">Sonraki</string>
-    <string name="devices_remote_loop_mode">Tekrar modu</string>
     <string name="devices_remote_volume">Ses düzeyi</string>
     <string name="devices_remote_remove_from_queue">Sıradan kaldır</string>
     <string name="devices_remote_more_options">Diğer seçenekler</string>

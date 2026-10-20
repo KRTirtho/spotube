@@ -210,8 +210,6 @@
     <string name="settings_error_cache_size_range">大小必須為 0 或正數。</string>
     <string name="settings_enable_endless_playback_title">啟用無限播放</string>
     <string name="settings_enable_endless_playback_subtitle">待播清單播完後，以推薦曲目繼續播放。</string>
-    <string name="settings_enable_connect_title">啟用 Connect</string>
-    <string name="settings_enable_connect_subtitle">透過 Spotube Connect 功能提供遠端播放控制。</string>
     <string name="settings_playback_port_title">播放代理伺服器連接埠</string>
     <string name="settings_allow_remote_control_title">允許遠端控制</string>
     <string name="settings_allow_remote_control_subtitle">讓同一網路中的其他裝置在連線後控制播放。</string>
@@ -491,7 +489,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">裝置</string>
     <string name="devices_refresh">重新整理</string>
-    <string name="devices_connected_to">已連線至 %1$s:%2$d</string>
     <string name="devices_disconnect">中斷連線</string>
     <string name="devices_connecting">連線中...</string>
     <string name="devices_searching">正在搜尋網路上的裝置...</string>
@@ -499,20 +496,13 @@
     <string name="devices_empty_hint">請確認另一部裝置已在設定中啟用「允許遠端控制」。</string>
     <string name="devices_unknown_device">未知裝置</string>
     <string name="devices_resolving">解析中...</string>
-    <string name="devices_device_id">ID：%1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">遠端控制</string>
     <string name="devices_remote_disconnected">已中斷連線</string>
     <string name="devices_remote_connection_error">連線錯誤：%1$s</string>
-    <string name="devices_remote_album_cover">專輯封面</string>
     <string name="devices_remote_unknown_track">未知曲目</string>
     <string name="devices_remote_unknown_artist">未知藝人</string>
-    <string name="devices_remote_seek">播放進度</string>
-    <string name="devices_remote_shuffle">隨機播放</string>
-    <string name="devices_remote_previous">上一首</string>
-    <string name="devices_remote_next">下一首</string>
-    <string name="devices_remote_loop_mode">重複播放模式</string>
     <string name="devices_remote_volume">音量</string>
     <string name="devices_remote_remove_from_queue">從待播清單移除</string>
     <string name="devices_remote_more_options">更多選項</string>

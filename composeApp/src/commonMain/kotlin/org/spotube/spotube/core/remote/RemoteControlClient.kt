@@ -26,7 +26,7 @@ import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.websocket.CloseReason
 import io.ktor.websocket.Frame
-import io.ktor.websocket.WebSocketSession
+import io.ktor.websocket.DefaultWebSocketSession
 import io.ktor.websocket.close
 import io.ktor.websocket.readText
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +40,7 @@ import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.StringResource
 import spotube.composeapp.generated.resources.Res
+import spotube.composeapp.generated.resources.devices_error_connection_denied
 import spotube.composeapp.generated.resources.devices_error_connection_failed
 import spotube.composeapp.generated.resources.devices_error_connection_lost
 import spotube.composeapp.generated.resources.devices_error_send_failed
@@ -66,7 +67,7 @@ class RemoteControlClient {
         }
     }
 
-    private var session: WebSocketSession? = null
+    private var session: DefaultWebSocketSession? = null
 
     private val _connectionState = MutableStateFlow<ConnectionState>(ConnectionState.Disconnected)
     val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
@@ -77,12 +78,23 @@ class RemoteControlClient {
     private val _latestQueue = MutableStateFlow<RemoteControlEvent.QueueUpdated?>(null)
     val latestQueue: StateFlow<RemoteControlEvent.QueueUpdated?> = _latestQueue.asStateFlow()
 
-    suspend fun connect(host: String, port: Int, deviceId: String, deviceName: String) {
+    /**
+     * [deviceName] identifies this controller to the host; [remoteDeviceName] is the
+     * host's advertised name, kept only so the UI can show what it is controlling.
+     */
+    suspend fun connect(
+        host: String,
+        port: Int,
+        deviceId: String,
+        deviceName: String,
+        remoteDeviceName: String = "") {
         if (_connectionState.value is ConnectionState.Connected) {
             logger.w { "Already connected" }
             return
         }
 
+        // Drop a stale attempt (e.g. one still waiting on the host's permission prompt).
+        closeSession()
         _connectionState.value = ConnectionState.Connecting
         try {
             session = httpClient.webSocketSession {
@@ -95,16 +107,16 @@ class RemoteControlClient {
 
             // Start receiving messages in a separate coroutine
             scope.launch {
-                receiveLoop(host, port)
+                receiveLoop(host, port, remoteDeviceName)
             }
         } catch (e: Exception) {
             logger.e(e) { "Failed to connect to $host:$port" }
+            closeSession()
             _connectionState.value = ConnectionState.Error(e.message, Res.string.devices_error_connection_failed)
-            disconnect()
         }
     }
 
-    private suspend fun receiveLoop(host: String, port: Int) {
+    private suspend fun receiveLoop(host: String, port: Int, remoteDeviceName: String) {
         val currentSession = session ?: return
         logger.d { "Starting receive loop for $host:$port" }
         try {
@@ -119,7 +131,7 @@ class RemoteControlClient {
                             when (event) {
                                 is RemoteControlEvent.Connected -> {
                                     logger.i { "Connection authorized by server" }
-                                    _connectionState.value = ConnectionState.Connected(host, port)
+                                    _connectionState.value = ConnectionState.Connected(host, port, remoteDeviceName)
                                 }
                                 is RemoteControlEvent.WaitingForPermission -> {
                                     logger.i { "Waiting for permission: ${event.message}" }
@@ -144,18 +156,37 @@ class RemoteControlClient {
                             logger.w(e) { "Failed to parse message: $text" }
                         }
                     }
-                    is Frame.Close -> {
-                        logger.i { "WebSocket closed by server" }
-                        _connectionState.value = ConnectionState.Disconnected
-                        break
-                    }
                     else -> {}
                 }
             }
-            logger.d { "Receive loop exited normally" }
+            // Ktor consumes Close frames itself and just ends `incoming`, so the server
+            // closing the socket (denied request, remote control turned off, host quit)
+            // only shows up here. Without this the state stayed Connecting/Connected forever
+            // and every later connect attempt was swallowed.
+            val reason = currentSession.closeReason.await()
+            logger.i { "WebSocket closed by server: $reason" }
+            onServerClosed(currentSession, reason)
         } catch (e: Exception) {
             logger.e(e) { "Error in receive loop" }
-            _connectionState.value = ConnectionState.Error(e.message, Res.string.devices_error_connection_lost)
+            if (session === currentSession) {
+                session = null
+                _connectionState.value = ConnectionState.Error(e.message, Res.string.devices_error_connection_lost)
+            }
+        }
+    }
+
+    private fun onServerClosed(closedSession: DefaultWebSocketSession, reason: CloseReason?) {
+        // disconnect() (or a newer connect()) already replaced this session; nothing to report.
+        if (session !== closedSession) return
+        session = null
+        val wasAuthorized = _connectionState.value is ConnectionState.Connected
+        _connectionState.value = when {
+            // The host refuses with VIOLATED_POLICY before authorizing: the user hit Deny
+            // (or dismissed the prompt), or remote control is turned off over there.
+            !wasAuthorized && reason?.knownReason == CloseReason.Codes.VIOLATED_POLICY ->
+                ConnectionState.Error(null, Res.string.devices_error_connection_denied)
+            wasAuthorized -> ConnectionState.Disconnected
+            else -> ConnectionState.Error(reason?.message?.ifBlank { null }, Res.string.devices_error_connection_failed)
         }
     }
 
@@ -180,10 +211,16 @@ class RemoteControlClient {
     }
 
     suspend fun disconnect() {
-        session?.close(CloseReason(CloseReason.Codes.NORMAL, "Client disconnecting"))
-        session = null
+        closeSession()
         _connectionState.value = ConnectionState.Disconnected
         logger.i { "Disconnected" }
+    }
+
+    /** Detaches before closing so the receive loop doesn't report this as a server close. */
+    private suspend fun closeSession() {
+        val current = session ?: return
+        session = null
+        runCatching { current.close(CloseReason(CloseReason.Codes.NORMAL, "Client disconnecting")) }
     }
 
     private fun randomShortId(): String {
@@ -199,7 +236,7 @@ class RemoteControlClient {
 sealed interface ConnectionState {
     data object Disconnected : ConnectionState
     data object Connecting : ConnectionState
-    data class Connected(val host: String, val port: Int) : ConnectionState
+    data class Connected(val host: String, val port: Int, val deviceName: String = "") : ConnectionState
     /**
      * [message] is the raw (untranslated) cause when available; [fallback] is the
      * localized description to show when it isn't.

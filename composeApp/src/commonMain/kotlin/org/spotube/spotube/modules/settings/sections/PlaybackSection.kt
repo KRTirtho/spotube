@@ -124,21 +124,6 @@ internal fun LazyListScope.playbackSection(
         }
         add {
             SwitchSettingCard(
-                title = stringResource(Res.string.settings_enable_connect_title),
-                subtitle = stringResource(Res.string.settings_enable_connect_subtitle),
-                icon = {
-                    SettingsItemIcon(Iconsax.IconsaxMirroringScreen, stringResource(Res.string.settings_enable_connect_title))
-                },
-                checked = settings.enableConnect,
-                onCheckedChange = { enabled ->
-                    settingsViewModel.updateSettings {
-                        copy(enableConnect = enabled)
-                    }
-                }
-            )
-        }
-        add {
-            SwitchSettingCard(
                 title = stringResource(Res.string.settings_allow_remote_control_title),
                 subtitle = stringResource(Res.string.settings_allow_remote_control_subtitle),
                 icon = {

@@ -213,8 +213,6 @@
     <string name="settings_error_cache_size_range">حجم باید 0 یا یک عدد مثبت باشد.</string>
     <string name="settings_enable_endless_playback_title">فعال‌سازی پخش بی‌پایان</string>
     <string name="settings_enable_endless_playback_subtitle">وقتی صف پخش تمام شد، پخش با آهنگ‌های پیشنهادی ادامه پیدا کند.</string>
-    <string name="settings_enable_connect_title">فعال‌سازی Connect</string>
-    <string name="settings_enable_connect_subtitle">کنترل‌های پخش از راه دور را از طریق قابلیت Spotube Connect در دسترس قرار دهید.</string>
     <string name="settings_playback_port_title">درگاه سرور پراکسی پخش</string>
     <string name="settings_allow_remote_control_title">اجازهٔ کنترل از راه دور</string>
     <string name="settings_allow_remote_control_subtitle">به دستگاه‌های دیگر در همان شبکه اجازه دهید هنگام اتصال، پخش را کنترل کنند.</string>
@@ -495,7 +493,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">دستگاه‌ها</string>
     <string name="devices_refresh">به‌روزرسانی</string>
-    <string name="devices_connected_to">متصل به %1$s:%2$d</string>
     <string name="devices_disconnect">قطع اتصال</string>
     <string name="devices_connecting">در حال اتصال...</string>
     <string name="devices_searching">در حال جستجوی دستگاه‌ها در شبکه...</string>
@@ -503,20 +500,13 @@
     <string name="devices_empty_hint">مطمئن شوید گزینهٔ \"اجازهٔ کنترل از راه دور\" در تنظیمات دستگاه دیگر فعال است.</string>
     <string name="devices_unknown_device">دستگاه ناشناس</string>
     <string name="devices_resolving">در حال شناسایی...</string>
-    <string name="devices_device_id">شناسه: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">کنترل از راه دور</string>
     <string name="devices_remote_disconnected">قطع شد</string>
     <string name="devices_remote_connection_error">خطای اتصال: %1$s</string>
-    <string name="devices_remote_album_cover">کاور آلبوم</string>
     <string name="devices_remote_unknown_track">آهنگ ناشناس</string>
     <string name="devices_remote_unknown_artist">هنرمند ناشناس</string>
-    <string name="devices_remote_seek">جابه‌جایی</string>
-    <string name="devices_remote_shuffle">پخش تصادفی</string>
-    <string name="devices_remote_previous">قبلی</string>
-    <string name="devices_remote_next">بعدی</string>
-    <string name="devices_remote_loop_mode">حالت تکرار</string>
     <string name="devices_remote_volume">صدا</string>
     <string name="devices_remote_remove_from_queue">حذف از صف</string>
     <string name="devices_remote_more_options">گزینه‌های بیشتر</string>

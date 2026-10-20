@@ -210,8 +210,6 @@
     <string name="settings_error_cache_size_range">Ukuran harus 0 atau bilangan positif.</string>
     <string name="settings_enable_endless_playback_title">Aktifkan pemutaran tanpa henti</string>
     <string name="settings_enable_endless_playback_subtitle">Lanjutkan pemutaran dengan lagu rekomendasi saat antrean habis.</string>
-    <string name="settings_enable_connect_title">Aktifkan Connect</string>
-    <string name="settings_enable_connect_subtitle">Tampilkan kontrol pemutaran jarak jauh melalui fitur Spotube Connect.</string>
     <string name="settings_playback_port_title">Port server proxy pemutaran</string>
     <string name="settings_allow_remote_control_title">Izinkan kontrol jarak jauh</string>
     <string name="settings_allow_remote_control_subtitle">Izinkan perangkat lain di jaringan yang sama mengontrol pemutaran saat terhubung.</string>
@@ -491,7 +489,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Perangkat</string>
     <string name="devices_refresh">Muat ulang</string>
-    <string name="devices_connected_to">Terhubung ke %1$s:%2$d</string>
     <string name="devices_disconnect">Putuskan</string>
     <string name="devices_connecting">Menghubungkan...</string>
     <string name="devices_searching">Mencari perangkat di jaringan...</string>
@@ -499,20 +496,13 @@
     <string name="devices_empty_hint">Pastikan perangkat lain telah mengaktifkan \"Izinkan kontrol jarak jauh\" di pengaturan.</string>
     <string name="devices_unknown_device">Perangkat Tidak Dikenal</string>
     <string name="devices_resolving">Menyelesaikan...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Kontrol Jarak Jauh</string>
     <string name="devices_remote_disconnected">Terputus</string>
     <string name="devices_remote_connection_error">Kesalahan koneksi: %1$s</string>
-    <string name="devices_remote_album_cover">Sampul album</string>
     <string name="devices_remote_unknown_track">Lagu Tidak Dikenal</string>
     <string name="devices_remote_unknown_artist">Artis Tidak Dikenal</string>
-    <string name="devices_remote_seek">Cari posisi</string>
-    <string name="devices_remote_shuffle">Acak</string>
-    <string name="devices_remote_previous">Sebelumnya</string>
-    <string name="devices_remote_next">Berikutnya</string>
-    <string name="devices_remote_loop_mode">Mode ulang</string>
     <string name="devices_remote_volume">Volume</string>
     <string name="devices_remote_remove_from_queue">Hapus dari antrean</string>
     <string name="devices_remote_more_options">Opsi lainnya</string>

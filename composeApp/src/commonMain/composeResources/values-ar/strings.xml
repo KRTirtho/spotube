@@ -225,8 +225,6 @@
     <string name="settings_error_cache_size_range">يجب أن يكون الحجم 0 أو رقمًا موجبًا.</string>
     <string name="settings_enable_endless_playback_title">تفعيل التشغيل اللانهائي</string>
     <string name="settings_enable_endless_playback_subtitle">واصل التشغيل بمقاطع مقترحة عند انتهاء قائمة الانتظار.</string>
-    <string name="settings_enable_connect_title">تفعيل Connect</string>
-    <string name="settings_enable_connect_subtitle">إتاحة عناصر التحكم في التشغيل عن بُعد عبر ميزة Spotube Connect.</string>
     <string name="settings_playback_port_title">منفذ خادم وكيل التشغيل</string>
     <string name="settings_allow_remote_control_title">السماح بالتحكم عن بُعد</string>
     <string name="settings_allow_remote_control_subtitle">اسمح للأجهزة الأخرى على الشبكة نفسها بالتحكم في التشغيل عند اتصالها.</string>
@@ -511,7 +509,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">الأجهزة</string>
     <string name="devices_refresh">تحديث</string>
-    <string name="devices_connected_to">متصل بـ %1$s:%2$d</string>
     <string name="devices_disconnect">قطع الاتصال</string>
     <string name="devices_connecting">جارٍ الاتصال...</string>
     <string name="devices_searching">جارٍ البحث عن أجهزة على الشبكة...</string>
@@ -519,20 +516,13 @@
     <string name="devices_empty_hint">تأكد من تفعيل \"السماح بالتحكم عن بُعد\" في إعدادات الجهاز الآخر.</string>
     <string name="devices_unknown_device">جهاز غير معروف</string>
     <string name="devices_resolving">جارٍ التحديد...</string>
-    <string name="devices_device_id">المعرّف: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">التحكم عن بُعد</string>
     <string name="devices_remote_disconnected">غير متصل</string>
     <string name="devices_remote_connection_error">خطأ في الاتصال: %1$s</string>
-    <string name="devices_remote_album_cover">غلاف الألبوم</string>
     <string name="devices_remote_unknown_track">مقطع غير معروف</string>
     <string name="devices_remote_unknown_artist">فنان غير معروف</string>
-    <string name="devices_remote_seek">التقديم والترجيع</string>
-    <string name="devices_remote_shuffle">ترتيب عشوائي</string>
-    <string name="devices_remote_previous">السابق</string>
-    <string name="devices_remote_next">التالي</string>
-    <string name="devices_remote_loop_mode">وضع التكرار</string>
     <string name="devices_remote_volume">مستوى الصوت</string>
     <string name="devices_remote_remove_from_queue">إزالة من قائمة الانتظار</string>
     <string name="devices_remote_more_options">خيارات إضافية</string>

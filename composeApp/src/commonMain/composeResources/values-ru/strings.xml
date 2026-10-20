@@ -219,8 +219,6 @@
     <string name="settings_error_cache_size_range">Размер должен быть 0 или положительным числом.</string>
     <string name="settings_enable_endless_playback_title">Бесконечное воспроизведение</string>
     <string name="settings_enable_endless_playback_subtitle">Продолжать воспроизведение рекомендованными треками, когда очередь закончится.</string>
-    <string name="settings_enable_connect_title">Включить Connect</string>
-    <string name="settings_enable_connect_subtitle">Предоставлять удалённое управление воспроизведением через Spotube Connect.</string>
     <string name="settings_playback_port_title">Порт прокси-сервера воспроизведения</string>
     <string name="settings_allow_remote_control_title">Разрешить удалённое управление</string>
     <string name="settings_allow_remote_control_subtitle">Разрешить другим устройствам в той же сети управлять воспроизведением после подключения.</string>
@@ -503,7 +501,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">Устройства</string>
     <string name="devices_refresh">Обновить</string>
-    <string name="devices_connected_to">Подключено к %1$s:%2$d</string>
     <string name="devices_disconnect">Отключиться</string>
     <string name="devices_connecting">Подключение...</string>
     <string name="devices_searching">Поиск устройств в сети...</string>
@@ -511,20 +508,13 @@
     <string name="devices_empty_hint">Убедитесь, что на другом устройстве в настройках включено «Разрешить удалённое управление».</string>
     <string name="devices_unknown_device">Неизвестное устройство</string>
     <string name="devices_resolving">Определение адреса...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">Удалённое управление</string>
     <string name="devices_remote_disconnected">Отключено</string>
     <string name="devices_remote_connection_error">Ошибка подключения: %1$s</string>
-    <string name="devices_remote_album_cover">Обложка альбома</string>
     <string name="devices_remote_unknown_track">Неизвестный трек</string>
     <string name="devices_remote_unknown_artist">Неизвестный исполнитель</string>
-    <string name="devices_remote_seek">Перемотка</string>
-    <string name="devices_remote_shuffle">Перемешать</string>
-    <string name="devices_remote_previous">Предыдущий</string>
-    <string name="devices_remote_next">Следующий</string>
-    <string name="devices_remote_loop_mode">Режим повтора</string>
     <string name="devices_remote_volume">Громкость</string>
     <string name="devices_remote_remove_from_queue">Удалить из очереди</string>
     <string name="devices_remote_more_options">Другие действия</string>

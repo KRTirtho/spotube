@@ -18,216 +18,195 @@
 package org.spotube.spotube.modules.devices
 
 
-import org.spotube.millennium.composables.MillenniumSpokeSpinner
-import org.spotube.millennium.composables.MillenniumIcon
 import org.spotube.millennium.composables.MillenniumButton
 import org.spotube.millennium.composables.MillenniumButtonStyle
+import org.spotube.millennium.composables.MillenniumCard
+import org.spotube.millennium.composables.MillenniumIcon
+import org.spotube.millennium.composables.MillenniumIconButton
+import org.spotube.millennium.composables.MillenniumIconButtonStyle
+import org.spotube.millennium.composables.MillenniumSpokeSpinner
 import org.spotube.millennium.theme.MillenniumTheme
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyItemScope
+import androidx.compose.foundation.shape.CircleShape
 
 import org.spotube.spotube.core.ui.theming.AppTheme
 
 import com.composeunstyled.Text
+import compose.icons.FeatherIcons
+import compose.icons.feathericons.ChevronRight
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import org.spotube.spotube.core.discovery.DiscoveredDevice
 import org.spotube.spotube.core.discovery.rememberLocalNetworkPermissionRequester
-import org.spotube.spotube.core.navigation.NavigationCommands
-import org.spotube.spotube.core.remote.ConnectionState
 import org.spotube.spotube.core.ui.component.ApplicationMainBar
+import org.spotube.spotube.modules.settings.components.SettingCardItem
+import org.spotube.spotube.modules.settings.sections.SettingsItemIcon
+import org.spotube.spotube.modules.settings.sections.settingsSectionCard
+import org.spotube.spotube.modules.settings.sections.settingsSectionHeader
 import org.spotube.spotube.modules.shell.LocalAppShellBottomInset
 import org.spotube.spotube.resources.iconsax.Iconsax
+import org.spotube.spotube.resources.iconsax.IconsaxCloseSquare
+import org.spotube.spotube.resources.iconsax.IconsaxInformation
 import org.spotube.spotube.resources.iconsax.IconsaxMirroringScreen
 import org.spotube.spotube.resources.iconsax.IconsaxRefreshRight
+import org.spotube.spotube.resources.iconsax.IconsaxWifiSquare
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import spotube.composeapp.generated.resources.Res
-import spotube.composeapp.generated.resources.devices_connected_to
-import spotube.composeapp.generated.resources.devices_connecting
-import spotube.composeapp.generated.resources.devices_device_id
 import spotube.composeapp.generated.resources.devices_disconnect
 import spotube.composeapp.generated.resources.devices_empty
 import spotube.composeapp.generated.resources.devices_empty_hint
+import spotube.composeapp.generated.resources.devices_open_remote
 import spotube.composeapp.generated.resources.devices_refresh
 import spotube.composeapp.generated.resources.devices_resolving
+import spotube.composeapp.generated.resources.devices_search_again
 import spotube.composeapp.generated.resources.devices_searching
+import spotube.composeapp.generated.resources.devices_searching_more
+import spotube.composeapp.generated.resources.devices_section_available
+import spotube.composeapp.generated.resources.devices_section_connected
+import spotube.composeapp.generated.resources.devices_status_connected
 import spotube.composeapp.generated.resources.devices_title
 import spotube.composeapp.generated.resources.devices_unknown_device
 import spotube.composeapp.generated.resources.jam_error_dismiss
 
+private val ContentMaxWidth = 720.dp
+
 @Composable
 fun DevicesScreen(
-    navigationCommands: NavigationCommands) {
-    val viewModel = koinViewModel<DevicesViewModel>()
-    val devices by viewModel.devices.collectAsStateWithLifecycle()
-    val isDiscovering by viewModel.isDiscovering.collectAsStateWithLifecycle()
-    val connectingToDevice by viewModel.connectingToDevice.collectAsStateWithLifecycle()
-    val connectionState by viewModel.connectionState.collectAsStateWithLifecycle()
-    val error by viewModel.error.collectAsStateWithLifecycle()
+    viewModel: DevicesViewModel = koinViewModel()
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val requestLocalNetworkPermission = rememberLocalNetworkPermissionRequester()
+    val shellBottomInset = LocalAppShellBottomInset.current
 
     DisposableEffect(Unit) {
         // Android 16+ needs NEARBY_WIFI_DEVICES granted at runtime before mDNS works.
         requestLocalNetworkPermission()
         viewModel.startDiscovery()
         onDispose {
+            // The remote connection itself outlives this screen; only discovery stops.
             viewModel.stopDiscovery()
-            // Don't disconnect here - the connection should persist when navigating to RemoteControlScreen
-            // The RemoteControlViewModel will manage the connection lifecycle
         }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(MillenniumTheme.colors.background)) {
+            .background(MillenniumTheme.colors.background)
+    ) {
         ApplicationMainBar(
             backButton = true,
             title = { Text(stringResource(Res.string.devices_title)) },
             actions = {
-                if (isDiscovering && connectingToDevice == null) {
+                if (state.isDiscovering) {
                     MillenniumSpokeSpinner(
-                        size = 24.dp,
-                        modifier = Modifier.padding(end = 8.dp))
+                        size = 20.dp,
+                        modifier = Modifier.padding(horizontal = 10.dp)
+                    )
                 } else {
-                    MillenniumIcon(
-                        imageVector = Iconsax.IconsaxRefreshRight,
-                        contentDescription = stringResource(Res.string.devices_refresh),
-                        modifier = Modifier
-                            .size(24.dp)
-                            .clickable(enabled = connectingToDevice == null) {
-                                viewModel.startDiscovery()
-                            })
-                }
-            })
-        val shellBottomInset = LocalAppShellBottomInset.current
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .weight(1f)) {
-            // Error banner
-            error?.let { devicesError ->
-                val errorMessage = devicesError.rawMessage
-                    ?: stringResource(devicesError.message, *devicesError.args.toTypedArray())
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)) {
-                    Column {
-                        Text(
-                            text = errorMessage,
-                            color = AppTheme.colors.error,
-                            style = AppTheme.typography.bodyMedium)
-                        MillenniumButton(
-                            onClick = { viewModel.clearError() },
-                            modifier = Modifier.padding(top = 8.dp),
-                            style = MillenniumButtonStyle.Secondary) {
-                            Text(stringResource(Res.string.jam_error_dismiss))
-                        }
+                    MillenniumIconButton(
+                        onClick = viewModel::startDiscovery,
+                        enabled = !state.isConnecting,
+                        style = MillenniumIconButtonStyle.Quiet
+                    ) {
+                        MillenniumIcon(
+                            imageVector = Iconsax.IconsaxRefreshRight,
+                            contentDescription = stringResource(Res.string.devices_refresh)
+                        )
                     }
                 }
             }
+        )
 
-            // Connection status
-            when (val state = connectionState) {
-                is ConnectionState.Connected -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)) {
-                        Column {
-                            Text(
-                                text = stringResource(Res.string.devices_connected_to, state.host, state.port),
-                                style = AppTheme.typography.bodyMedium,
-                                color = AppTheme.colors.primary)
-                            MillenniumButton(
-                                onClick = { viewModel.disconnect() },
-                                modifier = Modifier.padding(top = 8.dp),
-                                style = MillenniumButtonStyle.Secondary) {
-                                Text(stringResource(Res.string.devices_disconnect))
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            LazyColumn(
+                modifier = Modifier
+                    .widthIn(max = ContentMaxWidth)
+                    .fillMaxSize(),
+                contentPadding = PaddingValues(
+                    start = 8.dp,
+                    end = 8.dp,
+                    top = 8.dp,
+                    bottom = shellBottomInset + 16.dp
+                )
+            ) {
+                state.error?.let { error ->
+                    item {
+                        ErrorBanner(
+                            message = error.rawMessage
+                                ?: stringResource(error.message, *error.args.toTypedArray()),
+                            onDismiss = viewModel::clearError
+                        )
+                    }
+                }
+
+                state.connectedDevice?.let { device ->
+                    settingsSectionHeader(Res.string.devices_section_connected)
+                    item {
+                        ConnectedDeviceCard(
+                            device = device,
+                            onOpenRemote = viewModel::openRemote,
+                            onDisconnect = viewModel::disconnect
+                        )
+                    }
+                }
+
+                if (state.devices.isNotEmpty()) {
+                    settingsSectionHeader(Res.string.devices_section_available)
+                    settingsSectionCard(
+                        items = state.devices.map { device ->
+                            {
+                                DeviceTile(
+                                    device = device,
+                                    enabled = !state.isConnecting || device.isConnecting,
+                                    onClick = { viewModel.onDeviceClick(device.key) }
+                                )
                             }
                         }
-                    }
-                }
-                is ConnectionState.Connecting -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        contentAlignment = Alignment.CenterStart) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                            verticalAlignment = Alignment.CenterVertically) {
-                            MillenniumSpokeSpinner(size = 24.dp)
+                    )
+                    if (state.isDiscovering) {
+                        item {
                             Text(
-                                text = stringResource(Res.string.devices_connecting),
-                                style = AppTheme.typography.bodyMedium)
-                        }
-                    }
-                }
-                else -> {}
-            }
-
-            // Device list
-            if (devices.isEmpty() && connectingToDevice == null) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = shellBottomInset),
-                    contentAlignment = Alignment.Center) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(
-                            text = if (isDiscovering) {
-                                stringResource(Res.string.devices_searching)
-                            } else {
-                                stringResource(Res.string.devices_empty)
-                            },
-                            style = AppTheme.typography.bodyMedium,
-                            color = AppTheme.colors.onSurfaceVariant)
-                        if (!isDiscovering) {
-                            Text(
-                                text = stringResource(Res.string.devices_empty_hint),
+                                text = stringResource(Res.string.devices_searching_more),
                                 style = AppTheme.typography.bodySmall,
-                                color = AppTheme.colors.onSurfaceVariant,
-                                modifier = Modifier.padding(top = 8.dp, start = 32.dp, end = 32.dp))
+                                color = MillenniumTheme.colors.muted,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 12.dp)
+                            )
                         }
                     }
-                }
-            } else {
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(
-                        horizontal = 16.dp,
-                        vertical = 8.dp)) {
-                    items(devices.values.toList(), key = { it.key }) { device ->
-                        DeviceRow(
-                            device = device,
-                            isConnecting = connectingToDevice?.key == device.key,
-                            onClick = { viewModel.connectToDevice(device) })
-                    }
+                } else if (state.showEmptyState) {
                     item {
-                        Box(modifier = Modifier.padding(bottom = shellBottomInset))
+                        EmptyState(
+                            isDiscovering = state.isDiscovering,
+                            onSearchAgain = viewModel::startDiscovery
+                        )
                     }
                 }
             }
@@ -236,48 +215,190 @@ fun DevicesScreen(
 }
 
 @Composable
-private fun DeviceRow(
-    device: DiscoveredDevice,
-    isConnecting: Boolean,
-    onClick: () -> Unit) {
+private fun DeviceTile(
+    device: DeviceItemUi,
+    enabled: Boolean,
+    onClick: () -> Unit
+) {
+    val name = device.name ?: stringResource(Res.string.devices_unknown_device)
+    SettingCardItem(
+        enabled = enabled,
+        title = name,
+        subtitle = device.address ?: stringResource(Res.string.devices_resolving),
+        icon = { SettingsItemIcon(Iconsax.IconsaxMirroringScreen, name) },
+        trailingContent = {
+            when {
+                device.isConnecting -> MillenniumSpokeSpinner(size = 20.dp)
+                device.isConnected -> Text(
+                    text = stringResource(Res.string.devices_status_connected),
+                    style = AppTheme.typography.labelMedium,
+                    color = AppTheme.colors.primary
+                )
+                else -> MillenniumIcon(
+                    imageVector = FeatherIcons.ChevronRight,
+                    contentDescription = null,
+                    tint = AppTheme.colors.onSurfaceVariant
+                )
+            }
+        },
+        onClick = onClick
+    )
+}
+
+@Composable
+private fun LazyItemScope.ConnectedDeviceCard(
+    device: ConnectedDeviceUi,
+    onOpenRemote: () -> Unit,
+    onDisconnect: () -> Unit
+) {
+    val name = device.name ?: stringResource(Res.string.devices_unknown_device)
+    MillenniumCard(
+        modifier = Modifier
+            .fillParentMaxWidth()
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        maxWidth = ContentMaxWidth,
+        contentPadding = PaddingValues(16.dp),
+        contentSpacing = 16.dp,
+        shadowElevation = 6.dp
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            SettingsItemIcon(Iconsax.IconsaxMirroringScreen, name)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = name,
+                    style = AppTheme.typography.titleMedium,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = device.address,
+                    style = AppTheme.typography.bodySmall,
+                    color = AppTheme.colors.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End)
+        ) {
+            MillenniumButton(
+                onClick = onDisconnect,
+                style = MillenniumButtonStyle.Secondary
+            ) {
+                Text(stringResource(Res.string.devices_disconnect))
+            }
+            MillenniumButton(
+                onClick = onOpenRemote,
+                style = MillenniumButtonStyle.Primary
+            ) {
+                Text(stringResource(Res.string.devices_open_remote))
+            }
+        }
+    }
+}
+
+@Composable
+private fun ErrorBanner(
+    message: String,
+    onDismiss: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick, enabled = !isConnecting)
-            .padding(vertical = 12.dp, horizontal = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp)
+            .clip(AppTheme.shapes.medium)
+            .background(AppTheme.colors.errorContainer)
+            .padding(start = 12.dp, top = 4.dp, bottom = 4.dp, end = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        if (isConnecting) {
-            MillenniumSpokeSpinner(size = 24.dp)
-        } else {
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        MillenniumIcon(
+            imageVector = Iconsax.IconsaxInformation,
+            contentDescription = null,
+            tint = AppTheme.colors.onErrorContainer,
+            modifier = Modifier.size(20.dp)
+        )
+        Text(
+            text = message,
+            style = AppTheme.typography.bodyMedium,
+            color = AppTheme.colors.onErrorContainer,
+            modifier = Modifier.weight(1f)
+        )
+        MillenniumIconButton(
+            onClick = onDismiss,
+            style = MillenniumIconButtonStyle.Quiet
+        ) {
             MillenniumIcon(
-                imageVector = Iconsax.IconsaxMirroringScreen,
-                contentDescription = null,
-                tint = AppTheme.colors.primary)
+                imageVector = Iconsax.IconsaxCloseSquare,
+                contentDescription = stringResource(Res.string.jam_error_dismiss),
+                tint = AppTheme.colors.onErrorContainer
+            )
         }
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = device.name.ifBlank { stringResource(Res.string.devices_unknown_device) },
-                style = AppTheme.typography.bodyLarge,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis)
-            Text(
-                text = if (device.host.isNotBlank() && device.port > 0) {
-                    "${device.host}:${device.port}"
+    }
+}
+
+@Composable
+private fun LazyItemScope.EmptyState(
+    isDiscovering: Boolean,
+    onSearchAgain: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillParentMaxHeight(0.8f)
+            .fillParentMaxWidth()
+            .padding(24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            modifier = Modifier.widthIn(max = 360.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(72.dp)
+                    .clip(CircleShape)
+                    .background(AppTheme.colors.primary.copy(alpha = 0.12f)),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isDiscovering) {
+                    MillenniumSpokeSpinner(size = 32.dp)
                 } else {
-                    stringResource(Res.string.devices_resolving)
-                },
-                style = AppTheme.typography.bodySmall,
+                    MillenniumIcon(
+                        imageVector = Iconsax.IconsaxWifiSquare,
+                        contentDescription = null,
+                        tint = AppTheme.colors.primary,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
+            Text(
+                text = stringResource(
+                    if (isDiscovering) Res.string.devices_searching else Res.string.devices_empty
+                ),
+                style = AppTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 8.dp)
+            )
+            Text(
+                text = stringResource(Res.string.devices_empty_hint),
+                style = AppTheme.typography.bodyMedium,
                 color = AppTheme.colors.onSurfaceVariant,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis)
-            if (device.deviceId.isNotBlank()) {
-                Text(
-                    text = stringResource(Res.string.devices_device_id, device.deviceId.take(8)),
-                    style = AppTheme.typography.labelSmall,
-                    color = AppTheme.colors.onSurfaceVariant.copy(alpha = 0.6f),
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis)
+                textAlign = TextAlign.Center
+            )
+            if (!isDiscovering) {
+                MillenniumButton(
+                    onClick = onSearchAgain,
+                    style = MillenniumButtonStyle.Secondary,
+                    modifier = Modifier.padding(top = 8.dp)
+                ) {
+                    Text(stringResource(Res.string.devices_search_again))
+                }
             }
         }
     }

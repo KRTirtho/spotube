@@ -210,8 +210,6 @@
     <string name="settings_error_cache_size_range">용량은 0 또는 양수여야 해요.</string>
     <string name="settings_enable_endless_playback_title">끝없는 재생 사용</string>
     <string name="settings_enable_endless_playback_subtitle">대기열이 끝나면 추천 트랙으로 계속 재생해요.</string>
-    <string name="settings_enable_connect_title">Connect 사용</string>
-    <string name="settings_enable_connect_subtitle">Spotube Connect 기능을 통해 원격 재생 컨트롤을 제공해요.</string>
     <string name="settings_playback_port_title">재생 프록시 서버 포트</string>
     <string name="settings_allow_remote_control_title">원격 제어 허용</string>
     <string name="settings_allow_remote_control_subtitle">같은 네트워크의 다른 기기가 연결되면 재생을 제어할 수 있도록 허용해요.</string>
@@ -491,7 +489,6 @@
     <!-- Devices: discovery screen -->
     <string name="devices_title">기기</string>
     <string name="devices_refresh">새로고침</string>
-    <string name="devices_connected_to">%1$s:%2$d에 연결됨</string>
     <string name="devices_disconnect">연결 해제</string>
     <string name="devices_connecting">연결 중...</string>
     <string name="devices_searching">네트워크에서 기기를 찾는 중...</string>
@@ -499,20 +496,13 @@
     <string name="devices_empty_hint">상대 기기의 설정에서 “원격 제어 허용”이 켜져 있는지 확인하세요.</string>
     <string name="devices_unknown_device">알 수 없는 기기</string>
     <string name="devices_resolving">확인 중...</string>
-    <string name="devices_device_id">ID: %1$s...</string>
 
     <!-- Devices: remote control screen -->
     <string name="devices_remote_title">원격 제어</string>
     <string name="devices_remote_disconnected">연결 끊김</string>
     <string name="devices_remote_connection_error">연결 오류: %1$s</string>
-    <string name="devices_remote_album_cover">앨범 커버</string>
     <string name="devices_remote_unknown_track">알 수 없는 트랙</string>
     <string name="devices_remote_unknown_artist">알 수 없는 아티스트</string>
-    <string name="devices_remote_seek">탐색</string>
-    <string name="devices_remote_shuffle">셔플</string>
-    <string name="devices_remote_previous">이전</string>
-    <string name="devices_remote_next">다음</string>
-    <string name="devices_remote_loop_mode">반복 모드</string>
     <string name="devices_remote_volume">볼륨</string>
     <string name="devices_remote_remove_from_queue">대기열에서 삭제</string>
     <string name="devices_remote_more_options">옵션 더보기</string>
