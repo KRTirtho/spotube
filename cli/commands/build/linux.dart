@@ -45,6 +45,13 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
       );
     }
 
+    // fastforge's AppRun puts the bundled Mesa (usr/lib) ahead of the system
+    // GL stack, which breaks EGL/GL context creation on distros with newer
+    // DRI drivers (e.g. Linux Mint 22.3) and makes the app SIGSEGV
+    // immediately on startup. Patch the generated AppImage so the system
+    // GL stack wins and bundled libs only act as a fallback.
+    await _fixAppImageAppRun();
+
     final tempDir = join(Directory.systemTemp.path, "spotube-tar");
     final bundleArchName = architecture == "x86" ? "x86_64" : "aarch64";
     final bundleDirPath = join(
@@ -133,5 +140,71 @@ class LinuxBuildCommand extends Command with BuildCommandCommonSteps {
     await ogAppImage.delete();
 
     stdout.writeln("✅ Linux building done");
+  }
+
+  Future<void> _fixAppImageAppRun() async {
+    final ogAppImage = File(
+      join(
+        cwd.path,
+        "dist",
+        pubspec.version.toString(),
+        "spotube-${pubspec.version}-linux.AppImage",
+      ),
+    );
+    if (!ogAppImage.existsSync()) {
+      stdout.writeln(
+        "[fixAppImageAppRun] AppImage not found at ${ogAppImage.path}; skipping",
+      );
+      return;
+    }
+
+    final workDir = join(Directory.systemTemp.path, "spotube-appimage-fix");
+    await shell.run(
+      "rm -rf '$workDir' && mkdir -p '$workDir'"
+      " && cd '$workDir'"
+      " && '${ogAppImage.path}' --appimage-extract",
+    );
+
+    final appRun = File(join(workDir, "squashfs-root", "AppRun"));
+    if (!appRun.existsSync()) {
+      stdout.writeln("[fixAppImageAppRun] AppRun not found; skipping");
+      return;
+    }
+
+    final hostTriple =
+        architecture == "x86" ? "x86_64-linux-gnu" : "aarch64-linux-gnu";
+    final fixedAppRun = r'''#!/bin/bash
+APPDIR="$(cd "$(dirname "$0")" && pwd)"
+# System GL stack first, bundled libs only as fallback.
+# Keeping bundled Mesa ahead of the system stack breaks EGL/GL context
+# creation on distros with newer DRI drivers (e.g. Linux Mint 22.3).
+export LD_LIBRARY_PATH="/lib/HOST_TRIPLE:/usr/lib/HOST_TRIPLE:$APPDIR/usr/lib:$APPDIR/lib"
+cd "$APPDIR"
+exec ./spotube
+'''.replaceAll("HOST_TRIPLE", hostTriple);
+    await appRun.writeAsString(fixedAppRun);
+    await shell.run("chmod +x '${appRun.path}'");
+
+    final appimagetoolPath =
+        File(join(Directory.systemTemp.path, "appimagetool.AppImage"));
+    if (!appimagetoolPath.existsSync()) {
+      final archTag = architecture == "x86" ? "x86_64" : "aarch64";
+      await shell.run(
+        "curl -L --fail -o '${appimagetoolPath.path}'"
+        " 'https://github.com/AppImage/appimagetool/releases/download/continuous/appimagetool-$archTag.AppImage'",
+      );
+      await shell.run("chmod +x '${appimagetoolPath.path}'");
+    }
+
+    await shell.run(
+      "cd '$workDir'"
+      " && '${appimagetoolPath.path}' --appimage-extract-and-run"
+      " squashfs-root '${ogAppImage.path}'",
+    );
+
+    await Directory(workDir).delete(recursive: true);
+    stdout.writeln(
+      "[fixAppImageAppRun] AppRun patched in ${ogAppImage.path}",
+    );
   }
 }
