@@ -164,6 +164,7 @@ dev_dependencies:
     sdk: flutter
   integration_test:
     sdk: flutter
+  path_provider_platform_interface: ^2.1.2
   json_serializable: ^6.6.2
   freezed: ^2.5.2
   process_run: ^0.14.2

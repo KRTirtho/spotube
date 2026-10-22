@@ -11,6 +11,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:spotube/utils/platform.dart';
 import 'package:logging/logging.dart' as logging;
 
+import 'file_log_writer.dart';
+
 final _loggingToLoggerLevel = {
   logging.Level.ALL: Level.all,
   logging.Level.FINEST: Level.trace,
@@ -26,7 +28,7 @@ final _loggingToLoggerLevel = {
 
 class AppLogger {
   static late final Logger log;
-  static late final File logFile;
+  static FileLogWriter? _fileLogWriter;
 
   static initialize(bool verbose) {
     log = Logger(
@@ -39,17 +41,15 @@ class AppLogger {
     logging.hierarchicalLoggingEnabled = true;
     logging.Logger('YoutubeExplode.StreamsClient')
       ..level = logging.Level.SEVERE
-      ..onRecord.listen(
-        (record) {
-          log.log(
-            _loggingToLoggerLevel[record.level] ?? Level.info,
-            record.message,
-            error: record.error,
-            stackTrace: record.stackTrace,
-            time: record.time,
-          );
-        },
-      );
+      ..onRecord.listen((record) {
+        log.log(
+          _loggingToLoggerLevel[record.level] ?? Level.info,
+          record.message,
+          error: record.error,
+          stackTrace: record.stackTrace,
+          time: record.time,
+        );
+      });
   }
 
   static R? runZoned<R>(R Function() body) {
@@ -70,17 +70,14 @@ class AppLogger {
           Isolate.current.addErrorListener(
             RawReceivePort((pair) async {
               final isolateError = pair as List<dynamic>;
-              reportError(
-                isolateError.first.toString(),
-                isolateError.last,
-              );
+              reportError(isolateError.first.toString(), isolateError.last);
             }).sendPort,
           );
         }
 
         _initInternalPackageLoggers();
 
-        getLogsPath().then((value) => logFile = value);
+        _fileLogWriter = FileLogWriter(getLogsPath);
 
         return body();
       },
@@ -91,7 +88,11 @@ class AppLogger {
   }
 
   static Future<File> getLogsPath() async {
-    String dir = (await getApplicationDocumentsDirectory()).path;
+    // Documents can be protected by Windows Controlled Folder Access.
+    String dir = (kIsWindows
+            ? await getApplicationSupportDirectory()
+            : await getApplicationDocumentsDirectory())
+        .path;
     if (kIsAndroid) {
       dir = (await getExternalStorageDirectory())?.path ?? "";
     }
@@ -119,11 +120,10 @@ class AppLogger {
     log.e(message, error: error, stackTrace: stackTrace);
 
     if (kReleaseMode) {
-      await logFile.writeAsString(
+      await _fileLogWriter?.write(
         "[${DateTime.now()}]---------------------\n"
         "$error\n$stackTrace\n"
         "----------------------------------------\n",
-        mode: FileMode.writeOnlyAppend,
       );
     }
   }
