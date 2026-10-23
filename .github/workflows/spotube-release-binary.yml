@@ -155,7 +155,10 @@ jobs:
     timeout-minutes: 120
     runs-on: ubuntu-latest
     steps:
+      # Full history: the metainfo's release notes come from git-cliff
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Download maven local
         uses: actions/download-artifact@v8
@@ -195,6 +198,30 @@ jobs:
           # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+
+      # Portable tarball the AUR and Flathub packages install from. Like deb/rpm it uses the system's VLC,
+      # GTK and WebKitGTK, so it is packed from the distributable before the AppImage build replaces it
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
+
+      - name: Package Linux tarball
+        run: |
+          if [ "${{ inputs.release_type }}" = "nightly" ]; then
+            VERSION=nightly
+          else
+            VERSION=$(./gradlew -q :composeApp:printVersion)
+          fi
+          # Desktop entry + metainfo, with the release history from git-cliff
+          ./gradlew :composeApp:renderPackagingLinux -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+          packaging/package-linux-tarball.sh "$VERSION" "${{ inputs.release_type }}" .
+
+      - name: Upload tarball
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-tarball
+          path: spotube-linux-*-x86_64.tar.xz
 
       # Only the AppImage bundles VLC, GTK and WebKitGTK; deb/rpm depend on the distro packages
       - name: Package Linux AppImage
@@ -241,7 +268,10 @@ jobs:
     timeout-minutes: 120
     runs-on: ubuntu-24.04-arm
     steps:
+      # Full history: the metainfo's release notes come from git-cliff
       - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       # The arm64 runner image ships without an Android SDK/NDK, but :composeApp configuration needs both
       # (Gobley's cargo plugin resolves the NDK directory for the Android Rust targets)
@@ -288,6 +318,30 @@ jobs:
           # Nucleus lists GraalVM CE releases via the GitHub API; unauthenticated calls hit the 60/hour limit
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: ./gradlew :composeApp:packageGraalvmDeb :composeApp:packageGraalvmRpm -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+
+      # Portable tarball the AUR and Flathub packages install from. Like deb/rpm it uses the system's VLC,
+      # GTK and WebKitGTK, so it is packed from the distributable before the AppImage build replaces it
+      - name: Install git-cliff
+        uses: taiki-e/install-action@v2
+        with:
+          tool: git-cliff
+
+      - name: Package Linux tarball
+        run: |
+          if [ "${{ inputs.release_type }}" = "nightly" ]; then
+            VERSION=nightly
+          else
+            VERSION=$(./gradlew -q :composeApp:printVersion)
+          fi
+          # Desktop entry + metainfo, with the release history from git-cliff
+          ./gradlew :composeApp:renderPackagingLinux -Pnightly=${{ inputs.release_type == 'nightly' }} -PbuildNumber=${{ github.run_number }}
+          packaging/package-linux-tarball.sh "$VERSION" "${{ inputs.release_type }}" .
+
+      - name: Upload tarball
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-tarball-arm64
+          path: spotube-linux-*-aarch64.tar.xz
 
       # Only the AppImage bundles VLC, GTK and WebKitGTK; deb/rpm depend on the distro packages
       - name: Package Linux AppImage
@@ -507,7 +561,7 @@ jobs:
         run: |
           echo "## Downloads" > release-notes.md
           echo "" >> release-notes.md
-          for dir in android-apk linux-deb linux-rpm linux-appimage linux-deb-arm64 linux-rpm-arm64 linux-appimage-arm64 windows-exe macos-dmg; do
+          for dir in android-apk linux-deb linux-rpm linux-appimage linux-tarball linux-deb-arm64 linux-rpm-arm64 linux-appimage-arm64 linux-tarball-arm64 windows-exe macos-dmg; do
             if [ -d "$dir" ]; then
               echo "### $dir" >> release-notes.md
               for f in "$dir"/*; do
@@ -540,8 +594,10 @@ jobs:
             linux-deb/*.deb
             linux-rpm/*.rpm
             linux-appimage/*.AppImage
+            linux-tarball/*.tar.xz
             linux-deb-arm64/*.deb
             linux-rpm-arm64/*.rpm
             linux-appimage-arm64/*.AppImage
+            linux-tarball-arm64/*.tar.xz
             windows-exe/*.exe
             macos-dmg/*.dmg

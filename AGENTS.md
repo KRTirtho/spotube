@@ -66,6 +66,12 @@
 - **Android signing**: decodes `secrets.KEYSTORE` (base64) → `composeApp/upload-keystore.jks`, writes signing config into `local.properties` from secrets.
 - `create-release` job (depends on all builds) uses `softprops/action-gh-release@v2` to create the GitHub release with all artifacts attached.
 
+## Package managers (`packaging/`, `.github/workflows/spotube-publish-binary.yml`)
+- `packaging/<target>` (`linux`, `aur`, `flatpak`, `winget`, `chocolatey`) holds JMustache templates (`*.mustache`) plus files copied as is. `:composeApp:renderPackaging<Target>` renders them into `composeApp/build/packaging/<target>` (`RenderPackagingTask` in buildSrc documents the template data). Never hand-write versions, checksums or release notes into these files.
+- Checksums come from release assets in `-PpackagingArtifactsDir=<dir>`; a template using a missing value fails the render. Release notes come from `git-cliff --context` with `cliff.toml` (`GitCliffContextTask`): needs `git-cliff` on the PATH and full git history. `gradle.properties` defaults to `nightly=true`, which leaves commits unreleased: pass `-Pnightly=false` for a stable render.
+- `packaging/package-linux-tarball.sh` packs `spotube-linux-<version>-<arch>.tar.xz` (the AUR and Flathub source) from the GraalVM distributable and the rendered `linux` dir; the release workflow builds it before the AppImage step.
+- The publish workflow (`workflow_dispatch`, input `tag`) renders once, then pushes to Flathub (`team-spotube/org.spotube.spotube`), the AUR (`spotube-bin`), WinGet (PR from `team-spotube/winget-pkgs`) and Chocolatey.
+
 ## OpenCode Agent MCP Execution Directives
 
 ### 1. Code Discovery & Context Search

@@ -25,6 +25,8 @@ import org.jetbrains.compose.reload.gradle.ComposeHotRun
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.gradle.api.tasks.Copy
 import org.spotube.gradle.DownloadLinuxGtkBundleTask
+import org.spotube.gradle.GitCliffContextTask
+import org.spotube.gradle.RenderPackagingTask
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -75,6 +77,37 @@ val appRepositoryUrl = repositoryUrl
 tasks.register("printVersion") {
     val appVersion = appVersionName
     doLast { println(appVersion) }
+}
+
+// Package manager manifests: packaging/<target> rendered into build/packaging/<target> with the version, the
+// release assets' checksums (-PpackagingArtifactsDir=<dir>) and the git-cliff changelog. See RenderPackagingTask.
+val gitCliffContext = tasks.register<GitCliffContextTask>("gitCliffContext") {
+    configFile.set(rootProject.layout.projectDirectory.file("cliff.toml"))
+    repositoryDir.set(rootProject.layout.projectDirectory)
+    // Nightlies are not a release: their commits stay unreleased
+    if (!isNightly) tag.set("v$appVersionName")
+    outputFile.set(layout.buildDirectory.file("packaging/changelog-context.json"))
+}
+val packagingRootDir = rootProject.layout.projectDirectory
+val packagingArtifactsDir = packagingRootDir.dir(providers.gradleProperty("packagingArtifactsDir"))
+listOf("linux", "aur", "flatpak", "winget", "chocolatey").forEach { target ->
+    tasks.register<RenderPackagingTask>("renderPackaging${target.replaceFirstChar { it.uppercase() }}") {
+        description = "Renders packaging/$target into build/packaging/$target."
+        templateDir.set(packagingRootDir.dir("packaging/$target"))
+        version.set(appVersionName)
+        pkgrel.set(providers.gradleProperty("pkgrel").orElse("1"))
+        repositoryUrl.set(appRepositoryUrl)
+        artifactNames.set(
+            mapOf(
+                "linuxX86_64" to "spotube-linux-$appVersionName-x86_64.tar.xz",
+                "linuxAarch64" to "spotube-linux-$appVersionName-aarch64.tar.xz",
+                "windowsX64" to "Spotube-windows-x86_64-setup.exe",
+            )
+        )
+        artifactsDir.set(packagingArtifactsDir)
+        changelogContext.set(gitCliffContext.flatMap { it.outputFile })
+        outputDir.set(layout.buildDirectory.dir("packaging/$target"))
+    }
 }
 val githubRepositoryPath = repositoryUrl.removePrefix("https://github.com/")
 val latestReleaseApiUrl = "https://api.github.com/repos/$githubRepositoryPath/releases/latest"
