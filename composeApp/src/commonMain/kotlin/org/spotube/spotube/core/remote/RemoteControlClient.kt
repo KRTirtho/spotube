@@ -17,8 +17,8 @@
 
 package org.spotube.spotube.core.remote
 
+import org.spotube.spotube.core.network.HttpClientFactory
 import co.touchlab.kermit.Logger
-import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.header
 import io.ktor.client.request.url
@@ -49,7 +49,7 @@ import spotube.composeapp.generated.resources.devices_error_send_failed
  * WebSocket client for controlling a remote Spotube instance.
  * Connects to the remote device's `/control` endpoint and sends commands.
  */
-class RemoteControlClient {
+class RemoteControlClient(httpClientFactory: HttpClientFactory) {
     private val logger = Logger.withTag("RemoteControlClient")
     private val json = Json {
         ignoreUnknownKeys = true
@@ -59,7 +59,7 @@ class RemoteControlClient {
 
     private val scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
-    private val httpClient = HttpClient {
+    private val httpClient = httpClientFactory.create {
         install(WebSockets)
         install(HttpTimeout) {
             connectTimeoutMillis = 10_000

@@ -17,12 +17,13 @@
 
 package org.spotube.spotube.core.tools.user_agents
 
+import org.koin.core.component.inject
+import org.koin.core.component.KoinComponent
+import org.spotube.spotube.core.network.HttpClientFactory
 import co.touchlab.kermit.Logger
 import org.spotube.spotube.PlatformType
 import org.spotube.spotube.core.paths.Paths
 import org.spotube.spotube.getPlatform
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.cio.CIO
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
@@ -53,7 +54,8 @@ import kotlin.time.Clock
  * [random] is intentionally synchronous and never blocks on the network: it serves
  * whatever is cached (even stale) and refreshes in the background when needed.
  */
-object UserAgents {
+object UserAgents : KoinComponent {
+    private val httpClientFactory: HttpClientFactory by inject()
     private const val SOURCE_URL =
         "https://cdn.jsdelivr.net/npm/top-user-agents@latest/src/index.json"
     private const val CACHE_FILE_NAME = "user_agents_cache.json"
@@ -111,14 +113,9 @@ object UserAgents {
     private fun isValidAgent(ua: String) = ua.startsWith("Mozilla/")
 
     private suspend fun fetchRemote(): List<String> {
-        val client = HttpClient(CIO)
-        try {
-            val res = client.get(SOURCE_URL)
-            if (!res.status.isSuccess()) error("Unexpected status ${res.status}")
-            return json.decodeFromString(ListSerializer(String.serializer()), res.bodyAsText())
-        } finally {
-            client.close()
-        }
+        val res = httpClientFactory.default.get(SOURCE_URL)
+        if (!res.status.isSuccess()) error("Unexpected status ${res.status}")
+        return json.decodeFromString(ListSerializer(String.serializer()), res.bodyAsText())
     }
 
     private fun cachePath() = (Paths().getApplicationCacheDirPath() + "/" + CACHE_FILE_NAME).toPath()

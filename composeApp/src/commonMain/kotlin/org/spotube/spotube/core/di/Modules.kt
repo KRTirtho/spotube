@@ -17,6 +17,8 @@
 
 package org.spotube.spotube.core.di
 
+import org.koin.core.module.dsl.onClose
+import org.spotube.spotube.core.network.HttpClientFactory
 import co.touchlab.kermit.Logger
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueueRepository
@@ -108,6 +110,7 @@ expect val platformModules: Module
 val sharedModules = module {
     includes(navigationModule)
     singleOf(::Database)
+    single { HttpClientFactory() } withOptions { onClose { it?.close() } }
 
     singleOf(::WebViewController)
 
@@ -164,7 +167,7 @@ val sharedModules = module {
     viewModelOf(::WelcomeViewModel)
 
     // Updates
-    single { AppUpdateService(get()) } withOptions { createdAtStart() }
+    single { AppUpdateService(get(), get()) } withOptions { createdAtStart() }
     single { PluginUpdateService(get(), get()) } withOptions { createdAtStart() }
 
     // Downloads
@@ -273,7 +276,7 @@ val sharedModules = module {
         createdAtStart()
     }
     single { RemoteControlHandler(get(), get(), get(), get()) }
-    single { RemoteControlClient() }
+    single { RemoteControlClient(get()) }
     singleOf(::DeviceDiscoveryService)
     single { RemoteControlService(get(), get(), get()) } withOptions {
         createdAtStart()

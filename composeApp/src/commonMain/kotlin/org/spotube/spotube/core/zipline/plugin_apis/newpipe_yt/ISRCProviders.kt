@@ -17,15 +17,15 @@
 
 package org.spotube.spotube.core.zipline.plugin_apis.newpipe_yt
 
+import org.koin.core.component.inject
+import org.spotube.spotube.core.network.HttpClientFactory
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.tools.user_agents.UserAgents
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import org.spotube.spotube.core.di.injectLogger
 import org.koin.core.component.KoinComponent
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.post
@@ -54,15 +54,8 @@ class ISRCProviders : KoinComponent {
                 .lowercase()
     }
 
-    val client = HttpClient() {
-        install(ContentNegotiation) {
-            json(Json {
-                prettyPrint = true
-                isLenient = true
-                ignoreUnknownKeys = true
-            })
-        }
-    }
+    private val httpClientFactory: HttpClientFactory by inject()
+    private val client get() = httpClientFactory.json
 
     private fun MetadataTrack.describe() =
         "id=$id title='$title' artists=${artists.map { it.name }} album='${album?.title}' " +

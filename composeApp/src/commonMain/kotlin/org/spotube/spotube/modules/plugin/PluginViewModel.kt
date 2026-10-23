@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin
 
+import org.spotube.spotube.core.network.HttpClientFactory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import org.spotube.spotube.core.di.injectLogger
@@ -141,10 +142,11 @@ private data class PluginScreenState(
 @OptIn(ExperimentalCoroutinesApi::class)
 class PluginViewModel(
     private val pluginManager: PluginManager,
-    private val webViewController: WebViewController) : ViewModel(), KoinComponent {
+    private val webViewController: WebViewController,
+    httpClientFactory: HttpClientFactory) : ViewModel(), KoinComponent {
 
     private val logger by injectLogger<PluginViewModel>()
-    private val gitHubRepo = GitHubPluginRepository()
+    private val gitHubRepo = GitHubPluginRepository(httpClientFactory.json)
 
     private val _screenState = MutableStateFlow(PluginScreenState())
     private val _allRepos = mutableListOf<GitHubRepo>()
@@ -658,8 +660,4 @@ class PluginViewModel(
         }
     }
 
-    override fun onCleared() {
-        gitHubRepo.close()
-        super.onCleared()
-    }
 }

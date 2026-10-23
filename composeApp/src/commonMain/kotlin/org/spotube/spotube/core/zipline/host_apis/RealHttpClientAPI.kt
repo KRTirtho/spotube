@@ -17,11 +17,12 @@
 
 package org.spotube.spotube.core.zipline.host_apis
 
+import org.koin.core.component.inject
+import org.spotube.spotube.core.network.HttpClientFactory
 import org.spotube.plugin_interfaces.host_apis.HttpClientAPI
 import org.spotube.plugin_interfaces.host_apis.HttpMethod
 import org.spotube.plugin_interfaces.host_apis.HttpResponse
 import org.spotube.spotube.core.di.injectLogger
-import io.ktor.client.HttpClient
 import io.ktor.client.request.request
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -30,7 +31,8 @@ import org.koin.core.component.KoinComponent
 
 class RealHttpClientAPI : HttpClientAPI, KoinComponent {
     val logger by injectLogger<RealHttpClientAPI>()
-    val httpClient = HttpClient()
+    private val httpClientFactory: HttpClientFactory by inject()
+    private val httpClient get() = httpClientFactory.default
 
     override suspend fun request(
         method: HttpMethod,

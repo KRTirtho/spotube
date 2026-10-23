@@ -19,8 +19,12 @@
 
 ## Dependencies
 - `gradle/libs.versions.toml` is the single source of truth for all version pins and library declarations.
-- Kotlin: `2.3.0`, JVM target: `11` (compile/target compatibility in both `composeApp/build.gradle.kts` and `plugin_interfaces/build.gradle.kts`).
+- Kotlin: `2.4.21`, JVM target: `11` (compile/target compatibility in both `composeApp/build.gradle.kts` and `plugin_interfaces/build.gradle.kts`).
 - **compose-webview (desktop) dispatcher hijack:** `dev.nucleusframework:composewebview` transitively pulls `nucleus.decorated-window-tao`, which registers a `TaoMainDispatcherFactory` (`loadPriority = 100`) via `META-INF/services` that hijacks `Dispatchers.Main` away from the Swing EDT. This breaks lifecycle's `enforceMainThreadIfNeeded` (window fails with "Method addObserver must be called on the main thread"). The app overrides it with `SwingMainDispatcherFactory` (`composeApp/src/jvmMain/.../core/coroutines/`, `loadPriority = Int.MAX_VALUE`) which pins `Dispatchers.Main` back to the Swing EDT. Keep that factory + its `META-INF/services/kotlinx.coroutines.internal.MainDispatcherFactory` resource; the long-term fix is in the webview (make the Tao dispatcher opt-in or lower its priority).
+
+## Networking
+- Never call `HttpClient(...)` directly. Inject `HttpClientFactory` (`commonMain/.../core/network/HttpClientFactory.kt`, a Koin single) and use `.default` / `.json` (shared, never close them) or `.create { ... }` for extra plugins (caller owns and may close it). It owns the one engine-backed client, so the platform default engine is used everywhere (Darwin on iOS, OkHttp on Android/desktop).
+- Do not add `ktor-client-cio`: on iOS it competes with Darwin as the default engine and has no TLS on Kotlin/Native, so every HTTPS request fails.
 
 ## GraalVM native image (desktop)
 - Enabled via `graalvm { }` inside `nucleus.application` in `composeApp/build.gradle.kts`. Nucleus downloads GraalVM CE itself (or uses `$GRAALVM_HOME`). Linux needs `gcc` + `patchelf`.

@@ -17,9 +17,9 @@
 
 package org.spotube.spotube.modules.plugin
 
+import org.spotube.spotube.core.network.HttpClientFactory
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.parameter
@@ -27,7 +27,6 @@ import io.ktor.http.append
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class GitHubRepoSearchResponse(
@@ -64,12 +63,8 @@ data class GitHubAsset(
     val name: String,
     @SerialName("browser_download_url") val browserDownloadUrl: String)
 
-class GitHubPluginRepository {
-    private val httpClient = HttpClient {
-        install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true })
-        }
-    }
+/** [httpClient] must have JSON content negotiation installed (see [HttpClientFactory.json]). */
+class GitHubPluginRepository(private val httpClient: HttpClient) {
 
     suspend fun searchSpotubePlugins(page: Int = 1, perPage: Int = 30): GitHubRepoSearchResponse {
         return httpClient.get("https://api.github.com/search/repositories") {
@@ -112,9 +107,5 @@ class GitHubPluginRepository {
         } catch (_: Exception) {
             emptyList()
         }
-    }
-
-    fun close() {
-        httpClient.close()
     }
 }

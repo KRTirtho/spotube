@@ -17,13 +17,11 @@
 
 package org.spotube.spotube.modules.update
 
+import org.spotube.spotube.core.network.HttpClientFactory
 import co.touchlab.kermit.Logger
 import org.spotube.spotube.AppBuildInfo
 import org.spotube.spotube.modules.settings.SettingsRepository
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.http.HttpHeaders
@@ -37,7 +35,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 import net.swiftzer.semver.SemVer
 import org.koin.core.component.KoinComponent
 
@@ -52,14 +49,11 @@ data class AvailableAppUpdate(
  * process, independent of any screen's lifecycle.
  */
 class AppUpdateService(
-    private val settingsRepository: SettingsRepository) : KoinComponent, AutoCloseable {
+    private val settingsRepository: SettingsRepository,
+    httpClientFactory: HttpClientFactory) : KoinComponent {
     private val logger = Logger.withTag("AppUpdateService")
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-    private val httpClient = HttpClient(CIO) {
-        install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true })
-        }
-    }
+    private val httpClient = httpClientFactory.json
 
     private val _availableUpdate = MutableStateFlow<AvailableAppUpdate?>(null)
     val availableUpdate: StateFlow<AvailableAppUpdate?> = _availableUpdate.asStateFlow()
@@ -117,10 +111,6 @@ class AppUpdateService(
     private fun parseVersion(version: String): SemVer? = runCatching {
         SemVer.parse(version)
     }.getOrNull()
-
-    override fun close() {
-        httpClient.close()
-    }
 }
 
 @Serializable

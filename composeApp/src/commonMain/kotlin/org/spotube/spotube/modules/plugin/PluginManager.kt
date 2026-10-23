@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.plugin
 
+import org.spotube.spotube.core.network.HttpClientFactory
 import org.spotube.spotube.core.db.Database
 import org.spotube.spotube.core.db.DatabaseKeys
 import org.spotube.spotube.core.di.injectLogger
@@ -24,7 +25,6 @@ import org.spotube.spotube.core.paths.Paths
 import org.spotube.spotube.core.zipline.BuiltInPluginService
 import org.spotube.spotube.core.zipline.PluginService
 import org.spotube.spotube.core.zipline.ZiplinePluginService
-import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.utils.io.readRemaining
@@ -113,7 +113,8 @@ interface ScrobblePluginSource {
 
 class PluginManager(
     val database: Database,
-    val paths: Paths) : KoinComponent, PluginProvider, AudioPluginSource, ScrobblePluginSource {
+    val paths: Paths,
+    private val httpClientFactory: HttpClientFactory) : KoinComponent, PluginProvider, AudioPluginSource, ScrobblePluginSource {
     private val logger by injectLogger<PluginManager>()
     private val pluginExceptionHandler = CoroutineExceptionHandler { _, exception ->
         logger.e(exception) { "Plugin runtime threw an unhandled exception. Intercepted safely." }
@@ -121,7 +122,7 @@ class PluginManager(
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate + pluginExceptionHandler)
     private val pluginsDir = "${paths.getApplicationDataDirPath()}/plugins".toPath()
     val pluginsDirPath: Path get() = pluginsDir
-    private val httpClient = HttpClient()
+    private val httpClient get() = httpClientFactory.default
 
     enum class InstallPromptKind {
         INSTALL,

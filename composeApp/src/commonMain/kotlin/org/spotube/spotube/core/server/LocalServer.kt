@@ -17,16 +17,15 @@
 
 package org.spotube.spotube.core.server
 
+import org.spotube.spotube.core.network.HttpClientFactory
 import org.spotube.spotube.core.audioplayer.AudioPlayerQueue
 import org.spotube.spotube.core.di.injectLogger
 import org.spotube.spotube.core.remote.RemoteControlHandler
 import org.spotube.spotube.modules.settings.SettingsViewModel
-import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.http.HttpMethod
 import io.ktor.server.application.Application
 import io.ktor.server.application.install
-import io.ktor.server.cio.CIO
 import io.ktor.server.engine.EmbeddedServer
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.response.respondText
@@ -60,11 +59,12 @@ class LocalServer(
     private val streamingUrlRepository: StreamingUrlRepository,
     private val audioPlayerQueue: AudioPlayerQueue,
     private val cacheManager: CacheManager,
-    private val remoteControlHandler: RemoteControlHandler) : KoinComponent {
+    private val remoteControlHandler: RemoteControlHandler,
+    httpClientFactory: HttpClientFactory) : KoinComponent {
 
     val logger by injectLogger<LocalServer>()
-    private val httpClient = HttpClient {
-        // A stalled upstream connection must not wedge the CIO dispatcher thread
+    private val httpClient = httpClientFactory.create {
+        // A stalled upstream connection must not wedge an engine thread
         // forever. Only the connect phase is bounded — the proxy streams long
         // audio bodies, so request/socket timeouts would cut playback short.
         install(HttpTimeout) {

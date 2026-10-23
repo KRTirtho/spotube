@@ -17,6 +17,7 @@
 
 package org.spotube.spotube.modules.downloads
 
+import org.spotube.spotube.core.network.HttpClientFactory
 import co.touchlab.kermit.Logger
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
 import org.spotube.spotube.core.paths.Paths
@@ -26,7 +27,6 @@ import org.spotube.spotube.core.server.StreamingUrlRepository
 import org.spotube.spotube.core.server.urlSummary
 import org.spotube.plugin_interfaces.plugin_apis.audio.StreamProtocol
 import org.spotube.spotube.modules.settings.SettingsRepository
-import io.ktor.client.HttpClient
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.request.get
 import io.ktor.client.request.head
@@ -88,7 +88,8 @@ sealed interface DownloadStatus {
 class DownloadManager(
     private val settingsRepository: SettingsRepository,
     private val paths: Paths,
-    private val streamingUrlRepository: StreamingUrlRepository
+    private val streamingUrlRepository: StreamingUrlRepository,
+    private val httpClientFactory: HttpClientFactory
 ) {
     companion object {
         const val MAX_CONCURRENT_DOWNLOADS = 4
@@ -101,7 +102,7 @@ class DownloadManager(
     private val fileSystem = FileSystem.SYSTEM
     private val queueMutex = Mutex()
 
-    private val httpClient = HttpClient {
+    private val httpClient = httpClientFactory.create {
         install(HttpTimeout) {
             requestTimeoutMillis = 300_000
             connectTimeoutMillis = 30_000

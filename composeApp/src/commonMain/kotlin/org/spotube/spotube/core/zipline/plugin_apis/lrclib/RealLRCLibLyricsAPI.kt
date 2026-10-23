@@ -17,11 +17,14 @@
 
 package org.spotube.spotube.core.zipline.plugin_apis.lrclib
 
+import org.koin.core.component.inject
+import org.koin.core.component.KoinComponent
+import org.spotube.spotube.core.network.HttpJson
+import org.spotube.spotube.core.network.HttpClientFactory
 import org.spotube.plugin_interfaces.plugin_apis.lyrics.LyricsAPI
 import org.spotube.plugin_interfaces.plugin_apis.lyrics.LyricsLine
 import org.spotube.plugin_interfaces.plugin_apis.lyrics.LyricsResponse
 import org.spotube.plugin_interfaces.plugin_apis.metadata.track.MetadataTrack
-import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -36,7 +39,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.Json
 
 @Serializable
 data class LRCLibResponse(
@@ -47,19 +49,22 @@ data class LRCLibResponse(
     val plainLyrics: String?,
     val syncedLyrics: String?)
 
-class RealLRCLibLyricsAPI : LyricsAPI {
-    private val httpClient = HttpClient {
-        install(Logging) {
-            level = LogLevel.ALL
-            logger = Logger.SIMPLE
-        }
-        install(ContentNegotiation) {
-            json(Json { ignoreUnknownKeys = true })
-        }
-        defaultRequest {
-            url("https://lrclib.net/api/get")
-            // TODO: Add the actual version of Spotube instead of hardcoding it
-            userAgent("Spotube/v6.0.0 LRCLib Lyric Plugin")
+class RealLRCLibLyricsAPI : LyricsAPI, KoinComponent {
+    private val httpClientFactory: HttpClientFactory by inject()
+    private val httpClient by lazy {
+        httpClientFactory.create {
+            install(Logging) {
+                level = LogLevel.ALL
+                logger = Logger.SIMPLE
+            }
+            install(ContentNegotiation) {
+                json(HttpJson)
+            }
+            defaultRequest {
+                url("https://lrclib.net/api/get")
+                // TODO: Add the actual version of Spotube instead of hardcoding it
+                userAgent("Spotube/v6.0.0 LRCLib Lyric Plugin")
+            }
         }
     }
 
