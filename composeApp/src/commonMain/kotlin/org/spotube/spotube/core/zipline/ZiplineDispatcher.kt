@@ -40,7 +40,8 @@ class ZiplineDispatcher(
  * size is ~1 MiB, which causes native stack overflow when compiling large
  * JS modules like kotlin-stdlib (~491 KB).
  *
- * This expect/actual ensures the backing thread has a sufficiently large stack.
+ * iOS secondary threads get only 512 KiB, so every platform must create its own
+ * large-stack thread. This expect/actual ensures the backing thread has one.
  */
 expect fun createZiplineDispatcher(): ZiplineDispatcher
 
