@@ -40,7 +40,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.koin.core.component.KoinComponent
 
-val TOP_LEVEL_ROUTES = setOf(
+val TOP_LEVEL_ROUTES: Set<NavKey> = setOf(
     Routes.Home,
     Routes.Search,
     Routes.Library,
